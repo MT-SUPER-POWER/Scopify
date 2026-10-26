@@ -275,6 +275,12 @@ export interface TranslateFn {
    */
   (key: "mv.action.like", params?: TranslationParams): string;
   /**
+   * zh-CN: 观看 MV
+   * zh-TW: 觀看 MV
+   * en-US: Watch music video
+   */
+  (key: "mv.action.watch", params?: TranslationParams): string;
+  /**
    * zh-CN: 收藏
    * zh-TW: 收藏
    * en-US: Save
@@ -6992,6 +6998,12 @@ export interface TranslateFn {
    */
   (key: "search.section.voices", params?: TranslationParams): string;
   /**
+   * zh-CN: MV
+   * zh-TW: MV
+   * en-US: Music videos
+   */
+  (key: "search.section.mvs", params?: TranslationParams): string;
+  /**
    * zh-CN: 没有匹配结果
    * zh-TW: 沒有匹配結果
    * en-US: No matching results
@@ -7034,6 +7046,12 @@ export interface TranslateFn {
    */
   (key: "search.section.noVoiceResults", params?: TranslationParams): string;
   /**
+   * zh-CN: 没有 MV 结果
+   * zh-TW: 沒有 MV 結果
+   * en-US: No music video results
+   */
+  (key: "search.section.noMvResults", params?: TranslationParams): string;
+  /**
    * zh-CN: 搜索歌曲
    * zh-TW: 搜尋歌曲
    * en-US: Search Songs
@@ -7069,6 +7087,12 @@ export interface TranslateFn {
    * en-US: Search Sounds
    */
   (key: "search.section.searchVoices", params?: TranslationParams): string;
+  /**
+   * zh-CN: 搜索 MV
+   * zh-TW: 搜尋 MV
+   * en-US: Search Music Videos
+   */
+  (key: "search.section.searchMvs", params?: TranslationParams): string;
   /**
    * zh-CN: 歌手
    * zh-TW: 歌手
@@ -7129,6 +7153,12 @@ export interface TranslateFn {
    * en-US: Sounds
    */
   (key: "search.category.voices", params?: TranslationParams): string;
+  /**
+   * zh-CN: MV
+   * zh-TW: MV
+   * en-US: MVs
+   */
+  (key: "search.category.mvs", params?: TranslationParams): string;
   /**
    * zh-CN: 未知播客
    * zh-TW: 未知播客

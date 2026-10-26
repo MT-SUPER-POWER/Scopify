@@ -104,7 +104,7 @@ function mapSong(source: SongSearchData, unknownAlbumName: string, unknownSongNa
     duration: source.dt ?? 0,
     fee: source.fee,
     id: source.id,
-    mvid: source.mvid,
+    mvid: source.mv || source.mvid,
     name: source.name ?? unknownSongName,
   };
 }

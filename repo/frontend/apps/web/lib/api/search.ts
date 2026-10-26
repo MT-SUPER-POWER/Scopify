@@ -2,6 +2,7 @@ import type {
   AlbumSearchResponse,
   ArtistSearchResponse,
   ComplexSearchResponse,
+  MvSearchResponse,
   PlaylistSearchResponse,
   SongSearchResponse,
   VoiceSearchResponse,
@@ -93,6 +94,18 @@ export function searchVoices(keyword: string, limit = 30, offset = 0) {
       limit,
       offset,
       type: 2000,
+    },
+  });
+}
+
+/** 搜索 MV；新版 PC 搜索接口不含 MV，使用 cloudsearch 的 MV 类型（1004）。 */
+export function searchMVs(keyword: string, limit = 24, offset = 0) {
+  return request.get<MvSearchResponse>("/cloudsearch", {
+    params: {
+      keywords: keyword,
+      limit,
+      offset,
+      type: 1004,
     },
   });
 }

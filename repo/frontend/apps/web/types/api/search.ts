@@ -1,3 +1,5 @@
+import type { MvSummary } from "@/types/api/mv";
+
 export interface SearchArtistSource {
   albumSize?: number;
   alias?: string[];
@@ -29,6 +31,8 @@ export interface SongSearchData {
   dt?: number;
   fee?: number;
   id: number;
+  /** 新版 PC 搜索返回 mv，旧接口返回 mvid；0 表示没有 MV。 */
+  mv?: number;
   mvid?: number;
   name?: string;
   al?: SongSearchAlbum;
@@ -272,4 +276,13 @@ export interface VoiceSearchResponse extends SearchPagination {
   list?: VoiceSearchItem[];
   result?: VoiceSearchPayload;
   voices?: VoiceSearchItem[];
+}
+
+/** `/cloudsearch?type=1004` 的 MV 搜索结果。 */
+export interface MvSearchResponse {
+  code: number;
+  result?: {
+    mvs?: MvSummary[];
+    mvCount?: number;
+  };
 }

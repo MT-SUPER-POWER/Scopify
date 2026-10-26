@@ -5,6 +5,7 @@ import { useCallback } from "react";
 import { AllView } from "@/components/search/AllView";
 import { CategoryTabs } from "@/components/search/CategoryTabs";
 import { GridCategoryView } from "@/components/search/GridCategoryView";
+import { MvsView } from "@/components/search/MvsView";
 import { AllViewSkeleton, LoadingSkeleton } from "@/components/search/LoadingSkeleton";
 import { NetworkRetryState } from "@/components/shared/NetworkRetryState";
 import { PodcastsView } from "@/components/search/PodcastsView";
@@ -35,20 +36,24 @@ export default function SearchPage() {
     bestMatch,
     fetchNextAlbumPage,
     fetchNextArtistPage,
+    fetchNextMvPage,
     fetchNextPlaylistPage,
     fetchNextPodcastPage,
     fetchNextSongPage,
     fetchNextVoicePage,
     hasNextAlbumPage,
     hasNextArtistPage,
+    hasNextMvPage,
     hasNextPlaylistPage,
     hasNextPodcastPage,
     hasNextSongPage,
     hasNextVoicePage,
     hasError,
     loading,
+    mvs,
     isFetchingNextAlbumPage,
     isFetchingNextArtistPage,
+    isFetchingNextMvPage,
     isFetchingNextPlaylistPage,
     isFetchingNextPodcastPage,
     isFetchingNextSongPage,
@@ -114,6 +119,7 @@ export default function SearchPage() {
           bestMatch={bestMatch}
           podcasts={podcasts}
           loadingPlayId={loadingPlayId}
+          mvs={mvs}
           onPlayAlbum={handlePlayAlbum}
           onPlayPlaylist={handlePlayPlaylist}
           onSeeAll={handleCategoryChange}
@@ -127,6 +133,14 @@ export default function SearchPage() {
           hasNextPage={hasNextSongPage}
           isFetchingNextPage={isFetchingNextSongPage}
           onLoadMore={() => void fetchNextSongPage()}
+        />
+      )}
+      {!loading && activeCategory === "MVs" && (
+        <MvsView
+          mvs={mvs}
+          hasNextPage={hasNextMvPage}
+          isFetchingNextPage={isFetchingNextMvPage}
+          onLoadMore={() => void fetchNextMvPage()}
         />
       )}
       {!loading && activeCategory === "Podcasts" && (

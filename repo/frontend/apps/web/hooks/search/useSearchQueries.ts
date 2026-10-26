@@ -6,6 +6,7 @@ import {
   searchAlbums,
   searchArtists,
   searchComplex,
+  searchMVs,
   searchPlaylists,
   searchSongs,
   searchVoices,
@@ -17,6 +18,7 @@ import { musicQueryKeys } from "@/lib/query/queryKeys";
 import type {
   AlbumSearchResponse,
   ArtistSearchResponse,
+  MvSearchResponse,
   PlaylistSearchResponse,
   SongSearchResponse,
   VoiceSearchResponse,
@@ -139,6 +141,34 @@ export function useInfiniteArtistSearchQuery(keyword: string, limit: number, ena
     initialPageParam: 0,
     queryFn: async ({ pageParam }) => (await searchArtists(keyword, limit, pageParam)).data,
     queryKey: musicQueryKeys.search.artists(keyword, limit),
+  });
+}
+
+export function useInfiniteMvSearchQuery(keyword: string, limit: number, enabled: boolean) {
+  return useInfiniteQuery<
+    MvSearchResponse,
+    Error,
+    InfiniteData<MvSearchResponse>,
+    ReturnType<typeof musicQueryKeys.search.mvs>,
+    number
+  >({
+    enabled: isEnabled(keyword, enabled),
+    getNextPageParam: (lastPage, pages, lastPageOffset) => {
+      const nextOffset = getNextSearchPageOffset(
+        lastPage,
+        lastPageOffset,
+        limit,
+        (page) => page.result?.mvs ?? [],
+      );
+      // 接口不返回 hasMore，用总数判断是否已经取完
+      const total = pages[0]?.result?.mvCount;
+      return nextOffset !== undefined && (total === undefined || nextOffset < total)
+        ? nextOffset
+        : undefined;
+    },
+    initialPageParam: 0,
+    queryFn: async ({ pageParam }) => (await searchMVs(keyword, limit, pageParam)).data,
+    queryKey: musicQueryKeys.search.mvs(keyword, limit),
   });
 }
 

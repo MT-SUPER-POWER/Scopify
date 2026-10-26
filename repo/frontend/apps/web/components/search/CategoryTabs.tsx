@@ -15,6 +15,7 @@ export function CategoryTabs({ active, onChange }: Props) {
     Artists: t("search.category.artists"),
     Playlists: t("search.category.playlists"),
     Albums: t("search.category.albums"),
+    MVs: t("search.category.mvs"),
     Podcasts: t("search.category.podcasts"),
     Voices: t("search.category.voices"),
   };

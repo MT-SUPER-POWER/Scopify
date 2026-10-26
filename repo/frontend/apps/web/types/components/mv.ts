@@ -25,3 +25,8 @@ export interface MvInfoProps {
   detail: MvDetail;
   isSubscribed: boolean;
 }
+
+export interface SongMvBadgeProps {
+  /** 歌曲关联的 MV id；缺省或 0 时不渲染。 */
+  mvId?: number;
+}

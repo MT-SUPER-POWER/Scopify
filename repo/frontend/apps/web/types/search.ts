@@ -94,6 +94,7 @@ export const CATEGORIES = [
   "Artists",
   "Playlists",
   "Albums",
+  "MVs",
   "Podcasts",
   "Voices",
 ] as const;

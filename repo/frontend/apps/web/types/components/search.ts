@@ -1,3 +1,4 @@
+import type { MvSummary } from "@/types/api/mv";
 import type {
   Album,
   Artist,
@@ -15,6 +16,7 @@ export interface AllViewProps {
   artists: Artist[];
   bestMatch: SearchBestMatch | null;
   loadingPlayId: string | null;
+  mvs: MvSummary[];
   onNavigate: (path: string) => void;
   onPlayAlbum: (album: Album, event: React.MouseEvent) => void;
   onPlayPlaylist: (playlist: Playlist, event: React.MouseEvent) => void;
@@ -49,6 +51,10 @@ export interface SearchPaginationProps {
 
 export interface SongsViewProps extends SearchPaginationProps {
   songs: Song[];
+}
+
+export interface MvsViewProps extends SearchPaginationProps {
+  mvs: MvSummary[];
 }
 
 export interface PodcastsViewProps extends SearchPaginationProps {

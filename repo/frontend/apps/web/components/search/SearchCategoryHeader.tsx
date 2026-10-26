@@ -6,6 +6,7 @@ import type { SearchCategoryHeaderProps } from "@/types/components/search";
 const categoryTitleKeys = {
   Albums: "search.section.searchAlbums",
   Artists: "search.section.searchArtists",
+  MVs: "search.section.searchMvs",
   Playlists: "search.section.searchPlaylists",
   Podcasts: "search.section.searchPodcasts",
   Songs: "search.section.searchSongs",
