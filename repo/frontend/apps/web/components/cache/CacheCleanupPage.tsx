@@ -59,10 +59,10 @@ export function CacheCleanupPage({
   };
 
   return (
-    <div className="relative flex w-full flex-col p-6 text-muted-foreground md:p-10">
+    <div className="relative flex w-full flex-col px-6 pt-8 pb-10 text-muted-foreground md:px-10 md:pb-12">
       <div className="max-w-4xl">
         {/* 头部：去除冗余的局部返回按钮，将刷新按钮约束在 max-w-4xl 内容容器右侧 */}
-        <div className="mt-4 mb-8 flex items-center justify-between gap-4">
+        <div className="mb-8 flex items-center justify-between gap-4">
           <h1 className="text-3xl font-black tracking-tight text-foreground md:text-4xl">
             {t("settings.cache.cleanup.title")}
           </h1>

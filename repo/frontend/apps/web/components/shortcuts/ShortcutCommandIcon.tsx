@@ -1,9 +1,12 @@
 import {
   AudioLines,
+  ChevronLeft,
+  ChevronRight,
   Code2,
   Command,
   FastForward,
   Heart,
+  House,
   Keyboard,
   ListMusic,
   Maximize2,
@@ -11,6 +14,7 @@ import {
   MonitorCog,
   Monitor,
   PanelLeft,
+  PanelRight,
   PlayCircle,
   RectangleEllipsis,
   Rewind,
@@ -46,6 +50,10 @@ export function ShortcutCommandIcon({ className = "size-4", commandId }: Shortcu
   if (commandId === "toggle-dynamic-island") return <RectangleEllipsis className={className} />;
   if (commandId === "toggle-taskbar-lyric") return <AudioLines className={className} />;
   if (commandId === "toggle-sidebar") return <PanelLeft className={className} />;
+  if (commandId === "navigate-home") return <House className={className} />;
+  if (commandId === "navigate-back") return <ChevronLeft className={className} />;
+  if (commandId === "navigate-forward") return <ChevronRight className={className} />;
+  if (commandId === "toggle-now-playing-panel") return <PanelRight className={className} />;
   if (commandId === "open-shortcut-settings") return <Settings2 className={className} />;
   if (commandId === "toggle-queue") return <ListMusic className={className} />;
   if (commandId === "toggle-audio-settings") return <SlidersHorizontal className={className} />;

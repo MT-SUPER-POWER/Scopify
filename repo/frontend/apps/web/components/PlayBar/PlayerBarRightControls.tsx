@@ -8,6 +8,7 @@ import { AudioOutputDeviceControl } from "@/components/PlayBar/AudioOutputDevice
 import { AudioSettingsButton } from "@/components/PlayBar/AudioSettingsButton";
 import { FullscreenButton } from "@/components/PlayBar/FullscreenButton";
 import { LyricStageButton } from "@/components/PlayBar/LyricStageButton";
+import { NowPlayingPanelButton } from "@/components/PlayBar/NowPlayingPanelButton";
 import { QueuePopoverLauncher } from "@/components/PlayBar/QueuePopoverLauncher";
 import { usePlaybackCommands } from "@/hooks/player/usePlaybackCommands";
 import { usePlaybackProjection } from "@/hooks/player/usePlaybackProjection";
@@ -37,6 +38,9 @@ export function PlayerBarRightControls({ isLyricStageBar = false }: { isLyricSta
       <AudioSettingsButton />
 
       {!isLyricStageBar && <PersonalFmControlPanel />}
+
+      {/* 右侧正在播放面板开关 */}
+      {!isLyricStageBar && <NowPlayingPanelButton />}
 
       {/* 播放列表浮层 */}
       <QueuePopoverLauncher />

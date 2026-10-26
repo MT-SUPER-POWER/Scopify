@@ -2,6 +2,7 @@ import type { NeteaseComment } from "@/types/api/music";
 
 export const COMMENT_RESOURCE_TYPE = {
   song: 0,
+  mv: 1,
   playlist: 2,
   album: 3,
   voice: 4,
@@ -10,6 +11,12 @@ export const COMMENT_RESOURCE_TYPE = {
 
 export type CommentResourceKind = keyof typeof COMMENT_RESOURCE_TYPE;
 export type CommentResourceType = (typeof COMMENT_RESOURCE_TYPE)[CommentResourceKind];
+
+/** 评论所属资源；评论页从 URL 解析，嵌入式评论区（如 MV 页）直接传入。 */
+export interface CommentResourceRef {
+  kind: CommentResourceKind;
+  id: string;
+}
 
 export interface MusicCommentParams {
   id: number | string;

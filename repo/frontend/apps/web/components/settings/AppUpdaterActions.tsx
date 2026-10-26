@@ -1,11 +1,10 @@
 "use client";
 
-import { Download, ExternalLink, RefreshCw, Rocket } from "lucide-react";
+import { Download, ExternalLink, RefreshCw, RotateCcw } from "lucide-react";
+import { UpdateProgressRing } from "@/components/notifications/UpdateProgressRing";
 import { useI18n } from "@/store/module/i18n";
 import type { AppUpdaterStatusProps } from "@/types/components/settings";
-
-const buttonClass =
-  "inline-flex items-center justify-center gap-2 rounded-full px-4 py-2 text-xs font-bold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-50";
+import { SettingButton } from "./SettingsUI";
 
 export function AppUpdaterActions({
   state,
@@ -16,47 +15,54 @@ export function AppUpdaterActions({
   const { t } = useI18n();
   const DownloadIcon = state.manualInstall ? ExternalLink : Download;
 
-  if (state.status === "downloading") return null;
+  if (state.status === "downloading") {
+    const percent =
+      typeof state.percent === "number" && Number.isFinite(state.percent)
+        ? Math.min(100, Math.max(0, state.percent))
+        : 0;
+    return (
+      <span
+        role="progressbar"
+        aria-label={t("settings.updater.state.downloading")}
+        aria-valuemin={0}
+        aria-valuemax={100}
+        aria-valuenow={Math.floor(percent)}
+        className="inline-flex items-center gap-2 px-1 text-sm font-medium text-foreground tabular-nums"
+      >
+        <span className="relative inline-flex size-5">
+          <UpdateProgressRing state={state} strokeWidth={4} />
+        </span>
+        {Math.floor(percent)}%
+      </span>
+    );
+  }
 
   if (state.status === "available") {
     return (
-      <button
-        type="button"
-        onClick={() => void onDownload()}
-        className={`${buttonClass} bg-brand text-brand-foreground hover:bg-brand-hover`}
-      >
-        <DownloadIcon aria-hidden="true" className="size-3.5" />
+      <SettingButton onClick={() => void onDownload()}>
+        <DownloadIcon aria-hidden="true" className="size-4" />
         {state.manualInstall ? t("settings.updater.openRelease") : t("settings.updater.download")}
-      </button>
+      </SettingButton>
     );
   }
 
   if (state.status === "downloaded") {
     return state.manualInstall ? null : (
-      <button
-        type="button"
-        onClick={onInstall}
-        className={`${buttonClass} bg-brand text-brand-foreground hover:bg-brand-hover`}
-      >
-        <Rocket aria-hidden="true" className="size-3.5" />
+      <SettingButton onClick={onInstall}>
+        <RotateCcw aria-hidden="true" className="size-4" />
         {t("settings.updater.install")}
-      </button>
+      </SettingButton>
     );
   }
 
   const isChecking = state.status === "checking";
   return (
-    <button
-      type="button"
-      onClick={() => void onCheck()}
-      disabled={!state.supported || isChecking}
-      className={`${buttonClass} border border-input bg-surface-raised text-foreground hover:bg-accent`}
-    >
+    <SettingButton onClick={() => void onCheck()} disabled={!state.supported || isChecking}>
       <RefreshCw
         aria-hidden="true"
-        className={`size-3.5 ${isChecking ? "animate-spin motion-reduce:animate-none" : ""}`}
+        className={`size-4 ${isChecking ? "animate-spin motion-reduce:animate-none" : ""}`}
       />
       {isChecking ? t("settings.updater.checking") : t("settings.updater.check")}
-    </button>
+    </SettingButton>
   );
 }

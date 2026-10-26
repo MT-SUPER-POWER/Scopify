@@ -2,11 +2,11 @@
 
 import type { UpdateProgressRingProps } from "@/types/components/notifications";
 
-const RADIUS = 18.5;
+const RADIUS = 18;
 const CIRCUMFERENCE = 2 * Math.PI * RADIUS;
 
 /** 包在通知铃铛外的环形进度：下载更新时逐步填满，下载完成后保持满环等待安装。 */
-export function UpdateProgressRing({ state }: UpdateProgressRingProps) {
+export function UpdateProgressRing({ state, strokeWidth = 2 }: UpdateProgressRingProps) {
   const downloading = state.status === "downloading";
   const downloaded = state.status === "downloaded";
   if (!downloading && !downloaded) return null;
@@ -28,7 +28,7 @@ export function UpdateProgressRing({ state }: UpdateProgressRingProps) {
         cy="20"
         r={RADIUS}
         fill="none"
-        strokeWidth="2"
+        strokeWidth={strokeWidth}
         className="stroke-content-muted/20"
       />
       <circle
@@ -36,7 +36,7 @@ export function UpdateProgressRing({ state }: UpdateProgressRingProps) {
         cy="20"
         r={RADIUS}
         fill="none"
-        strokeWidth="2"
+        strokeWidth={strokeWidth}
         strokeLinecap="round"
         strokeDasharray={CIRCUMFERENCE}
         strokeDashoffset={CIRCUMFERENCE * (1 - percent / 100)}

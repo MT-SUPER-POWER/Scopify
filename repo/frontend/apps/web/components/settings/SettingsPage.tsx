@@ -40,8 +40,8 @@ const SettingsPage = () => {
   };
 
   return (
-    <div className="relative flex w-full flex-col p-6 text-muted-foreground md:p-10">
-      <div className="mt-4 mb-8 flex items-center justify-between">
+    <div className="relative flex w-full flex-col px-6 pt-8 pb-10 text-muted-foreground md:px-10 md:pb-12">
+      <div className="mb-8 flex items-center justify-between">
         <h1 className="text-3xl font-black tracking-tight text-foreground md:text-4xl">
           {t("settings.title")}
         </h1>

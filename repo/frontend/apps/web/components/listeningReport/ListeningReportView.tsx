@@ -202,7 +202,7 @@ export function ListeningReportView() {
           ) : null}
         </div>
       ) : (
-        <div className="flex h-screen w-full flex-col justify-center px-5 pt-16 sm:px-8 lg:px-12">
+        <div className="flex h-screen w-full flex-col justify-center px-5 sm:px-8 lg:px-12">
           <div className="mx-auto mb-8 flex w-full max-w-360 justify-start">
             <ListeningReportHeader
               isRefetching={isRefetching}

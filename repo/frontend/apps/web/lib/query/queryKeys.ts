@@ -1,6 +1,8 @@
 import type { CommentResourceKind } from "@/types/api/comment";
+import { mvQueryKeys } from "@/lib/query/mvQueryKeys";
 
 export const musicQueryKeys = {
+  mv: mvQueryKeys,
   album: {
     detail: (albumId: string) => ["album", "detail", albumId] as const,
     subscriptions: (userId: number) => ["album", "subscriptions", userId] as const,
@@ -23,13 +25,17 @@ export const musicQueryKeys = {
     newAlbums: (limit = 20) => ["home", "new-albums", limit] as const,
     newSongs: (limit = 12) => ["home", "new-songs", limit] as const,
     personalizedPlaylists: (limit = 100) => ["home", "personalized-playlists", limit] as const,
-    recommendedPlaylists: () => ["home", "recommended-playlists"] as const,
+    recommendedPlaylists: (accountId: number | string) =>
+      ["home", "recommended-playlists", String(accountId)] as const,
     recommendedVoiceLists: (limit = 24) => ["home", "recommended-voice-lists", limit] as const,
     toplists: () => ["home", "toplists"] as const,
     toplistTracks: (id: number | string) => ["home", "toplist-tracks", id] as const,
-    recentPlaylists: (limit = 20) => ["home", "recent-playlists", limit] as const,
-    followedArtists: (limit = 30) => ["home", "followed-artists", limit] as const,
-    followedArtistAlbums: (limit = 20) => ["home", "followed-artist-albums", limit] as const,
+    recentPlaylists: (limit: number, accountId: number | string) =>
+      ["home", "recent-playlists", String(accountId), limit] as const,
+    followedArtists: (limit: number, accountId: number | string) =>
+      ["home", "followed-artists", String(accountId), limit] as const,
+    followedArtistAlbums: (limit: number, accountId: number | string) =>
+      ["home", "followed-artist-albums", String(accountId), limit] as const,
     userProfile: (userId: string) => ["home", "user-profile", userId] as const,
   },
   library: {
@@ -58,6 +64,8 @@ export const musicQueryKeys = {
   comment: {
     count: (kind: CommentResourceKind | "unknown", resourceId: string) =>
       ["comment", "count", kind, resourceId] as const,
+    hotPreview: (songId: number, limit: number) =>
+      ["comment", "hot-preview", songId, limit] as const,
   },
   playlist: {
     content: (playlistId: string, isRecommend: boolean) =>
@@ -72,6 +80,7 @@ export const musicQueryKeys = {
     albums: (keyword: string, limit: number) => ["search", "albums", keyword, limit] as const,
     artists: (keyword: string, limit: number) => ["search", "artists", keyword, limit] as const,
     complex: (keyword: string) => ["search", "complex", keyword] as const,
+    mvs: (keyword: string, limit: number) => ["search", "mvs", keyword, limit] as const,
     playlists: (keyword: string, limit: number) => ["search", "playlists", keyword, limit] as const,
     songs: (keyword: string, limit: number) => ["search", "songs", keyword, limit] as const,
     voices: (keyword: string, limit: number) => ["search", "voices", keyword, limit] as const,
@@ -82,6 +91,7 @@ export const musicQueryKeys = {
     similar: (songId: number, userId: number) => ["song", "similar", userId, songId] as const,
     chorus: (songId: number | string) => ["song", "chorus", songId] as const,
     dynamicCover: (songId: number | string) => ["song", "dynamic-cover", songId] as const,
+    mvId: (songId: number) => ["song", "mv-id", songId] as const,
   },
   user: {
     medal: (userId: number | string) => ["user", "medal", String(userId)] as const,

@@ -1,97 +1,64 @@
 "use client";
 
-import { ChevronLeft, ChevronRight, List } from "lucide-react";
+import { List } from "lucide-react";
 import RightActions from "./RightActions";
+import { HeaderHistoryNav } from "./HeaderHistoryNav";
+import { HeaderHomeButton } from "./HeaderHomeButton";
 import HeaderSearch from "@/components/SearchContents/HeaderSearch";
-import { useIsScrollAtTop } from "@/components/shared/NavigationScrollProvider";
-import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
+import { ScopifyBrand } from "@/components/shared/ScopifyBrand";
 import { cn } from "@/lib/utils";
 import { useI18n } from "@/store/module/i18n";
 import { useLatticeView } from "@/store/module/lattice";
 import { headerStyles } from "@/styles";
 
-const NAV_BTN = "bg-surface-sunken/80 hover:bg-surface-elevated";
+const NAV_BTN = cn(
+  "flex size-8 items-center justify-center rounded-full",
+  "bg-surface-sunken/80 text-content-muted transition-all hover:bg-surface-elevated hover:text-content",
+);
 
+/** 横跨整个窗口的顶栏：左侧品牌与历史导航（仅桌面端），中间首页与搜索，右侧通知/私信/头像。 */
 export function Header() {
   const { t } = useI18n();
-  const isAtTop = useIsScrollAtTop();
-  const smartRouter = useSmartRouter();
   const latticeActive = useLatticeView((state) => state.active);
   const latticeController = useLatticeView((state) => state.controller);
 
   return (
-    <div
+    <header
       className={cn(
         headerStyles.root,
-        "absolute flex h-16 w-full shrink-0 items-center justify-between gap-3 px-3 lg:px-6",
-        "top-0 z-20",
+        "relative flex h-12 w-full shrink-0 items-center justify-between gap-3",
       )}
     >
-      {/* 滚动时的背景遮罩 */}
-      <div
-        className={cn(
-          "absolute inset-0 -z-10 rounded-lg bg-surface-overlay/80 backdrop-blur-lg transition-opacity duration-300 group-data-[lattice-active=true]/main:opacity-0",
-          isAtTop ? "opacity-0" : "border-b border-border opacity-100",
-        )}
-      />
-
-      {/* 左侧导航箭头 */}
-      <div className={cn(headerStyles.history, "flex shrink-0 items-center gap-2")}>
-        <button
-          onClick={() => smartRouter.back()}
-          className={cn(
-            "flex size-10 items-center justify-center rounded-full",
-            "text-content-muted transition-all hover:text-content",
-            NAV_BTN,
-          )}
-        >
-          <ChevronLeft className="size-5" />
-        </button>
-        <button
-          onClick={() => smartRouter.forward()}
-          className={cn(
-            headerStyles.forward,
-            "flex size-10 items-center justify-center rounded-full",
-            "text-content-muted transition-all hover:text-content",
-            NAV_BTN,
-          )}
-        >
-          <ChevronRight className="size-5" />
-        </button>
+      {/* 左侧品牌与导航箭头 */}
+      <div className={cn(headerStyles.history, "flex min-w-0 items-center gap-2")}>
+        <ScopifyBrand priority className="mx-2 min-w-0" wordmarkClassName={headerStyles.wordmark} />
+        <HeaderHistoryNav />
         {latticeActive && latticeController && (
           <button
             type="button"
             onClick={latticeController.close}
             aria-label={t("playlist.lattice.back")}
             title={`${t("playlist.lattice.back")} · Esc`}
-            className={cn(
-              "flex size-10 items-center justify-center rounded-full",
-              "text-content-muted transition-all hover:text-content",
-              NAV_BTN,
-            )}
+            className={cn(headerStyles.noDrag, NAV_BTN)}
           >
-            <List className="size-5" />
+            <List className="size-4" />
           </button>
         )}
       </div>
 
-      {/* 中间搜索区域 */}
-      <div
-        className={cn(
-          headerStyles.search,
-          "mx-2 flex max-w-100 min-w-0 flex-1 flex-row items-center justify-center gap-2 md:mx-4",
-        )}
-      >
+      {/* 中间首页按钮与搜索：相对整个窗口居中，不受两侧为窗口按钮让出的不对称内边距影响 */}
+      <div className={cn(headerStyles.search, headerStyles.noDrag, headerStyles.center)}>
+        <HeaderHomeButton />
         <HeaderSearch />
       </div>
 
       {/* 右侧操作区 */}
-      <div className="flex shrink-0 items-center gap-2">
-        {/* 与左侧 Lattice 退出按钮等宽的占位，保持搜索框居中 */}
-        {latticeActive && latticeController && <div aria-hidden className="size-10" />}
-        <RightActions />
+      <div className="flex min-w-0 items-center justify-end">
+        <div className={headerStyles.noDrag}>
+          <RightActions />
+        </div>
       </div>
-    </div>
+    </header>
   );
 }
 

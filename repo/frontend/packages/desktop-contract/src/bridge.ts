@@ -42,7 +42,7 @@ import type {
   DesktopCacheStats,
 } from "./cache";
 
-export const DESKTOP_BRIDGE_PROTOCOL_VERSION = 26;
+export const DESKTOP_BRIDGE_PROTOCOL_VERSION = 27;
 
 export interface DesktopVideoExportSource {
   id: string;
@@ -139,6 +139,8 @@ export interface DesktopBridge<TLyrics = unknown> {
   enterFullScreen(): void;
   exitApp(): void;
   exitFullScreen(): void;
+  /** 顶栏内系统窗口按钮（最小化/最大化/关闭）的图标颜色，随渲染层明暗主题切换。 */
+  setTitleBarSymbolColor(color: string): void;
   getDiscordPresenceStatus(): Promise<DiscordPresenceStatus>;
   getHostConfig(): Promise<DesktopHostConfig>;
   getHostname(): Promise<string>;

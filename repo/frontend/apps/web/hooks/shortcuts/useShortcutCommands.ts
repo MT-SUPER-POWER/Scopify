@@ -123,6 +123,19 @@ export function useShortcutCommands(options?: ShortcutCommandExecutorOptions) {
         case "toggle-sidebar":
           ui.toggleSidebar();
           return;
+        case "navigate-home":
+          navigateTo("/");
+          return;
+        // 前进/后退按钮只在桌面端顶栏提供，Web 端交给浏览器自身的导航
+        case "navigate-back":
+          if (runtime.isDesktop) window.history.back();
+          return;
+        case "navigate-forward":
+          if (runtime.isDesktop) window.history.forward();
+          return;
+        case "toggle-now-playing-panel":
+          ui.toggleNowPlayingPanel();
+          return;
         case "toggle-queue":
           ui.toggleQueue();
           return;

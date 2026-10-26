@@ -10,7 +10,6 @@ import type {
   SocialPeopleMode,
   SocialEventTarget,
   SocialProfileTab,
-  SocialTopic,
   SocialProfile,
 } from "@/types/social";
 
@@ -30,7 +29,24 @@ export interface SocialEventProps {
   event: SocialEvent;
   quoted?: boolean;
   detail?: boolean;
-  showFollow?: boolean;
+}
+export interface SocialEventSource {
+  name: string;
+  href: string;
+}
+export interface SocialPostViewProps {
+  event: SocialEvent;
+  /** 动态被删除后关闭浮层 */
+  onDeleted: () => void;
+}
+export interface SocialNoteTileProps {
+  event: SocialEvent;
+  source?: SocialEventSource;
+}
+export interface SocialNoteGridProps {
+  items: SocialEvent[];
+  /** 为每条动态提供来源标签（如聚合流中的所属乐迷团） */
+  getSource?: (event: SocialEvent) => SocialEventSource | undefined;
 }
 export interface SocialEventActionsProps extends SocialEventProps {
   liking: boolean;
@@ -48,16 +64,11 @@ export interface SocialCommentRowProps {
 export interface SocialFeedProps {
   uid?: string;
   enabled?: boolean;
-}
-export interface SocialHotFeedProps {
-  topic: SocialTopic;
-}
-export interface SocialTopicsProps {
-  selectedId?: string;
+  /** 以瀑布流卡片展示；个人主页仍用完整列表 */
+  grid?: boolean;
 }
 export interface SocialHeaderProps {
   view: "friends" | "hot" | "people";
-  topic?: SocialTopic;
   groupId: string;
   /** 当前用户加入的乐迷团；为空时第二个标签回退为「广场」。 */
   groups: UserFansGroupItem[];
@@ -71,9 +82,9 @@ export interface SocialFansGroupRailItemProps {
   active: boolean;
   label: string;
   title?: string;
-  badge?: string;
   onSelect: () => void;
-  children: ReactNode;
+  /** 胶囊左侧的小头像；「全部」不传 */
+  children?: ReactNode;
 }
 export interface SocialNotesFeedProps {
   groupId: string;
@@ -85,11 +96,14 @@ export interface SocialPostTextProps {
   text: string;
   expanded?: boolean;
 }
+
+export interface SocialInlineTextProps {
+  text: string;
+}
 export interface SocialPeopleProps {
   uid?: string;
   mode: SocialPeopleMode;
   query?: string;
-  compact?: boolean;
 }
 export interface SocialComposerProps {
   forwarded?: SocialEvent;

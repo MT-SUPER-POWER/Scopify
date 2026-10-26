@@ -17,6 +17,7 @@ function songToSongDetail(song: Song): SongDetail {
     ar: (song.artists || []).map((a) => ({ id: a.id, name: a.name })),
     al: { id: song.album?.id ?? 0, name: song.album?.name ?? "", picUrl },
     alia: song.alias,
+    ...(song.mvid ? { mv: song.mvid } : {}),
     publishTime: song.album?.publishTime || 0,
   };
 }

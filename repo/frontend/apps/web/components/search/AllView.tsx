@@ -1,5 +1,6 @@
 import { AlbumCard } from "@/components/SearchContents/AlbumCard";
 import { ArtistCard } from "@/components/SearchContents/ArtistCard";
+import { MvCard } from "@/components/mv/MvCard";
 import { PlaylistCard } from "@/components/SearchContents/PlaylistCard";
 import { SectionHeader } from "@/components/SearchContents/SectionHeader";
 import { useI18n } from "@/store/module/i18n";
@@ -16,6 +17,7 @@ export function AllView({
   artists,
   bestMatch,
   loadingPlayId,
+  mvs,
   onPlayAlbum,
   onPlayPlaylist,
   onSeeAll,
@@ -48,6 +50,18 @@ export function AllView({
                 artist={artist}
                 onClick={() => onNavigate(`/artist?id=${artist.id}`)}
               />
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* MV 网格 */}
+      {mvs.length > 0 && (
+        <div className="mb-10 w-full min-w-0">
+          <SectionHeader title={t("search.section.mvs")} onSeeAll={() => onSeeAll("MVs")} />
+          <div className="grid w-full min-w-0 grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
+            {mvs.slice(0, 3).map((mv) => (
+              <MvCard key={mv.id} mv={mv} />
             ))}
           </div>
         </div>

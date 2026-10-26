@@ -12,7 +12,6 @@ import type {
   SocialCommentPage,
   SocialMessagePage,
   SocialResource,
-  SocialTopicPage,
   SocialGroup,
 } from "@/types/social";
 import type { UpdateUserProfilePayload } from "@/types/api/profileUpdate";
@@ -119,39 +118,6 @@ export async function fetchGroupNotes(
       }),
     ),
     next: page.more === true && rows.length > 0 && next && next !== cursor ? next : undefined,
-  };
-}
-export async function fetchHotTopics(
-  offset: number,
-  signal?: AbortSignal,
-): Promise<SocialTopicPage> {
-  const response = await read("/hot/topic", { limit: 20, offset }, signal);
-  const rows = array(response.hot);
-  return {
-    items: n.uniqueById(
-      rows.flatMap((row) => {
-        const topic = n.topic(row);
-        return topic ? [topic] : [];
-      }),
-    ),
-    next:
-      rows.length && (response.more === true || (response.more === undefined && rows.length === 20))
-        ? offset + rows.length
-        : undefined,
-  };
-}
-export async function fetchTopicEvents(
-  actid: string,
-  signal?: AbortSignal,
-): Promise<SocialEventPage> {
-  const response = await read("/topic/detail/event/hot", { actid }, signal);
-  return {
-    items: n.uniqueById(
-      array(response.events).flatMap((row) => {
-        const event = n.event(row);
-        return event ? [event] : [];
-      }),
-    ),
   };
 }
 export async function fetchPeople(

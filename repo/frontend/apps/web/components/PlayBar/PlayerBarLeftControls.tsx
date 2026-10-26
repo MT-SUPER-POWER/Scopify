@@ -24,6 +24,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@scopify/ui/shadcn/components/tooltip";
+import { SIDEBAR_COLLAPSED_WIDTH } from "@/constants/layout";
 import { getSizedImageUrl } from "@/lib/music/imageUrl";
 
 export interface PlayerBarLeftControlsProps {
@@ -37,6 +38,8 @@ export function PlayerBarLeftControls({
 }: PlayerBarLeftControlsProps) {
   const { t } = useI18n();
   const isLyricsOpen = useUiStore((s) => s.isLyricsOpen);
+  const isCollapsed = useUiStore((s) => s.isCollapsed);
+  const alignToCollapsedSidebar = !isLyricStageBar && isCollapsed;
   const openLyrics = () => useUiStore.getState().setIsLyricsOpen(true);
   const closeLyrics = () => useUiStore.getState().setIsLyricsOpen(false);
   const smartRouter = useSmartRouter();
@@ -60,7 +63,20 @@ export function PlayerBarLeftControls({
       )}
     >
       {/* 专辑封面 */}
-      <div className="group relative size-12 shrink-0 cursor-pointer overflow-hidden rounded-md bg-surface-elevated shadow-panel lg:size-14">
+      <div
+        style={
+          alignToCollapsedSidebar
+            ? ({ "--sidebar-collapsed-w": `${SIDEBAR_COLLAPSED_WIDTH}px` } as React.CSSProperties)
+            : undefined
+        }
+        className={cn(
+          "group relative size-12 shrink-0 cursor-pointer overflow-hidden rounded-md bg-surface-elevated shadow-panel lg:size-14",
+          !isLyricStageBar &&
+            (isCollapsed
+              ? "ml-[calc((var(--sidebar-collapsed-w)-48px)/2)] lg:ml-[calc((var(--sidebar-collapsed-w)-56px)/2)]"
+              : "ml-4 lg:ml-3"),
+        )}
+      >
         {currentSong && artworkUrl ? (
           <Image
             width={56}

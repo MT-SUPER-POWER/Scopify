@@ -56,7 +56,8 @@ export function useSocialAggregatedNotes(groupIds: string[]) {
           if (!cursor) return { gid, items: [], next: undefined };
           try {
             const page = await fetchGroupNotes(gid, cursor, signal);
-            return { gid, items: page.items, next: page.next };
+            const items = page.items.map((item) => ({ ...item, communityId: gid }));
+            return { gid, items, next: page.next };
           } catch {
             return { gid, items: [], next: undefined };
           }

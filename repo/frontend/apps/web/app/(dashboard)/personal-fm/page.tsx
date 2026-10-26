@@ -16,7 +16,7 @@ export default function PersonalFmPage() {
 
   if (!isLoggedIn) {
     return (
-      <main className="min-h-screen bg-surface-raised px-6 pt-24 pb-28 md:px-10">
+      <main className="min-h-screen bg-surface-raised px-6 pt-8 pb-28 md:px-10">
         <QuietState icon={Radio} title={t("personalFm.loggedOut")} />
       </main>
     );

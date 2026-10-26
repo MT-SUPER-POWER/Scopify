@@ -7,7 +7,7 @@ import PlaylistLoading from "@/components/Playlist/PlaylistLoading";
 import { PlaylistPageSkeleton } from "@/components/Playlist/PlaylistPageSkeleton";
 import { PlaylistTrackList } from "@/components/Playlist/PlaylistTrackList";
 import { useRouteRestorationPlaceholder } from "@/components/shared/NavigationScrollProvider";
-import { DASHBOARD_HEADER_HEIGHT } from "@/constants/layout";
+import { DASHBOARD_MAIN_STICKY_TOP } from "@/constants/layout";
 import { usePlaylistContentPresentation } from "@/hooks/playlist/usePlaylistContentPresentation";
 import { useI18n } from "@/store/module/i18n";
 import type { PlaylistContentProps } from "@/types/components/playlist";
@@ -127,7 +127,7 @@ export function PlaylistContent({
                   onTracksChange={setTracks}
                   playSourceId={playSourceId}
                   readonly={readonly}
-                  stickyHeaderTop={DASHBOARD_HEADER_HEIGHT}
+                  stickyHeaderTop={DASHBOARD_MAIN_STICKY_TOP}
                   tracks={tracks}
                 />
               )}

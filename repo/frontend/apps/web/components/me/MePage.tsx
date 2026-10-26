@@ -163,7 +163,7 @@ export default function MePage() {
     <main className="flex-1 overflow-y-auto bg-surface-raised">
       {/* 顶部 Hero 区域 */}
       <div
-        className={`bg-linear-to-b ${PROFILE_DATA.coverColor} flex flex-col items-center gap-6 to-surface-raised px-6 pt-20 pb-6 md:flex-row md:items-end md:px-8`}
+        className={`bg-linear-to-b ${PROFILE_DATA.coverColor} flex flex-col items-center gap-6 to-surface-raised p-6 md:flex-row md:items-end md:px-8`}
       >
         <Image
           width={192}

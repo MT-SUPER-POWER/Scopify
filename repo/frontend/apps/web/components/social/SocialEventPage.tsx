@@ -1,7 +1,6 @@
 "use client";
 
 import { useSearchParams } from "next/navigation";
-import { AppBackground } from "@/components/shared/AppBackground";
 import { useSocialAccount, useSocialEvent } from "@/hooks/social/useSocialQueries";
 import { useI18n } from "@/store/module/i18n";
 import type { SocialEventDetailProps } from "@/types/components/social";
@@ -23,7 +22,6 @@ function SocialEventDetail({ target }: SocialEventDetailProps) {
   const query = useSocialEvent(valid ? target : { id: "", uid: "" });
   return (
     <div className={s.page}>
-      <AppBackground />
       <main className={s.detail}>
         <h1 className={s.detailHeading}>{t("social.detail")}</h1>
         {!uid ? (

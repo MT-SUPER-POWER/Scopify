@@ -10,6 +10,7 @@ import { memo, useCallback, useMemo } from "react";
 import { FaRegCommentDots } from "react-icons/fa6";
 import { toast } from "sonner";
 import { ArtistInlineLinks } from "@/components/shared/ArtistInlineLinks";
+import { SongMvBadge } from "@/components/shared/SongMvBadge";
 import { SongVipBadge } from "@/components/shared/SongVipBadge";
 import {
   ContextMenu,
@@ -233,14 +234,7 @@ export const SongItem = memo(
                   </span>
                 ) : null}
                 <SongVipBadge fee={song.fee} />
-                {song.mvid ? (
-                  <span
-                    className="inline-flex h-[13px] shrink-0 items-center rounded-xs border border-info bg-info/10 px-[2px] text-[9px] leading-[11px] font-normal text-info"
-                    title="MV"
-                  >
-                    MV
-                  </span>
-                ) : null}
+                <SongMvBadge mvId={song.mvid} />
               </div>
               <ArtistInlineLinks
                 artists={song.artists.map((a) => ({ id: a.id, name: a.name }))}

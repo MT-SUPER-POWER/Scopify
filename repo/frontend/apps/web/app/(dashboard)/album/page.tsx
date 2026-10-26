@@ -39,14 +39,14 @@ export default function AlbumPage() {
 
   if (isLoading && !ALBUM_INFO)
     return (
-      <div className="min-h-screen w-full bg-surface-raised py-24">
+      <div className="min-h-screen w-full bg-surface-raised pt-8 pb-24">
         <PlaylistLoading />
       </div>
     );
 
   if ((isError && !ALBUM_INFO) || (!isLoading && !ALBUM_INFO))
     return (
-      <div className="min-h-screen w-full bg-surface-raised py-24">
+      <div className="min-h-screen w-full bg-surface-raised pt-8 pb-24">
         <NetworkRetryState
           title={t("network.offline.title")}
           subtitle={t("album.empty.unavailable")}
@@ -87,6 +87,8 @@ export default function AlbumPage() {
           <div className="hero-content-transition relative z-10 flex flex-1 flex-col">
             <AlbumActions
               albumId={albumId}
+              albumTitle={ALBUM_INFO.title}
+              tracks={tracks}
               isPlaying={isPlaying}
               isAlbumCollected={isAlbumCollected}
               isTogglingAlbumSubscribe={isTogglingAlbumSubscribe}

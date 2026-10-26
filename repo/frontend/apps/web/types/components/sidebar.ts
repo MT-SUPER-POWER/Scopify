@@ -13,6 +13,11 @@ export interface SidebarPlaylistLibraryProps {
   isCollapsed: boolean;
 }
 
+export interface LibraryNavigationProps extends SidebarPlaylistLibraryProps {
+  /** 渲染在首个分组标题右侧的操作，例如侧边栏菜单。 */
+  headerAction?: ReactNode;
+}
+
 export interface SiderBarMenuProps {
   isCollapsed?: boolean;
 }

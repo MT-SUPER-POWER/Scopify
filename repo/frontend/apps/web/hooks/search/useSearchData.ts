@@ -6,6 +6,7 @@ import {
   useComplexSearchQuery,
   useInfiniteAlbumSearchQuery,
   useInfiniteArtistSearchQuery,
+  useInfiniteMvSearchQuery,
   useInfinitePlaylistSearchQuery,
   useInfiniteSongSearchQuery,
   useInfiniteVoiceListSearchQuery,
@@ -98,7 +99,7 @@ function mapResourceToSong(
     duration: song.dt ?? 0,
     fee: song.fee,
     id: song.id,
-    mvid: song.mvid,
+    mvid: song.mv || song.mvid,
     name: song.name ?? unknownSongName,
   };
 }
@@ -114,6 +115,8 @@ export function useSearchData(keywords: string, activeCategory: Category) {
   const loadPodcasts = activeCategory === "Podcasts";
   const loadVoices = activeCategory === "Voices";
   const loadArtists = isAll || activeCategory === "Artists";
+  // 综合搜索不含 MV，全部视图与 MV 分类共用同一个 MV 查询
+  const loadMvs = isAll || activeCategory === "MVs";
   const complexQuery = useComplexSearchQuery(keyword, usesComplexSearch);
   const songQuery = useInfiniteSongSearchQuery(keyword, 30, !usesComplexSearch && loadSongs);
   const albumQuery = useInfiniteAlbumSearchQuery(keyword, 20, !usesComplexSearch && loadAlbums);
@@ -125,6 +128,7 @@ export function useSearchData(keywords: string, activeCategory: Category) {
   const artistQuery = useInfiniteArtistSearchQuery(keyword, 20, !usesComplexSearch && loadArtists);
   const voiceListQuery = useInfiniteVoiceListSearchQuery(keyword, 30, loadPodcasts);
   const voiceSearchQuery = useInfiniteVoiceSearchQuery(keyword, 30, loadVoices);
+  const mvQuery = useInfiniteMvSearchQuery(keyword, 24, loadMvs);
   const unknownAlbumName = translate(locale, "common.meta.unknownAlbum");
   const unknownPodcastName = translate(locale, "search.podcast.unknown");
   const unknownSongName = translate(locale, "common.meta.unknownSong");
@@ -223,6 +227,10 @@ export function useSearchData(keywords: string, activeCategory: Category) {
       voiceSearchQuery.data?.pages,
     ],
   );
+  const mvs = useMemo(
+    () => (loadMvs ? (mvQuery.data?.pages.flatMap((page) => page.result?.mvs ?? []) ?? []) : []),
+    [loadMvs, mvQuery.data?.pages],
+  );
   const bestMatch = isAll ? complexResults.bestMatch : null;
   const loading = usesComplexSearch
     ? complexQuery.isLoading
@@ -231,7 +239,8 @@ export function useSearchData(keywords: string, activeCategory: Category) {
       (loadPlaylists && playlistQuery.isLoading) ||
       (loadPodcasts && voiceListQuery.isLoading) ||
       (loadVoices && voiceSearchQuery.isLoading) ||
-      (loadArtists && artistQuery.isLoading);
+      (loadArtists && artistQuery.isLoading) ||
+      (loadMvs && mvQuery.isLoading);
   const hasError = usesComplexSearch
     ? complexQuery.isError
     : (loadSongs && songQuery.isError) ||
@@ -239,7 +248,8 @@ export function useSearchData(keywords: string, activeCategory: Category) {
       (loadPlaylists && playlistQuery.isError) ||
       (loadPodcasts && voiceListQuery.isError) ||
       (loadVoices && voiceSearchQuery.isError) ||
-      (loadArtists && artistQuery.isError);
+      (loadArtists && artistQuery.isError) ||
+      (loadMvs && mvQuery.isError);
 
   const refetch = useCallback(async () => {
     if (usesComplexSearch) {
@@ -254,14 +264,17 @@ export function useSearchData(keywords: string, activeCategory: Category) {
       ...(loadPodcasts ? [voiceListQuery.refetch()] : []),
       ...(loadVoices ? [voiceSearchQuery.refetch()] : []),
       ...(loadArtists ? [artistQuery.refetch()] : []),
+      ...(loadMvs ? [mvQuery.refetch()] : []),
     ]);
   }, [
     albumQuery,
     artistQuery,
     complexQuery,
+    mvQuery,
     usesComplexSearch,
     loadAlbums,
     loadArtists,
+    loadMvs,
     loadPlaylists,
     loadPodcasts,
     loadVoices,
@@ -279,23 +292,27 @@ export function useSearchData(keywords: string, activeCategory: Category) {
     hasError,
     fetchNextAlbumPage: albumQuery.fetchNextPage,
     fetchNextArtistPage: artistQuery.fetchNextPage,
+    fetchNextMvPage: mvQuery.fetchNextPage,
     fetchNextPlaylistPage: playlistQuery.fetchNextPage,
     fetchNextPodcastPage: voiceListQuery.fetchNextPage,
     fetchNextSongPage: songQuery.fetchNextPage,
     fetchNextVoicePage: voiceSearchQuery.fetchNextPage,
     hasNextAlbumPage: Boolean(albumQuery.hasNextPage),
     hasNextArtistPage: Boolean(artistQuery.hasNextPage),
+    hasNextMvPage: Boolean(mvQuery.hasNextPage),
     hasNextPlaylistPage: Boolean(playlistQuery.hasNextPage),
     hasNextPodcastPage: Boolean(voiceListQuery.hasNextPage),
     hasNextSongPage: Boolean(songQuery.hasNextPage),
     hasNextVoicePage: Boolean(voiceSearchQuery.hasNextPage),
     isFetchingNextAlbumPage: albumQuery.isFetchingNextPage,
     isFetchingNextArtistPage: artistQuery.isFetchingNextPage,
+    isFetchingNextMvPage: mvQuery.isFetchingNextPage,
     isFetchingNextPlaylistPage: playlistQuery.isFetchingNextPage,
     isFetchingNextPodcastPage: voiceListQuery.isFetchingNextPage,
     isFetchingNextSongPage: songQuery.isFetchingNextPage,
     isFetchingNextVoicePage: voiceSearchQuery.isFetchingNextPage,
     loading,
+    mvs,
     playlists,
     podcasts,
     refetch,

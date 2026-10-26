@@ -37,7 +37,7 @@ export default function RecentSongsPage() {
 
   if (!isLoggedIn) {
     return (
-      <main className="min-h-screen bg-surface-raised px-6 pt-24 pb-28 md:px-10">
+      <main className="min-h-screen bg-surface-raised px-6 pt-8 pb-28 md:px-10">
         <QuietState icon={History} title={t("library.loggedOut.recent")} />
       </main>
     );
@@ -45,7 +45,7 @@ export default function RecentSongsPage() {
 
   if (recentSongsQuery.isError) {
     return (
-      <main className="min-h-screen bg-surface-raised px-6 pt-24 pb-28 md:px-10">
+      <main className="min-h-screen bg-surface-raised px-6 pt-8 pb-28 md:px-10">
         <NetworkRetryState
           title={t("network.offline.title")}
           subtitle={t("network.offline.subtitle")}

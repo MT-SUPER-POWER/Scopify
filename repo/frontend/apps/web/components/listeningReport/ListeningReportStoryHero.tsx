@@ -83,7 +83,7 @@ export function ListeningReportStoryHero({
         />
       </div>
 
-      <div className="relative z-20 mx-auto flex w-full max-w-360 flex-col justify-center px-5 pt-16 pb-6 sm:px-8 sm:pt-20 lg:px-12">
+      <div className="relative z-20 mx-auto flex w-full max-w-360 flex-col justify-center px-5 py-6 sm:px-8 sm:pt-8 lg:px-12">
         <div className="max-w-xl lg:max-w-2xl">
           <div className="mb-5 lg:mb-6">
             <ListeningReportHeader

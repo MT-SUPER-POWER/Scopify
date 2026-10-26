@@ -203,6 +203,7 @@ export function createElectronRuntime(bridge: ScopifyDesktopBridge): WebRuntime 
         if (fullscreen) bridge.enterFullScreen();
         else bridge.exitFullScreen();
       },
+      setTitleBarSymbolColor: (color) => bridge.setTitleBarSymbolColor(color),
       toggleDeveloperTools: () => bridge.toggleDeveloperTools(),
     },
   };

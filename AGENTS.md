@@ -117,6 +117,16 @@ Scopify/
 
 前端/Electron 的代码结构规范、`app/` 路由组装原则、类型定义放哪、组件拆分及 API 三层架构，统一托管于 Skill：👉 **[skills/nextjs-project-structure/](skills/nextjs-project-structure/SKILL.md)**
 
+### Query 状态与错误边界
+
+任何新增或修改数据请求、页面加载/错误状态、分页、Mutation、媒体播放错误处理时，必须阅读并遵循 [Query 与错误边界规范](skills/nextjs-project-structure/rules/query-boundaries.md)。
+
+- Query 管理请求状态；React 边界决定失败影响范围。按可独立恢复的业务区域划分边界，禁止把独立请求的错误聚合成整页错误。
+- 调用 Query 的组件必须位于对应边界内部；首次无数据失败进入边界，有缓存的后台刷新失败保留内容。`undefined`、成功空数组、暂停请求、取消请求必须区分。
+- 分页、用户操作、媒体错误在各自区域处理，不抹去页面或已加载内容。请求失败不得用 `[]`/`null` 伪装成功；收藏等状态不可在失败时伪造默认值。
+- 复用统一的 Query 错误边界、错误分类与重试协议；`QueryCache.onError` / `MutationCache.onError` 负责记录，不负责决定页面 UI。
+- 迁移按业务区域提交，删除被替代的手工聚合状态和无效封装；遵守本文件的检查约定，不因重构扩大本地检查范围。
+
 ### Electron 主进程服务目录
 
 主进程服务统一放在 `repo/frontend/apps/desktop/electron/main/service/`，按功能分目录，不再使用并列的 `capabilities/` 与 `services/`：

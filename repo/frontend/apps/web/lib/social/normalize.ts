@@ -10,7 +10,6 @@ import type {
   SocialProfile,
   SocialResource,
   SocialUser,
-  SocialTopic,
 } from "@/types/social";
 
 export function object(value: unknown): SocialRawObject {
@@ -151,21 +150,6 @@ export function event(value: unknown, depth = 0): SocialEvent | undefined {
       typeof (raw.privacySetting ?? raw.privacy) === "number"
         ? number(raw.privacySetting ?? raw.privacy)
         : undefined,
-  };
-}
-export function topic(value: unknown): SocialTopic | undefined {
-  const raw = object(value);
-  const topicId = id(raw.actId);
-  const title = text(raw.title);
-  if (!/^\d+$/.test(topicId) || !title) return;
-  return {
-    id: topicId,
-    title,
-    description: Array.isArray(raw.text)
-      ? raw.text.map(text).filter(Boolean).join("\n")
-      : text(raw.text),
-    cover: imageUrl(raw.sharePicUrl),
-    participants: number(raw.participateCount),
   };
 }
 export function playlist(value: unknown): SocialPlaylist {

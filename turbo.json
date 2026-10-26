@@ -1,5 +1,5 @@
 {
-  "$schema": "https://turborepo.dev/schema.json",
+  "$schema": "https://v2-11-10.turborepo.dev/schema.json",
   "cacheMaxSize": "2GB",
   "cacheMaxAge": "7d",
   "globalPassThroughEnv": [

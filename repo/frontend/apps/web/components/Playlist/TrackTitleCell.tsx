@@ -2,6 +2,7 @@
 
 import { SongQualityBadge } from "@/components/shared/SongQualityBadge";
 import { SongTitleWithAlia } from "@/components/shared/SongTitleWithAlia";
+import { SongMvBadge } from "@/components/shared/SongMvBadge";
 import { SongVipBadge } from "@/components/shared/SongVipBadge";
 import { TableCell } from "@/components/ui/table";
 import { CLOUD_SONG_FALLBACK_COVER } from "@/constants/cloud";
@@ -44,6 +45,7 @@ export function TrackTitleCell({ track, isActive }: TrackTitleCellProps) {
           <div className="mt-0.5 flex min-w-0 items-center gap-0.5">
             <SongQualityBadge qualityLevel={track.privilege?.maxBrLevel} />
             <SongVipBadge fee={track.fee} />
+            <SongMvBadge mvId={track.mv} />
             <span className="min-w-0 cursor-pointer truncate text-sm font-normal text-content-muted">
               {track.ar.slice(0, 2).map((artist, index, artists) => (
                 <span

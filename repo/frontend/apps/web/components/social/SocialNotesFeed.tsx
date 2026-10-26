@@ -6,9 +6,8 @@ import { useSocialNotes } from "@/hooks/social/useSocialNotes";
 import { uniqueById } from "@/lib/social/normalize";
 import { useI18n } from "@/store/module/i18n";
 import type { SocialNotesFeedProps } from "@/types/components/social";
-import { SocialEventCard } from "./SocialEventCard";
+import { SocialNoteGrid } from "./SocialNoteGrid";
 import { SocialLoadMore, SocialState } from "./SocialPrimitives";
-import s from "./Social.module.css";
 
 export function SocialNotesFeed({ groupId }: SocialNotesFeedProps) {
   const { t } = useI18n();
@@ -30,11 +29,7 @@ export function SocialNotesFeed({ groupId }: SocialNotesFeedProps) {
         empty={!items.length ? t("social.emptyNotes") : undefined}
         onRetry={() => void query.refetch()}
       >
-        <div className={s.timeline}>
-          {items.map((event) => (
-            <SocialEventCard key={event.id} event={event} showFollow />
-          ))}
-        </div>
+        <SocialNoteGrid items={items} />
         <div ref={sentinel} aria-hidden="true" />
         <SocialLoadMore
           more={query.hasNextPage}

@@ -14,12 +14,7 @@ import {
 } from "./SocialPrimitives";
 import s from "./Social.module.css";
 
-export function SocialPeople({
-  uid = "",
-  mode,
-  query: search = "",
-  compact = false,
-}: SocialPeopleProps) {
+export function SocialPeople({ uid = "", mode, query: search = "" }: SocialPeopleProps) {
   const { t } = useI18n(),
     { uid: self } = useSocialAccount();
   const query = useSocialPeople(uid || self, mode, search);
@@ -36,24 +31,22 @@ export function SocialPeople({
           : undefined
       }
     >
-      {(compact ? items.slice(0, 5) : items).map((user) => (
+      {items.map((user) => (
         <div className={s.person} key={user.id}>
-          <SocialAvatar user={user} size={compact ? "small" : undefined} />
+          <SocialAvatar user={user} />
           <div className={s.personText}>
             <SocialAuthor user={user} />
             <p>{user.signature || t("social.noSignature")}</p>
           </div>
-          {!compact && <FollowButton user={user} />}
+          <FollowButton user={user} />
         </div>
       ))}
-      {!compact && (
-        <SocialLoadMore
-          more={query.hasNextPage}
-          pending={query.isFetching}
-          error={query.isError}
-          onLoad={() => void (query.isRefetchError ? query.refetch() : query.fetchNextPage())}
-        />
-      )}
+      <SocialLoadMore
+        more={query.hasNextPage}
+        pending={query.isFetching}
+        error={query.isError}
+        onLoad={() => void (query.isRefetchError ? query.refetch() : query.fetchNextPage())}
+      />
     </SocialState>
   );
 }

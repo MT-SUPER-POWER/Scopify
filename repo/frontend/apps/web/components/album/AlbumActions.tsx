@@ -5,6 +5,7 @@ import { ArrowDownCircle, MessageCircle, MoreHorizontal, Pause, Play, Shuffle } 
 
 import { PlaylistViewButton } from "@/components/Playlist/lattice/PlaylistViewButton";
 import { CollectionToggleButton } from "@/components/shared/CollectionToggleButton";
+import { TrackPreviewButton } from "@/components/trackPreview/TrackPreviewButton";
 import { useCommentCountQuery } from "@/hooks/comment/useCommentCountQuery";
 import { getCommentHref } from "@/lib/comment/commentResource";
 import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
@@ -20,6 +21,8 @@ import {
 
 export function AlbumActions({
   albumId,
+  albumTitle,
+  tracks,
   isPlaying,
   isAlbumCollected,
   isTogglingAlbumSubscribe,
@@ -58,6 +61,8 @@ export function AlbumActions({
             {playLabel}
           </TooltipContent>
         </Tooltip>
+
+        <TrackPreviewButton tracks={tracks} title={albumTitle} playlistId={albumId} />
 
         <Tooltip>
           <TooltipTrigger asChild>

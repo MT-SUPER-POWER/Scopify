@@ -26,6 +26,9 @@ export interface AlbumSubscriptionMutation {
 
 export interface AlbumActionsProps {
   albumId: string;
+  /** 专辑曲目与名称，用于播放按钮旁的 MV 预览入口。 */
+  albumTitle: string;
+  tracks: SongDetail[];
   isAlbumCollected: boolean;
   isPlaying: boolean;
   isTogglingAlbumSubscribe: boolean;

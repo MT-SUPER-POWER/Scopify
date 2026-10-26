@@ -45,6 +45,8 @@ export interface SocialEvent {
   forward?: SocialEvent;
   unavailableForward: boolean;
   privacy?: number;
+  /** 聚合乐迷团流中该条笔记所属的乐迷团 ID */
+  communityId?: string;
 }
 export interface SocialEventPage<Cursor = number> {
   items: SocialEvent[];
@@ -54,17 +56,6 @@ export interface SocialGroup {
   id: string;
   name: string;
   cover: string;
-}
-export interface SocialTopic {
-  id: string;
-  title: string;
-  description: string;
-  cover: string;
-  participants: number;
-}
-export interface SocialTopicPage {
-  items: SocialTopic[];
-  next?: number;
 }
 export interface SocialPeoplePage {
   items: SocialUser[];

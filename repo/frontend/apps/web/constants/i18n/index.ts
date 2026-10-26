@@ -44,10 +44,16 @@ import { updaterMessages } from "./updater";
 import { personalFmMessages } from "./personalFm";
 import { notificationMessages } from "./notifications";
 import { socialMessages } from "./social";
+import { nowPlayingMessages } from "./nowPlaying";
+import { mvMessages } from "./mv";
+import { trackPreviewMessages } from "./trackPreview";
 
 export const messages = {
   "zh-CN": {
     ...updatesMessages["zh-CN"],
+    ...nowPlayingMessages["zh-CN"],
+    ...mvMessages["zh-CN"],
+    ...trackPreviewMessages["zh-CN"],
     ...deviceMessages["zh-CN"],
     ...notificationMessages["zh-CN"],
     ...privateMessageMessages["zh-CN"],
@@ -96,6 +102,9 @@ export const messages = {
   },
   "zh-TW": {
     ...updatesMessages["zh-TW"],
+    ...nowPlayingMessages["zh-TW"],
+    ...mvMessages["zh-TW"],
+    ...trackPreviewMessages["zh-TW"],
     ...deviceMessages["zh-TW"],
     ...notificationMessages["zh-TW"],
     ...privateMessageMessages["zh-TW"],
@@ -144,6 +153,9 @@ export const messages = {
   },
   "en-US": {
     ...updatesMessages["en-US"],
+    ...nowPlayingMessages["en-US"],
+    ...mvMessages["en-US"],
+    ...trackPreviewMessages["en-US"],
     ...deviceMessages["en-US"],
     ...notificationMessages["en-US"],
     ...privateMessageMessages["en-US"],

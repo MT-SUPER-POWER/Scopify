@@ -5,7 +5,8 @@ import { useCallback } from "react";
 import { AllView } from "@/components/search/AllView";
 import { CategoryTabs } from "@/components/search/CategoryTabs";
 import { GridCategoryView } from "@/components/search/GridCategoryView";
-import { AllViewSkeleton, LoadingSkeleton } from "@/components/search/LoadingSkeleton";
+import { MvsView } from "@/components/search/MvsView";
+import { CategorySkeleton } from "@/components/search/LoadingSkeleton";
 import { NetworkRetryState } from "@/components/shared/NetworkRetryState";
 import { PodcastsView } from "@/components/search/PodcastsView";
 import { SongsView } from "@/components/search/SongsView";
@@ -35,20 +36,24 @@ export default function SearchPage() {
     bestMatch,
     fetchNextAlbumPage,
     fetchNextArtistPage,
+    fetchNextMvPage,
     fetchNextPlaylistPage,
     fetchNextPodcastPage,
     fetchNextSongPage,
     fetchNextVoicePage,
     hasNextAlbumPage,
     hasNextArtistPage,
+    hasNextMvPage,
     hasNextPlaylistPage,
     hasNextPodcastPage,
     hasNextSongPage,
     hasNextVoicePage,
     hasError,
     loading,
+    mvs,
     isFetchingNextAlbumPage,
     isFetchingNextArtistPage,
+    isFetchingNextMvPage,
     isFetchingNextPlaylistPage,
     isFetchingNextPodcastPage,
     isFetchingNextSongPage,
@@ -89,7 +94,7 @@ export default function SearchPage() {
   };
 
   return (
-    <div className="mx-auto min-h-full w-full max-w-400 p-6 pt-22 text-content">
+    <div className="mx-auto min-h-full w-full max-w-400 p-6 pt-6 text-content">
       <CategoryTabs active={activeCategory} onChange={handleCategoryChange} />
       {hasError && (
         <div className="mb-6">
@@ -103,8 +108,7 @@ export default function SearchPage() {
           />
         </div>
       )}
-      {loading && activeCategory === "All" && <AllViewSkeleton />}
-      {loading && activeCategory !== "All" && <LoadingSkeleton />}
+      {loading && <CategorySkeleton category={activeCategory} />}
       {!loading && activeCategory === "All" && (
         <AllView
           songs={songs}
@@ -114,6 +118,7 @@ export default function SearchPage() {
           bestMatch={bestMatch}
           podcasts={podcasts}
           loadingPlayId={loadingPlayId}
+          mvs={mvs}
           onPlayAlbum={handlePlayAlbum}
           onPlayPlaylist={handlePlayPlaylist}
           onSeeAll={handleCategoryChange}
@@ -127,6 +132,14 @@ export default function SearchPage() {
           hasNextPage={hasNextSongPage}
           isFetchingNextPage={isFetchingNextSongPage}
           onLoadMore={() => void fetchNextSongPage()}
+        />
+      )}
+      {!loading && activeCategory === "MVs" && (
+        <MvsView
+          mvs={mvs}
+          hasNextPage={hasNextMvPage}
+          isFetchingNextPage={isFetchingNextMvPage}
+          onLoadMore={() => void fetchNextMvPage()}
         />
       )}
       {!loading && activeCategory === "Podcasts" && (

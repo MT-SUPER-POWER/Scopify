@@ -89,6 +89,450 @@ export interface TranslateFn {
    */
   (key: "updates.improved", params?: TranslationParams): string;
   /**
+   * zh-CN: 正在播放
+   * zh-TW: 正在播放
+   * en-US: Now Playing
+   */
+  (key: "nowPlaying.title", params?: TranslationParams): string;
+  /**
+   * zh-CN: 正在播放
+   * zh-TW: 正在播放
+   * en-US: Now Playing
+   */
+  (key: "nowPlaying.tab.overview", params?: TranslationParams): string;
+  /**
+   * zh-CN: 队列
+   * zh-TW: 佇列
+   * en-US: Queue
+   */
+  (key: "nowPlaying.tab.queue", params?: TranslationParams): string;
+  /**
+   * zh-CN: 歌词
+   * zh-TW: 歌詞
+   * en-US: Lyrics
+   */
+  (key: "nowPlaying.tab.lyrics", params?: TranslationParams): string;
+  /**
+   * zh-CN: 歌词预览
+   * zh-TW: 歌詞預覽
+   * en-US: Lyrics preview
+   */
+  (key: "nowPlaying.lyricsPreview", params?: TranslationParams): string;
+  /**
+   * zh-CN: 暂无歌词
+   * zh-TW: 暫無歌詞
+   * en-US: No lyrics for this song
+   */
+  (key: "nowPlaying.lyricsEmpty", params?: TranslationParams): string;
+  /**
+   * zh-CN: 全屏歌词
+   * zh-TW: 全螢幕歌詞
+   * en-US: Full-screen lyrics
+   */
+  (key: "nowPlaying.lyricsFullscreen", params?: TranslationParams): string;
+  /**
+   * zh-CN: 显示正在播放面板
+   * zh-TW: 顯示正在播放面板
+   * en-US: Show Now Playing view
+   */
+  (key: "nowPlaying.show", params?: TranslationParams): string;
+  /**
+   * zh-CN: 隐藏正在播放面板
+   * zh-TW: 隱藏正在播放面板
+   * en-US: Hide Now Playing view
+   */
+  (key: "nowPlaying.hide", params?: TranslationParams): string;
+  /**
+   * zh-CN: 关于艺人
+   * zh-TW: 關於藝人
+   * en-US: About the artist
+   */
+  (key: "nowPlaying.aboutArtist", params?: TranslationParams): string;
+  /**
+   * zh-CN: {{count}} 位粉丝
+   * zh-TW: {{count}} 位粉絲
+   * en-US: {{count}} followers
+   */
+  (key: "nowPlaying.fans", params?: TranslationParams): string;
+  /**
+   * zh-CN: 下一首
+   * zh-TW: 下一首
+   * en-US: Next in queue
+   */
+  (key: "nowPlaying.nextUp", params?: TranslationParams): string;
+  /**
+   * zh-CN: 打开播放队列
+   * zh-TW: 開啟播放佇列
+   * en-US: Open queue
+   */
+  (key: "nowPlaying.openQueue", params?: TranslationParams): string;
+  /**
+   * zh-CN: 队列中没有下一首了
+   * zh-TW: 佇列中沒有下一首了
+   * en-US: Nothing else queued
+   */
+  (key: "nowPlaying.queueEnd", params?: TranslationParams): string;
+  /**
+   * zh-CN: 专辑
+   * zh-TW: 專輯
+   * en-US: Album
+   */
+  (key: "nowPlaying.album", params?: TranslationParams): string;
+  /**
+   * zh-CN: 观看 MV
+   * zh-TW: 觀看 MV
+   * en-US: Watch music video
+   */
+  (key: "nowPlaying.watchMv", params?: TranslationParams): string;
+  /**
+   * zh-CN: 返回封面
+   * zh-TW: 返回封面
+   * en-US: Back to cover
+   */
+  (key: "nowPlaying.closeMv", params?: TranslationParams): string;
+  /**
+   * zh-CN: MV
+   * zh-TW: MV
+   * en-US: Music videos
+   */
+  (key: "nowPlaying.mvs", params?: TranslationParams): string;
+  /**
+   * zh-CN: 本曲 MV
+   * zh-TW: 本曲 MV
+   * en-US: This song
+   */
+  (key: "nowPlaying.songMv", params?: TranslationParams): string;
+  /**
+   * zh-CN: 相似歌曲
+   * zh-TW: 相似歌曲
+   * en-US: Similar songs
+   */
+  (key: "nowPlaying.similarSongs", params?: TranslationParams): string;
+  /**
+   * zh-CN: 全部 {{count}} 条
+   * zh-TW: 全部 {{count}} 則
+   * en-US: All {{count}}
+   */
+  (key: "nowPlaying.allComments", params?: TranslationParams): string;
+  /**
+   * zh-CN: 演职人员
+   * zh-TW: 演職人員
+   * en-US: Credits
+   */
+  (key: "nowPlaying.credits", params?: TranslationParams): string;
+  /**
+   * zh-CN: 主要艺人
+   * zh-TW: 主要藝人
+   * en-US: Main artist
+   */
+  (key: "nowPlaying.mainArtist", params?: TranslationParams): string;
+  /**
+   * zh-CN: 合作艺人
+   * zh-TW: 合作藝人
+   * en-US: Featured artist
+   */
+  (key: "nowPlaying.featuredArtist", params?: TranslationParams): string;
+  /**
+   * zh-CN: 发行时间
+   * zh-TW: 發行時間
+   * en-US: Released
+   */
+  (key: "nowPlaying.releaseDate", params?: TranslationParams): string;
+  /**
+   * zh-CN: 无效的 MV
+   * zh-TW: 無效的 MV
+   * en-US: Invalid music video
+   */
+  (key: "mv.status.invalid", params?: TranslationParams): string;
+  /**
+   * zh-CN: 这个 MV 暂时无法播放
+   * zh-TW: 這個 MV 暫時無法播放
+   * en-US: This music video can't be played right now
+   */
+  (key: "mv.status.unavailable", params?: TranslationParams): string;
+  /**
+   * zh-CN: 画质
+   * zh-TW: 畫質
+   * en-US: Quality
+   */
+  (key: "mv.quality", params?: TranslationParams): string;
+  /**
+   * zh-CN: 播放
+   * zh-TW: 播放
+   * en-US: Play
+   */
+  (key: "mv.player.play", params?: TranslationParams): string;
+  /**
+   * zh-CN: 暂停
+   * zh-TW: 暫停
+   * en-US: Pause
+   */
+  (key: "mv.player.pause", params?: TranslationParams): string;
+  /**
+   * zh-CN: 下一个
+   * zh-TW: 下一個
+   * en-US: Next
+   */
+  (key: "mv.player.next", params?: TranslationParams): string;
+  /**
+   * zh-CN: 静音
+   * zh-TW: 靜音
+   * en-US: Mute
+   */
+  (key: "mv.player.mute", params?: TranslationParams): string;
+  /**
+   * zh-CN: 取消静音
+   * zh-TW: 取消靜音
+   * en-US: Unmute
+   */
+  (key: "mv.player.unmute", params?: TranslationParams): string;
+  /**
+   * zh-CN: 音量
+   * zh-TW: 音量
+   * en-US: Volume
+   */
+  (key: "mv.player.volume", params?: TranslationParams): string;
+  /**
+   * zh-CN: 剧场模式
+   * zh-TW: 劇場模式
+   * en-US: Theater mode
+   */
+  (key: "mv.player.theater", params?: TranslationParams): string;
+  /**
+   * zh-CN: 退出剧场模式
+   * zh-TW: 退出劇場模式
+   * en-US: Exit theater mode
+   */
+  (key: "mv.player.exitTheater", params?: TranslationParams): string;
+  /**
+   * zh-CN: 网页全屏
+   * zh-TW: 網頁全螢幕
+   * en-US: Fill window
+   */
+  (key: "mv.player.webFullscreen", params?: TranslationParams): string;
+  /**
+   * zh-CN: 退出网页全屏
+   * zh-TW: 退出網頁全螢幕
+   * en-US: Exit fill window
+   */
+  (key: "mv.player.exitWebFullscreen", params?: TranslationParams): string;
+  /**
+   * zh-CN: 全屏
+   * zh-TW: 全螢幕
+   * en-US: Full screen
+   */
+  (key: "mv.player.fullscreen", params?: TranslationParams): string;
+  /**
+   * zh-CN: 退出全屏
+   * zh-TW: 退出全螢幕
+   * en-US: Exit full screen
+   */
+  (key: "mv.player.exitFullscreen", params?: TranslationParams): string;
+  /**
+   * zh-CN: {{count}}次播放
+   * zh-TW: {{count}}次播放
+   * en-US: {{count}} plays
+   */
+  (key: "mv.meta.plays", params?: TranslationParams): string;
+  /**
+   * zh-CN: 发布于 {{date}}
+   * zh-TW: 發佈於 {{date}}
+   * en-US: Released {{date}}
+   */
+  (key: "mv.meta.published", params?: TranslationParams): string;
+  /**
+   * zh-CN: {{count}}次观看
+   * zh-TW: {{count}}次觀看
+   * en-US: {{count}} views
+   */
+  (key: "mv.meta.views", params?: TranslationParams): string;
+  /**
+   * zh-CN: 更多操作
+   * zh-TW: 更多操作
+   * en-US: More actions
+   */
+  (key: "mv.card.more", params?: TranslationParams): string;
+  /**
+   * zh-CN: 前往歌手页
+   * zh-TW: 前往歌手頁
+   * en-US: Go to artist
+   */
+  (key: "mv.card.goToArtist", params?: TranslationParams): string;
+  /**
+   * zh-CN: 点赞
+   * zh-TW: 按讚
+   * en-US: Like
+   */
+  (key: "mv.action.like", params?: TranslationParams): string;
+  /**
+   * zh-CN: 复制链接
+   * zh-TW: 複製連結
+   * en-US: Copy link
+   */
+  (key: "mv.action.copyLink", params?: TranslationParams): string;
+  /**
+   * zh-CN: 分享
+   * zh-TW: 分享
+   * en-US: Share
+   */
+  (key: "mv.action.share", params?: TranslationParams): string;
+  /**
+   * zh-CN: 链接已复制
+   * zh-TW: 連結已複製
+   * en-US: Link copied
+   */
+  (key: "mv.toast.linkCopied", params?: TranslationParams): string;
+  /**
+   * zh-CN: {{count}} 位粉丝
+   * zh-TW: {{count}} 位粉絲
+   * en-US: {{count}} followers
+   */
+  (key: "mv.channel.fans", params?: TranslationParams): string;
+  /**
+   * zh-CN: {{count}} 条评论
+   * zh-TW: {{count}} 則評論
+   * en-US: {{count}} comments
+   */
+  (key: "mv.comments.count", params?: TranslationParams): string;
+  /**
+   * zh-CN: 在评论页查看
+   * zh-TW: 在評論頁查看
+   * en-US: Open comments page
+   */
+  (key: "mv.comments.openPage", params?: TranslationParams): string;
+  /**
+   * zh-CN: 排序方式
+   * zh-TW: 排序方式
+   * en-US: Sort by
+   */
+  (key: "mv.comments.sortBy", params?: TranslationParams): string;
+  /**
+   * zh-CN: 添加评论...
+   * zh-TW: 新增留言...
+   * en-US: Add a comment...
+   */
+  (key: "mv.comments.addPlaceholder", params?: TranslationParams): string;
+  /**
+   * zh-CN: 评论
+   * zh-TW: 留言
+   * en-US: Comment
+   */
+  (key: "mv.comments.submit", params?: TranslationParams): string;
+  /**
+   * zh-CN: 登录后参与评论
+   * zh-TW: 登入後參與評論
+   * en-US: Log in to join the conversation
+   */
+  (key: "mv.comments.loginToComment", params?: TranslationParams): string;
+  /**
+   * zh-CN: 观看 MV
+   * zh-TW: 觀看 MV
+   * en-US: Watch music video
+   */
+  (key: "mv.action.watch", params?: TranslationParams): string;
+  /**
+   * zh-CN: 收藏
+   * zh-TW: 收藏
+   * en-US: Save
+   */
+  (key: "mv.action.subscribe", params?: TranslationParams): string;
+  /**
+   * zh-CN: 已收藏
+   * zh-TW: 已收藏
+   * en-US: Saved
+   */
+  (key: "mv.action.subscribed", params?: TranslationParams): string;
+  /**
+   * zh-CN: 请先登录
+   * zh-TW: 請先登入
+   * en-US: Log in first
+   */
+  (key: "mv.toast.loginRequired", params?: TranslationParams): string;
+  /**
+   * zh-CN: 精彩评论
+   * zh-TW: 精彩評論
+   * en-US: Top comments
+   */
+  (key: "mv.section.comments", params?: TranslationParams): string;
+  /**
+   * zh-CN: 相似 MV
+   * zh-TW: 相似 MV
+   * en-US: Similar music videos
+   */
+  (key: "mv.section.similar", params?: TranslationParams): string;
+  /**
+   * zh-CN: 预览
+   * zh-TW: 預覽
+   * en-US: Preview
+   */
+  (key: "trackPreview.open", params?: TranslationParams): string;
+  /**
+   * zh-CN: 预览 {{count}} 首 MV
+   * zh-TW: 預覽 {{count}} 首 MV
+   * en-US: Preview {{count}} music videos
+   */
+  (key: "trackPreview.openWithCount", params?: TranslationParams): string;
+  /**
+   * zh-CN: 逐首预览列表中带 MV 的歌曲
+   * zh-TW: 逐首預覽清單中帶 MV 的歌曲
+   * en-US: Preview the songs in this list that have music videos
+   */
+  (key: "trackPreview.description", params?: TranslationParams): string;
+  /**
+   * zh-CN: {{index}} / {{total}}
+   * zh-TW: {{index}} / {{total}}
+   * en-US: {{index}} / {{total}}
+   */
+  (key: "trackPreview.position", params?: TranslationParams): string;
+  /**
+   * zh-CN: 下一首
+   * zh-TW: 下一首
+   * en-US: Next
+   */
+  (key: "trackPreview.next", params?: TranslationParams): string;
+  /**
+   * zh-CN: 上一首
+   * zh-TW: 上一首
+   * en-US: Previous
+   */
+  (key: "trackPreview.previous", params?: TranslationParams): string;
+  /**
+   * zh-CN: 静音
+   * zh-TW: 靜音
+   * en-US: Mute
+   */
+  (key: "trackPreview.mute", params?: TranslationParams): string;
+  /**
+   * zh-CN: 取消静音
+   * zh-TW: 取消靜音
+   * en-US: Unmute
+   */
+  (key: "trackPreview.unmute", params?: TranslationParams): string;
+  /**
+   * zh-CN: 播放这首歌
+   * zh-TW: 播放這首歌
+   * en-US: Play this song
+   */
+  (key: "trackPreview.playSong", params?: TranslationParams): string;
+  /**
+   * zh-CN: 打开 MV 页
+   * zh-TW: 開啟 MV 頁
+   * en-US: Open music video page
+   */
+  (key: "trackPreview.openMv", params?: TranslationParams): string;
+  /**
+   * zh-CN: 已添加到播放队列
+   * zh-TW: 已加入播放佇列
+   * en-US: Added to queue
+   */
+  (key: "trackPreview.queueAdded", params?: TranslationParams): string;
+  /**
+   * zh-CN: 这首歌已在播放队列中
+   * zh-TW: 這首歌已在播放佇列中
+   * en-US: This song is already in the queue
+   */
+  (key: "trackPreview.queueExists", params?: TranslationParams): string;
+  /**
    * zh-CN: 设备列表响应不完整，请稍后重试。
    * zh-TW: 裝置清單回應不完整，請稍後重試。
    * en-US: The device response is incomplete. Try again.
@@ -1205,12 +1649,6 @@ export interface TranslateFn {
    */
   (key: "social.backToFeed", params?: TranslationParams): string;
   /**
-   * zh-CN: 查看全部关注
-   * zh-TW: 查看全部關注
-   * en-US: See everyone you follow
-   */
-  (key: "social.allFollowing", params?: TranslationParams): string;
-  /**
    * zh-CN: 来自 {{name}}
    * zh-TW: 來自 {{name}}
    * en-US: From {{name}}
@@ -1247,59 +1685,11 @@ export interface TranslateFn {
    */
   (key: "social.searchResults", params?: TranslationParams): string;
   /**
-   * zh-CN: 热门话题
-   * zh-TW: 熱門話題
-   * en-US: Popular topics
-   */
-  (key: "social.hotTopics", params?: TranslationParams): string;
-  /**
-   * zh-CN: 暂时没有热门话题，稍后再来看看。
-   * zh-TW: 暫時沒有熱門話題，稍後再來看看。
-   * en-US: No popular topics right now. Check back later.
-   */
-  (key: "social.emptyTopics", params?: TranslationParams): string;
-  /**
-   * zh-CN: 选择热门话题
-   * zh-TW: 選擇熱門話題
-   * en-US: Choose a popular topic
-   */
-  (key: "social.chooseTopic", params?: TranslationParams): string;
-  /**
-   * zh-CN: 更多话题
-   * zh-TW: 更多話題
-   * en-US: More topics
-   */
-  (key: "social.moreTopics", params?: TranslationParams): string;
-  /**
-   * zh-CN: {{count}} 人参与
-   * zh-TW: {{count}} 人參與
-   * en-US: {{count}} participants
-   */
-  (key: "social.topicParticipants", params?: TranslationParams): string;
-  /**
-   * zh-CN: 这个话题暂时没有热门动态，换个话题看看吧。
-   * zh-TW: 這個話題暫時沒有熱門動態，換個話題看看吧。
-   * en-US: No popular posts here yet. Try another topic.
-   */
-  (key: "social.emptyTopicFeed", params?: TranslationParams): string;
-  /**
    * zh-CN: 刷新失败，仍显示上次加载的动态。
    * zh-TW: 重新整理失敗，仍顯示上次載入的動態。
    * en-US: Couldn't refresh. Your previously loaded posts are still here.
    */
   (key: "social.refreshFailed", params?: TranslationParams): string;
-  /**
-   * zh-CN: 已看完这个话题的热门动态，换个话题继续发现。
-   * zh-TW: 已看完這個話題的熱門動態，換個話題繼續探索。
-   * en-US: You're caught up on this topic. Choose another to keep exploring.
-   */
-  (key: "social.topicEnd", params?: TranslationParams): string;
-  /**
-   * zh-CN: 发现与个人信息
-   * zh-TW: 探索與個人資訊
-   * en-US: Discovery and profile
-   */
-  (key: "social.discover", params?: TranslationParams): string;
   /**
    * zh-CN: 展开全文
    * zh-TW: 展開全文
@@ -1312,12 +1702,6 @@ export interface TranslateFn {
    * en-US: Show less
    */
   (key: "social.showLess", params?: TranslationParams): string;
-  /**
-   * zh-CN: 让好音乐，遇见懂它的人。
-   * zh-TW: 讓好音樂，遇見懂它的人。
-   * en-US: Good music brings us together.
-   */
-  (key: "social.subtitle", params?: TranslationParams): string;
   /**
    * zh-CN: 朋友动态
    * zh-TW: 朋友動態
@@ -1649,6 +2033,18 @@ export interface TranslateFn {
    */
   (key: "social.delete", params?: TranslationParams): string;
   /**
+   * zh-CN: 确认删除
+   * zh-TW: 確認刪除
+   * en-US: Confirm delete
+   */
+  (key: "social.confirmDelete", params?: TranslationParams): string;
+  /**
+   * zh-CN: 共 {{count}} 条评论
+   * zh-TW: 共 {{count}} 則留言
+   * en-US: {{count}} comments
+   */
+  (key: "social.commentsTotal", params?: TranslationParams): string;
+  /**
    * zh-CN: 删除这条动态？
    * zh-TW: 刪除這則動態？
    * en-US: Delete this post?
@@ -1973,18 +2369,6 @@ export interface TranslateFn {
    */
   (key: "social.squareTab", params?: TranslationParams): string;
   /**
-   * zh-CN: 你和关注的人的最新动态
-   * zh-TW: 你和關注的人的最新動態
-   * en-US: Latest from you and people you follow
-   */
-  (key: "social.followingContext", params?: TranslationParams): string;
-  /**
-   * zh-CN: 来自你加入的 {{count}} 个乐迷团
-   * zh-TW: 來自你加入的 {{count}} 個樂迷團
-   * en-US: From the {{count}} fan clubs you joined
-   */
-  (key: "social.aggregatedContext", params?: TranslationParams): string;
-  /**
    * zh-CN: 大家正在分享的音乐笔记
    * zh-TW: 大家正在分享的音樂筆記
    * en-US: Music notes people are sharing
@@ -1996,12 +2380,6 @@ export interface TranslateFn {
    * en-US: Artist page
    */
   (key: "social.viewArtist", params?: TranslationParams): string;
-  /**
-   * zh-CN: 返回{{name}}
-   * zh-TW: 返回{{name}}
-   * en-US: Back to {{name}}
-   */
-  (key: "social.backTo", params?: TranslationParams): string;
   /**
    * zh-CN: 发布后会出现在你的主页，关注你的人可在「关注」中看到。
    * zh-TW: 發佈後會出現在你的主頁，關注你的人可在「關注」中看到。
@@ -6776,6 +7154,12 @@ export interface TranslateFn {
    */
   (key: "search.section.voices", params?: TranslationParams): string;
   /**
+   * zh-CN: MV
+   * zh-TW: MV
+   * en-US: Music videos
+   */
+  (key: "search.section.mvs", params?: TranslationParams): string;
+  /**
    * zh-CN: 没有匹配结果
    * zh-TW: 沒有匹配結果
    * en-US: No matching results
@@ -6818,6 +7202,12 @@ export interface TranslateFn {
    */
   (key: "search.section.noVoiceResults", params?: TranslationParams): string;
   /**
+   * zh-CN: 没有 MV 结果
+   * zh-TW: 沒有 MV 結果
+   * en-US: No music video results
+   */
+  (key: "search.section.noMvResults", params?: TranslationParams): string;
+  /**
    * zh-CN: 搜索歌曲
    * zh-TW: 搜尋歌曲
    * en-US: Search Songs
@@ -6853,6 +7243,12 @@ export interface TranslateFn {
    * en-US: Search Sounds
    */
   (key: "search.section.searchVoices", params?: TranslationParams): string;
+  /**
+   * zh-CN: 搜索 MV
+   * zh-TW: 搜尋 MV
+   * en-US: Search Music Videos
+   */
+  (key: "search.section.searchMvs", params?: TranslationParams): string;
   /**
    * zh-CN: 歌手
    * zh-TW: 歌手
@@ -6913,6 +7309,12 @@ export interface TranslateFn {
    * en-US: Sounds
    */
   (key: "search.category.voices", params?: TranslationParams): string;
+  /**
+   * zh-CN: MV
+   * zh-TW: MV
+   * en-US: MVs
+   */
+  (key: "search.category.mvs", params?: TranslationParams): string;
   /**
    * zh-CN: 未知播客
    * zh-TW: 未知播客
@@ -7051,6 +7453,12 @@ export interface TranslateFn {
    * en-US: Album
    */
   (key: "comments.page.albumTag", params?: TranslationParams): string;
+  /**
+   * zh-CN: MV
+   * zh-TW: MV
+   * en-US: Music video
+   */
+  (key: "comments.page.mvTag", params?: TranslationParams): string;
   /**
    * zh-CN: 声音
    * zh-TW: 聲音
@@ -21832,6 +22240,24 @@ export interface TranslateFn {
    * en-US: Toggle Sidebar
    */
   (key: "shortcuts.command.toggleSidebar", params?: TranslationParams): string;
+  /**
+   * zh-CN: 显示/隐藏正在播放面板
+   * zh-TW: 顯示/隱藏正在播放面板
+   * en-US: Show/Hide Now Playing View
+   */
+  (key: "shortcuts.command.toggleNowPlayingPanel", params?: TranslationParams): string;
+  /**
+   * zh-CN: 后退
+   * zh-TW: 後退
+   * en-US: Go Back
+   */
+  (key: "shortcuts.command.navigateBack", params?: TranslationParams): string;
+  /**
+   * zh-CN: 前进
+   * zh-TW: 前進
+   * en-US: Go Forward
+   */
+  (key: "shortcuts.command.navigateForward", params?: TranslationParams): string;
   /**
    * zh-CN: 打开/关闭播放队列
    * zh-TW: 開啟/關閉播放佇列

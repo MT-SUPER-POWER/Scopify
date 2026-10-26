@@ -8,6 +8,9 @@ export const useUiStore = create<UiStore>()(
       isSearchOpen: false,
       isCollapsed: false,
       isLyricsOpen: false,
+      isNowPlayingPanelOpen: true,
+      nowPlayingPanelTab: "overview",
+      nowPlayingMv: null,
       isQueueOpen: false,
       isShortcutHelpOpen: false,
       isFullscreen: false,
@@ -19,6 +22,21 @@ export const useUiStore = create<UiStore>()(
       toggleLyrics: () => set((state) => ({ isLyricsOpen: !state.isLyricsOpen })),
       setIsCollapsed: (collapsed) => set({ isCollapsed: collapsed }),
       toggleSidebar: () => set((state) => ({ isCollapsed: !state.isCollapsed })),
+      // 收起面板时一并退出队列视图，否则折叠条会因队列仍为打开状态而立刻重新展开
+      setIsNowPlayingPanelOpen: (open) =>
+        set(
+          open
+            ? { isNowPlayingPanelOpen: true }
+            : { isNowPlayingPanelOpen: false, isQueueOpen: false },
+        ),
+      toggleNowPlayingPanel: () =>
+        set((state) =>
+          state.isNowPlayingPanelOpen
+            ? { isNowPlayingPanelOpen: false, isQueueOpen: false }
+            : { isNowPlayingPanelOpen: true },
+        ),
+      setNowPlayingMv: (selection) => set({ nowPlayingMv: selection }),
+      setNowPlayingPanelTab: (tab) => set({ nowPlayingPanelTab: tab, isQueueOpen: false }),
       setIsQueueOpen: (open) => set({ isQueueOpen: open }),
       toggleQueue: () => set((state) => ({ isQueueOpen: !state.isQueueOpen })),
       setIsShortcutHelpOpen: (open) => set({ isShortcutHelpOpen: open }),
@@ -29,6 +47,8 @@ export const useUiStore = create<UiStore>()(
       storage: createJSONStorage(() => localStorage),
       partialize: (state) => ({
         isCollapsed: state.isCollapsed,
+        isNowPlayingPanelOpen: state.isNowPlayingPanelOpen,
+        nowPlayingPanelTab: state.nowPlayingPanelTab,
       }),
       merge: (persistedState, currentState) => ({
         ...currentState,

@@ -13,8 +13,19 @@ import { getDashboardLoadingPlaceholder } from "@/components/shared/DashboardRou
 import { PlaybackMediaRuntimeProvider } from "@/components/player/PlaybackMediaRuntimeProvider";
 import { useDesktopPlaybackWallpaperPresentation } from "@/hooks/desktopWallpaper/useDesktopPlaybackWallpaperPresentation";
 import { useNowPlayingDocumentTitle } from "@/hooks/player/useNowPlayingDocumentTitle";
-import { useSidebarLoadingLayout } from "@/hooks/sidebar/useSidebarLoadingLayout";
-import { DASHBOARD_LAYOUT_GROUP_ID, SIDEBAR_DEFAULT_SIZE_PERCENT } from "@/constants/layout";
+import { useTitleBarSymbolColor } from "@/hooks/ui/useTitleBarSymbolColor";
+import { useAnimatedPanelCollapse } from "@/hooks/ui/useAnimatedPanelCollapse";
+import { useNowPlayingPanelVisibility } from "@/hooks/ui/useNowPlayingPanelVisibility";
+import {
+  DASHBOARD_LAYOUT_GROUP_ID,
+  DASHBOARD_PANEL_IDS,
+  NOW_PLAYING_PANEL_DEFAULT_SIZE_PERCENT,
+  NOW_PLAYING_PANEL_MAX_WIDTH,
+  NOW_PLAYING_PANEL_MIN_WIDTH,
+  NOW_PLAYING_PANEL_RAIL_WIDTH,
+  SIDEBAR_COLLAPSED_WIDTH,
+  SIDEBAR_DEFAULT_SIZE_PERCENT,
+} from "@/constants/layout";
 import { runtime } from "@/lib/runtime";
 import {
   DESKTOP_PLAYBACK_CONTROLLER_FOLIA_VISUAL_SETTINGS_PATH,
@@ -33,7 +44,10 @@ import { CommandWorkspaceModal } from "@/components/commandWorkspace/CommandWork
 import { WhatsNewModal } from "@/components/updates/WhatsNewModal";
 // self components
 import MainLayoutSkeleton from "./Skeleton";
+import { LoadingNowPlayingSkeleton, SIDEBAR_BOOT_WIDTH } from "./LoadingChrome";
 import { Sidebar } from "@/components/Siderbar";
+import { NowPlayingCollapsedRail } from "@/components/nowPlaying/NowPlayingCollapsedRail";
+import { NowPlayingPanel } from "@/components/nowPlaying/NowPlayingPanel";
 
 // The wallpaper renderer brings the entire Folia visualizer graph into the
 // bundle. It is only used by the dedicated desktop-wallpaper window, so keep
@@ -46,6 +60,14 @@ const DesktopPlaybackWallpaperRenderer = dynamic(
   { ssr: false },
 );
 
+const RESIZE_HANDLE_CLASS = cn(
+  "relative flex w-2 items-center justify-center bg-transparent transition-colors",
+  "focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:outline-none",
+  "after:absolute after:inset-y-0 after:w-px after:bg-transparent after:transition-colors",
+  "hover:after:bg-border",
+  "data-[resize-handle-state=drag]:after:bg-content-muted/50",
+);
+
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ SKELETON ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 function MainLayoutInner({ children }: { children?: ReactNode }) {
@@ -55,10 +77,11 @@ function MainLayoutInner({ children }: { children?: ReactNode }) {
   // DOM 引用与界面状态标记
   const sidebarPanelRef = usePanelRef();
   const sidebarPanelElementRef = useRef<HTMLDivElement>(null);
-  const hasInitializedSidebarPanelRef = useRef(false);
+  const nowPlayingPanelRef = usePanelRef();
+  const nowPlayingPanelElementRef = useRef<HTMLDivElement>(null);
   const [isMounted, setIsMounted] = useState(false);
-  const sidebarLoadingLayout = useSidebarLoadingLayout();
   useNowPlayingDocumentTitle();
+  useTitleBarSymbolColor();
 
   useEffect(() => {
     setIsMounted(true);
@@ -68,6 +91,7 @@ function MainLayoutInner({ children }: { children?: ReactNode }) {
   const clearSearchQuery = useSearchStore((s) => s.clearQuery);
   const isCollapsed = useUiStore((s) => s.isCollapsed);
   const setIsCollapsed = useUiStore((s) => s.setIsCollapsed);
+  const setIsNowPlayingPanelOpen = useUiStore((s) => s.setIsNowPlayingPanelOpen);
   const setIsFullscreen = useUiStore((s) => s.setIsFullscreen);
 
   // 监听路由变化，如果回到首页则清空搜索词
@@ -95,8 +119,14 @@ function MainLayoutInner({ children }: { children?: ReactNode }) {
     });
   }, []);
 
+  const nowPlayingPanel = useNowPlayingPanelVisibility();
+  const panelIds = nowPlayingPanel.canShow
+    ? [DASHBOARD_PANEL_IDS.sidebar, DASHBOARD_PANEL_IDS.main, DASHBOARD_PANEL_IDS.nowPlaying]
+    : [DASHBOARD_PANEL_IDS.sidebar, DASHBOARD_PANEL_IDS.main];
+
   const { defaultLayout, onLayoutChanged } = useDefaultLayout({
-    groupId: DASHBOARD_LAYOUT_GROUP_ID,
+    id: DASHBOARD_LAYOUT_GROUP_ID,
+    panelIds,
     storage:
       typeof window !== "undefined"
         ? window.localStorage
@@ -114,41 +144,20 @@ function MainLayoutInner({ children }: { children?: ReactNode }) {
     return runtime.window.onFullscreenChanged(setIsFullscreen);
   }, [setIsFullscreen]);
 
-  useEffect(() => {
-    const panel = sidebarPanelRef.current;
-    if (!panel) return;
+  useAnimatedPanelCollapse({
+    panelRef: sidebarPanelRef,
+    elementRef: sidebarPanelElementRef,
+    collapsed: isCollapsed,
+    enabled: isMounted,
+  });
 
-    if (!hasInitializedSidebarPanelRef.current) {
-      hasInitializedSidebarPanelRef.current = true;
-      if (isCollapsed) panel.collapse();
-      else panel.expand();
-      return;
-    }
-
-    const panelElement = sidebarPanelElementRef.current;
-    const shouldReduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    let clearTransitionTimeout: number | undefined;
-    if (!shouldReduceMotion && panelElement) {
-      panelElement.style.transition = "flex-grow 220ms cubic-bezier(0.22, 1, 0.36, 1)";
-      panelElement.style.willChange = "flex-grow";
-      clearTransitionTimeout = window.setTimeout(() => {
-        panelElement.style.transition = "";
-        panelElement.style.willChange = "";
-      }, 220);
-    }
-
-    if (isCollapsed) panel.collapse();
-    else panel.expand();
-
-    return () => {
-      if (clearTransitionTimeout !== undefined) {
-        window.clearTimeout(clearTransitionTimeout);
-      }
-      if (!panelElement) return;
-      panelElement.style.transition = "";
-      panelElement.style.willChange = "";
-    };
-  }, [isCollapsed, isMounted, sidebarPanelRef]);
+  // 右栏折叠为窄条而非卸载，开关时与侧边栏同样滑动
+  useAnimatedPanelCollapse({
+    panelRef: nowPlayingPanelRef,
+    elementRef: nowPlayingPanelElementRef,
+    collapsed: !nowPlayingPanel.isOpen,
+    enabled: isMounted && nowPlayingPanel.canShow,
+  });
 
   if (wallpaperPresentation.active && wallpaperPresentation.model) {
     return (
@@ -178,7 +187,15 @@ function MainLayoutInner({ children }: { children?: ReactNode }) {
       <LyricStageMount />
       <FoliaSettingsMount />
 
-      {/* 左右结构 */}
+      {/* 顶栏行连同外边距一起作为桌面端窗口拖拽区（系统标题栏已隐藏） */}
+      <div
+        data-track-drag-chrome
+        className="relative z-30 -mx-2 -mt-2 px-2 pt-2 [-webkit-app-region:drag]"
+      >
+        <Header />
+      </div>
+
+      {/* 三栏结构 */}
       <main className="relative min-h-0 w-full flex-1">
         {isMounted ? (
           <ResizablePanelGroup
@@ -188,49 +205,60 @@ function MainLayoutInner({ children }: { children?: ReactNode }) {
             className="size-full"
           >
             <ResizablePanel
+              id={DASHBOARD_PANEL_IDS.sidebar}
               panelRef={sidebarPanelRef}
               elementRef={sidebarPanelElementRef}
               defaultSize={`${SIDEBAR_DEFAULT_SIZE_PERCENT}%`}
               minSize="15%"
               maxSize="40%"
               collapsible
-              collapsedSize={80}
+              collapsedSize={SIDEBAR_COLLAPSED_WIDTH}
               onResize={() => setIsCollapsed(sidebarPanelRef.current?.isCollapsed() ?? false)}
               className={cn("overflow-hidden rounded-lg bg-surface-sunken")}
             >
               <Sidebar />
             </ResizablePanel>
 
-            <ResizableHandle
-              className={cn(
-                "relative flex w-2 items-center justify-center bg-transparent transition-colors",
-                "focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:outline-none",
-                "after:absolute after:inset-y-0 after:w-px after:bg-transparent after:transition-colors",
-                "hover:after:bg-border",
-                "data-[resize-handle-state=drag]:after:bg-content-muted/50",
-              )}
-            />
+            <ResizableHandle className={RESIZE_HANDLE_CLASS} />
 
-            <ResizablePanel>
+            <ResizablePanel id={DASHBOARD_PANEL_IDS.main}>
               <div
                 data-dashboard-main
                 className="group/main relative size-full overflow-hidden rounded-lg bg-surface-raised"
               >
-                <div className="pointer-events-none absolute inset-x-0 top-0 z-20">
-                  <div data-track-drag-chrome className="pointer-events-auto">
-                    <Header />
-                  </div>
-                </div>
-
                 <div className="size-full overflow-hidden">{children}</div>
               </div>
             </ResizablePanel>
+
+            {nowPlayingPanel.canShow && (
+              <>
+                <ResizableHandle className={RESIZE_HANDLE_CLASS} />
+                <ResizablePanel
+                  id={DASHBOARD_PANEL_IDS.nowPlaying}
+                  panelRef={nowPlayingPanelRef}
+                  elementRef={nowPlayingPanelElementRef}
+                  defaultSize={`${NOW_PLAYING_PANEL_DEFAULT_SIZE_PERCENT}%`}
+                  minSize={NOW_PLAYING_PANEL_MIN_WIDTH}
+                  maxSize={NOW_PLAYING_PANEL_MAX_WIDTH}
+                  collapsible
+                  collapsedSize={NOW_PLAYING_PANEL_RAIL_WIDTH}
+                  onResize={() =>
+                    setIsNowPlayingPanelOpen(!(nowPlayingPanelRef.current?.isCollapsed() ?? false))
+                  }
+                  className="overflow-hidden"
+                >
+                  {nowPlayingPanel.isOpen ? <NowPlayingPanel /> : <NowPlayingCollapsedRail />}
+                </ResizablePanel>
+              </>
+            )}
           </ResizablePanelGroup>
         ) : (
           <div className="flex size-full gap-2">
             <div
-              className="shrink-0 overflow-hidden rounded-lg bg-surface-sunken"
-              style={{ width: `${sidebarLoadingLayout.sizePercent}%` }}
+              className={cn(
+                SIDEBAR_BOOT_WIDTH,
+                "shrink-0 overflow-hidden rounded-lg bg-surface-sunken",
+              )}
             >
               <Sidebar />
             </div>
@@ -238,13 +266,9 @@ function MainLayoutInner({ children }: { children?: ReactNode }) {
               data-dashboard-main
               className="group/main relative flex-1 overflow-hidden rounded-lg bg-surface-raised"
             >
-              <div className="pointer-events-none absolute inset-x-0 top-0 z-20">
-                <div data-track-drag-chrome className="pointer-events-auto">
-                  <Header />
-                </div>
-              </div>
               <div className="size-full overflow-hidden">{children}</div>
             </div>
+            <LoadingNowPlayingSkeleton />
           </div>
         )}
       </main>

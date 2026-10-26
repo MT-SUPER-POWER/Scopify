@@ -5,6 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import {
   getAlbumComments,
   getMusicComments,
+  getMVComments,
   getNewComments,
   getPlaylistComments,
   getVoiceComments,
@@ -33,7 +34,9 @@ async function fetchCommentCount(kind: CommentResourceKind, resourceId: string) 
         ? getPlaylistComments(params)
         : kind === "voice"
           ? getVoiceComments(params)
-          : getMusicComments(params));
+          : kind === "mv"
+            ? getMVComments(params)
+            : getMusicComments(params));
     const total = response.data?.total;
     if (typeof total === "number" && total >= 0) return total;
   }

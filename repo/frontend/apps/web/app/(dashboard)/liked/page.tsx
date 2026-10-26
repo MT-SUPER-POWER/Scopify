@@ -19,7 +19,7 @@ export default function LikedSongsPage() {
 
   if (!isLoggedIn) {
     return (
-      <main className="min-h-screen bg-surface-raised px-6 pt-24 pb-28 md:px-10">
+      <main className="min-h-screen bg-surface-raised px-6 pt-8 pb-28 md:px-10">
         <QuietState icon={Heart} title={t("library.loggedOut.liked")} />
       </main>
     );
@@ -29,7 +29,7 @@ export default function LikedSongsPage() {
 
   if (likedPlaylistQuery.isError) {
     return (
-      <main className="min-h-screen bg-surface-raised px-6 pt-24 pb-28 md:px-10">
+      <main className="min-h-screen bg-surface-raised px-6 pt-8 pb-28 md:px-10">
         <NetworkRetryState
           title={t("network.offline.title")}
           subtitle={t("network.offline.subtitle")}
@@ -43,7 +43,7 @@ export default function LikedSongsPage() {
 
   if (!likedPlaylistId) {
     return (
-      <main className="min-h-screen bg-surface-raised px-6 pt-24 pb-28 md:px-10">
+      <main className="min-h-screen bg-surface-raised px-6 pt-8 pb-28 md:px-10">
         <QuietState
           icon={Heart}
           title={t("library.empty.liked.title")}

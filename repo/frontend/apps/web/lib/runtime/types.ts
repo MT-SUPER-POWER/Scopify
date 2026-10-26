@@ -232,6 +232,8 @@ export interface RuntimeWindowControls {
   onFullscreenChanged(callback: (isFullscreen: boolean) => void): RuntimeUnsubscribe;
   onVisibilityChanged(callback: (isVisible: boolean) => void): RuntimeUnsubscribe;
   setFullscreen(fullscreen: boolean): Promise<void>;
+  /** 桌面端顶栏内系统窗口按钮的图标颜色；Web 端无系统按钮，为空操作。 */
+  setTitleBarSymbolColor(color: string): void;
   toggleDeveloperTools(): Promise<boolean>;
 }
 
