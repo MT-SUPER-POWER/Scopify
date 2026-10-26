@@ -269,6 +269,24 @@ export interface TranslateFn {
    */
   (key: "mv.meta.published", params?: TranslationParams): string;
   /**
+   * zh-CN: {{count}} 次观看
+   * zh-TW: {{count}} 次觀看
+   * en-US: {{count}} views
+   */
+  (key: "mv.meta.views", params?: TranslationParams): string;
+  /**
+   * zh-CN: 更多操作
+   * zh-TW: 更多操作
+   * en-US: More actions
+   */
+  (key: "mv.card.more", params?: TranslationParams): string;
+  /**
+   * zh-CN: 前往歌手页
+   * zh-TW: 前往歌手頁
+   * en-US: Go to artist
+   */
+  (key: "mv.card.goToArtist", params?: TranslationParams): string;
+  /**
    * zh-CN: 点赞
    * zh-TW: 按讚
    * en-US: Like

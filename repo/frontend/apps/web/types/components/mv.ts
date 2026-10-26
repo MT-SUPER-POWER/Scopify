@@ -46,3 +46,7 @@ export interface MvChannelProps {
 export interface MvCommentsProps {
   mvid: number;
 }
+
+export interface MvCardPreviewProps {
+  mvid: number;
+}
