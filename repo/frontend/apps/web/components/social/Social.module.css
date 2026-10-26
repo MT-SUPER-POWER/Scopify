@@ -980,7 +980,7 @@
 .streamHeader[data-top="false"] .streamToolbar {
   border-bottom-color: transparent;
 }
-.streamToolbar h1 {
+.streamTitle {
   align-self: center;
   font-size: 24px;
   font-weight: 750;
@@ -1071,18 +1071,6 @@
   align-items: center;
   gap: 6px;
   font-weight: 600;
-}
-.refreshButton {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  min-height: 36px;
-  font-size: 12px;
-  color: var(--social-muted);
-  white-space: nowrap;
-}
-.refreshButton:hover {
-  color: var(--foreground);
 }
 .sourceLabel {
   color: var(--social-muted);
@@ -1403,7 +1391,7 @@
   .streamToolbar {
     gap: 18px;
   }
-  .streamToolbar h1 {
+  .streamTitle {
     font-size: 21px;
   }
   .streamToolbar .tabs {

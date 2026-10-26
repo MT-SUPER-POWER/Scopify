@@ -2405,18 +2405,6 @@ export interface TranslateFn {
    */
   (key: "social.squareTab", params?: TranslationParams): string;
   /**
-   * zh-CN: 你和关注的人的最新动态
-   * zh-TW: 你和關注的人的最新動態
-   * en-US: Latest from you and people you follow
-   */
-  (key: "social.followingContext", params?: TranslationParams): string;
-  /**
-   * zh-CN: 来自你加入的 {{count}} 个乐迷团
-   * zh-TW: 來自你加入的 {{count}} 個樂迷團
-   * en-US: From the {{count}} fan clubs you joined
-   */
-  (key: "social.aggregatedContext", params?: TranslationParams): string;
-  /**
    * zh-CN: 大家正在分享的音乐笔记
    * zh-TW: 大家正在分享的音樂筆記
    * en-US: Music notes people are sharing
