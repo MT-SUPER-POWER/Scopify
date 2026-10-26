@@ -239,6 +239,72 @@ export interface TranslateFn {
    */
   (key: "nowPlaying.releaseDate", params?: TranslationParams): string;
   /**
+   * zh-CN: 无效的 MV
+   * zh-TW: 無效的 MV
+   * en-US: Invalid music video
+   */
+  (key: "mv.status.invalid", params?: TranslationParams): string;
+  /**
+   * zh-CN: 这个 MV 暂时无法播放
+   * zh-TW: 這個 MV 暫時無法播放
+   * en-US: This music video can't be played right now
+   */
+  (key: "mv.status.unavailable", params?: TranslationParams): string;
+  /**
+   * zh-CN: 画质
+   * zh-TW: 畫質
+   * en-US: Quality
+   */
+  (key: "mv.quality", params?: TranslationParams): string;
+  /**
+   * zh-CN: {{count}} 次播放
+   * zh-TW: {{count}} 次播放
+   * en-US: {{count}} plays
+   */
+  (key: "mv.meta.plays", params?: TranslationParams): string;
+  /**
+   * zh-CN: 发布于 {{date}}
+   * zh-TW: 發佈於 {{date}}
+   * en-US: Released {{date}}
+   */
+  (key: "mv.meta.published", params?: TranslationParams): string;
+  /**
+   * zh-CN: 点赞
+   * zh-TW: 按讚
+   * en-US: Like
+   */
+  (key: "mv.action.like", params?: TranslationParams): string;
+  /**
+   * zh-CN: 收藏
+   * zh-TW: 收藏
+   * en-US: Save
+   */
+  (key: "mv.action.subscribe", params?: TranslationParams): string;
+  /**
+   * zh-CN: 已收藏
+   * zh-TW: 已收藏
+   * en-US: Saved
+   */
+  (key: "mv.action.subscribed", params?: TranslationParams): string;
+  /**
+   * zh-CN: 请先登录
+   * zh-TW: 請先登入
+   * en-US: Log in first
+   */
+  (key: "mv.toast.loginRequired", params?: TranslationParams): string;
+  /**
+   * zh-CN: 精彩评论
+   * zh-TW: 精彩評論
+   * en-US: Top comments
+   */
+  (key: "mv.section.comments", params?: TranslationParams): string;
+  /**
+   * zh-CN: 相似 MV
+   * zh-TW: 相似 MV
+   * en-US: Similar music videos
+   */
+  (key: "mv.section.similar", params?: TranslationParams): string;
+  /**
    * zh-CN: 设备列表响应不完整，请稍后重试。
    * zh-TW: 裝置清單回應不完整，請稍後重試。
    * en-US: The device response is incomplete. Try again.

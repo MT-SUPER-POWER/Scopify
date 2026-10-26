@@ -1,7 +1,7 @@
 "use client";
 
 import { NowPlayingCard } from "./NowPlayingCard";
-import { NowPlayingMvRow } from "./NowPlayingMvRow";
+import { MvListItem } from "@/components/mv/MvListItem";
 import { useArtistMVsQuery, useMVDetailQuery } from "@/hooks/mv/useMVQueries";
 import { useSongMvId } from "@/hooks/song/useSongMvId";
 import { useNowPlayingMv } from "@/hooks/ui/useNowPlayingMv";
@@ -45,14 +45,20 @@ export function NowPlayingMvs({ song }: NowPlayingSectionProps) {
 
   return (
     <NowPlayingCard title={t("nowPlaying.mvs")} className="pb-2">
-      <ul className="mt-2 flex flex-col">
+      <ul className="mt-2 flex flex-col px-2">
         {items.map((item) => (
           <li key={item.id}>
-            <NowPlayingMvRow
+            <MvListItem
               mv={item}
               isActive={item.id === mv.activeMvId}
-              isSongMv={item.id === songMvId}
               onSelect={select}
+              badge={
+                item.id === songMvId ? (
+                  <span className="shrink-0 rounded-sm bg-content/10 px-1 text-[10px] leading-4 font-bold text-content">
+                    {t("nowPlaying.songMv")}
+                  </span>
+                ) : undefined
+              }
             />
           </li>
         ))}

@@ -1,0 +1,43 @@
+import { defineMessages } from "./define";
+
+export const mvMessages = defineMessages(
+  {
+    "mv.status.invalid": "无效的 MV",
+    "mv.status.unavailable": "这个 MV 暂时无法播放",
+    "mv.quality": "画质",
+    "mv.meta.plays": "{{count}} 次播放",
+    "mv.meta.published": "发布于 {{date}}",
+    "mv.action.like": "点赞",
+    "mv.action.subscribe": "收藏",
+    "mv.action.subscribed": "已收藏",
+    "mv.toast.loginRequired": "请先登录",
+    "mv.section.comments": "精彩评论",
+    "mv.section.similar": "相似 MV",
+  },
+  {
+    "mv.status.invalid": "無效的 MV",
+    "mv.status.unavailable": "這個 MV 暫時無法播放",
+    "mv.quality": "畫質",
+    "mv.meta.plays": "{{count}} 次播放",
+    "mv.meta.published": "發佈於 {{date}}",
+    "mv.action.like": "按讚",
+    "mv.action.subscribe": "收藏",
+    "mv.action.subscribed": "已收藏",
+    "mv.toast.loginRequired": "請先登入",
+    "mv.section.comments": "精彩評論",
+    "mv.section.similar": "相似 MV",
+  },
+  {
+    "mv.status.invalid": "Invalid music video",
+    "mv.status.unavailable": "This music video can't be played right now",
+    "mv.quality": "Quality",
+    "mv.meta.plays": "{{count}} plays",
+    "mv.meta.published": "Released {{date}}",
+    "mv.action.like": "Like",
+    "mv.action.subscribe": "Save",
+    "mv.action.subscribed": "Saved",
+    "mv.toast.loginRequired": "Log in first",
+    "mv.section.comments": "Top comments",
+    "mv.section.similar": "Similar music videos",
+  },
+);

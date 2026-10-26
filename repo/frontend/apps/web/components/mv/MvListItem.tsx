@@ -1,24 +1,23 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { Play } from "lucide-react";
 import { getSizedImageUrl } from "@/lib/music/imageUrl";
+import { getMvArtistNames, getMvCover } from "@/lib/music/mvCover";
 import { cn, formatDuration, formatPlayCount } from "@/lib/utils";
-import { useI18n } from "@/store/module/i18n";
-import type { NowPlayingMvRowProps } from "@/types/components/nowPlaying";
+import type { MvListItemProps } from "@/types/components/mv";
 
-/** MV 卡片中的一行：16:9 缩略图、时长、标题与播放量，点击在面板封面位播放。 */
-export function NowPlayingMvRow({ mv, isActive, isSongMv, onSelect }: NowPlayingMvRowProps) {
-  const { t } = useI18n();
-  const cover = mv.imgurl16v9 || mv.cover || mv.imgurl || mv.picUrl;
+const ROW_CLASS =
+  "group flex w-full items-center gap-3 rounded-md p-2 text-left transition-colors hover:bg-content/5";
 
-  return (
-    <button
-      type="button"
-      onClick={() => onSelect(mv.id)}
-      aria-current={isActive || undefined}
-      className="group mx-2 flex w-[calc(100%-1rem)] items-center gap-3 rounded-md p-2 text-left transition-colors hover:bg-content/5"
-    >
+/** 横向 MV 条目：16:9 缩略图与时长、标题、艺人与播放量。传 href 时为链接，否则为按钮。 */
+export function MvListItem({ mv, href, onSelect, isActive = false, badge }: MvListItemProps) {
+  const cover = getMvCover(mv);
+  const artistNames = getMvArtistNames(mv);
+
+  const content = (
+    <>
       <span className="relative aspect-video w-28 shrink-0 overflow-hidden rounded bg-surface-elevated">
         {cover && (
           <Image
@@ -46,14 +45,33 @@ export function NowPlayingMvRow({ mv, isActive, isSongMv, onSelect }: NowPlaying
           {mv.name}
         </span>
         <span className="mt-1 flex min-w-0 items-center gap-1.5 text-xs text-content-muted">
-          {isSongMv && (
-            <span className="shrink-0 rounded-sm bg-content/10 px-1 text-[10px] leading-4 font-bold text-content">
-              {t("nowPlaying.songMv")}
-            </span>
-          )}
-          {mv.playCount ? <span className="truncate">{formatPlayCount(mv.playCount)}</span> : null}
+          {badge}
+          <span className="truncate">
+            {[artistNames, mv.playCount ? formatPlayCount(mv.playCount) : ""]
+              .filter(Boolean)
+              .join(" · ")}
+          </span>
         </span>
       </span>
+    </>
+  );
+
+  if (href) {
+    return (
+      <Link href={href} scroll={false} aria-current={isActive || undefined} className={ROW_CLASS}>
+        {content}
+      </Link>
+    );
+  }
+
+  return (
+    <button
+      type="button"
+      onClick={() => onSelect?.(mv.id)}
+      aria-current={isActive || undefined}
+      className={ROW_CLASS}
+    >
+      {content}
     </button>
   );
 }
