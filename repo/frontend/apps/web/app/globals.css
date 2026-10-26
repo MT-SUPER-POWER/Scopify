@@ -16,9 +16,12 @@
 
 @layer components {
   .hero-content-transition {
-    background-image: linear-gradient(to bottom, var(--scopify-hero-shade), var(--card));
-    background-repeat: no-repeat;
-    background-size: 100% var(--scopify-hero-transition-depth);
+    background-image: linear-gradient(
+      to bottom,
+      var(--scopify-hero-shade) 0,
+      var(--card) var(--scopify-hero-transition-depth),
+      var(--card) 100%
+    );
   }
 }
 
