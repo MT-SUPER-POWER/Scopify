@@ -224,9 +224,7 @@ export function MvPlayer({ mvid, resolutions, poster, onNext }: MvPlayerProps) {
             currentTime={video.currentTime}
             duration={video.duration}
             buffered={video.buffered}
-            onSeek={(time) => {
-              if (videoRef.current) videoRef.current.currentTime = time;
-            }}
+            onSeek={video.seekTo}
           />
           <div className="flex items-center gap-1">
             <button
