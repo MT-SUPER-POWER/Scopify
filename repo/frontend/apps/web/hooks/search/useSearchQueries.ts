@@ -177,7 +177,12 @@ export function useInfiniteArtistSearchQuery(keyword: string, limit: number, ena
   });
 }
 
-export function useInfiniteMvSearchQuery(keyword: string, limit: number, enabled: boolean) {
+export function useInfiniteMvSearchQuery(
+  keyword: string,
+  limit: number,
+  enabled: boolean,
+  useBoundary = false,
+) {
   return useInfiniteQuery<
     MvSearchResponse,
     Error,
@@ -186,6 +191,7 @@ export function useInfiniteMvSearchQuery(keyword: string, limit: number, enabled
     number
   >({
     enabled: isEnabled(keyword, enabled),
+    throwOnError: useBoundary ? throwQueryErrorWithoutData : undefined,
     getNextPageParam: (lastPage, pages, lastPageOffset) => {
       const nextOffset = getNextSearchPageOffset(
         lastPage,
@@ -200,7 +206,8 @@ export function useInfiniteMvSearchQuery(keyword: string, limit: number, enabled
         : undefined;
     },
     initialPageParam: 0,
-    queryFn: async ({ pageParam }) => (await searchMVs(keyword, limit, pageParam)).data,
+    queryFn: async ({ pageParam, signal }) =>
+      (await searchMVs(keyword, limit, pageParam, signal)).data,
     queryKey: musicQueryKeys.search.mvs(keyword, limit),
   });
 }

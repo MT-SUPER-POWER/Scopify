@@ -23,6 +23,7 @@ export interface MvPageContentProps {
 }
 
 export interface MvSimilarContentProps extends MvPageContentProps {
+  detail: MvDetail;
   onNextChange: (id: number | null) => void;
 }
 

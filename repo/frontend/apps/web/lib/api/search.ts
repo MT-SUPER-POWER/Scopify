@@ -101,8 +101,9 @@ export function searchVoices(keyword: string, limit = 30, offset = 0) {
 }
 
 /** 搜索 MV；新版 PC 搜索接口不含 MV，使用 cloudsearch 的 MV 类型（1004）。 */
-export function searchMVs(keyword: string, limit = 24, offset = 0) {
+export function searchMVs(keyword: string, limit = 24, offset = 0, signal?: AbortSignal) {
   return request.get<MvSearchResponse>("/cloudsearch", {
+    signal,
     params: {
       keywords: keyword,
       limit,
