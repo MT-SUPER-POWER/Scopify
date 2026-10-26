@@ -11,6 +11,7 @@ import { SocialEventActions } from "./SocialEventActions";
 import { SocialEventMedia } from "./SocialEventMedia";
 import { SocialEventMenu } from "./SocialEventMenu";
 import { SocialPostText } from "./SocialPostText";
+import { SocialInlineText } from "./SocialInlineText";
 import { SocialResourceCard } from "./SocialResourceCard";
 import s from "./Social.module.css";
 
@@ -61,7 +62,7 @@ export function SocialEventCard({
         {event.title && (
           <h2 className={s.postTitle}>
             <Link href={href} scroll={false}>
-              {event.title}
+              <SocialInlineText text={event.title} />
             </Link>
           </h2>
         )}

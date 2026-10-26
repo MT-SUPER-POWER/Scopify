@@ -3,6 +3,7 @@
 import { useId, useState } from "react";
 import { useI18n } from "@/store/module/i18n";
 import type { SocialPostTextProps } from "@/types/components/social";
+import { SocialInlineText } from "./SocialInlineText";
 import s from "./Social.module.css";
 
 export function SocialPostText({ text, expanded = false }: SocialPostTextProps) {
@@ -15,15 +16,7 @@ export function SocialPostText({ text, expanded = false }: SocialPostTextProps) 
   return (
     <div className={s.postCopy}>
       <p id={id} className={s.postText}>
-        {content.split(/(#[^#\n]+#)/g).map((part, index) =>
-          /^#[^#\n]+#$/.test(part) ? (
-            <span key={index} className={s.hashtag}>
-              {part}
-            </span>
-          ) : (
-            part
-          ),
-        )}
+        <SocialInlineText text={content} />
       </p>
       {collapsible && (
         <button

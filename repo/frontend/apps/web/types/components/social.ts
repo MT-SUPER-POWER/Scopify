@@ -92,6 +92,9 @@ export interface SocialPostTextProps {
   text: string;
   expanded?: boolean;
 }
+export interface SocialInlineTextProps {
+  text: string;
+}
 export interface SocialPeopleProps {
   uid?: string;
   mode: SocialPeopleMode;
