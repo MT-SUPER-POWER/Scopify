@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { EllipsisVertical, Link2, UserRound } from "lucide-react";
+import { EllipsisVertical, Link2, Play, UserRound } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { MvArtistAvatar } from "./MvArtistAvatar";
@@ -24,8 +24,8 @@ import type { MvCardProps } from "@/types/components/mv";
 const PREVIEW_DELAY_MS = 600;
 
 /**
- * 网格用的 MV 卡片，按 YouTube 首页视频卡复刻：12px 圆角 16:9 封面、右下角时长，
- * 悬停片刻后静音预览；下方 36px 艺人头像、16px 两行标题、艺人名与观看次数，悬停时右侧出现更多菜单。
+ * 网格用的 MV 卡片：12px 圆角 16:9 封面、左下角播放量、右下角时长，
+ * 悬停片刻后静音预览；下方 36px 艺人头像、16px 两行标题、艺人名，悬停时右侧出现更多菜单。
  */
 export function MvCard({ mv }: MvCardProps) {
   const { t } = useI18n();
@@ -59,17 +59,18 @@ export function MvCard({ mv }: MvCardProps) {
 
   return (
     <div
-      className="group/mv flex min-w-0 flex-col"
+      className={cn(
+        "group/mv relative flex min-w-0 flex-col rounded-2xl p-3 transition-all duration-200",
+        "bg-surface-elevated/40 hover:bg-surface-elevated hover:shadow-xl hover:shadow-black/20",
+        isPreviewing && "bg-surface-elevated shadow-2xl shadow-black/30",
+      )}
       onPointerEnter={() => setIsHovering(true)}
       onPointerLeave={() => setIsHovering(false)}
     >
       <Link
         href={href}
         scroll={false}
-        className={cn(
-          "relative block aspect-video w-full overflow-hidden bg-surface-elevated transition-[border-radius] duration-200",
-          isPreviewing ? "rounded-none" : "rounded-xl",
-        )}
+        className="relative block aspect-video w-full overflow-hidden rounded-xl bg-surface-sunken"
       >
         {cover && (
           <Image
@@ -81,8 +82,14 @@ export function MvCard({ mv }: MvCardProps) {
           />
         )}
         {isPreviewing && <MvCardPreview mvid={mv.id} />}
-        {mv.duration && !isPreviewing ? (
-          <span className="absolute right-2 bottom-2 rounded bg-black/60 px-1 py-px text-xs leading-[18px] font-medium text-white tabular-nums">
+        {mv.playCount && !isPreviewing ? (
+          <span className="absolute bottom-2 left-2 flex items-center gap-1 rounded bg-black/60 px-1.5 py-px text-xs leading-[18px] font-medium text-white tabular-nums">
+            <Play className="size-3 fill-current" />
+            {formatPlayCount(mv.playCount)}
+          </span>
+        ) : null}
+        {mv.duration ? (
+          <span className="absolute right-2 bottom-2 rounded bg-black/60 px-1.5 py-px text-xs leading-[18px] font-medium text-white tabular-nums">
             {formatDuration(mv.duration)}
           </span>
         ) : null}
@@ -119,11 +126,6 @@ export function MvCard({ mv }: MvCardProps) {
             ) : (
               <p className="truncate">{artistNames}</p>
             )}
-            {mv.playCount ? (
-              <p className="truncate">
-                {t("mv.meta.views", { count: formatPlayCount(mv.playCount) })}
-              </p>
-            ) : null}
           </div>
         </div>
 

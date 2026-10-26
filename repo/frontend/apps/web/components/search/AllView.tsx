@@ -59,8 +59,8 @@ export function AllView({
       {mvs.length > 0 && (
         <div className="mb-10 w-full min-w-0">
           <SectionHeader title={t("search.section.mvs")} onSeeAll={() => onSeeAll("MVs")} />
-          <div className="grid w-full min-w-0 grid-cols-[repeat(auto-fill,minmax(280px,1fr))] gap-x-4 gap-y-10">
-            {mvs.slice(0, 4).map((mv) => (
+          <div className="grid w-full min-w-0 grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
+            {mvs.slice(0, 3).map((mv) => (
               <MvCard key={mv.id} mv={mv} />
             ))}
           </div>

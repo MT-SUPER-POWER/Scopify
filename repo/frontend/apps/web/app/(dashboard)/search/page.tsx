@@ -6,7 +6,7 @@ import { AllView } from "@/components/search/AllView";
 import { CategoryTabs } from "@/components/search/CategoryTabs";
 import { GridCategoryView } from "@/components/search/GridCategoryView";
 import { MvsView } from "@/components/search/MvsView";
-import { AllViewSkeleton, LoadingSkeleton } from "@/components/search/LoadingSkeleton";
+import { CategorySkeleton } from "@/components/search/LoadingSkeleton";
 import { NetworkRetryState } from "@/components/shared/NetworkRetryState";
 import { PodcastsView } from "@/components/search/PodcastsView";
 import { SongsView } from "@/components/search/SongsView";
@@ -108,8 +108,7 @@ export default function SearchPage() {
           />
         </div>
       )}
-      {loading && activeCategory === "All" && <AllViewSkeleton />}
-      {loading && activeCategory !== "All" && <LoadingSkeleton />}
+      {loading && <CategorySkeleton category={activeCategory} />}
       {!loading && activeCategory === "All" && (
         <AllView
           songs={songs}
