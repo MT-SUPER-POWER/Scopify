@@ -9,7 +9,8 @@ export const COMMENT_RESOURCE_TYPE = {
 } as const;
 
 export type CommentResourceKind = keyof typeof COMMENT_RESOURCE_TYPE;
-export type CommentResourceType = (typeof COMMENT_RESOURCE_TYPE)[CommentResourceKind];
+/** MV 使用资源类型 1；页面支持的资源种类仍由 COMMENT_RESOURCE_TYPE 定义。 */
+export type CommentResourceType = (typeof COMMENT_RESOURCE_TYPE)[CommentResourceKind] | 1;
 
 export interface MusicCommentParams {
   id: number | string;

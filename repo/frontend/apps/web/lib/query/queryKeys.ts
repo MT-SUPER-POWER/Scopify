@@ -1,6 +1,8 @@
 import type { CommentResourceKind } from "@/types/api/comment";
+import { mvQueryKeys } from "@/lib/query/mvQueryKeys";
 
 export const musicQueryKeys = {
+  mv: mvQueryKeys,
   album: {
     detail: (albumId: string) => ["album", "detail", albumId] as const,
     subscriptions: (userId: number) => ["album", "subscriptions", userId] as const,

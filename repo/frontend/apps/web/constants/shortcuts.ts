@@ -135,6 +135,13 @@ export const SHORTCUT_COMMANDS: readonly ShortcutCommandDefinition[] = [
     defaultBinding: { key: "KeyB", primary: true },
   },
   {
+    id: "navigate-home",
+    group: "interface",
+    labelKey: "social.home",
+    keywords: "首页 首頁 返回首页 回到首頁 home",
+    defaultBinding: { key: "Home" },
+  },
+  {
     id: "navigate-back",
     group: "interface",
     labelKey: "shortcuts.command.navigateBack",

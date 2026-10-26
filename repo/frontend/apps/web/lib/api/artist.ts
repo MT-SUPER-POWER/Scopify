@@ -6,6 +6,7 @@ import type {
   FollowedArtistsResponse,
   HotArtistsResponse,
 } from "@/types/api/artist";
+import type { ArtistMvsResponse } from "@/types/api/mv";
 import request from "../web/request";
 
 /**
@@ -68,9 +69,10 @@ export function getArtistAlbums(id: number | string, limit = 10, offset = 0) {
 /**
  * 获取歌手 MV 列表
  */
-export function getArtistMVs(id: number | string) {
-  return request.get("/artist/mv", {
-    params: { id },
+export function getArtistMVs(id: number | string, limit = 30, offset = 0, signal?: AbortSignal) {
+  return request.get<ArtistMvsResponse>("/artist/mv", {
+    params: { id, limit, offset },
+    signal,
   });
 }
 
