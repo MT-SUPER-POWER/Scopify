@@ -78,9 +78,9 @@ export interface SocialFansGroupRailItemProps {
   active: boolean;
   label: string;
   title?: string;
-  badge?: string;
   onSelect: () => void;
-  children: ReactNode;
+  /** 胶囊左侧的小头像；「全部」不传 */
+  children?: ReactNode;
 }
 export interface SocialNotesFeedProps {
   groupId: string;
