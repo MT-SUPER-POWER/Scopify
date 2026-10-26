@@ -16,7 +16,7 @@ import {
   setLyricSourceSelection,
 } from "@/lib/cache/playbackCache";
 import { adaptNeteaseLyric } from "@/lib/lyrics/neteaseLyricAdapter";
-import { downloadBlob, sanitizeDownloadFileName } from "@/lib/web/download";
+import { buildLyricExport, downloadLyricExport } from "@/lib/lyrics/export";
 import { useI18n } from "@/store/module/i18n";
 import { usePlayerStore } from "@/store/module/player";
 import { useLyricStageStore } from "@/store/module/lyrics";
@@ -156,21 +156,12 @@ export function useOnlineLyricsTab() {
 
   const exportLyric = useCallback(
     (format: LyricExportFormat) => {
-      const content = lyric?.[format]?.lyric?.trim();
-      if (!song || !content) {
+      const file = song && lyric ? buildLyricExport(song, lyric, format) : null;
+      if (!file) {
         toast.error(t("lyrics.tab.exportEmpty"));
         return;
       }
-
-      const artists = song.ar?.map((artist) => artist.name).join(", ");
-      const baseName = sanitizeDownloadFileName(
-        artists ? `${song.name} - ${artists}` : song.name,
-        "lyrics",
-      );
-      downloadBlob(
-        new Blob([content], { type: "text/plain;charset=utf-8" }),
-        `${baseName}.${format}`,
-      );
+      downloadLyricExport(file);
       toast.success(t("lyrics.tab.exported"));
     },
     [lyric, song, t],
