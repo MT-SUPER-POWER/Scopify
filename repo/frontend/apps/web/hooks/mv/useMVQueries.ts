@@ -2,6 +2,7 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/hooks/auth/useAuth";
+import { throwQueryErrorWithoutData } from "@/lib/query/errorPolicy";
 import { getArtistMVs } from "@/lib/api/artist";
 import { getMVComments } from "@/lib/api/comment";
 import { getMVDetail, getMVDetailInfo, getMVUrl, getSubscribedMVs } from "@/lib/api/mv";
@@ -14,6 +15,7 @@ export function useMVDetailQuery(mvid: MvQueryId, options: MvQueryOptions = {}) 
   const { accountId } = useAuth();
   const id = mvid ? String(mvid) : "";
   return useQuery({
+    throwOnError: options.boundary ? throwQueryErrorWithoutData : false,
     enabled: (options.enabled ?? true) && Boolean(id),
     queryKey: musicQueryKeys.mv.detail(id, accountId ?? ""),
     queryFn: async ({ signal }) => {

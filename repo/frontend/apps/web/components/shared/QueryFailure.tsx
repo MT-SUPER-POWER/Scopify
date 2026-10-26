@@ -5,12 +5,19 @@ import { Button } from "@scopify/ui/shadcn/components/button";
 import { NetworkRetryState } from "@/components/shared/NetworkRetryState";
 import { QuietState } from "@/components/shared/QuietState";
 import { getQueryFailureKind } from "@/lib/query/errorPolicy";
+import { isApiError } from "@/lib/web/apiError";
 import { useI18n } from "@/store/module/i18n";
 import type { QueryFailureProps } from "@/types/components/queryBoundary";
 
 export function QueryFailure({ error, onRetry, title, compact }: QueryFailureProps) {
   const { t } = useI18n();
   const kind = getQueryFailureKind(error);
+  const failureTitle =
+    kind === "unexpected"
+      ? t("errorPage.unexpected.title")
+      : isApiError(error) && error.status === 404
+        ? t("errorPage.notFound.title")
+        : error.message;
   return (
     <section aria-label={title} className="space-y-3">
       {title ? <h2 className="text-xl font-bold text-content">{title}</h2> : null}
@@ -26,7 +33,7 @@ export function QueryFailure({ error, onRetry, title, compact }: QueryFailurePro
         <QuietState
           compact={compact}
           icon={AlertTriangle}
-          title={kind === "unexpected" ? t("errorPage.unexpected.title") : error.message}
+          title={failureTitle}
           description={kind === "unexpected" ? t("errorPage.unexpected.description") : undefined}
           action={
             <Button variant="secondary" size="sm" onClick={onRetry}>
