@@ -6,6 +6,24 @@ import type { PanelImperativeHandle } from "react-resizable-panels";
 const PANEL_TRANSITION_MS = 220;
 
 /**
+ * 面板刚挂载时，面板组可能还没登记它的尺寸约束，此时 collapse/expand 会抛错并让整个布局进入错误边界；
+ * 失败时下一帧再试一次，仍失败就放弃（面板保持默认尺寸，下次状态变化会再同步）。
+ */
+function syncCollapsed(
+  panel: PanelImperativeHandle,
+  collapsed: boolean,
+  retry = true,
+): number | undefined {
+  try {
+    if (collapsed) panel.collapse();
+    else panel.expand();
+  } catch {
+    if (retry) return requestAnimationFrame(() => void syncCollapsed(panel, collapsed, false));
+  }
+  return undefined;
+}
+
+/**
  * 让可折叠的 ResizablePanel 随 `collapsed` 状态折叠/展开，同组面板一起平滑滑动。
  * 面板首次挂载时直接定位不做动画；`enabled` 为 false（面板未渲染）时重置，下次挂载重新按首次处理。
  */
@@ -31,9 +49,19 @@ export function useAnimatedPanelCollapse({
 
     if (!hasInitializedRef.current) {
       hasInitializedRef.current = true;
-      if (collapsed) panel.collapse();
-      else panel.expand();
-      return;
+      // 推迟到下一帧，等面板组登记完新挂载面板的约束
+      let retryFrame: number | undefined;
+      let hasSynced = false;
+      const frame = requestAnimationFrame(() => {
+        hasSynced = true;
+        retryFrame = syncCollapsed(panel, collapsed);
+      });
+      return () => {
+        cancelAnimationFrame(frame);
+        if (retryFrame !== undefined) cancelAnimationFrame(retryFrame);
+        // 还没来得及同步就被清理（如 StrictMode 重复挂载），下次仍按首次挂载处理，不做动画
+        if (!hasSynced) hasInitializedRef.current = false;
+      };
     }
 
     // 同组所有面板一起过渡：只给折叠的面板加过渡时，其余面板会瞬间跳到终值，
@@ -61,10 +89,10 @@ export function useAnimatedPanelCollapse({
       clearTransitionTimeout = window.setTimeout(clearTransition, PANEL_TRANSITION_MS);
     }
 
-    if (collapsed) panel.collapse();
-    else panel.expand();
+    const retryFrame = syncCollapsed(panel, collapsed);
 
     return () => {
+      if (retryFrame !== undefined) cancelAnimationFrame(retryFrame);
       if (clearTransitionTimeout !== undefined) {
         window.clearTimeout(clearTransitionTimeout);
       }
