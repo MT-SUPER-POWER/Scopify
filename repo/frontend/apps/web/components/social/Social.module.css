@@ -1087,13 +1087,14 @@
 .streamPage .timeline > .event {
   padding: 18px 20px 12px;
   gap: 14px;
-  border: 1px solid var(--line);
+  border: 1px solid color-mix(in srgb, var(--foreground) 6%, transparent);
   border-radius: 16px;
-  background: color-mix(in srgb, var(--foreground) 3%, transparent);
+  /* 不透明底色：动态页不叠加外观渐变，半透明卡片在渐变上会显得发灰发脏 */
+  background: color-mix(in srgb, var(--foreground) 4%, var(--background));
   transition: background-color 0.2s ease;
 }
 .streamPage .timeline > .event:hover {
-  background: color-mix(in srgb, var(--foreground) 5%, transparent);
+  background: color-mix(in srgb, var(--foreground) 6%, var(--background));
 }
 .streamPage .timeline > .event > .avatar {
   width: 42px;
@@ -1161,9 +1162,12 @@
 .streamPage .event[data-media="true"] > .eventBody > .resource {
   padding: 8px;
 }
+/* 操作按钮靠左紧凑排列，不再沿整行均分 */
 .streamPage .actions {
-  max-width: 450px;
-  margin-top: 14px;
+  justify-content: flex-start;
+  gap: 20px;
+  max-width: none;
+  margin: 12px 0 0 -8px;
 }
 .streamPage .action {
   padding: 6px 8px;

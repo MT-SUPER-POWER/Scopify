@@ -2,7 +2,6 @@
 
 import { MessagesSquare } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { AppBackground } from "@/components/shared/AppBackground";
 import { QuietState } from "@/components/shared/QuietState";
 import { useSocialAccount, useSocialHotTopics } from "@/hooks/social/useSocialQueries";
 import { useSocialViewport } from "@/hooks/social/useSocialViewport";
@@ -79,7 +78,6 @@ function SocialPageContent() {
 
   return (
     <div ref={pageRef} className={s.page + " " + s.streamPage}>
-      {uid ? <AppBackground /> : null}
       <div className={s.feedLayout}>
         <main className={s.main}>
           <SocialHeader
