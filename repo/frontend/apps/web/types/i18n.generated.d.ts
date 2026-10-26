@@ -365,6 +365,78 @@ export interface TranslateFn {
    */
   (key: "mv.section.similar", params?: TranslationParams): string;
   /**
+   * zh-CN: 预览
+   * zh-TW: 預覽
+   * en-US: Preview
+   */
+  (key: "trackPreview.open", params?: TranslationParams): string;
+  /**
+   * zh-CN: 预览 {{count}} 首 MV
+   * zh-TW: 預覽 {{count}} 首 MV
+   * en-US: Preview {{count}} music videos
+   */
+  (key: "trackPreview.openWithCount", params?: TranslationParams): string;
+  /**
+   * zh-CN: 逐首预览列表中带 MV 的歌曲
+   * zh-TW: 逐首預覽清單中帶 MV 的歌曲
+   * en-US: Preview the songs in this list that have music videos
+   */
+  (key: "trackPreview.description", params?: TranslationParams): string;
+  /**
+   * zh-CN: {{index}} / {{total}}
+   * zh-TW: {{index}} / {{total}}
+   * en-US: {{index}} / {{total}}
+   */
+  (key: "trackPreview.position", params?: TranslationParams): string;
+  /**
+   * zh-CN: 下一首
+   * zh-TW: 下一首
+   * en-US: Next
+   */
+  (key: "trackPreview.next", params?: TranslationParams): string;
+  /**
+   * zh-CN: 上一首
+   * zh-TW: 上一首
+   * en-US: Previous
+   */
+  (key: "trackPreview.previous", params?: TranslationParams): string;
+  /**
+   * zh-CN: 静音
+   * zh-TW: 靜音
+   * en-US: Mute
+   */
+  (key: "trackPreview.mute", params?: TranslationParams): string;
+  /**
+   * zh-CN: 取消静音
+   * zh-TW: 取消靜音
+   * en-US: Unmute
+   */
+  (key: "trackPreview.unmute", params?: TranslationParams): string;
+  /**
+   * zh-CN: 播放这首歌
+   * zh-TW: 播放這首歌
+   * en-US: Play this song
+   */
+  (key: "trackPreview.playSong", params?: TranslationParams): string;
+  /**
+   * zh-CN: 打开 MV 页
+   * zh-TW: 開啟 MV 頁
+   * en-US: Open music video page
+   */
+  (key: "trackPreview.openMv", params?: TranslationParams): string;
+  /**
+   * zh-CN: 已添加到播放队列
+   * zh-TW: 已加入播放佇列
+   * en-US: Added to queue
+   */
+  (key: "trackPreview.queueAdded", params?: TranslationParams): string;
+  /**
+   * zh-CN: 这首歌已在播放队列中
+   * zh-TW: 這首歌已在播放佇列中
+   * en-US: This song is already in the queue
+   */
+  (key: "trackPreview.queueExists", params?: TranslationParams): string;
+  /**
    * zh-CN: 设备列表响应不完整，请稍后重试。
    * zh-TW: 裝置清單回應不完整，請稍後重試。
    * en-US: The device response is incomplete. Try again.

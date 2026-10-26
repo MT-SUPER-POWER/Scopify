@@ -29,6 +29,7 @@ import { PlaylistViewButton } from "@/components/Playlist/lattice/PlaylistViewBu
 import { PlaylistMoreMenu } from "@/components/Playlist/PlaylistMoreMenu";
 import { CollectionToggleButton } from "@/components/shared/CollectionToggleButton";
 import { ShortcutHint } from "@/components/shortcuts/ShortcutHint";
+import { TrackPreviewButton } from "@/components/trackPreview/TrackPreviewButton";
 import { useCommentCountQuery } from "@/hooks/comment/useCommentCountQuery";
 import { useHistoricalDailyRecommendations } from "@/hooks/playlist/useHistoricalDailyRecommendations";
 import { usePlaylistSearchShortcut } from "@/hooks/playlist/usePlaylistSearchShortcut";
@@ -248,6 +249,15 @@ export default function PlaylistActions(props: PlaylistActionsProps) {
               {playbackActionLabel}
             </TooltipContent>
           </Tooltip>
+
+          {!isSticky && (
+            <TrackPreviewButton
+              tracks={tracks}
+              title={playlistInfo?.title ?? ""}
+              tags={playlistInfo?.tags}
+              playlistId={playSourceId ?? playlistId}
+            />
+          )}
 
           {actionSlot}
 
