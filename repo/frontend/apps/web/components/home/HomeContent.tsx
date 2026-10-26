@@ -36,7 +36,9 @@ export function HomeContent() {
     isLoading,
     isUnavailable,
     loadingPlayId,
-    hasError,
+    failedSectionNames,
+    isRetryingFailedSections,
+    retryFailedSections,
     dateInfo,
     userName,
     isLogin,
@@ -150,14 +152,14 @@ export function HomeContent() {
             onPlayToplist={handlePlayPlaylist}
           />
 
-          {hasError && (
+          {failedSectionNames.length > 0 && (
             <NetworkRetryState
               compact
-              title={t("network.offline.title")}
+              title={failedSectionNames.join(" · ")}
               subtitle={t("network.offline.subtitle")}
               actionLabel={t("network.action.refresh")}
-              isRetrying={isLoading}
-              onRetry={() => void fetchHomeData()}
+              isRetrying={isRetryingFailedSections}
+              onRetry={() => void retryFailedSections()}
             />
           )}
         </div>

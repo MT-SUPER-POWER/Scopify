@@ -5,6 +5,7 @@ import { getArtistTopSongs } from "@/lib/api/artist";
 import { getPlaylistAllTracks } from "@/lib/api/playlist";
 import { useLoginStatus } from "@/lib/hooks/useLoginStatus";
 import { resolveCoverUrl } from "@/lib/music/resolveCoverUrl";
+import { getHomeLoadState } from "@/lib/home/loadState";
 import { usePlayerStore, useUserStore } from "@/store";
 import { useI18n } from "@/store/module/i18n";
 import type { NeteaseAlbum } from "@/types/api/album";
@@ -18,6 +19,7 @@ import type {
 import { pruneSongDetail, type SongDetail } from "@/types/api/music";
 import { pruneRecommendPlaylist, type RawRecommendPlaylist } from "@/types/api/playlist";
 import type { Artist, Song, Voice } from "@/types/search";
+import type { HomeSectionId } from "@/types/home";
 import {
   useFollowedArtistsAlbumsQuery,
   useFollowedArtistsQuery,
@@ -31,13 +33,6 @@ import {
   useRecommendedVoiceListsQuery,
   useToplistDetailQuery,
 } from "./useHomeQueries";
-
-export interface ArtistTopListItem {
-  id: number;
-  name: string;
-  picUrl: string;
-  musicSize?: number;
-}
 
 function getRecommendedVoices(response: RecommendedVoiceListsResponse | undefined) {
   return response?.data?.recommendVoiceVOS ?? [];
@@ -219,40 +214,51 @@ export function useHomeData() {
     );
   }, [followedArtistsAlbumsQuery.data]);
 
-  const isLoading =
-    personalizedQuery.isFetching ||
-    recommendedQuery.isFetching ||
-    recommendedVoiceListsQuery.isFetching ||
-    hotArtistsQuery.isFetching ||
-    newSongsQuery.isFetching ||
-    toplistsQuery.isFetching ||
-    newAlbumsQuery.isFetching;
-  const hasError =
-    personalizedQuery.isError ||
-    recommendedQuery.isError ||
-    recommendedVoiceListsQuery.isError ||
-    hotArtistsQuery.isError ||
-    newSongsQuery.isError ||
-    toplistsQuery.isError ||
-    newAlbumsQuery.isError;
-  const hasHomeContent =
-    playlists.length > 0 ||
+  const sectionQueries = {
+    playlists: [personalizedQuery, ...(isLogin ? [recommendedQuery] : [])],
+    voices: [recommendedVoiceListsQuery],
+    artists: [hotArtistsQuery],
+    songs: [newSongsQuery],
+    toplists: [toplistsQuery],
+    albums: [newAlbumsQuery],
+  };
+  const sectionContent: Record<HomeSectionId, boolean> = {
+    playlists: playlists.length > 0,
+    voices: recommendedVoiceLists.length > 0,
+    artists: suggestedArtists.length > 0,
+    songs: newSongs.length > 0,
+    toplists: toplists.length > 0,
+    albums: newAlbums.length > 0,
+  };
+  const { isLoading, isUnavailable, failedSections } = getHomeLoadState(
+    (Object.keys(sectionQueries) as HomeSectionId[]).map((id) => ({
+      id,
+      hasContent: sectionContent[id],
+      isError: sectionQueries[id].every((query) => query.isError),
+      isFetching: sectionQueries[id].some((query) => query.isFetching),
+    })),
     bannerPlaylist.length > 0 ||
-    recommendedVoiceLists.length > 0 ||
-    suggestedArtists.length > 0 ||
-    newSongs.length > 0 ||
-    toplists.length > 0 ||
-    newAlbums.length > 0 ||
-    recentPlaylists.length > 0 ||
-    artistTopList.length > 0 ||
-    followedAlbums.length > 0;
-  const isUnavailable =
-    !isLoading &&
-    !hasHomeContent &&
-    personalizedQuery.isError &&
-    recommendedVoiceListsQuery.isError &&
-    hotArtistsQuery.isError &&
-    newSongsQuery.isError;
+      recentPlaylists.length > 0 ||
+      artistTopList.length > 0 ||
+      followedAlbums.length > 0,
+  );
+  const sectionNames: Record<HomeSectionId, string> = {
+    playlists: t("home.madeFor", { name: t("home.you") }),
+    voices: t("home.recommendedVoiceLists"),
+    artists: t("home.suggestedArtists"),
+    songs: t("home.newSongs"),
+    toplists: t("home.toplists"),
+    albums: t("home.newAlbums"),
+  };
+  const failedSectionNames = failedSections.map(({ id }) => sectionNames[id]);
+  const isRetryingFailedSections = failedSections.some(({ isFetching }) => isFetching);
+  const retryFailedSections = async () => {
+    await Promise.all(
+      failedSections.flatMap(({ id }) =>
+        sectionQueries[id].filter((query) => query.isError).map((query) => query.refetch()),
+      ),
+    );
+  };
 
   useEffect(() => {
     const today = new Date();
@@ -409,7 +415,9 @@ export function useHomeData() {
     isLoading,
     isUnavailable,
     loadingPlayId,
-    hasError,
+    failedSectionNames,
+    isRetryingFailedSections,
+    retryFailedSections,
     dateInfo,
     userName,
     userId,
