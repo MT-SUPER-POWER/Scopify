@@ -47,7 +47,6 @@ const targetPatterns = [
   "components/settings/DesktopSettingsTab.tsx",
   "components/ui/**/*.tsx",
   "components/voice/**/*.tsx",
-  "hooks/home/useHomeData.ts",
 ];
 
 const bannedPatterns = [

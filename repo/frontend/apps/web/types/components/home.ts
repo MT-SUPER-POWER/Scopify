@@ -4,8 +4,17 @@ import type { NeteaseBanner } from "@/types/api/banner";
 import type { SongDetail } from "@/types/api/music";
 import type { RecommendPlaylist } from "@/types/api/playlist";
 import type { ToplistDetailItem } from "@/types/api/toplist";
-import type { CarouselDirection } from "@/types/home";
+import type { CarouselDirection, HomePlaybackActions } from "@/types/home";
 import type { Artist, Voice } from "@/types/search";
+
+export interface HomeQueryContentProps {
+  actions: HomePlaybackActions;
+}
+
+export interface HomeGreetingContentProps extends HomeQueryContentProps {
+  greeting: string;
+  dateInfo: HomeGreetingSectionProps["dateInfo"];
+}
 
 export interface ActivityBannerCardProps {
   banner: NeteaseBanner;

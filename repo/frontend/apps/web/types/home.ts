@@ -1,3 +1,6 @@
+import type { MouseEvent } from "react";
+import type { SongDetail } from "@/types/api/music";
+
 export interface CarouselSwipeOptions {
   onNext: () => void;
   onPrevious: () => void;
@@ -6,13 +9,12 @@ export interface CarouselSwipeOptions {
 
 export type CarouselDirection = -1 | 1;
 
-export type HomeSectionId = "playlists" | "voices" | "artists" | "songs" | "toplists" | "albums";
-
-export interface HomeSectionLoadState {
-  id: HomeSectionId;
-  hasContent: boolean;
-  isFetching: boolean;
-  isError: boolean;
+export interface HomePlaybackActions {
+  loadingPlayId: string | null;
+  handlePlayPlaylist: (id: number | string, event: MouseEvent) => Promise<void>;
+  handlePlayAlbum: (id: number | string, event: MouseEvent) => Promise<void>;
+  handlePlayArtistTopSongs: (id: number | string, event: MouseEvent) => Promise<void>;
+  playSongs: (songs: SongDetail[], index: number) => Promise<void>;
 }
 
 export interface ArtistTopListItem {
