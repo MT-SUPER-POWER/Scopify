@@ -20,6 +20,8 @@ export interface MvCardProps {
 
 export interface MvPlayerProps {
   mvid: number;
+  isTheater: boolean;
+  onToggleTheater: () => void;
   resolutions: MvResolution[];
   poster?: string;
   /** 播放下一个（相似 MV 的第一个）；播完也会自动调用。 */

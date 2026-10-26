@@ -293,6 +293,18 @@ export interface TranslateFn {
    */
   (key: "mv.player.volume", params?: TranslationParams): string;
   /**
+   * zh-CN: 剧场模式
+   * zh-TW: 劇場模式
+   * en-US: Theater mode
+   */
+  (key: "mv.player.theater", params?: TranslationParams): string;
+  /**
+   * zh-CN: 退出剧场模式
+   * zh-TW: 退出劇場模式
+   * en-US: Exit theater mode
+   */
+  (key: "mv.player.exitTheater", params?: TranslationParams): string;
+  /**
    * zh-CN: 网页全屏
    * zh-TW: 網頁全螢幕
    * en-US: Fill window

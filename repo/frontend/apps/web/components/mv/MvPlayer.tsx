@@ -9,6 +9,8 @@ import {
   Play,
   Shrink,
   SkipForward,
+  RectangleHorizontal,
+  PanelsTopLeft,
 } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { MvProgressBar } from "./player/MvProgressBar";
@@ -47,9 +49,16 @@ function isTypingTarget(target: EventTarget | null) {
 /**
  * MV 页播放器（YouTube 式控件）：进度条、播放/下一个、音量、时间、画质、网页全屏（铺满应用窗口，
  * 同 Bilibili）与真全屏。快捷键：空格/K 播放暂停，J/L 进退 10 秒，←/→ 5 秒，↑/↓ 音量，M 静音，
- * W 网页全屏，F 全屏，Esc 退出网页全屏。页面上这些无修饰键优先控制 MV，而不是全局的歌曲播放。
+ * T 剧场模式，W 网页全屏，F 全屏，Esc 退出网页全屏。这些无修饰键优先控制 MV。
  */
-export function MvPlayer({ mvid, resolutions, poster, onNext }: MvPlayerProps) {
+export function MvPlayer({
+  mvid,
+  resolutions,
+  poster,
+  onNext,
+  isTheater,
+  onToggleTheater,
+}: MvPlayerProps) {
   const { t } = useI18n();
   const { videoRef, handleVideoPlay } = useMvSongExclusivity();
   const { resolution, autoPlay, changeResolution, restorePlayback } = useMvQualitySwitch(videoRef);
@@ -144,6 +153,7 @@ export function MvPlayer({ mvid, resolutions, poster, onNext }: MvPlayerProps) {
         KeyM: toggleMute,
         KeyF: toggleFullscreen,
         KeyW: () => setIsWebFullscreen((value) => !value),
+        KeyT: onToggleTheater,
         ...(isWebFullscreen && !document.fullscreenElement
           ? { Escape: () => setIsWebFullscreen(false) }
           : {}),
@@ -159,6 +169,7 @@ export function MvPlayer({ mvid, resolutions, poster, onNext }: MvPlayerProps) {
     window.addEventListener("keydown", onKeyDown, true);
     return () => window.removeEventListener("keydown", onKeyDown, true);
   }, [
+    onToggleTheater,
     isWebFullscreen,
     seekBy,
     setVolume,
@@ -181,7 +192,9 @@ export function MvPlayer({ mvid, resolutions, poster, onNext }: MvPlayerProps) {
           ? "fixed inset-0 z-200"
           : isFullscreen
             ? "size-full"
-            : "aspect-video w-full rounded-xl shadow-panel",
+            : isTheater
+              ? "h-[min(70dvh,calc(100dvh-12rem))] min-h-64 w-full"
+              : "aspect-video w-full rounded-xl shadow-panel",
         !showControls && "cursor-none",
       )}
     >
@@ -265,6 +278,20 @@ export function MvPlayer({ mvid, resolutions, poster, onNext }: MvPlayerProps) {
                 current={currentResolution}
                 onChange={changeResolution}
               />
+              <button
+                type="button"
+                onClick={onToggleTheater}
+                aria-label={t(isTheater ? "mv.player.exitTheater" : "mv.player.theater")}
+                aria-pressed={isTheater}
+                title={`${t(isTheater ? "mv.player.exitTheater" : "mv.player.theater")} (t)`}
+                className={CONTROL_BTN}
+              >
+                {isTheater ? (
+                  <PanelsTopLeft className="size-5" />
+                ) : (
+                  <RectangleHorizontal className="size-5" />
+                )}
+              </button>
               <button
                 type="button"
                 onClick={() => setIsWebFullscreen((value) => !value)}

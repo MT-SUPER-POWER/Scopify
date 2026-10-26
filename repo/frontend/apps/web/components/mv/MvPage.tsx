@@ -1,6 +1,7 @@
 "use client";
 
 import { useSearchParams } from "next/navigation";
+import { useCallback, useState } from "react";
 import { MvComments } from "./MvComments";
 import { MvInfo } from "./MvInfo";
 import { MvListItem } from "./MvListItem";
@@ -11,6 +12,7 @@ import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
 import { useMVDetailQuery } from "@/hooks/mv/useMVQueries";
 import { getSizedImageUrl } from "@/lib/music/imageUrl";
 import { getMvCover } from "@/lib/music/mvCover";
+import { cn } from "@/lib/utils";
 import { useI18n } from "@/store/module/i18n";
 import { Skeleton } from "@scopify/ui/shadcn/components/skeleton";
 
@@ -22,6 +24,8 @@ export function MvPage() {
   const detailQuery = useMVDetailQuery(mvid || null);
   const similarMvs = useSimilarMVsQuery(mvid || null).data?.mvs ?? [];
   const detail = detailQuery.data?.data;
+  const [isTheater, setIsTheater] = useState(false);
+  const toggleTheater = useCallback(() => setIsTheater((value) => !value), []);
 
   if (!mvid) {
     return (
@@ -47,17 +51,32 @@ export function MvPage() {
   const poster = detail ? getMvCover(detail) : "";
 
   return (
-    <div className="mx-auto grid w-full max-w-400 gap-6 p-6 pb-10 text-content xl:grid-cols-[minmax(0,1fr)_402px]">
-      {/* 切换 MV 时整列重建，播放器与展开状态从头开始 */}
-      <div key={mvid} className="min-w-0">
+    <div
+      className={cn(
+        "mx-auto grid w-full gap-x-6 text-content xl:grid-cols-[minmax(0,1fr)_402px]",
+        isTheater ? "max-w-none pb-10" : "max-w-400 p-6 pb-10",
+      )}
+    >
+      {/* 只用布局样式切换剧场模式，保持播放器实例和进度。 */}
+      <div
+        key={`player-${mvid}`}
+        className={cn("min-w-0 xl:col-start-1 xl:row-start-1", isTheater && "col-span-full")}
+      >
         <MvPlayer
           mvid={mvid}
+          isTheater={isTheater}
+          onToggleTheater={toggleTheater}
           resolutions={detail?.brs ?? []}
           poster={poster ? getSizedImageUrl(poster, 1280) : undefined}
           onNext={
             similarMvs[0] ? () => void smartRouter.push(`/mv?id=${similarMvs[0].id}`) : undefined
           }
         />
+      </div>
+      <div
+        key={`info-${mvid}`}
+        className={cn("min-w-0 xl:col-start-1 xl:row-start-2", isTheater && "px-6")}
+      >
         {detail ? (
           <MvInfo detail={detail} isSubscribed={Boolean(detailQuery.data?.subed)} />
         ) : (
@@ -71,7 +90,12 @@ export function MvPage() {
       </div>
 
       {similarMvs.length > 0 && (
-        <aside className="min-w-0">
+        <aside
+          className={cn(
+            "min-w-0 xl:col-start-2",
+            isTheater ? "p-6 xl:row-start-2" : "mt-6 xl:row-span-2 xl:row-start-1 xl:mt-0",
+          )}
+        >
           <h2 className="mb-2 text-base font-bold">{t("mv.section.similar")}</h2>
           <ul className="-mx-1 flex flex-col gap-1">
             {similarMvs.map((item) => (
