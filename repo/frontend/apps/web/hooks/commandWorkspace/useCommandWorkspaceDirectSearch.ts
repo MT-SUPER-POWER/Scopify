@@ -26,7 +26,7 @@ export function useCommandWorkspaceDirectSearch({
   const setGlobalQuery = useSearchStore((state) => state.setQuery);
   const [filter, setFilter] = useState<CommandWorkspaceSearchFilter | null>(null);
   const [query, setQuery] = useState(initialQuery);
-  const [selectedIndex, setSelectedIndex] = useState(0);
+  const [selectedIndex, setSelectedIndex] = useState(-1);
   const { isLoading, suggestions } = useCommandWorkspaceSuggestions(query);
   const candidates = query.trim()
     ? suggestions.length
@@ -46,7 +46,7 @@ export function useCommandWorkspaceDirectSearch({
         typeof candidate === "string"
           ? { category: filter?.category ?? "All", keyword: candidate }
           : candidate;
-      const keyword = entry.keyword.trim();
+      const keyword = entry.keyword.trim() || placeholder.trim();
       if (!keyword) return;
       if (keyword.startsWith(">")) {
         onEnterCommand();
@@ -57,7 +57,7 @@ export function useCommandWorkspaceDirectSearch({
       router.replace(buildSearchUrl(keyword, entry.category));
       onClose();
     },
-    [addRecent, filter, onClose, onEnterCommand, router, setGlobalQuery],
+    [addRecent, filter, onClose, onEnterCommand, placeholder, router, setGlobalQuery],
   );
 
   const handleQueryChange = (nextQuery: string) => {
@@ -66,7 +66,8 @@ export function useCommandWorkspaceDirectSearch({
       return;
     }
     setQuery(nextQuery);
-    setSelectedIndex(0);
+    setGlobalQuery(nextQuery);
+    setSelectedIndex(-1);
   };
 
   const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
@@ -77,12 +78,12 @@ export function useCommandWorkspaceDirectSearch({
     }
     if (event.key === "ArrowDown") {
       event.preventDefault();
-      setSelectedIndex((index) => (candidateCount ? (index + 1) % candidateCount : 0));
+      setSelectedIndex((index) => (candidateCount ? (index + 1) % candidateCount : -1));
     }
     if (event.key === "ArrowUp") {
       event.preventDefault();
       setSelectedIndex((index) =>
-        candidateCount ? (index - 1 + candidateCount) % candidateCount : 0,
+        candidateCount ? (index <= 0 ? candidateCount - 1 : index - 1) : -1,
       );
     }
     if (event.key === "Escape") {
@@ -106,7 +107,7 @@ export function useCommandWorkspaceDirectSearch({
     handleQueryChange,
     onFilterChange: (next: CommandWorkspaceSearchFilter | null) => {
       setFilter(next);
-      setSelectedIndex(0);
+      setSelectedIndex(-1);
     },
   };
 }

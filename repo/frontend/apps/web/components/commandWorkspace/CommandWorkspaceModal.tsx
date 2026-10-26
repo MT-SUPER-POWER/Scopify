@@ -26,7 +26,7 @@ export function CommandWorkspaceModal({ isOpen, onClose }: CommandWorkspaceModal
   }, [isOpen, persistedQuery, setIsSearching]);
 
   const dismiss = () => {
-    setGlobalQuery("");
+    if (useSearchStore.getState().query.trimStart().startsWith(">")) setGlobalQuery("");
     onClose();
   };
 
