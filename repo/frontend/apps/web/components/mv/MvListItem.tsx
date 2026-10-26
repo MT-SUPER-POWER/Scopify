@@ -12,17 +12,29 @@ const ROW_CLASS =
   "group flex w-full items-center gap-3 rounded-md p-2 text-left transition-colors hover:bg-content/5";
 
 /** 横向 MV 条目：16:9 缩略图与时长、标题、艺人与播放量。传 href 时为链接，否则为按钮。 */
-export function MvListItem({ mv, href, onSelect, isActive = false, badge }: MvListItemProps) {
+export function MvListItem({
+  mv,
+  href,
+  onSelect,
+  isActive = false,
+  badge,
+  size = "sm",
+}: MvListItemProps) {
   const cover = getMvCover(mv);
   const artistNames = getMvArtistNames(mv);
 
   const content = (
     <>
-      <span className="relative aspect-video w-28 shrink-0 overflow-hidden rounded bg-surface-elevated">
+      <span
+        className={cn(
+          "relative aspect-video shrink-0 overflow-hidden bg-surface-elevated",
+          size === "md" ? "w-40 rounded-lg" : "w-28 rounded",
+        )}
+      >
         {cover && (
           <Image
             fill
-            sizes="112px"
+            sizes={size === "md" ? "160px" : "112px"}
             src={getSizedImageUrl(cover, 240)}
             alt=""
             className="object-cover transition-transform duration-300 group-hover:scale-105"

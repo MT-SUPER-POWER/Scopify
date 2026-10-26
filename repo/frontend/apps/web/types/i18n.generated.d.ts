@@ -275,6 +275,42 @@ export interface TranslateFn {
    */
   (key: "mv.action.like", params?: TranslationParams): string;
   /**
+   * zh-CN: 复制链接
+   * zh-TW: 複製連結
+   * en-US: Copy link
+   */
+  (key: "mv.action.copyLink", params?: TranslationParams): string;
+  /**
+   * zh-CN: 链接已复制
+   * zh-TW: 連結已複製
+   * en-US: Link copied
+   */
+  (key: "mv.toast.linkCopied", params?: TranslationParams): string;
+  /**
+   * zh-CN: {{count}} 位粉丝
+   * zh-TW: {{count}} 位粉絲
+   * en-US: {{count}} followers
+   */
+  (key: "mv.channel.fans", params?: TranslationParams): string;
+  /**
+   * zh-CN: {{count}} 条评论
+   * zh-TW: {{count}} 則評論
+   * en-US: {{count}} comments
+   */
+  (key: "mv.comments.count", params?: TranslationParams): string;
+  /**
+   * zh-CN: 在评论页查看
+   * zh-TW: 在評論頁查看
+   * en-US: Open comments page
+   */
+  (key: "mv.comments.openPage", params?: TranslationParams): string;
+  /**
+   * zh-CN: 登录后参与评论
+   * zh-TW: 登入後參與評論
+   * en-US: Log in to join the conversation
+   */
+  (key: "mv.comments.loginToComment", params?: TranslationParams): string;
+  /**
    * zh-CN: 观看 MV
    * zh-TW: 觀看 MV
    * en-US: Watch music video

@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import type { MvDetail, MvResolution, MvSummary } from "@/types/api/mv";
+import type { MvArtist, MvDetail, MvResolution, MvSummary } from "@/types/api/mv";
 
 export interface MvListItemProps {
   mv: MvSummary;
@@ -9,6 +9,8 @@ export interface MvListItemProps {
   isActive?: boolean;
   /** 艺人前的小标签，例如「本曲 MV」。 */
   badge?: ReactNode;
+  /** sm 用于窄面板，md 用于 MV 页侧栏。 */
+  size?: "sm" | "md";
 }
 
 export interface MvCardProps {
@@ -29,4 +31,18 @@ export interface MvInfoProps {
 export interface SongMvBadgeProps {
   /** 歌曲关联的 MV id；缺省或 0 时不渲染。 */
   mvId?: number;
+}
+
+export interface MvArtistAvatarProps {
+  artistId?: number;
+  name: string;
+  className?: string;
+}
+
+export interface MvChannelProps {
+  artist: Pick<MvArtist, "id" | "name">;
+}
+
+export interface MvCommentsProps {
+  mvid: number;
 }
