@@ -18,6 +18,14 @@ export interface MvCardProps {
   mv: MvSummary;
 }
 
+export interface MvPageContentProps {
+  mvid: number;
+}
+
+export interface MvSimilarContentProps extends MvPageContentProps {
+  onNextChange: (id: number | null) => void;
+}
+
 export interface MvPlayerProps {
   mvid: number;
   isTheater: boolean;

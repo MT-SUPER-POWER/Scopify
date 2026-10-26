@@ -15,6 +15,8 @@ export interface MvQualityPlaybackSnapshot {
 
 export interface MvQueryOptions {
   enabled?: boolean;
+  /** 在已迁移的业务区域内将首次读取错误交给 QueryBoundary。 */
+  boundary?: boolean;
 }
 
 export interface MvSubscriptionVariables {

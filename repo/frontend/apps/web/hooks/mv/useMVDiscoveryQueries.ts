@@ -1,6 +1,7 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
+import { throwQueryErrorWithoutData } from "@/lib/query/errorPolicy";
 import { useAuth } from "@/hooks/auth/useAuth";
 import {
   getAllMVs,
@@ -66,6 +67,7 @@ export function useTopMVsQuery(params: MvTopParams = {}, options: MvQueryOptions
 export function useSimilarMVsQuery(mvid: MvQueryId, options: MvQueryOptions = {}) {
   const id = mvid ? String(mvid) : "";
   return useQuery({
+    throwOnError: options.boundary ? throwQueryErrorWithoutData : false,
     enabled: (options.enabled ?? true) && Boolean(id),
     queryKey: musicQueryKeys.mv.similar(id),
     queryFn: async ({ signal }) => {

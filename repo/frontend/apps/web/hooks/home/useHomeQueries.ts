@@ -1,6 +1,7 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
+import { throwQueryErrorWithoutData } from "@/lib/query/errorPolicy";
 
 import { getArtistAlbums, getFollowedArtists, getHotArtists } from "@/lib/api/artist";
 import { getNewestAlbums, getUserAlbumSublist } from "@/lib/api/album";
@@ -18,33 +19,39 @@ import { useUserStore } from "@/store";
 import type { NeteaseAlbum } from "@/types/api/album";
 import { prunePlaylistTracks } from "@/types/api/playlist";
 
-export function usePersonalizedPlaylistsQuery(limit = 100) {
+export function usePersonalizedPlaylistsQuery(limit = 100, boundary = true) {
   return useQuery({
+    throwOnError: boundary ? throwQueryErrorWithoutData : false,
     meta: { persist: true, scope: "public" },
     queryFn: async () => (await getPersonalizePlaylists(limit)).data,
     queryKey: musicQueryKeys.home.personalizedPlaylists(limit),
   });
 }
 
-export function useRecommendedPlaylistsQuery(enabled: boolean) {
+export function useRecommendedPlaylistsQuery(enabled: boolean, boundary = true) {
+  const userId = useUserStore((state) => state.user?.userId);
+  const accountId = enabled ? (userId ?? "authenticated") : "anonymous";
   return useQuery({
+    throwOnError: boundary ? throwQueryErrorWithoutData : false,
     enabled,
     meta: { scope: "account" },
     queryFn: async () => (await getRecommendedPlaylists()).data,
-    queryKey: musicQueryKeys.home.recommendedPlaylists(),
+    queryKey: musicQueryKeys.home.recommendedPlaylists(accountId),
   });
 }
 
 export function useRecommendedVoiceListsQuery(limit = 24) {
   return useQuery({
+    throwOnError: throwQueryErrorWithoutData,
     meta: { persist: true, scope: "public" },
     queryFn: async () => (await getRecommendedVoiceLists(limit)).data,
     queryKey: musicQueryKeys.home.recommendedVoiceLists(limit),
   });
 }
 
-export function useHotArtistsQuery(limit = 50) {
+export function useHotArtistsQuery(limit = 50, boundary = true) {
   return useQuery({
+    throwOnError: boundary ? throwQueryErrorWithoutData : false,
     meta: { persist: true, scope: "public" },
     queryFn: async () => (await getHotArtists(limit)).data,
     queryKey: musicQueryKeys.home.hotArtists(limit),
@@ -65,6 +72,7 @@ export function useHomeUserProfileQuery(userId: null | string) {
 
 export function useNewSongsQuery(limit = 12) {
   return useQuery({
+    throwOnError: throwQueryErrorWithoutData,
     meta: { persist: true, scope: "public" },
     queryFn: async () => (await getPersonalizedNewSongs(limit)).data,
     queryKey: musicQueryKeys.home.newSongs(limit),
@@ -73,6 +81,7 @@ export function useNewSongsQuery(limit = 12) {
 
 export function useToplistDetailQuery() {
   return useQuery({
+    throwOnError: throwQueryErrorWithoutData,
     meta: { persist: true, scope: "public" },
     queryFn: async () => (await getToplistDetail()).data,
     queryKey: musicQueryKeys.home.toplists(),
@@ -81,6 +90,7 @@ export function useToplistDetailQuery() {
 
 export function useNewAlbumsQuery() {
   return useQuery({
+    throwOnError: throwQueryErrorWithoutData,
     meta: { persist: true, scope: "public" },
     queryFn: async () => (await getNewestAlbums()).data,
     queryKey: musicQueryKeys.home.newAlbums(),
@@ -101,31 +111,40 @@ export function useToplistTracksQuery(id: number) {
 }
 
 export function useRecentPlaylistsQuery(enabled: boolean, limit = 20) {
+  const userId = useUserStore((state) => state.user?.userId);
+  const accountId = enabled ? (userId ?? "authenticated") : "anonymous";
   return useQuery({
+    throwOnError: throwQueryErrorWithoutData,
     enabled,
     meta: { scope: "account" },
     queryFn: async () => (await getRecentPlaylists(limit)).data,
-    queryKey: musicQueryKeys.home.recentPlaylists(limit),
+    queryKey: musicQueryKeys.home.recentPlaylists(limit, accountId),
   });
 }
 
-export function useFollowedArtistsQuery(enabled: boolean, limit = 30) {
+export function useFollowedArtistsQuery(enabled: boolean, limit = 30, boundary = true) {
+  const userId = useUserStore((state) => state.user?.userId);
+  const accountId = enabled ? (userId ?? "authenticated") : "anonymous";
   return useQuery({
+    throwOnError: boundary ? throwQueryErrorWithoutData : false,
     enabled,
     meta: { scope: "account" },
     queryFn: async () => {
       const response = await getFollowedArtists(limit);
-      if (response.data?.data) {
+      if (response.data?.data && useUserStore.getState().user?.userId === userId) {
         useUserStore.getState().setFollowedArtists(response.data.data);
       }
       return response.data;
     },
-    queryKey: musicQueryKeys.home.followedArtists(limit),
+    queryKey: musicQueryKeys.home.followedArtists(limit, accountId),
   });
 }
 
 export function useFollowedArtistsAlbumsQuery(enabled: boolean) {
+  const userId = useUserStore((state) => state.user?.userId);
+  const accountId = enabled ? (userId ?? "authenticated") : "anonymous";
   return useQuery({
+    throwOnError: throwQueryErrorWithoutData,
     enabled,
     meta: { scope: "account" },
     queryFn: async () => {
@@ -143,22 +162,23 @@ export function useFollowedArtistsAlbumsQuery(enabled: boolean) {
       }
 
       const albumPromises = artists.slice(0, 4).map(async (artist) => {
-        try {
-          const res = await getArtistAlbums(artist.id, 5);
-          return (res.data.hotAlbums ?? []).map((al) => ({
-            id: al.id,
-            name: al.name,
-            picUrl: al.picUrl,
-            publishTime: al.publishTime,
-            artist: { id: artist.id, name: artist.name },
-          }));
-        } catch {
-          return [];
-        }
+        const res = await getArtistAlbums(artist.id, 5);
+        return (res.data.hotAlbums ?? []).map((al) => ({
+          id: al.id,
+          name: al.name,
+          picUrl: al.picUrl,
+          publishTime: al.publishTime,
+          artist: { id: artist.id, name: artist.name },
+        }));
       });
-
-      const nested = await Promise.all(albumPromises);
-      const combined = nested.flat();
+      const results = await Promise.allSettled(albumPromises);
+      if (results.every((result) => result.status === "rejected")) {
+        const failed = results.find((result) => result.status === "rejected");
+        if (failed?.status === "rejected") throw failed.reason;
+      }
+      const combined = results.flatMap((result) =>
+        result.status === "fulfilled" ? result.value : [],
+      );
       const seen = new Set<number>();
       const uniqueAlbums: NeteaseAlbum[] = [];
       for (const al of combined) {
@@ -169,6 +189,6 @@ export function useFollowedArtistsAlbumsQuery(enabled: boolean) {
       }
       return uniqueAlbums;
     },
-    queryKey: musicQueryKeys.home.followedArtistAlbums(20),
+    queryKey: musicQueryKeys.home.followedArtistAlbums(20, accountId),
   });
 }
