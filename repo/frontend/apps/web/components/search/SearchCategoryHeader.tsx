@@ -7,6 +7,7 @@ const categoryTitleKeys = {
   Albums: "search.section.searchAlbums",
   Artists: "search.section.searchArtists",
   Lyrics: "search.section.searchLyrics",
+  Sheets: "songResources.sheets",
   MVs: "search.section.searchMvs",
   Playlists: "search.section.searchPlaylists",
   Podcasts: "search.section.searchPodcasts",

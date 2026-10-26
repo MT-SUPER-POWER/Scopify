@@ -36,8 +36,9 @@ export function searchSuggest(keyword: string) {
   });
 }
 
-export function searchSongs(keyword: string, limit = 15, offset = 0) {
+export function searchSongs(keyword: string, limit = 15, offset = 0, signal?: AbortSignal) {
   return request.get<SongSearchResponse>("/v1/search/song/pc", {
+    signal,
     params: {
       keyword: keyword,
       limit: limit,

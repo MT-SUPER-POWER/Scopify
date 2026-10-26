@@ -1,13 +1,9 @@
+import type { CategoryTabsProps } from "@/types/components/search";
 import { cn } from "@/lib/utils";
 import { useI18n } from "@/store/module/i18n";
 import { CATEGORIES, type Category } from "@/types/search";
 
-interface Props {
-  active: Category;
-  onChange: (cat: Category) => void;
-}
-
-export function CategoryTabs({ active, onChange }: Props) {
+export function CategoryTabs({ active, onChange }: CategoryTabsProps) {
   const { t } = useI18n();
   const labelMap: Record<Category, string> = {
     All: t("search.category.all"),
@@ -16,6 +12,7 @@ export function CategoryTabs({ active, onChange }: Props) {
     Playlists: t("search.category.playlists"),
     Albums: t("search.category.albums"),
     Lyrics: t("search.category.lyrics"),
+    Sheets: t("songResources.sheets"),
     MVs: t("search.category.mvs"),
     Podcasts: t("search.category.podcasts"),
     Voices: t("search.category.voices"),

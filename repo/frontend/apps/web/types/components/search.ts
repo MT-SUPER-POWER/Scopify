@@ -141,3 +141,16 @@ export interface SearchLyricDialogProps extends Pick<
   song: SongDetail;
   isPlaying: boolean;
 }
+
+export interface CategoryTabsProps {
+  active: Category;
+  onChange: (category: Category) => void;
+}
+export interface SheetsViewProps {
+  keyword: string;
+}
+
+export interface SheetSongResultCardProps {
+  song: SongDetail;
+  onSelect: (song: SongDetail) => void;
+}

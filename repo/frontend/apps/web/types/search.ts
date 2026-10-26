@@ -103,6 +103,7 @@ export const CATEGORIES = [
   "Playlists",
   "Albums",
   "Lyrics",
+  "Sheets",
   "MVs",
   "Podcasts",
   "Voices",

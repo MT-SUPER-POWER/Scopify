@@ -10,6 +10,7 @@ import { MvsView } from "@/components/search/MvsView";
 import { CategorySkeleton } from "@/components/search/LoadingSkeleton";
 import { NetworkRetryState } from "@/components/shared/NetworkRetryState";
 import { PodcastsView } from "@/components/search/PodcastsView";
+import { SheetsView } from "@/components/search/SheetsView";
 import { SongsView } from "@/components/search/SongsView";
 import { VoicesView } from "@/components/search/VoicesView";
 import { usePlayActions } from "@/hooks/search/usePlayActions";
@@ -131,6 +132,7 @@ export default function SearchPage() {
           voices={voices}
         />
       )}
+      {activeCategory === "Sheets" && <SheetsView keyword={keywords} />}
       {!loading && activeCategory === "Songs" && (
         <SongsView
           songs={songs}

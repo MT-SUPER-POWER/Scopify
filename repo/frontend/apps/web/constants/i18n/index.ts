@@ -1,3 +1,4 @@
+import { songResourceMessages } from "./songResources";
 import { privateMessageMessages } from "./privateMessages";
 import { updatesMessages } from "./updates";
 import { musicDiscoveryMessages } from "./musicDiscovery";
@@ -50,6 +51,7 @@ import { trackPreviewMessages } from "./trackPreview";
 
 export const messages = {
   "zh-CN": {
+    ...songResourceMessages["zh-CN"],
     ...updatesMessages["zh-CN"],
     ...nowPlayingMessages["zh-CN"],
     ...mvMessages["zh-CN"],
@@ -101,6 +103,7 @@ export const messages = {
     ...personalFmMessages["zh-CN"],
   },
   "zh-TW": {
+    ...songResourceMessages["zh-TW"],
     ...updatesMessages["zh-TW"],
     ...nowPlayingMessages["zh-TW"],
     ...mvMessages["zh-TW"],
@@ -152,6 +155,7 @@ export const messages = {
     ...personalFmMessages["zh-TW"],
   },
   "en-US": {
+    ...songResourceMessages["en-US"],
     ...updatesMessages["en-US"],
     ...nowPlayingMessages["en-US"],
     ...mvMessages["en-US"],
