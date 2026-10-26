@@ -51,8 +51,8 @@ const PlaylistHeader = ({ info, isDaily }: PlaylistHeaderProps) => {
   };
 
   return (
-    <div className="relative z-10 flex flex-col items-start gap-7 px-6 pt-8 pb-7 md:flex-row md:items-stretch md:gap-8 md:px-8 lg:px-10 xl:px-12">
-      <div className="hover:scale-1.02 size-48 shrink-0 overflow-hidden rounded-md bg-surface-elevated shadow-floating transition-transform duration-300 lg:size-56">
+    <div className="relative z-10 flex flex-col items-start gap-7 px-6 pt-10 pb-7 md:flex-row md:items-stretch md:gap-8 md:px-8 md:pt-12 md:pb-8 lg:px-10 lg:pt-16 xl:px-12">
+      <div className="hover:scale-1.02 size-48 shrink-0 overflow-hidden rounded-md bg-surface-elevated shadow-floating transition-transform duration-300 md:size-52 lg:size-60">
         {isDaily || !info.cover ? (
           <DailyCalendarCover dailyDate={info.dailyDate} />
         ) : (
@@ -66,7 +66,7 @@ const PlaylistHeader = ({ info, isDaily }: PlaylistHeaderProps) => {
         )}
       </div>
 
-      <div className="[container-type:inline-size] flex min-w-0 flex-1 flex-col justify-end text-content md:min-h-48 lg:min-h-56">
+      <div className="[container-type:inline-size] flex min-w-0 flex-1 flex-col justify-end text-content md:min-h-52 lg:min-h-60">
         {/* Top: Privacy & Style Pill Badges */}
         <div className="mb-3 flex flex-row flex-wrap items-center gap-2 md:mb-4">
           <span className="rounded-sm bg-content/10 px-3 py-1 text-sm tracking-wider uppercase">

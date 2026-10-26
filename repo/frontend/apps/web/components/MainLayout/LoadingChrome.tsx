@@ -85,11 +85,13 @@ export function LoadingSidebarSkeleton() {
             </nav>
 
             <section className="flex flex-col border-t border-content/10 @max-[91px]/sidebar:border-t-0">
-              <div className="flex items-center justify-between pt-4 pr-3 pb-2 pl-5 @max-[91px]/sidebar:hidden">
-                <Skeleton className="h-3 w-8 bg-skeleton-subtle" />
-                <Skeleton className="-my-0.5 size-5 rounded-full bg-skeleton-subtle" />
+              <div className="px-3 pt-3 @max-[91px]/sidebar:hidden">
+                <div className="flex h-6 items-center justify-between pb-2 pl-2">
+                  <Skeleton className="h-3 w-8 bg-skeleton-subtle" />
+                  <Skeleton className="-my-0.5 size-5 rounded-full bg-skeleton-subtle" />
+                </div>
               </div>
-              <div className="hidden px-2 pb-4 @max-[91px]/sidebar:pb-2 [html[data-boot-session=true]_&]:block">
+              <div className="hidden px-2 pt-1 pb-4 @max-[91px]/sidebar:pb-2 [html[data-boot-session=true]_&]:block">
                 <SidebarPlaylistSkeleton />
               </div>
             </section>

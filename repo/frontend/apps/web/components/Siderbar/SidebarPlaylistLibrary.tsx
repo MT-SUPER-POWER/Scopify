@@ -22,20 +22,24 @@ export function SidebarPlaylistLibrary({ isCollapsed }: SidebarPlaylistLibraryPr
       aria-label={t("sidebar.group.playlists")}
     >
       {!isCollapsed && (
-        <div className="flex items-center justify-between pt-4 pr-3 pb-2 pl-5 text-xs font-bold text-content-subtle">
-          <span>{t("sidebar.group.playlists")}</span>
-          <button
-            type="button"
-            title={t("sidebar.menu.createPlaylist")}
-            aria-label={t("sidebar.menu.createPlaylist")}
-            onClick={() => void requireLoginAction(() => setIsCreateOpen(true))}
-            className="-my-0.5 flex size-5 items-center justify-center rounded-full transition-colors hover:bg-content/10 hover:text-content"
-          >
-            <Plus className="size-3.5" strokeWidth={2.5} />
-          </button>
+        <div className="px-3 pt-3">
+          <div className="flex h-6 items-center justify-between gap-2 pb-2 pl-2">
+            <p className="text-xs font-medium text-content-subtle">
+              {t("sidebar.group.playlists")}
+            </p>
+            <button
+              type="button"
+              title={t("sidebar.menu.createPlaylist")}
+              aria-label={t("sidebar.menu.createPlaylist")}
+              onClick={() => void requireLoginAction(() => setIsCreateOpen(true))}
+              className="-my-0.5 flex size-5 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-content/10 hover:text-content"
+            >
+              <Plus className="size-3.5" strokeWidth={2.5} />
+            </button>
+          </div>
         </div>
       )}
-      <div className={cn("w-full min-w-0 space-y-1 px-2", isCollapsed ? "pb-2" : "pb-4")}>
+      <div className={cn("w-full min-w-0 space-y-1 px-2 pt-1", isCollapsed ? "pb-2" : "pb-4")}>
         {isLoggedIn && <SidebarSpecialPlaylists isCollapsed={isCollapsed} />}
         <SidebarPlaylistLibraryContent isCollapsed={isCollapsed} />
       </div>
