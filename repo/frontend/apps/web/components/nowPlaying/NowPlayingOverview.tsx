@@ -8,13 +8,36 @@ import { NowPlayingLyricsPreview } from "./NowPlayingLyricsPreview";
 import { NowPlayingMvs } from "./NowPlayingMvs";
 import { NowPlayingNextUp } from "./NowPlayingNextUp";
 import { NowPlayingSimilarSongs } from "./NowPlayingSimilarSongs";
+import { useEffect, useRef } from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import type { NowPlayingSectionProps } from "@/types/components/nowPlaying";
+import type { NowPlayingOverviewProps } from "@/types/components/nowPlaying";
+
+/** 浮动顶栏的高度：封面底边滚到它下面时，顶栏改为实色。 */
+const FLOATING_HEADER_HEIGHT = 56;
 
 /** 面板的「正在播放」视图：大封面与一列信息卡片。 */
-export function NowPlayingOverview({ song }: NowPlayingSectionProps) {
+export function NowPlayingOverview({ song, onCoverVisibleChange }: NowPlayingOverviewProps) {
+  const viewportRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const viewport = viewportRef.current;
+    if (!viewport) return;
+    const update = () => {
+      const media = viewport.querySelector<HTMLElement>("[data-now-playing-media]");
+      const coverBottom = media ? media.offsetTop + media.offsetHeight : 0;
+      onCoverVisibleChange(viewport.scrollTop + FLOATING_HEADER_HEIGHT < coverBottom);
+    };
+    update();
+    viewport.addEventListener("scroll", update, { passive: true });
+    return () => {
+      viewport.removeEventListener("scroll", update);
+      onCoverVisibleChange(true);
+    };
+  }, [onCoverVisibleChange]);
+
   return (
     <ScrollArea
+      viewportRef={viewportRef}
       className="min-h-0 flex-1"
       viewportClassName="[&>div]:!block [&>div]:!min-w-0 [&>div]:!w-full"
     >

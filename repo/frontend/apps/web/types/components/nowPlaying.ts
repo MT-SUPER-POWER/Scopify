@@ -43,3 +43,14 @@ export interface NowPlayingMvPlayerProps {
   /** resume 为 false 时只收起 MV，不恢复歌曲播放。 */
   onClose: (resume?: boolean) => void;
 }
+
+export interface NowPlayingPanelTabsProps {
+  view: NowPlayingPanelView;
+  /** 浮在封面上时使用深色半透明样式。 */
+  overlay?: boolean;
+}
+
+export interface NowPlayingOverviewProps extends NowPlayingSectionProps {
+  /** 封面是否仍在浮动顶栏下方可见。 */
+  onCoverVisibleChange: (visible: boolean) => void;
+}
