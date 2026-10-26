@@ -257,6 +257,66 @@ export interface TranslateFn {
    */
   (key: "mv.quality", params?: TranslationParams): string;
   /**
+   * zh-CN: 播放
+   * zh-TW: 播放
+   * en-US: Play
+   */
+  (key: "mv.player.play", params?: TranslationParams): string;
+  /**
+   * zh-CN: 暂停
+   * zh-TW: 暫停
+   * en-US: Pause
+   */
+  (key: "mv.player.pause", params?: TranslationParams): string;
+  /**
+   * zh-CN: 下一个
+   * zh-TW: 下一個
+   * en-US: Next
+   */
+  (key: "mv.player.next", params?: TranslationParams): string;
+  /**
+   * zh-CN: 静音
+   * zh-TW: 靜音
+   * en-US: Mute
+   */
+  (key: "mv.player.mute", params?: TranslationParams): string;
+  /**
+   * zh-CN: 取消静音
+   * zh-TW: 取消靜音
+   * en-US: Unmute
+   */
+  (key: "mv.player.unmute", params?: TranslationParams): string;
+  /**
+   * zh-CN: 音量
+   * zh-TW: 音量
+   * en-US: Volume
+   */
+  (key: "mv.player.volume", params?: TranslationParams): string;
+  /**
+   * zh-CN: 网页全屏
+   * zh-TW: 網頁全螢幕
+   * en-US: Fill window
+   */
+  (key: "mv.player.webFullscreen", params?: TranslationParams): string;
+  /**
+   * zh-CN: 退出网页全屏
+   * zh-TW: 退出網頁全螢幕
+   * en-US: Exit fill window
+   */
+  (key: "mv.player.exitWebFullscreen", params?: TranslationParams): string;
+  /**
+   * zh-CN: 全屏
+   * zh-TW: 全螢幕
+   * en-US: Full screen
+   */
+  (key: "mv.player.fullscreen", params?: TranslationParams): string;
+  /**
+   * zh-CN: 退出全屏
+   * zh-TW: 退出全螢幕
+   * en-US: Exit full screen
+   */
+  (key: "mv.player.exitFullscreen", params?: TranslationParams): string;
+  /**
    * zh-CN: {{count}} 次播放
    * zh-TW: {{count}} 次播放
    * en-US: {{count}} plays

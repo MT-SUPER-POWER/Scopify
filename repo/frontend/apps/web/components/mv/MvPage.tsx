@@ -7,6 +7,7 @@ import { MvListItem } from "./MvListItem";
 import { MvPlayer } from "./MvPlayer";
 import { NetworkRetryState } from "@/components/shared/NetworkRetryState";
 import { useSimilarMVsQuery } from "@/hooks/mv/useMVDiscoveryQueries";
+import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
 import { useMVDetailQuery } from "@/hooks/mv/useMVQueries";
 import { getSizedImageUrl } from "@/lib/music/imageUrl";
 import { getMvCover } from "@/lib/music/mvCover";
@@ -16,6 +17,7 @@ import { Skeleton } from "@scopify/ui/shadcn/components/skeleton";
 /** MV 页（参考 YouTube 观看页）：播放器、信息与评论在左，相似 MV 在右（窄窗口时排到下方）。 */
 export function MvPage() {
   const { t } = useI18n();
+  const smartRouter = useSmartRouter();
   const mvid = Number(useSearchParams().get("id")) || 0;
   const detailQuery = useMVDetailQuery(mvid || null);
   const similarMvs = useSimilarMVsQuery(mvid || null).data?.mvs ?? [];
@@ -52,6 +54,9 @@ export function MvPage() {
           mvid={mvid}
           resolutions={detail?.brs ?? []}
           poster={poster ? getSizedImageUrl(poster, 1280) : undefined}
+          onNext={
+            similarMvs[0] ? () => void smartRouter.push(`/mv?id=${similarMvs[0].id}`) : undefined
+          }
         />
         {detail ? (
           <MvInfo detail={detail} isSubscribed={Boolean(detailQuery.data?.subed)} />

@@ -36,6 +36,8 @@ export function RouteScrollSurface({ children }: RouteScrollSurfaceProps) {
         aria-busy={isRestoring}
         className={cn(
           "isolate z-0 size-full bg-surface-raised",
+          // MV 网页全屏时，播放器 fixed 铺满窗口；把整个内容层提到顶栏与播放栏之上，否则会被它们压住
+          "[html[data-mv-web-fullscreen]_&]:z-300",
           "[&_[data-slot=scroll-area-viewport]>div]:block!",
           "[&_[data-slot=scroll-area-viewport]>div]:min-h-full!",
           "[&_[data-slot=scroll-area-viewport]>div]:w-full!",

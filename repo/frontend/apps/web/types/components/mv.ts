@@ -21,6 +21,28 @@ export interface MvPlayerProps {
   mvid: number;
   resolutions: MvResolution[];
   poster?: string;
+  /** 播放下一个（相似 MV 的第一个）；播完也会自动调用。 */
+  onNext?: () => void;
+}
+
+export interface MvProgressBarProps {
+  currentTime: number;
+  duration: number;
+  buffered: number;
+  onSeek: (time: number) => void;
+}
+
+export interface MvVolumeControlProps {
+  volume: number;
+  isMuted: boolean;
+  onVolumeChange: (volume: number) => void;
+  onToggleMute: () => void;
+}
+
+export interface MvQualityMenuProps {
+  resolutions: number[];
+  current: number;
+  onChange: (resolution: number) => void;
 }
 
 export interface MvInfoProps {
