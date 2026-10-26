@@ -8,7 +8,7 @@ import { trayLog } from "@main/utils/logger";
 
 // 默认 TrayWindow 大小
 const TRAY_WIDTH = 240;
-const TRAY_HEIGHT = 400;
+const TRAY_HEIGHT = 520;
 
 // Electron 原生对象必须保留强引用，否则垃圾回收会让托盘和窗口提前失效。
 export let trayWindow: BrowserWindow | null = null;

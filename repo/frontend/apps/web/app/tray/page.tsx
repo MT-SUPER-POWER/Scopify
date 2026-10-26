@@ -101,7 +101,7 @@ export default function TrayPage() {
   const iconClass = "mr-2 size-4";
   // 覆盖 Button 的默认样式，让其更像一个菜单项
   const menuItemClass =
-    "h-9 w-full justify-start rounded-md px-3 py-5 font-normal text-content-muted transition-colors hover:bg-surface-elevated hover:text-content";
+    "h-9 w-full justify-start gap-0 rounded-md px-3 font-normal text-content-muted transition-colors hover:bg-surface-elevated hover:text-content";
 
   return (
     <main data-tray-content className="size-full bg-background">
@@ -163,6 +163,7 @@ export default function TrayPage() {
             onChange={handleVolumeChange}
             orientation="horizontal"
             variant="inline"
+            className="h-9 px-3"
           />
 
           <Separator className="my-1.5 bg-border" />
@@ -215,7 +216,7 @@ export default function TrayPage() {
           {/* 主窗口跳转设置页面 */}
           <Button
             variant="ghost"
-            className={`${menuItemClass}`}
+            className={menuItemClass}
             onClick={() => runtime.navigation.navigateMainWindow("/setting")}
           >
             <Settings className={iconClass} />

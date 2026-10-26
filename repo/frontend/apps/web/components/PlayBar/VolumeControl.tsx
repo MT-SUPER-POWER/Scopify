@@ -3,6 +3,7 @@
 import { Volume, Volume1, Volume2, VolumeOff } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { SmoothSlider } from "@/components/shared/SmoothSlider";
+import { cn } from "@/lib/utils";
 import { useI18n } from "@/store/module/i18n";
 
 interface VolumeControlProps {
@@ -133,19 +134,19 @@ export const VolumeControl = ({
   if (variant === "inline") {
     return (
       <div
-        className={`flex items-center gap-3 ${className}`}
+        className={cn("flex w-full items-center gap-3", className)}
         onWheel={handleWheel}
         title={t("shortcuts.scope.volume")}
       >
         <button
           onClick={handleMuteToggle}
-          className="text-muted-foreground transition-colors hover:text-foreground"
+          className="shrink-0 cursor-pointer text-content-muted transition-colors hover:text-content"
           aria-label={volumeLabel}
         >
           {getVolumeIcon()}
         </button>
 
-        <div className={orientation === "horizontal" ? "w-24" : "h-24"}>
+        <div className={orientation === "horizontal" ? "min-w-0 flex-1" : "h-24"}>
           <SmoothSlider
             value={isMuted ? 0 : volume}
             onChange={handleVolumeChange}
