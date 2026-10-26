@@ -14,7 +14,12 @@ import { SocialPostText } from "./SocialPostText";
 import { SocialResourceCard } from "./SocialResourceCard";
 import s from "./Social.module.css";
 
-export function SocialEventCard({ event, quoted = false, detail = false }: SocialEventProps) {
+export function SocialEventCard({
+  event,
+  quoted = false,
+  detail = false,
+  source,
+}: SocialEventProps) {
   const { t, locale } = useI18n();
   const actions = useSocialEventActions(event);
   const href = eventHref(event);
@@ -30,6 +35,11 @@ export function SocialEventCard({ event, quoted = false, detail = false }: Socia
                 <time dateTime={new Date(event.time).toISOString()}>
                   {formatSocialTime(event.time, locale)}
                 </time>
+              </Link>
+            )}
+            {source && (
+              <Link href={source.href} scroll={false} className={s.eventSource} title={source.name}>
+                {t("social.communitySource", { name: source.name })}
               </Link>
             )}
             {event.privacy !== undefined && event.privacy !== 0 && (

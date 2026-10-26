@@ -30,6 +30,12 @@ export interface SocialEventProps {
   event: SocialEvent;
   quoted?: boolean;
   detail?: boolean;
+  /** 内容来源（如所属乐迷团），显示在时间之后 */
+  source?: SocialEventSource;
+}
+export interface SocialEventSource {
+  name: string;
+  href: string;
 }
 export interface SocialEventActionsProps extends SocialEventProps {
   liking: boolean;

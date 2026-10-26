@@ -272,6 +272,21 @@
   color: var(--social-muted);
   font-size: 12px;
 }
+.eventSource {
+  color: var(--social-muted);
+  font-size: 12px;
+  max-width: 16em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.eventSource::before {
+  content: "·";
+  margin-right: 10px;
+}
+.eventSource:hover {
+  color: var(--foreground);
+}
 .eventIdentity {
   display: flex;
   align-items: baseline;

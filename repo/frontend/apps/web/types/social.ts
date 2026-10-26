@@ -45,6 +45,8 @@ export interface SocialEvent {
   forward?: SocialEvent;
   unavailableForward: boolean;
   privacy?: number;
+  /** 聚合乐迷团流中该条笔记所属的乐迷团 ID */
+  communityId?: string;
 }
 export interface SocialEventPage<Cursor = number> {
   items: SocialEvent[];

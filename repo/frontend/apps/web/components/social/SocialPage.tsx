@@ -119,10 +119,7 @@ function SocialPageContent() {
                 />
               )}
               {isAggregated ? (
-                <SocialAggregatedNotesFeed
-                  key="aggregated"
-                  groupIds={userGroups.map((g) => g.fansGroupId)}
-                />
+                <SocialAggregatedNotesFeed key="aggregated" groups={userGroups} />
               ) : (
                 <SocialNotesFeed key={groupId} groupId={groupId} />
               )}
