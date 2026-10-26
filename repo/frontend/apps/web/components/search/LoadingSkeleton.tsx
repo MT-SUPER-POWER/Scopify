@@ -178,6 +178,31 @@ export function AllViewSkeleton() {
   );
 }
 
+function LyricsViewSkeleton() {
+  return (
+    <div className="space-y-4 pb-10">
+      {Array.from({ length: 6 }, (_, index) => (
+        <div
+          key={index}
+          className="border-surface-border rounded-xl border bg-surface-elevated/40 p-4"
+        >
+          <div className="flex items-center gap-3">
+            <SkeletonBlock className="size-11 shrink-0 rounded-lg" />
+            <div className="flex-1 space-y-1.5">
+              <SkeletonBlock className="h-4 w-1/3" />
+              <SkeletonBlock className="h-3 w-1/4" />
+            </div>
+          </div>
+          <div className="mt-3 space-y-1.5 pl-14">
+            <SkeletonBlock className="h-3 w-2/3" />
+            <SkeletonBlock className="h-3 w-1/2" />
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 export function CategorySkeleton({ category }: { category: Category }) {
   switch (category) {
     case "All":
@@ -186,6 +211,8 @@ export function CategorySkeleton({ category }: { category: Category }) {
       return <MvsViewSkeleton />;
     case "Songs":
       return <SongsViewSkeleton />;
+    case "Lyrics":
+      return <LyricsViewSkeleton />;
     case "Artists":
       return (
         <div className="pb-10">

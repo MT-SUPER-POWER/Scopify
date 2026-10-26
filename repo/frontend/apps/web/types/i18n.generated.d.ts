@@ -7208,6 +7208,12 @@ export interface TranslateFn {
    */
   (key: "search.section.noMvResults", params?: TranslationParams): string;
   /**
+   * zh-CN: 没有歌词结果
+   * zh-TW: 沒有歌詞結果
+   * en-US: No lyric results
+   */
+  (key: "search.section.noLyricResults", params?: TranslationParams): string;
+  /**
    * zh-CN: 搜索歌曲
    * zh-TW: 搜尋歌曲
    * en-US: Search Songs
@@ -7249,6 +7255,12 @@ export interface TranslateFn {
    * en-US: Search Music Videos
    */
   (key: "search.section.searchMvs", params?: TranslationParams): string;
+  /**
+   * zh-CN: 搜索歌词
+   * zh-TW: 搜尋歌詞
+   * en-US: Search Lyrics
+   */
+  (key: "search.section.searchLyrics", params?: TranslationParams): string;
   /**
    * zh-CN: 歌手
    * zh-TW: 歌手
@@ -7297,6 +7309,12 @@ export interface TranslateFn {
    * en-US: Albums
    */
   (key: "search.category.albums", params?: TranslationParams): string;
+  /**
+   * zh-CN: 歌词
+   * zh-TW: 歌詞
+   * en-US: Lyrics
+   */
+  (key: "search.category.lyrics", params?: TranslationParams): string;
   /**
    * zh-CN: 播客
    * zh-TW: 播客
@@ -7393,6 +7411,24 @@ export interface TranslateFn {
    * en-US: Unknown Artist
    */
   (key: "search.song.unknownArtist", params?: TranslationParams): string;
+  /**
+   * zh-CN: 匹配歌词
+   * zh-TW: 匹配歌詞
+   * en-US: Matched lyrics
+   */
+  (key: "search.lyrics.matchedSnippet", params?: TranslationParams): string;
+  /**
+   * zh-CN: 展开完整歌词
+   * zh-TW: 展開完整歌詞
+   * en-US: View full lyrics
+   */
+  (key: "search.lyrics.viewFull", params?: TranslationParams): string;
+  /**
+   * zh-CN: 收起完整歌词
+   * zh-TW: 收起完整歌詞
+   * en-US: Collapse lyrics
+   */
+  (key: "search.lyrics.collapseFull", params?: TranslationParams): string;
   /**
    * zh-CN: 已点赞
    * zh-TW: 已按讚

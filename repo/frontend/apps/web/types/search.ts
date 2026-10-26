@@ -78,10 +78,18 @@ export type SearchBestMatch =
   | { kind: "playlist"; playlist: Playlist }
   | { kind: "song"; song: Song };
 
+export interface LyricSearchItem {
+  highlightText?: string;
+  lyric: string;
+  matchedLyric: string;
+  song: Song;
+}
+
 export interface SearchResults {
   albums: Album[];
   artists: Artist[];
   bestMatch: SearchBestMatch | null;
+  lyrics?: LyricSearchItem[];
   podcasts: Podcast[];
   playlists: Playlist[];
   songs: Song[];
@@ -94,6 +102,7 @@ export const CATEGORIES = [
   "Artists",
   "Playlists",
   "Albums",
+  "Lyrics",
   "MVs",
   "Podcasts",
   "Voices",

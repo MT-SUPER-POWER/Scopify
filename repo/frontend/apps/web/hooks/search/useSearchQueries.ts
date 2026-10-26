@@ -6,6 +6,7 @@ import {
   searchAlbums,
   searchArtists,
   searchComplex,
+  searchLyrics,
   searchMVs,
   searchPlaylists,
   searchSongs,
@@ -18,6 +19,7 @@ import { musicQueryKeys } from "@/lib/query/queryKeys";
 import type {
   AlbumSearchResponse,
   ArtistSearchResponse,
+  LyricSearchResponse,
   MvSearchResponse,
   PlaylistSearchResponse,
   SongSearchResponse,
@@ -80,6 +82,28 @@ export function useInfiniteSongSearchQuery(keyword: string, limit: number, enabl
     initialPageParam: 0,
     queryFn: async ({ pageParam }) => (await searchSongs(keyword, limit, pageParam)).data,
     queryKey: musicQueryKeys.search.songs(keyword, limit),
+  });
+}
+
+export function useInfiniteLyricSearchQuery(keyword: string, limit: number, enabled: boolean) {
+  return useInfiniteQuery<
+    LyricSearchResponse,
+    Error,
+    InfiniteData<LyricSearchResponse>,
+    ReturnType<typeof musicQueryKeys.search.lyrics>,
+    number
+  >({
+    enabled: isEnabled(keyword, enabled),
+    getNextPageParam: (lastPage, _pages, lastPageOffset) =>
+      getNextSearchPageOffset(
+        lastPage,
+        lastPageOffset,
+        limit,
+        (page) => page.data?.resources ?? [],
+      ),
+    initialPageParam: 0,
+    queryFn: async ({ pageParam }) => (await searchLyrics(keyword, limit, pageParam)).data,
+    queryKey: musicQueryKeys.search.lyrics(keyword, limit),
   });
 }
 

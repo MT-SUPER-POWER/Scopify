@@ -286,3 +286,37 @@ export interface MvSearchResponse {
     mvCount?: number;
   };
 }
+
+export interface LyricSearchSongData {
+  al?: SongSearchAlbum;
+  alia?: string[];
+  alias?: string[];
+  ar?: SongSearchArtist[];
+  dt?: number;
+  fee?: number;
+  id: number;
+  mv?: number;
+  mvid?: number;
+  name?: string;
+}
+
+export interface LyricSearchResource {
+  highlightText?: string;
+  lyric?: string;
+  matchedLyric?: string;
+  song?: LyricSearchSongData;
+}
+
+export interface LyricSearchPayload extends SearchPagination {
+  more?: boolean;
+  moreText?: string | null;
+  resources?: LyricSearchResource[];
+  totalCount?: number;
+}
+
+/** `/search/lyric` 的按歌词搜索结果。 */
+export interface LyricSearchResponse {
+  code: number;
+  data?: LyricSearchPayload;
+  message?: string | null;
+}

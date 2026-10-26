@@ -2,6 +2,7 @@ import type {
   AlbumSearchResponse,
   ArtistSearchResponse,
   ComplexSearchResponse,
+  LyricSearchResponse,
   MvSearchResponse,
   PlaylistSearchResponse,
   SongSearchResponse,
@@ -106,6 +107,17 @@ export function searchMVs(keyword: string, limit = 24, offset = 0) {
       limit,
       offset,
       type: 1004,
+    },
+  });
+}
+
+/** 按歌词搜索；使用 /search/lyric 接口，返回包含该歌词片段的歌曲与匹配行。 */
+export function searchLyrics(keyword: string, limit = 30, offset = 0) {
+  return request.get<LyricSearchResponse>("/search/lyric", {
+    params: {
+      keyword,
+      limit,
+      offset,
     },
   });
 }

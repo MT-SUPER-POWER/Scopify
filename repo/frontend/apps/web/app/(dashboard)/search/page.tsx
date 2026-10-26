@@ -5,6 +5,7 @@ import { useCallback } from "react";
 import { AllView } from "@/components/search/AllView";
 import { CategoryTabs } from "@/components/search/CategoryTabs";
 import { GridCategoryView } from "@/components/search/GridCategoryView";
+import { LyricsView } from "@/components/search/LyricsView";
 import { MvsView } from "@/components/search/MvsView";
 import { CategorySkeleton } from "@/components/search/LoadingSkeleton";
 import { NetworkRetryState } from "@/components/shared/NetworkRetryState";
@@ -36,6 +37,7 @@ export default function SearchPage() {
     bestMatch,
     fetchNextAlbumPage,
     fetchNextArtistPage,
+    fetchNextLyricPage,
     fetchNextMvPage,
     fetchNextPlaylistPage,
     fetchNextPodcastPage,
@@ -43,6 +45,7 @@ export default function SearchPage() {
     fetchNextVoicePage,
     hasNextAlbumPage,
     hasNextArtistPage,
+    hasNextLyricPage,
     hasNextMvPage,
     hasNextPlaylistPage,
     hasNextPodcastPage,
@@ -50,9 +53,11 @@ export default function SearchPage() {
     hasNextVoicePage,
     hasError,
     loading,
+    lyrics,
     mvs,
     isFetchingNextAlbumPage,
     isFetchingNextArtistPage,
+    isFetchingNextLyricPage,
     isFetchingNextMvPage,
     isFetchingNextPlaylistPage,
     isFetchingNextPodcastPage,
@@ -132,6 +137,15 @@ export default function SearchPage() {
           hasNextPage={hasNextSongPage}
           isFetchingNextPage={isFetchingNextSongPage}
           onLoadMore={() => void fetchNextSongPage()}
+        />
+      )}
+      {!loading && activeCategory === "Lyrics" && (
+        <LyricsView
+          items={lyrics}
+          keyword={keywords}
+          hasNextPage={hasNextLyricPage}
+          isFetchingNextPage={isFetchingNextLyricPage}
+          onLoadMore={() => void fetchNextLyricPage()}
         />
       )}
       {!loading && activeCategory === "MVs" && (

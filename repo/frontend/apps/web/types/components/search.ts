@@ -3,6 +3,7 @@ import type {
   Album,
   Artist,
   Category,
+  LyricSearchItem,
   Playlist,
   Podcast,
   SearchBestMatch,
@@ -51,6 +52,11 @@ export interface SearchPaginationProps {
 
 export interface SongsViewProps extends SearchPaginationProps {
   songs: Song[];
+}
+
+export interface LyricsViewProps extends SearchPaginationProps {
+  items: LyricSearchItem[];
+  keyword?: string;
 }
 
 export interface MvsViewProps extends SearchPaginationProps {
