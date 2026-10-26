@@ -4,7 +4,7 @@ import type {
   CommandWorkspaceSearchFilter,
   CommandWorkspaceSearchItem,
 } from "@/types/commandWorkspace";
-import type { Category, SearchResults } from "@/types/search";
+import type { Category, SearchResults, SearchRecentEntry } from "@/types/search";
 
 export function buildCommandWorkspaceSearchHref(
   keywords: string,
@@ -49,4 +49,13 @@ export function getCommandWorkspaceSearchItems(
 
 export function getCommandWorkspaceSearchItemKey(item: CommandWorkspaceSearchItem) {
   return `${item.kind}-${item.entity.id}`;
+}
+
+export function resolveCommandWorkspaceSearchEntry(
+  candidate: SearchRecentEntry | string,
+  filter: CommandWorkspaceSearchFilter | null,
+): SearchRecentEntry {
+  const entry: SearchRecentEntry =
+    typeof candidate === "string" ? { category: "All", keyword: candidate } : candidate;
+  return { ...entry, category: filter?.category ?? entry.category };
 }

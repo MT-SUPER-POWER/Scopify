@@ -3,6 +3,7 @@
 import { type KeyboardEvent, useCallback, useEffect, useRef, useState } from "react";
 import { useCommandWorkspaceSuggestions } from "@/hooks/commandWorkspace/useCommandWorkspaceSuggestions";
 import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
+import { resolveCommandWorkspaceSearchEntry } from "@/lib/commandWorkspace/search";
 import { buildSearchUrl } from "@/lib/search/searchCategory";
 import { useSearchStore } from "@/store/module/search";
 import type {
@@ -42,10 +43,7 @@ export function useCommandWorkspaceDirectSearch({
 
   const submit = useCallback(
     (candidate: SearchRecentEntry | string) => {
-      const entry: SearchRecentEntry =
-        typeof candidate === "string"
-          ? { category: filter?.category ?? "All", keyword: candidate }
-          : candidate;
+      const entry = resolveCommandWorkspaceSearchEntry(candidate, filter);
       const keyword = entry.keyword.trim() || placeholder.trim();
       if (!keyword) return;
       if (keyword.startsWith(">")) {

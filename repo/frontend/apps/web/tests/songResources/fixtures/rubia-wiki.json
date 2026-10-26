@@ -1,0 +1,111 @@
+{
+  "code": 200,
+  "data": {
+    "blocks": [
+      {
+        "bizCode": "songDetailNewSongWiki",
+        "rnData": {
+          "blocks": [
+            {
+              "blockCode": "wikiSubBlockSongInfoVo",
+              "blockInfo": {
+                "blockName": "创作信息",
+                "desc": "Rubia，即茜草，其花语是“爱的守护，分享伤痛”",
+                "wikiSubElementVos": [
+                  {
+                    "title": "作词",
+                    "wikiSubMetaVos": [
+                      {
+                        "text": "TetraCalyx"
+                      }
+                    ]
+                  },
+                  {
+                    "title": "作曲",
+                    "wikiSubMetaVos": [
+                      {
+                        "text": "蔡近翰Zoe(HOYO-MiX)"
+                      }
+                    ]
+                  },
+                  {
+                    "title": "编曲",
+                    "wikiSubMetaVos": [
+                      {
+                        "text": "宫奇Gon(HOYO-MiX)"
+                      }
+                    ]
+                  },
+                  {
+                    "title": "编曲",
+                    "wikiSubMetaVos": [
+                      {
+                        "text": "杨启翔Frex(HOYO-MiX)"
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "blockCode": "wikiSubBlockBaseInfoVo",
+              "blockInfo": {
+                "blockName": "基本信息",
+                "wikiSubElementVos": [
+                  {
+                    "title": "曲风",
+                    "wikiSubMetaVos": [
+                      {
+                        "text": "二次元-游戏音乐"
+                      },
+                      {
+                        "text": "流行"
+                      }
+                    ]
+                  },
+                  {
+                    "title": "推荐标签",
+                    "wikiSubMetaVos": [
+                      {
+                        "text": "思念"
+                      },
+                      {
+                        "text": "治愈"
+                      },
+                      {
+                        "text": "平静"
+                      },
+                      {
+                        "text": "放松"
+                      }
+                    ]
+                  },
+                  {
+                    "title": "语种",
+                    "content": "英语"
+                  },
+                  {
+                    "title": "发行时间",
+                    "content": "2021-01-29"
+                  },
+                  {
+                    "title": "发行版本",
+                    "content": "录音室版"
+                  },
+                  {
+                    "title": "BPM",
+                    "content": "68"
+                  },
+                  {
+                    "title": "乐器",
+                    "content": "含原声吉他"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

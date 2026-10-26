@@ -5,6 +5,114 @@ import type { TranslationKey, TranslationParams } from "@/lib/i18n";
 
 export interface TranslateFn {
   /**
+   * zh-CN: 音乐百科
+   * zh-TW: 音樂百科
+   * en-US: Music encyclopedia
+   */
+  (key: "songResources.wiki", params?: TranslationParams): string;
+  /**
+   * zh-CN: 乐谱
+   * zh-TW: 樂譜
+   * en-US: Sheet music
+   */
+  (key: "songResources.sheets", params?: TranslationParams): string;
+  /**
+   * zh-CN: 暂无百科信息
+   * zh-TW: 暫無百科資訊
+   * en-US: No encyclopedia information yet
+   */
+  (key: "songResources.emptyWiki", params?: TranslationParams): string;
+  /**
+   * zh-CN: 这首歌暂无可用乐谱
+   * zh-TW: 這首歌暫無可用樂譜
+   * en-US: No sheet music for this song yet
+   */
+  (key: "songResources.emptySheets", params?: TranslationParams): string;
+  /**
+   * zh-CN: 乐谱预览
+   * zh-TW: 樂譜預覽
+   * en-US: Sheet preview
+   */
+  (key: "songResources.preview", params?: TranslationParams): string;
+  /**
+   * zh-CN: 暂无可预览的谱页，可能需要相应权限
+   * zh-TW: 暫無可預覽的譜頁，可能需要相應權限
+   * en-US: No preview pages available; access may be restricted
+   */
+  (key: "songResources.previewEmpty", params?: TranslationParams): string;
+  /**
+   * zh-CN: 登录后查看乐谱内容
+   * zh-TW: 登入後查看樂譜內容
+   * en-US: Sign in to view sheet music
+   */
+  (key: "songResources.loginRequired", params?: TranslationParams): string;
+  /**
+   * zh-CN: 登录
+   * zh-TW: 登入
+   * en-US: Sign in
+   */
+  (key: "songResources.login", params?: TranslationParams): string;
+  /**
+   * zh-CN: {{count}} 页
+   * zh-TW: {{count}} 頁
+   * en-US: {{count}} pages
+   */
+  (key: "songResources.pages", params?: TranslationParams): string;
+  /**
+   * zh-CN: 第 {{page}} 页
+   * zh-TW: 第 {{page}} 頁
+   * en-US: Page {{page}}
+   */
+  (key: "songResources.page", params?: TranslationParams): string;
+  /**
+   * zh-CN: 谱页图片加载失败
+   * zh-TW: 譜頁圖片載入失敗
+   * en-US: Could not load this page
+   */
+  (key: "songResources.imageError", params?: TranslationParams): string;
+  /**
+   * zh-CN: 继续查找更多乐谱
+   * zh-TW: 繼續尋找更多樂譜
+   * en-US: Keep searching for sheets
+   */
+  (key: "songResources.keepSearching", params?: TranslationParams): string;
+  /**
+   * zh-CN: {{count}} 份乐谱
+   * zh-TW: {{count}} 份樂譜
+   * en-US: {{count}} sheets
+   */
+  (key: "songResources.sheetCount", params?: TranslationParams): string;
+  /**
+   * zh-CN: 还有 {{count}} 份乐谱，查看全部
+   * zh-TW: 還有 {{count}} 份樂譜，查看全部
+   * en-US: {{count}} more sheets, view all
+   */
+  (key: "songResources.moreSheets", params?: TranslationParams): string;
+  /**
+   * zh-CN: 查看全部
+   * zh-TW: 查看全部
+   * en-US: View all
+   */
+  (key: "songResources.more", params?: TranslationParams): string;
+  /**
+   * zh-CN: 按歌曲查找乐谱，仅展示有可用乐谱的歌曲。
+   * zh-TW: 按歌曲尋找樂譜，僅顯示有可用樂譜的歌曲。
+   * en-US: Find sheet music by song. Only songs with available sheets are shown.
+   */
+  (key: "songResources.searchHint", params?: TranslationParams): string;
+  /**
+   * zh-CN: 查看乐谱
+   * zh-TW: 查看樂譜
+   * en-US: View sheet music
+   */
+  (key: "songResources.openSheets", params?: TranslationParams): string;
+  /**
+   * zh-CN: 没有匹配的歌曲
+   * zh-TW: 沒有相符的歌曲
+   * en-US: No matching songs
+   */
+  (key: "songResources.noSongs", params?: TranslationParams): string;
+  /**
    * zh-CN: What's New
    * zh-TW: What's New
    * en-US: What's New

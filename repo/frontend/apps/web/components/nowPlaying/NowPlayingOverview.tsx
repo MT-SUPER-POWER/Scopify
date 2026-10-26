@@ -1,6 +1,7 @@
 "use client";
 
 import { NowPlayingArtistCard } from "./NowPlayingArtistCard";
+import { NowPlayingSongResources } from "./NowPlayingSongResources";
 import { NowPlayingCredits } from "./NowPlayingCredits";
 import { NowPlayingHero } from "./NowPlayingHero";
 import { NowPlayingHotComments } from "./NowPlayingHotComments";
@@ -47,6 +48,7 @@ export function NowPlayingOverview({ song, onCoverVisibleChange }: NowPlayingOve
         <NowPlayingArtistCard key={song.ar?.[0]?.id} song={song} />
         <NowPlayingMvs song={song} />
         <NowPlayingCredits song={song} />
+        <NowPlayingSongResources key={song.id} song={song} />
         <NowPlayingHotComments key={song.id} song={song} />
         <NowPlayingNextUp />
         <NowPlayingSimilarSongs song={song} />

@@ -173,6 +173,7 @@ export interface CommandWorkspaceQueueItemMetadataProps {
 }
 
 export interface CommandWorkspaceSearchProps {
+  onClose(): void;
   onOpenTrackList(item: CommandWorkspaceSearchItem): void;
 }
 
@@ -196,7 +197,7 @@ export interface CommandWorkspaceNowPlayingProps {
 }
 
 export type CommandWorkspaceFilterId =
-  "song" | "artist" | "album" | "playlist" | "podcast" | "episode";
+  "song" | "artist" | "album" | "playlist" | "podcast" | "episode" | "lyric" | "sheet" | "mv";
 
 export interface CommandWorkspaceSearchFilter {
   category: Exclude<Category, "All">;

@@ -1,5 +1,6 @@
 "use client";
 
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { AtSign } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { CommandWorkspaceFilterPickerProps } from "@/types/commandWorkspace";
@@ -15,21 +16,23 @@ export function CommandWorkspaceFilterPicker({
         <AtSign className="size-3.5" />
         选择搜索分类
       </div>
-      {filters.map((candidate, index) => (
-        <button
-          key={candidate.id}
-          type="button"
-          onMouseDown={(event) => event.preventDefault()}
-          onClick={() => onChoose(candidate)}
-          className={cn(
-            "flex w-full items-center justify-between px-3 py-2 text-left text-sm transition-colors",
-            selectedIndex === index ? "bg-white/12 text-white" : "text-zinc-300 hover:bg-white/8",
-          )}
-        >
-          <span>{candidate.label}</span>
-          <kbd className="text-xs text-zinc-500">{candidate.token}</kbd>
-        </button>
-      ))}
+      <ScrollArea style={{ height: filters.length * 36, maxHeight: "50vh" }}>
+        {filters.map((candidate, index) => (
+          <button
+            key={candidate.id}
+            type="button"
+            onMouseDown={(event) => event.preventDefault()}
+            onClick={() => onChoose(candidate)}
+            className={cn(
+              "flex w-full items-center justify-between px-3 py-2 text-left text-sm transition-colors",
+              selectedIndex === index ? "bg-white/12 text-white" : "text-zinc-300 hover:bg-white/8",
+            )}
+          >
+            <span>{candidate.label}</span>
+            <kbd className="text-xs text-zinc-500">{candidate.token}</kbd>
+          </button>
+        ))}
+      </ScrollArea>
     </div>
   );
 }

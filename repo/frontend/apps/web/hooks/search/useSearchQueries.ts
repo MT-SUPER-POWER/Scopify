@@ -1,5 +1,7 @@
 "use client";
 
+import { throwQueryErrorWithoutData } from "@/lib/query/errorPolicy";
+
 import { type InfiniteData, useInfiniteQuery, useQuery } from "@tanstack/react-query";
 
 import {
@@ -63,7 +65,12 @@ function getNextSearchPageOffset<T>(
   return lastPageOffset + itemCount;
 }
 
-export function useInfiniteSongSearchQuery(keyword: string, limit: number, enabled: boolean) {
+export function useInfiniteSongSearchQuery(
+  keyword: string,
+  limit: number,
+  enabled: boolean,
+  useBoundary = false,
+) {
   return useInfiniteQuery<
     SongSearchResponse,
     Error,
@@ -72,6 +79,7 @@ export function useInfiniteSongSearchQuery(keyword: string, limit: number, enabl
     number
   >({
     enabled: isEnabled(keyword, enabled),
+    throwOnError: useBoundary ? throwQueryErrorWithoutData : undefined,
     getNextPageParam: (lastPage, _pages, lastPageOffset) =>
       getNextSearchPageOffset(
         lastPage,
@@ -80,7 +88,8 @@ export function useInfiniteSongSearchQuery(keyword: string, limit: number, enabl
         (page) => page.data?.resources ?? [],
       ),
     initialPageParam: 0,
-    queryFn: async ({ pageParam }) => (await searchSongs(keyword, limit, pageParam)).data,
+    queryFn: async ({ pageParam, signal }) =>
+      (await searchSongs(keyword, limit, pageParam, signal)).data,
     queryKey: musicQueryKeys.search.songs(keyword, limit),
   });
 }
@@ -168,7 +177,12 @@ export function useInfiniteArtistSearchQuery(keyword: string, limit: number, ena
   });
 }
 
-export function useInfiniteMvSearchQuery(keyword: string, limit: number, enabled: boolean) {
+export function useInfiniteMvSearchQuery(
+  keyword: string,
+  limit: number,
+  enabled: boolean,
+  useBoundary = false,
+) {
   return useInfiniteQuery<
     MvSearchResponse,
     Error,
@@ -177,6 +191,7 @@ export function useInfiniteMvSearchQuery(keyword: string, limit: number, enabled
     number
   >({
     enabled: isEnabled(keyword, enabled),
+    throwOnError: useBoundary ? throwQueryErrorWithoutData : undefined,
     getNextPageParam: (lastPage, pages, lastPageOffset) => {
       const nextOffset = getNextSearchPageOffset(
         lastPage,
@@ -191,7 +206,8 @@ export function useInfiniteMvSearchQuery(keyword: string, limit: number, enabled
         : undefined;
     },
     initialPageParam: 0,
-    queryFn: async ({ pageParam }) => (await searchMVs(keyword, limit, pageParam)).data,
+    queryFn: async ({ pageParam, signal }) =>
+      (await searchMVs(keyword, limit, pageParam, signal)).data,
     queryKey: musicQueryKeys.search.mvs(keyword, limit),
   });
 }

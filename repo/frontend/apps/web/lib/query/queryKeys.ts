@@ -89,6 +89,10 @@ export const musicQueryKeys = {
       ["search", "voice-lists", keyword, limit] as const,
   },
   song: {
+    wiki: (songId: number, userId: number) => ["song", "wiki", songId, userId] as const,
+    sheets: (songId: number) => ["song", "sheets", songId] as const,
+    sheetPreview: (sheetId: number, userId: number) =>
+      ["song", "sheet-preview", userId, sheetId] as const,
     similar: (songId: number, userId: number) => ["song", "similar", userId, songId] as const,
     chorus: (songId: number | string) => ["song", "chorus", songId] as const,
     dynamicCover: (songId: number | string) => ["song", "dynamic-cover", songId] as const,

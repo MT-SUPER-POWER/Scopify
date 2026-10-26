@@ -1,5 +1,6 @@
 import type { SongDetail } from "@/types/api/music";
 import type { MvSummary } from "@/types/api/mv";
+import type { MusicSheet } from "@/types/api/songResources";
 import type {
   Album,
   Artist,
@@ -140,4 +141,25 @@ export interface SearchLyricDialogProps extends Pick<
 > {
   song: SongDetail;
   isPlaying: boolean;
+}
+
+export interface CategoryTabsProps {
+  active: Category;
+  onChange: (category: Category) => void;
+}
+export interface SheetsViewProps {
+  keyword: string;
+}
+
+export interface SheetSongResultCardProps {
+  song: SongDetail;
+  sheets: MusicSheet[];
+  onSelectSong: (song: SongDetail) => void;
+  onSelectSheet: (sheet: MusicSheet) => void;
+}
+
+export interface SheetSongFailureCardProps {
+  song: SongDetail;
+  error: Error;
+  onRetry: () => void;
 }

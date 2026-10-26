@@ -21,7 +21,9 @@ export function MvPageContent({ mvid }: MvPageContentProps) {
   const { t } = useI18n();
   const smartRouter = useSmartRouter();
   const detailQuery = useMVDetailQuery(mvid, { boundary: true });
-  const [nextId, setNextId] = useState<number | null>(null);
+  const [next, setNext] = useState<readonly [number, number | null] | null>(null);
+  const nextId = next?.[0] === mvid ? next[1] : null;
+  const handleNextChange = useCallback((id: number | null) => setNext([mvid, id]), [mvid]);
   const detail = detailQuery.data?.data;
   const [isTheater, setIsTheater] = useState(false);
   const toggleTheater = useCallback(() => setIsTheater((value) => !value), []);
@@ -76,7 +78,14 @@ export function MvPageContent({ mvid }: MvPageContentProps) {
         )}
       >
         <QueryBoundary resetKey={`mv:similar:${mvid}`} title={t("mv.section.similar")} compact>
-          <MvSimilarContent mvid={mvid} onNextChange={setNextId} />
+          {detail ? (
+            <MvSimilarContent
+              key={mvid}
+              mvid={mvid}
+              detail={detail}
+              onNextChange={handleNextChange}
+            />
+          ) : null}
         </QueryBoundary>
       </aside>
     </div>

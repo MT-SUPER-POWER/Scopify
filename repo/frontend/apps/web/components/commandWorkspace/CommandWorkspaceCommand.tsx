@@ -105,7 +105,9 @@ export function CommandWorkspaceCommand({ onClose, onLeaveCommand }: CommandWork
           onOpenPage={setPage}
         />
       ) : null}
-      {page === "search" ? <CommandWorkspaceSearch onOpenTrackList={handleOpenTrackList} /> : null}
+      {page === "search" ? (
+        <CommandWorkspaceSearch onClose={onClose} onOpenTrackList={handleOpenTrackList} />
+      ) : null}
       {page === "queue" ? <CommandWorkspaceQueue onClose={onClose} /> : null}
       {page === "now-playing" ? <CommandWorkspaceNowPlaying onClose={onClose} /> : null}
       {page === "dynamic-island" ? <CommandWorkspaceDynamicIsland /> : null}
