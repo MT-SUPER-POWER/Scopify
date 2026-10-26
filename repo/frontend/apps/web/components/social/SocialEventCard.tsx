@@ -6,7 +6,7 @@ import { eventHref } from "@/lib/social/normalize";
 import { formatSocialTime } from "@/lib/social/time";
 import { useI18n } from "@/store/module/i18n";
 import type { SocialEventProps } from "@/types/components/social";
-import { FollowButton, SocialAvatar, SocialAuthor } from "./SocialPrimitives";
+import { SocialAvatar, SocialAuthor } from "./SocialPrimitives";
 import { SocialEventActions } from "./SocialEventActions";
 import { SocialEventMedia } from "./SocialEventMedia";
 import { SocialEventMenu } from "./SocialEventMenu";
@@ -14,12 +14,7 @@ import { SocialPostText } from "./SocialPostText";
 import { SocialResourceCard } from "./SocialResourceCard";
 import s from "./Social.module.css";
 
-export function SocialEventCard({
-  event,
-  quoted = false,
-  detail = false,
-  showFollow = false,
-}: SocialEventProps) {
+export function SocialEventCard({ event, quoted = false, detail = false }: SocialEventProps) {
   const { t, locale } = useI18n();
   const actions = useSocialEventActions(event);
   const href = eventHref(event);
@@ -45,7 +40,6 @@ export function SocialEventCard({
           </div>
           {!quoted && (
             <div className={s.eventTools}>
-              {showFollow && <FollowButton user={event.user} className={s.inlineFollow} />}
               <SocialEventMenu
                 event={event}
                 pending={actions.remove.isPending}

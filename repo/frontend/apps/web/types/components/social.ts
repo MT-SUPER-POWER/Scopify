@@ -30,7 +30,6 @@ export interface SocialEventProps {
   event: SocialEvent;
   quoted?: boolean;
   detail?: boolean;
-  showFollow?: boolean;
 }
 export interface SocialEventActionsProps extends SocialEventProps {
   liking: boolean;

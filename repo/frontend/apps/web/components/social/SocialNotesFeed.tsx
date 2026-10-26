@@ -32,7 +32,7 @@ export function SocialNotesFeed({ groupId }: SocialNotesFeedProps) {
       >
         <div className={s.timeline}>
           {items.map((event) => (
-            <SocialEventCard key={event.id} event={event} showFollow />
+            <SocialEventCard key={event.id} event={event} />
           ))}
         </div>
         <div ref={sentinel} aria-hidden="true" />

@@ -49,7 +49,7 @@ export function SocialHotFeed({ topic }: SocialHotFeedProps) {
         )}
         <div className={s.timeline}>
           {events.map((event) => (
-            <SocialEventCard key={event.id} event={event} showFollow />
+            <SocialEventCard key={event.id} event={event} />
           ))}
         </div>
         <p className={s.loadMore}>{t("social.topicEnd")}</p>
