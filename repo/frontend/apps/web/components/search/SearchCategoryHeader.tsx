@@ -17,9 +17,9 @@ export function SearchCategoryHeader({ actions, category }: SearchCategoryHeader
   const { t } = useI18n();
 
   return (
-    <div className="mb-6 flex items-center justify-between gap-4">
-      <h2 className="text-2xl font-bold tracking-tight">{t(categoryTitleKeys[category])}</h2>
-      {actions}
-    </div>
+    <>
+      <h2 className="sr-only">{t(categoryTitleKeys[category])}</h2>
+      {actions ? <div className="mb-6 flex justify-end">{actions}</div> : null}
+    </>
   );
 }
