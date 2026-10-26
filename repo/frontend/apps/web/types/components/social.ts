@@ -34,6 +34,11 @@ export interface SocialEventSource {
   name: string;
   href: string;
 }
+export interface SocialPostViewProps {
+  event: SocialEvent;
+  /** 动态被删除后关闭浮层 */
+  onDeleted: () => void;
+}
 export interface SocialNoteTileProps {
   event: SocialEvent;
   source?: SocialEventSource;

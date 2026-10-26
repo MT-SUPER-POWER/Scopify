@@ -15,6 +15,7 @@ import { SocialNotesFeed } from "./SocialNotesFeed";
 import { SocialFansGroupRail } from "./SocialFansGroupRail";
 import { SocialAggregatedNotesFeed } from "./SocialAggregatedNotesFeed";
 import { SocialHeader } from "./SocialHeader";
+import { SocialPostModal } from "./SocialPostModal";
 import s from "./Social.module.css";
 
 export function SocialPage() {
@@ -102,6 +103,7 @@ function SocialPageContent() {
           )}
         </main>
       </div>
+      {uid && <SocialPostModal />}
     </div>
   );
 }

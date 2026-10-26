@@ -5,8 +5,8 @@ import Link from "next/link";
 import { useState } from "react";
 import { useSocialEventActions } from "@/hooks/social/useSocialActions";
 import { useSocialPlayback } from "@/hooks/social/useSocialPlayback";
+import { useSocialPostModal } from "@/hooks/social/useSocialPostModal";
 import { useRequireLoginAction } from "@/lib/hooks/useRequireLoginAction";
-import { eventHref } from "@/lib/social/normalize";
 import { getSizedImageUrl } from "@/lib/music/imageUrl";
 import { useI18n } from "@/store/module/i18n";
 import type { SocialNoteTileProps, SocialResourceProps } from "@/types/components/social";
@@ -16,13 +16,14 @@ import s from "./Social.module.css";
 
 /**
  * 瀑布流中的一条动态：封面（图片 / 歌曲封面 / 文字卡）+ 标题 + 作者与点赞。
- * 不加卡片底色，直接坐在页面面板上，避免与面板产生色差；完整内容在详情页查看。
+ * 不加卡片底色，直接坐在页面面板上，避免与面板产生色差；完整内容在浮层中查看。
  */
 export function SocialNoteTile({ event, source }: SocialNoteTileProps) {
   const { t, locale } = useI18n();
   const requireLogin = useRequireLoginAction();
   const actions = useSocialEventActions(event);
-  const href = eventHref(event);
+  // 点击在当前页打开动态浮层，而不是跳到独立详情页
+  const href = useSocialPostModal().hrefFor(event);
   // 纯转发没有自己的配图和资源时，用原动态的内容做封面
   const content = event.pictures.length || event.resource || !event.forward ? event : event.forward;
   const picture = content.pictures[0];

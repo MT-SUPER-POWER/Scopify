@@ -1509,3 +1509,405 @@
 .tileLike[data-active="true"] svg {
   fill: currentColor;
 }
+
+/* ---- 动态浮层（小红书式：左媒体，右侧作者 / 正文 / 评论 / 底部互动栏） ---- */
+.postModal {
+  --line: color-mix(in srgb, var(--foreground) 9%, transparent);
+  --social-muted: var(--muted-foreground);
+  display: block;
+  width: min(1200px, calc(100vw - 128px));
+  max-width: none;
+  height: min(860px, calc(100dvh - 48px));
+  padding: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  color: var(--foreground);
+}
+.postModal[data-media="false"] {
+  width: min(560px, calc(100vw - 128px));
+}
+.postModal button {
+  cursor: pointer;
+}
+.postModal button:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+.postModal a {
+  text-decoration: none;
+}
+.postModal :is(button, a, input):focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+.postModalClose {
+  position: absolute;
+  top: 0;
+  left: -56px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--card) 80%, transparent);
+  color: var(--foreground);
+  transition: background-color 0.2s ease;
+}
+.postModalClose:hover {
+  background: var(--card);
+}
+.postModalClose svg {
+  width: 20px;
+  height: 20px;
+}
+.postModalFrame {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border-radius: 20px;
+  background: var(--card);
+}
+.postModalState {
+  display: grid;
+  flex: 1;
+  place-items: center;
+}
+.postMedia {
+  position: relative;
+  display: flex;
+  flex: 1 1 auto;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  overflow: hidden;
+  background: #000;
+}
+.postMedia > img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+.postMedia > .postMediaBackdrop {
+  position: absolute;
+  inset: -40px;
+  width: calc(100% + 80px);
+  height: calc(100% + 80px);
+  object-fit: cover;
+  filter: blur(40px) brightness(0.5);
+}
+.postMedia > .postMediaCover {
+  position: relative;
+  width: min(68%, 440px);
+  height: auto;
+  aspect-ratio: 1;
+  object-fit: cover;
+  border-radius: 12px;
+  box-shadow: 0 24px 60px rgb(0 0 0 / 0.5);
+}
+.postMediaNav {
+  position: absolute;
+  top: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgb(255 255 255 / 0.85);
+  color: #111;
+  translate: 0 -50%;
+}
+.postMediaNav[data-side="prev"] {
+  left: 14px;
+}
+.postMediaNav[data-side="next"] {
+  right: 14px;
+}
+.postMediaNav svg {
+  width: 20px;
+  height: 20px;
+}
+.postMediaDots {
+  position: absolute;
+  bottom: 16px;
+  left: 50%;
+  display: flex;
+  gap: 5px;
+  translate: -50% 0;
+}
+.postMediaDots span {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgb(255 255 255 / 0.4);
+}
+.postMediaDots span[data-active="true"] {
+  background: #fff;
+}
+.postPanel {
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  width: 440px;
+  min-height: 0;
+}
+.postModal[data-media="false"] .postPanel {
+  width: 100%;
+}
+.postPanelHeader {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 22px 24px 14px;
+  font-size: 15px;
+}
+.postPanelHeader .avatar {
+  width: 40px;
+  height: 40px;
+}
+.postPanelHeader .author {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  font-weight: 500;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.postPanelHeader .postFollow {
+  min-width: 88px;
+  min-height: 38px;
+  padding: 0 20px;
+  border: 1px solid var(--primary);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--primary);
+  font-size: 15px;
+  font-weight: 600;
+}
+.postPanelHeader .postFollow:hover {
+  background: color-mix(in srgb, var(--primary) 12%, transparent);
+}
+.postPanelHeader .postFollow[aria-pressed="true"] {
+  border-color: var(--line);
+  color: var(--social-muted);
+}
+.postPanelScroll {
+  flex: 1;
+  min-height: 0;
+  padding: 4px 24px 16px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+.postCaption {
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--line);
+}
+.postCaptionTitle {
+  margin: 4px 0 8px;
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+.postCaption .postText {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.75;
+}
+.postCaption .resource {
+  margin: 14px 0 0;
+}
+.postCaption .quote {
+  margin-top: 14px;
+}
+.postMeta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 12px;
+  color: var(--social-muted);
+  font-size: 13px;
+}
+.postPanelNote {
+  padding: 24px 0;
+  color: var(--social-muted);
+  font-size: 13px;
+  text-align: center;
+}
+.postComments {
+  padding-top: 18px;
+}
+.postCommentsTotal {
+  margin-bottom: 18px;
+  color: var(--social-muted);
+  font-size: 14px;
+  font-weight: 400;
+}
+.postComment {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 22px;
+}
+.postComment > .avatar {
+  width: 36px;
+  height: 36px;
+}
+.postComment .author {
+  color: var(--social-muted);
+  font-size: 14px;
+  font-weight: 400;
+}
+.postCommentText {
+  margin-top: 4px;
+  font-size: 14px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.postCommentQuote {
+  margin-top: 6px;
+  padding-left: 10px;
+  border-left: 2px solid var(--line);
+  color: var(--social-muted);
+  font-size: 13px;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+.postCommentTime {
+  display: block;
+  margin-top: 6px;
+  color: var(--social-muted);
+  font-size: 12px;
+}
+.postCommentMeta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 18px;
+  margin-top: 6px;
+  color: var(--social-muted);
+  font-size: 12px;
+}
+.postCommentMeta button {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.postCommentMeta button:hover {
+  color: var(--foreground);
+}
+.postCommentMeta svg {
+  width: 15px;
+  height: 15px;
+}
+.postCommentMeta button[data-danger="true"] {
+  color: var(--destructive);
+}
+.postCommentMeta button[data-active="true"],
+.postActions button[data-active="true"] {
+  color: var(--primary);
+}
+.postCommentMeta button[data-active="true"] svg,
+.postActions button[data-active="true"] svg {
+  fill: currentColor;
+}
+.postPanelFooter {
+  padding: 12px 20px 16px;
+  border-top: 1px solid var(--line);
+}
+.postReplyTag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin: 0 0 8px 4px;
+  padding: 2px 10px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--foreground) 8%, transparent);
+  color: var(--social-muted);
+  font-size: 12px;
+}
+.postReplyTag svg {
+  width: 12px;
+  height: 12px;
+}
+.postBar {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.postCommentForm {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  height: 40px;
+  padding: 0 6px 0 16px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--foreground) 7%, transparent);
+}
+.postCommentForm input {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  border: 0;
+  outline: none;
+  background: transparent;
+  color: var(--foreground);
+  font-size: 14px;
+}
+.postCommentForm button {
+  height: 30px;
+  padding: 0 14px;
+  border-radius: 999px;
+  background: var(--primary);
+  color: var(--primary-foreground);
+  font-size: 13px;
+  font-weight: 600;
+}
+.postActions {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 14px;
+  margin-left: auto;
+}
+.postActions button {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--foreground);
+  font-size: 14px;
+  transition: opacity 0.15s ease;
+}
+.postActions button:hover {
+  opacity: 0.65;
+}
+.postActions svg {
+  width: 22px;
+  height: 22px;
+}
+@media (max-width: 900px) {
+  .postModal,
+  .postModal[data-media="false"] {
+    width: calc(100vw - 32px);
+  }
+  .postModalClose {
+    top: 10px;
+    left: 10px;
+    z-index: 1;
+  }
+  .postModalFrame {
+    flex-direction: column;
+  }
+  .postMedia {
+    flex: 0 0 42%;
+  }
+  .postPanel {
+    flex: 1;
+    width: 100%;
+  }
+}

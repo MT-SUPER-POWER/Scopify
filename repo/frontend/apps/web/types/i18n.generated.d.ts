@@ -2033,6 +2033,18 @@ export interface TranslateFn {
    */
   (key: "social.delete", params?: TranslationParams): string;
   /**
+   * zh-CN: 确认删除
+   * zh-TW: 確認刪除
+   * en-US: Confirm delete
+   */
+  (key: "social.confirmDelete", params?: TranslationParams): string;
+  /**
+   * zh-CN: 共 {{count}} 条评论
+   * zh-TW: 共 {{count}} 則留言
+   * en-US: {{count}} comments
+   */
+  (key: "social.commentsTotal", params?: TranslationParams): string;
+  /**
    * zh-CN: 删除这条动态？
    * zh-TW: 刪除這則動態？
    * en-US: Delete this post?
