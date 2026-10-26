@@ -1,5 +1,6 @@
 import type { SongDetail } from "@/types/api/music";
 import type { MvSummary } from "@/types/api/mv";
+import type { MusicSheet } from "@/types/api/songResources";
 import type {
   Album,
   Artist,
@@ -152,5 +153,13 @@ export interface SheetsViewProps {
 
 export interface SheetSongResultCardProps {
   song: SongDetail;
-  onSelect: (song: SongDetail) => void;
+  sheets: MusicSheet[];
+  onSelectSong: (song: SongDetail) => void;
+  onSelectSheet: (sheet: MusicSheet) => void;
+}
+
+export interface SheetSongFailureCardProps {
+  song: SongDetail;
+  error: Error;
+  onRetry: () => void;
 }

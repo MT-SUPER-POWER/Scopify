@@ -1,6 +1,6 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
+import { useQueries, useQuery } from "@tanstack/react-query";
 import { getSheetPreview, getSongSheets, getSongWiki } from "@/lib/api/songResources";
 import {
   normalizeSheetPreview,
@@ -28,6 +28,18 @@ export function useSongSheetsQuery(songId: number) {
     enabled: songId > 0,
     staleTime: 5 * 60_000,
     throwOnError: throwQueryErrorWithoutData,
+  });
+}
+/** 搜索结果页批量查询歌曲乐谱；与单曲查询共用 queryKey，弹窗打开时直接命中缓存。 */
+export function useSongSheetsQueries(songIds: number[]) {
+  return useQueries({
+    queries: songIds.map((songId) => ({
+      queryKey: musicQueryKeys.song.sheets(songId),
+      queryFn: async ({ signal }: { signal: AbortSignal }) =>
+        normalizeSongSheets(await getSongSheets(songId, signal)),
+      enabled: songId > 0,
+      staleTime: 5 * 60_000,
+    })),
   });
 }
 export function useSheetPreviewQuery(sheetId: number) {

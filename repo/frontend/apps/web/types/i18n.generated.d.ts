@@ -71,11 +71,23 @@ export interface TranslateFn {
    */
   (key: "songResources.imageError", params?: TranslationParams): string;
   /**
-   * zh-CN: 加载更多歌曲
-   * zh-TW: 載入更多歌曲
-   * en-US: Load more songs
+   * zh-CN: 继续查找更多乐谱
+   * zh-TW: 繼續尋找更多樂譜
+   * en-US: Keep searching for sheets
    */
-  (key: "songResources.loadMore", params?: TranslationParams): string;
+  (key: "songResources.keepSearching", params?: TranslationParams): string;
+  /**
+   * zh-CN: {{count}} 份乐谱
+   * zh-TW: {{count}} 份樂譜
+   * en-US: {{count}} sheets
+   */
+  (key: "songResources.sheetCount", params?: TranslationParams): string;
+  /**
+   * zh-CN: 还有 {{count}} 份乐谱，查看全部
+   * zh-TW: 還有 {{count}} 份樂譜，查看全部
+   * en-US: {{count}} more sheets, view all
+   */
+  (key: "songResources.moreSheets", params?: TranslationParams): string;
   /**
    * zh-CN: 查看全部
    * zh-TW: 查看全部
@@ -83,9 +95,9 @@ export interface TranslateFn {
    */
   (key: "songResources.more", params?: TranslationParams): string;
   /**
-   * zh-CN: 按歌曲查找乐谱，选择歌曲查看可用版本。
-   * zh-TW: 按歌曲尋找樂譜，選擇歌曲查看可用版本。
-   * en-US: Find sheet music by song, then choose an available arrangement.
+   * zh-CN: 按歌曲查找乐谱，仅展示有可用乐谱的歌曲。
+   * zh-TW: 按歌曲尋找樂譜，僅顯示有可用樂譜的歌曲。
+   * en-US: Find sheet music by song. Only songs with available sheets are shown.
    */
   (key: "songResources.searchHint", params?: TranslationParams): string;
   /**
