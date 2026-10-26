@@ -17,11 +17,12 @@ import { MvVolumeControl } from "./player/MvVolumeControl";
 import { useMVUrlQuery } from "@/hooks/mv/useMVQueries";
 import { useMvSongExclusivity } from "@/hooks/mv/useMvSongExclusivity";
 import { useMvVideoState } from "@/hooks/mv/useMvVideoState";
+import { useMvQualitySwitch } from "@/hooks/mv/useMvQualitySwitch";
+import { getMvResolutions } from "@/lib/music/mvQuality";
 import { cn, formatDuration } from "@/lib/utils";
 import { useI18n } from "@/store/module/i18n";
 import type { MvPlayerProps } from "@/types/components/mv";
 
-const MAX_RESOLUTION = 1080;
 const CONTROLS_IDLE_MS = 2_500;
 const VOLUME_STORAGE_KEY = "scopify-mv-volume";
 const CONTROL_BTN =
@@ -50,18 +51,14 @@ function isTypingTarget(target: EventTarget | null) {
  */
 export function MvPlayer({ mvid, resolutions, poster, onNext }: MvPlayerProps) {
   const { t } = useI18n();
-  const available = resolutions
-    .map((item) => item.br)
-    .filter((br) => br <= MAX_RESOLUTION)
-    .sort((a, b) => b - a);
-  const [selected, setSelected] = useState<number | null>(null);
-  const resolution = selected ?? available[0] ?? MAX_RESOLUTION;
+  const { videoRef, handleVideoPlay } = useMvSongExclusivity();
+  const { resolution, autoPlay, changeResolution, restorePlayback } = useMvQualitySwitch(videoRef);
   const urlQuery = useMVUrlQuery(mvid, resolution);
   const url = urlQuery.data?.data?.url ?? null;
-  const { videoRef, handleVideoPlay } = useMvSongExclusivity();
+  const currentResolution = urlQuery.data?.data?.r || resolution;
+  const available = getMvResolutions(resolutions, currentResolution);
   const video = useMvVideoState(videoRef, url);
   const containerRef = useRef<HTMLDivElement>(null);
-  const resumeAtRef = useRef(0);
   const idleTimerRef = useRef<number | undefined>(undefined);
   const [isWebFullscreen, setIsWebFullscreen] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
@@ -124,11 +121,6 @@ export function MvPlayer({ mvid, resolutions, poster, onNext }: MvPlayerProps) {
     document.documentElement.setAttribute("data-mv-web-fullscreen", "");
     return () => document.documentElement.removeAttribute("data-mv-web-fullscreen");
   }, [isWebFullscreen]);
-
-  // 换片或换画质后恢复记住的音量
-  useEffect(() => {
-    if (videoRef.current) videoRef.current.volume = readStoredVolume();
-  }, [url, videoRef]);
 
   useEffect(() => {
     const onChange = () => setIsFullscreen(document.fullscreenElement === containerRef.current);
@@ -199,15 +191,15 @@ export function MvPlayer({ mvid, resolutions, poster, onNext }: MvPlayerProps) {
           key={url}
           src={url}
           poster={poster}
-          autoPlay
+          autoPlay={autoPlay}
           playsInline
           onPlay={handleVideoPlay}
           onClick={togglePlay}
           onDoubleClick={toggleFullscreen}
           onEnded={onNext}
           onLoadedMetadata={(event) => {
-            if (resumeAtRef.current > 0) event.currentTarget.currentTime = resumeAtRef.current;
-            resumeAtRef.current = 0;
+            event.currentTarget.volume = readStoredVolume();
+            restorePlayback(event);
           }}
           className="size-full object-contain"
         />
@@ -221,10 +213,10 @@ export function MvPlayer({ mvid, resolutions, poster, onNext }: MvPlayerProps) {
         <LoaderCircle className="pointer-events-none absolute inset-0 m-auto size-12 animate-spin text-white/80" />
       )}
 
-      {url && (
+      {(url || urlQuery.isError || urlQuery.isSuccess) && (
         <div
           className={cn(
-            "absolute inset-x-0 bottom-0 bg-linear-to-t from-black/75 via-black/30 to-transparent px-3 pt-16 pb-1 transition-opacity duration-200",
+            "absolute inset-x-0 bottom-0 bg-linear-to-t from-black/75 via-black/30 to-transparent px-3 pt-16 pb-1 transition-opacity duration-200 focus-within:pointer-events-auto focus-within:opacity-100",
             showControls ? "opacity-100" : "pointer-events-none opacity-0",
           )}
         >
@@ -270,16 +262,11 @@ export function MvPlayer({ mvid, resolutions, poster, onNext }: MvPlayerProps) {
             </span>
 
             <div className="ml-auto flex items-center gap-1">
-              {available.length > 1 && (
-                <MvQualityMenu
-                  resolutions={available}
-                  current={resolution}
-                  onChange={(br) => {
-                    resumeAtRef.current = videoRef.current?.currentTime ?? 0;
-                    setSelected(br);
-                  }}
-                />
-              )}
+              <MvQualityMenu
+                resolutions={available}
+                current={currentResolution}
+                onChange={changeResolution}
+              />
               <button
                 type="button"
                 onClick={() => setIsWebFullscreen((value) => !value)}

@@ -1,5 +1,18 @@
 export type MvQueryId = number | string | null | undefined;
 
+export type MvQualityPlaybackTarget = Pick<
+  HTMLVideoElement,
+  "volume" | "muted" | "playbackRate" | "currentTime" | "duration" | "pause"
+>;
+
+export interface MvQualityPlaybackSnapshot {
+  currentTime: number;
+  paused: boolean;
+  muted: boolean;
+  volume: number;
+  playbackRate: number;
+}
+
 export interface MvQueryOptions {
   enabled?: boolean;
 }
