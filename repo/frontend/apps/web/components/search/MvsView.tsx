@@ -19,7 +19,7 @@ export function MvsView({ hasNextPage, isFetchingNextPage, onLoadMore, mvs }: Mv
     <div className="pb-10">
       <SearchCategoryHeader category="MVs" />
       {mvs.length > 0 ? (
-        <div className="grid w-full min-w-0 grid-cols-[repeat(auto-fill,minmax(240px,1fr))] gap-3">
+        <div className="grid w-full min-w-0 grid-cols-[repeat(auto-fill,minmax(260px,1fr))] gap-x-4 gap-y-8">
           {mvs.map((mv) => (
             <MvCard key={mv.id} mv={mv} />
           ))}
