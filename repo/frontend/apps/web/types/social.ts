@@ -57,17 +57,6 @@ export interface SocialGroup {
   name: string;
   cover: string;
 }
-export interface SocialTopic {
-  id: string;
-  title: string;
-  description: string;
-  cover: string;
-  participants: number;
-}
-export interface SocialTopicPage {
-  items: SocialTopic[];
-  next?: number;
-}
 export interface SocialPeoplePage {
   items: SocialUser[];
   next?: number;

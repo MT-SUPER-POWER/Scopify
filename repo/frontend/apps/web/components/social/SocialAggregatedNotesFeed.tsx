@@ -6,9 +6,8 @@ import { useSocialAggregatedNotes } from "@/hooks/social/useSocialNotes";
 import type { UserFansGroupItem } from "@/types/api/fansGroup";
 import { uniqueById } from "@/lib/social/normalize";
 import { useI18n } from "@/store/module/i18n";
-import { SocialEventCard } from "./SocialEventCard";
+import { SocialNoteGrid } from "./SocialNoteGrid";
 import { SocialLoadMore, SocialState } from "./SocialPrimitives";
-import s from "./Social.module.css";
 
 /**
  * 聚合乐迷团笔记流组件
@@ -46,16 +45,18 @@ export function SocialAggregatedNotesFeed({ groups }: SocialAggregatedNotesFeedP
       empty={!items.length ? t("social.emptyNotes") : undefined}
       onRetry={() => void query.refetch()}
     >
-      <div className={s.timeline}>
-        {items.map((event) => {
+      <SocialNoteGrid
+        items={items}
+        getSource={(event) => {
           const group = event.communityId ? groupById.get(event.communityId) : undefined;
-          const source = group && {
-            name: group.artistName || group.fansGroupName,
-            href: `/social?group=${group.fansGroupId}`,
-          };
-          return <SocialEventCard key={event.id} event={event} source={source} />;
-        })}
-      </div>
+          return (
+            group && {
+              name: group.artistName || group.fansGroupName,
+              href: `/social?group=${group.fansGroupId}`,
+            }
+          );
+        }}
+      />
       <div ref={sentinel} aria-hidden="true" />
       <SocialLoadMore
         more={query.hasNextPage}

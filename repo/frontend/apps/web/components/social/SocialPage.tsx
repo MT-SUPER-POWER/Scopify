@@ -3,21 +3,17 @@
 import { MessagesSquare } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { QuietState } from "@/components/shared/QuietState";
-import { useSocialAccount, useSocialHotTopics } from "@/hooks/social/useSocialQueries";
+import { useSocialAccount } from "@/hooks/social/useSocialQueries";
 import { useSocialViewport } from "@/hooks/social/useSocialViewport";
 import { useUserFansGroupsQuery } from "@/hooks/fansGroup/useFansGroupQueries";
 import { SOCIAL_DISCOVERY_GROUP } from "@/constants/social";
-import { uniqueById } from "@/lib/social/normalize";
 import { useI18n } from "@/store/module/i18n";
-import { SocialComposer } from "./SocialComposer";
 import { SocialFeed } from "./SocialFeed";
 import { SocialPeople } from "./SocialPeople";
 import { SocialSearchForm } from "./SocialSearchForm";
-import { SocialHotFeed } from "./SocialHotFeed";
 import { SocialNotesFeed } from "./SocialNotesFeed";
 import { SocialFansGroupRail } from "./SocialFansGroupRail";
 import { SocialAggregatedNotesFeed } from "./SocialAggregatedNotesFeed";
-import { SocialTopicList } from "./SocialTopicList";
 import { SocialHeader } from "./SocialHeader";
 import s from "./Social.module.css";
 
@@ -38,12 +34,8 @@ function SocialPageContent() {
 
   const view = params.get("view");
   const people = view === "people",
-    following = view === "following",
-    topicsView = view === "topics";
+    following = view === "following";
   const search = params.get("query") ?? "";
-  const topics = useSocialHotTopics();
-  const items = uniqueById(topics.data?.pages.flatMap((page) => page.items) ?? []);
-  const requestedTopic = params.get("topic") ?? "";
   const requestedGroup = params.get("group") ?? "";
 
   const isAggregated = hasUserGroups && (!requestedGroup || requestedGroup === "all");
@@ -58,16 +50,6 @@ function SocialPageContent() {
       ? "all"
       : SOCIAL_DISCOVERY_GROUP;
 
-  const topic = /^\d+$/.test(requestedTopic)
-    ? (items.find((item) => item.id === requestedTopic) ?? {
-        id: requestedTopic,
-        title: params.get("title") || t("social.hotTopics"),
-        description: "",
-        cover: "",
-        participants: 0,
-      })
-    : undefined;
-
   const handleSelectGroup = (gid: string | null) => {
     if (!gid || gid === "all") {
       router.push("/social", { scroll: false });
@@ -81,10 +63,7 @@ function SocialPageContent() {
       <div className={s.feedLayout}>
         <main className={s.main}>
           <SocialHeader
-            view={
-              people ? "people" : following ? "friends" : topicsView || topic ? "topics" : "hot"
-            }
-            topic={topic}
+            view={people ? "people" : following ? "friends" : "hot"}
             groupId={groupId}
             groups={userGroups}
           />
@@ -104,16 +83,7 @@ function SocialPageContent() {
               />
             </section>
           ) : following ? (
-            <>
-              <SocialComposer />
-              <SocialFeed />
-            </>
-          ) : topic ? (
-            <SocialHotFeed key={topic.id} topic={topic} />
-          ) : topicsView ? (
-            <section className={s.topicBrowser}>
-              <SocialTopicList expanded />
-            </section>
+            <SocialFeed grid />
           ) : (
             <>
               {hasUserGroups && (

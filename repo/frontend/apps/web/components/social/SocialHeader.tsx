@@ -18,7 +18,7 @@ import s from "./Social.module.css";
  * 动态页头部：标签与操作合并为一行吸顶（标题仅供读屏，侧栏已标明当前位置）。
  * 只有返回链接或选中乐迷团这类需要说明的场景，才在下方显示随内容滚走的上下文行。
  */
-export function SocialHeader({ view, topic, groupId, groups }: SocialHeaderProps) {
+export function SocialHeader({ view, groupId, groups }: SocialHeaderProps) {
   const { t } = useI18n();
   const isAtTop = useIsScrollAtTop();
   const { uid, account } = useSocialAccount();
@@ -26,33 +26,23 @@ export function SocialHeader({ view, topic, groupId, groups }: SocialHeaderProps
   const hasGroups = groups.length > 0;
   const discoverTab = t(hasGroups ? "social.fansGroupTab" : "social.squareTab");
   const selectedGroup = groups.find((group) => group.fansGroupId === groupId);
-  const community = useSocialGroup(view === "hot" && !topic && !hasGroups ? groupId : "");
+  const community = useSocialGroup(view === "hot" && !hasGroups ? groupId : "");
   const queryKey =
     view === "people"
       ? socialKey(account, "people")
       : view === "friends"
         ? socialKey(account, "events", "home")
-        : topic
-          ? socialKey(account, "events", "topic", topic.id)
-          : view === "topics"
-            ? socialKey(account, "topics")
-            : groupId === "all"
-              ? socialKey(account, "events", "community", "aggregated")
-              : socialKey(account, "events", "community", groupId);
+        : groupId === "all"
+          ? socialKey(account, "events", "community", "aggregated")
+          : socialKey(account, "events", "community", groupId);
   const refreshing = useIsFetching({ queryKey }) > 0;
 
   let context: ReactNode = null;
-  if (view === "people" || topic) {
+  if (view === "people") {
     context = (
-      <Link
-        href={topic ? "/social?view=topics" : "/social"}
-        scroll={false}
-        className={s.contextBack}
-      >
+      <Link href="/social" scroll={false} className={s.contextBack}>
         <ArrowLeft aria-hidden="true" className="size-4" />
-        {view === "people"
-          ? t("social.backToFeed")
-          : t("social.backTo", { name: t("social.hotTopics") })}
+        {t("social.backToFeed")}
       </Link>
     );
   } else if (view === "hot" && selectedGroup) {
@@ -127,15 +117,6 @@ export function SocialHeader({ view, topic, groupId, groups }: SocialHeaderProps
               aria-current={view === "hot" ? "page" : undefined}
             >
               {discoverTab}
-            </Link>
-            <Link
-              href="/social?view=topics"
-              scroll={false}
-              className={s.tab}
-              data-active={view === "topics"}
-              aria-current={view === "topics" && !topic ? "page" : undefined}
-            >
-              {t("social.hotTopics")}
             </Link>
           </nav>
           <div className={s.headerActions}>

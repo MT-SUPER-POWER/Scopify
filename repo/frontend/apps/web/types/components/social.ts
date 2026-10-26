@@ -10,7 +10,6 @@ import type {
   SocialPeopleMode,
   SocialEventTarget,
   SocialProfileTab,
-  SocialTopic,
   SocialProfile,
 } from "@/types/social";
 
@@ -30,12 +29,19 @@ export interface SocialEventProps {
   event: SocialEvent;
   quoted?: boolean;
   detail?: boolean;
-  /** 内容来源（如所属乐迷团），显示在时间之后 */
-  source?: SocialEventSource;
 }
 export interface SocialEventSource {
   name: string;
   href: string;
+}
+export interface SocialNoteTileProps {
+  event: SocialEvent;
+  source?: SocialEventSource;
+}
+export interface SocialNoteGridProps {
+  items: SocialEvent[];
+  /** 为每条动态提供来源标签（如聚合流中的所属乐迷团） */
+  getSource?: (event: SocialEvent) => SocialEventSource | undefined;
 }
 export interface SocialEventActionsProps extends SocialEventProps {
   liking: boolean;
@@ -53,18 +59,11 @@ export interface SocialCommentRowProps {
 export interface SocialFeedProps {
   uid?: string;
   enabled?: boolean;
-}
-export interface SocialHotFeedProps {
-  topic: SocialTopic;
-}
-export interface SocialTopicsProps {
-  selectedId?: string;
-  /** 独立页签中直接展示全部话题，不先折叠为前 4 条 */
-  expanded?: boolean;
+  /** 以瀑布流卡片展示；个人主页仍用完整列表 */
+  grid?: boolean;
 }
 export interface SocialHeaderProps {
-  view: "friends" | "hot" | "people" | "topics";
-  topic?: SocialTopic;
+  view: "friends" | "hot" | "people";
   groupId: string;
   /** 当前用户加入的乐迷团；为空时第二个标签回退为「广场」。 */
   groups: UserFansGroupItem[];
@@ -92,6 +91,7 @@ export interface SocialPostTextProps {
   text: string;
   expanded?: boolean;
 }
+
 export interface SocialInlineTextProps {
   text: string;
 }

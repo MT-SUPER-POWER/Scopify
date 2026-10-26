@@ -7,10 +7,11 @@ import { uniqueById } from "@/lib/social/normalize";
 import { useI18n } from "@/store/module/i18n";
 import type { SocialFeedProps } from "@/types/components/social";
 import { SocialEventCard } from "./SocialEventCard";
+import { SocialNoteGrid } from "./SocialNoteGrid";
 import { SocialLoadMore, SocialLogin, SocialState } from "./SocialPrimitives";
 import s from "./Social.module.css";
 
-export function SocialFeed({ uid, enabled = true }: SocialFeedProps) {
+export function SocialFeed({ uid, enabled = true, grid = false }: SocialFeedProps) {
   const { uid: self } = useSocialAccount(),
     { t } = useI18n();
   const query = useSocialFeed(uid, enabled);
@@ -31,11 +32,15 @@ export function SocialFeed({ uid, enabled = true }: SocialFeedProps) {
       onRetry={() => void query.refetch()}
       empty={!items.length ? t(uid ? "social.emptyUserFeed" : "social.emptyFeed") : undefined}
     >
-      <div className={s.timeline}>
-        {items.map((event) => (
-          <SocialEventCard key={event.id} event={event} />
-        ))}
-      </div>
+      {grid ? (
+        <SocialNoteGrid items={items} />
+      ) : (
+        <div className={s.timeline}>
+          {items.map((event) => (
+            <SocialEventCard key={event.id} event={event} />
+          ))}
+        </div>
+      )}
       <div ref={sentinel} aria-hidden="true" />
       <SocialLoadMore
         more={query.hasNextPage}
