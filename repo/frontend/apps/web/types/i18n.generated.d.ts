@@ -329,8 +329,8 @@ export interface TranslateFn {
    */
   (key: "mv.player.exitFullscreen", params?: TranslationParams): string;
   /**
-   * zh-CN: {{count}} 次播放
-   * zh-TW: {{count}} 次播放
+   * zh-CN: {{count}}次播放
+   * zh-TW: {{count}}次播放
    * en-US: {{count}} plays
    */
   (key: "mv.meta.plays", params?: TranslationParams): string;
@@ -341,8 +341,8 @@ export interface TranslateFn {
    */
   (key: "mv.meta.published", params?: TranslationParams): string;
   /**
-   * zh-CN: {{count}} 次观看
-   * zh-TW: {{count}} 次觀看
+   * zh-CN: {{count}}次观看
+   * zh-TW: {{count}}次觀看
    * en-US: {{count}} views
    */
   (key: "mv.meta.views", params?: TranslationParams): string;
@@ -1739,12 +1739,6 @@ export interface TranslateFn {
    */
   (key: "social.topicEnd", params?: TranslationParams): string;
   /**
-   * zh-CN: 发现与个人信息
-   * zh-TW: 探索與個人資訊
-   * en-US: Discovery and profile
-   */
-  (key: "social.discover", params?: TranslationParams): string;
-  /**
    * zh-CN: 展开全文
    * zh-TW: 展開全文
    * en-US: Show more
@@ -1756,12 +1750,6 @@ export interface TranslateFn {
    * en-US: Show less
    */
   (key: "social.showLess", params?: TranslationParams): string;
-  /**
-   * zh-CN: 让好音乐，遇见懂它的人。
-   * zh-TW: 讓好音樂，遇見懂它的人。
-   * en-US: Good music brings us together.
-   */
-  (key: "social.subtitle", params?: TranslationParams): string;
   /**
    * zh-CN: 朋友动态
    * zh-TW: 朋友動態

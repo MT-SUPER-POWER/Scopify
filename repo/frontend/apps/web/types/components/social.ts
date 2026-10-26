@@ -59,9 +59,11 @@ export interface SocialHotFeedProps {
 }
 export interface SocialTopicsProps {
   selectedId?: string;
+  /** 独立页签中直接展示全部话题，不先折叠为前 4 条 */
+  expanded?: boolean;
 }
 export interface SocialHeaderProps {
-  view: "friends" | "hot" | "people";
+  view: "friends" | "hot" | "people" | "topics";
   topic?: SocialTopic;
   groupId: string;
   /** 当前用户加入的乐迷团；为空时第二个标签回退为「广场」。 */
@@ -94,7 +96,6 @@ export interface SocialPeopleProps {
   uid?: string;
   mode: SocialPeopleMode;
   query?: string;
-  compact?: boolean;
 }
 export interface SocialComposerProps {
   forwarded?: SocialEvent;

@@ -737,16 +737,11 @@
 .streamPage {
   padding: 64px clamp(24px, 4vw, 64px) 40px;
 }
+/* 动态页只保留一列居中的信息流，阅读宽度固定，不随窗口拉宽 */
 .streamPage .feedLayout {
-  grid-template-columns: minmax(0, 1fr) 300px;
-  gap: 40px;
-  max-width: 1220px;
-  min-height: calc(var(--social-viewport-height, 100dvh) - 64px);
-}
-/* 未登录时没有右侧栏，主栏居中 */
-.streamPage .feedLayout[data-solo="true"] {
   display: block;
-  max-width: 700px;
+  max-width: 680px;
+  min-height: calc(var(--social-viewport-height, 100dvh) - 64px);
 }
 .streamHeader {
   position: sticky;
@@ -1251,53 +1246,6 @@
   color: var(--social-muted);
   font-size: 13px;
 }
-.streamPage .rail {
-  position: sticky;
-  top: 84px;
-  align-self: start;
-  max-height: calc(var(--social-viewport-height, 100dvh) - 104px);
-  overflow-y: auto;
-  overscroll-behavior: contain;
-  scrollbar-width: thin;
-  scrollbar-color: transparent transparent;
-  margin: 4px 0 0;
-  padding: 0 4px 20px 30px;
-  border-left: 1px solid var(--line);
-}
-.streamPage .rail:hover {
-  scrollbar-color: var(--line) transparent;
-}
-.streamPage .rail .search {
-  margin-bottom: 30px;
-  background: color-mix(in srgb, var(--foreground) 2%, transparent);
-}
-.streamPage .railSection {
-  padding: 0 0 26px;
-  margin-bottom: 26px;
-}
-.streamPage .railSection .sectionTitle {
-  font-size: 16px;
-  margin-bottom: 10px;
-}
-.streamPage .rail .person {
-  border: 0;
-  padding: 13px 0;
-  gap: 12px;
-}
-.streamPage .rail .personText p {
-  margin-top: 5px;
-}
-.streamPage .rail .author {
-  font-size: 13px;
-  font-weight: 600;
-}
-.streamPage .rail .state {
-  padding: 20px 8px;
-  font-size: 12px;
-}
-.streamPage .rail .loadMore {
-  padding: 12px 0 0;
-}
 .topicList {
   list-style: none;
   margin: 0;
@@ -1348,11 +1296,6 @@
   line-height: 1.6;
   margin-top: 5px;
 }
-.railFooter {
-  color: var(--social-muted);
-  font-size: 11px;
-  line-height: 1.8;
-}
 .topicIntro {
   display: flex;
   align-items: center;
@@ -1389,7 +1332,8 @@
   object-fit: cover;
   flex-shrink: 0;
 }
-.peopleBrowser {
+.peopleBrowser,
+.topicBrowser {
   padding: 20px 0;
 }
 .refreshNotice {
@@ -1407,13 +1351,6 @@
   }
   .rail {
     margin-left: 20px;
-    padding-left: 20px;
-  }
-  .streamPage .feedLayout {
-    grid-template-columns: minmax(0, 1fr) 250px;
-    gap: 28px;
-  }
-  .streamPage .rail {
     padding-left: 20px;
   }
   .profileLayout {
@@ -1437,9 +1374,6 @@
   }
   .rail {
     display: none;
-  }
-  .streamPage .feedLayout {
-    max-width: 700px;
   }
   .profileLayout {
     grid-template-columns: 1fr;

@@ -33,21 +33,31 @@ export function SocialHeader({ view, topic, groupId, groups }: SocialHeaderProps
         ? socialKey(account, "events", "home")
         : topic
           ? socialKey(account, "events", "topic", topic.id)
-          : groupId === "all"
-            ? socialKey(account, "events", "community", "aggregated")
-            : socialKey(account, "events", "community", groupId);
+          : view === "topics"
+            ? socialKey(account, "topics")
+            : groupId === "all"
+              ? socialKey(account, "events", "community", "aggregated")
+              : socialKey(account, "events", "community", groupId);
   const refreshing = useIsFetching({ queryKey }) > 0;
 
   let context;
   if (view === "people" || topic) {
     context = (
-      <Link href="/social" scroll={false} className={s.contextBack}>
+      <Link
+        href={topic ? "/social?view=topics" : "/social"}
+        scroll={false}
+        className={s.contextBack}
+      >
         <ArrowLeft aria-hidden="true" className="size-4" />
-        {view === "people" ? t("social.backToFeed") : t("social.backTo", { name: discoverTab })}
+        {view === "people"
+          ? t("social.backToFeed")
+          : t("social.backTo", { name: t("social.hotTopics") })}
       </Link>
     );
   } else if (view === "friends") {
     context = <span>{t("social.followingContext")}</span>;
+  } else if (view === "topics") {
+    context = null;
   } else if (selectedGroup) {
     const level = selectedGroup.userLevel?.level;
     context = (
@@ -118,10 +128,19 @@ export function SocialHeader({ view, topic, groupId, groups }: SocialHeaderProps
               href="/social"
               scroll={false}
               className={s.tab}
-              data-active={view === "hot" && !topic}
-              aria-current={view === "hot" && !topic ? "page" : undefined}
+              data-active={view === "hot"}
+              aria-current={view === "hot" ? "page" : undefined}
             >
               {discoverTab}
+            </Link>
+            <Link
+              href="/social?view=topics"
+              scroll={false}
+              className={s.tab}
+              data-active={view === "topics"}
+              aria-current={view === "topics" && !topic ? "page" : undefined}
+            >
+              {t("social.hotTopics")}
             </Link>
           </nav>
           <div className={s.headerActions}>

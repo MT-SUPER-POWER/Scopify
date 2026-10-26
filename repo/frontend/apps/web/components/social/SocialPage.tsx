@@ -18,7 +18,7 @@ import { SocialHotFeed } from "./SocialHotFeed";
 import { SocialNotesFeed } from "./SocialNotesFeed";
 import { SocialFansGroupRail } from "./SocialFansGroupRail";
 import { SocialAggregatedNotesFeed } from "./SocialAggregatedNotesFeed";
-import { SocialSidebar } from "./SocialSidebar";
+import { SocialTopicList } from "./SocialTopicList";
 import { SocialHeader } from "./SocialHeader";
 import s from "./Social.module.css";
 
@@ -39,7 +39,8 @@ function SocialPageContent() {
 
   const view = params.get("view");
   const people = view === "people",
-    following = view === "following";
+    following = view === "following",
+    topicsView = view === "topics";
   const search = params.get("query") ?? "";
   const topics = useSocialHotTopics();
   const items = uniqueById(topics.data?.pages.flatMap((page) => page.items) ?? []);
@@ -79,10 +80,12 @@ function SocialPageContent() {
   return (
     <div ref={pageRef} className={s.page + " " + s.streamPage}>
       {uid ? <AppBackground /> : null}
-      <div className={s.feedLayout} data-solo={!uid}>
+      <div className={s.feedLayout}>
         <main className={s.main}>
           <SocialHeader
-            view={people ? "people" : following ? "friends" : "hot"}
+            view={
+              people ? "people" : following ? "friends" : topicsView || topic ? "topics" : "hot"
+            }
             topic={topic}
             groupId={groupId}
             groups={userGroups}
@@ -109,6 +112,10 @@ function SocialPageContent() {
             </>
           ) : topic ? (
             <SocialHotFeed key={topic.id} topic={topic} />
+          ) : topicsView ? (
+            <section className={s.topicBrowser}>
+              <SocialTopicList expanded />
+            </section>
           ) : (
             <>
               {hasUserGroups && (
@@ -126,7 +133,6 @@ function SocialPageContent() {
             </>
           )}
         </main>
-        {uid && <SocialSidebar selectedId={topic?.id} />}
       </div>
     </div>
   );

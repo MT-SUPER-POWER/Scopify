@@ -9,9 +9,12 @@ import type { SocialTopicsProps } from "@/types/components/social";
 import { SocialLoadMore, SocialState } from "./SocialPrimitives";
 import s from "./Social.module.css";
 
-export function SocialTopicList({ selectedId }: SocialTopicsProps) {
+export function SocialTopicList({
+  selectedId,
+  expanded: initialExpanded = false,
+}: SocialTopicsProps) {
   const { t, locale } = useI18n();
-  const [expanded, setExpanded] = useState(false);
+  const [expanded, setExpanded] = useState(initialExpanded);
   const query = useSocialHotTopics();
   const topics = uniqueById(query.data?.pages.flatMap((page) => page.items) ?? []);
   const visible = expanded ? topics : topics.slice(0, 4);
