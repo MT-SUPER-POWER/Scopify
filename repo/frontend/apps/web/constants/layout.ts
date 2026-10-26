@@ -6,7 +6,7 @@ export const DASHBOARD_LAYOUT_GROUP_ID = "music-player-layout";
 /** Sidebar panel width (percent of the dashboard) before the user resizes it. */
 export const SIDEBAR_DEFAULT_SIZE_PERCENT = 18;
 /** Collapsed sidebar keeps an icon rail of this width (react-resizable-panels `collapsedSize`). */
-export const SIDEBAR_COLLAPSED_WIDTH = 80;
+export const SIDEBAR_COLLAPSED_WIDTH = 74;
 
 /** Panel ids inside the dashboard group; persisted layouts are keyed by the rendered id set. */
 export const DASHBOARD_PANEL_IDS = {

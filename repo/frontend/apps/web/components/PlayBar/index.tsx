@@ -44,7 +44,8 @@ export const PlayerBar = ({
     >
       <div
         className={cn(
-          "z-20 h-17 w-full items-center px-4 transition-all duration-300 ease-linear lg:h-18",
+          "z-20 h-17 w-full items-center transition-all duration-300 ease-linear lg:h-18",
+          isLyricStageBar ? "px-4" : "pr-4 pl-0",
           isLyricStageBar
             ? "grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] gap-4"
             : "flex justify-between md:grid md:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] md:gap-4",
