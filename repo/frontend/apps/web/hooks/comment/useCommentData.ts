@@ -6,11 +6,14 @@ import { toast } from "sonner";
 
 import { getAritstDetail } from "@/lib/api/artist";
 import { getAlbumDetail } from "@/lib/api/album";
+import { getMVDetail } from "@/lib/api/mv";
+import { getMvCover } from "@/lib/music/mvCover";
 import {
   addResourceComment,
   delComments,
   getAlbumComments,
   getMusicComments,
+  getMVComments,
   getNewComments,
   getPlaylistComments,
   getVoiceComments,
@@ -28,7 +31,11 @@ import {
 } from "@/lib/comment/commentResource";
 import { useLoginStatus } from "@/lib/hooks/useLoginStatus";
 import { useI18n } from "@/store/module/i18n";
-import type { CommentResourceKind } from "@/types/api/comment";
+import {
+  COMMENT_RESOURCE_TYPE,
+  type CommentResourceKind,
+  type CommentResourceRef,
+} from "@/types/api/comment";
 import type { NeteaseComment, SongDetail } from "@/types/api/music";
 import type { CommentResourceHeaderData } from "@/types/comment";
 
@@ -138,8 +145,28 @@ async function getVoiceListHeader(resourceId: string): Promise<CommentResourceHe
   };
 }
 
+async function getMvHeader(resourceId: string): Promise<CommentResourceHeaderData> {
+  const mv = (await getMVDetail(resourceId)).data?.data;
+  const artists = mv?.artists?.length
+    ? mv.artists
+    : mv?.artistId
+      ? [{ id: mv.artistId, name: mv.artistName ?? "" }]
+      : [];
+  return {
+    artists: artists.map((artist) => ({
+      avatarUrl: "img1v1Url" in artist ? (artist.img1v1Url ?? "") : "",
+      id: artist.id,
+      name: artist.name,
+    })),
+    coverUrl: (mv && getMvCover(mv)) || FALLBACK_COVER,
+    title: mv?.name ?? "",
+  };
+}
+
 function getResourceHeader(kind: CommentResourceKind, resourceId: string) {
   switch (kind) {
+    case "mv":
+      return getMvHeader(resourceId);
     case "album":
       return getAlbumHeader(resourceId);
     case "playlist":
@@ -153,18 +180,26 @@ function getResourceHeader(kind: CommentResourceKind, resourceId: string) {
   }
 }
 
-export function useCommentData() {
+/**
+ * 评论列表、点赞、回复与发表。不传 resourceRef 时从评论页 URL 解析资源；
+ * 嵌入在其他页面（如 MV 页）时直接传入资源。
+ */
+export function useCommentData(resourceRef?: CommentResourceRef) {
   const { t } = useI18n();
   const isLogin = useLoginStatus();
   const searchParams = useSearchParams();
+  const refKind = resourceRef?.kind;
+  const refId = resourceRef?.id;
   const resource = useMemo(
     () =>
-      resolveCommentResource(
-        searchParams.get("resource"),
-        searchParams.get("id"),
-        searchParams.get("SongId") || searchParams.get("songId"),
-      ),
-    [searchParams],
+      refKind && refId
+        ? { id: refId, kind: refKind, type: COMMENT_RESOURCE_TYPE[refKind] }
+        : resolveCommentResource(
+            searchParams.get("resource"),
+            searchParams.get("id"),
+            searchParams.get("SongId") || searchParams.get("songId"),
+          ),
+    [refId, refKind, searchParams],
   );
 
   const [headerData, setHeaderData] = useState<CommentResourceHeaderData>({
@@ -210,7 +245,9 @@ export function useCommentData() {
                       ? getPlaylistComments(params)
                       : resource.kind === "voice"
                         ? getVoiceComments(params)
-                        : getMusicComments(params))
+                        : resource.kind === "mv"
+                          ? getMVComments(params)
+                          : getMusicComments(params))
                 ).data,
               );
 
@@ -367,6 +404,7 @@ export function useCommentData() {
 
   return {
     albumCover: headerData.coverUrl,
+    total,
     commentHeaderInfo,
     comments,
     handleDelete,

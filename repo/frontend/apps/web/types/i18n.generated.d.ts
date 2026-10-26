@@ -7298,6 +7298,12 @@ export interface TranslateFn {
    */
   (key: "comments.page.albumTag", params?: TranslationParams): string;
   /**
+   * zh-CN: MV
+   * zh-TW: MV
+   * en-US: Music video
+   */
+  (key: "comments.page.mvTag", params?: TranslationParams): string;
+  /**
    * zh-CN: 声音
    * zh-TW: 聲音
    * en-US: Voice
