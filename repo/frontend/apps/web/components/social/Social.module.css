@@ -720,13 +720,13 @@
   color: var(--social-muted);
 }
 .streamPage {
-  padding: 64px clamp(24px, 4vw, 64px) 40px;
+  padding: 12px clamp(24px, 4vw, 64px) 40px;
 }
 /* 动态页铺满面板宽度做瀑布流，超宽屏时限制总宽避免列过多 */
 .streamPage .feedLayout {
   display: block;
   max-width: 1240px;
-  min-height: calc(var(--social-viewport-height, 100dvh) - 64px);
+  min-height: calc(var(--social-viewport-height, 100dvh) - 52px);
 }
 .streamPage .peopleBrowser {
   max-width: 680px;
@@ -1260,7 +1260,7 @@
     padding: 78px 16px 36px;
   }
   .streamPage {
-    padding: 72px 20px 32px;
+    padding: 12px 20px 32px;
   }
   .heading h1 {
     font-size: 26px;
