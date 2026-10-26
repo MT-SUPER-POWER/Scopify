@@ -39,6 +39,18 @@ describe("song encyclopedia and sheets", () => {
   it("rejects malformed sheet lists and deduplicates repeated arrangements", () => {
     expect(normalizeSongSheets({ code: 200, data: { musicSheetSimpleInfoVOS: [] } })).toEqual([]);
     expect(() => normalizeSongSheets({ code: 200, data: {} } as never)).toThrow();
+    expect(
+      normalizeSongSheets({
+        code: 200,
+        data: { musicSheetSimpleInfoVOS: null, errorCode: 404 },
+      } as never),
+    ).toEqual([]);
+    expect(() =>
+      normalizeSongSheets({
+        code: 200,
+        data: { musicSheetSimpleInfoVOS: null, errorCode: 500 },
+      } as never),
+    ).toThrow();
     expect(() =>
       normalizeSongSheets({
         code: 200,

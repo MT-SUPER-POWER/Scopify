@@ -34,6 +34,8 @@ export function normalizeSongWiki(response: SongWikiResponse): SongWikiSection[]
 }
 
 export function normalizeSongSheets(response: SongSheetListResponse): MusicSheet[] {
+  /** 歌曲没有乐谱时接口返回 errorCode 404 且列表为 null，这是“空结果”而不是失败。 */
+  if (response.data?.errorCode === 404) return [];
   const items = response.data?.musicSheetSimpleInfoVOS;
   if (!Array.isArray(items) || response.data?.errorCode)
     throw new Error("Invalid sheet list response");
