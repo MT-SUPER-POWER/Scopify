@@ -17,7 +17,7 @@ export function SongMvBadge({ mvId }: SongMvBadgeProps) {
       aria-label={t("mv.action.watch")}
       onClick={(event) => event.stopPropagation()}
       onDoubleClick={(event) => event.stopPropagation()}
-      className="inline-flex h-[13px] shrink-0 items-center rounded-xs border border-info bg-info/10 px-[2px] text-[9px] leading-[11px] font-normal text-info transition-colors hover:bg-info hover:text-white"
+      className="inline-flex h-[13px] shrink-0 items-center rounded-xs border border-info bg-info/10 px-[2px] text-[9px] leading-[11px] font-normal text-info transition-colors hover:bg-info hover:text-info-foreground"
     >
       MV
     </Link>
