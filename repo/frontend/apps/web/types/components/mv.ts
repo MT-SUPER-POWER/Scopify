@@ -1,3 +1,4 @@
+import type { NeteaseComment } from "@/types/api/music";
 import type { ReactNode } from "react";
 import type { MvArtist, MvDetail, MvResolution, MvSummary } from "@/types/api/mv";
 
@@ -71,4 +72,28 @@ export interface MvCommentsProps {
 
 export interface MvCardPreviewProps {
   mvid: number;
+}
+
+export interface MvCommentComposerProps {
+  placeholder: string;
+  submitLabel: string;
+  /** 回复时的紧凑尺寸（小头像）。 */
+  compact?: boolean;
+  autoFocus?: boolean;
+  onFocus?: () => void;
+  /** 返回是否成功；成功后清空输入。 */
+  onSubmit: (text: string) => Promise<boolean>;
+  onCancel?: () => void;
+}
+
+export interface MvCommentItemProps {
+  comment: NeteaseComment;
+  isOwn: boolean;
+  isReplying: boolean;
+  canReply: boolean;
+  onLike: () => void;
+  onDelete: () => void;
+  onReplyOpen: () => void;
+  onReplyCancel: () => void;
+  onReplySubmit: (text: string) => Promise<boolean>;
 }

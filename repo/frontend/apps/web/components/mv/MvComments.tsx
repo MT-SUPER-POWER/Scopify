@@ -1,32 +1,33 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
-import { Loader2 } from "lucide-react";
+import { Check, ListFilter, Loader2 } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { CommentInputBox } from "@/components/Comment/CommentInputBox";
-import { CommentItem } from "@/components/Comment/CommentItem";
+import { MvCommentComposer } from "./comments/MvCommentComposer";
+import { MvCommentItem } from "./comments/MvCommentItem";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { useCommentData } from "@/hooks/comment/useCommentData";
-import { useLoginStatus } from "@/lib/hooks/useLoginStatus";
-import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
 import { getCommentHref } from "@/lib/comment/commentResource";
-import { getSizedImageUrl } from "@/lib/music/imageUrl";
-import { cn } from "@/lib/utils";
+import { useLoginStatus } from "@/lib/hooks/useLoginStatus";
 import { useUserStore } from "@/store";
 import { useI18n } from "@/store/module/i18n";
 import type { MvCommentsProps } from "@/types/components/mv";
 
-type MvCommentTab = "hot" | "latest";
+type MvCommentSort = "hot" | "latest";
 
 /**
- * MV 页视频下方的评论区（参考 YouTube）：评论数与精彩/最新切换、常驻输入框、
- * 复用评论页的评论条目，最新评论滚动到底自动加载。
+ * MV 页视频下方的评论区（按 YouTube 复刻）：「N 条评论」与排序方式、常驻输入框、
+ * 评论条目内联回复；最新评论滚动到底自动加载。数据与操作沿用评论页的 useCommentData。
  */
 export function MvComments({ mvid }: MvCommentsProps) {
   const { t } = useI18n();
-  const smartRouter = useSmartRouter();
   const isLogin = useLoginStatus();
-  const currentUser = useUserStore((state) => state.user);
+  const currentUserId = useUserStore((state) => state.user?.userId);
   const resource = useMemo(() => ({ kind: "mv" as const, id: String(mvid) }), [mvid]);
   const {
     comments,
@@ -42,107 +43,102 @@ export function MvComments({ mvid }: MvCommentsProps) {
     setReplyTarget,
     total,
   } = useCommentData(resource);
-  const [tab, setTab] = useState<MvCommentTab>("hot");
-  const activeTab: MvCommentTab = hotComments.length > 0 ? tab : "latest";
-  const composerRef = useRef<HTMLDivElement>(null);
+  const [sort, setSort] = useState<MvCommentSort>("hot");
+  const activeSort: MvCommentSort = hotComments.length > 0 ? sort : "latest";
+  const list = activeSort === "hot" ? hotComments : comments;
   const loadMoreRef = useRef<HTMLDivElement>(null);
-  const list = activeTab === "hot" ? hotComments : comments;
 
   useEffect(() => {
     const target = loadMoreRef.current;
-    if (!target || activeTab !== "latest") return;
+    if (!target || activeSort !== "latest") return;
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting && hasMore && !isLoading) void loadMore();
       },
-      { rootMargin: "200px" },
+      { rootMargin: "300px" },
     );
     observer.observe(target);
     return () => observer.disconnect();
-  }, [activeTab, hasMore, isLoading, loadMore]);
+  }, [activeSort, hasMore, isLoading, loadMore]);
 
-  const reply = (commentId: number) => {
-    handleReply(commentId);
-    composerRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
-  };
+  const sortOptions: { value: MvCommentSort; label: string }[] = [
+    ...(hotComments.length > 0
+      ? [{ value: "hot" as const, label: t("comments.page.hotComments") }]
+      : []),
+    { value: "latest", label: t("comments.page.latestComments") },
+  ];
 
   return (
     <section className="mt-6">
-      <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
+      <div className="flex items-center gap-8">
         <h2 className="text-xl font-bold text-content">
           {t("mv.comments.count", { count: total.toLocaleString() })}
         </h2>
-        <div role="tablist" className="flex gap-2">
-          {hotComments.length > 0 &&
-            (["hot", "latest"] as const).map((value) => (
-              <button
-                key={value}
-                type="button"
-                role="tab"
-                aria-selected={activeTab === value}
-                onClick={() => setTab(value)}
-                className={cn(
-                  "rounded-lg px-3 py-1 text-sm font-semibold transition-colors",
-                  activeTab === value
-                    ? "bg-content text-surface"
-                    : "bg-content/8 text-content hover:bg-content/15",
-                )}
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <button
+              type="button"
+              className="flex items-center gap-2 text-sm font-medium text-content transition-opacity hover:opacity-80"
+            >
+              <ListFilter className="size-5" />
+              {t("mv.comments.sortBy")}
+            </button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="start" className="w-40">
+            {sortOptions.map((option) => (
+              <DropdownMenuItem
+                key={option.value}
+                onClick={() => setSort(option.value)}
+                className="flex cursor-pointer items-center justify-between"
               >
-                {t(value === "hot" ? "comments.page.hotComments" : "comments.page.latestComments")}
-              </button>
+                {option.label}
+                {activeSort === option.value && <Check className="size-4 text-brand" />}
+              </DropdownMenuItem>
             ))}
-        </div>
+          </DropdownMenuContent>
+        </DropdownMenu>
         <Link
           href={getCommentHref("mv", mvid)}
           scroll={false}
-          className="ml-auto text-sm font-semibold text-content-muted transition-colors hover:text-content"
+          className="ml-auto text-sm font-medium text-content-muted transition-colors hover:text-content"
         >
           {t("mv.comments.openPage")}
         </Link>
       </div>
 
-      <div ref={composerRef} className="mt-5 flex gap-4">
-        <span className="relative mt-1 size-10 shrink-0 overflow-hidden rounded-full bg-surface-elevated">
-          {currentUser?.avatarUrl && (
-            <Image
-              fill
-              sizes="40px"
-              src={getSizedImageUrl(currentUser.avatarUrl, 120)}
-              alt=""
-              className="object-cover"
-            />
-          )}
-        </span>
+      <div className="mt-6">
         {isLogin ? (
-          <div className="min-w-0 flex-1">
-            <CommentInputBox
-              replyTarget={replyTarget}
-              onCancelReply={() => setReplyTarget(null)}
-              onSubmit={async (text) => {
-                const ok = await handleSubmitComment(text);
-                if (ok) setTab("latest");
-                return ok;
-              }}
-            />
-          </div>
+          <MvCommentComposer
+            placeholder={t("mv.comments.addPlaceholder")}
+            submitLabel={t("mv.comments.submit")}
+            // 顶部输入与内联回复共用 replyTarget，聚焦顶部时先关掉正在进行的回复
+            onFocus={() => setReplyTarget(null)}
+            onSubmit={async (text) => {
+              const ok = await handleSubmitComment(text);
+              if (ok) setSort("latest");
+              return ok;
+            }}
+          />
         ) : (
-          <p className="flex-1 self-center border-b border-content/10 pb-2 text-sm text-content-subtle">
+          <p className="border-b border-content/20 pb-1 text-sm text-content-muted">
             {t("mv.comments.loginToComment")}
           </p>
         )}
       </div>
 
-      <div className="mt-8 space-y-6">
+      <div className="mt-8 flex flex-col gap-6">
         {list.map((comment) => (
-          <CommentItem
-            key={`${activeTab}-${comment.commentId}`}
+          <MvCommentItem
+            key={`${activeSort}-${comment.commentId}`}
             comment={comment}
-            isHot={activeTab === "hot"}
-            currentUserId={currentUser?.userId}
-            onLike={handleLike}
-            onDelete={handleDelete}
-            onReply={reply}
-            onRouterClick={(url) => smartRouter.push(url)}
+            isOwn={String(comment.user.userId) === String(currentUserId ?? "")}
+            isReplying={replyTarget?.commentId === comment.commentId}
+            canReply={isLogin}
+            onLike={() => void handleLike(comment.commentId, activeSort === "hot")}
+            onDelete={() => void handleDelete(comment.commentId)}
+            onReplyOpen={() => handleReply(comment.commentId)}
+            onReplyCancel={() => setReplyTarget(null)}
+            onReplySubmit={handleSubmitComment}
           />
         ))}
         {list.length === 0 && !isLoading && (
@@ -152,13 +148,11 @@ export function MvComments({ mvid }: MvCommentsProps) {
         )}
       </div>
 
-      {activeTab === "latest" && (
+      {activeSort === "latest" && (
         <div ref={loadMoreRef} className="flex justify-center py-6 text-sm text-content-muted">
           {isLoading ? (
-            <Loader2 className="size-5 animate-spin text-brand" />
-          ) : hasMore ? (
-            t("comments.page.loadMore")
-          ) : comments.length > 0 ? (
+            <Loader2 className="size-6 animate-spin text-brand" />
+          ) : !hasMore && comments.length > 0 ? (
             t("comments.page.end")
           ) : null}
         </div>

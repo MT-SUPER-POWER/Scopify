@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { toast } from "sonner";
-import { FolderHeart, Link2, ThumbsUp } from "lucide-react";
+import { Bookmark, Share2, ThumbsUp } from "lucide-react";
 import { MvChannel } from "./MvChannel";
 import { useMVLikeMutation, useMVSubscriptionMutation } from "@/hooks/mv/useMVMutations";
 import { useMVDetailInfoQuery } from "@/hooks/mv/useMVQueries";
@@ -12,14 +12,15 @@ import { useI18n } from "@/store/module/i18n";
 import type { MvInfoProps } from "@/types/components/mv";
 
 const ACTION_BTN =
-  "flex h-9 shrink-0 items-center gap-2 rounded-full px-4 text-sm font-bold transition-colors disabled:opacity-50";
+  "flex h-9 shrink-0 items-center gap-2 rounded-full px-4 text-sm font-medium transition-colors disabled:opacity-50";
+const IDLE_BTN = "bg-content/10 text-content hover:bg-content/20";
 
 /**
  * 播放器下方的信息区（参考 YouTube 观看页）：标题；艺人行与点赞/收藏/复制链接；
  * 播放量、发布时间与简介合在一个可展开的卡片里。
  */
 export function MvInfo({ detail, isSubscribed }: MvInfoProps) {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
   const isLoggedIn = useLoginStatus();
   const info = useMVDetailInfoQuery(detail.id).data;
   const likeMutation = useMVLikeMutation();
@@ -32,6 +33,11 @@ export function MvInfo({ detail, isSubscribed }: MvInfoProps) {
       ? [{ id: detail.artistId, name: detail.artistName ?? "" }]
       : [];
   const isLiked = info?.liked ?? false;
+  const publishedDate = detail.publishTime ? new Date(detail.publishTime) : null;
+  const publishedLabel =
+    publishedDate && !Number.isNaN(publishedDate.getTime())
+      ? publishedDate.toLocaleDateString(locale, { dateStyle: "long" })
+      : (detail.publishTime ?? "");
 
   const requireLogin = () => {
     if (isLoggedIn) return true;
@@ -67,10 +73,7 @@ export function MvInfo({ detail, isSubscribed }: MvInfoProps) {
             onClick={() => {
               if (requireLogin()) likeMutation.mutate({ mvid: detail.id, liked: !isLiked });
             }}
-            className={cn(
-              ACTION_BTN,
-              isLiked ? "bg-brand/15 text-brand" : "bg-content/8 text-content hover:bg-content/15",
-            )}
+            className={cn(ACTION_BTN, isLiked ? "bg-brand/15 text-brand" : IDLE_BTN)}
           >
             <ThumbsUp className={cn("size-4", isLiked && "fill-current")} />
             {info?.likedCount ? formatPlayCount(info.likedCount) : t("mv.action.like")}
@@ -83,34 +86,29 @@ export function MvInfo({ detail, isSubscribed }: MvInfoProps) {
               if (requireLogin())
                 subscribeMutation.mutate({ mvid: detail.id, subscribe: !isSubscribed });
             }}
-            className={cn(
-              ACTION_BTN,
-              isSubscribed
-                ? "bg-brand/15 text-brand"
-                : "bg-content/8 text-content hover:bg-content/15",
-            )}
+            className={cn(ACTION_BTN, isSubscribed ? "bg-brand/15 text-brand" : IDLE_BTN)}
           >
-            <FolderHeart className="size-4" />
+            <Bookmark className={cn("size-4", isSubscribed && "fill-current")} />
             {t(isSubscribed ? "mv.action.subscribed" : "mv.action.subscribe")}
           </button>
           <button
             type="button"
             onClick={() => void copyLink()}
-            className={cn(ACTION_BTN, "bg-content/8 text-content hover:bg-content/15")}
+            className={cn(ACTION_BTN, IDLE_BTN)}
           >
-            <Link2 className="size-4" />
-            {t("mv.action.copyLink")}
+            <Share2 className="size-4" />
+            {t("mv.action.share")}
           </button>
         </div>
       </div>
 
-      <div className="mt-4 rounded-xl bg-content/6 p-3 text-sm">
-        <p className="font-bold text-content">
+      <div className="mt-4 rounded-xl bg-content/10 p-3 text-sm">
+        <p className="font-semibold text-content">
           {[
             detail.playCount
-              ? t("mv.meta.plays", { count: formatPlayCount(detail.playCount) })
+              ? t("mv.meta.views", { count: formatPlayCount(detail.playCount) })
               : "",
-            detail.publishTime ?? "",
+            publishedLabel,
           ]
             .filter(Boolean)
             .join("  ")}
@@ -128,7 +126,7 @@ export function MvInfo({ detail, isSubscribed }: MvInfoProps) {
             <button
               type="button"
               onClick={() => setIsDescExpanded((value) => !value)}
-              className="mt-1 font-bold text-content hover:underline"
+              className="mt-1 font-semibold text-content hover:underline"
             >
               {t(isDescExpanded ? "common.action.showLess" : "common.action.showAll")}
             </button>

@@ -47,7 +47,7 @@ export function MvPage() {
   const poster = detail ? getMvCover(detail) : "";
 
   return (
-    <div className="mx-auto grid w-full max-w-400 gap-8 p-6 pb-10 text-content xl:grid-cols-[minmax(0,1fr)_400px]">
+    <div className="mx-auto grid w-full max-w-400 gap-6 p-6 pb-10 text-content xl:grid-cols-[minmax(0,1fr)_402px]">
       {/* 切换 MV 时整列重建，播放器与展开状态从头开始 */}
       <div key={mvid} className="min-w-0">
         <MvPlayer
@@ -73,7 +73,7 @@ export function MvPage() {
       {similarMvs.length > 0 && (
         <aside className="min-w-0">
           <h2 className="mb-2 text-base font-bold">{t("mv.section.similar")}</h2>
-          <ul className="-mx-2 flex flex-col">
+          <ul className="-mx-1 flex flex-col gap-1">
             {similarMvs.map((item) => (
               <li key={item.id}>
                 <MvListItem mv={item} href={`/mv?id=${item.id}`} size="md" />

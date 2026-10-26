@@ -359,6 +359,12 @@ export interface TranslateFn {
    */
   (key: "mv.action.copyLink", params?: TranslationParams): string;
   /**
+   * zh-CN: 分享
+   * zh-TW: 分享
+   * en-US: Share
+   */
+  (key: "mv.action.share", params?: TranslationParams): string;
+  /**
    * zh-CN: 链接已复制
    * zh-TW: 連結已複製
    * en-US: Link copied
@@ -382,6 +388,24 @@ export interface TranslateFn {
    * en-US: Open comments page
    */
   (key: "mv.comments.openPage", params?: TranslationParams): string;
+  /**
+   * zh-CN: 排序方式
+   * zh-TW: 排序方式
+   * en-US: Sort by
+   */
+  (key: "mv.comments.sortBy", params?: TranslationParams): string;
+  /**
+   * zh-CN: 添加评论...
+   * zh-TW: 新增留言...
+   * en-US: Add a comment...
+   */
+  (key: "mv.comments.addPlaceholder", params?: TranslationParams): string;
+  /**
+   * zh-CN: 评论
+   * zh-TW: 留言
+   * en-US: Comment
+   */
+  (key: "mv.comments.submit", params?: TranslationParams): string;
   /**
    * zh-CN: 登录后参与评论
    * zh-TW: 登入後參與評論
