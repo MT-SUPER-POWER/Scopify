@@ -262,27 +262,11 @@ useEffect(() => {
 
 ---
 
-## 错误处理模式
+## 错误与恢复规范
 
-```ts
-// Hook 层统一处理错误
-const { mutateAsync } = useMutation({
-  mutationFn: signApi,
-  onSuccess: (data) => {
-    queryClient.invalidateQueries({ queryKey: signKeys.info() });
-    if (data.code === 200) {
-      toast.success("签到成功");
-    } else {
-      toast.error(data.message);
-    }
-  },
-  onError: (error: any) => {
-    const msg = error?.businessMsg || error?.message || "";
-    if (msg.includes("已经")) {
-      toast.info("今日已签到");
-    } else {
-      toast.error(msg);
-    }
-  },
-});
-```
+读取请求、加载状态、分页、Mutation 与媒体错误必须遵循 [Query 与错误边界](./query-boundaries.md)。
+
+- 读取失败通过 Query 的 throwOnError 进入最近业务边界；边界中统一恢复 Query 与 React 错误状态。
+- QueryCache.onError / MutationCache.onError 统一记录，不决定页面展示。
+- Mutation 的业务反馈在操作所属 hook/组件中处理；失败不得放在 onSuccess 中判断，也不得通过 catch 返回成功空值。
+- `useQuery` 可以继续使用，不要求全仓改为 Suspense；不要在聚合 hook 中重建一套加载/错误状态机。

@@ -88,6 +88,10 @@ project-root/
 - `types/api/` 定义所有请求/响应类型
 - `hooks/` 使用 TanStack Query 管理缓存、状态、副作用
 
+### Query 与错误边界 → [rules/query-boundaries.md](./rules/query-boundaries.md)
+
+涉及请求、加载/错误 UI、缓存刷新、分页、Mutation 或媒体错误时必须阅读此规范。按独立恢复的业务区域组合 Query 与 React 错误边界，不在聚合 hook 中重建请求状态机。
+
 ---
 
 ## 代码模式示例
