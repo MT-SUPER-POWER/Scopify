@@ -1,4 +1,4 @@
-import type { BrowserWindow, Point, Rectangle } from "electron";
+import type { BrowserWindow, Point, Rectangle, Tray } from "electron";
 import type { DesktopPlaybackWallpaperService } from "@/types/service/desktop/wallpaper/service";
 import type { PlaybackGateway } from "@/types/service/playback/gateway";
 import type { PlaybackClockAnchor } from "@scopify/desktop-contract";
@@ -43,4 +43,14 @@ export type MacTrayLocale = "zh-CN" | "zh-TW" | "en-US";
 export interface MacMenuBarPreferences {
   showLyrics: boolean;
   showControls: boolean;
+}
+
+export type MacTrayControlIconName = "heart" | "heartFilled" | "next" | "pause" | "play" | "prev";
+export type MacTrayControlAction = "previous" | "toggle" | "next" | "like";
+
+/** 每个控制按钮独占一个原生菜单栏项，支持独立点击与系统高亮。 */
+export interface MacTrayStatusItems {
+  logo: Tray;
+  controls: Partial<Record<MacTrayControlAction, Tray>>;
+  title: Tray | null;
 }
