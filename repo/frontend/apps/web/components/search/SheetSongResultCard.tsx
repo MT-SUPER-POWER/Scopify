@@ -62,7 +62,7 @@ export function SheetSongResultCard({
                 aria-label={`${sheet.name} · ${t("songResources.preview")}`}
                 className="group block w-full text-left outline-none"
               >
-                <span className="relative flex aspect-3/4 items-center justify-center overflow-hidden rounded-md border border-border bg-white transition-shadow group-hover:shadow-md group-focus-visible:ring-2 group-focus-visible:ring-ring">
+                <span className="relative flex aspect-3/4 items-center justify-center overflow-hidden rounded-md border border-border bg-muted transition-shadow group-hover:shadow-md group-focus-visible:ring-2 group-focus-visible:ring-ring">
                   {sheet.coverImageUrl ? (
                     <img
                       src={sheet.coverImageUrl}
@@ -74,7 +74,7 @@ export function SheetSongResultCard({
                     <FileMusic className="size-6 text-muted-foreground" />
                   )}
                   {sheet.totalPageSize ? (
-                    <span className="absolute right-1 bottom-1 rounded bg-black/60 px-1.5 py-0.5 text-[10px] leading-none text-white">
+                    <span className="absolute right-1 bottom-1 rounded bg-overlay/60 px-1.5 py-0.5 text-[10px] leading-none text-overlay-foreground">
                       {t("songResources.pages", { count: sheet.totalPageSize })}
                     </span>
                   ) : null}
