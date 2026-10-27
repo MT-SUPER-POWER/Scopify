@@ -32,7 +32,8 @@ import {
   toggleDesktopPlaybackController,
 } from "@main/service/desktop/wallpaper";
 
-import { getMacTrayLyricFrame } from "./macTrayLyrics";
+import { cropMacTrayLyric, getMacTrayLyricFrame } from "./macTrayLyrics";
+import { disposeMenuBarTextRenderer, renderMenuBarText } from "@main/service/renderer/menuBarText";
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ CONSTANTS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -41,7 +42,7 @@ const MENU_BAR_ICON_SIZE = 18;
 /** 菜单里歌名过长会把整列撑宽，超出部分省略。 */
 const MAX_MENU_TEXT_LENGTH = 48;
 /** 歌词切行定时器的最短间隔，避免密集短句时空转。 */
-const MIN_LYRIC_TICK_MS = 50;
+const MIN_LYRIC_TICK_MS = 16;
 /** 菜单头部封面 32pt，按 @2x 取 64px。 */
 const COVER_SIZE = 32;
 const PREFERENCES_FILE = "mac-menu-bar.json";
@@ -141,7 +142,6 @@ let menuBarPreferences: MacMenuBarPreferences | null = null;
 let cover: CoverCache | null = null;
 let lyricCache: LyricCache | null = null;
 let lyricTimer: ReturnType<typeof setTimeout> | undefined;
-let lyricText: string | null = null;
 let lyricScroll: MacTrayLyricScrollState | null = null;
 let cleanups: (() => void)[] = [];
 
@@ -515,7 +515,6 @@ function getPositionMs(options: MacTrayOptions, snapshot: PlaybackProjection) {
 function stopLyricTicker() {
   clearTimeout(lyricTimer);
   lyricTimer = undefined;
-  lyricText = null;
   lyricScroll = null;
 }
 
@@ -530,7 +529,6 @@ function updateLyricTitle(options: MacTrayOptions) {
   const snapshot = options.playback.getSnapshot();
   const track = describeTrack(snapshot, getCopy());
   if (!getMenuBarPreferences().showLyrics || !title || title.isDestroyed() || !snapshot || !track) {
-    lyricText = null;
     lyricScroll = null;
     return;
   }
@@ -544,16 +542,45 @@ function updateLyricTitle(options: MacTrayOptions) {
   const key = `${snapshot.track?.id}|${snapshot.lyricsVersion}|${index}|${fullText}`;
   if (
     lyricScroll?.key !== key ||
-    positionMs < lyricScroll.lastPositionMs ||
+    positionMs < lyricScroll.lastPositionMs - 250 ||
     positionMs - lyricScroll.lastPositionMs > 1500
   ) {
-    lyricScroll = { key, startPositionMs: positionMs, lastPositionMs: positionMs };
+    const scroll: MacTrayLyricScrollState = {
+      key,
+      startPositionMs: positionMs,
+      lastPositionMs: positionMs,
+      bitmap: null,
+      lastOffset: null,
+    };
+    lyricScroll = scroll;
+    // 初次排版期间显示静态文本；异步结果只允许写入仍然有效的歌词项。
+    title.setImage(nativeImage.createEmpty());
+    title.setTitle(truncate(fullText, 30));
+    void renderMenuBarText(fullText)
+      .then((bitmap) => {
+        if (lyricScroll !== scroll || title.isDestroyed()) return;
+        scroll.bitmap = bitmap;
+        updateLyricTitle(options);
+      })
+      .catch((error) => trayLog.warn("[mac-tray] failed to render lyric text", error));
   }
   lyricScroll.lastPositionMs = positionMs;
-  const frame = getMacTrayLyricFrame(fullText, positionMs - lyricScroll.startPositionMs);
-  if (frame.text !== lyricText) {
-    lyricText = frame.text;
-    title.setTitle(frame.text);
+  const bitmap = lyricScroll.bitmap;
+  const frame = getMacTrayLyricFrame(
+    bitmap ? bitmap.width - bitmap.viewportWidth : 0,
+    positionMs - lyricScroll.startPositionMs,
+  );
+  const offset = Math.round(frame.offset);
+  if (bitmap && offset !== lyricScroll.lastOffset) {
+    const image = nativeImage.createFromBitmap(cropMacTrayLyric(bitmap, offset), {
+      width: bitmap.viewportWidth,
+      height: bitmap.height,
+      scaleFactor: 2,
+    });
+    image.setTemplateImage(true);
+    title.setTitle("");
+    title.setImage(image);
+    lyricScroll.lastOffset = offset;
   }
 
   if (!snapshot.isPlaying) return;
@@ -719,4 +746,5 @@ export function disposeMacTray() {
   destroyStatusItems();
   cover = null;
   lyricCache = null;
+  disposeMenuBarTextRenderer();
 }

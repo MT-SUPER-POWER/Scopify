@@ -47,7 +47,15 @@ mock.module("electron", () => ({
   app: { getLocale: () => "en-US", dock: { setMenu() {} }, once() {} },
   Tray: FakeTray,
   Menu: { buildFromTemplate: (template: unknown) => template },
-  nativeImage: { createFromPath: image, createEmpty: image },
+  nativeImage: {
+    createFromPath: image,
+    createEmpty: image,
+    createFromBitmap: (pixels: Buffer, options: unknown) => ({
+      pixels,
+      options,
+      setTemplateImage() {},
+    }),
+  },
   net: {},
 }));
 mock.module("../electron/main/constants", () => ({
@@ -73,6 +81,16 @@ mock.module("../electron/main/window/dynamicIsland", () => ({
 mock.module("../electron/main/service/desktop/wallpaper", () => ({
   isDesktopPlaybackControllerOpen: () => false,
   toggleDesktopPlaybackController() {},
+}));
+
+mock.module("../electron/main/service/renderer/menuBarText", () => ({
+  renderMenuBarText: async (text: string) => {
+    const width = Array.from(text).length * 20;
+    const pixels = Buffer.alloc(width * 4);
+    for (let column = 0; column < width; column += 1) pixels[column * 4] = column % 256;
+    return { width, height: 1, viewportWidth: Math.min(width, 600), pixels };
+  },
+  disposeMenuBarTextRenderer() {},
 }));
 
 const { initMacTray, disposeMacTray } = await import("../electron/main/window/macTray");
@@ -175,22 +193,32 @@ test("menu bar controls have separate native targets, actions, state and cleanup
     },
   };
   refresh();
-  expect(title.title).toBe(longLine.slice(0, 30));
+  await Promise.resolve();
+  expect(title.title).toBe("");
+  expect(title.image).toMatchObject({ options: { width: 600, scaleFactor: 2 } });
+  const initialImage = title.image;
   snapshot = { ...snapshot, positionMs: 1200 };
   refresh();
-  expect(title.title).toBe(longLine.slice(1, 31));
+  expect(title.image).toBe(initialImage);
   snapshot = { ...snapshot, isPlaying: false };
   refresh();
-  expect(title.title).toBe(longLine.slice(1, 31));
+  expect(title.image).toBe(initialImage);
   snapshot = { ...snapshot, isPlaying: true, positionMs: 1440 };
   refresh();
-  expect(title.title).toBe(longLine.slice(2, 32));
+  expect(title.image).not.toBe(initialImage);
+  expect((title.image as { pixels: Buffer }).pixels[0]).toBe(12);
+  // Small playback-clock corrections must not restart the opening hold.
+  snapshot = { ...snapshot, positionMs: 1430 };
+  refresh();
+  expect((title.image as { pixels: Buffer }).pixels[0]).toBe(11);
   snapshot = { ...snapshot, positionMs: 3000 };
   refresh();
-  expect(title.title).toBe("下一句");
+  await Promise.resolve();
+  expect(title.image).toMatchObject({ options: { width: 60 } });
   snapshot = { ...snapshot, positionMs: 0 };
   refresh();
-  expect(title.title).toBe(longLine.slice(0, 30));
+  await Promise.resolve();
+  expect((title.image as { pixels: Buffer }).pixels[0]).toBe(0);
 
   snapshot = { ...snapshot, track: null };
   refresh();

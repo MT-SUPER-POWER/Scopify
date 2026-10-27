@@ -59,4 +59,13 @@ export interface MacTrayLyricScrollState {
   key: string;
   startPositionMs: number;
   lastPositionMs: number;
+  bitmap: MacTrayLyricBitmap | null;
+  lastOffset: number | null;
+}
+
+export interface MacTrayLyricBitmap {
+  pixels: Buffer;
+  width: number;
+  height: number;
+  viewportWidth: number;
 }

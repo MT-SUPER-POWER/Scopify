@@ -1,24 +1,29 @@
-/** 固定字符窗口；按字素切分，避免截断 emoji、组合音标或代理对。 */
-const VISIBLE_GRAPHEMES = 30;
+import type { MacTrayLyricBitmap } from "@/types/tray";
+
 const HOLD_MS = 1200;
-const STEP_MS = 240;
-const segmenter = new Intl.Segmenter(undefined, { granularity: "grapheme" });
+/** @2x 像素/毫秒，即每秒 24pt；每帧最多移动约半个逻辑像素。 */
+const PIXELS_PER_MS = 0.048;
+const FRAME_MS = 1000 / 60;
 
-/** 由播放进度驱动，暂停时停在当前窗口；首尾停留后循环。 */
-export function getMacTrayLyricFrame(text: string, elapsedMs: number) {
-  const characters = Array.from(segmenter.segment(text), ({ segment }) => segment);
-  const distance = characters.length - VISIBLE_GRAPHEMES;
-  if (distance <= 0) return { text, nextUpdateMs: null };
-
-  const travelMs = distance * STEP_MS;
+/** 固定宽度内按像素平移，首尾停留；由播放时钟驱动以支持暂停。 */
+export function getMacTrayLyricFrame(distance: number, elapsedMs: number) {
+  if (distance <= 0) return { offset: 0, nextUpdateMs: null };
+  const travelMs = distance / PIXELS_PER_MS;
   const cycleMs = HOLD_MS * 2 + travelMs;
   const phase = Math.max(0, elapsedMs) % cycleMs;
-  const offset = Math.min(distance, Math.max(0, Math.floor((phase - HOLD_MS) / STEP_MS) + 1));
-  const nextUpdateMs =
-    phase < HOLD_MS
-      ? HOLD_MS - phase
-      : offset < distance
-        ? STEP_MS - ((phase - HOLD_MS) % STEP_MS)
-        : cycleMs - phase;
-  return { text: characters.slice(offset, offset + VISIBLE_GRAPHEMES).join(""), nextUpdateMs };
+  if (phase < HOLD_MS) return { offset: 0, nextUpdateMs: HOLD_MS - phase };
+  if (phase >= HOLD_MS + travelMs) return { offset: distance, nextUpdateMs: cycleMs - phase };
+  return { offset: (phase - HOLD_MS) * PIXELS_PER_MS, nextUpdateMs: FRAME_MS };
+}
+
+/** 从已排版的整行位图裁切固定视口，避免逐字替换造成宽度跳动。 */
+export function cropMacTrayLyric(bitmap: MacTrayLyricBitmap, offset: number) {
+  const left = Math.max(0, Math.min(bitmap.width - bitmap.viewportWidth, Math.round(offset)));
+  const stride = bitmap.viewportWidth * 4;
+  const pixels = Buffer.alloc(stride * bitmap.height);
+  for (let row = 0; row < bitmap.height; row += 1) {
+    const start = (row * bitmap.width + left) * 4;
+    bitmap.pixels.copy(pixels, row * stride, start, start + stride);
+  }
+  return pixels;
 }
