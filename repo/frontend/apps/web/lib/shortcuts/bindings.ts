@@ -18,10 +18,10 @@ export function getShortcutBindingParts(binding: ShortcutBinding | null): string
   if (!binding) return [];
 
   const mac = isMacPlatform();
-  const modifier = mac ? "⌘" : "Ctrl";
+  const modifier = mac ? "⌘" : "⌃";
   return [
     binding.primary ? modifier : null,
-    binding.alt ? (mac ? "⌥" : "Alt") : null,
+    binding.alt ? "⌥" : null,
     binding.shift ? "⇧" : null,
     getKeyLabel(binding.key),
   ].filter((part): part is string => Boolean(part));
@@ -83,9 +83,9 @@ export function findShortcutConflict(
 
 function getKeyLabel(key: string) {
   if (SHORTCUT_KEY_LABELS[key]) return SHORTCUT_KEY_LABELS[key];
-  if (key === "Enter" || key === "NumpadEnter") return isMacPlatform() ? "↩" : "↵";
-  if (key === "Escape") return isMacPlatform() ? "⎋" : "Esc";
-  if (key === "ControlLeft" || key === "ControlRight") return isMacPlatform() ? "⌃" : "Ctrl";
+  if (key === "Enter" || key === "NumpadEnter") return "↩";
+  if (key === "Escape") return "⎋";
+  if (key === "ControlLeft" || key === "ControlRight") return "⌃";
   if (key === "MetaLeft" || key === "MetaRight") return isMacPlatform() ? "⌘" : "⊞";
   if (key.startsWith("Key")) return key.slice(3);
   if (key.startsWith("Digit")) return key.slice(5);

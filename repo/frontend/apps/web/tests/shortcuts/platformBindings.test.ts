@@ -42,15 +42,15 @@ test("macOS displays key symbols while preserving existing bindings and physical
 });
 
 test.each(["Win32", "Linux x86_64"])(
-  "%s keeps Ctrl and Alt labels and event handling",
+  "%s uses shared symbols while retaining Control as its primary modifier",
   (platform) => {
     setPlatform(platform);
     const binding = { key: "Comma", primary: true, alt: true };
-    expect(getShortcutBindingParts(binding)).toEqual(["Ctrl", "Alt", ","]);
-    expect(getShortcutBindingLabel(binding)).toBe("Ctrl Alt ,");
-    expect(getShortcutBindingLabel({ key: "KeyD", primary: true, shift: true })).toBe("Ctrl ⇧ D");
-    expect(getShortcutBindingLabel({ key: "Enter" })).toBe("↵");
-    expect(getShortcutBindingLabel({ key: "Escape" })).toBe("Esc");
+    expect(getShortcutBindingParts(binding)).toEqual(["⌃", "⌥", ","]);
+    expect(getShortcutBindingLabel(binding)).toBe("⌃ ⌥ ,");
+    expect(getShortcutBindingLabel({ key: "KeyD", primary: true, shift: true })).toBe("⌃ ⇧ D");
+    expect(getShortcutBindingLabel({ key: "Enter" })).toBe("↩");
+    expect(getShortcutBindingLabel({ key: "Escape" })).toBe("⎋");
     const event = {
       code: "Comma",
       metaKey: false,
@@ -58,7 +58,11 @@ test.each(["Win32", "Linux x86_64"])(
       altKey: true,
       shiftKey: false,
     } as KeyboardEvent;
+    expect(getShortcutBindingLabel({ key: "ControlLeft" })).toBe("⌃");
     expect(getShortcutBindingFromEvent(event)).toEqual(binding);
     expect(isShortcutBindingMatch(binding, event)).toBe(true);
+    expect(
+      isShortcutBindingMatch(binding, { ...event, ctrlKey: false, metaKey: true } as KeyboardEvent),
+    ).toBe(false);
   },
 );
