@@ -73,6 +73,7 @@ repo/
 1. [Folia](https://github.com/chthollyphile/folia-major/tree/main)
 2. [Netease Cloud Music API Enhanced](https://github.com/neteasecloudmusicapienhanced/api-enhanced)
 3. [SPlayer-Next](https://github.com/SPlayer-Dev/SPlayer-Next)
+4. [Rhine](https://github.com/LBEILC/RhineLabUI)
 
 ### 参考文档
 
