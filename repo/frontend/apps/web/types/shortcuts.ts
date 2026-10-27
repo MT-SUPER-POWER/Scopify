@@ -1,3 +1,5 @@
+import type { LucideIcon } from "lucide-react";
+import type { SHORTCUT_COMMAND_DEFINITIONS } from "@/constants/shortcuts";
 import type { TranslationKey } from "@/lib/i18n";
 import type {
   CommandWorkspaceRootPage,
@@ -9,48 +11,7 @@ export interface ShortcutCommandIconProps {
   commandId: string;
 }
 
-export type ShortcutCommandId =
-  | "toggle-playback"
-  | "toggle-like"
-  | "previous-track"
-  | "next-track"
-  | "increase-volume"
-  | "decrease-volume"
-  | "seek-backward-5s"
-  | "seek-forward-5s"
-  | "seek-backward-1s"
-  | "seek-forward-1s"
-  | "open-search"
-  | "toggle-lyric-stage"
-  | "toggle-stage-settings"
-  | "open-folia-settings"
-  | "open-folia-theme-library"
-  | "toggle-sidebar"
-  | "navigate-home"
-  | "navigate-back"
-  | "navigate-forward"
-  | "toggle-now-playing-panel"
-  | "open-shortcut-settings"
-  | "toggle-queue"
-  | "toggle-audio-settings"
-  | "toggle-audio-output-device"
-  | "toggle-subtitle-controls"
-  | "toggle-desktop-subtitle"
-  | "toggle-dynamic-island"
-  | "toggle-taskbar-lyric"
-  | "toggle-desktop-controller"
-  | "toggle-desktop-music-mode"
-  | "show-shortcut-help"
-  | "open-command-palette"
-  | "open-whats-new"
-  | "toggle-mute"
-  | "toggle-fullscreen"
-  | "toggle-developer-tools"
-  | "open-current-track-comments"
-  | "focus-playlist-search"
-  | "playlist-view-list"
-  | "playlist-view-lattice"
-  | "toggle-lattice-lights-off";
+export type ShortcutCommandId = (typeof SHORTCUT_COMMAND_DEFINITIONS)[number]["id"];
 
 export type ShortcutGroup = "playback" | "interface" | "shortcuts";
 export type ShortcutScope = "global" | "playlist";
@@ -62,14 +23,28 @@ export interface ShortcutBinding {
   shift?: boolean;
 }
 
-export interface ShortcutCommandDefinition {
-  id: ShortcutCommandId;
+export interface ShortcutCommandContract {
+  id: string;
   group: ShortcutGroup;
   labelKey: TranslationKey;
   keywords?: string;
   /** `null` leaves the command unassigned until the user records a binding. */
   defaultBinding: ShortcutBinding | null;
   scope?: ShortcutScope;
+  icon: LucideIcon;
+  isAvailable?: (context: ShortcutAvailabilityContext) => boolean;
+  execute(context: ShortcutActionContext): void | Promise<void>;
+  /** False for commands already represented by a workspace/tree entry. */
+  showInCommandWorkspace?: boolean;
+  commandWorkspaceLabelSuffix?: string;
+  desktopController?: boolean;
+  /** Preserve the listener's focus and repeat policies alongside the command. */
+  focus?: "non-editable" | "anywhere" | "volume";
+  allowRepeat?: boolean;
+}
+
+export interface ShortcutCommandDefinition extends ShortcutCommandContract {
+  id: ShortcutCommandId;
 }
 
 /** Page state that decides whether a command is offered in the command palette. */
@@ -80,6 +55,7 @@ export interface ShortcutAvailabilityContext {
 
 export interface ShortcutCommandExecutorOptions {
   navigateTo?(path: string): void;
+  focusPlaylistSearch?(): void;
 }
 
 export type ShortcutOverrides = Partial<Record<ShortcutCommandId, ShortcutBinding | null>>;
@@ -103,4 +79,59 @@ export interface InWindowShortcutsOptions {
   commandIds?: readonly ShortcutCommandId[];
   executeCommand?: (commandId: ShortcutCommandId) => void;
   scope?: ShortcutScope;
+}
+
+/** Business capabilities injected into declarations; reads current state at execution time. */
+export interface ShortcutActionContext {
+  playback: {
+    toggle(): void;
+    toggleLike(): void;
+    previous(): void;
+    next(): void;
+    adjustVolume(delta: number): void;
+    toggleMute(): void;
+    seekBy(deltaMs: number): void;
+  };
+  navigation: {
+    navigateTo(path: string): void;
+    navigateHome(): void;
+    back(): void;
+    forward(): void;
+  };
+  ui: {
+    toggleSearch(): void;
+    toggleCommandPalette(): void;
+    toggleSidebar(): void;
+    toggleQueue(): void;
+    toggleNowPlayingPanel(): void;
+    toggleShortcutHelp(): void;
+  };
+  folia: {
+    toggleLyricStage(): void;
+    toggleStageSettings(): void;
+    openFoliaSettings(): void;
+    openFoliaThemeLibrary(): void;
+  };
+  audio: {
+    toggleAudioSettings(): void;
+    toggleAudioOutputDevice(): void;
+  };
+  desktop: {
+    toggleDynamicIsland(): void;
+    toggleTaskbarLyric(): void;
+    toggleDesktopSubtitle(): void;
+    toggleSubtitleControls(): void;
+    toggleDesktopController(): void;
+    toggleDesktopMusicMode(): void;
+    toggleFullscreen(): void;
+    toggleDeveloperTools(): void;
+  };
+  lattice: {
+    viewList(): void;
+    viewLattice(): void;
+    toggleLightsOff(): void;
+  };
+  playlist: { focusSearch(): void };
+  track: { openCurrentComments(): void };
+  updates: { openWhatsNew(): void };
 }

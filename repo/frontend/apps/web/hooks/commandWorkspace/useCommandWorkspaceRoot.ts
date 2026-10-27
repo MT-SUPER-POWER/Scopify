@@ -57,23 +57,14 @@ export function useCommandWorkspaceRoot({
           })),
           ...commands
             .filter((command) => (command.scope ?? "global") === "global")
-            .filter(
-              (command) =>
-                command.id !== "open-command-palette" &&
-                command.id !== "open-search" &&
-                command.id !== "open-folia-settings" &&
-                command.id !== "open-folia-theme-library",
-            )
+            .filter((command) => command.showInCommandWorkspace !== false)
             .filter((command) =>
               isShortcutCommandAvailable(command.id, { latticeActive, latticeAvailable }),
             )
             .map((command) => ({
               binding: command.binding,
               id: command.id,
-              label:
-                command.id === "toggle-dynamic-island"
-                  ? `${t(command.labelKey)} · 开关`
-                  : t(command.labelKey),
+              label: `${t(command.labelKey)}${command.commandWorkspaceLabelSuffix ?? ""}`,
               keywords: command.keywords ?? "",
               summary: "快捷操作",
               type: "shortcut" as const,
@@ -82,11 +73,7 @@ export function useCommandWorkspaceRoot({
         ],
         (command) => command.usageCount,
       ).filter((command) => {
-        const text = (
-          command.id === "open-whats-new"
-            ? `${command.label} what's new whats new changelog 更新日志 新鲜事`
-            : `${command.label} ${command.keywords}`
-        ).toLocaleLowerCase();
+        const text = `${command.label} ${command.keywords}`.toLocaleLowerCase();
         const search = query.trim().toLocaleLowerCase();
         return command.id === "dynamic-island"
           ? search.split(/\s+/).every((term) => text.includes(term))

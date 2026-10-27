@@ -1,4 +1,4 @@
-import { SHORTCUT_COMMANDS } from "@/constants/shortcuts";
+import { getCommandDefinition, SHORTCUT_COMMANDS } from "@/constants/shortcuts";
 import type { ShortcutBinding, ShortcutCommandId, ShortcutOverrides } from "@/types/shortcuts";
 
 const KEY_LABELS: Record<string, string> = {
@@ -17,7 +17,7 @@ export function getEffectiveShortcutBinding(
   overrides: ShortcutOverrides,
 ): ShortcutBinding | null {
   if (commandId in overrides) return overrides[commandId] ?? null;
-  return SHORTCUT_COMMANDS.find((command) => command.id === commandId)?.defaultBinding ?? null;
+  return getCommandDefinition(commandId)?.defaultBinding ?? null;
 }
 
 export function getShortcutBindingLabel(binding: ShortcutBinding | null): string {
