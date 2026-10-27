@@ -1,16 +1,6 @@
+import { SHORTCUT_KEY_LABELS } from "@/constants/shortcutKeys";
 import { getCommandDefinition, SHORTCUT_COMMANDS } from "@/constants/shortcuts";
 import type { ShortcutBinding, ShortcutCommandId, ShortcutOverrides } from "@/types/shortcuts";
-
-const KEY_LABELS: Record<string, string> = {
-  Space: "Space",
-  ArrowUp: "Up",
-  ArrowDown: "Down",
-  ArrowLeft: "Left",
-  ArrowRight: "Right",
-  Slash: "/",
-  Comma: ",",
-  Period: ".",
-};
 
 export function getEffectiveShortcutBinding(
   commandId: ShortcutCommandId,
@@ -21,18 +11,18 @@ export function getEffectiveShortcutBinding(
 }
 
 export function getShortcutBindingLabel(binding: ShortcutBinding | null): string {
-  return getShortcutBindingParts(binding).join(" + ");
+  return getShortcutBindingParts(binding).join(" ");
 }
 
 export function getShortcutBindingParts(binding: ShortcutBinding | null): string[] {
   if (!binding) return [];
 
   const mac = isMacPlatform();
-  const modifier = mac ? "Cmd" : "Ctrl";
+  const modifier = mac ? "⌘" : "Ctrl";
   return [
     binding.primary ? modifier : null,
-    binding.alt ? (mac ? "Option" : "Alt") : null,
-    binding.shift ? "Shift" : null,
+    binding.alt ? (mac ? "⌥" : "Alt") : null,
+    binding.shift ? "⇧" : null,
     getKeyLabel(binding.key),
   ].filter((part): part is string => Boolean(part));
 }
@@ -92,7 +82,11 @@ export function findShortcutConflict(
 }
 
 function getKeyLabel(key: string) {
-  if (KEY_LABELS[key]) return KEY_LABELS[key];
+  if (SHORTCUT_KEY_LABELS[key]) return SHORTCUT_KEY_LABELS[key];
+  if (key === "Enter" || key === "NumpadEnter") return isMacPlatform() ? "↩" : "↵";
+  if (key === "Escape") return isMacPlatform() ? "⎋" : "Esc";
+  if (key === "ControlLeft" || key === "ControlRight") return isMacPlatform() ? "⌃" : "Ctrl";
+  if (key === "MetaLeft" || key === "MetaRight") return isMacPlatform() ? "⌘" : "⊞";
   if (key.startsWith("Key")) return key.slice(3);
   if (key.startsWith("Digit")) return key.slice(5);
   return key.replace(/^Numpad/, "Num ");
