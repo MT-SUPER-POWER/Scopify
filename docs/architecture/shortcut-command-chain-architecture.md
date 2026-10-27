@@ -1,7 +1,5 @@
 # 快捷键与命令套链分层架构
 
-> Status: Proposed Owner: Frontend & Desktop Team Reference: [shortcut_chain_architecture_plan.md](file:///Users/momo/.gemini/antigravity/brain/dc2bfa60-ec02-40d5-9b5d-9d17c45aec4e/shortcut_chain_architecture_plan.md)
-
 本文定义 Scopify 前端与桌面端统一的**快捷键与命令套链分层架构（Chained Shortcut & Command Architecture）**。它确立了从“功能触发”到“一体化声明”再到“下游多端消费”的单向数据流与标准协议，解决过去快捷键定义散落、执行割裂以及下游命令面板重复注入的结构性问题。
 
 ---
