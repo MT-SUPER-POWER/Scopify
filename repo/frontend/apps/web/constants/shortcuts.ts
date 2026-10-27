@@ -117,6 +117,13 @@ export const SHORTCUT_COMMANDS: readonly ShortcutCommandDefinition[] = [
     defaultBinding: { key: "KeyM", primary: true, shift: true },
   },
   {
+    id: "toggle-stage-settings",
+    group: "interface",
+    labelKey: "shortcuts.command.toggleStageSettings",
+    keywords: "舞台控制 播放面板 stage settings panel 歌词设置 封面 控制 音质",
+    defaultBinding: { key: "Comma", primary: true, alt: true },
+  },
+  {
     id: "open-folia-settings",
     group: "interface",
     labelKey: "shortcuts.command.openFoliaSettings",

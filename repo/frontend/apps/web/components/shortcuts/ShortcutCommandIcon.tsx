@@ -47,6 +47,7 @@ export function ShortcutCommandIcon({ className = "size-4", commandId }: Shortcu
     return <Search className={className} />;
   }
   if (commandId === "toggle-lyric-stage") return <AudioLines className={className} />;
+  if (commandId === "toggle-stage-settings") return <Settings2 className={className} />;
   if (commandId === "toggle-dynamic-island") return <RectangleEllipsis className={className} />;
   if (commandId === "toggle-taskbar-lyric") return <AudioLines className={className} />;
   if (commandId === "toggle-sidebar") return <PanelLeft className={className} />;

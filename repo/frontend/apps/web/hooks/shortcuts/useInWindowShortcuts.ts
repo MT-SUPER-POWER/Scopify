@@ -37,6 +37,11 @@ export function useInWindowShortcuts({
         !useLyricStageStore.getState().sonnetPerformanceWarningOpen
       ) {
         event.preventDefault();
+        const folia = useFoliaSettingsStore.getState();
+        if (folia.stagePanelOpen) {
+          folia.setStagePanelOpen(false);
+          return;
+        }
         ui.setIsLyricsOpen(false);
         return;
       }

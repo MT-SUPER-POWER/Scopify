@@ -6,6 +6,7 @@ import { useMemo } from "react";
 import { buildFoliaCommands, filterFoliaCommands } from "@/lib/commandWorkspace/foliaCommands";
 import { useFoliaSettingsStore } from "@/store/module/foliaSettings";
 import { useLyricStageStore } from "@/store/module/lyrics";
+import { useUiStore } from "@/store/module/ui";
 import { useI18n } from "@/store/module/i18n";
 import type { FoliaCommandEntry, FoliaCommandGroup } from "@/types/foliaCommands";
 
@@ -52,6 +53,11 @@ export function useFoliaCommands(group: FoliaCommandGroup | null, query: string)
     if (action.kind === "theme") settings.openThemeLibrary();
     if (action.kind === "visualizer")
       useLyricStageStore.getState().requestVisualizerMode(action.mode);
+    if (action.kind === "stage-panel") {
+      const ui = useUiStore.getState();
+      if (!ui.isLyricsOpen) ui.setIsLyricsOpen(true);
+      settings.setStagePanelOpen(true);
+    }
   };
   return { catalog, entries, execute };
 }

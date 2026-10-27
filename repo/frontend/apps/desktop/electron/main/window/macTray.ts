@@ -8,11 +8,17 @@ import {
   Tray,
   type MenuItemConstructorOptions,
   type NativeImage,
-  type Point,
-  type Rectangle,
 } from "electron";
 import type { PlaybackProjection } from "@scopify/desktop-contract";
-import type { MacMenuBarPreferences, MacTrayLocale, MacTrayOptions } from "@/types/tray";
+import type {
+  MacMenuBarPreferences,
+  MacTrayControlAction,
+  MacTrayControlIconName,
+  MacTrayLocale,
+  MacTrayLyricScrollState,
+  MacTrayOptions,
+  MacTrayStatusItems,
+} from "@/types/tray";
 import { trayLog } from "@main/utils/logger";
 import { isRecord, readUserDataJson, writeUserDataJson } from "@main/utils/userDataJson";
 import {
@@ -26,21 +32,19 @@ import {
   toggleDesktopPlaybackController,
 } from "@main/service/desktop/wallpaper";
 
+import { cropMacTrayLyric, getMacTrayLyricFrame } from "./macTrayLyrics";
+import { disposeMenuBarTextRenderer, renderMenuBarText } from "@main/service/renderer/menuBarText";
+
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ CONSTANTS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 /** 菜单栏图标标准高度 18pt，@2x 位图 36px。 */
 const MENU_BAR_ICON_SIZE = 18;
 /** 菜单里歌名过长会把整列撑宽，超出部分省略。 */
 const MAX_MENU_TEXT_LENGTH = 48;
-/** 菜单栏文字占的是所有应用共享的空间，歌词过长时省略。 */
-const MAX_LYRIC_TEXT_LENGTH = 30;
 /** 歌词切行定时器的最短间隔，避免密集短句时空转。 */
-const MIN_LYRIC_TICK_MS = 50;
+const MIN_LYRIC_TICK_MS = 16;
 /** 菜单头部封面 32pt，按 @2x 取 64px。 */
 const COVER_SIZE = 32;
-/** 控制按钮单个 16pt，按钮之间 10pt，比系统给独立菜单栏项留的间距更紧凑。 */
-const CONTROL_ICON_SIZE = 16;
-const CONTROL_GAP = 10;
 const PREFERENCES_FILE = "mac-menu-bar.json";
 const DEFAULT_PREFERENCES: MacMenuBarPreferences = { showLyrics: true, showControls: true };
 
@@ -112,21 +116,8 @@ const COPY = {
 
 type MacTrayCopy = (typeof COPY)[MacTrayLocale];
 
-/**
- * 菜单栏由三个 NSStatusItem 组成。系统把后创建的放在左侧，所以按 logo → 控制 → 歌名
- * 的顺序创建，得到与网易云一致的「歌名 ⏮ ⏯ ⏭ ♡ logo」排列。
- * 四个控制按钮画在同一张图里、按点击位置分发：独立 StatusItem 之间的系统间距过宽且不可调。
- */
-interface StatusItems {
-  logo: Tray;
-  controls: Tray | null;
-  title: Tray | null;
-}
-
-type ControlIconName = "heart" | "heartFilled" | "next" | "pause" | "play" | "prev";
-type ControlAction = "previous" | "toggle" | "next" | "like";
-
-const CONTROL_ACTIONS: ControlAction[] = ["previous", "toggle", "next", "like"];
+/** macOS 把后创建的菜单栏项放在左侧；控制项按此顺序的逆序创建。 */
+const CONTROL_ACTIONS: MacTrayControlAction[] = ["previous", "toggle", "next", "like"];
 
 interface LyricLine {
   startTimeMs: number;
@@ -144,14 +135,14 @@ interface CoverCache {
 }
 
 // Electron 原生对象必须保留强引用，否则垃圾回收会让菜单栏图标提前消失。
-let items: StatusItems | null = null;
+let items: MacTrayStatusItems | null = null;
 let layoutKey: string | null = null;
 let statusSignature: string | null = null;
 let menuBarPreferences: MacMenuBarPreferences | null = null;
 let cover: CoverCache | null = null;
 let lyricCache: LyricCache | null = null;
 let lyricTimer: ReturnType<typeof setTimeout> | undefined;
-let lyricText: string | null = null;
+let lyricScroll: MacTrayLyricScrollState | null = null;
 let cleanups: (() => void)[] = [];
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ FUNCTIONS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -229,7 +220,7 @@ function createLogoIcon() {
 const controlIcons = new Map<string, NativeImage>();
 
 /** 文件名以 Template 结尾，macOS 自动按模板图处理并加载同目录 @2x。 */
-function getControlIcon(name: ControlIconName) {
+function getControlIcon(name: MacTrayControlIconName) {
   let icon = controlIcons.get(name);
   if (!icon) {
     icon = nativeImage.createFromPath(join(__menuBarIconDir, `${name}Template.png`));
@@ -240,53 +231,23 @@ function getControlIcon(name: ControlIconName) {
   return icon;
 }
 
-const controlStrips = new Map<string, NativeImage>();
-
-/** 把四个 @2x 控制图标横向拼成一张模板图，间距由 CONTROL_GAP 决定。 */
-function getControlStrip(isPlaying: boolean, liked: boolean) {
-  const key = `${isPlaying}|${liked}`;
-  const cached = controlStrips.get(key);
-  if (cached) return cached;
-
-  const names: ControlIconName[] = [
-    "prev",
-    isPlaying ? "pause" : "play",
-    "next",
-    liked ? "heartFilled" : "heart",
-  ];
-  const icon = CONTROL_ICON_SIZE * 2;
-  const gap = CONTROL_GAP * 2;
-  const width = icon * names.length + gap * (names.length - 1);
-  const strip = Buffer.alloc(width * icon * 4);
-  names.forEach((name, index) => {
-    // 直接取 @2x 表示（32px）；resize 按 DIP 计算，会把 @2x 放大成 64px。
-    const source = getControlIcon(name).toBitmap({ scaleFactor: 2 });
-    if (source.length !== icon * icon * 4) {
-      trayLog.error("[mac-tray] unexpected control icon size", name, source.length);
-      return;
-    }
-    const left = index * (icon + gap);
-    for (let row = 0; row < icon; row += 1) {
-      source.copy(strip, (row * width + left) * 4, row * icon * 4, (row + 1) * icon * 4);
-    }
-  });
-
-  const image = nativeImage.createFromBitmap(strip, { width, height: icon, scaleFactor: 2 });
-  image.setTemplateImage(true);
-  controlStrips.set(key, image);
-  return image;
+function getControlIconName(
+  action: MacTrayControlAction,
+  snapshot: PlaybackProjection | null,
+): MacTrayControlIconName {
+  switch (action) {
+    case "previous":
+      return "prev";
+    case "toggle":
+      return snapshot?.isPlaying ? "pause" : "play";
+    case "next":
+      return "next";
+    case "like":
+      return snapshot?.liked ? "heartFilled" : "heart";
+  }
 }
 
-/** 以图片在菜单栏项中居中为前提，把点击横坐标换算成第几个按钮；落在间隙里归给最近的按钮。 */
-function resolveControlAction(bounds: Rectangle, position: Point): ControlAction {
-  const slot = CONTROL_ICON_SIZE + CONTROL_GAP;
-  const stripWidth = slot * CONTROL_ACTIONS.length - CONTROL_GAP;
-  const left = bounds.x + (bounds.width - stripWidth) / 2;
-  const index = Math.floor((position.x - left + CONTROL_GAP / 2) / slot);
-  return CONTROL_ACTIONS[Math.min(CONTROL_ACTIONS.length - 1, Math.max(0, index))];
-}
-
-function runControlAction(options: MacTrayOptions, action: ControlAction) {
+function runControlAction(options: MacTrayOptions, action: MacTrayControlAction) {
   switch (action) {
     case "previous":
       return run("previous", options.playback.previous);
@@ -554,11 +515,11 @@ function getPositionMs(options: MacTrayOptions, snapshot: PlaybackProjection) {
 function stopLyricTicker() {
   clearTimeout(lyricTimer);
   lyricTimer = undefined;
-  lyricText = null;
+  lyricScroll = null;
 }
 
 /**
- * 开启菜单栏歌词时把文字项写成当前歌词，并定时到下一行起点再刷新。
+ * 短歌词保持静止；长歌词首尾停留后滚动，切行和跳转进度时复位。
  * 前奏、间奏的空行与无歌词时回退为「歌名 - 歌手」。
  */
 function updateLyricTitle(options: MacTrayOptions) {
@@ -568,7 +529,7 @@ function updateLyricTitle(options: MacTrayOptions) {
   const snapshot = options.playback.getSnapshot();
   const track = describeTrack(snapshot, getCopy());
   if (!getMenuBarPreferences().showLyrics || !title || title.isDestroyed() || !snapshot || !track) {
-    lyricText = null;
+    lyricScroll = null;
     return;
   }
 
@@ -577,19 +538,59 @@ function updateLyricTitle(options: MacTrayOptions) {
   let index = -1;
   for (let i = 0; i < lines.length && lines[i].startTimeMs <= positionMs; i += 1) index = i;
 
-  const text = truncate(
-    lines[index]?.text || `${track.title} - ${track.artists}`,
-    MAX_LYRIC_TEXT_LENGTH,
+  const fullText = lines[index]?.text || `${track.title} - ${track.artists}`;
+  const key = `${snapshot.track?.id}|${snapshot.lyricsVersion}|${index}|${fullText}`;
+  if (
+    lyricScroll?.key !== key ||
+    positionMs < lyricScroll.lastPositionMs - 250 ||
+    positionMs - lyricScroll.lastPositionMs > 1500
+  ) {
+    const scroll: MacTrayLyricScrollState = {
+      key,
+      startPositionMs: positionMs,
+      lastPositionMs: positionMs,
+      bitmap: null,
+      lastOffset: null,
+    };
+    lyricScroll = scroll;
+    // 初次排版期间显示静态文本；异步结果只允许写入仍然有效的歌词项。
+    title.setImage(nativeImage.createEmpty());
+    title.setTitle(truncate(fullText, 30));
+    void renderMenuBarText(fullText)
+      .then((bitmap) => {
+        if (lyricScroll !== scroll || title.isDestroyed()) return;
+        scroll.bitmap = bitmap;
+        updateLyricTitle(options);
+      })
+      .catch((error) => trayLog.warn("[mac-tray] failed to render lyric text", error));
+  }
+  lyricScroll.lastPositionMs = positionMs;
+  const bitmap = lyricScroll.bitmap;
+  const frame = getMacTrayLyricFrame(
+    bitmap ? bitmap.width - bitmap.viewportWidth : 0,
+    positionMs - lyricScroll.startPositionMs,
   );
-  if (text !== lyricText) {
-    lyricText = text;
-    title.setTitle(text);
+  const offset = Math.round(frame.offset);
+  if (bitmap && offset !== lyricScroll.lastOffset) {
+    const image = nativeImage.createFromBitmap(cropMacTrayLyric(bitmap, offset), {
+      width: bitmap.viewportWidth,
+      height: bitmap.height,
+      scaleFactor: 2,
+    });
+    image.setTemplateImage(true);
+    title.setTitle("");
+    title.setImage(image);
+    lyricScroll.lastOffset = offset;
   }
 
+  if (!snapshot.isPlaying) return;
   const nextLine = lines[index + 1];
-  if (!snapshot.isPlaying || !nextLine) return;
+  const untilNextLine = nextLine ? nextLine.startTimeMs - positionMs : Infinity;
+  const untilNextFrame = frame.nextUpdateMs ?? Infinity;
+  const nextUpdateMs = Math.min(untilNextLine, untilNextFrame);
+  if (!Number.isFinite(nextUpdateMs)) return;
   const rate = options.getPlaybackAnchor()?.rate || 1;
-  const delay = Math.max(MIN_LYRIC_TICK_MS, (nextLine.startTimeMs - positionMs) / rate);
+  const delay = Math.max(MIN_LYRIC_TICK_MS, nextUpdateMs / rate);
   lyricTimer = setTimeout(() => updateLyricTitle(options), delay);
 }
 
@@ -597,7 +598,7 @@ function updateLyricTitle(options: MacTrayOptions) {
 
 function destroyStatusItems() {
   if (!items) return;
-  for (const tray of Object.values(items) as (Tray | null)[]) {
+  for (const tray of [items.logo, items.title, ...Object.values(items.controls)]) {
     if (tray && !tray.isDestroyed()) tray.destroy();
   }
   items = null;
@@ -610,20 +611,21 @@ function createStatusItems(
   options: MacTrayOptions,
   layout: { controls: boolean; title: boolean },
   popUp: (tray: Tray) => void,
-): StatusItems {
+): MacTrayStatusItems {
   const logo = new Tray(createLogoIcon());
   logo.on("click", () => popUp(logo));
   logo.on("right-click", () => popUp(logo));
 
-  const created: StatusItems = { logo, controls: null, title: null };
+  const created: MacTrayStatusItems = { logo, controls: {}, title: null };
   if (layout.controls) {
-    const controls = new Tray(getControlStrip(false, false));
-    // 连点下一首时每次点击都要生效，不能被合并成双击。
-    controls.setIgnoreDoubleClickEvents(true);
-    controls.on("click", (_event, bounds, position) =>
-      runControlAction(options, resolveControlAction(bounds, position)),
-    );
-    created.controls = controls;
+    // 每个按钮拥有独立的原生点击区域、高亮和悬停提示。
+    for (const action of [...CONTROL_ACTIONS].reverse()) {
+      const control = new Tray(getControlIcon(getControlIconName(action, null)));
+      // 连点下一首时每次点击都要生效，不能被合并成双击。
+      control.setIgnoreDoubleClickEvents(true);
+      control.on("click", () => runControlAction(options, action));
+      created.controls[action] = control;
+    }
   }
   if (layout.title) {
     const title = new Tray(nativeImage.createEmpty());
@@ -666,7 +668,22 @@ function renderStatusItems(
   statusSignature = signature;
 
   items.logo.setToolTip(track ? `${track.title} - ${track.artists}` : "Scopify");
-  items.controls?.setImage(getControlStrip(Boolean(snapshot?.isPlaying), Boolean(snapshot?.liked)));
+  for (const action of CONTROL_ACTIONS) {
+    const control = items.controls[action];
+    if (!control) continue;
+    const label =
+      action === "toggle"
+        ? snapshot?.isPlaying
+          ? copy.pause
+          : copy.play
+        : action === "like"
+          ? snapshot?.liked
+            ? copy.unlike
+            : copy.like
+          : copy[action];
+    control.setImage(getControlIcon(getControlIconName(action, snapshot)));
+    control.setToolTip(label);
+  }
   // 歌词文字由 updateLyricTitle 按进度写入，这里只更新悬停提示。
   if (items.title && track) items.title.setToolTip(`${track.title} - ${track.artists}`);
 }
@@ -729,4 +746,5 @@ export function disposeMacTray() {
   destroyStatusItems();
   cover = null;
   lyricCache = null;
+  disposeMenuBarTextRenderer();
 }

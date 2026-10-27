@@ -1,10 +1,13 @@
 import type { FoliaStageEditSection } from "@/types/foliaStage";
 
 export interface FoliaSettingsStore {
+  stagePanelOpen: boolean;
   visualSection: FoliaStageEditSection | null;
   themeLibraryOpen: boolean;
   themeCloseRequest: number;
   fontPickerTarget: "lyrics" | "subtitle" | null;
+  setStagePanelOpen(open: boolean): void;
+  toggleStagePanel(): void;
   openVisualSettings(section?: FoliaStageEditSection): void;
   closeVisualSettings(): void;
   toggleVisualSettings(): void;
