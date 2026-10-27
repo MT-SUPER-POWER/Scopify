@@ -2,6 +2,7 @@
 
 import { useCallback } from "react";
 
+import { useShortcutCommands } from "@/hooks/shortcuts/useShortcutCommands";
 import { useInWindowShortcuts } from "@/hooks/shortcuts/useInWindowShortcuts";
 import type { PlaylistSearchShortcutOptions } from "@/types/components/playlist";
 
@@ -13,7 +14,7 @@ export function usePlaylistSearchShortcut({
   onSearchClose,
   searchOpen,
 }: PlaylistSearchShortcutOptions) {
-  const executeCommand = useCallback(() => {
+  const focusPlaylistSearch = useCallback(() => {
     if (searchOpen) {
       inputRef.current?.blur();
       onSearchClose();
@@ -22,6 +23,8 @@ export function usePlaylistSearchShortcut({
     onSearchOpen();
     window.requestAnimationFrame(() => inputRef.current?.focus());
   }, [inputRef, onSearchClose, onSearchOpen, searchOpen]);
+
+  const executeCommand = useShortcutCommands({ focusPlaylistSearch });
 
   useInWindowShortcuts({
     commandIds: PLAYLIST_SEARCH_SHORTCUT_COMMAND_IDS,

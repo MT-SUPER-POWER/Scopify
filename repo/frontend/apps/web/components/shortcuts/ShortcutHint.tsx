@@ -1,25 +1,23 @@
 "use client";
 
-import type { ReactNode } from "react";
+import { getCommandDefinition } from "@/constants/shortcuts";
+import { useI18n } from "@/store/module/i18n";
 
 import { getEffectiveShortcutBinding, getShortcutBindingLabel } from "@/lib/shortcuts/bindings";
 import { useShortcutStore } from "@/store/module/shortcuts";
-import type { ShortcutCommandId } from "@/types/shortcuts";
-
-interface ShortcutHintProps {
-  commandId?: ShortcutCommandId;
-  label: ReactNode;
-}
+import type { ShortcutHintProps } from "@/types/components/shortcuts";
 
 /** Renders an action label with its effective, user-customized shortcut. */
 export function ShortcutHint({ commandId, label }: ShortcutHintProps) {
+  const { t } = useI18n();
+  const command = commandId ? getCommandDefinition(commandId) : undefined;
   const overrides = useShortcutStore((state) => state.overrides);
   const binding = commandId ? getEffectiveShortcutBinding(commandId, overrides) : null;
   const shortcutLabel = getShortcutBindingLabel(binding);
 
   return (
     <span className="flex items-center gap-3 whitespace-nowrap">
-      <span>{label}</span>
+      <span>{label ?? (command ? t(command.labelKey) : null)}</span>
       {shortcutLabel ? (
         <kbd className="rounded bg-background/15 px-1.5 py-0.5 font-sans text-[10px] font-medium tabular-nums">
           {shortcutLabel}

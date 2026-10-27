@@ -3,14 +3,13 @@
 import { useEffect } from "react";
 import { SHORTCUT_COMMANDS } from "@/constants/shortcuts";
 import { getEffectiveShortcutBinding, isShortcutBindingMatch } from "@/lib/shortcuts/bindings";
+import { useLatticeView } from "@/store/module/lattice";
 import { useShortcutStore } from "@/store/module/shortcuts";
 import { useFoliaSettingsStore } from "@/store/module/foliaSettings";
 import { useLyricStageStore } from "@/store/module/lyrics";
 import { useUiStore } from "@/store/module/ui";
-import type { InWindowShortcutsOptions, ShortcutCommandId } from "@/types/shortcuts";
+import type { InWindowShortcutsOptions, ShortcutCommandDefinition } from "@/types/shortcuts";
 import { useShortcutCommands } from "./useShortcutCommands";
-
-const VOLUME_COMMAND_IDS = new Set<ShortcutCommandId>(["increase-volume", "decrease-volume"]);
 
 export function useInWindowShortcuts({
   commandIds,
@@ -48,14 +47,23 @@ export function useInWindowShortcuts({
 
       const command = SHORTCUT_COMMANDS.find((candidate) => {
         if ((candidate.scope ?? "global") !== scope) return false;
+        const lattice = useLatticeView.getState();
+        if (
+          candidate.isAvailable &&
+          !candidate.isAvailable({
+            latticeActive: lattice.active,
+            latticeAvailable: lattice.controller !== null,
+          })
+        )
+          return false;
         if (commandIds && !commandIds.includes(candidate.id)) return false;
         const binding = getEffectiveShortcutBinding(candidate.id, overrides);
         return binding ? isShortcutBindingMatch(binding, event) : false;
       });
 
       if (!command) return;
-      if (event.repeat && !command.id.startsWith("seek-")) return;
-      if (!canHandleShortcutInCurrentFocus(command.id, event.target)) return;
+      if (event.repeat && !command.allowRepeat) return;
+      if (!canHandleShortcutInCurrentFocus(command, event.target)) return;
 
       event.preventDefault();
       incrementUsage(command.id);
@@ -67,16 +75,12 @@ export function useInWindowShortcuts({
   }, [commandIds, executeShortcutCommand, incrementUsage, overrides, scope]);
 }
 
-function canHandleShortcutInCurrentFocus(commandId: ShortcutCommandId, target: EventTarget | null) {
-  if (VOLUME_COMMAND_IDS.has(commandId)) return isShortcutScopeFocused("volume");
-  if (
-    commandId === "open-search" ||
-    commandId === "open-command-palette" ||
-    commandId === "toggle-desktop-music-mode" ||
-    commandId === "focus-playlist-search" ||
-    commandId === "toggle-mute"
-  )
-    return true;
+function canHandleShortcutInCurrentFocus(
+  command: ShortcutCommandDefinition,
+  target: EventTarget | null,
+) {
+  if (command.focus === "volume") return isShortcutScopeFocused("volume");
+  if (command.focus === "anywhere") return true;
   return !isEditableTarget(target);
 }
 

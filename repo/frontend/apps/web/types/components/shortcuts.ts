@@ -1,7 +1,9 @@
+import type { ReactNode } from "react";
 import type {
   ShortcutAssignmentResult,
   ShortcutBinding,
   ShortcutCommandDefinition,
+  ShortcutCommandId,
 } from "@/types/shortcuts";
 
 export interface RegisteredShortcutCommand extends ShortcutCommandDefinition {
@@ -20,4 +22,9 @@ export interface ShortcutBindingRowProps {
   onAssign: (binding: ShortcutBinding) => ShortcutAssignmentResult;
   onDisable: () => void;
   onReset: () => void;
+}
+
+export interface ShortcutHintProps {
+  commandId?: ShortcutCommandId;
+  label?: ReactNode;
 }
