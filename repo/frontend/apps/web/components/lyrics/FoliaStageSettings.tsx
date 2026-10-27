@@ -23,6 +23,13 @@ import {
 
 import { FoliaAudioEqualizerDialog } from "@/components/lyrics/FoliaAudioEqualizerDialog";
 import { FoliaLyricMatchDialog } from "@/components/lyrics/FoliaLyricMatchDialog";
+import { ShortcutHint } from "@/components/shortcuts/ShortcutHint";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@scopify/ui/shadcn/components/tooltip";
 import { FoliaLyricsControls } from "@/components/lyrics/FoliaLyricsControls";
 import { FoliaPanelControls } from "@/components/lyrics/FoliaPanelControls";
 import { FoliaPanelQuality } from "@/components/lyrics/FoliaPanelQuality";
@@ -142,16 +149,30 @@ export function FoliaStageSettings({
         handle={
           isOpen || !isChromeHidden ? (
             <div className="pointer-events-auto pr-4 md:pr-8">
-              <motion.button
-                type="button"
-                title={String(t(isOpen ? "folia.ui.close" : "folia.options.visualSettings"))}
-                initial={{ opacity: 0, scale: 0.92 }}
-                animate={{ opacity: 1, scale: 1 }}
-                onClick={() => onOpenChange(!isOpen)}
-                className="flex size-12 items-center justify-center rounded-full border-none bg-black/40 text-white shadow-lg backdrop-blur-md transition-transform hover:scale-105"
-              >
-                {isOpen ? <X size={20} /> : <Settings2 size={20} />}
-              </motion.button>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <motion.button
+                      type="button"
+                      aria-label={String(
+                        t(isOpen ? "folia.ui.close" : "shortcuts.command.toggleStageSettings"),
+                      )}
+                      initial={{ opacity: 0, scale: 0.92 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      onClick={() => onOpenChange(!isOpen)}
+                      className="flex size-12 items-center justify-center rounded-full border-none bg-black/40 text-white shadow-lg backdrop-blur-md transition-transform hover:scale-105"
+                    >
+                      {isOpen ? <X size={20} /> : <Settings2 size={20} />}
+                    </motion.button>
+                  </TooltipTrigger>
+                  <TooltipContent side="left" sideOffset={12}>
+                    <ShortcutHint
+                      commandId="toggle-stage-settings"
+                      label={t(isOpen ? "folia.ui.close" : "shortcuts.command.toggleStageSettings")}
+                    />
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
             </div>
           ) : null
         }

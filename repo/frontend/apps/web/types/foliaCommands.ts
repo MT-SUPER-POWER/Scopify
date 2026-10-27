@@ -27,7 +27,8 @@ export type FoliaCommandAction =
   | { kind: "lyric-toggle"; setting: FoliaLyricToggleSetting; inverted?: boolean }
   | { kind: "lyric-content"; mode: SubtitleContentMode }
   | { kind: "theme" }
-  | { kind: "visualizer"; mode: LyricVisualizerMode };
+  | { kind: "visualizer"; mode: LyricVisualizerMode }
+  | { kind: "stage-panel" };
 
 export interface FoliaCommandEntry {
   id: string;

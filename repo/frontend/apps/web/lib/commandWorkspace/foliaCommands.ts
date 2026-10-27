@@ -18,6 +18,14 @@ export function buildFoliaCommands(t: TranslateFn): FoliaCommandEntry[] {
       action: { kind: "group", group: "folia-settings" },
     },
     {
+      id: "folia-stage-panel",
+      parentId: "folia-settings",
+      label: "舞台控制面板",
+      summary: "展开歌曲控制、歌词、封面与队列面板",
+      keywords: "stage panel 舞台控制面板 播放抽屉",
+      action: { kind: "stage-panel" },
+    },
+    {
       id: "folia-visualizers",
       parentId: "folia-settings",
       label: "选择可视化",

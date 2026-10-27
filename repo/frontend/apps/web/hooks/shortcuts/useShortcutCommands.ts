@@ -114,6 +114,14 @@ export function useShortcutCommands(options?: ShortcutCommandExecutorOptions) {
         case "toggle-lyric-stage":
           ui.toggleLyrics();
           return;
+        case "toggle-stage-settings":
+          if (!ui.isLyricsOpen) {
+            ui.setIsLyricsOpen(true);
+            useFoliaSettingsStore.getState().setStagePanelOpen(true);
+          } else {
+            useFoliaSettingsStore.getState().toggleStagePanel();
+          }
+          return;
         case "open-folia-settings":
           useFoliaSettingsStore.getState().toggleVisualSettings();
           return;
@@ -124,6 +132,9 @@ export function useShortcutCommands(options?: ShortcutCommandExecutorOptions) {
           ui.toggleSidebar();
           return;
         case "navigate-home":
+          if (ui.isLyricsOpen) {
+            ui.setIsLyricsOpen(false);
+          }
           navigateTo("/");
           return;
         // 前进/后退按钮只在桌面端顶栏提供，Web 端交给浏览器自身的导航

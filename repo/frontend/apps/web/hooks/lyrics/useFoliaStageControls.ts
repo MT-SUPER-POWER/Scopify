@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { usePlayerChromeAutoHide } from "@/components/lyrics/folia/src/hooks/usePlayerChromeAutoHide";
 import { useFoliaSettingsStore } from "@/store/module/foliaSettings";
 import { useLyricStageStore } from "@/store/module/lyrics";
@@ -11,10 +12,18 @@ import type { DesktopLyricCommand } from "@/types/desktopLyric";
 const keepAutoHideEnabled = () => undefined;
 
 export function useFoliaStageControls({ onClose }: LyricStageProps) {
+  const router = useRouter();
   const [isBorderVisible, setIsBorderVisible] = useState(false);
   const [isPlayerChromeHidden, setIsPlayerChromeHidden] = useState(false);
-  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const isSettingsOpen = useFoliaSettingsStore((state) => state.stagePanelOpen);
+  const setIsSettingsOpen = useFoliaSettingsStore((state) => state.setStagePanelOpen);
   const [isTransparent, setIsTransparent] = useState(false);
+
+  useEffect(() => {
+    return () => {
+      useFoliaSettingsStore.getState().setStagePanelOpen(false);
+    };
+  }, []);
   const autoHideCursorWithChrome = useLyricStageStore((state) => state.autoHideCursorWithChrome);
   const {
     cyclePlayerChromeVisibilityMode,
@@ -56,7 +65,18 @@ export function useFoliaStageControls({ onClose }: LyricStageProps) {
         return;
       if (event.key === "Escape") {
         event.preventDefault();
+        if (useFoliaSettingsStore.getState().stagePanelOpen) {
+          setIsSettingsOpen(false);
+          return;
+        }
         onClose();
+        return;
+      }
+      if (event.key === "Home") {
+        event.preventDefault();
+        setIsSettingsOpen(false);
+        onClose();
+        router.push("/");
         return;
       }
       if (
@@ -72,7 +92,7 @@ export function useFoliaStageControls({ onClose }: LyricStageProps) {
       }
       if (event.key.toLowerCase() === "p") {
         event.preventDefault();
-        setIsSettingsOpen((open) => !open);
+        setIsSettingsOpen(!useFoliaSettingsStore.getState().stagePanelOpen);
       }
     };
     const onDesktopCommand = (event: Event) => {
@@ -90,7 +110,13 @@ export function useFoliaStageControls({ onClose }: LyricStageProps) {
       window.removeEventListener("desktop-lyric:stage-command", onDesktopCommand);
       window.removeEventListener("keydown", onKeyDown);
     };
-  }, [cyclePlayerChromeVisibilityMode, onClose, setPlayerChromeVisibilityMode]);
+  }, [
+    cyclePlayerChromeVisibilityMode,
+    onClose,
+    router,
+    setIsSettingsOpen,
+    setPlayerChromeVisibilityMode,
+  ]);
 
   return {
     isBorderVisible,

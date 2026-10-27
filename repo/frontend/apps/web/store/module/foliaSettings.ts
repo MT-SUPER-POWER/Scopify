@@ -3,12 +3,16 @@ import type { FoliaSettingsStore } from "@/types/foliaSettings";
 
 /** Transient global surfaces; opening settings never changes Stage visibility. */
 export const useFoliaSettingsStore = create<FoliaSettingsStore>((set, get) => ({
+  stagePanelOpen: false,
   visualSection: null,
   themeLibraryOpen: false,
   themeCloseRequest: 0,
   fontPickerTarget: null,
+  setStagePanelOpen: (stagePanelOpen) => set({ stagePanelOpen }),
+  toggleStagePanel: () => set((state) => ({ stagePanelOpen: !state.stagePanelOpen })),
   openVisualSettings: (section = "visualizer") =>
     set((state) => ({
+      stagePanelOpen: false,
       visualSection: section,
       themeCloseRequest: state.themeCloseRequest + (state.themeLibraryOpen ? 1 : 0),
     })),
@@ -23,7 +27,12 @@ export const useFoliaSettingsStore = create<FoliaSettingsStore>((set, get) => ({
     else state.openVisualSettings();
   },
   openThemeLibrary: () =>
-    set({ themeLibraryOpen: true, fontPickerTarget: null, themeCloseRequest: 0 }),
+    set({
+      stagePanelOpen: false,
+      themeLibraryOpen: true,
+      fontPickerTarget: null,
+      themeCloseRequest: 0,
+    }),
   closeThemeLibrary: () => set({ themeLibraryOpen: false, themeCloseRequest: 0 }),
   toggleThemeLibrary: () => {
     if (get().themeLibraryOpen) {

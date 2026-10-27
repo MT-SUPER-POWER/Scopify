@@ -22367,6 +22367,12 @@ export interface TranslateFn {
    */
   (key: "shortcuts.command.toggleLyricStage", params?: TranslationParams): string;
   /**
+   * zh-CN: 打开/关闭舞台控制面板
+   * zh-TW: 開啟/關閉舞台控制面板
+   * en-US: Toggle Stage Control Panel
+   */
+  (key: "shortcuts.command.toggleStageSettings", params?: TranslationParams): string;
+  /**
    * zh-CN: 打开/关闭 Folia 设置
    * zh-TW: 開啟/關閉 Folia 設定
    * en-US: Open/Close Folia Settings
