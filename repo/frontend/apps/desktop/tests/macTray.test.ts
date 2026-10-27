@@ -7,6 +7,7 @@ const trays: FakeTray[] = [];
 class FakeTray extends EventEmitter {
   image: unknown;
   tooltip = "";
+  title = "";
   ignoreDoubleClick = false;
   destroyed = false;
   constructor(image: unknown) {
@@ -23,7 +24,9 @@ class FakeTray extends EventEmitter {
   setIgnoreDoubleClickEvents(value: boolean) {
     this.ignoreDoubleClick = value;
   }
-  setTitle() {}
+  setTitle(text: string) {
+    this.title = text;
+  }
   isDestroyed() {
     return this.destroyed;
   }
@@ -157,6 +160,37 @@ test("menu bar controls have separate native targets, actions, state and cleanup
   expect(like.image).toMatchObject({ path: "/icons/heartTemplate.png" });
   expect(play.tooltip).toBe("Play");
   expect(like.tooltip).toBe("Like");
+
+  const longLine = "0123456789abcdefghijklmnopqrstuvwxyz";
+  snapshot = {
+    ...snapshot,
+    isPlaying: true,
+    positionMs: 0,
+    lyricsVersion: "scroll-test",
+    lyrics: {
+      lines: [
+        { startTimeMs: 0, text: longLine },
+        { startTimeMs: 3000, text: "下一句" },
+      ],
+    },
+  };
+  refresh();
+  expect(title.title).toBe(longLine.slice(0, 30));
+  snapshot = { ...snapshot, positionMs: 1200 };
+  refresh();
+  expect(title.title).toBe(longLine.slice(1, 31));
+  snapshot = { ...snapshot, isPlaying: false };
+  refresh();
+  expect(title.title).toBe(longLine.slice(1, 31));
+  snapshot = { ...snapshot, isPlaying: true, positionMs: 1440 };
+  refresh();
+  expect(title.title).toBe(longLine.slice(2, 32));
+  snapshot = { ...snapshot, positionMs: 3000 };
+  refresh();
+  expect(title.title).toBe("下一句");
+  snapshot = { ...snapshot, positionMs: 0 };
+  refresh();
+  expect(title.title).toBe(longLine.slice(0, 30));
 
   snapshot = { ...snapshot, track: null };
   refresh();

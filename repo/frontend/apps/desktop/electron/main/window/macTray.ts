@@ -15,6 +15,7 @@ import type {
   MacTrayControlAction,
   MacTrayControlIconName,
   MacTrayLocale,
+  MacTrayLyricScrollState,
   MacTrayOptions,
   MacTrayStatusItems,
 } from "@/types/tray";
@@ -31,14 +32,14 @@ import {
   toggleDesktopPlaybackController,
 } from "@main/service/desktop/wallpaper";
 
+import { getMacTrayLyricFrame } from "./macTrayLyrics";
+
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ CONSTANTS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 /** 菜单栏图标标准高度 18pt，@2x 位图 36px。 */
 const MENU_BAR_ICON_SIZE = 18;
 /** 菜单里歌名过长会把整列撑宽，超出部分省略。 */
 const MAX_MENU_TEXT_LENGTH = 48;
-/** 菜单栏文字占的是所有应用共享的空间，歌词过长时省略。 */
-const MAX_LYRIC_TEXT_LENGTH = 30;
 /** 歌词切行定时器的最短间隔，避免密集短句时空转。 */
 const MIN_LYRIC_TICK_MS = 50;
 /** 菜单头部封面 32pt，按 @2x 取 64px。 */
@@ -141,6 +142,7 @@ let cover: CoverCache | null = null;
 let lyricCache: LyricCache | null = null;
 let lyricTimer: ReturnType<typeof setTimeout> | undefined;
 let lyricText: string | null = null;
+let lyricScroll: MacTrayLyricScrollState | null = null;
 let cleanups: (() => void)[] = [];
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ FUNCTIONS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -514,10 +516,11 @@ function stopLyricTicker() {
   clearTimeout(lyricTimer);
   lyricTimer = undefined;
   lyricText = null;
+  lyricScroll = null;
 }
 
 /**
- * 开启菜单栏歌词时把文字项写成当前歌词，并定时到下一行起点再刷新。
+ * 短歌词保持静止；长歌词首尾停留后滚动，切行和跳转进度时复位。
  * 前奏、间奏的空行与无歌词时回退为「歌名 - 歌手」。
  */
 function updateLyricTitle(options: MacTrayOptions) {
@@ -528,6 +531,7 @@ function updateLyricTitle(options: MacTrayOptions) {
   const track = describeTrack(snapshot, getCopy());
   if (!getMenuBarPreferences().showLyrics || !title || title.isDestroyed() || !snapshot || !track) {
     lyricText = null;
+    lyricScroll = null;
     return;
   }
 
@@ -536,19 +540,30 @@ function updateLyricTitle(options: MacTrayOptions) {
   let index = -1;
   for (let i = 0; i < lines.length && lines[i].startTimeMs <= positionMs; i += 1) index = i;
 
-  const text = truncate(
-    lines[index]?.text || `${track.title} - ${track.artists}`,
-    MAX_LYRIC_TEXT_LENGTH,
-  );
-  if (text !== lyricText) {
-    lyricText = text;
-    title.setTitle(text);
+  const fullText = lines[index]?.text || `${track.title} - ${track.artists}`;
+  const key = `${snapshot.track?.id}|${snapshot.lyricsVersion}|${index}|${fullText}`;
+  if (
+    lyricScroll?.key !== key ||
+    positionMs < lyricScroll.lastPositionMs ||
+    positionMs - lyricScroll.lastPositionMs > 1500
+  ) {
+    lyricScroll = { key, startPositionMs: positionMs, lastPositionMs: positionMs };
+  }
+  lyricScroll.lastPositionMs = positionMs;
+  const frame = getMacTrayLyricFrame(fullText, positionMs - lyricScroll.startPositionMs);
+  if (frame.text !== lyricText) {
+    lyricText = frame.text;
+    title.setTitle(frame.text);
   }
 
+  if (!snapshot.isPlaying) return;
   const nextLine = lines[index + 1];
-  if (!snapshot.isPlaying || !nextLine) return;
+  const untilNextLine = nextLine ? nextLine.startTimeMs - positionMs : Infinity;
+  const untilNextFrame = frame.nextUpdateMs ?? Infinity;
+  const nextUpdateMs = Math.min(untilNextLine, untilNextFrame);
+  if (!Number.isFinite(nextUpdateMs)) return;
   const rate = options.getPlaybackAnchor()?.rate || 1;
-  const delay = Math.max(MIN_LYRIC_TICK_MS, (nextLine.startTimeMs - positionMs) / rate);
+  const delay = Math.max(MIN_LYRIC_TICK_MS, nextUpdateMs / rate);
   lyricTimer = setTimeout(() => updateLyricTitle(options), delay);
 }
 

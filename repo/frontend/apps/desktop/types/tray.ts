@@ -54,3 +54,9 @@ export interface MacTrayStatusItems {
   controls: Partial<Record<MacTrayControlAction, Tray>>;
   title: Tray | null;
 }
+
+export interface MacTrayLyricScrollState {
+  key: string;
+  startPositionMs: number;
+  lastPositionMs: number;
+}
