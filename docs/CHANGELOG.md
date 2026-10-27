@@ -2,6 +2,93 @@
 
 > 根据 commit 自动生成，请勿手动编辑；推送版本 tag 后由 CI 更新。v2.0.3 及更早版本见[历史更新记录](archive/CHANGELOG-legacy.md)。
 
+## v3.0.1 — 2026-10-27
+
+### 新增
+
+- 乐谱搜索直接展示谱面并支持滚动自动加载 ([b33db0b0](https://github.com/MT-SUPER-POWER/Scopify/commit/b33db0b0e49bac5500bb9f87a0a267e74fa4b919))
+- 支持音乐百科与乐谱搜索和预览 ([18b155f9](https://github.com/MT-SUPER-POWER/Scopify/commit/18b155f904e61b18e20e80169a322c56f9b33e2d))
+- 优化歌词搜索卡片并支持完整歌词弹窗与导出 ([8e50951b](https://github.com/MT-SUPER-POWER/Scopify/commit/8e50951b73a2ba917aac6a77fa6f8ff21c922782))
+- 前端搜索接入歌词搜索能力 ([061c39d5](https://github.com/MT-SUPER-POWER/Scopify/commit/061c39d51386874d6946426fab0d15ccf0487d11))
+
+### 修复
+
+- 修复乐谱结果卡片的主题色彩兼容 ([1b97e635](https://github.com/MT-SUPER-POWER/Scopify/commit/1b97e6352a36c6b0a586699c8c9734b849eea7ab))
+- 没有乐谱的歌曲不再提示加载失败 ([bd0b0ce6](https://github.com/MT-SUPER-POWER/Scopify/commit/bd0b0ce6e3662b67ba06e0ec674bf9defedb54bc))
+- 补齐命令搜索分类并对齐搜索页约束 ([31b088f3](https://github.com/MT-SUPER-POWER/Scopify/commit/31b088f373e029aa914ee9e73f9d7d3b08359fe5))
+- 使用歌曲搜索结果展示相似视频 ([8b7b016f](https://github.com/MT-SUPER-POWER/Scopify/commit/8b7b016fc1a9d2be89f82be112e47f673dba5d5b))
+
+## v3.0.0 — 2026-10-26
+
+### 新增
+
+- 点开动态改为小红书式浮层 ([f5f94696](https://github.com/MT-SUPER-POWER/Scopify/commit/f5f94696721d98ed3ae7673a9cbf0d12cd21af3e))
+- 动态页改为瀑布流卡片，去掉热门话题 ([e203a769](https://github.com/MT-SUPER-POWER/Scopify/commit/e203a76995a0e85975ee5b25f7b849f61ae63864))
+- 动态标题中的 #话题# 也会高亮 ([2d09977d](https://github.com/MT-SUPER-POWER/Scopify/commit/2d09977dba3081988ef4a1ca4f9438e449befc1a))
+- 乐迷团筛选改为胶囊样式，名字不再被截断 ([281342eb](https://github.com/MT-SUPER-POWER/Scopify/commit/281342eb17497c36ef30392ed35a146a5ef50801))
+- 动态页头部合并为一行，去掉多余的说明文字 ([2ea690e8](https://github.com/MT-SUPER-POWER/Scopify/commit/2ea690e83bba1b968e3c829c510cf54fb5fd214a))
+- 动态页改为单列居中，热门话题移到页签 ([ba21a834](https://github.com/MT-SUPER-POWER/Scopify/commit/ba21a8340fc6e019aa3053d4a54eddb80f204132))
+- 乐迷团聚合动态显示每条内容来自哪个乐迷团 ([74210e3a](https://github.com/MT-SUPER-POWER/Scopify/commit/74210e3a0a680e82a0bfff565625309248c18e95))
+- 动态改为卡片样式，单张图片不再撑满版面 ([94df46d6](https://github.com/MT-SUPER-POWER/Scopify/commit/94df46d67f3c86f21136b62e78c4b70af4044a78))
+- 优化 MV 卡片排布、悬停预览与骨架屏体验 ([d1184295](https://github.com/MT-SUPER-POWER/Scopify/commit/d1184295ff1c507beb904e8d9b277db4af374d89))
+- 支持剧场模式和 T 键切换 ([b9d434af](https://github.com/MT-SUPER-POWER/Scopify/commit/b9d434afbc8e768dff35163415810c430b941d51))
+- 播放器显示清晰度并支持保留进度切换 ([b32a46b0](https://github.com/MT-SUPER-POWER/Scopify/commit/b32a46b08b337cb268954fd77df1772aa70643a3))
+- MV 页改为完整 YouTube 观看布局，评论区按 YouTube 复刻 ([9523f71e](https://github.com/MT-SUPER-POWER/Scopify/commit/9523f71ea99587bc8cb1589ce3a08f010d664ee3))
+- MV 播放器改为 YouTube 式自定义控件，新增网页全屏 ([e6706c8f](https://github.com/MT-SUPER-POWER/Scopify/commit/e6706c8f89045619e0944e6a41aa64e8b1385232))
+- 歌单与专辑新增 MV 预览，像刷视频一样逐首试听 ([c748867f](https://github.com/MT-SUPER-POWER/Scopify/commit/c748867f0fc7153eed0234636623c206bd990e6c))
+- MV 卡片按 YouTube 视频卡复刻，悬停自动静音预览 ([74783099](https://github.com/MT-SUPER-POWER/Scopify/commit/747830997adc5fb849b7cc1e2c6be422687cb89f))
+- MV 搜索结果改为 YouTube 式卡片 ([91e84a37](https://github.com/MT-SUPER-POWER/Scopify/commit/91e84a37cbe3dd83d5c7ce7db581239d909e45e4))
+- MV 页改为 YouTube 式观看布局，并接入完整评论区 ([5497c5f2](https://github.com/MT-SUPER-POWER/Scopify/commit/5497c5f2041782fbb8b805ed425fc9e3d5ad740f))
+- 评论页支持 MV，可查看、点赞、回复和发表 MV 评论 ([4ab0c312](https://github.com/MT-SUPER-POWER/Scopify/commit/4ab0c3125a4b915329f0876965f327e04162027d))
+- 搜索结果接入 MV，新增「MV」分类与综合结果中的 MV 区块 ([47b421b5](https://github.com/MT-SUPER-POWER/Scopify/commit/47b421b526ceb89604ddf5a11aa06675342c813d))
+- 新增 MV 播放页，可切换画质并浏览相似 MV 与精彩评论 ([75a33c12](https://github.com/MT-SUPER-POWER/Scopify/commit/75a33c1274da97bd4b6908e0e8ce91a509b7577c))
+- 正在播放面板支持观看 MV，并新增「MV」卡片 ([6c0b9117](https://github.com/MT-SUPER-POWER/Scopify/commit/6c0b9117a6c2c7a88ed813c918191116a4450d82))
+- 支持按 Home 键返回首页 ([cc014998](https://github.com/MT-SUPER-POWER/Scopify/commit/cc014998febcc14ece2958451080e6309853130a))
+- 正在播放面板新增「相似歌曲」卡片 ([8e464bab](https://github.com/MT-SUPER-POWER/Scopify/commit/8e464bab0ffcbdaad61fb01a522a8617e90d8b1b))
+- 正在播放面板新增「精彩评论」卡片 ([60972107](https://github.com/MT-SUPER-POWER/Scopify/commit/60972107306894dc5da9e5ed8b40acabb13bdc1a))
+- 「关于艺人」改为大图标题样式，并新增可逐个关注的「演职人员」卡片 ([40fef86b](https://github.com/MT-SUPER-POWER/Scopify/commit/40fef86b8bcb6bf256f0702d20d2ec7aae3ea26b))
+- 正在播放面板顶部改为通栏沉浸式封面，有动态封面时播放视频 ([56fea26e](https://github.com/MT-SUPER-POWER/Scopify/commit/56fea26ebdcabc493282448de9de6df610a668ac))
+- 右侧面板新增「歌词」视图与歌词预览卡片，可点击任意一句跳转 ([4a7c7991](https://github.com/MT-SUPER-POWER/Scopify/commit/4a7c7991b467d912cae92bfdde8e21653bc9dc24))
+- 右侧面板新增「队列」视图，宽窗口下播放队列直接停靠在面板里 ([d1881f87](https://github.com/MT-SUPER-POWER/Scopify/commit/d1881f877b838269b628bb436c7785f565057ecc))
+- 前进/后退仅在桌面端显示，无法跳转时置灰，并支持 Alt+Shift+H/L ([74d43975](https://github.com/MT-SUPER-POWER/Scopify/commit/74d43975a3252fb6706924b0e43692d68fec150e))
+- 去掉系统标题栏，窗口按钮并入顶栏 ([b5074abc](https://github.com/MT-SUPER-POWER/Scopify/commit/b5074abc552d6bb72c2ec183483ed7ed165b96f2))
+- 正在播放面板开关时与左侧边栏一样平滑滑动 ([b9f7c438](https://github.com/MT-SUPER-POWER/Scopify/commit/b9f7c438fb3a772a2509791e43f3ff41187b82eb))
+- 正在播放面板显示下一首与歌曲信息 ([56b7f73c](https://github.com/MT-SUPER-POWER/Scopify/commit/56b7f73c59bee1d0192a0be095f3e72efbef5f6b))
+- 关闭正在播放面板后保留窄条，按 Ctrl+Alt+B 快速开关 ([61a49afb](https://github.com/MT-SUPER-POWER/Scopify/commit/61a49afbb942c0420c79f65908e52d403130b85f))
+- 正在播放面板显示「关于艺人」卡片 ([31d81f55](https://github.com/MT-SUPER-POWER/Scopify/commit/31d81f55582b89ad2a19c31e9ec7991b5028c4fa))
+- 新增右侧「正在播放」面板，显示大封面与歌曲信息 ([7772a5fe](https://github.com/MT-SUPER-POWER/Scopify/commit/7772a5fe7b8e75f8df4af0dba15d2746cbb35db6))
+- 顶栏横跨整个窗口，首页按钮与搜索框居中 ([197e191c](https://github.com/MT-SUPER-POWER/Scopify/commit/197e191c6381230472811db9e1ee792413aa21f3))
+- 客户端更新状态改为与其他设置项一致的样式 ([7929e96d](https://github.com/MT-SUPER-POWER/Scopify/commit/7929e96de7375f881ae73946a933669156e02090))
+
+### 修复
+
+- 修复托盘音量条布局并增加托盘窗口默认高度 ([26818380](https://github.com/MT-SUPER-POWER/Scopify/commit/26818380407de0543d034e11f78049b2d8f49b1c))
+- 统一侧边栏歌单间距并优化歌单页头高度 ([9f0da924](https://github.com/MT-SUPER-POWER/Scopify/commit/9f0da924ffe7e3c59c080ac258274b850018ee31))
+- 修复歌单内容区过渡渐变截断导致的底色断层 ([74c8db5d](https://github.com/MT-SUPER-POWER/Scopify/commit/74c8db5d89ec8df44fcdf4d63caaa4c063ff3ef5))
+- 移除页头重复预留的顶部空白 ([f7cdc84e](https://github.com/MT-SUPER-POWER/Scopify/commit/f7cdc84ebbc0c8f3695dd6e9092f41d89ba5a930))
+- 动态页去掉渐变背景，卡片改为不透明底色 ([44f495f4](https://github.com/MT-SUPER-POWER/Scopify/commit/44f495f4f83a7b2d2f77e5d0b27321a523e9e3a3))
+- 修复错误边界策略导致的查询类型推断失败 ([9a4f1d6e](https://github.com/MT-SUPER-POWER/Scopify/commit/9a4f1d6ed2b5e98e5ab2df16c7fe7169f7178b46))
+- 按栏目区分加载失败并保留可用内容 ([01c874bb](https://github.com/MT-SUPER-POWER/Scopify/commit/01c874bb24682e2b36c3d5fe438d9aacbce992b6))
+- 拖动进度条松手后不再短暂回弹 ([9a074043](https://github.com/MT-SUPER-POWER/Scopify/commit/9a074043182756cbcda811a9253bee27898e3901))
+- 保留搜索词并恢复默认提示词搜索 ([2dfbc850](https://github.com/MT-SUPER-POWER/Scopify/commit/2dfbc850df2bab04b1966ae33c4a62537e67e8c3))
+- 收紧清晰度选择器的留白 ([c1e614a2](https://github.com/MT-SUPER-POWER/Scopify/commit/c1e614a2101dbcb7d39b0faa77d6858c96e6a195))
+- 面板顶栏浮在封面上，不再在封面上方空出一条 ([1f6afdee](https://github.com/MT-SUPER-POWER/Scopify/commit/1f6afdee78e3d1ac84fd491323bbf5b3edee799e))
+- 移除分类标签下重复的结果标题 ([b870f54e](https://github.com/MT-SUPER-POWER/Scopify/commit/b870f54edbe72160259710128f3359d763dd3105))
+- 窗口由窄变宽、右侧面板重新出现时不再导致主布局崩溃 ([b0b0f540](https://github.com/MT-SUPER-POWER/Scopify/commit/b0b0f54061513f64f5098201b8498ff62075ba44))
+- 播放栏封面垂直中线与侧边栏对齐 ([fe5daec8](https://github.com/MT-SUPER-POWER/Scopify/commit/fe5daec8d51599b7511968bc8f5ba25acc671866))
+- 去除新布局下设置页为旧顶栏预留的顶部留白 ([6133f425](https://github.com/MT-SUPER-POWER/Scopify/commit/6133f425f8ad86b06387f7609dbc36e0f5bc8492))
+- 启动骨架按左右栏的折叠状态还原，不再总显示默认布局 ([709b36bf](https://github.com/MT-SUPER-POWER/Scopify/commit/709b36bfe4761ccb8823b83981d42c4ebc49e9ce))
+- 桌面端搜索框与首页按钮回到窗口正中 ([e787c929](https://github.com/MT-SUPER-POWER/Scopify/commit/e787c929d4d698ca7516e7288da34e31c7a56a3d))
+- 切换页面时窗口标题不再闪烁 ([ea9558af](https://github.com/MT-SUPER-POWER/Scopify/commit/ea9558af7c40874fa90e8c011cf4e0c6cf9df4bf))
+- 未登录时侧边栏菜单底部不再多出一条空分隔线 ([9240f677](https://github.com/MT-SUPER-POWER/Scopify/commit/9240f6777cdad4646613b88509099a3bc77a96bd))
+
+### 优化
+
+- 头像改为更大气的深色圆盘样式，顶栏整体比例向 Spotify 看齐 ([65d1275f](https://github.com/MT-SUPER-POWER/Scopify/commit/65d1275f784c0e20fba5836e71ed0c267bbf0cb6))
+- 启动加载时预留正在播放面板位置，避免布局跳动 ([59f5ec9a](https://github.com/MT-SUPER-POWER/Scopify/commit/59f5ec9ab196dcf09a538d06ad41f85f09502de3))
+- 默认窗口尺寸调整为 1600×900 ([ac222ae8](https://github.com/MT-SUPER-POWER/Scopify/commit/ac222ae84a202a9e342f7143e7e9ac07fc961a65))
+- 底部播放栏高度降低，界面更紧凑 ([db22f24f](https://github.com/MT-SUPER-POWER/Scopify/commit/db22f24f6e6d997a53e3831410419c89a4240b33))
+
 ## v2.2.3 — 2026-10-25
 
 ### 新增
