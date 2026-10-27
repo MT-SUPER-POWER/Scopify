@@ -27,10 +27,11 @@ export function getShortcutBindingLabel(binding: ShortcutBinding | null): string
 export function getShortcutBindingParts(binding: ShortcutBinding | null): string[] {
   if (!binding) return [];
 
-  const modifier = isMacPlatform() ? "Cmd" : "Ctrl";
+  const mac = isMacPlatform();
+  const modifier = mac ? "Cmd" : "Ctrl";
   return [
     binding.primary ? modifier : null,
-    binding.alt ? "Alt" : null,
+    binding.alt ? (mac ? "Option" : "Alt") : null,
     binding.shift ? "Shift" : null,
     getKeyLabel(binding.key),
   ].filter((part): part is string => Boolean(part));
