@@ -576,7 +576,7 @@ function createStatusItems(
 
   const created: MacTrayStatusItems = { logo, controls: {}, title: null };
   if (layout.controls) {
-    // 每个按钮拥有独立的原生点击区域、高亮和辅助功能名称。
+    // 每个按钮拥有独立的原生点击区域、高亮和悬停提示。
     for (const action of [...CONTROL_ACTIONS].reverse()) {
       const control = new Tray(getControlIcon(getControlIconName(action, null)));
       // 连点下一首时每次点击都要生效，不能被合并成双击。
@@ -641,7 +641,6 @@ function renderStatusItems(
           : copy[action];
     control.setImage(getControlIcon(getControlIconName(action, snapshot)));
     control.setToolTip(label);
-    control.setAccessibilityTitle(label);
   }
   // 歌词文字由 updateLyricTitle 按进度写入，这里只更新悬停提示。
   if (items.title && track) items.title.setToolTip(`${track.title} - ${track.artists}`);

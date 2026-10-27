@@ -7,7 +7,6 @@ const trays: FakeTray[] = [];
 class FakeTray extends EventEmitter {
   image: unknown;
   tooltip = "";
-  accessibilityTitle = "";
   ignoreDoubleClick = false;
   destroyed = false;
   constructor(image: unknown) {
@@ -20,9 +19,6 @@ class FakeTray extends EventEmitter {
   }
   setToolTip(text: string) {
     this.tooltip = text;
-  }
-  setAccessibilityTitle(text: string) {
-    this.accessibilityTitle = text;
   }
   setIgnoreDoubleClickEvents(value: boolean) {
     this.ignoreDoubleClick = value;
@@ -133,7 +129,6 @@ test("menu bar controls have separate native targets, actions, state and cleanup
   ]);
   for (const button of [like, nextButton, play, previousButton]) {
     expect(button.ignoreDoubleClick).toBe(true);
-    expect(button.accessibilityTitle).toBe(button.tooltip);
   }
   previousButton.emit("click");
   play.emit("click");
@@ -154,6 +149,14 @@ test("menu bar controls have separate native targets, actions, state and cleanup
   expect(like.image).toMatchObject({ path: "/icons/heartFilledTemplate.png" });
   expect(play.tooltip).toBe("Pause");
   expect(like.tooltip).toBe("Unlike");
+
+  snapshot = { ...snapshot, isPlaying: false, liked: false };
+  refresh();
+  expect(trays).toHaveLength(6);
+  expect(play.image).toMatchObject({ path: "/icons/playTemplate.png" });
+  expect(like.image).toMatchObject({ path: "/icons/heartTemplate.png" });
+  expect(play.tooltip).toBe("Play");
+  expect(like.tooltip).toBe("Like");
 
   snapshot = { ...snapshot, track: null };
   refresh();
