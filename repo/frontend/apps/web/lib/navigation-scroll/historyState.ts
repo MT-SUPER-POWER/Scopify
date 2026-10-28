@@ -1,7 +1,7 @@
 import type {
   NavigationScrollEntryId,
   NavigationScrollHistoryState,
-} from "@/types/navigation-scroll";
+} from "@/types/app/navigationScroll";
 
 export const NAVIGATION_SCROLL_HISTORY_NAMESPACE = "__scopify";
 

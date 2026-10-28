@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
-import type { UiStore } from "@/types/ui";
+import type { UiStore } from "@/types/app/ui";
 
 export const useUiStore = create<UiStore>()(
   persist(

@@ -12,7 +12,7 @@ import type {
   NavigationScrollRestorationAdapter,
   NavigationScrollRestoreReadiness,
   NavigationScrollSnapshot,
-} from "@/types/navigation-scroll";
+} from "@/types/app/navigationScroll";
 
 const AT_TOP_TOLERANCE_PX = 1;
 const DEFAULT_RESTORE_TIMEOUT_MS = 2_000;

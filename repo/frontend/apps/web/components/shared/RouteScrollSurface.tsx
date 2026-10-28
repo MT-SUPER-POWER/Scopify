@@ -4,7 +4,7 @@ import { type ReactNode, useEffect, useRef } from "react";
 import { useNavigationScroll } from "@/components/shared/NavigationScrollProvider";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
-import type { RouteRestorationPlaceholder } from "@/types/navigation-scroll";
+import type { RouteRestorationPlaceholder } from "@/types/app/navigationScroll";
 
 interface RouteScrollSurfaceProps {
   children: ReactNode;

@@ -17,7 +17,7 @@ import { useI18n } from "@/store/module/i18n";
 import { usePerformanceStore } from "@/store/module/performance";
 import { APP_LOCALES, type AppLocale } from "@/types/settings/config";
 import type { GeneralSettingsTabProps } from "@/types/settings/components";
-import type { PlaybackProgressRefreshRate } from "@/types/performance";
+import type { PlaybackProgressRefreshRate } from "@/types/app/performance";
 import { AudioDeviceSettingsSection } from "./AudioDeviceSettingsSection";
 import { SettingInput, SettingRow, SettingSection, Toggle } from "./SettingsUI";
 

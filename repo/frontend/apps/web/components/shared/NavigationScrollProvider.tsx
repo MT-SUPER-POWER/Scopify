@@ -6,7 +6,7 @@ import type {
   NavigationScrollCoordinatorState,
   NavigationScrollRestorationAdapter,
   RouteRestorationPlaceholder,
-} from "@/types/navigation-scroll";
+} from "@/types/app/navigationScroll";
 import {
   createContext,
   type PropsWithChildren,

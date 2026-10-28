@@ -1,7 +1,7 @@
 import { isApiError } from "@/lib/web/apiError";
 import { runtime } from "@/lib/runtime";
 import { writeNativeRendererConsoleError } from "@/lib/runtime/consoleBridge";
-import type { LogMetadata, LogValue, RendererLogSource } from "@/types/logging";
+import type { LogMetadata, LogValue, RendererLogSource } from "@/types/app/logging";
 
 const MAX_ARRAY_LENGTH = 20;
 const MAX_DEPTH = 4;
