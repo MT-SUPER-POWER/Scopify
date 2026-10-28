@@ -1,6 +1,6 @@
 "use client";
 
-import type { ListeningReportActivityChartProps } from "@/types/components/listeningReport";
+import type { ListeningReportActivityChartProps } from "@/types/listeningReport/components";
 
 import { ListeningReportIsometricHeatmap } from "./ListeningReportIsometricHeatmap";
 import { ListeningReportTimeOfDayRadar } from "./ListeningReportTimeOfDayRadar";

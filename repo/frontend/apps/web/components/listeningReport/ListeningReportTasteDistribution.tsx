@@ -2,7 +2,7 @@
 
 import { useMemo } from "react";
 
-import type { ListeningReportTasteDistributionProps } from "@/types/components/listeningReport";
+import type { ListeningReportTasteDistributionProps } from "@/types/listeningReport/components";
 
 export function ListeningReportTasteDistribution({
   summary,

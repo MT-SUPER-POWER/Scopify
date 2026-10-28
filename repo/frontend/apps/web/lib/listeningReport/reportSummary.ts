@@ -12,7 +12,7 @@ import type {
   TopSongSectionItem,
   TopStyleSectionItem,
   WallpaperItem,
-} from "@/types/api/listeningReport";
+} from "@/types/listeningReport/api";
 import type {
   ListeningReportDailyActivityItem,
   ListeningReportEraItem,
@@ -26,7 +26,7 @@ import type {
   ListeningReportStyleItem,
   ListeningReportSummary,
   ListeningReportTimeOfDayItem,
-} from "@/types/listeningReport";
+} from "@/types/listeningReport/model";
 
 type UnknownRecord = Record<string, unknown>;
 

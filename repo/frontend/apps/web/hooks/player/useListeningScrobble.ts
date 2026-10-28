@@ -8,7 +8,7 @@ import {
   getTrackedListeningDelta,
 } from "@/lib/player/listeningScrobble";
 import { useLoginStatus } from "@/lib/hooks/useLoginStatus";
-import type { UseListeningScrobbleOptions } from "@/types/listeningScrobble";
+import type { UseListeningScrobbleOptions } from "@/types/listeningReport/scrobble";
 
 /** Uploads one meaningful listening session without counting manual seeks as listening time. */
 export function useListeningScrobble({ audioRef, session }: UseListeningScrobbleOptions) {

@@ -3,7 +3,7 @@
 import { useMemo } from "react";
 
 import { LISTENING_REPORT_MONTH_NAMES } from "@/constants/listeningReport";
-import type { ListeningReportRecordWallProps } from "@/types/components/listeningReport";
+import type { ListeningReportRecordWallProps } from "@/types/listeningReport/components";
 
 export function ListeningReportRecordWall({
   selectedMonth,

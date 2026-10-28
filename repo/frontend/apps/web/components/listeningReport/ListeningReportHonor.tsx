@@ -1,6 +1,6 @@
 import { IconTrophy } from "@tabler/icons-react";
 
-import type { ListeningReportHonorProps } from "@/types/components/listeningReport";
+import type { ListeningReportHonorProps } from "@/types/listeningReport/components";
 
 export function ListeningReportHonor({
   activeDays,

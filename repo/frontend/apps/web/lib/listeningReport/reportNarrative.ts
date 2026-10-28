@@ -1,12 +1,12 @@
 import type { MonthOption } from "@/lib/listeningReport/dateHelpers";
 import { LISTENING_REPORT_MONTH_NAMES } from "@/constants/listeningReport";
-import type { ListeningReportPeriod } from "@/types/api/listeningReport";
-import type { ListeningReportSummary } from "@/types/listeningReport";
+import type { ListeningReportPeriod } from "@/types/listeningReport/api";
+import type { ListeningReportSummary } from "@/types/listeningReport/model";
 import type {
   ListeningReportDominantTimeOfDay,
   ListeningReportFooterSummary,
   ListeningReportNarrative,
-} from "@/types/listeningReportNarrative";
+} from "@/types/listeningReport/narrative";
 
 const TIME_OF_DAY_COPY: Record<string, Omit<ListeningReportDominantTimeOfDay, "period">> = {
   afternoon: {

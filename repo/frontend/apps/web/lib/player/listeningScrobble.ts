@@ -1,5 +1,5 @@
-import type { ScrobbleV1Request } from "@/types/api/scrobble";
-import type { ListeningScrobbleSession } from "@/types/listeningScrobble";
+import type { ScrobbleV1Request } from "@/types/listeningReport/scrobbleApi";
+import type { ListeningScrobbleSession } from "@/types/listeningReport/scrobble";
 
 const MAX_TRACKED_PROGRESS_DELTA_SECONDS = 20;
 const MINIMUM_SCROBBLE_SECONDS = 30;

@@ -14,7 +14,7 @@ import {
   LISTENING_REPORT_ORDERED_PERIOD_KEYS,
   LISTENING_REPORT_TIME_OF_DAY_META,
 } from "@/constants/listeningReport";
-import type { ListeningReportTimeOfDayRadarProps } from "@/types/components/listeningReport";
+import type { ListeningReportTimeOfDayRadarProps } from "@/types/listeningReport/components";
 
 function RadarTooltipContent({
   active,

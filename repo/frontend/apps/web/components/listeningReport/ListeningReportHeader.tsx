@@ -5,8 +5,8 @@ import { IconRefresh } from "@tabler/icons-react";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
 import { useI18n } from "@/store/module/i18n";
-import type { ListeningReportPeriod } from "@/types/api/listeningReport";
-import type { ListeningReportHeaderProps } from "@/types/listeningReport";
+import type { ListeningReportPeriod } from "@/types/listeningReport/api";
+import type { ListeningReportHeaderProps } from "@/types/listeningReport/model";
 
 import { ListeningReportMonthPicker } from "./ListeningReportMonthPicker";
 import { ListeningReportWeekPicker } from "./ListeningReportWeekPicker";

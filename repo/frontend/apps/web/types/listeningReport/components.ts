@@ -1,7 +1,7 @@
 import type { MonthOption } from "@/lib/listeningReport/dateHelpers";
-import type { SongPlayRankItem, TodayListeningSongDTO } from "@/types/api/listeningReport";
-import type { ListeningReportSummary } from "@/types/listeningReport";
-import type { ListeningReportFooterSummary } from "@/types/listeningReportNarrative";
+import type { SongPlayRankItem, TodayListeningSongDTO } from "@/types/listeningReport/api";
+import type { ListeningReportSummary } from "@/types/listeningReport/model";
+import type { ListeningReportFooterSummary } from "@/types/listeningReport/narrative";
 
 export interface ListeningReportActivityChartProps {
   summary: ListeningReportSummary;

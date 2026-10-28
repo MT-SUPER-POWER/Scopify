@@ -1,5 +1,5 @@
 import type { MonthOption } from "@/lib/listeningReport/dateHelpers";
-import type { ListeningReportSummary } from "@/types/listeningReport";
+import type { ListeningReportSummary } from "@/types/listeningReport/model";
 
 export interface ListeningReportDominantTimeOfDay {
   label: string;

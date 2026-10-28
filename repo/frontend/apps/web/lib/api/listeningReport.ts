@@ -4,7 +4,7 @@ import type {
   RealtimeListeningReportPeriod,
   SongPlayRankResponse,
   TodayListeningSongsResponse,
-} from "@/types/api/listeningReport";
+} from "@/types/listeningReport/api";
 import request, { requestConfig } from "../web/request";
 
 /** 获取累计听歌时长。 */

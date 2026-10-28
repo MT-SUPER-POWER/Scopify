@@ -4,7 +4,7 @@ import { IconHeadphones, IconPlayerPlayFilled, IconRepeat } from "@tabler/icons-
 import { useMemo } from "react";
 
 import { useReportSongPlayback } from "@/hooks/listeningReport/useReportSongPlayback";
-import type { ListeningReportTopSongsProps } from "@/types/components/listeningReport";
+import type { ListeningReportTopSongsProps } from "@/types/listeningReport/components";
 
 export function ListeningReportTopSongs({ rankList, summary }: ListeningReportTopSongsProps) {
   const { playSong, playingSongId } = useReportSongPlayback();

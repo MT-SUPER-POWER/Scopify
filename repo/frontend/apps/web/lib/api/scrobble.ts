@@ -1,4 +1,4 @@
-import type { ScrobbleV1Request, ScrobbleV1Response } from "@/types/api/scrobble";
+import type { ScrobbleV1Request, ScrobbleV1Response } from "@/types/listeningReport/scrobbleApi";
 
 import request, { requestConfig } from "../web/request";
 

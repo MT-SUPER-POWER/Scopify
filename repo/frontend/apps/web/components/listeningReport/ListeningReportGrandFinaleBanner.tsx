@@ -1,4 +1,4 @@
-import type { ListeningReportGrandFinaleBannerProps } from "@/types/components/listeningReport";
+import type { ListeningReportGrandFinaleBannerProps } from "@/types/listeningReport/components";
 import { ScopifyBrand } from "@/components/shared/ScopifyBrand";
 
 export function ListeningReportGrandFinaleBanner({

@@ -18,7 +18,7 @@ import type {
   RealtimeListeningReportPeriod,
   SongPlayRankItem,
   TodayListeningSongDTO,
-} from "@/types/api/listeningReport";
+} from "@/types/listeningReport/api";
 
 /** Loads the listening report for the specified period and optional endTime timestamp. */
 export function useListeningReportQuery(period: ListeningReportPeriod, endTime?: number) {

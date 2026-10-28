@@ -3,7 +3,7 @@
 import { IconMusic } from "@tabler/icons-react";
 import { useMemo } from "react";
 
-import type { ListeningReportTopArtistsProps } from "@/types/components/listeningReport";
+import type { ListeningReportTopArtistsProps } from "@/types/listeningReport/components";
 
 export function ListeningReportTopArtists({ summary }: ListeningReportTopArtistsProps) {
   const topArtist = summary.topArtist;

@@ -19,7 +19,7 @@ import {
   type WeekOption,
 } from "@/lib/listeningReport/dateHelpers";
 import { useI18n } from "@/store/module/i18n";
-import type { ListeningReportPeriod } from "@/types/api/listeningReport";
+import type { ListeningReportPeriod } from "@/types/listeningReport/api";
 
 import { ListeningReportGrandFinaleBanner } from "./ListeningReportGrandFinaleBanner";
 import { ListeningReportHeader } from "./ListeningReportHeader";

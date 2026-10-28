@@ -4,7 +4,7 @@ import { Play, Radio } from "lucide-react";
 
 import { useReportSongPlayback } from "@/hooks/listeningReport/useReportSongPlayback";
 import { useI18n } from "@/store/module/i18n";
-import type { ListeningReportTodayFeedProps } from "@/types/components/listeningReport";
+import type { ListeningReportTodayFeedProps } from "@/types/listeningReport/components";
 
 function formatPlayTime(timestamp: number): string {
   if (!timestamp) return "";

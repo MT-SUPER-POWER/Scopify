@@ -13,7 +13,7 @@ import {
 import { LISTENING_REPORT_MONTH_NAMES } from "@/constants/listeningReport";
 import { formatMinutesText } from "@/lib/listeningReport/dateHelpers";
 import { useUserStore } from "@/store";
-import type { ListeningReportPosterModalProps } from "@/types/components/listeningReport";
+import type { ListeningReportPosterModalProps } from "@/types/listeningReport/components";
 
 export function ListeningReportPosterModal({
   isOpen,

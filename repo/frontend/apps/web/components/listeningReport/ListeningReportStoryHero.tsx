@@ -9,7 +9,7 @@ import {
   buildListeningReportNarrative,
   extractHeroCovers,
 } from "@/lib/listeningReport/reportNarrative";
-import type { ListeningReportStoryHeroProps } from "@/types/components/listeningReport";
+import type { ListeningReportStoryHeroProps } from "@/types/listeningReport/components";
 
 import { ListeningReportHeader } from "./ListeningReportHeader";
 import { ListeningReportHonor } from "./ListeningReportHonor";

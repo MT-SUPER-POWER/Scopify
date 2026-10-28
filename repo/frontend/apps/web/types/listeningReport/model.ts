@@ -1,4 +1,4 @@
-import type { ListeningReportPeriod } from "@/types/api/listeningReport";
+import type { ListeningReportPeriod } from "@/types/listeningReport/api";
 
 export interface ListeningReportSummary {
   activeDays: number | null;

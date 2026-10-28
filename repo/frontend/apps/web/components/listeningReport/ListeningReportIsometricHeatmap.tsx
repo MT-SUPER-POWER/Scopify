@@ -4,7 +4,7 @@ import { useMemo, useState } from "react";
 
 import { LISTENING_REPORT_PILLAR_COLORS } from "@/constants/listeningReport";
 import { getMonthHeatmapGrid, type MonthHeatmapDay } from "@/lib/listeningReport/dateHelpers";
-import type { ListeningReportIsometricHeatmapProps } from "@/types/components/listeningReport";
+import type { ListeningReportIsometricHeatmapProps } from "@/types/listeningReport/components";
 
 export function ListeningReportIsometricHeatmap({
   activeDays,
