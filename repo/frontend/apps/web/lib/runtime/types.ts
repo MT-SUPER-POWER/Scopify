@@ -29,19 +29,19 @@ import type {
   DesktopLyricCommand,
   DesktopLyricPreferences,
   DesktopLyricPreferencesUpdate,
-} from "@/types/desktopLyric";
+} from "@/types/desktop/lyric";
 import type {
   DynamicIslandCommand,
   DynamicIslandMode,
   DynamicIslandPreferences,
   DynamicIslandPreferencesUpdate,
-} from "@/types/dynamicIsland";
+} from "@/types/desktop/dynamicIsland";
 import type {
   TaskbarLyricCommand,
   TaskbarLyricLayout,
   TaskbarLyricPreferences,
   TaskbarLyricPreferencesUpdate,
-} from "@/types/taskbarLyric";
+} from "@/types/desktop/taskbarLyric";
 import type { AppUpdateState } from "@/types/updater";
 import type { LyricData } from "@/types/lyrics/model";
 import type { CachePreferences } from "@/types/cache";

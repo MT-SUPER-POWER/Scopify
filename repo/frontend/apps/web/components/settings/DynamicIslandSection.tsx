@@ -15,12 +15,12 @@ import {
 import { useCompanionPreferences } from "@/hooks/desktopCompanion/useCompanionPreferences";
 import { runtime } from "@/lib/runtime";
 import { useI18n } from "@/store/module/i18n";
-import type { BooleanKeys } from "@/types/desktopCompanion";
+import type { BooleanKeys } from "@/types/desktop/companion";
 import type {
   DynamicIslandPreferences,
   DynamicIslandPreferencesUpdate,
   DynamicIslandTransition,
-} from "@/types/dynamicIsland";
+} from "@/types/desktop/dynamicIsland";
 import { SettingRow, SettingSection, Toggle } from "./SettingsUI";
 
 export function DynamicIslandSection() {

@@ -1,4 +1,4 @@
-import type { DynamicIslandMetrics } from "@/types/dynamicIsland";
+import type { DynamicIslandMetrics } from "@/types/desktop/dynamicIsland";
 
 /** scale = 1 时主行高度；其余尺寸都按它等比换算，与 SPlayer-Next 的灵动岛比例一致。 */
 const BASE_ROW_HEIGHT = 40;

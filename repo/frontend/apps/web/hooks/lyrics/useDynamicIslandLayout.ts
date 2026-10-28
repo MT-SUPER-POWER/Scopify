@@ -4,7 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { getDynamicIslandChromeWidth } from "@/lib/lyrics/dynamicIslandLayout";
 import { measureTextWidth } from "@/lib/lyrics/textMeasure";
 import { runtime } from "@/lib/runtime";
-import type { DynamicIslandContent, DynamicIslandMetrics } from "@/types/dynamicIsland";
+import type { DynamicIslandContent, DynamicIslandMetrics } from "@/types/desktop/dynamicIsland";
 
 /** 回弹缓动峰值约超出 10%，展开期间命中区域多留一些，避免边缘被裁。 */
 const SHAPE_OVERSHOOT = 1.15;

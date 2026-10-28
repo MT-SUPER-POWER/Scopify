@@ -10,7 +10,7 @@ import {
   TooltipTrigger,
 } from "@scopify/ui/shadcn/components/tooltip";
 import { useI18n } from "@/store/module/i18n";
-import type { DesktopPlaybackTransportControlsProps } from "@/types/components/desktopPlaybackWallpaper";
+import type { DesktopPlaybackTransportControlsProps } from "@/types/desktop/playbackWallpaperComponents";
 
 const transportButtonClass =
   "desktop-controller-soft-button flex size-8 items-center justify-center rounded-full transition disabled:pointer-events-none disabled:opacity-35";

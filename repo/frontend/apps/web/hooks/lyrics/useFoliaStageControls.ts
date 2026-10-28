@@ -7,7 +7,7 @@ import { useFoliaSettingsStore } from "@/store/module/foliaSettings";
 import { useLyricStageStore } from "@/store/module/lyrics";
 import { useUiStore } from "@/store/module/ui";
 import type { LyricStageProps } from "@/types/lyrics/components";
-import type { DesktopLyricCommand } from "@/types/desktopLyric";
+import type { DesktopLyricCommand } from "@/types/desktop/lyric";
 
 const keepAutoHideEnabled = () => undefined;
 

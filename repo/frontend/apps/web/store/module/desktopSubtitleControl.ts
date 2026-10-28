@@ -2,7 +2,7 @@
 
 import { create } from "zustand";
 import { runtime } from "@/lib/runtime";
-import type { DesktopSubtitleControlStore } from "@/types/desktopSubtitleControl";
+import type { DesktopSubtitleControlStore } from "@/types/desktop/subtitleControl";
 
 export const useDesktopSubtitleControl = create<DesktopSubtitleControlStore>((set, get) => ({
   open: false,

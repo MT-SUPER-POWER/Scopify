@@ -6,7 +6,7 @@ import { FoliaPresentationSurface } from "@/components/lyrics/FoliaPresentationS
 import { useFoliaPlaybackBridge } from "@/hooks/player/useFoliaPlaybackBridge";
 import { useFoliaPresentationAppearance } from "@/hooks/player/useFoliaPresentationAppearance";
 import { usePlaybackProjection } from "@/hooks/player/usePlaybackProjection";
-import type { DesktopPlaybackWallpaperRendererProps } from "@/types/components/desktopPlaybackWallpaper";
+import type { DesktopPlaybackWallpaperRendererProps } from "@/types/desktop/playbackWallpaperComponents";
 
 export function DesktopPlaybackWallpaperRenderer({ model }: DesktopPlaybackWallpaperRendererProps) {
   const [captureBackgroundOnly, setCaptureBackgroundOnly] = useState(false);

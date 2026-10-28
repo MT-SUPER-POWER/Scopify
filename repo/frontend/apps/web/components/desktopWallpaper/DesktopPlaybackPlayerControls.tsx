@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { FoliaPlaybackProgressBar } from "@/components/desktopWallpaper/FoliaPlaybackProgressBar";
 import { DesktopPlaybackTransportControls } from "@/components/desktopWallpaper/DesktopPlaybackTransportControls";
 import { useI18n } from "@/store/module/i18n";
-import type { DesktopPlaybackPlayerControlsProps } from "@/types/components/desktopPlaybackWallpaper";
+import type { DesktopPlaybackPlayerControlsProps } from "@/types/desktop/playbackWallpaperComponents";
 
 const LYRIC_REVEAL_DELAY_MS = 800;
 

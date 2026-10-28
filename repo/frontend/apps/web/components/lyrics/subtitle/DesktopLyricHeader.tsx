@@ -22,7 +22,7 @@ import { cn } from "@/lib/utils";
 import { useAppearanceStore } from "@/store/module/appearance";
 import { useDesktopSubtitleControl } from "@/store/module/desktopSubtitleControl";
 import { useI18n } from "@/store/module/i18n";
-import type { DesktopLyricHeaderProps } from "@/types/desktopLyric";
+import type { DesktopLyricHeaderProps } from "@/types/desktop/lyric";
 
 const BUTTON_CLASS =
   "flex size-8 shrink-0 items-center justify-center rounded-lg text-white transition-colors hover:bg-white/20 focus-visible:outline-2 focus-visible:outline-white active:bg-white/30 disabled:opacity-50 aria-pressed:bg-white/25";

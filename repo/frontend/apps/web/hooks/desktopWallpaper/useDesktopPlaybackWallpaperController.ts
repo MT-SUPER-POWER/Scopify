@@ -8,7 +8,7 @@ import type {
 } from "@scopify/desktop-contract";
 
 import { runtime } from "@/lib/runtime";
-import type { DesktopPlaybackWallpaperControllerState } from "@/types/desktopPlaybackWallpaper";
+import type { DesktopPlaybackWallpaperControllerState } from "@/types/desktop/playbackWallpaper";
 
 export function useDesktopPlaybackWallpaperController(): DesktopPlaybackWallpaperControllerState {
   const [model, setModel] = useState<DesktopPlaybackWallpaperModel | null>(null);

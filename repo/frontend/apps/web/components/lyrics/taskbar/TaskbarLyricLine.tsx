@@ -3,7 +3,7 @@
 import { CompanionLyricText } from "@/components/lyrics/companion/CompanionLyricText";
 import { useSubtitleMarquee } from "@/hooks/lyrics/useSubtitleMarquee";
 import { cn } from "@/lib/utils";
-import type { TaskbarLyricLineProps } from "@/types/taskbarLyric";
+import type { TaskbarLyricLineProps } from "@/types/desktop/taskbarLyric";
 
 const SECONDARY_SCALE = 0.82;
 const STILL = { position: 0, startedAt: null };

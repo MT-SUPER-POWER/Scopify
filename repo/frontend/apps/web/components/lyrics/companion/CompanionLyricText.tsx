@@ -3,7 +3,7 @@
 import { useMemo, type CSSProperties } from "react";
 import { splitLyricGraphemes } from "@/components/lyrics/folia/src/utils/lyrics/graphemeTiming";
 import { useCompanionLyricProgress } from "@/hooks/lyrics/useCompanionLyricProgress";
-import type { CompanionLyricTextProps } from "@/types/desktopCompanion";
+import type { CompanionLyricTextProps } from "@/types/desktop/companion";
 
 /** 逐字渐变的过渡宽度（相对单个字素），让填充边缘柔和一点。 */
 const FEATHER = 12;

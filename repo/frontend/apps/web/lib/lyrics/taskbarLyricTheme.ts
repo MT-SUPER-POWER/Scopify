@@ -1,4 +1,4 @@
-import type { TaskbarLyricColorMode } from "@/types/taskbarLyric";
+import type { TaskbarLyricColorMode } from "@/types/desktop/taskbarLyric";
 
 const LIGHT_TEXT = {
   primary: "#ffffff",

@@ -5,7 +5,7 @@ import { usePlaybackCommands } from "@/hooks/player/usePlaybackCommands";
 import { usePlaybackProjection } from "@/hooks/player/usePlaybackProjection";
 import { cn } from "@/lib/utils";
 import { useI18n } from "@/store/module/i18n";
-import type { TaskbarLyricControlsProps } from "@/types/taskbarLyric";
+import type { TaskbarLyricControlsProps } from "@/types/desktop/taskbarLyric";
 
 const BUTTON_CLASS =
   "flex aspect-square h-full shrink-0 items-center justify-center rounded-md border border-(--tbl-primary)/25 transition-[background-color,transform] duration-300 hover:bg-(--tbl-primary)/15 active:scale-90";

@@ -15,12 +15,12 @@ import {
 import { useCompanionPreferences } from "@/hooks/desktopCompanion/useCompanionPreferences";
 import { runtime } from "@/lib/runtime";
 import { useI18n } from "@/store/module/i18n";
-import type { BooleanKeys } from "@/types/desktopCompanion";
+import type { BooleanKeys } from "@/types/desktop/companion";
 import type {
   TaskbarLyricColorMode,
   TaskbarLyricPosition,
   TaskbarLyricPreferencesUpdate,
-} from "@/types/taskbarLyric";
+} from "@/types/desktop/taskbarLyric";
 import { SettingInput, SettingRow, SettingSection, Toggle } from "./SettingsUI";
 
 const POSITIONS: TaskbarLyricPosition[] = ["auto", "left", "right"];

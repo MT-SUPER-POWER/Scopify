@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef } from "react";
 import type { PointerEvent as ReactPointerEvent } from "react";
-import type { CompanionWindowDragOptions } from "@/types/desktopCompanion";
+import type { CompanionWindowDragOptions } from "@/types/desktop/companion";
 
 /** 留给系统原生拖边缩放的边缘宽度。 */
 const RESIZE_BORDER_WIDTH = 8;

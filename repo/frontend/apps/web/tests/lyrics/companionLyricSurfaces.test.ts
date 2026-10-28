@@ -10,7 +10,7 @@ import {
   computeMarqueeOffset,
 } from "@/lib/lyrics/desktopLyricLayout";
 import { resolveTaskbarLyricTheme } from "@/lib/lyrics/taskbarLyricTheme";
-import type { CompanionLyricSnapshot } from "@/types/desktopCompanion";
+import type { CompanionLyricSnapshot } from "@/types/desktop/companion";
 
 const line = (fullText: string, startTime: number, translation?: string): FoliaLine => ({
   endTime: startTime + 3,

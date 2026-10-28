@@ -1,5 +1,5 @@
-import type { DynamicIslandPreferences } from "@/types/dynamicIsland";
-import type { TaskbarLyricPreferences } from "@/types/taskbarLyric";
+import type { DynamicIslandPreferences } from "@/types/desktop/dynamicIsland";
+import type { TaskbarLyricPreferences } from "@/types/desktop/taskbarLyric";
 
 /** 偏好从主进程读回之前的占位值，与主进程默认值保持一致。 */
 export const DEFAULT_DYNAMIC_ISLAND_PREFERENCES: DynamicIslandPreferences = {

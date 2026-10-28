@@ -3,7 +3,7 @@
 import { useEffect, useRef } from "react";
 import { runtime } from "@/lib/runtime";
 import { useTimeStore } from "@/store/module/time";
-import type { DiscordPresenceSnapshotInput } from "@/types/discordPresence";
+import type { DiscordPresenceSnapshotInput } from "@/types/desktop/discordPresence";
 
 const DISCORD_SNAPSHOT_INTERVAL_MS = 1_000;
 

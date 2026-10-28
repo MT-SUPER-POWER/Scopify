@@ -1,7 +1,7 @@
 "use client";
 
 import { PlaybackProgressBar } from "@/components/PlayBar/PlaybackProgressBar";
-import type { FoliaPlaybackProgressBarProps } from "@/types/components/desktopPlaybackWallpaper";
+import type { FoliaPlaybackProgressBarProps } from "@/types/desktop/playbackWallpaperComponents";
 
 export function FoliaPlaybackProgressBar({
   ariaLabel,

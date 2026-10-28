@@ -5,7 +5,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import type { DesktopIconVisibilityState } from "@scopify/desktop-contract";
 
 import { runtime } from "@/lib/runtime";
-import type { DesktopIconVisibilityControllerState } from "@/types/desktopIcons";
+import type { DesktopIconVisibilityControllerState } from "@/types/desktop/icons";
 
 function unavailableState(error: unknown): DesktopIconVisibilityState {
   return {

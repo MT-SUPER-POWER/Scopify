@@ -1,4 +1,4 @@
-import type { DiscordPresenceTrackMetadata } from "@/types/discordPresence";
+import type { DiscordPresenceTrackMetadata } from "@/types/desktop/discordPresence";
 
 function normalizeMetadataValue(value: string) {
   return value.trim().toLocaleLowerCase();

@@ -1,6 +1,6 @@
-import type { CompanionLyricSnapshot } from "@/types/desktopCompanion";
-import type { DynamicIslandContent } from "@/types/dynamicIsland";
-import type { TaskbarLyricItem } from "@/types/taskbarLyric";
+import type { CompanionLyricSnapshot } from "@/types/desktop/companion";
+import type { DynamicIslandContent } from "@/types/desktop/dynamicIsland";
+import type { TaskbarLyricItem } from "@/types/desktop/taskbarLyric";
 
 const APP_NAME = "Scopify";
 

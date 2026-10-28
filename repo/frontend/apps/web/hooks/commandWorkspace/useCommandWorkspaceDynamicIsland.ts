@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useCompanionPreferences } from "@/hooks/desktopCompanion/useCompanionPreferences";
 import { runtime } from "@/lib/runtime";
-import type { DynamicIslandPreferencesUpdate } from "@/types/dynamicIsland";
+import type { DynamicIslandPreferencesUpdate } from "@/types/desktop/dynamicIsland";
 
 export function useCommandWorkspaceDynamicIsland() {
   const [preferences, setPreferences] = useCompanionPreferences(

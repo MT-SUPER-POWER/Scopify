@@ -1,7 +1,7 @@
 "use client";
 
 import { Switch } from "@/components/ui/switch";
-import type { TraySwitchRowProps } from "@/types/tray";
+import type { TraySwitchRowProps } from "@/types/desktop/tray";
 
 /** 托盘面板里“图标 + 文案 + 开关”的整行，整行可点。 */
 export function TraySwitchRow({

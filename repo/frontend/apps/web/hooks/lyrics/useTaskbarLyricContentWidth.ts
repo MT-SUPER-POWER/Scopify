@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { measureTextWidth } from "@/lib/lyrics/textMeasure";
 import { runtime } from "@/lib/runtime";
-import type { TaskbarLyricContentWidthOptions } from "@/types/taskbarLyric";
+import type { TaskbarLyricContentWidthOptions } from "@/types/desktop/taskbarLyric";
 
 /** 外层左右内边距、歌词区左右外边距、封面内边距之和。 */
 const CHROME_WIDTH = 12 + 8;

@@ -16,7 +16,7 @@ import { runtime } from "@/lib/runtime";
 import type {
   DesktopWallpaperAudioMotionValues,
   DesktopWallpaperFoliaPlaybackState,
-} from "@/types/desktopPlaybackWallpaper";
+} from "@/types/desktop/playbackWallpaper";
 import type { LyricData } from "@/types/lyrics/model";
 
 export function useDesktopWallpaperFoliaPlayback(

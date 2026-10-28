@@ -8,7 +8,7 @@ import type { DesktopPlaybackWallpaperStatus } from "@scopify/desktop-contract";
 import { Switch } from "@/components/ui/switch";
 import { cn } from "@/lib/utils";
 import { useI18n } from "@/store/module/i18n";
-import type { DesktopPlaybackWallpaperControlsProps } from "@/types/components/desktopPlaybackWallpaper";
+import type { DesktopPlaybackWallpaperControlsProps } from "@/types/desktop/playbackWallpaperComponents";
 import type { TranslateFn } from "@/types/i18n.generated";
 
 function getStatusPresentation(status: DesktopPlaybackWallpaperStatus, t: TranslateFn) {

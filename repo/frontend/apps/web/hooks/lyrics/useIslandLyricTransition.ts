@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { TransitionEvent } from "react";
-import type { DynamicIslandContent, DynamicIslandTransition } from "@/types/dynamicIsland";
+import type { DynamicIslandContent, DynamicIslandTransition } from "@/types/desktop/dynamicIsland";
 
 /** 收缩动画时长加一点余量：窗口在后台时 transitionend 可能不触发，到点强制换行。 */
 const SHRINK_FALLBACK_MS = 400;

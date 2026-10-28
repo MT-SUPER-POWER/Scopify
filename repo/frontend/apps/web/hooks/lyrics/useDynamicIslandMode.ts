@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { runtime } from "@/lib/runtime";
-import type { DynamicIslandMode } from "@/types/dynamicIsland";
+import type { DynamicIslandMode } from "@/types/desktop/dynamicIsland";
 
 /** 吸附/悬浮形态由主进程在拖拽中实时判定，渲染端据此切换圆角。 */
 export function useDynamicIslandMode() {

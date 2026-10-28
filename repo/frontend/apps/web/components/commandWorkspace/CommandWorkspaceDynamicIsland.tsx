@@ -4,7 +4,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { DYNAMIC_ISLAND_SCALE_OPTIONS } from "@/constants/desktopCompanion";
 import { useCommandWorkspaceDynamicIsland } from "@/hooks/commandWorkspace/useCommandWorkspaceDynamicIsland";
 import { useI18n } from "@/store/module/i18n";
-import type { DynamicIslandTransition } from "@/types/dynamicIsland";
+import type { DynamicIslandTransition } from "@/types/desktop/dynamicIsland";
 
 export function CommandWorkspaceDynamicIsland() {
   const { t } = useI18n();

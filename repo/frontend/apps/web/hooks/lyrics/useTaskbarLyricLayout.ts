@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { runtime } from "@/lib/runtime";
-import type { TaskbarLyricLayout } from "@/types/taskbarLyric";
+import type { TaskbarLyricLayout } from "@/types/desktop/taskbarLyric";
 
 /** 任务栏布局（可用宽度、贴靠方向、深浅色）由主进程在任务栏变化时推送。 */
 export function useTaskbarLyricLayout() {

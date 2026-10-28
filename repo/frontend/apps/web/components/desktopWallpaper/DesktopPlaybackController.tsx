@@ -25,7 +25,7 @@ import { runtime } from "@/lib/runtime";
 import { cn } from "@/lib/utils";
 import { useI18n } from "@/store/module/i18n";
 import { useLyricStageStore } from "@/store/module/lyrics";
-import type { DesktopPlaybackControllerTab } from "@/types/desktopPlaybackWallpaper";
+import type { DesktopPlaybackControllerTab } from "@/types/desktop/playbackWallpaper";
 
 export function DesktopPlaybackController() {
   const { t } = useI18n();
