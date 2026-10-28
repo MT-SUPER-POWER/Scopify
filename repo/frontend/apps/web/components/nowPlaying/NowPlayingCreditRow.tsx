@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { NowPlayingFollowButton } from "./NowPlayingFollowButton";
 import { useArtistFollow } from "@/hooks/artist/useArtistFollow";
-import type { NowPlayingCreditRowProps } from "@/types/components/nowPlaying";
+import type { NowPlayingCreditRowProps } from "@/types/player/nowPlayingComponents";
 
 /** 演职人员中的一位艺人：名字、身份与关注按钮。 */
 export function NowPlayingCreditRow({ artist, role }: NowPlayingCreditRowProps) {

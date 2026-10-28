@@ -16,7 +16,7 @@ import { useOnlineLyricsTab } from "@/hooks/lyrics/useOnlineLyricsTab";
 import { useI18n } from "@/store/module/i18n";
 import { usePlayerStore } from "@/store/module/player";
 import type { FoliaLyricsControlsProps } from "@/types/components/lyrics";
-import type { ReplayGainMode } from "@/types/player";
+import type { ReplayGainMode } from "@/types/player/model";
 
 // The lyrics tab (Folia panelTab/SourceTab.tsx, LyricTimelineOffsetControl.tsx, LyricFileButton.tsx,
 // ReplayGainControl.tsx): where the lyrics come from, the timeline offset in 250 ms steps, online

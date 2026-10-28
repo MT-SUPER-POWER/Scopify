@@ -1,4 +1,4 @@
-import type { PlaybackLoadIdentity, PlayerStore } from "@/types/player";
+import type { PlaybackLoadIdentity, PlayerStore } from "@/types/player/model";
 
 /** Rejects async media/lyric results that no longer belong to the active load attempt. */
 export function isPlaybackLoadCurrent(

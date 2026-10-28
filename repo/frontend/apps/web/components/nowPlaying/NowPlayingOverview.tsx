@@ -11,7 +11,7 @@ import { NowPlayingNextUp } from "./NowPlayingNextUp";
 import { NowPlayingSimilarSongs } from "./NowPlayingSimilarSongs";
 import { useEffect, useRef } from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import type { NowPlayingOverviewProps } from "@/types/components/nowPlaying";
+import type { NowPlayingOverviewProps } from "@/types/player/nowPlayingComponents";
 
 /** 浮动顶栏的高度：封面底边滚到它下面时，顶栏改为实色。 */
 const FLOATING_HEADER_HEIGHT = 56;

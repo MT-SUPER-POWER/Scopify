@@ -6,7 +6,7 @@ import { useNowPlayingTint } from "@/hooks/ui/useNowPlayingTint";
 import { cn } from "@/lib/utils";
 import { useI18n } from "@/store/module/i18n";
 import { useUiStore } from "@/store/module/ui";
-import type { NowPlayingSectionProps } from "@/types/components/nowPlaying";
+import type { NowPlayingSectionProps } from "@/types/player/nowPlayingComponents";
 
 const PREVIEW_LINE_COUNT = 3;
 

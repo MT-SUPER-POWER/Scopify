@@ -6,7 +6,7 @@ import { SongResourcesDialog } from "@/components/songResources/SongResourcesDia
 import { SongWikiSection } from "@/components/songResources/SongWikiSection";
 import { SongSheetsSection } from "@/components/songResources/SongSheetsSection";
 import { useI18n } from "@/store/module/i18n";
-import type { NowPlayingSectionProps } from "@/types/components/nowPlaying";
+import type { NowPlayingSectionProps } from "@/types/player/nowPlayingComponents";
 import type { SongResourceTab } from "@/types/songResources/components";
 
 export function NowPlayingSongResources({ song }: NowPlayingSectionProps) {

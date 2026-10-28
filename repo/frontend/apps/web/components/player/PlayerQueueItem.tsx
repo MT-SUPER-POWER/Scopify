@@ -6,7 +6,7 @@ import { ArtistInlineLinks } from "@/components/shared/ArtistInlineLinks";
 import { SongContextMenu } from "@/components/shared/SongContextMenu";
 import { SongVipBadge } from "@/components/shared/SongVipBadge";
 import { cn, formatDuration } from "@/lib/utils";
-import type { QueueItemProps } from "@/types/components/player";
+import type { QueueItemProps } from "@/types/player/components";
 
 export const PlayerQueueItem = memo(function PlayerQueueItem({
   song,

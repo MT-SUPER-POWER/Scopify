@@ -13,7 +13,7 @@ import { cn } from "@/lib/utils";
 import { usePlayerStore } from "@/store";
 import { useAppDragStore } from "@/store/module/appDrag";
 import { useI18n } from "@/store/module/i18n";
-import type { PlayerQueueListHandle, PlayerQueueListProps } from "@/types/components/player";
+import type { PlayerQueueListHandle, PlayerQueueListProps } from "@/types/player/components";
 
 export const PlayerQueueList = forwardRef<PlayerQueueListHandle, PlayerQueueListProps>(
   function PlayerQueueList({ isOpen, className }, ref) {

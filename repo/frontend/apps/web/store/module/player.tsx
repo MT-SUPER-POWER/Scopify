@@ -22,7 +22,7 @@ import { enrichSongStatsById } from "@/lib/song/enrichSongStats";
 import { useI18nStore } from "@/store/module/i18n";
 import { useTimeStore } from "@/store/module/time";
 import { pruneNeteaseLyric, type NeteaseLyric, type SongDetail } from "@/types/song/api";
-import type { PlayerStore } from "@/types/player";
+import type { PlayerStore } from "@/types/player/model";
 
 export type {
   MusicQuality,
@@ -31,7 +31,7 @@ export type {
   ReplayGainMode,
   RepeatMode,
   SourceChangeMode,
-} from "@/types/player";
+} from "@/types/player/model";
 
 function shuffleArray<T>(array: readonly T[]): T[] {
   const shuffled = [...array];

@@ -2,7 +2,7 @@
 
 import { PlayerQueueItem } from "@/components/player/PlayerQueueItem";
 import { useSortableListItem } from "@/hooks/playlist/useSortableListItem";
-import type { SortablePlayerQueueItemProps } from "@/types/components/player";
+import type { SortablePlayerQueueItemProps } from "@/types/player/components";
 
 export function SortablePlayerQueueItem({
   id,

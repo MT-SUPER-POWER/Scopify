@@ -24,7 +24,7 @@ import { useAudioEqualizerStore } from "@/store/module/audioEqualizer";
 import { usePlayerStore } from "@/store/module/player";
 import type { AudioFeatureSource } from "@/types/audioFeaturePublisher";
 import type { SongDetail } from "@/types/song/api";
-import type { ReplayGainMode } from "@/types/player";
+import type { ReplayGainMode } from "@/types/player/model";
 
 interface AudioContextWindow extends Window {
   webkitAudioContext?: typeof AudioContext;

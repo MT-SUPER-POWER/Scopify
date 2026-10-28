@@ -11,7 +11,7 @@ import type {
   LyricMatchOverride,
   LyricSourceSelection,
 } from "@/types/lyrics";
-import type { MusicQuality } from "@/types/player";
+import type { MusicQuality } from "@/types/player/model";
 import type { ImmerseType, NeteaseLyric } from "@/types/song/api";
 
 const URL_TTL_MS = 30 * 60 * 1000; // 30 分钟

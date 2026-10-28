@@ -4,7 +4,7 @@ import { LoaderCircle, RotateCw } from "lucide-react";
 import Link from "next/link";
 import { ShortcutHint } from "@/components/shortcuts/ShortcutHint";
 import { cn, formatCompactCount } from "@/lib/utils";
-import type { PlayerBarStatActionProps } from "@/types/components/player";
+import type { PlayerBarStatActionProps } from "@/types/player/components";
 import {
   Tooltip,
   TooltipContent,

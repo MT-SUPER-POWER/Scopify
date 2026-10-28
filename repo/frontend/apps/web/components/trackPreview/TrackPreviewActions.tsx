@@ -7,7 +7,7 @@ import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
 import { cn } from "@/lib/utils";
 import { usePlayerStore, useUserStore } from "@/store";
 import { useI18n } from "@/store/module/i18n";
-import type { TrackPreviewActionsProps } from "@/types/components/trackPreview";
+import type { TrackPreviewActionsProps } from "@/types/player/trackPreviewComponents";
 import {
   Tooltip,
   TooltipContent,

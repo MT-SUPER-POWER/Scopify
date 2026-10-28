@@ -5,7 +5,7 @@ import { useEffect, useRef } from "react";
 import { useMVUrlQuery } from "@/hooks/mv/useMVQueries";
 import { usePlaybackProjection } from "@/hooks/player/usePlaybackProjection";
 import { useI18n } from "@/store/module/i18n";
-import type { NowPlayingMvPlayerProps } from "@/types/components/nowPlaying";
+import type { NowPlayingMvPlayerProps } from "@/types/player/nowPlayingComponents";
 
 /** 面板封面位里的 MV 播放器；观看途中用户从播放栏继续放歌时直接收起，不再抢回声音。 */
 export function NowPlayingMvPlayer({ mvId, onClose }: NowPlayingMvPlayerProps) {

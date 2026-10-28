@@ -4,7 +4,7 @@ import { useEffect } from "react";
 
 import { usePersonalFmStore } from "@/store/module/personalFm";
 import { usePlayerStore } from "@/store/module/player";
-import type { UseMediaSessionOptions } from "@/types/player";
+import type { UseMediaSessionOptions } from "@/types/player/model";
 
 const ARTWORK_SIZES = ["96x96", "128x128", "192x192", "256x256", "384x384", "512x512"] as const;
 

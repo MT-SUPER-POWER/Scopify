@@ -6,7 +6,7 @@ import { SongContextMenu } from "@/components/shared/SongContextMenu";
 import { useSimilarSongPlayback } from "@/hooks/song/useSimilarSongPlayback";
 import { getSizedImageUrl } from "@/lib/music/imageUrl";
 import { cn } from "@/lib/utils";
-import type { NowPlayingSimilarRowProps } from "@/types/components/nowPlaying";
+import type { NowPlayingSimilarRowProps } from "@/types/player/nowPlayingComponents";
 
 /** 相似歌曲中的一行：点击播放（与相似歌曲弹窗一致），右键可加入歌单或队列。 */
 export function NowPlayingSimilarRow({ song, songs }: NowPlayingSimilarRowProps) {

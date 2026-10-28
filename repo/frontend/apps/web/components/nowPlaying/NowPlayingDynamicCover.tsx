@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { useSongDynamicCoverQuery } from "@/hooks/song/useSongDynamicCover";
 import { resolveDynamicCoverVideoUrl } from "@/lib/music/dynamicCover";
 import { cn } from "@/lib/utils";
-import type { NowPlayingDynamicCoverProps } from "@/types/components/nowPlaying";
+import type { NowPlayingDynamicCoverProps } from "@/types/player/nowPlayingComponents";
 
 /**
  * 网易云「动态封面」短视频（类似 Spotify Canvas），静音循环叠在静态封面上，

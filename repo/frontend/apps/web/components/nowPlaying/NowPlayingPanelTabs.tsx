@@ -3,7 +3,10 @@
 import { cn } from "@/lib/utils";
 import { useI18n } from "@/store/module/i18n";
 import { useUiStore } from "@/store/module/ui";
-import type { NowPlayingPanelTabsProps, NowPlayingPanelView } from "@/types/components/nowPlaying";
+import type {
+  NowPlayingPanelTabsProps,
+  NowPlayingPanelView,
+} from "@/types/player/nowPlayingComponents";
 
 const TABS = [
   { view: "overview", labelKey: "nowPlaying.tab.overview" },

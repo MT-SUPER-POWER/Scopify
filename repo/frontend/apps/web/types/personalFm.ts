@@ -1,4 +1,4 @@
-import type { PlaybackNextSource } from "@/types/player";
+import type { PlaybackNextSource } from "@/types/player/model";
 import type { SongDetail } from "@/types/song/api";
 
 export type PersonalFmModeId =

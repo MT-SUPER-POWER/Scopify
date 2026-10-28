@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
 import { SongVipBadge } from "@/components/shared/SongVipBadge";
 import { usePlayerStore } from "@/store";
 import { useI18n } from "@/store/module/i18n";
-import type { LyricQueueRowProps } from "@/types/components/player";
+import type { LyricQueueRowProps } from "@/types/player/components";
 
 const QueueRow = memo(({ song, index, isCurrent, onPlay, style }: LyricQueueRowProps) => (
   <button

@@ -16,7 +16,7 @@ import { resolveCoverUrl } from "@/lib/music/resolveCoverUrl";
 import { cn } from "@/lib/utils";
 import { useI18n } from "@/store/module/i18n";
 import { useUiStore } from "@/store/module/ui";
-import type { NowPlayingSectionProps } from "@/types/components/nowPlaying";
+import type { NowPlayingSectionProps } from "@/types/player/nowPlayingComponents";
 
 const ACTION_BTN =
   "flex size-9 shrink-0 items-center justify-center rounded-full transition-all hover:scale-110";

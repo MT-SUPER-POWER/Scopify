@@ -8,7 +8,7 @@ import { getSizedImageUrl } from "@/lib/music/imageUrl";
 import { resolveCoverUrl } from "@/lib/music/resolveCoverUrl";
 import { cn } from "@/lib/utils";
 import { useI18n } from "@/store/module/i18n";
-import type { TrackPreviewButtonProps } from "@/types/components/trackPreview";
+import type { TrackPreviewButtonProps } from "@/types/player/trackPreviewComponents";
 import {
   Tooltip,
   TooltipContent,

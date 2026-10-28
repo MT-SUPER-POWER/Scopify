@@ -4,7 +4,7 @@ import { NowPlayingCard } from "./NowPlayingCard";
 import { NowPlayingSimilarRow } from "./NowPlayingSimilarRow";
 import { useSimilarSongs } from "@/hooks/song/useSimilarSongs";
 import { useI18n } from "@/store/module/i18n";
-import type { NowPlayingSectionProps } from "@/types/components/nowPlaying";
+import type { NowPlayingSectionProps } from "@/types/player/nowPlayingComponents";
 
 const SIMILAR_SONG_LIMIT = 5;
 

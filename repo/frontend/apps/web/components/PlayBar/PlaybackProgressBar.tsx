@@ -4,7 +4,7 @@ import { useCallback } from "react";
 
 import { SmoothSlider } from "@/components/shared/SmoothSlider";
 import { formatDuration } from "@/lib/utils";
-import type { PlaybackProgressBarProps } from "@/types/components/player";
+import type { PlaybackProgressBarProps } from "@/types/player/components";
 
 function normalizeTime(value: number, durationMs: number) {
   const finiteValue = Number.isFinite(value) ? Math.max(0, value) : 0;

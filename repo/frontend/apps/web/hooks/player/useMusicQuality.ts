@@ -3,7 +3,7 @@
 import { useCallback, useState } from "react";
 
 import { usePlayerStore } from "@/store/module/player";
-import type { MusicQuality } from "@/types/player";
+import type { MusicQuality } from "@/types/player/model";
 import type { ImmerseType } from "@/types/song/api";
 
 export function useMusicQuality() {

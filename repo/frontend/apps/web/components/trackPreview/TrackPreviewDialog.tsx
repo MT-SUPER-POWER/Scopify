@@ -11,7 +11,7 @@ import { MvChannel } from "@/components/mv/MvChannel";
 import { getSizedImageUrl } from "@/lib/music/imageUrl";
 import { resolveCoverUrl } from "@/lib/music/resolveCoverUrl";
 import { useI18n } from "@/store/module/i18n";
-import type { TrackPreviewDialogProps } from "@/types/components/trackPreview";
+import type { TrackPreviewDialogProps } from "@/types/player/trackPreviewComponents";
 import {
   Dialog,
   DialogContent,

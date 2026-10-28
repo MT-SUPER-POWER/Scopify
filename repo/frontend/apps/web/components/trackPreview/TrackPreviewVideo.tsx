@@ -4,7 +4,7 @@ import { LoaderCircle } from "lucide-react";
 import { useEffect } from "react";
 import { useMVUrlQuery } from "@/hooks/mv/useMVQueries";
 import { useMvSongExclusivity } from "@/hooks/mv/useMvSongExclusivity";
-import type { TrackPreviewVideoProps } from "@/types/components/trackPreview";
+import type { TrackPreviewVideoProps } from "@/types/player/trackPreviewComponents";
 
 const PREVIEW_RESOLUTION = 720;
 /** 从 MV 的这个位置起播，跳过片头，接近副歌。 */

@@ -7,7 +7,7 @@ import { useArtistFollow } from "@/hooks/artist/useArtistFollow";
 import { useArtistDetailQuery } from "@/hooks/artist/useArtistQueries";
 import { getSizedImageUrl } from "@/lib/music/imageUrl";
 import { useI18n } from "@/store/module/i18n";
-import type { NowPlayingSectionProps } from "@/types/components/nowPlaying";
+import type { NowPlayingSectionProps } from "@/types/player/nowPlayingComponents";
 import { Skeleton } from "@scopify/ui/shadcn/components/skeleton";
 
 /** 「关于艺人」：以主艺人大图开头、标题叠在图上，下方是粉丝数、关注按钮与简介摘要。 */

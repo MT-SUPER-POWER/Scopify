@@ -4,7 +4,7 @@ import { Check } from "lucide-react";
 import { MediaInfoBadge } from "@/components/shared/MediaInfoBadge";
 import { cn } from "@/lib/utils";
 import { useI18n } from "@/store/module/i18n";
-import type { QualityOptionButtonProps } from "@/types/playerBar";
+import type { QualityOptionButtonProps } from "@/types/player/bar";
 
 export function QualityOptionButton({
   option,

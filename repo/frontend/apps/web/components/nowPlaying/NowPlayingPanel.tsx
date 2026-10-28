@@ -10,7 +10,7 @@ import { cn } from "@/lib/utils";
 import { usePlayerStore } from "@/store";
 import { useI18n } from "@/store/module/i18n";
 import { useUiStore } from "@/store/module/ui";
-import type { NowPlayingPanelView } from "@/types/components/nowPlaying";
+import type { NowPlayingPanelView } from "@/types/player/nowPlayingComponents";
 
 /**
  * 主布局右栏：在正在播放信息、滚动歌词与播放队列之间切换。

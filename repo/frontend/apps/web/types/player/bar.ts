@@ -1,6 +1,6 @@
 import type { ComponentType } from "react";
 import type { TranslationKey } from "@/lib/i18n";
-import type { MusicQuality } from "@/types/player";
+import type { MusicQuality } from "@/types/player/model";
 
 // ── Quality ──────────────────────────────────────────────────────────────────
 

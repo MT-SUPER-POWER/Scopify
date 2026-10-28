@@ -7,7 +7,7 @@ import { useSongMvId } from "@/hooks/song/useSongMvId";
 import { useNowPlayingMv } from "@/hooks/ui/useNowPlayingMv";
 import { useI18n } from "@/store/module/i18n";
 import type { MvSummary } from "@/types/mv/api";
-import type { NowPlayingSectionProps } from "@/types/components/nowPlaying";
+import type { NowPlayingSectionProps } from "@/types/player/nowPlayingComponents";
 
 const MV_LIMIT = 4;
 const ARTIST_MV_PARAMS = { limit: MV_LIMIT + 1 };

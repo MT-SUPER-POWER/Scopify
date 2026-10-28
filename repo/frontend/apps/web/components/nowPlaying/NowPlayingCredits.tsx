@@ -7,7 +7,7 @@ import { NowPlayingCreditRow } from "./NowPlayingCreditRow";
 import { getSizedImageUrl } from "@/lib/music/imageUrl";
 import { resolveCoverUrl } from "@/lib/music/resolveCoverUrl";
 import { useI18n } from "@/store/module/i18n";
-import type { NowPlayingSectionProps } from "@/types/components/nowPlaying";
+import type { NowPlayingSectionProps } from "@/types/player/nowPlayingComponents";
 
 /** 「演职人员」：每位艺人可单独关注，末尾附所属专辑与发行时间。 */
 export function NowPlayingCredits({ song }: NowPlayingSectionProps) {

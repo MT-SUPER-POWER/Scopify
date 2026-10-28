@@ -9,7 +9,7 @@ import {
   Sliders,
   Sparkles,
 } from "lucide-react";
-import type { QualityOption } from "@/types/playerBar";
+import type { QualityOption } from "@/types/player/bar";
 
 // ── Quality Options ───────────────────────────────────────────────────────────
 

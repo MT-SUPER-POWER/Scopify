@@ -5,7 +5,7 @@ import type {
   DesktopCacheStats,
 } from "@scopify/desktop-contract";
 import type { NeteaseLyric } from "@/types/song/api";
-import type { MusicQuality } from "@/types/player";
+import type { MusicQuality } from "@/types/player/model";
 
 export type { CacheCategory, CacheScope } from "@scopify/desktop-contract";
 

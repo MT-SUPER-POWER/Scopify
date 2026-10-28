@@ -17,7 +17,7 @@ import {
 import { usePlayerStore } from "@/store";
 import { useI18n } from "@/store/module/i18n";
 import { useUiStore } from "@/store/module/ui";
-import type { PlayerQueueListHandle } from "@/types/components/player";
+import type { PlayerQueueListHandle } from "@/types/player/components";
 
 export const QueuePopover = () => {
   const { t } = useI18n();

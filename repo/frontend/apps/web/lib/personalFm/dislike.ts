@@ -1,5 +1,5 @@
 import type { SongDetail } from "@/types/song/api";
-import type { PlaybackNextSource } from "@/types/player";
+import type { PlaybackNextSource } from "@/types/player/model";
 
 /**
  * The narrow player surface required after NetEase accepts a Personal FM

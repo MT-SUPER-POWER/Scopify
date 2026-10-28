@@ -1,5 +1,5 @@
 import { cn } from "@/lib/utils";
-import type { NowPlayingCardProps } from "@/types/components/nowPlaying";
+import type { NowPlayingCardProps } from "@/types/player/nowPlayingComponents";
 
 /** 正在播放面板中各信息块的统一卡片外壳。 */
 export function NowPlayingCard({ title, action, children, className }: NowPlayingCardProps) {

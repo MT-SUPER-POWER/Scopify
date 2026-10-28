@@ -6,7 +6,7 @@ import Image from "next/image";
 import { cn } from "@/lib/utils";
 import SPOTIFYANIME from "@/resources/eq-playing.svg";
 import { useI18n } from "@/store/module/i18n";
-import type { PlayerQueueItemCoverProps } from "@/types/components/player";
+import type { PlayerQueueItemCoverProps } from "@/types/player/components";
 import { getSizedImageUrl } from "@/lib/music/imageUrl";
 
 export function PlayerQueueItemCover({
