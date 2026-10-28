@@ -2,10 +2,10 @@
 
 import { useCallback, useEffect, useMemo, useRef } from "react";
 
-import type { HtmlAudioEngineAdapter } from "@/types/playbackAdapters";
+import type { HtmlAudioEngineAdapter } from "@/types/playback/adapters";
 import { usePlayerStore } from "@/store/module/player";
 import { useTimeStore } from "@/store/module/time";
-import type { PlaybackMediaSourceState } from "@/types/playbackMedia";
+import type { PlaybackMediaSourceState } from "@/types/playback/media";
 
 export function shouldWarmPlaybackUrl(input: {
   hasSong: boolean;

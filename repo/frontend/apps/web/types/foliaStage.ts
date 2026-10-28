@@ -21,7 +21,7 @@ import type {
 } from "@/components/lyrics/folia/src/components/visualizer/tuningRegistry";
 import type { LyricVisualizerMode } from "@/types/lyrics";
 import type { FoliaStageAssets } from "@/types/foliaAssets";
-import type { PlaybackPresentationTrack } from "@/types/playbackProjection";
+import type { PlaybackPresentationTrack } from "@/types/playback/projection";
 import type { DesktopPlaybackWallpaperLayers } from "@scopify/desktop-contract";
 import type { FoliaStageTheme, FoliaThemeVariant } from "@scopify/ui/folia";
 

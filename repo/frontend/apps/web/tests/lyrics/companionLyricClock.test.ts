@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it } from "bun:test";
 import type { PlaybackProjection } from "@scopify/desktop-contract";
 import type { Line } from "@/components/lyrics/folia/src/types";
-import type { PlaybackProjectionExternalStore } from "@/types/playbackTransport";
+import type { PlaybackProjectionExternalStore } from "@/types/playback/transport";
 import {
   createCompanionLyricClock,
   getCompanionLyricCursor,

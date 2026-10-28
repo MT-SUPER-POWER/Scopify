@@ -29,9 +29,9 @@ import type {
   InProcessProjectionConnection,
   PlaybackAuthorityProviderProps,
   PlaybackAuthoritySessionIdentity,
-} from "@/types/playbackAuthority";
+} from "@/types/playback/authority";
 import type { LyricData } from "@/types/lyrics";
-import type { PlaybackProjectionSource } from "@/types/playbackProjection";
+import type { PlaybackProjectionSource } from "@/types/playback/projection";
 
 const DEFAULT_AUTHORITY_CONNECTION_ID = "main-renderer-playback-authority";
 

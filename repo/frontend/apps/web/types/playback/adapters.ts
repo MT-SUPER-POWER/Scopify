@@ -1,7 +1,7 @@
 import type { AudioEngineAdapter, SourceResolution } from "@scopify/playback-core";
 
 import type { ImmerseType, MusicQualityLevel, SongUrlOptions } from "@/types/song/api";
-import type { PlaybackAuthorityMediaEvent, PlaybackMediaSample } from "@/types/playbackMediaPort";
+import type { PlaybackAuthorityMediaEvent, PlaybackMediaSample } from "@/types/playback/mediaPort";
 import type { MusicQuality } from "@/types/player/model";
 
 export type HtmlAudioMediaEventType = PlaybackAuthorityMediaEvent | "progress" | "time-update";

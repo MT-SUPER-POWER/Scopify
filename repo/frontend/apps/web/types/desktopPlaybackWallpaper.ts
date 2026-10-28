@@ -8,7 +8,7 @@ import type { MotionValue } from "framer-motion";
 
 import type { FoliaPlaybackBridge } from "@/types/foliaStage";
 import type { LyricData } from "@/types/lyrics";
-import type { PlaybackPresentationTrack } from "@/types/playbackProjection";
+import type { PlaybackPresentationTrack } from "@/types/playback/projection";
 
 export interface DesktopPlaybackControllerShortcutHandlerProps {
   onClose(): void;

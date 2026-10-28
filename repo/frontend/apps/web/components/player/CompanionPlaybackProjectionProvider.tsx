@@ -10,7 +10,7 @@ import { createElectronPlaybackReplicaTransport } from "@/lib/playbackProjection
 import { createPlaybackReplica } from "@/lib/playbackProjection/replica";
 import { runtime } from "@/lib/runtime";
 import type { LyricData } from "@/types/lyrics";
-import type { PlaybackProjectionSource } from "@/types/playbackProjection";
+import type { PlaybackProjectionSource } from "@/types/playback/projection";
 
 type SwappablePlaybackSource<TLyrics> = PlaybackProjectionSource<TLyrics> & {
   replaceSource(source: PlaybackProjectionSource<TLyrics>): void;

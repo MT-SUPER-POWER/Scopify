@@ -3,8 +3,8 @@ import type { PlaybackMessage } from "@scopify/desktop-contract";
 import type {
   InProcessPlaybackTransport,
   PlaybackAuthorityBinding,
-} from "@/types/playbackAuthority";
-import type { ElectronPlaybackAuthorityTransport } from "@/types/playbackTransport";
+} from "@/types/playback/authority";
+import type { ElectronPlaybackAuthorityTransport } from "@/types/playback/transport";
 
 /** Fans one Authority out to the local Replica and Electron Broker behind one transport interface. */
 export function createCompositePlaybackAuthorityTransport<TLyrics>(

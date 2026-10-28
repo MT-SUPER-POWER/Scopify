@@ -9,8 +9,8 @@ import type {
   InProcessPlaybackTransportOptions,
   InProcessProjectionConnection,
   PlaybackAuthorityBinding,
-} from "@/types/playbackAuthority";
-import type { PlaybackProjectionSource } from "@/types/playbackProjection";
+} from "@/types/playback/authority";
+import type { PlaybackProjectionSource } from "@/types/playback/projection";
 
 const unavailableReceipt = (command: PlaybackCommand, reason: string): PlaybackCommandReceipt => ({
   commandId: command.commandId,

@@ -1,6 +1,6 @@
 import { shallow } from "zustand/shallow";
-import type { PlaybackProjectionExternalStore } from "@/types/playbackTransport";
-import type { PlaybackProjectionSource } from "@/types/playbackProjection";
+import type { PlaybackProjectionExternalStore } from "@/types/playback/transport";
+import type { PlaybackProjectionSource } from "@/types/playback/projection";
 const PLAYBACK_CONNECTION_WATCHDOG_MS = 1_000;
 
 export function createPlaybackProjectionStore<TLyrics>(source: PlaybackProjectionSource<TLyrics>) {

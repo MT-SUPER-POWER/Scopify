@@ -7,7 +7,7 @@ import type {
   PendingPlaybackDelivery,
   PlaybackMessageApplyResult,
   PlaybackProjectionSource,
-} from "@/types/playbackProjection";
+} from "@/types/playback/projection";
 
 export class InMemoryPlaybackTransport<TLyrics = unknown> {
   readonly dispatchedCommands: PlaybackCommand[] = [];

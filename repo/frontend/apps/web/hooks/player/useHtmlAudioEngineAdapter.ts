@@ -3,7 +3,7 @@
 import { useEffect, useState, type MutableRefObject } from "react";
 
 import { createHtmlAudioEngineAdapter } from "@/lib/player/adapters/htmlAudioEngineAdapter";
-import type { HtmlAudioEngineAdapter } from "@/types/playbackAdapters";
+import type { HtmlAudioEngineAdapter } from "@/types/playback/adapters";
 
 /**
  * Creates the renderer's sole physical audio adapter after React mounts the

@@ -5,7 +5,7 @@ import { createContext, useEffect, useMemo } from "react";
 import type {
   PlaybackProjectionExternalStore,
   PlaybackProjectionProviderProps,
-} from "@/types/playbackTransport";
+} from "@/types/playback/transport";
 
 import { createPlaybackProjectionStore } from "@/lib/playbackProjection/externalStore";
 

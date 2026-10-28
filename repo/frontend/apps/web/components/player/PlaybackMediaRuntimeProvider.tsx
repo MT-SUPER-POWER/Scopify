@@ -6,7 +6,7 @@ import { useAudioVisualizer } from "@/hooks/player/useAudioVisualizer";
 import { useHtmlAudioEngineAdapter } from "@/hooks/player/useHtmlAudioEngineAdapter";
 import { usePlaybackMediaEvents } from "@/hooks/player/usePlaybackMediaEvents";
 import { usePlaybackMediaSource } from "@/hooks/player/usePlaybackMediaSource";
-import type { PlaybackMediaRuntimeProviderProps } from "@/types/playbackMedia";
+import type { PlaybackMediaRuntimeProviderProps } from "@/types/playback/media";
 import { setAudioElementOutputDevice } from "@/lib/player/audioOutput";
 import { useAudioOutputStore } from "@/store/module/audioOutput";
 

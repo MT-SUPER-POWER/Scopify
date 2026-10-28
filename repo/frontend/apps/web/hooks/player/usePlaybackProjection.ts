@@ -5,7 +5,7 @@ import { useContext, useEffect, useState, useSyncExternalStore } from "react";
 import { PlaybackProjectionContext } from "@/components/player/PlaybackProjectionProvider";
 import { PLAYBACK_PROGRESS_SAMPLE_INTERVAL_MS } from "@/constants/performance";
 import { usePerformanceStore } from "@/store/module/performance";
-import type { PlaybackProjectionExternalStore } from "@/types/playbackTransport";
+import type { PlaybackProjectionExternalStore } from "@/types/playback/transport";
 
 export function usePlaybackProjection<TLyrics = unknown>() {
   const store = usePlaybackProjectionStore<TLyrics>();

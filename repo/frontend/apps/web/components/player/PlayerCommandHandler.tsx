@@ -6,7 +6,7 @@ import { usePlaybackCommands } from "@/hooks/player/usePlaybackCommands";
 import { useInWindowShortcuts } from "@/hooks/shortcuts/useInWindowShortcuts";
 import { runtime } from "@/lib/runtime";
 import type { RuntimeMediaControls } from "@/lib/runtime";
-import type { PlaybackCommands } from "@/types/playbackTransport";
+import type { PlaybackCommands } from "@/types/playback/transport";
 
 export function registerMediaControlCommands(
   media: Pick<RuntimeMediaControls, "onCommand">,

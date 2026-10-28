@@ -8,8 +8,8 @@ import type {
   PlaybackAuthorityCallbacks,
   PlaybackAuthorityScheduler,
   UsePlaybackAuthorityOptions,
-} from "@/types/playbackAuthority";
-import type { PlaybackClock } from "@/types/playbackProjection";
+} from "@/types/playback/authority";
+import type { PlaybackClock } from "@/types/playback/projection";
 
 const browserClock: PlaybackClock = {
   nowMs: () => Date.now(),

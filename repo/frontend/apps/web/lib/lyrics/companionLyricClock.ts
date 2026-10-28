@@ -1,5 +1,5 @@
 import type { Line } from "@/components/lyrics/folia/src/types";
-import type { PlaybackProjectionExternalStore } from "@/types/playbackTransport";
+import type { PlaybackProjectionExternalStore } from "@/types/playback/transport";
 import { applyLyricOffsetMs, findLatestActiveFoliaLineIndex } from "@/lib/lyrics/timeline";
 
 /** Non-negative cursors are active lines; -1 is the intro; -(index + 2) is a gap after index. */

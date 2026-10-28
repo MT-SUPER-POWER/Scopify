@@ -13,7 +13,7 @@ import type {
   PlaybackMessageApplyResult,
   PlaybackProjectionSource,
   PlaybackReplicaOptions,
-} from "@/types/playbackProjection";
+} from "@/types/playback/projection";
 
 export const DEFAULT_PLAYBACK_DISCONNECT_AFTER_MS = 5_000;
 

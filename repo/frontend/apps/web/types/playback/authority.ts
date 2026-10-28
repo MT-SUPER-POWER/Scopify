@@ -7,15 +7,15 @@ import type {
 } from "@scopify/desktop-contract";
 import type { ReactNode, RefObject } from "react";
 
-import type { PlaybackClock, PlaybackProjectionSource } from "@/types/playbackProjection";
-import type { HtmlAudioEngineAdapter } from "@/types/playbackAdapters";
-import type { PlaybackAuthorityMediaEvent, PlaybackMediaPort } from "@/types/playbackMediaPort";
+import type { PlaybackClock, PlaybackProjectionSource } from "@/types/playback/projection";
+import type { HtmlAudioEngineAdapter } from "@/types/playback/adapters";
+import type { PlaybackAuthorityMediaEvent, PlaybackMediaPort } from "@/types/playback/mediaPort";
 
 export type {
   PlaybackAuthorityMediaEvent,
   PlaybackMediaPort,
   PlaybackMediaSample,
-} from "@/types/playbackMediaPort";
+} from "@/types/playback/mediaPort";
 
 export interface PlaybackAuthorityScheduler {
   clearInterval(handle: unknown): void;

@@ -8,13 +8,13 @@ import {
 } from "@scopify/desktop-contract";
 
 import { createPlaybackReplica } from "@/lib/playbackProjection/replica";
-import type { PlaybackAuthorityBinding } from "@/types/playbackAuthority";
+import type { PlaybackAuthorityBinding } from "@/types/playback/authority";
 import type {
   ElectronPlaybackAuthorityTransport,
   ElectronPlaybackAuthorityTransportOptions,
   ElectronPlaybackReplicaTransport,
   ElectronPlaybackReplicaTransportOptions,
-} from "@/types/playbackTransport";
+} from "@/types/playback/transport";
 
 export const DEFAULT_PLAYBACK_COMMAND_TIMEOUT_MS = 15_000;
 export const MAX_PLAYBACK_COMMAND_TIMEOUT_MS = 30_000;

@@ -3,7 +3,7 @@
 import { useMemo } from "react";
 
 import { usePlaybackProjectionStore } from "@/hooks/player/usePlaybackProjection";
-import type { PlaybackCommands } from "@/types/playbackTransport";
+import type { PlaybackCommands } from "@/types/playback/transport";
 
 let nextCommandSequence = 0;
 

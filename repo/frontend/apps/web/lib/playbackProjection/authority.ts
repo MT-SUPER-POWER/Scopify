@@ -20,7 +20,7 @@ import type {
   PlaybackAuthorityStatePatch,
   PlaybackMediaSample,
   PlaybackSessionStartOptions,
-} from "@/types/playbackAuthority";
+} from "@/types/playback/authority";
 
 const DEFAULT_HEALTH_ANCHOR_INTERVAL_MS = 1_000;
 

@@ -8,8 +8,8 @@ import type {
 } from "@scopify/desktop-contract";
 import type { ReactNode } from "react";
 
-import type { PlaybackAuthorityBinding } from "@/types/playbackAuthority";
-import type { PlaybackClock, PlaybackProjectionSource } from "@/types/playbackProjection";
+import type { PlaybackAuthorityBinding } from "@/types/playback/authority";
+import type { PlaybackClock, PlaybackProjectionSource } from "@/types/playback/projection";
 
 export interface PlaybackProjectionProviderProps<TLyrics = unknown> {
   children: ReactNode;

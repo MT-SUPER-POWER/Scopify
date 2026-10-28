@@ -1,4 +1,4 @@
-import type { AdjustablePlaybackClock, PlaybackClock } from "@/types/playbackProjection";
+import type { AdjustablePlaybackClock, PlaybackClock } from "@/types/playback/projection";
 
 function readEpochNowMs(): number {
   const performance = globalThis.performance;

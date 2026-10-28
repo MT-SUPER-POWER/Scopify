@@ -13,12 +13,12 @@ import type {
   PlaybackAuthorityMediaEvent,
   PlaybackMediaPort,
   PlaybackMediaSample,
-} from "@/types/playbackMediaPort";
+} from "@/types/playback/mediaPort";
 import type {
   HtmlAudioEngineAdapter,
   HtmlAudioMediaEvent,
   HtmlAudioMediaEventType,
-} from "@/types/playbackAdapters";
+} from "@/types/playback/adapters";
 
 const MEDIA_EVENTS: ReadonlyArray<
   readonly [keyof HTMLMediaElementEventMap, HtmlAudioMediaEventType]

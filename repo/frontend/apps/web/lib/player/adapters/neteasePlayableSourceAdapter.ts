@@ -17,7 +17,7 @@ import {
 import type {
   NeteasePlayableSourceAdapterDependencies,
   WebNeteasePlayableSourceResolver,
-} from "@/types/playbackAdapters";
+} from "@/types/playback/adapters";
 import type { MusicQuality } from "@/types/player/model";
 import type { ImmerseType } from "@/types/song/api";
 
