@@ -6,7 +6,7 @@ allowed-tools: Bash(find . -type f -name "*.tsx" -o -name "*.ts" | grep -v node_
 
 # Next.js 项目结构规范
 
-> **Scopify 项目以仓库根目录 [AGENTS.md](../../AGENTS.md) 为唯一规范来源。** 本 skill 提供通用细则；与 AGENTS.md 冲突时以 AGENTS.md 为准（如 `store/` 非 `stores/`，`types/api/` 分层等）。规范写在 markdown 中，**不使用 `.cursor/rules/`**。
+> **Scopify 项目以仓库根目录 [AGENTS.md](../../AGENTS.md) 为唯一规范来源。** 本 skill 提供通用细则；与 AGENTS.md 冲突时以 AGENTS.md 为准（如 `store/` 非 `stores/`，`types/<领域>/` 分层等）。规范写在 markdown 中，**不使用 `.cursor/rules/`**。
 
 ## 核心原则
 
@@ -77,15 +77,15 @@ project-root/
 
 ### 类型与 hooks → [rules/types-hooks.md](./rules/types-hooks.md)
 
-- 所有 `type` / `interface` 定义进 `/types/<领域>.ts`，不允许写在 page.tsx 或组件文件内
+- 所有 `type` / `interface` 定义进 `/types/<领域>/`（`model.ts` / `api.ts` / `components.ts`），不允许写在 page.tsx 或组件文件内
 - 所有 custom hook 进 `/hooks/`，不允许写在组件文件内部
 - 静态数据超过 **10 条** 进 `/constants/`
 
 ### API、类型与数据获取层 → [rules/api-layer.md](./rules/api-layer.md)
 
-- **三层架构**：`lib/api/` (请求封装) → `types/api/` (类型定义) → `hooks/` (TanStack Query)
+- **三层架构**：`lib/api/` (请求封装) → `types/<领域>/api.ts` (类型定义) → `hooks/` (TanStack Query)
 - `lib/api/` 只负责发请求，不包含业务逻辑
-- `types/api/` 定义所有请求/响应类型
+- `types/<领域>/api.ts` 定义所有请求/响应类型
 - `hooks/` 使用 TanStack Query 管理缓存、状态、副作用
 
 ### Query 与错误边界 → [rules/query-boundaries.md](./rules/query-boundaries.md)
@@ -134,7 +134,7 @@ export default function DocPage() { ... }
 ```
 
 ```ts
-// ✅ 类型放 /types/doc.ts
+// ✅ 类型放 /types/doc/model.ts
 export interface DocPageProps {
   params: { slug: string };
 }

@@ -1,29 +1,35 @@
 # 类型、Hooks、常量的归属判断
 
-> Scopify 细则见根目录 [AGENTS.md](../../AGENTS.md)。API 类型放 `types/api/`，`lib/api/` 禁止定义 interface。
+> Scopify 细则见根目录 [AGENTS.md](../../AGENTS.md)。API 类型放 `types/<领域>/api.ts`，`lib/api/` 禁止定义 interface。
 
 ## `/types` — 类型定义
 
 ### 规则
 
-- 所有 `interface` 和 `type` 定义**必须**放在 `/types/<领域>.ts` 或 `/types/api/<领域>.ts`
+- 所有 `interface` 和 `type` 定义**必须**放在 `/types/<领域>/` 目录下
 - **禁止**在 page.tsx、**lib/api/**、hook 文件内定义类型（简单 props 类型除外）
-- 按业务领域拆文件，不要把所有类型堆进 `types/index.ts`
+- 先按业务领域建目录，再按层次拆文件：领域主文件用固定名 `model.ts`（业务实体）、`api.ts`（请求/响应）、`components.ts`（复用 Props）；同一领域有更多主题时用 `<主题>.ts`、`<主题>Api.ts`、`<主题>Components.ts`
+- 领域目录名尽量与 `components/` 下的业务目录一致，不要在 `types/` 根目录直接放业务文件
+- 不设 `types/index.ts` 或领域聚合出口，直接 `import { DocPageProps } from "@/types/doc/components"`，避免命名冲突和循环依赖
+- 生成文件 `i18n.generated.d.ts` 与全局声明 `electron.d.ts` 是仅有的两个根目录文件
 
 ### 文件划分示例
 
 ```
 types/
-├── doc.ts       # 文档相关（DocItem, DocSection, DocPageProps...）
-├── user.ts      # 用户相关（User, UserRole, AuthState...）
-├── api.ts       # API 响应结构（ApiResponse<T>, PaginatedResult...）
-└── nav.ts       # 导航相关（NavItem, NavGroup, BreadcrumbItem...）
+├── doc/
+│   ├── model.ts          # DocItem, DocSection...
+│   ├── api.ts            # 文档接口的请求/响应
+│   └── components.ts     # DocPageProps...
+├── user/
+│   ├── api.ts
+│   └── profile.ts
+└── nav/
+    └── model.ts          # NavItem, NavGroup, BreadcrumbItem...
 ```
 
 > [!note]
-> 如果这样子划分某一个 types 里面仍然类型过多的话，可以继续细分，比如 `types/doc.ts` 里面可以再细分成 `types/doc/page.ts`、`types/doc/item.ts` 等等，保持单一职责和清晰的归属。
-
-最后都是通过 `types/index.ts` 导出，外部只需要 import `{ DocPageProps } from '@/types'` 就好了，不需要关心具体的文件结构。
+> 某个领域的文件仍然过大时，继续按主题拆成 `<领域>/<主题>.ts`，保持单一职责和清晰的归属。
 
 ### Props 类型的例外处理
 
@@ -41,7 +47,7 @@ interface ButtonProps {
   variant?: "primary" | "secondary";
 }
 
-// ✅ 必须移到 /types/doc.ts 的业务类型
+// ✅ 必须移到 /types/doc/model.ts 的业务类型
 export interface DocItem {
   id: string;
   slug: string;

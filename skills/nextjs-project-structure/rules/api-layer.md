@@ -1,15 +1,15 @@
 # API、类型与数据获取层规范
 
-> 定义 `/lib/api/`、`/types/api/`、`/hooks/` 三层架构的职责边界与协作模式。
+> 定义 `/lib/api/`、`/types/<领域>/api.ts`、`/hooks/` 三层架构的职责边界与协作模式。
 
 ---
 
 ## 三层架构
 
 ```
-lib/api/        → 薄封装层：纯函数，只负责发请求
-types/api/      → 类型层：定义请求/响应的 TypeScript 接口
-hooks/          → 数据管理层：TanStack Query 封装，处理缓存/状态/副作用
+lib/api/              → 薄封装层：纯函数，只负责发请求
+types/<领域>/api.ts   → 类型层：定义请求/响应的 TypeScript 接口
+hooks/                → 数据管理层：TanStack Query 封装，处理缓存/状态/副作用
 ```
 
 ---
@@ -19,7 +19,7 @@ hooks/          → 数据管理层：TanStack Query 封装，处理缓存/状�
 | 层级         | 职责                     | 包含状态？ | 包含 UI 逻辑？ |
 | ------------ | ------------------------ | ---------- | -------------- |
 | `lib/api/`   | HTTP 请求封装            | ❌         | ❌             |
-| `types/api/` | 类型定义                 | ❌         | ❌             |
+| `types/<领域>/api.ts` | 类型定义            | ❌         | ❌             |
 | `hooks/`     | 数据获取、缓存、状态同步 | ✅         | ❌             |
 
 ---
@@ -42,7 +42,7 @@ lib/api/
 ```ts
 // ✅ 正确：薄封装，只负责发请求
 import request from "@/lib/web/request";
-import type { VipSignResponse, VipSignInfoResponse } from "@/types/api/vipSign";
+import type { VipSignResponse, VipSignInfoResponse } from "@/types/vipSign/api";
 
 /** 签到 POST /vip/sign */
 export function vipSign(cookie?: string) {
@@ -79,17 +79,24 @@ export async function doVipSign() {
 
 ---
 
-## types/api/ 规范
+## types/<领域>/api.ts 规范
 
 ### 文件结构
 
+按业务领域建目录，API 类型放在领域目录的 `api.ts`；同一领域有多个独立接口组时用 `<主题>Api.ts`。不设 `index.ts` 聚合出口，直接从具体文件导入。
+
 ```
-types/api/
-├── user.ts           # 用户相关类型
-├── playlist.ts       # 歌单相关类型
-├── vipSign.ts        # 签到相关类型
-├── music.ts          # 音乐相关类型
-└── index.ts          # 统一导出
+types/
+├── user/
+│   ├── api.ts            # 用户相关接口类型
+│   └── medalApi.ts       # 勋章接口类型
+├── playlist/
+│   ├── api.ts            # 歌单相关接口类型
+│   └── tagsApi.ts
+├── vipSign/
+│   └── api.ts            # 签到相关接口类型
+└── song/
+    └── api.ts            # 歌曲相关接口类型
 ```
 
 ### 编写规范
@@ -154,7 +161,7 @@ hooks/
 // ✅ 正确：TanStack Query Hook
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { vipSign, vipSignInfo } from "@/lib/api/user";
-import type { VipSignInfoResponse, VipSignResponse } from "@/types/api/vipSign";
+import type { VipSignInfoResponse, VipSignResponse } from "@/types/vipSign/api";
 
 // Query Key 工厂
 export const vipSignKeys = {

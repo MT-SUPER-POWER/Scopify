@@ -59,9 +59,9 @@ Web Path alias：`@/` → `repo/frontend/apps/web/`，例如 `@/types/…`、`@/
 
 | 类型 | 路径 | 示例 |
 | --- | --- | --- |
-| API 响应/请求 | `types/api/<领域>.ts` | `FollowedArtistsResponse` |
-| 业务实体 | `types/<领域>.ts` | `ArtistInfo`、`FollowedArtist` |
-| 组件 Props（复杂/复用） | `types/components/<领域>.ts` | `ArtistInlineLinksProps` |
+| API 响应/请求 | `types/<领域>/api.ts`（次要接口 `<主题>Api.ts`） | `FollowedArtistsResponse` |
+| 业务实体 | `types/<领域>/model.ts`（其他主题 `<主题>.ts`） | `ArtistInfo`、`FollowedArtist` |
+| 组件 Props（复杂/复用） | `types/<领域>/components.ts`（次要 `<主题>Components.ts`） | `ArtistInlineLinksProps` |
 
 **禁止**在以下位置定义类型：
 

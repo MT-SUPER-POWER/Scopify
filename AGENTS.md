@@ -117,6 +117,10 @@ Scopify/
 
 前端/Electron 的代码结构规范、`app/` 路由组装原则、类型定义放哪、组件拆分及 API 三层架构，统一托管于 Skill：👉 **[skills/nextjs-project-structure/](skills/nextjs-project-structure/SKILL.md)**
 
+### `types/` 目录约定
+
+`types/` 先按业务领域建目录（尽量与 `components/` 业务目录同名，如 `types/playlist/`、`types/user/`），目录内再分层：`model.ts`（业务实体）、`api.ts`（请求/响应）、`components.ts`（复用 Props）；同一领域有更多主题时用 `<主题>.ts`、`<主题>Api.ts`、`<主题>Components.ts`。不建 `index.ts` 聚合出口，导入时直接指向具体文件，例如 `@/types/playlist/api`。根目录只保留生成文件 `i18n.generated.d.ts` 与全局声明 `electron.d.ts`。
+
 ### Query 状态与错误边界
 
 任何新增或修改数据请求、页面加载/错误状态、分页、Mutation、媒体播放错误处理时，必须阅读并遵循 [Query 与错误边界规范](skills/nextjs-project-structure/rules/query-boundaries.md)。
