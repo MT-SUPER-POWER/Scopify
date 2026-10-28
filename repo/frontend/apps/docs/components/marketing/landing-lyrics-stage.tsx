@@ -3,7 +3,6 @@
 import { motion, useInView, useReducedMotion } from "framer-motion";
 import { useRef } from "react";
 
-import { LandingChapterLabel } from "@/components/marketing/landing-chapter-label";
 import { LandingLiveStage } from "@/components/marketing/landing-live-stage";
 import { LandingModeDial } from "@/components/marketing/landing-mode-dial";
 import { LANDING_VISUALIZER_MODES } from "@/constants/marketing";
@@ -76,10 +75,9 @@ export function LandingLyricsStage() {
             filter: stage.headingFilter,
           }}
         >
-          <LandingChapterLabel chapter="verse" />
           <h2
             id="landing-stage-title"
-            className="landing-display mt-5 text-[clamp(1.9rem,4.4vw,3.8rem)] leading-[1.15] font-semibold tracking-[-0.035em] text-balance text-white"
+            className="landing-display text-[clamp(1.9rem,4.4vw,3.8rem)] leading-[1.15] font-semibold tracking-[-0.035em] text-balance text-white"
           >
             每一句歌词，都换一种方式出场。
           </h2>

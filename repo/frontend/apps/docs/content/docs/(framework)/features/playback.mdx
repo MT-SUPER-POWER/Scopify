@@ -3,7 +3,13 @@ title: 播放与队列
 description: 控制进度、音量、播放模式、音质与待播内容。
 ---
 
-import playbackQueueScreenshot from "../../../../assets/features/playback-queue.png";
+import playbackQueueScreenshot from "../../../../assets/features/playback-queue-current.png";
+import nowPlayingPanelScreenshot from "../../../../assets/features/now-playing-panel.png";
+import mvPlayerScreenshot from "../../../../assets/features/mv-player-current.png";
+import mvTheaterScreenshot from "../../../../assets/features/mv-theater-current.png";
+import mvWebFullscreenScreenshot from "../../../../assets/features/mv-web-fullscreen-current.png";
+import mvFullscreenScreenshot from "../../../../assets/features/mv-fullscreen-current.png";
+import mvCommentsScreenshot from "../../../../assets/features/mv-comments-current.png";
 
 [← 产品能力总览](/docs/features)
 
@@ -14,7 +20,7 @@ import playbackQueueScreenshot from "../../../../assets/features/playback-queue.
 ## 待播与上下文
 
 <figure>
-  <img className="rounded-xl border" src={playbackQueueScreenshot.src} alt="Scopify 播放队列，显示待播曲目和当前歌曲" />
+  <img className="h-auto w-full rounded-xl border" src={playbackQueueScreenshot.src} alt="Scopify 播放队列，显示待播曲目和当前歌曲" />
   <figcaption>从播放栏展开当前队列，在浏览页面时查看待播曲目。</figcaption>
 </figure>
 
@@ -24,3 +30,47 @@ import playbackQueueScreenshot from "../../../../assets/features/playback-queue.
 | 播放模式 | 切换随机、顺序、单曲循环等模式 |
 | 待播队列 | 查看接下来播放的曲目并管理播放顺序 |
 | 播放上下文 | 快速进入评论、歌词、音频设置和全屏舞台 |
+
+## 歌曲资料与 MV
+
+打开播放栏的「正在播放」面板，或按 `Ctrl + Alt + B`（macOS 为 `Cmd + Option + B`），可以在「正在播放」「歌词」「队列」之间切换。面板展示当前歌曲、歌词预览、艺人及相关内容；歌词视图支持点击歌词跳转，宽窗口下还可以直接查看队列。
+
+<figure>
+  <img className="h-auto w-full rounded-xl border" src={nowPlayingPanelScreenshot.src} alt="正在播放面板，顶部可切换正在播放、歌词和队列" />
+  <figcaption>在右侧面板查看当前歌曲与歌词，不必离开当前页面。</figcaption>
+</figure>
+
+向下浏览面板，可以查看当前歌曲的音乐百科和乐谱；点击卡片上的「查看全部」展开完整内容。乐谱预览需要登录，具体谱页是否可用取决于内容权限；没有资料时会显示空状态。
+
+## MV 播放与评论
+
+有 MV 的歌曲可以从正在播放面板进入 MV 播放页，也可以从 [MV 搜索](/docs/features/search) 打开。播放页将视频、歌曲信息与互动操作组合在一起，提供清晰度选择、剧场模式、网页全屏和全屏；切换清晰度时保留播放进度。歌单和专辑也可进入 MV 预览，逐首浏览相关视频。
+
+<figure>
+  <img className="h-auto w-full rounded-xl border" src={mvPlayerScreenshot.src} alt="MV 普通播放布局，展示视频播放器、清晰度、视频信息和评论入口" />
+  <figcaption>普通播放布局把播放控制、视频信息和评论放在同一条浏览路径中。</figcaption>
+</figure>
+
+<figure>
+  <img className="h-auto w-full rounded-xl border" src={mvTheaterScreenshot.src} alt="MV 剧场模式，宽幅播放器横跨内容区域" />
+  <figcaption>剧场模式放宽播放器，保留视频下方的详情内容。</figcaption>
+</figure>
+
+<figure>
+  <img className="h-auto w-full rounded-xl border" src={mvWebFullscreenScreenshot.src} alt="MV 网页全屏模式，播放器覆盖整个客户端窗口" />
+  <figcaption>网页全屏将播放器铺满客户端窗口，暂时收起导航和其他内容；按 W 或 Esc 返回。</figcaption>
+</figure>
+
+<figure>
+  <img className="h-auto w-full rounded-xl border" src={mvFullscreenScreenshot.src} alt="MV 系统全屏模式，播放器占满显示器" />
+  <figcaption>系统全屏占满显示器；按 F 或 Esc 退出。</figcaption>
+</figure>
+
+播放页下方可浏览评论、切换排序、点赞和回复，也可进入完整评论页；相似 MV 在独立区域展示，加载失败时可以重试。
+
+<figure>
+  <img className="h-auto w-full rounded-xl border" src={mvCommentsScreenshot.src} alt="MV 页面中的评论列表、排序、点赞与回复入口" />
+  <figcaption>评论直接接在视频信息下方，也可进入完整评论页。</figcaption>
+</figure>
+
+在 MV 播放器中，`T` 切换剧场模式，`W` 切换网页全屏，`F` 切换全屏，`Esc` 退出网页全屏。

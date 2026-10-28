@@ -3,9 +3,12 @@ title: 搜索与导航
 description: 从快捷搜索进入分类结果，并用命令快速到达功能。
 ---
 
-import searchBarScreenshot from "../../../../assets/features/SearchWithBar.png";
-import searchModalScreenshot from "../../../../assets/features/SearchModal.png";
-import searchScreenshot from "../../../../assets/features/SearchResult.png";
+import searchBarScreenshot from "../../../../assets/features/search-overview-current.png";
+import searchModalScreenshot from "../../../../assets/features/search-entry-current.png";
+import searchScreenshot from "../../../../assets/features/search-songs-current.png";
+import lyricsSearchScreenshot from "../../../../assets/features/search-lyrics.png";
+import sheetsSearchScreenshot from "../../../../assets/features/search-sheets.png";
+import mvSearchScreenshot from "../../../../assets/features/search-mv-current.png";
 
 [← 产品能力总览](/docs/features)
 
@@ -14,18 +17,41 @@ import searchScreenshot from "../../../../assets/features/SearchResult.png";
 搜索有三种形态：快捷模态框适合在当前页面直接发起搜索，常驻搜索栏适合连续修改关键词，结果页负责按内容类型承载完整结果。桌面端还提供命令面板，常用页面和操作无需逐层寻找。
 
 <figure>
-  <img className="rounded-xl border" src={searchModalScreenshot.src} alt="Scopify 快捷搜索模态框" />
-  <figcaption>快捷搜索不会打断当前浏览上下文。</figcaption>
+  <img className="h-auto w-full rounded-xl border" src={searchModalScreenshot.src} alt="Scopify 顶栏搜索框与关键词建议" />
+  <figcaption>顶栏搜索展开关键词建议，保留当前浏览上下文。</figcaption>
 </figure>
 
 <figure>
-  <img className="rounded-xl border" src={searchBarScreenshot.src} alt="Scopify 搜索结果的全部视图" />
-  <figcaption>顶部常驻搜索栏可随时修改关键词；「全部」视图同时展示最佳匹配、歌曲和歌手，并可切换到歌曲、歌手、歌单、专辑、播客与声音。</figcaption>
+  <img className="h-auto w-full rounded-xl border" src={searchBarScreenshot.src} alt="Scopify 搜索结果的全部视图" />
+  <figcaption>顶部常驻搜索栏可随时修改关键词；「全部」视图汇总匹配内容，再通过分类查看完整结果。</figcaption>
+</figure>
+
+## 歌词、乐谱与 MV
+
+搜索结果可切换到「歌词」「乐谱」和「MV」，也可以继续浏览歌曲、歌手、歌单、专辑、播客和声音。歌词结果突出匹配的文字，点击卡片可展开完整歌词，播放歌曲或导出 LRC、YRC 文件。
+
+<figure>
+  <img className="h-auto w-full rounded-xl border" src={lyricsSearchScreenshot.src} alt="歌词搜索结果卡片，关键词在歌词片段中高亮" />
+  <figcaption>按歌词内容查找歌曲，展开结果可查看完整歌词。</figcaption>
+</figure>
+
+乐谱按歌曲分组展示，只列出有可用乐谱的歌曲。点击谱面缩略图可以预览，滚动结果页会继续加载；查看谱页需要登录，部分内容可能受权限限制。
+
+<figure>
+  <img className="h-auto w-full rounded-xl border" src={sheetsSearchScreenshot.src} alt="乐谱搜索结果，按歌曲展示吉他谱和钢琴谱缩略图" />
+  <figcaption>按歌曲浏览可用乐谱，并从谱面进入预览。</figcaption>
+</figure>
+
+MV 分类以视频卡片展示结果，悬停可静音预览，点击进入播放页。歌曲的音乐百科与乐谱也可以从正在播放面板查看，详见 [播放与队列](/docs/features/playback)。
+
+<figure>
+  <img className="h-auto w-full rounded-xl border" src={mvSearchScreenshot.src} alt="MV 搜索结果，以视频缩略图卡片显示标题、歌手、播放量与时长" />
+  <figcaption>MV 搜索以视频卡片展示结果，悬停可预览。</figcaption>
 </figure>
 
 ## 分类结果
 
 <figure>
-  <img className="rounded-xl border" src={searchScreenshot.src} alt="Scopify 歌曲分类搜索结果" />
+  <img className="h-auto w-full rounded-xl border" src={searchScreenshot.src} alt="Scopify 歌曲分类搜索结果" />
   <figcaption>切换到分类后，结果页以完整列表展示，并保留喜欢、时长和歌曲音质标识。</figcaption>
 </figure>

@@ -4,7 +4,6 @@ import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion
 import Image from "next/image";
 import { useRef } from "react";
 
-import { LandingChapterLabel } from "@/components/marketing/landing-chapter-label";
 import { LandingReveal } from "@/components/marketing/landing-reveal";
 import { LANDING_FILM_SCREENSHOTS } from "@/constants/marketing";
 
@@ -30,10 +29,9 @@ export function LandingFilmWall() {
       className="relative overflow-hidden py-32"
     >
       <LandingReveal className="mx-auto flex max-w-360 flex-col items-center px-5 text-center">
-        <LandingChapterLabel chapter="echo" />
         <h2
           id="landing-film-title"
-          className="landing-display mt-6 text-[clamp(2.2rem,5vw,4.4rem)] leading-[1.1] font-semibold tracking-[-0.04em] text-white"
+          className="landing-display text-[clamp(2.2rem,5vw,4.4rem)] leading-[1.1] font-semibold tracking-[-0.04em] text-white"
         >
           没有效果图。
         </h2>

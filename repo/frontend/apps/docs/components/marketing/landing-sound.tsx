@@ -3,7 +3,6 @@
 import { motion } from "framer-motion";
 import { type CSSProperties, useRef } from "react";
 
-import { LandingChapterLabel } from "@/components/marketing/landing-chapter-label";
 import { LandingEqualizer } from "@/components/marketing/landing-equalizer";
 import { LandingQualityLadder } from "@/components/marketing/landing-quality-ladder";
 import { LandingReveal } from "@/components/marketing/landing-reveal";
@@ -43,10 +42,9 @@ export function LandingSound() {
         >
           <div>
             <LandingReveal>
-              <LandingChapterLabel chapter="chorus" />
               <h2
                 id="landing-sound-title"
-                className="landing-display mt-5 text-[clamp(2.2rem,4.4vw,3.8rem)] leading-[1.08] font-semibold tracking-[-0.04em] text-white"
+                className="landing-display text-[clamp(2.2rem,4.4vw,3.8rem)] leading-[1.08] font-semibold tracking-[-0.04em] text-white"
               >
                 {LANDING_QUALITY_TIERS.length} 档音质，
                 <br />
