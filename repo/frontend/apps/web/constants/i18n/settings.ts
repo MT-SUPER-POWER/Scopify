@@ -130,7 +130,8 @@ export const settingsMessages = defineMessages(
     "settings.gpu.label": "硬件加速",
     "settings.gpu.sublabel": "当应用卡顿或 GPU 兼容性较差时，可以关闭。",
     "settings.devTools.label": "开发者工具",
-    "settings.devTools.sublabel": "允许通过 F12 或命令面板打开 Electron 开发者工具。",
+    "settings.devTools.sublabel":
+      "允许打开 Electron 开发者工具，并使用 Ctrl+R（macOS 为 ⌘R）刷新窗口。",
     "settings.windowClose.label": "关闭窗口行为",
     "settings.windowClose.sublabel": "设置点击应用窗口关闭按钮时的响应动作。",
     "settings.windowClose.minimize": "最小化到托盘",
@@ -477,7 +478,8 @@ export const settingsMessages = defineMessages(
     "settings.gpu.label": "硬體加速",
     "settings.gpu.sublabel": "當應用卡頓或 GPU 相容性較差時，可以關閉。",
     "settings.devTools.label": "開發者工具",
-    "settings.devTools.sublabel": "允許透過快速鍵或命令面板開啟 Electron 開發者工具。",
+    "settings.devTools.sublabel":
+      "允許開啟 Electron 開發者工具，並使用 Ctrl+R（macOS 為 ⌘R）重新整理視窗。",
     "settings.windowClose.label": "關閉視窗行為",
     "settings.windowClose.sublabel": "設定點擊應用程式視窗關閉按鈕時的響應動作。",
     "settings.windowClose.minimize": "最小化到系統匣",
@@ -838,7 +840,7 @@ export const settingsMessages = defineMessages(
     "settings.gpu.sublabel": "Turn this off if the app is slow or the GPU is unstable.",
     "settings.devTools.label": "Developer Tools",
     "settings.devTools.sublabel":
-      "Allow Electron Developer Tools to open with F12 or the command palette.",
+      "Allow Electron Developer Tools and refresh the window with Ctrl+R (⌘R on macOS).",
     "settings.windowClose.label": "Window Close Action",
     "settings.windowClose.sublabel": "Choose the action when clicking the window close button.",
     "settings.windowClose.minimize": "Minimize to Tray",

@@ -62,6 +62,19 @@ export function createMainWindow(options: MainWindowOptions) {
     const isZoomShortcut =
       (input.control || input.meta) && ["0", "=", "+", "-"].includes(input.key);
     if (isZoomShortcut) event.preventDefault();
+
+    const isReloadShortcut =
+      input.type === "keyDown" &&
+      (process.platform === "darwin"
+        ? input.meta && !input.control
+        : input.control && !input.meta) &&
+      !input.alt &&
+      !input.shift &&
+      input.key.toLowerCase() === "r";
+    if (isReloadShortcut) {
+      event.preventDefault();
+      if (loadDesktopHostConfig().app.devTools) window.reload();
+    }
   });
   // 切换路由时 Next.js 先写入页面标题，渲染层随即改回「歌名 - 歌手」；
   // Electron 默认会把每次中间值都同步到原生标题栏，造成闪烁。这里合并短时间内的连续变更，

@@ -3575,9 +3575,9 @@ export interface TranslateFn {
    */
   (key: "settings.devTools.label", params?: TranslationParams): string;
   /**
-   * zh-CN: 允许通过 F12 或命令面板打开 Electron 开发者工具。
-   * zh-TW: 允許透過快速鍵或命令面板開啟 Electron 開發者工具。
-   * en-US: Allow Electron Developer Tools to open with F12 or the command palette.
+   * zh-CN: 允许打开 Electron 开发者工具，并使用 Ctrl+R（macOS 为 ⌘R）刷新窗口。
+   * zh-TW: 允許開啟 Electron 開發者工具，並使用 Ctrl+R（macOS 為 ⌘R）重新整理視窗。
+   * en-US: Allow Electron Developer Tools and refresh the window with Ctrl+R (⌘R on macOS).
    */
   (key: "settings.devTools.sublabel", params?: TranslationParams): string;
   /**
