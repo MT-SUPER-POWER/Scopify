@@ -30,14 +30,17 @@ export function MvListItem({
       <span
         className={cn(
           "relative aspect-video shrink-0 overflow-hidden bg-surface-elevated",
-          size === "md" ? "w-42 rounded-lg" : "w-28 rounded",
+          size === "sm" ? "w-28 rounded" : "w-42 rounded-lg",
+          size === "lg" && "xl:w-[60%]",
         )}
       >
         {cover && (
           <Image
             fill
-            sizes={size === "md" ? "168px" : "112px"}
-            src={getSizedImageUrl(cover, 240)}
+            sizes={
+              size === "lg" ? "(min-width: 1280px) 284px, 168px" : size === "md" ? "168px" : "112px"
+            }
+            src={getSizedImageUrl(cover, size === "lg" ? 640 : 240)}
             alt=""
             className={cn(
               "object-cover",
@@ -63,7 +66,7 @@ export function MvListItem({
         >
           {mv.name}
         </span>
-        {size === "md" ? (
+        {size !== "sm" ? (
           // YouTube 侧栏：艺人与观看次数分两行
           <span className="mt-1 block text-xs leading-[18px] text-content-muted">
             <span className="block truncate">{artistNames}</span>

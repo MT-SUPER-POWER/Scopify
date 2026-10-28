@@ -11,10 +11,12 @@ import {
   SkipForward,
   RectangleHorizontal,
   PanelsTopLeft,
+  PanelBottom,
 } from "lucide-react";
+import { Popover as PopoverPrimitive } from "radix-ui";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { MvProgressBar } from "./player/MvProgressBar";
-import { MvQualityMenu } from "./player/MvQualityMenu";
+import { MvSettingsMenu } from "./player/MvSettingsMenu";
 import { MvVolumeControl } from "./player/MvVolumeControl";
 import { useMVUrlQuery } from "@/hooks/mv/useMVQueries";
 import { useMvSongExclusivity } from "@/hooks/mv/useMvSongExclusivity";
@@ -23,6 +25,7 @@ import { useMvQualitySwitch } from "@/hooks/mv/useMvQualitySwitch";
 import { getMvResolutions } from "@/lib/music/mvQuality";
 import { cn, formatDuration } from "@/lib/utils";
 import { useI18n } from "@/store/module/i18n";
+import { useMvPlaybackStore } from "@/store/module/mvPlayback";
 import type { MvPlayerProps } from "@/types/mv/components";
 
 const CONTROLS_IDLE_MS = 2_500;
@@ -57,11 +60,21 @@ export function MvPlayer({
   poster,
   onNext,
   isTheater,
+  isPlayerBarHidden,
+  onTogglePlayerBar,
   onToggleTheater,
 }: MvPlayerProps) {
   const { t } = useI18n();
   const { videoRef, handleVideoPlay } = useMvSongExclusivity();
-  const { resolution, autoPlay, changeResolution, restorePlayback } = useMvQualitySwitch(videoRef);
+  const { resolution, autoPlay, changeResolution, restorePlayback } = useMvQualitySwitch(
+    videoRef,
+    resolutions,
+  );
+  const quality = useMvPlaybackStore((state) => state.quality);
+  const playbackRate = useMvPlaybackStore((state) => state.playbackRate);
+  const setPlaybackRate = useMvPlaybackStore((state) => state.setPlaybackRate);
+  const autoNext = useMvPlaybackStore((state) => state.autoNext);
+  const setAutoNext = useMvPlaybackStore((state) => state.setAutoNext);
   const urlQuery = useMVUrlQuery(mvid, resolution);
   const url = urlQuery.data?.data?.url ?? null;
   const currentResolution = urlQuery.data?.data?.r || resolution;
@@ -72,7 +85,9 @@ export function MvPlayer({
   const [isWebFullscreen, setIsWebFullscreen] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [isIdle, setIsIdle] = useState(false);
-  const showControls = !isIdle || video.isPaused;
+  const [isTheaterMenuOpen, setIsTheaterMenuOpen] = useState(false);
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const showControls = !isIdle || video.isPaused || isTheaterMenuOpen || isSettingsOpen;
 
   const togglePlay = useCallback(() => {
     const element = videoRef.current;
@@ -139,6 +154,7 @@ export function MvPlayer({
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
+      if (isTheaterMenuOpen || isSettingsOpen) return;
       if (event.ctrlKey || event.metaKey || event.altKey || event.shiftKey) return;
       if (isTypingTarget(event.target) || document.querySelector("[role=dialog]")) return;
       const actions: Record<string, () => void> = {
@@ -170,6 +186,8 @@ export function MvPlayer({
     return () => window.removeEventListener("keydown", onKeyDown, true);
   }, [
     onToggleTheater,
+    isTheaterMenuOpen,
+    isSettingsOpen,
     isWebFullscreen,
     seekBy,
     setVolume,
@@ -193,7 +211,9 @@ export function MvPlayer({
           : isFullscreen
             ? "size-full"
             : isTheater
-              ? "h-[min(70dvh,calc(100dvh-12rem))] min-h-64 w-full"
+              ? isPlayerBarHidden
+                ? "h-[min(82dvh,calc(100dvh-8rem))] min-h-64 w-full"
+                : "h-[min(75dvh,calc(100dvh-8rem))] min-h-64 w-full"
               : "aspect-video w-full rounded-xl shadow-panel",
         !showControls && "cursor-none",
       )}
@@ -209,9 +229,10 @@ export function MvPlayer({
           onPlay={handleVideoPlay}
           onClick={togglePlay}
           onDoubleClick={toggleFullscreen}
-          onEnded={onNext}
+          onEnded={autoNext ? onNext : undefined}
           onLoadedMetadata={(event) => {
             event.currentTarget.volume = readStoredVolume();
+            event.currentTarget.playbackRate = playbackRate;
             restorePlayback(event);
           }}
           className="size-full object-contain"
@@ -273,25 +294,93 @@ export function MvPlayer({
             </span>
 
             <div className="ml-auto flex items-center gap-1">
-              <MvQualityMenu
+              <MvSettingsMenu
                 resolutions={available}
                 current={currentResolution}
-                onChange={changeResolution}
+                quality={quality}
+                playbackRate={playbackRate}
+                autoNext={autoNext}
+                onQualityChange={changeResolution}
+                onPlaybackRateChange={(rate) => {
+                  setPlaybackRate(rate);
+                  if (videoRef.current) videoRef.current.playbackRate = rate;
+                }}
+                onAutoNextChange={setAutoNext}
+                open={isSettingsOpen}
+                onOpenChange={setIsSettingsOpen}
               />
-              <button
-                type="button"
-                onClick={onToggleTheater}
-                aria-label={t(isTheater ? "mv.player.exitTheater" : "mv.player.theater")}
-                aria-pressed={isTheater}
-                title={`${t(isTheater ? "mv.player.exitTheater" : "mv.player.theater")} (t)`}
-                className={CONTROL_BTN}
-              >
-                {isTheater ? (
-                  <PanelsTopLeft className="size-5" />
-                ) : (
-                  <RectangleHorizontal className="size-5" />
-                )}
-              </button>
+              <PopoverPrimitive.Root open={isTheaterMenuOpen} onOpenChange={setIsTheaterMenuOpen}>
+                <PopoverPrimitive.Trigger asChild>
+                  <button
+                    type="button"
+                    aria-label={t("mv.player.theater")}
+                    title={`${t("mv.player.theater")} (t)`}
+                    className={CONTROL_BTN}
+                  >
+                    {isTheater ? (
+                      <PanelsTopLeft className="size-5" />
+                    ) : (
+                      <RectangleHorizontal className="size-5" />
+                    )}
+                  </button>
+                </PopoverPrimitive.Trigger>
+                <PopoverPrimitive.Content
+                  side="top"
+                  align="end"
+                  sideOffset={8}
+                  className="z-20 w-56 rounded-xl bg-black/90 p-1.5 text-white shadow-xl ring-1 ring-white/10 outline-none"
+                >
+                  <button
+                    type="button"
+                    role="switch"
+                    aria-checked={isTheater}
+                    onClick={onToggleTheater}
+                    className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left text-sm hover:bg-white/15"
+                  >
+                    <RectangleHorizontal className="size-4" />
+                    <span className="flex-1">{t("mv.player.theater")}</span>
+                    <span
+                      aria-hidden
+                      className={cn(
+                        "h-5 w-9 rounded-full p-0.5 transition-colors",
+                        isTheater ? "bg-white" : "bg-white/30",
+                      )}
+                    >
+                      <span
+                        className={cn(
+                          "block size-4 rounded-full transition-transform",
+                          isTheater ? "translate-x-4 bg-black" : "bg-white",
+                        )}
+                      />
+                    </span>
+                  </button>
+                  <button
+                    type="button"
+                    role="switch"
+                    aria-checked={!isPlayerBarHidden}
+                    disabled={!isTheater}
+                    onClick={onTogglePlayerBar}
+                    className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left text-sm hover:bg-white/15 disabled:opacity-40"
+                  >
+                    <PanelBottom className="size-4" />
+                    <span className="flex-1">{t("playerBar.show")}</span>
+                    <span
+                      aria-hidden
+                      className={cn(
+                        "h-5 w-9 rounded-full p-0.5 transition-colors",
+                        !isPlayerBarHidden ? "bg-white" : "bg-white/30",
+                      )}
+                    >
+                      <span
+                        className={cn(
+                          "block size-4 rounded-full transition-transform",
+                          !isPlayerBarHidden ? "translate-x-4 bg-black" : "bg-white",
+                        )}
+                      />
+                    </span>
+                  </button>
+                </PopoverPrimitive.Content>
+              </PopoverPrimitive.Root>
               <button
                 type="button"
                 onClick={() => setIsWebFullscreen((value) => !value)}

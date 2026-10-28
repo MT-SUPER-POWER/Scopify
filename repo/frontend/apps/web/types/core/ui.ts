@@ -16,6 +16,8 @@ export interface NowPlayingMvSelection {
 }
 
 export interface UiStore {
+  isPlayerBarHidden: boolean;
+  setIsPlayerBarHidden: (hidden: boolean) => void;
   isSearchOpen: boolean;
   setIsSearchOpen: (open: boolean) => void;
   isLyricsOpen: boolean;

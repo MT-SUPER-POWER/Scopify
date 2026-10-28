@@ -51,7 +51,7 @@ export interface CommandWorkspaceRootItem {
   label: string;
   page?: CommandWorkspaceRootPage;
   summary: string;
-  type: "shortcut" | "workspace" | "folia";
+  type: "shortcut" | "workspace" | "folia" | "action";
   foliaEntry?: FoliaCommandEntry;
   usageCount: number;
 }

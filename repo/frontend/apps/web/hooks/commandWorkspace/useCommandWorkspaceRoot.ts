@@ -55,6 +55,18 @@ export function useCommandWorkspaceRoot({
                 : "",
             usageCount: commandWorkspaceUsageCounts[command.page] ?? 0,
           })),
+          ...(runtime.isDesktop
+            ? [
+                {
+                  id: "exit-app",
+                  label: "退出 Scopify",
+                  keywords: "退出 关闭 程序 应用 exit quit close app",
+                  summary: "完全退出应用",
+                  type: "action" as const,
+                  usageCount: 0,
+                },
+              ]
+            : []),
           ...commands
             .filter((command) => (command.scope ?? "global") === "global")
             .filter((command) => command.showInCommandWorkspace !== false)
@@ -105,9 +117,12 @@ export function useCommandWorkspaceRoot({
     onOpenPage(page);
   };
 
-  const runSelected = () => {
-    const selected = items[selectedIndex];
-    if (!selected) return;
+  const runItem = (selected: CommandWorkspaceRootItem) => {
+    if (selected.type === "action" && selected.id === "exit-app") {
+      onClose();
+      runtime.app.exit();
+      return;
+    }
     if (selected.foliaEntry) {
       folia.execute(selected.foliaEntry, onOpenPage, onClose);
       return;
@@ -117,6 +132,11 @@ export function useCommandWorkspaceRoot({
       return;
     }
     runShortcut(selected.id as ShortcutCommandId);
+  };
+
+  const runSelected = () => {
+    const selected = items[selectedIndex];
+    if (selected) runItem(selected);
   };
 
   const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
@@ -154,9 +174,7 @@ export function useCommandWorkspaceRoot({
     },
     onSelect: (item: CommandWorkspaceRootItem, index: number) => {
       setSelectedIndex(index);
-      if (item.foliaEntry) folia.execute(item.foliaEntry, onOpenPage, onClose);
-      else if (item.type === "workspace" && item.page) runWorkspacePage(item.page);
-      else runShortcut(item.id as ShortcutCommandId);
+      runItem(item);
     },
   };
 }

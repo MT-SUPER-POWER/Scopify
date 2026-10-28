@@ -5,6 +5,8 @@ import type { UiStore } from "@/types/core/ui";
 export const useUiStore = create<UiStore>()(
   persist(
     (set) => ({
+      isPlayerBarHidden: false,
+      setIsPlayerBarHidden: (hidden) => set({ isPlayerBarHidden: hidden }),
       isSearchOpen: false,
       isCollapsed: false,
       isLyricsOpen: false,

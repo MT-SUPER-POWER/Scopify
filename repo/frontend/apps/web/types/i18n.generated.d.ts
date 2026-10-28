@@ -365,6 +365,36 @@ export interface TranslateFn {
    */
   (key: "mv.quality", params?: TranslationParams): string;
   /**
+   * zh-CN: 播放器设置
+   * zh-TW: 播放器設定
+   * en-US: Player settings
+   */
+  (key: "mv.player.settings", params?: TranslationParams): string;
+  /**
+   * zh-CN: 自动
+   * zh-TW: 自動
+   * en-US: Auto
+   */
+  (key: "mv.player.auto", params?: TranslationParams): string;
+  /**
+   * zh-CN: 播放速度
+   * zh-TW: 播放速度
+   * en-US: Playback speed
+   */
+  (key: "mv.player.speed", params?: TranslationParams): string;
+  /**
+   * zh-CN: 正常
+   * zh-TW: 正常
+   * en-US: Normal
+   */
+  (key: "mv.player.normal", params?: TranslationParams): string;
+  /**
+   * zh-CN: 自动播放下一个
+   * zh-TW: 自動播放下一個
+   * en-US: Autoplay next
+   */
+  (key: "mv.player.autoNext", params?: TranslationParams): string;
+  /**
    * zh-CN: 播放
    * zh-TW: 播放
    * en-US: Play
@@ -3545,9 +3575,9 @@ export interface TranslateFn {
    */
   (key: "settings.devTools.label", params?: TranslationParams): string;
   /**
-   * zh-CN: 允许通过 F12 或命令面板打开 Electron 开发者工具。
-   * zh-TW: 允許透過快速鍵或命令面板開啟 Electron 開發者工具。
-   * en-US: Allow Electron Developer Tools to open with F12 or the command palette.
+   * zh-CN: 允许打开 Electron 开发者工具，并使用 Ctrl+R（macOS 为 ⌘R）刷新窗口。
+   * zh-TW: 允許開啟 Electron 開發者工具，並使用 Ctrl+R（macOS 為 ⌘R）重新整理視窗。
+   * en-US: Allow Electron Developer Tools and refresh the window with Ctrl+R (⌘R on macOS).
    */
   (key: "settings.devTools.sublabel", params?: TranslationParams): string;
   /**
@@ -9565,6 +9595,18 @@ export interface TranslateFn {
    * en-US: Lyrics
    */
   (key: "playerBar.lyrics", params?: TranslationParams): string;
+  /**
+   * zh-CN: 显示播放条
+   * zh-TW: 顯示播放列
+   * en-US: Show player bar
+   */
+  (key: "playerBar.show", params?: TranslationParams): string;
+  /**
+   * zh-CN: 隐藏播放条
+   * zh-TW: 隱藏播放列
+   * en-US: Hide player bar
+   */
+  (key: "playerBar.hide", params?: TranslationParams): string;
   /**
    * zh-CN: 置顶显示
    * zh-TW: 置頂顯示
