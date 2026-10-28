@@ -119,7 +119,7 @@ Scopify/
 
 ### `types/` 目录约定
 
-`types/` 先按业务领域建目录（尽量与 `components/` 业务目录同名，如 `types/playlist/`、`types/user/`），目录内再分层：`model.ts`（业务实体）、`api.ts`（请求/响应）、`components.ts`（复用 Props）；同一领域有更多主题时用 `<主题>.ts`、`<主题>Api.ts`、`<主题>Components.ts`。不建 `index.ts` 聚合出口，导入时直接指向具体文件，例如 `@/types/playlist/api`。根目录只保留生成文件 `i18n.generated.d.ts`；`window.electronAPI` 的全局声明在 `desktop/electron.d.ts`。
+`types/` 先按业务领域建目录（尽量与 `components/` 业务目录同名，如 `types/playlist/`、`types/user/`），目录内再分层：`model.ts`（业务实体）、`api.ts`（请求/响应）、`components.ts`（复用 Props）；同一领域有更多主题时用 `<主题>.ts`、`<主题>Api.ts`、`<主题>Components.ts`。不建 `index.ts` 聚合出口，导入时直接指向具体文件，例如 `@/types/playlist/api`。根目录只保留生成文件 `i18n.generated.d.ts` 与全局声明 `electron.d.ts`。
 
 ### Query 状态与错误边界
 
