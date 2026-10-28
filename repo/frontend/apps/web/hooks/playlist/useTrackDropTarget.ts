@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 import { trackDropTargets } from "@/lib/playlist/trackDropTargets";
 import { useAppDragStore } from "@/store/module/appDrag";
-import type { TrackDropTarget } from "@/types/trackDrag";
+import type { TrackDropTarget } from "@/types/tracklist/trackDrag";
 
 export function useTrackDropTarget(target: TrackDropTarget) {
   const { id, onDrop } = target;

@@ -20,8 +20,8 @@ import { getEventCoordinates } from "@dnd-kit/utilities";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useAppDragStore } from "@/store/module/appDrag";
 import { findTrackDropTarget } from "@/lib/playlist/trackDropTargets";
-import type { TrackDragPoint } from "@/types/trackDrag";
-import type { ListInsertionTarget, SortableListProps } from "@/types/sortableList";
+import type { TrackDragPoint } from "@/types/tracklist/trackDrag";
+import type { ListInsertionTarget, SortableListProps } from "@/types/tracklist/sortableList";
 
 // The compact preview follows the pointer instead of the source row's left edge.
 const followPointer: Modifier = ({ activatorEvent, activeNodeRect, transform }) => {

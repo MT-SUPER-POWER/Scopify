@@ -25,7 +25,7 @@ import type {
   TracklistColumnResizeDragState,
   TracklistColumnVisibility,
   TracklistResizableColumnId,
-} from "@/types/tracklist";
+} from "@/types/tracklist/model";
 
 export function useTracklistColumnLayout(visibility: TracklistColumnVisibility) {
   const { showAlbumColumn, showDateColumn, showLikeColumn } = visibility;

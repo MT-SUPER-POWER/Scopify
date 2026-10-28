@@ -1,7 +1,7 @@
 "use client";
 
 import { create } from "zustand";
-import type { AppDragState } from "@/types/trackDrag";
+import type { AppDragState } from "@/types/tracklist/trackDrag";
 
 export const useAppDragStore = create<AppDragState>((set) => ({
   isDragging: false,

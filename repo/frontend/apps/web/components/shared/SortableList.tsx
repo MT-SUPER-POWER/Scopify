@@ -6,7 +6,7 @@ import { createPortal } from "react-dom";
 import { thumbnailModifiers, useSortableListDrag } from "@/hooks/playlist/useSortableListDrag";
 import { SortableListContext } from "@/lib/playlist/sortableListContext";
 import { useI18n } from "@/store/module/i18n";
-import type { SortableListProps } from "@/types/sortableList";
+import type { SortableListProps } from "@/types/tracklist/sortableList";
 import "./trackDrag.css";
 
 export function SortableList(props: SortableListProps) {

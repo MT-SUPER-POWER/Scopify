@@ -1,7 +1,7 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import type { StackedDragThumbnailProps } from "@/types/sortableList";
+import type { StackedDragThumbnailProps } from "@/types/tracklist/sortableList";
 
 export function StackedDragThumbnail({
   cover,

@@ -4,7 +4,7 @@ import type {
   TracklistColumnVisibility,
   TracklistColumnWidths,
   TracklistResizableColumnId,
-} from "@/types/tracklist";
+} from "@/types/tracklist/model";
 
 export const TRACKLIST_INDEX_COLUMN_WIDTH = 56;
 

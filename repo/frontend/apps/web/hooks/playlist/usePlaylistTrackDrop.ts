@@ -11,7 +11,7 @@ import { clearPageCache } from "@/lib/cache/pageCache";
 import { useUserStore } from "@/store";
 import { useAppDragStore } from "@/store/module/appDrag";
 import { useI18n } from "@/store/module/i18n";
-import type { PlaylistDropRequest } from "@/types/trackDrag";
+import type { PlaylistDropRequest } from "@/types/tracklist/trackDrag";
 
 export function usePlaylistTrackDrop() {
   const mutation = usePlaylistTrackMutation();

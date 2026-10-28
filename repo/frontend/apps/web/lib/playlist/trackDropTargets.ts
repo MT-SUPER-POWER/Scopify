@@ -1,4 +1,4 @@
-import type { TrackDragPoint, TrackDropTarget } from "@/types/trackDrag";
+import type { TrackDragPoint, TrackDropTarget } from "@/types/tracklist/trackDrag";
 
 // Lists have independent DndContexts. Resolve sidebar targets against the actual
 // hit-tested DOM, including clipping/overlays, rather than cross-context IDs.

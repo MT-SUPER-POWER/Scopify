@@ -1,4 +1,4 @@
-import type { DragThumbnailProps } from "@/types/sortableList";
+import type { DragThumbnailProps } from "@/types/tracklist/sortableList";
 
 export function DragThumbnail({ cover, title, subtitle }: DragThumbnailProps) {
   return (
