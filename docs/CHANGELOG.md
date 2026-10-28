@@ -2,6 +2,27 @@
 
 > 根据 commit 自动生成，请勿手动编辑；推送版本 tag 后由 CI 更新。v2.0.3 及更早版本见[历史更新记录](archive/CHANGELOG-legacy.md)。
 
+## v3.1.0 — 2026-10-28
+
+### 新增
+
+- 菜单栏长歌词支持自动滚动 ([351c5ec7](https://github.com/MT-SUPER-POWER/Scopify/commit/351c5ec7f11410b419ea6f9b2215f58c3dd68911))
+- 支持舞台控制面板快捷键与分层退出 ([b46df6dd](https://github.com/MT-SUPER-POWER/Scopify/commit/b46df6dd624e1d5585ce424855d08795cc3ad782))
+
+### 修复
+
+- 修正 Windows 快捷键显示 ([eab55859](https://github.com/MT-SUPER-POWER/Scopify/commit/eab55859c030b52f035d0871ab75d8747c8a45b4))
+- 精简落地页章节与尾部展示 ([67ede9d0](https://github.com/MT-SUPER-POWER/Scopify/commit/67ede9d0068839452e8ae1398744e8e028cb28aa))
+- 跨平台统一按键符号并区分控制键 ([78c95111](https://github.com/MT-SUPER-POWER/Scopify/commit/78c95111b9978f4e08c011d6d610510b9494ea35))
+- 使用平台按键符号显示快捷键 ([deed66c6](https://github.com/MT-SUPER-POWER/Scopify/commit/deed66c63c260da5ea61531c8d0a40d42f2f8f18))
+- macOS 快捷键正确显示 Option 键 ([27e72445](https://github.com/MT-SUPER-POWER/Scopify/commit/27e7244512d3571602b10680537ed6e92f59b64a))
+- 修复播放与暂停图标不随状态切换 ([c76adbe9](https://github.com/MT-SUPER-POWER/Scopify/commit/c76adbe9fdc3d68af6841ec7a9d7f5253015e3bc))
+- 修复菜单栏播放按钮无法独立交互 ([9c15bd6b](https://github.com/MT-SUPER-POWER/Scopify/commit/9c15bd6be4fe19991f574d077a7a57944615cb14))
+
+### 优化
+
+- 让菜单栏长歌词滚动更流畅 ([9496ba29](https://github.com/MT-SUPER-POWER/Scopify/commit/9496ba2942d95f0c2e64c88136a5fabd84fa95a0))
+
 ## v3.0.1 — 2026-10-27
 
 ### 新增
