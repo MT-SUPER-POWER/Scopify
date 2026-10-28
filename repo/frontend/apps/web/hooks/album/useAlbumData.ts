@@ -5,7 +5,7 @@ import { useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 
-import type { AlbumInfo, AlbumSubscriptionMutation } from "@/types/album";
+import type { AlbumInfo, AlbumSubscriptionMutation } from "@/types/album/model";
 
 import { subscribeAlbum } from "@/lib/api/album";
 import { useRequireLoginAction } from "@/lib/hooks/useRequireLoginAction";

@@ -4,7 +4,7 @@ import type {
   AlbumSublistResponse,
   AlbumSubscribeResponse,
   NewestAlbumsResponse,
-} from "@/types/api/album";
+} from "@/types/album/api";
 
 import request, { requestConfig, requestData } from "@/lib/web/request";
 

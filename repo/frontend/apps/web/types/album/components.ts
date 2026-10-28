@@ -1,4 +1,4 @@
-import type { AlbumInfo } from "@/types/album";
+import type { AlbumInfo } from "@/types/album/model";
 
 export interface AlbumDescriptionDialogProps {
   info: AlbumInfo;

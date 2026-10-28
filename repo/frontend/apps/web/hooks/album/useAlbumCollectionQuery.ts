@@ -6,7 +6,7 @@ import { getUserAlbumSublist } from "@/lib/api/album";
 import { useLoginStatus } from "@/lib/hooks/useLoginStatus";
 import { musicQueryKeys } from "@/lib/query/queryKeys";
 import { useUserStore } from "@/store";
-import type { AlbumSublistResponse } from "@/types/api/album";
+import type { AlbumSublistResponse } from "@/types/album/api";
 
 export function getCollectedAlbumIds(response: AlbumSublistResponse) {
   return (response.data ?? []).map((album) => album.id);

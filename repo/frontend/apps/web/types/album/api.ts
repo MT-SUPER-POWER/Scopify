@@ -1,5 +1,5 @@
 import type { RawSongDetail } from "@/types/api/music";
-import type { NeteaseUserAlbum } from "@/types/api/release";
+import type { NeteaseUserAlbum } from "@/types/album/releaseApi";
 
 export interface AlbumDetailResponse {
   album?: NeteaseAlbum;

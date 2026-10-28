@@ -7,7 +7,7 @@ import { Dialog as DialogPrimitive } from "radix-ui";
 import { MediaDescriptionDialog } from "@/components/shared/MediaDescriptionDialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useI18n } from "@/store/module/i18n";
-import type { AlbumDescriptionDialogProps } from "@/types/components/album";
+import type { AlbumDescriptionDialogProps } from "@/types/album/components";
 
 export function AlbumDescriptionDialog({ info, onOpenChange, open }: AlbumDescriptionDialogProps) {
   const { t } = useI18n();

@@ -7,7 +7,7 @@ import { AlbumDescriptionDialog } from "@/components/album/AlbumDescriptionDialo
 import { ResponsiveHeaderTitle } from "@/components/shared/ResponsiveHeaderTitle";
 
 import { useI18n } from "@/store/module/i18n";
-import type { AlbumHeaderProps } from "@/types/components/album";
+import type { AlbumHeaderProps } from "@/types/album/components";
 
 export function AlbumHeader({ info, onArtistClick }: AlbumHeaderProps) {
   const { t } = useI18n();

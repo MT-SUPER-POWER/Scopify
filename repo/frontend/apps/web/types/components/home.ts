@@ -1,5 +1,5 @@
 import type { MouseEvent, ReactNode } from "react";
-import type { NeteaseAlbum } from "@/types/api/album";
+import type { NeteaseAlbum } from "@/types/album/api";
 import type { NeteaseBanner } from "@/types/api/banner";
 import type { SongDetail } from "@/types/api/music";
 import type { RecommendPlaylist } from "@/types/api/playlist";

@@ -11,7 +11,7 @@ import { getCommentHref } from "@/lib/comment/commentResource";
 import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
 import { formatCompactCount } from "@/lib/utils";
 import { useI18n } from "@/store/module/i18n";
-import type { AlbumActionsProps } from "@/types/album";
+import type { AlbumActionsProps } from "@/types/album/model";
 import {
   Tooltip,
   TooltipContent,
