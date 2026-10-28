@@ -1,4 +1,4 @@
-import type { NeteaseComment } from "@/types/api/music";
+import type { NeteaseComment } from "@/types/song/api";
 
 export const COMMENT_RESOURCE_TYPE = {
   song: 0,

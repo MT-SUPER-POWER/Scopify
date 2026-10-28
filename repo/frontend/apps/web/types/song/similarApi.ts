@@ -1,4 +1,4 @@
-import type { RawSongDetail, SongPlaybackPrivilege } from "@/types/api/music";
+import type { RawSongDetail, SongPlaybackPrivilege } from "@/types/song/api";
 
 /** The link-position endpoint returns server-driven resource blocks, not SongDetail[]. */
 export interface SimilarSongsResponse {

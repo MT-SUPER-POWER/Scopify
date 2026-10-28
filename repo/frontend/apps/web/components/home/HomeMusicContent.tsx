@@ -9,7 +9,7 @@ import {
   useNewSongsQuery,
   useToplistDetailQuery,
 } from "@/hooks/home/useHomeQueries";
-import { pruneSongDetail } from "@/types/api/music";
+import { pruneSongDetail } from "@/types/song/api";
 import type { ToplistDetailItem } from "@/types/api/toplist";
 import type { HomeQueryContentProps } from "@/types/components/home";
 

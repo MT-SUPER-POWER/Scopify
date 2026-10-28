@@ -12,7 +12,7 @@ import { useRequireLoginAction } from "@/lib/hooks/useRequireLoginAction";
 import { musicQueryKeys } from "@/lib/query/queryKeys";
 import { usePlayerStore, useUserStore } from "@/store";
 import { useI18n } from "@/store/module/i18n";
-import { pruneSongDetail } from "@/types/api/music";
+import { pruneSongDetail } from "@/types/song/api";
 
 import { useAlbumQuery } from "./useAlbumQuery";
 import { useAlbumCollectionQuery } from "./useAlbumCollectionQuery";

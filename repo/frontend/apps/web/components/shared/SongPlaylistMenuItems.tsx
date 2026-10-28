@@ -6,7 +6,7 @@ import {
   ContextMenuSubContent,
   ContextMenuSubTrigger,
 } from "@/components/ui/context-menu";
-import type { SongContextMenuSectionProps } from "@/types/components/songContextMenu";
+import type { SongContextMenuSectionProps } from "@/types/song/contextMenuComponents";
 import { getSizedImageUrl } from "@/lib/music/imageUrl";
 
 export function SongPlaylistMenuItems({ actions, model }: SongContextMenuSectionProps) {

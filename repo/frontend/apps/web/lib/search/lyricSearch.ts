@@ -1,4 +1,4 @@
-import type { SongDetail } from "@/types/api/music";
+import type { SongDetail } from "@/types/song/api";
 import type { Song } from "@/types/search/model";
 
 export function songToSongDetail(song: Song): SongDetail {

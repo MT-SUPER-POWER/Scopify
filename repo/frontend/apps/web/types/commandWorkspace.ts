@@ -1,5 +1,5 @@
 import type { FoliaCommandEntry, FoliaCommandGroup } from "@/types/foliaCommands";
-import type { SongDetail } from "@/types/api/music";
+import type { SongDetail } from "@/types/song/api";
 import type { Album, Artist, Category, Playlist, Podcast, Song, Voice } from "@/types/search/model";
 import type { DragEvent, KeyboardEvent, RefObject } from "react";
 import type { LucideIcon } from "lucide-react";

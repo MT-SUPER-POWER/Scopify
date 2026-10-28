@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import type { useArtistFollow } from "@/hooks/artist/useArtistFollow";
-import type { SongDetail } from "@/types/api/music";
+import type { SongDetail } from "@/types/song/api";
 import type { NowPlayingPanelTab } from "@/types/ui";
 
 /** 面板当前展示的视图：两个常规视图之外，队列打开时临时覆盖。 */

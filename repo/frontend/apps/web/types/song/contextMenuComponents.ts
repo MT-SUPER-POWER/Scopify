@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 
-import type { SongDetail } from "@/types/api/music";
+import type { SongDetail } from "@/types/song/api";
 
 export interface SongContextMenuProps {
   children: ReactNode;

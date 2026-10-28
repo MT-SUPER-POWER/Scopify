@@ -21,7 +21,7 @@ import { getVoiceNeteaseLyric } from "@/lib/lyrics/voiceLyric";
 import { enrichSongStatsById } from "@/lib/song/enrichSongStats";
 import { useI18nStore } from "@/store/module/i18n";
 import { useTimeStore } from "@/store/module/time";
-import { pruneNeteaseLyric, type NeteaseLyric, type SongDetail } from "@/types/api/music";
+import { pruneNeteaseLyric, type NeteaseLyric, type SongDetail } from "@/types/song/api";
 import type { PlayerStore } from "@/types/player";
 
 export type {

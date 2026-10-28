@@ -13,7 +13,7 @@ import { translate } from "@/lib/i18n";
 import { getPersonalFmRemainingCount, selectNewPersonalFmQueueItems } from "@/lib/personalFm/queue";
 import { useI18nStore } from "@/store/module/i18n";
 import { usePlayerStore } from "@/store/module/player";
-import { pruneSongDetail, type SongDetail } from "@/types/api/music";
+import { pruneSongDetail, type SongDetail } from "@/types/song/api";
 import type { PersonalFmSelection, PersonalFmStore } from "@/types/personalFm";
 
 const PERSONAL_FM_STORAGE_KEY = "scopify-personal-fm";

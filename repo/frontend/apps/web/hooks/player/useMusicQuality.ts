@@ -4,7 +4,7 @@ import { useCallback, useState } from "react";
 
 import { usePlayerStore } from "@/store/module/player";
 import type { MusicQuality } from "@/types/player";
-import type { ImmerseType } from "@/types/api/music";
+import type { ImmerseType } from "@/types/song/api";
 
 export function useMusicQuality() {
   const [isChanging, setIsChanging] = useState(false);

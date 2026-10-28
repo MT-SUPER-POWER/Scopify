@@ -6,7 +6,7 @@ import { SongVipBadge } from "@/components/shared/SongVipBadge";
 import { useSimilarSongPlayback } from "@/hooks/song/useSimilarSongPlayback";
 import { cn } from "@/lib/utils";
 import { useI18n } from "@/store/module/i18n";
-import type { SimilarSongRowProps } from "@/types/components/similarSongs";
+import type { SimilarSongRowProps } from "@/types/song/similarComponents";
 import { getSizedImageUrl } from "@/lib/music/imageUrl";
 
 export function SimilarSongRow({ song, songs }: SimilarSongRowProps) {

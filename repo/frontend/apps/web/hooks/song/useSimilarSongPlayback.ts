@@ -1,6 +1,6 @@
 "use client";
 import { usePlayerStore } from "@/store";
-import type { SongDetail } from "@/types/api/music";
+import type { SongDetail } from "@/types/song/api";
 
 export function useSimilarSongPlayback(song: SongDetail, songs: SongDetail[]) {
   const isActive = usePlayerStore((state) => state.currentSongDetail?.id === song.id);

@@ -1,5 +1,5 @@
 import { resolveCoverUrl } from "@/lib/music/resolveCoverUrl";
-import type { SongDetail } from "@/types/api/music";
+import type { SongDetail } from "@/types/song/api";
 import type { Song } from "@/types/search/model";
 
 export function toVoiceSongDetail(song: Song, fallbackCoverUrl = "", voiceId?: number): SongDetail {

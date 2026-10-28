@@ -10,7 +10,7 @@ import { useLoginStatus } from "@/lib/hooks/useLoginStatus";
 import { usePlayerStore, useUserStore } from "@/store";
 import { useI18n } from "@/store/module/i18n";
 import type { NeteasePlaylist } from "@/types/api/playlist";
-import type { SongContextMenuActionsProps } from "@/types/components/songContextMenu";
+import type { SongContextMenuActionsProps } from "@/types/song/contextMenuComponents";
 
 export function useSongContextMenuActions({
   isContextMenuOpen,

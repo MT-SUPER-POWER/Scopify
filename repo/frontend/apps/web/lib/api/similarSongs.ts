@@ -3,7 +3,7 @@ import type {
   SimilarSongDetailsResponse,
   SimilarSongListResponse,
   SimilarSongsResponse,
-} from "@/types/api/similarSongs";
+} from "@/types/song/similarApi";
 
 export function getSimilarSongs(id: number, signal?: AbortSignal) {
   return request.get<SimilarSongsResponse>(

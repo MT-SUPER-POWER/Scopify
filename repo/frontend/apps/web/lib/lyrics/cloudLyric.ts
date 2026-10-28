@@ -2,7 +2,7 @@ import { getCloudLyric } from "@/lib/api/cloud";
 import { getLyric } from "@/lib/api/music";
 import { useUserStore } from "@/store/module/user";
 import { getCloudLyricText, getCloudSongId } from "@/types/api/cloud";
-import type { NeteaseLyric, SongDetail } from "@/types/api/music";
+import type { NeteaseLyric, SongDetail } from "@/types/song/api";
 
 function hasLyricText(lyric: NeteaseLyric) {
   return Boolean(lyric.lrc?.lyric?.trim() || lyric.yrc?.lyric?.trim());

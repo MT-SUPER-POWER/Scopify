@@ -6,7 +6,7 @@ import { isRealUser } from "@/lib/hooks/useLoginStatus";
 import { useUserStore } from "@/store";
 import { useAppDragStore } from "@/store/module/appDrag";
 import { useI18n } from "@/store/module/i18n";
-import type { SongDetail } from "@/types/api/music";
+import type { SongDetail } from "@/types/song/api";
 
 export function useBatchSongLike() {
   const songLikeMutation = useSongLikeMutation();

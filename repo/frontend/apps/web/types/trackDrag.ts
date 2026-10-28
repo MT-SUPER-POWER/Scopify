@@ -1,4 +1,4 @@
-import type { SongDetail } from "@/types/api/music";
+import type { SongDetail } from "@/types/song/api";
 
 export interface AppDragState {
   isDragging: boolean;

@@ -4,7 +4,7 @@ import { getSimilarSongDetails, getSimilarSongList, getSimilarSongs } from "@/li
 import { musicQueryKeys } from "@/lib/query/queryKeys";
 import { getSimilarSongIds } from "@/lib/song/similarSongs";
 import { useUserStore } from "@/store";
-import { pruneSongDetail } from "@/types/api/music";
+import { pruneSongDetail } from "@/types/song/api";
 
 export function useSimilarSongs(songId: number, open: boolean) {
   const userId = useUserStore((state) => state.user?.userId ?? 0);

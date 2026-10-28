@@ -16,7 +16,7 @@ import { useLoginStatus } from "@/lib/hooks/useLoginStatus";
 import { musicQueryKeys } from "@/lib/query/queryKeys";
 import { useUserStore } from "@/store";
 import { prunePlaylist, type NeteasePlaylist, type RawNeteasePlaylist } from "@/types/api/playlist";
-import { pruneSongDetail, type SongDetail } from "@/types/api/music";
+import { pruneSongDetail, type SongDetail } from "@/types/song/api";
 import type {
   CreatedVoiceList,
   LikedVoice,

@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, mock } from "bun:test";
 import { create } from "zustand";
-import { pruneSongDetail, type SongDetail } from "@/types/api/music";
+import { pruneSongDetail, type SongDetail } from "@/types/song/api";
 
 const song = (id: number) => pruneSongDetail({ id, name: `Song ${id}` });
 let requests = 0;

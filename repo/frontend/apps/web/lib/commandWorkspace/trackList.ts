@@ -3,7 +3,7 @@ import { getArtistTopSongs } from "@/lib/api/artist";
 import { getPlaylistAllTracks } from "@/lib/api/playlist";
 import { getRadioPrograms } from "@/lib/api/radio";
 import { toVoiceSongDetail } from "@/lib/search/voiceSong";
-import { pruneSongDetail, type SongDetail } from "@/types/api/music";
+import { pruneSongDetail, type SongDetail } from "@/types/song/api";
 import type {
   CommandWorkspaceSearchItem,
   CommandWorkspaceTrackList,

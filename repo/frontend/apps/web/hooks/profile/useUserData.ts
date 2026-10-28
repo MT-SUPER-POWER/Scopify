@@ -12,7 +12,7 @@ import { getListeningDurationSeconds } from "@/lib/listeningReport/normalize";
 import { getMainColorFromImage } from "@/lib/web/imageColor";
 import { useI18nStore } from "@/store/module/i18n";
 import { useUserStore } from "@/store/module/user";
-import { pruneSongDetail } from "@/types/api/music";
+import { pruneSongDetail } from "@/types/song/api";
 import { getPlaylistTrackCount, type RawNeteasePlaylist } from "@/types/api/playlist";
 import {
   getRecentSong,

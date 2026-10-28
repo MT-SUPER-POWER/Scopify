@@ -1,5 +1,5 @@
 import type { SongSearchResource } from "@/types/search/api";
-import type { NeteaseLyric, SongDetail } from "@/types/api/music";
+import type { NeteaseLyric, SongDetail } from "@/types/song/api";
 import type { LyricMatchCandidate } from "@/types/lyrics";
 
 export function buildLyricMatchQuery(song: SongDetail): string {

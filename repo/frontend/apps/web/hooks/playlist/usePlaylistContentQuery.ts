@@ -10,7 +10,7 @@ import {
 } from "@/lib/api/playlist";
 import { getRecommendedSongs } from "@/lib/api/track";
 import { musicQueryKeys } from "@/lib/query/queryKeys";
-import { pruneSongDetail, type RawSongDetail, type SongDetail } from "@/types/api/music";
+import { pruneSongDetail, type RawSongDetail, type SongDetail } from "@/types/song/api";
 import {
   prunePlaylistTracks,
   type HistoricalDailyRecommendationDetailResponse,

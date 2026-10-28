@@ -17,7 +17,7 @@ import { updatePlaylistTrack } from "@/lib/api/track";
 import { clearPageCache } from "@/lib/cache/pageCache";
 import { useUserStore } from "@/store";
 import { useI18n } from "@/store/module/i18n";
-import type { CreatePlaylistFromTracksDialogProps } from "@/types/components/songContextMenu";
+import type { CreatePlaylistFromTracksDialogProps } from "@/types/song/contextMenuComponents";
 
 export function CreatePlaylistFromTracksDialog({
   open,

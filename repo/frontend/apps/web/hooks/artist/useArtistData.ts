@@ -9,7 +9,7 @@ import {
   useArtistTopSongsQuery,
 } from "@/hooks/artist/useArtistQueries";
 import { useI18n } from "@/store/module/i18n";
-import { pruneSongDetail } from "@/types/api/music";
+import { pruneSongDetail } from "@/types/song/api";
 
 export function useArtistData(artistId: null | string) {
   const { t } = useI18n();

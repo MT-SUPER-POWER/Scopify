@@ -36,7 +36,7 @@ import {
   type CommentResourceKind,
   type CommentResourceRef,
 } from "@/types/comment/api";
-import type { NeteaseComment, SongDetail } from "@/types/api/music";
+import type { NeteaseComment, SongDetail } from "@/types/song/api";
 import type { CommentResourceHeaderData } from "@/types/comment/model";
 
 const LIMIT = 20;

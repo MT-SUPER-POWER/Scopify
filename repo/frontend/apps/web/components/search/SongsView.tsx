@@ -2,7 +2,7 @@ import { LoaderCircle } from "lucide-react";
 import { useMemo } from "react";
 import TracklistTable from "@/components/Playlist/TrackTable";
 import { useInfiniteScrollTrigger } from "@/hooks/search/useInfiniteScrollTrigger";
-import type { SongDetail } from "@/types/api/music";
+import type { SongDetail } from "@/types/song/api";
 import type { SongsViewProps } from "@/types/search/components";
 import type { Song } from "@/types/search/model";
 import { SearchCategoryHeader } from "./SearchCategoryHeader";

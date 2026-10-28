@@ -1,4 +1,4 @@
-import type { SongChorusResponse } from "@/types/api/music";
+import type { SongChorusResponse } from "@/types/song/api";
 import type { LyricChorusRange, LyricDisplayLine } from "@/types/lyrics";
 
 const INTERLUDE_FULL_TEXT = "......";

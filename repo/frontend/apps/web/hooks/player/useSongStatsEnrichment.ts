@@ -6,7 +6,7 @@ import {
   getSongStatsEnrichmentState,
   subscribeSongStatsEnrichment,
 } from "@/lib/song/enrichSongStats";
-import type { SongDetail } from "@/types/api/music";
+import type { SongDetail } from "@/types/song/api";
 
 const EMPTY_STATS_STATE = getSongStatsEnrichmentState(null);
 

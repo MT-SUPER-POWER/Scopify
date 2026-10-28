@@ -5,7 +5,7 @@ import { getPlaylistAllTracks } from "@/lib/api/playlist";
 import { translate } from "@/lib/i18n";
 import { usePlayerStore } from "@/store";
 import { useI18nStore } from "@/store/module/i18n";
-import { pruneSongDetail, type RawSongDetail, type SongDetail } from "@/types/api/music";
+import { pruneSongDetail, type RawSongDetail, type SongDetail } from "@/types/song/api";
 import type { Album, Playlist, Song } from "@/types/search/model";
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ UTILS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━

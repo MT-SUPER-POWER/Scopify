@@ -12,7 +12,7 @@ import {
 import { SimilarSongRow } from "@/components/song/SimilarSongRow";
 import { useSimilarSongs } from "@/hooks/song/useSimilarSongs";
 import { useI18n } from "@/store/module/i18n";
-import type { SimilarSongsDialogProps } from "@/types/components/similarSongs";
+import type { SimilarSongsDialogProps } from "@/types/song/similarComponents";
 
 export function SimilarSongsDialog({ song, open, onOpenChange }: SimilarSongsDialogProps) {
   const { t } = useI18n();

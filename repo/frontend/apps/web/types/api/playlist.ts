@@ -3,7 +3,7 @@ import {
   type RawSongDetail,
   type SongDetail,
   type SongPlaybackPrivilege,
-} from "@/types/api/music";
+} from "@/types/song/api";
 
 export interface NeteasePlaylist {
   specialType?: number;

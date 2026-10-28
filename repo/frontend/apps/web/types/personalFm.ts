@@ -1,5 +1,5 @@
 import type { PlaybackNextSource } from "@/types/player";
-import type { SongDetail } from "@/types/api/music";
+import type { SongDetail } from "@/types/song/api";
 
 export type PersonalFmModeId =
   "DEFAULT" | "FAMILIAR" | "EXPLORE" | "SCENE_RCMD" | "PUZZLE_MODE_RCMD";

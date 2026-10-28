@@ -1,5 +1,5 @@
 import { pruneUser } from "@/types/user/api";
-import type { SongDetail } from "@/types/api/music";
+import type { SongDetail } from "@/types/song/api";
 import type { SocialRawObject } from "@/types/social/api";
 import type {
   SocialComment,

@@ -1,4 +1,4 @@
-import type { NeteaseLyric } from "@/types/api/music";
+import type { NeteaseLyric } from "@/types/song/api";
 import { getVoiceLyric } from "@/lib/api/voicelist";
 import type { VoiceLyricDocument, VoiceLyricSentence } from "@/types/voice/api";
 

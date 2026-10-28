@@ -3,7 +3,7 @@ import { getRadioProgramDetail } from "@/lib/api/radio";
 import { getSongRedCount } from "@/lib/api/track";
 import { getVoiceDetail } from "@/lib/api/voicelist";
 import { usePlayerStore, useUserStore } from "@/store";
-import type { SongDetail, SongStats } from "@/types/api/music";
+import type { SongDetail, SongStats } from "@/types/song/api";
 import { reportFailure } from "@/lib/web/errorTracking";
 import { createSongStatsEnricher, type SongStatsResource } from "@/lib/song/enrichSongStatsCore";
 

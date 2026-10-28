@@ -7,7 +7,7 @@ import { getArtistTopSongs } from "@/lib/api/artist";
 import { getPlaylistAllTracks } from "@/lib/api/playlist";
 import { usePlayerStore } from "@/store";
 import { useI18n } from "@/store/module/i18n";
-import { pruneSongDetail, type SongDetail } from "@/types/api/music";
+import { pruneSongDetail, type SongDetail } from "@/types/song/api";
 import type { HomePlaybackActions } from "@/types/home";
 
 /** 首页各栏目共用播放动作；读取 Query 的状态不参与此 hook。 */

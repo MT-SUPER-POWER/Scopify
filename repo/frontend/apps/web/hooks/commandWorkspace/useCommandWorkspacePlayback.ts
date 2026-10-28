@@ -4,7 +4,7 @@ import { useCallback } from "react";
 import { toCommandWorkspaceSongDetail } from "@/lib/commandWorkspace/trackList";
 import { toVoiceSongDetail } from "@/lib/search/voiceSong";
 import { usePlayerStore } from "@/store";
-import type { SongDetail } from "@/types/api/music";
+import type { SongDetail } from "@/types/song/api";
 import type { Song, Voice } from "@/types/search/model";
 
 export function useCommandWorkspacePlayback() {

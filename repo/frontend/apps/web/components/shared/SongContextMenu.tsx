@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { ContextMenu, ContextMenuTrigger } from "@/components/ui/context-menu";
 import { SongContextMenuActions } from "@/components/shared/SongContextMenuActions";
-import type { SongContextMenuProps } from "@/types/components/songContextMenu";
+import type { SongContextMenuProps } from "@/types/song/contextMenuComponents";
 
 export function SongContextMenu({ children, onOpenContextMenu, ...props }: SongContextMenuProps) {
   const [isContextMenuOpen, setIsContextMenuOpen] = useState(false);

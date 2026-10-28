@@ -1,4 +1,4 @@
-import type { NeteaseLyric } from "@/types/api/music";
+import type { NeteaseLyric } from "@/types/song/api";
 import type {
   LyricCreditEntry,
   LyricData,

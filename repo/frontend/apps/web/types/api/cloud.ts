@@ -1,5 +1,5 @@
 import { CLOUD_SONG_FALLBACK_COVER } from "@/constants/cloud";
-import { pruneSongDetail, type RawSongDetail, type SongDetail } from "@/types/api/music";
+import { pruneSongDetail, type RawSongDetail, type SongDetail } from "@/types/song/api";
 
 /** `/user/cloud` 列表项；未匹配到公开曲目的上传文件，`simpleSong` 只有文件元数据。 */
 export interface RawCloudSong {

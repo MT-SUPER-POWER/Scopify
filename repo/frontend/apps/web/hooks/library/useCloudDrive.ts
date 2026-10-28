@@ -22,7 +22,7 @@ import {
   type CloudDriveData,
   type CloudUploadProgress,
 } from "@/types/api/cloud";
-import type { SongDetail } from "@/types/api/music";
+import type { SongDetail } from "@/types/song/api";
 
 const CLOUD_PAGE_SIZE = 200;
 /** 网易云盘上限约数千首，限制页数避免异常 hasMore 造成无限请求。 */

@@ -9,7 +9,7 @@ import { dislikePersonalFmTrack } from "@/lib/personalFm/dislike";
 import { useI18n } from "@/store/module/i18n";
 import { usePersonalFmStore } from "@/store/module/personalFm";
 import { usePlayerStore } from "@/store/module/player";
-import type { SongDetail } from "@/types/api/music";
+import type { SongDetail } from "@/types/song/api";
 
 /**
  * Provides the one Personal FM-specific negative-feedback flow shared by the

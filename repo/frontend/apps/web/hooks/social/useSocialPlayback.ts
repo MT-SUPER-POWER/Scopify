@@ -7,8 +7,8 @@ import { getPlaylistAllTracks } from "@/lib/api/playlist";
 import { getAlbumDetail } from "@/lib/api/album";
 import { usePlayerStore } from "@/store/module/player";
 import { useI18n } from "@/store/module/i18n";
-import { pruneSongDetail } from "@/types/api/music";
-import type { RawSongDetail } from "@/types/api/music";
+import { pruneSongDetail } from "@/types/song/api";
+import type { RawSongDetail } from "@/types/song/api";
 import type { SocialResource } from "@/types/social/model";
 
 export function useSocialPlayback(resource: SocialResource) {

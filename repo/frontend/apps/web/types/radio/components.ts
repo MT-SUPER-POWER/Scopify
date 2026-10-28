@@ -1,4 +1,4 @@
-import type { SongDetail } from "@/types/api/music";
+import type { SongDetail } from "@/types/song/api";
 import type { RadioDetail, RadioProgram } from "@/types/radio/api";
 import type { ReactNode } from "react";
 

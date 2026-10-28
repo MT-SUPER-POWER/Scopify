@@ -1,4 +1,4 @@
-import type { RawSongDetail, SongDetail } from "@/types/api/music";
+import type { RawSongDetail, SongDetail } from "@/types/song/api";
 
 export interface ArtistCoverTheme {
   cover: string;

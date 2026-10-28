@@ -3,7 +3,7 @@ import {
   type CommentResourceKind,
   type NewCommentResponse,
 } from "@/types/comment/api";
-import type { SongComment } from "@/types/api/music";
+import type { SongComment } from "@/types/song/api";
 
 export function getCommentHref(kind: CommentResourceKind, id: number | string) {
   if (kind === "song") return `/comment?songId=${id}`;

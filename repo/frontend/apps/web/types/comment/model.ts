@@ -1,4 +1,4 @@
-import type { NeteaseComment } from "@/types/api/music";
+import type { NeteaseComment } from "@/types/song/api";
 import type { CommentHeaderArtist } from "@/types/comment/components";
 
 export interface CommentResourceHeaderData {

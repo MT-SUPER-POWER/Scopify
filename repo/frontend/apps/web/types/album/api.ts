@@ -1,4 +1,4 @@
-import type { RawSongDetail } from "@/types/api/music";
+import type { RawSongDetail } from "@/types/song/api";
 import type { NeteaseUserAlbum } from "@/types/album/releaseApi";
 
 export interface AlbumDetailResponse {

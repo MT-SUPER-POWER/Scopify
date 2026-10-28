@@ -25,7 +25,7 @@ import type {
   LyricExportFormat,
   LyricSourceSelection,
 } from "@/types/lyrics";
-import type { NeteaseLyric } from "@/types/api/music";
+import type { NeteaseLyric } from "@/types/song/api";
 
 export function useOnlineLyricsTab() {
   const { t } = useI18n();

@@ -4,7 +4,7 @@ import { MediaInfoBadge } from "@/components/shared/MediaInfoBadge";
 import { getSongQualityBadge } from "@/lib/song/qualityBadge";
 import { useI18n } from "@/store/module/i18n";
 
-import type { SongQualityBadgeProps } from "@/types/songQuality";
+import type { SongQualityBadgeProps } from "@/types/song/quality";
 
 const qualityLabelKeys = {
   jymaster: "playbar.quality.badge.jymaster",

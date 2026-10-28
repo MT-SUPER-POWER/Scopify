@@ -1,7 +1,7 @@
 import type { CSSProperties, MouseEventHandler, ReactNode } from "react";
-import type { SongDetail } from "@/types/api/music";
+import type { SongDetail } from "@/types/song/api";
 import type { ProgressRangeMarker } from "@/types/components/slider";
-import type { SongStatsEnrichmentStatus } from "@/types/songStats";
+import type { SongStatsEnrichmentStatus } from "@/types/song/stats";
 import type { ShortcutCommandId } from "@/types/shortcuts";
 
 export interface PlaybackProgressBarProps {

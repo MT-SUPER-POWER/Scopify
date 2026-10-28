@@ -30,7 +30,7 @@ import { useLoginStatus } from "@/lib/hooks/useLoginStatus";
 import { cn, formatDuration } from "@/lib/utils";
 import { usePlayerStore, useUserStore } from "@/store";
 import { useI18n } from "@/store/module/i18n";
-import type { SongDetail } from "@/types/api/music";
+import type { SongDetail } from "@/types/song/api";
 import type { Song } from "@/types/search/model";
 import { getSizedImageUrl } from "@/lib/music/imageUrl";
 

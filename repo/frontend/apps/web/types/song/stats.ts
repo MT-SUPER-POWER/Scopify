@@ -1,4 +1,4 @@
-import type { SongStats } from "@/types/api/music";
+import type { SongStats } from "@/types/song/api";
 
 export type SongStatsEnrichmentStatus = "complete" | "failed" | "idle" | "loading" | "partial";
 

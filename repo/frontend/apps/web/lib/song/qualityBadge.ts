@@ -1,9 +1,9 @@
-import type { SongQualityBadgeLevel, SongQualityBadgeDefinition } from "@/types/songQuality";
+import type { SongQualityBadgeLevel, SongQualityBadgeDefinition } from "@/types/song/quality";
 export type {
   SongQualityBadgeLevel,
   SongQualityBadgeTone,
   SongQualityBadgeDefinition,
-} from "@/types/songQuality";
+} from "@/types/song/quality";
 
 const qualityBadges: Record<SongQualityBadgeLevel, SongQualityBadgeDefinition> = {
   jymaster: { level: "jymaster", tone: "gold" },

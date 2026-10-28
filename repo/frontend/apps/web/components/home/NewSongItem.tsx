@@ -8,7 +8,7 @@ import { SongContextMenu } from "@/components/shared/SongContextMenu";
 import { SongVipBadge } from "@/components/shared/SongVipBadge";
 import { cn, formatDuration } from "@/lib/utils";
 import { usePlayerStore } from "@/store";
-import type { SongDetail } from "@/types/api/music";
+import type { SongDetail } from "@/types/song/api";
 
 interface NewSongItemProps {
   index: number;

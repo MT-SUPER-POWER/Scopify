@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { useI18n } from "@/store/module/i18n";
-import type { SongDetail } from "@/types/api/music";
+import type { SongDetail } from "@/types/song/api";
 import type { ArtistInfo } from "@/types/artist/model";
 import { PopularTrackItem } from "./PopularTrackItem";
 

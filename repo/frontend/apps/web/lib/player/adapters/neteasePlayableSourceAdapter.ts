@@ -19,7 +19,7 @@ import type {
   WebNeteasePlayableSourceResolver,
 } from "@/types/playbackAdapters";
 import type { MusicQuality } from "@/types/player";
-import type { ImmerseType } from "@/types/api/music";
+import type { ImmerseType } from "@/types/song/api";
 
 /**
  * The playback core deliberately uses runtime-neutral quality names. Keep the

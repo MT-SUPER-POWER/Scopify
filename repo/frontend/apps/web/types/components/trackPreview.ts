@@ -1,4 +1,4 @@
-import type { SongDetail } from "@/types/api/music";
+import type { SongDetail } from "@/types/song/api";
 
 export interface TrackPreviewButtonProps {
   /** 歌单或专辑的全部曲目；其中带 MV 的歌曲进入预览。 */

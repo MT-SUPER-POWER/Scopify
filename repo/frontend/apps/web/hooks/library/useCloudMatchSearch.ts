@@ -5,7 +5,7 @@ import { toast } from "sonner";
 import { searchSongs } from "@/lib/api/search";
 import { getLyricMatchScore, mapSongSearchResourceToLyricMatchCandidate } from "@/lib/lyrics/match";
 import { useI18n } from "@/store/module/i18n";
-import type { SongDetail } from "@/types/api/music";
+import type { SongDetail } from "@/types/song/api";
 import type { LyricMatchCandidate } from "@/types/lyrics";
 
 /** 为云盘文件搜索可匹配的公开曲目，按标题、歌手、时长相似度排序。 */

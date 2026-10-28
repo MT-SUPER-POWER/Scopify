@@ -4,7 +4,7 @@ import type {
   NewCommentParams,
   NewCommentResponse,
 } from "@/types/comment/api";
-import type { SongComment } from "@/types/api/music";
+import type { SongComment } from "@/types/song/api";
 import request, { requestConfig } from "../web/request";
 
 export async function getMusicComments(params: MusicCommentParams) {

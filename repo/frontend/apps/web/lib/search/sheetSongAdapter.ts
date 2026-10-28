@@ -1,5 +1,5 @@
 import type { SongSearchResource } from "@/types/search/api";
-import type { SongDetail } from "@/types/api/music";
+import type { SongDetail } from "@/types/song/api";
 
 export function mapSheetSearchSong(
   resource: SongSearchResource,

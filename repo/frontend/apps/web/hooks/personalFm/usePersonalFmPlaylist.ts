@@ -18,7 +18,7 @@ import { useI18n } from "@/store/module/i18n";
 import { ensurePersonalFmOnEntry } from "@/lib/personalFm/entry";
 import { usePersonalFmStore } from "@/store/module/personalFm";
 import { usePlayerStore } from "@/store/module/player";
-import type { SongDetail } from "@/types/api/music";
+import type { SongDetail } from "@/types/song/api";
 import type { PlaylistInfo } from "@/types/playlist";
 
 export function usePersonalFmPlaylist() {

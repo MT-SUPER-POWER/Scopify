@@ -6,7 +6,7 @@ import { toast } from "sonner";
 import { getRadioDetail, getRadioPrograms } from "@/lib/api/radio";
 import { usePlayerStore } from "@/store";
 import { useI18n } from "@/store/module/i18n";
-import { pruneSongDetail, type SongDetail } from "@/types/api/music";
+import { pruneSongDetail, type SongDetail } from "@/types/song/api";
 import type { RadioDetail, RadioDetailResponse, RadioProgram } from "@/types/radio/api";
 
 function toRadioTrack(program: RadioProgram, radio: RadioDetail): SongDetail {

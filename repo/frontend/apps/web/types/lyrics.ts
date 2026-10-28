@@ -1,4 +1,4 @@
-import type { NeteaseLyric } from "@/types/api/music";
+import type { NeteaseLyric } from "@/types/song/api";
 import type { VisualizerMode } from "@/components/lyrics/folia/src/types";
 
 /** A NetEase song selected as the source for another track's lyrics. */

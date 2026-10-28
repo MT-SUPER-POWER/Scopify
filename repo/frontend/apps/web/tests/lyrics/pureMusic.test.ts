@@ -7,7 +7,7 @@ import {
 import { adaptNeteaseLyric } from "@/lib/lyrics/neteaseLyricAdapter";
 import { adaptLyricDataToFolia } from "@/lib/lyrics/foliaLyricAdapter";
 import { decideSongCommit, isInstrumentalConfirmed } from "@/lib/lyrics/folia/songHandover";
-import type { NeteaseLyric } from "@/types/api/music";
+import type { NeteaseLyric } from "@/types/song/api";
 import type { LyricData } from "@/types/lyrics";
 
 describe("isPureMusicLyricText", () => {

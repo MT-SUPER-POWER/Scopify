@@ -1,6 +1,6 @@
 import { describe, expect, it } from "bun:test";
 import { buildLyricExport } from "@/lib/lyrics/export";
-import type { NeteaseLyric, SongDetail } from "@/types/api/music";
+import type { NeteaseLyric, SongDetail } from "@/types/song/api";
 
 const song = {
   name: "青花瓷: Live",

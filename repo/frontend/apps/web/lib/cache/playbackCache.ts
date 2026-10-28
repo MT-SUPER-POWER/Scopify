@@ -12,7 +12,7 @@ import type {
   LyricSourceSelection,
 } from "@/types/lyrics";
 import type { MusicQuality } from "@/types/player";
-import type { ImmerseType, NeteaseLyric } from "@/types/api/music";
+import type { ImmerseType, NeteaseLyric } from "@/types/song/api";
 
 const URL_TTL_MS = 30 * 60 * 1000; // 30 分钟
 const LYRIC_TTL_MS = 24 * 60 * 60 * 1000; // 24 小时

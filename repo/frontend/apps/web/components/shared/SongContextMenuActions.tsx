@@ -11,7 +11,7 @@ import { SongNavigationMenuItems } from "@/components/shared/SongNavigationMenuI
 import { SongPlaylistMenuItems } from "@/components/shared/SongPlaylistMenuItems";
 import { SongRemovalMenuItems } from "@/components/shared/SongRemovalMenuItems";
 import { useSongContextMenuActions } from "@/hooks/song/useSongContextMenuActions";
-import type { SongContextMenuActionsProps } from "@/types/components/songContextMenu";
+import type { SongContextMenuActionsProps } from "@/types/song/contextMenuComponents";
 
 export function SongContextMenuActions(actions: SongContextMenuActionsProps) {
   const model = useSongContextMenuActions(actions);

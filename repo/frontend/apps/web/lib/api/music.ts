@@ -9,7 +9,7 @@ import type {
   SongChorusResponse,
   PersonalizedNewSongResponse,
   SongUrlOptions,
-} from "@/types/api/music";
+} from "@/types/song/api";
 import request, { requestConfig } from "../web/request";
 
 export async function greySongUrlMatch(

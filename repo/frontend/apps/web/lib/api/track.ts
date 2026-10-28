@@ -1,5 +1,5 @@
 // 歌曲评论接口
-import type { SongDynamicCoverResponse, SongRedCountResponse } from "@/types/api/music";
+import type { SongDynamicCoverResponse, SongRedCountResponse } from "@/types/song/api";
 import type {
   PlaylistTrackMutationVariables,
   PlaylistTrackUpdateResponse,

@@ -1,5 +1,5 @@
 import { downloadBlob, sanitizeDownloadFileName } from "@/lib/web/download";
-import type { NeteaseLyric, SongDetail } from "@/types/api/music";
+import type { NeteaseLyric, SongDetail } from "@/types/song/api";
 import type { LyricExportFormat } from "@/types/lyrics";
 
 export function buildLyricExport(song: SongDetail, lyric: NeteaseLyric, format: LyricExportFormat) {

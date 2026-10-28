@@ -1,4 +1,4 @@
-import type { NeteaseComment } from "@/types/api/music";
+import type { NeteaseComment } from "@/types/song/api";
 import type { ReactNode } from "react";
 import type { MvArtist, MvDetail, MvResolution, MvSummary } from "@/types/mv/api";
 

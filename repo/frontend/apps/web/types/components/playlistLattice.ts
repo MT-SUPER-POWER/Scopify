@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import type { SongDetail } from "@/types/api/music";
+import type { SongDetail } from "@/types/song/api";
 import type { QueueInstance, ReflowTile } from "@/types/playlistLattice";
 
 export interface PlaylistLatticeProps {

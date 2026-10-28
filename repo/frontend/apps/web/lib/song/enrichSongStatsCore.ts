@@ -1,5 +1,5 @@
-import type { SongDetail, SongStats } from "@/types/api/music";
-import type { SongStatsEnrichmentState, SongStatsLoadResult } from "@/types/songStats";
+import type { SongDetail, SongStats } from "@/types/song/api";
+import type { SongStatsEnrichmentState, SongStatsLoadResult } from "@/types/song/stats";
 
 export type SongStatsResource = { kind: "song"; id: number } | { kind: "voice"; id: number };
 

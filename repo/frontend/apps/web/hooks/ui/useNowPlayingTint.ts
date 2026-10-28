@@ -3,7 +3,7 @@
 import { useCoverThemeColor } from "@/hooks/playlist/useCoverThemeColor";
 import { getSizedImageUrl } from "@/lib/music/imageUrl";
 import { resolveCoverUrl } from "@/lib/music/resolveCoverUrl";
-import type { SongDetail } from "@/types/api/music";
+import type { SongDetail } from "@/types/song/api";
 
 /**
  * 当前歌曲封面的主色，压暗后作为右侧面板歌词卡、封面渐变的底色，保证其上的白字可读。

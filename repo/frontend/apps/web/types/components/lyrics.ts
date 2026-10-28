@@ -2,7 +2,7 @@ import type { Theme } from "@/components/lyrics/folia/src/types";
 import type { ChangeEvent, DragEvent, ReactNode, RefObject } from "react";
 import type { FoliaStageAssets } from "@/types/foliaAssets";
 import type { LyricDisplayLine, LyricMatchCandidate } from "@/types/lyrics";
-import type { SongDetail } from "@/types/api/music";
+import type { SongDetail } from "@/types/song/api";
 import type {
   FoliaQuickEffectPickerPosition,
   FoliaStageEditSection,

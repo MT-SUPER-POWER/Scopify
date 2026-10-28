@@ -45,7 +45,7 @@ import { cn } from "@/lib/utils";
 import { reportActionFailure } from "@/lib/web/errorTracking";
 import { usePlayerStore, useUserStore } from "@/store";
 import { useI18n } from "@/store/module/i18n";
-import { pruneSongDetail, type SongDetail } from "@/types/api/music";
+import { pruneSongDetail, type SongDetail } from "@/types/song/api";
 import type { NavigationScrollRestorationAdapter } from "@/types/navigation-scroll";
 
 import { ConfirmDialogShandCN } from "./TableConfirmDialog";

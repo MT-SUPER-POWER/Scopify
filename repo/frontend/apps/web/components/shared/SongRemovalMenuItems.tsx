@@ -5,7 +5,7 @@ import {
   ContextMenuItem,
   ContextMenuSeparator,
 } from "@/components/ui/context-menu";
-import type { SongContextMenuSectionProps } from "@/types/components/songContextMenu";
+import type { SongContextMenuSectionProps } from "@/types/song/contextMenuComponents";
 
 export function SongRemovalMenuItems({ actions, model }: SongContextMenuSectionProps) {
   const {

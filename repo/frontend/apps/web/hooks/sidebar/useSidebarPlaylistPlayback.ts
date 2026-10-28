@@ -4,7 +4,7 @@ import { useRequireLoginAction } from "@/lib/hooks/useRequireLoginAction";
 import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
 import { usePlayerStore, useUserStore } from "@/store";
 import { useI18n } from "@/store/module/i18n";
-import { pruneSongDetail } from "@/types/api/music";
+import { pruneSongDetail } from "@/types/song/api";
 
 export function useSidebarPlaylistPlayback(playlistID: number | string) {
   const { t } = useI18n();

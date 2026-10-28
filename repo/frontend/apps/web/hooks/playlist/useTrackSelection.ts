@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import type { SongDetail } from "@/types/api/music";
+import type { SongDetail } from "@/types/song/api";
 
 export function useTrackSelection(tracks: SongDetail[]) {
   const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set());

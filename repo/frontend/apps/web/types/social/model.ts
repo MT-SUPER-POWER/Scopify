@@ -1,5 +1,5 @@
 import type { NeteaseUser } from "@/types/user/api";
-import type { SongDetail } from "@/types/api/music";
+import type { SongDetail } from "@/types/song/api";
 
 export interface SocialUser {
   id: string;

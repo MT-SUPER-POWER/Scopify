@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/context-menu";
 import { getCommentHref } from "@/lib/comment/commentResource";
 import { formatCompactCount } from "@/lib/utils";
-import type { SongContextMenuSectionProps } from "@/types/components/songContextMenu";
+import type { SongContextMenuSectionProps } from "@/types/song/contextMenuComponents";
 
 export function SongNavigationMenuItems({ actions, model }: SongContextMenuSectionProps) {
   const { song, onViewTranscript } = actions;

@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { enrichSongsStats } from "@/lib/song/enrichSongStats";
-import type { SongDetail, SongStats } from "@/types/api/music";
+import type { SongDetail, SongStats } from "@/types/song/api";
 
 /** 为曲目列表后台补全 likedCount / commentCount，增量更新展示 */
 export function useEnrichSongStats(tracks: SongDetail[]) {

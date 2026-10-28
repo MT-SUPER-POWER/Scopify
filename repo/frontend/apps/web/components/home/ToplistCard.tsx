@@ -7,7 +7,7 @@ import { memo, useCallback, useEffect, useMemo, useState } from "react";
 import { useToplistTracksQuery } from "@/hooks/home/useHomeQueries";
 import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
 import { cn } from "@/lib/utils";
-import type { SongDetail } from "@/types/api/music";
+import type { SongDetail } from "@/types/song/api";
 import type { ToplistDetailItem } from "@/types/api/toplist";
 
 interface ToplistCardProps {

@@ -15,7 +15,7 @@ import {
 import { useSongContextMenuActions } from "@/hooks/song/useSongContextMenuActions";
 import { isCloudSongMatched } from "@/types/api/cloud";
 import type { CloudSongContextMenuProps } from "@/types/components/library";
-import type { SongContextMenuActionsProps } from "@/types/components/songContextMenu";
+import type { SongContextMenuActionsProps } from "@/types/song/contextMenuComponents";
 
 /** 云盘文件专用菜单：只保留对上传文件有意义的操作，并接入云盘自己的接口。 */
 export function CloudSongContextMenu({

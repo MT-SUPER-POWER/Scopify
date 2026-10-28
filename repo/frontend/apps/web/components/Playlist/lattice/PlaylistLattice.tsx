@@ -7,7 +7,7 @@ import { usePlaybackProjection } from "@/hooks/player/usePlaybackProjection";
 import { useLatticePreferences } from "@/store/module/lattice";
 import { usePlayerStore } from "@/store";
 import { useI18n } from "@/store/module/i18n";
-import type { SongDetail } from "@/types/api/music";
+import type { SongDetail } from "@/types/song/api";
 import type { PlaylistLatticeProps } from "@/types/components/playlistLattice";
 import { LatticeToolbar } from "./LatticeToolbar";
 import { LatticePoster } from "./LatticePoster";

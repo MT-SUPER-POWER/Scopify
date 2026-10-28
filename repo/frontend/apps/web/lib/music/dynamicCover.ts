@@ -1,4 +1,4 @@
-import type { SongDynamicCoverData } from "@/types/api/music";
+import type { SongDynamicCoverData } from "@/types/song/api";
 
 const VIDEO_URL_KEYS = ["videoPlayUrl", "dynamicCoverVideoUrl", "playUrl"] as const;
 

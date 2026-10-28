@@ -3,7 +3,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { getSongDetail } from "@/lib/api/track";
 import { musicQueryKeys } from "@/lib/query/queryKeys";
-import type { RawSongDetail, SongDetail } from "@/types/api/music";
+import type { RawSongDetail, SongDetail } from "@/types/song/api";
 
 /**
  * 歌曲关联的 MV id（没有时为 0）。新数据直接带 mv 字段；

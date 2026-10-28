@@ -1,4 +1,4 @@
-import type { ImmerseType, NeteaseLyric, SongDetail } from "@/types/api/music";
+import type { ImmerseType, NeteaseLyric, SongDetail } from "@/types/song/api";
 
 export type MusicQuality =
   "sky" | "jymaster" | "dolby" | "vivid" | "spatial" | "hires" | "lossless" | "high" | "standard";
