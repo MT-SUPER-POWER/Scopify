@@ -9,7 +9,7 @@ import { useLoginStatus } from "@/lib/hooks/useLoginStatus";
 import { musicQueryKeys } from "@/lib/query/queryKeys";
 import { useUserStore } from "@/store";
 import { useI18n } from "@/store/module/i18n";
-import type { ArtistFollowCountResponse } from "@/types/api/artist";
+import type { ArtistFollowCountResponse } from "@/types/artist/api";
 
 /** 艺人关注状态、粉丝数与关注切换；歌手页与正在播放面板共用。 */
 export function useArtistFollow(artistId: number | string) {

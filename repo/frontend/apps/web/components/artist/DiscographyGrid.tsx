@@ -1,7 +1,7 @@
 import { Loader2, Play } from "lucide-react";
 import Image from "next/image";
 import { useI18n } from "@/store/module/i18n";
-import type { Album } from "@/types/artist";
+import type { Album } from "@/types/artist/model";
 
 interface Props {
   albums: Album[];

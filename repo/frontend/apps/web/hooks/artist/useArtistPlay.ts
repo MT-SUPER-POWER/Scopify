@@ -5,7 +5,7 @@ import { translate } from "@/lib/i18n";
 import { usePlayerStore } from "@/store";
 import { useI18nStore } from "@/store/module/i18n";
 import { pruneSongDetail, type SongDetail } from "@/types/api/music";
-import type { Album, Track } from "@/types/artist";
+import type { Album, Track } from "@/types/artist/model";
 
 export function useArtistPlay(hotTracksQueue: SongDetail[]) {
   const { currentSongDetail, isPlaying, setIsPlaying, setQueue, playTrack, playQueueIndex } =

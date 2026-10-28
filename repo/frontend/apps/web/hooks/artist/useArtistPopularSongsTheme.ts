@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { getMainColorFromImage } from "@/lib/web/imageColor";
-import type { ArtistCoverTheme } from "@/types/artist";
+import type { ArtistCoverTheme } from "@/types/artist/model";
 
 export function useArtistPopularSongsTheme(cover: string | null | undefined) {
   const [result, setResult] = useState<ArtistCoverTheme | null>(null);

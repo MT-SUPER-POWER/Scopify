@@ -8,7 +8,7 @@ import { pruneSongDetail, type RawSongDetail, type SongDetail } from "@/types/ap
 import { type NeteasePlaylist, type RawNeteasePlaylist, prunePlaylist } from "@/types/api/playlist";
 import type { NeteaseUserAlbum } from "@/types/album/releaseApi";
 import { type NeteaseUser, type NeteaseUserSource, pruneUser } from "@/types/api/user";
-import type { FollowedArtist } from "@/types/artist";
+import type { FollowedArtist } from "@/types/artist/model";
 
 type UserStore = {
   user: NeteaseUser | null;

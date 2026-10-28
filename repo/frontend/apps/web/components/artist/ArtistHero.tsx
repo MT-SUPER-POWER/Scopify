@@ -1,7 +1,7 @@
 import { BadgeCheck } from "lucide-react";
 import { formatNumber } from "@/lib/utils";
 import { useI18n } from "@/store/module/i18n";
-import type { ArtistInfo } from "@/types/artist";
+import type { ArtistInfo } from "@/types/artist/model";
 import { getSizedImageUrl } from "@/lib/music/imageUrl";
 
 interface Props {

@@ -7,7 +7,7 @@ import { memo, useCallback, useMemo, useState } from "react";
 import { FaRegCommentDots } from "react-icons/fa6";
 import { toast } from "sonner";
 
-import type { ArtistInfo } from "@/types/artist";
+import type { ArtistInfo } from "@/types/artist/model";
 
 import {
   ContextMenu,

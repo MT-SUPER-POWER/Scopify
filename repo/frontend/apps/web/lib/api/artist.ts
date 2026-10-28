@@ -5,7 +5,7 @@ import type {
   ArtistTopSongsResponse,
   FollowedArtistsResponse,
   HotArtistsResponse,
-} from "@/types/api/artist";
+} from "@/types/artist/api";
 import type { ArtistMvsResponse } from "@/types/api/mv";
 import request from "../web/request";
 

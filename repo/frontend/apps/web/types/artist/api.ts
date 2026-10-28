@@ -1,4 +1,4 @@
-import type { FollowedArtist } from "@/types/artist";
+import type { FollowedArtist } from "@/types/artist/model";
 import type { RawSongDetail } from "@/types/api/music";
 
 export interface ArtistDetailResponse {
