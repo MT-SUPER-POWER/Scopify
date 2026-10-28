@@ -43,7 +43,7 @@ import type {
   TaskbarLyricPreferencesUpdate,
 } from "@/types/taskbarLyric";
 import type { AppUpdateState } from "@/types/updater";
-import type { LyricData } from "@/types/lyrics";
+import type { LyricData } from "@/types/lyrics/model";
 import type { CachePreferences } from "@/types/cache";
 
 export type RuntimeUnsubscribe = () => void;

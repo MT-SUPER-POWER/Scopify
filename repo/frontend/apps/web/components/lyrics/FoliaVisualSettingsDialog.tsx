@@ -13,7 +13,7 @@ import { FoliaSettingsPreview } from "@/components/lyrics/FoliaSettingsPreview";
 import { FoliaStyleShelf } from "@/components/lyrics/FoliaStyleShelf";
 import { FoliaVisualSettingsPanel } from "@/components/lyrics/FoliaVisualSettingsPanel";
 import { useFoliaStageSettingsPanel } from "@/hooks/player/useFoliaStageSettingsPanel";
-import type { FoliaVisualSettingsDialogProps } from "@/types/components/lyrics";
+import type { FoliaVisualSettingsDialogProps } from "@/types/lyrics/components";
 
 /** Shared by the Stage and music-library entry points. */
 export function FoliaVisualSettingsDialog({

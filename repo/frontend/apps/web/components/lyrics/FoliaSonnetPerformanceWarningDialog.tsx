@@ -6,7 +6,7 @@ import { AlertTriangle } from "lucide-react";
 
 import { useFoliaModalFocus } from "@/hooks/lyrics/useFoliaModalFocus";
 import { useI18n } from "@/store/module/i18n";
-import type { FoliaSonnetPerformanceWarningDialogProps } from "@/types/components/lyrics";
+import type { FoliaSonnetPerformanceWarningDialogProps } from "@/types/lyrics/components";
 
 export function FoliaSonnetPerformanceWarningDialog({
   dontShowAgain,

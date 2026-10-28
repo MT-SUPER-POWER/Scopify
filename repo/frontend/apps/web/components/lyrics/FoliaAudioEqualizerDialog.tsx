@@ -5,7 +5,7 @@ import { FoliaStudioWindow } from "@scopify/ui/scopify/components/folia-studio/w
 import { AudioEqualizerPanel } from "@/components/player/AudioEqualizerPanel";
 import { useFoliaModalFocus } from "@/hooks/lyrics/useFoliaModalFocus";
 import { useI18n } from "@/store/module/i18n";
-import type { FoliaAudioEqualizerDialogProps } from "@/types/components/lyrics";
+import type { FoliaAudioEqualizerDialogProps } from "@/types/lyrics/components";
 
 export function FoliaAudioEqualizerDialog({
   isOpen,

@@ -4,7 +4,7 @@ import { Check, RotateCcw, Save } from "lucide-react";
 
 import { FoliaStudioHeader } from "@scopify/ui/scopify/components/folia-studio/header";
 import { useI18n } from "@/store/module/i18n";
-import type { FoliaThemeWorkbenchHeaderProps } from "@/types/components/lyrics";
+import type { FoliaThemeWorkbenchHeaderProps } from "@/types/lyrics/components";
 
 export function FoliaThemeWorkbenchHeader({
   activeThemeId,

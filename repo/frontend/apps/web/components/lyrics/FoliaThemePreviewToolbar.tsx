@@ -3,7 +3,7 @@
 import { Check, Pause, Play, RotateCcw } from "lucide-react";
 
 import { useI18n } from "@/store/module/i18n";
-import type { FoliaThemePreviewToolbarProps } from "@/types/components/lyrics";
+import type { FoliaThemePreviewToolbarProps } from "@/types/lyrics/components";
 
 export function FoliaThemePreviewToolbar({
   context,

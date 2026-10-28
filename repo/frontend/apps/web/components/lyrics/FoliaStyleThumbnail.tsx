@@ -8,7 +8,7 @@ import {
   FOLIA_SETTINGS_PREVIEW_CONTENT,
 } from "@/constants/lyricsPreview";
 import { useLyricStageStore } from "@/store/module/lyrics";
-import type { FoliaStyleThumbnailProps } from "@/types/foliaVisualSettings";
+import type { FoliaStyleThumbnailProps } from "@/types/lyrics/folia/visualSettings";
 
 /** Frozen, scaled stage: visible shelf tiles do not own a playback clock. */
 export function FoliaStyleThumbnail({ mode, theme, assets }: FoliaStyleThumbnailProps) {

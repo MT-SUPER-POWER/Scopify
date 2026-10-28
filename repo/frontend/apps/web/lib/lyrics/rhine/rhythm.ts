@@ -2,8 +2,8 @@
 import type {
   RhineAudioSample as MusicBands,
   RhineRhythmStyle as RhythmStyle,
-} from "@/types/rhineBackground";
-import type { RhythmFrame } from "@/types/rhineRuntime";
+} from "@/types/lyrics/rhine/background";
+import type { RhythmFrame } from "@/types/lyrics/rhine/runtime";
 const clamp = (value: number, low = 0, high = 1) => Math.min(high, Math.max(low, value));
 export function musicDisplacement(
   row: number,

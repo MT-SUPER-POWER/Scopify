@@ -5,7 +5,7 @@ import { FoliaPictureChecks } from "@scopify/ui/scopify/components/folia-panel/p
 import { FoliaPickerMoreButton } from "@scopify/ui/scopify/components/folia-panel/mode-stepper-row";
 import { drawPoolPicture } from "@/components/lyrics/FoliaPanelModePictures";
 import { useI18n } from "@/store/module/i18n";
-import type { FoliaRandomPoolPopoverProps } from "@/types/components/lyrics";
+import type { FoliaRandomPoolPopoverProps } from "@/types/lyrics/components";
 
 export function FoliaRandomPoolPopover({
   anchorRef,

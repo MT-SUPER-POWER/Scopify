@@ -2,7 +2,7 @@ import { FOLIA_LYRIC_COMMANDS } from "@/constants/foliaLyricCommands";
 import { buildPersonalFmCommands } from "@/lib/commandWorkspace/personalFmCommands";
 import { DESKTOP_FOLIA_VISUALIZER_OPTIONS } from "@/constants/desktopPlaybackController";
 import { FOLIA_VISUALIZER_DESCRIPTIONS } from "@/constants/foliaCommandDescriptions";
-import type { FoliaCommandEntry, FoliaCommandGroup } from "@/types/foliaCommands";
+import type { FoliaCommandEntry, FoliaCommandGroup } from "@/types/lyrics/folia/commands";
 import type { TranslateFn } from "@/types/i18n.generated";
 
 export function buildFoliaCommands(t: TranslateFn): FoliaCommandEntry[] {

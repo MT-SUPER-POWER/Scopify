@@ -6,7 +6,7 @@ import {
 } from "@scopify/ui/scopify/components/folia-studio/settings";
 import { useI18n } from "@/store/module/i18n";
 import { useLyricStageStore } from "@/store/module/lyrics";
-import type { FoliaHarmonySettingsCardProps } from "@/types/components/lyrics";
+import type { FoliaHarmonySettingsCardProps } from "@/types/lyrics/components";
 
 export function FoliaHarmonySettingsCard({ className }: FoliaHarmonySettingsCardProps) {
   const { t } = useI18n();

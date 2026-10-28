@@ -6,8 +6,8 @@ import type {
 } from "@scopify/desktop-contract";
 import type { MotionValue } from "framer-motion";
 
-import type { FoliaPlaybackBridge } from "@/types/foliaStage";
-import type { LyricData } from "@/types/lyrics";
+import type { FoliaPlaybackBridge } from "@/types/lyrics/folia/stage";
+import type { LyricData } from "@/types/lyrics/model";
 import type { PlaybackPresentationTrack } from "@/types/playback/projection";
 
 export interface DesktopPlaybackControllerShortcutHandlerProps {

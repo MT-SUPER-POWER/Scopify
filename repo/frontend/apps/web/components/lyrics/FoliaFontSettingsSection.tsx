@@ -6,7 +6,7 @@ import {
   FoliaSettingsRow,
 } from "@scopify/ui/scopify/components/folia-studio/settings";
 import { FoliaThemeQuickPicker } from "@/components/lyrics/FoliaThemeQuickPicker";
-import type { FoliaVisualSettingsPanelProps } from "@/types/foliaVisualSettings";
+import type { FoliaVisualSettingsPanelProps } from "@/types/lyrics/folia/visualSettings";
 
 export function FoliaFontSettingsSection({
   model: m,

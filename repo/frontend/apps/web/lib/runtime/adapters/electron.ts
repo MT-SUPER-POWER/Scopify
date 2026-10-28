@@ -1,6 +1,6 @@
 import type { DesktopBridge, DesktopHostConfig } from "@scopify/desktop-contract";
 
-import type { LyricData } from "@/types/lyrics";
+import type { LyricData } from "@/types/lyrics/model";
 
 import type { WebRuntime } from "../types";
 

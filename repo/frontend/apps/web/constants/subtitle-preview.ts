@@ -1,7 +1,7 @@
 import { DEFAULT_LYRICS_PREVIEW } from "./appearance";
 import { subtitlePalette } from "@/lib/settings/subtitlePalette";
-import type { BuiltinSubtitlePalette } from "@/types/subtitle-preview";
-import type { SubtitlePayload } from "@/types/subtitle-preview";
+import type { BuiltinSubtitlePalette } from "@/types/lyrics/subtitlePreview";
+import type { SubtitlePayload } from "@/types/lyrics/subtitlePreview";
 
 const basePalette = subtitlePalette(DEFAULT_LYRICS_PREVIEW);
 

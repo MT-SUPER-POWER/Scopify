@@ -5,7 +5,7 @@ import { createPortal } from "react-dom";
 
 import { FoliaQuickEffectPickerMenu } from "@/components/lyrics/FoliaQuickEffectPickerMenu";
 import { getFoliaQuickEffectPickerPosition } from "@/lib/lyrics/foliaQuickEffectPicker";
-import type { FoliaQuickEffectPickerProps } from "@/types/components/lyrics";
+import type { FoliaQuickEffectPickerProps } from "@/types/lyrics/components";
 
 /** Compact selector adapted from Folia's player-panel visual controls. */
 export function FoliaQuickEffectPicker<Value extends string>({

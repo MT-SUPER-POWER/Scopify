@@ -6,7 +6,7 @@ import type { Theme } from "@/components/lyrics/folia/src/types";
 import { useFoliaStageAssets } from "@/hooks/player/useFoliaStageAssets";
 import { getFoliaStageTheme, getFoliaThemeColors } from "@scopify/ui/folia";
 import { useLyricStageStore } from "@/store/module/lyrics";
-import type { FoliaPresentationAppearance } from "@/types/foliaStage";
+import type { FoliaPresentationAppearance } from "@/types/lyrics/folia/stage";
 
 export function useFoliaPresentationAppearance(): FoliaPresentationAppearance {
   const assets = useFoliaStageAssets();

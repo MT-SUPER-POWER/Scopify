@@ -11,7 +11,7 @@ import { FoliaGlobalLyricOffsetDialog } from "@/components/lyrics/FoliaGlobalLyr
 import { FoliaVideoExportDialog } from "@/components/lyrics/FoliaVideoExportDialog";
 import { useI18n } from "@/store/module/i18n";
 import { useLyricStageStore } from "@/store/module/lyrics";
-import type { FoliaGlobalSettingsCardProps } from "@/types/components/lyrics";
+import type { FoliaGlobalSettingsCardProps } from "@/types/lyrics/components";
 
 export function FoliaGlobalSettingsCard({ theme }: FoliaGlobalSettingsCardProps) {
   const { t } = useI18n();

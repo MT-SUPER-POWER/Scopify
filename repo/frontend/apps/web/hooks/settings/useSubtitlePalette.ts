@@ -5,7 +5,7 @@ import { isSubtitleThemeActive, subtitleThemePatch } from "@/lib/settings/subtit
 import { useAppearanceStore } from "@/store/module/appearance";
 import { useSubtitleThemeStore } from "@/store/module/subtitleThemes";
 import { useI18n } from "@/store/module/i18n";
-import type { SavedSubtitleTheme } from "@/types/subtitle-preview";
+import type { SavedSubtitleTheme } from "@/types/lyrics/subtitlePreview";
 
 export function useSubtitlePalette() {
   const { t } = useI18n();

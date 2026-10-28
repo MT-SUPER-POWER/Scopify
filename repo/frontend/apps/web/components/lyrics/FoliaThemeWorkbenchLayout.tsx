@@ -8,7 +8,7 @@ import { useMediaQuery } from "@/lib/hooks/useMediaQuery";
 import type {
   FoliaThemeLibraryPanelHandle,
   FoliaThemeWorkbenchLayoutProps,
-} from "@/types/components/lyrics";
+} from "@/types/lyrics/components";
 import {
   ResizableHandle,
   ResizablePanel,

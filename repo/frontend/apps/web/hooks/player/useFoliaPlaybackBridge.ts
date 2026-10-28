@@ -4,8 +4,8 @@ import { useMotionValue } from "framer-motion";
 import { useEffect, useMemo, useRef, useState } from "react";
 
 import type { AudioBands } from "@/components/lyrics/folia/src/types";
-import type { LyricAudioBands, LyricChorusRange, LyricData } from "@/types/lyrics";
-import type { FoliaPlaybackBridge } from "@/types/foliaStage";
+import type { LyricAudioBands, LyricChorusRange, LyricData } from "@/types/lyrics/model";
+import type { FoliaPlaybackBridge } from "@/types/lyrics/folia/stage";
 
 import { useSongChorus } from "@/hooks/lyrics/useSongChorus";
 import {

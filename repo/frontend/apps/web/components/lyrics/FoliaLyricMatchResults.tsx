@@ -4,7 +4,7 @@ import { Check, LoaderCircle, Music2 } from "lucide-react";
 
 import { getLyricMatchScore } from "@/lib/lyrics/match";
 import { useI18n } from "@/store/module/i18n";
-import type { FoliaLyricMatchResultsProps } from "@/types/components/lyrics";
+import type { FoliaLyricMatchResultsProps } from "@/types/lyrics/components";
 
 export function FoliaLyricMatchResults({
   candidates,

@@ -5,7 +5,7 @@ import { SETTINGS_ACTION_BUTTON_CLASS_NAME } from "@/constants/settings";
 import { subtitleThemeEditorHref } from "@/lib/settings/subtitleTheme";
 import { useSubtitleThemeEditor } from "@/hooks/settings/useSubtitleThemeEditor";
 import { useI18n } from "@/store/module/i18n";
-import type { SubtitleThemeEditorProps } from "@/types/subtitle-preview";
+import type { SubtitleThemeEditorProps } from "@/types/lyrics/subtitlePreview";
 import { ThemeEditorBoundary } from "./ThemeEditorBoundary";
 import { ThemeEditorFrame } from "./ThemeEditorFrame";
 import { ThemeNameField } from "./ThemeNameField";

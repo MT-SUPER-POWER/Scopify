@@ -1,5 +1,5 @@
 import type { SongChorusResponse } from "@/types/song/api";
-import type { LyricChorusRange, LyricDisplayLine } from "@/types/lyrics";
+import type { LyricChorusRange, LyricDisplayLine } from "@/types/lyrics/model";
 
 const INTERLUDE_FULL_TEXT = "......";
 

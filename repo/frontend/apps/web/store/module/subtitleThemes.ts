@@ -5,7 +5,7 @@ import { createJSONStorage, persist } from "zustand/middleware";
 import { DEFAULT_LYRICS_PREVIEW } from "@/constants/appearance";
 import { subtitlePalette } from "@/lib/settings/subtitlePalette";
 import { isThemeNameValid } from "@/lib/settings/themeNames";
-import type { SubtitleThemeStore } from "@/types/subtitle-preview";
+import type { SubtitleThemeStore } from "@/types/lyrics/subtitlePreview";
 
 export const useSubtitleThemeStore = create<SubtitleThemeStore>()(
   persist(

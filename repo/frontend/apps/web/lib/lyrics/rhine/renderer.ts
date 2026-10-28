@@ -6,7 +6,7 @@ import { OutputPass } from "three/addons/postprocessing/OutputPass.js";
 import type { ShaderPass } from "three/addons/postprocessing/ShaderPass.js";
 import { SMAAPass } from "three/addons/postprocessing/SMAAPass.js";
 import { RHINE_QUALITY } from "@/constants/rhineBackground";
-import type { RhineQuality } from "@/types/rhineBackground";
+import type { RhineQuality } from "@/types/lyrics/rhine/background";
 import { RhineAOPass } from "./ambientOcclusion";
 import { createAtmospherePass } from "./atmosphere";
 import { themeEnvironment } from "./themeMaterial";

@@ -13,7 +13,7 @@ import type {
   RhineBackgroundProps,
   RhineLoadState,
   RhineSceneInput,
-} from "@/types/rhineBackground";
+} from "@/types/lyrics/rhine/background";
 
 function sceneInput(props: RhineBackgroundProps): RhineSceneInput {
   const tuning = { ...DEFAULT_RHINE_BACKGROUND_TUNING, ...props.config?.rhine?.tuning };

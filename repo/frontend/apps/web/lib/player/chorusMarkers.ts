@@ -1,4 +1,4 @@
-import type { LyricChorusRange } from "@/types/lyrics";
+import type { LyricChorusRange } from "@/types/lyrics/model";
 
 export function getChorusProgressRanges(
   ranges: readonly LyricChorusRange[],

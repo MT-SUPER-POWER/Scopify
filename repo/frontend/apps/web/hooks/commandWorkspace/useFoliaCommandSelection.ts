@@ -2,7 +2,7 @@
 
 import { useShallow } from "zustand/react/shallow";
 import { useLyricStageStore } from "@/store/module/lyrics";
-import type { FoliaCommandEntry } from "@/types/foliaCommands";
+import type { FoliaCommandEntry } from "@/types/lyrics/folia/commands";
 
 export function useFoliaCommandSelection(entries: FoliaCommandEntry[]) {
   return useLyricStageStore(

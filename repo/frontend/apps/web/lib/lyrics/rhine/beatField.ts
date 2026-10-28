@@ -1,6 +1,6 @@
 import { RHINE_SPECTRUM_COLUMNS, RhineBeatDetector } from "./beat";
 import { smooth } from "./motion";
-import type { RhineBeatFrame, RhineFieldPulse, RhineThemeCell } from "@/types/rhineRuntime";
+import type { RhineBeatFrame, RhineFieldPulse, RhineThemeCell } from "@/types/lyrics/rhine/runtime";
 
 const KICK_LIFE = 1.6;
 const LIFT_LIFE = 1.5;

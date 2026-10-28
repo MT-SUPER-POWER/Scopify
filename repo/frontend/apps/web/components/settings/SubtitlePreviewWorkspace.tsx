@@ -1,7 +1,7 @@
 "use client";
 
 import { useSubtitlePreview } from "@/hooks/settings/useSubtitlePreview";
-import type { SubtitlePreviewWorkspaceProps } from "@/types/subtitle-preview";
+import type { SubtitlePreviewWorkspaceProps } from "@/types/lyrics/subtitlePreview";
 import { useI18n } from "@/store/module/i18n";
 import { LyricsStylePreview } from "./LyricsStylePreview";
 import { SettingSection } from "./SettingsUI";

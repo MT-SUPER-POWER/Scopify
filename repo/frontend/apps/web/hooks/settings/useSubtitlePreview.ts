@@ -5,7 +5,7 @@ import { SUBTITLE_PREVIEW_SCENES } from "@/constants/subtitle-preview";
 import { isChineseSubtitleText } from "@/lib/lyrics/subtitleLanguage";
 import { subtitlePlaybackPosition } from "@/lib/settings/subtitlePlayback";
 import type { LyricsPreviewSettings } from "@/types/appearance";
-import type { SubtitlePlayback, SubtitlePreviewScene } from "@/types/subtitle-preview";
+import type { SubtitlePlayback, SubtitlePreviewScene } from "@/types/lyrics/subtitlePreview";
 
 export function useSubtitlePreview(settings: LyricsPreviewSettings, palettePreview = false) {
   const [sceneLayout, setSceneLayout] = useState<Partial<LyricsPreviewSettings>>(

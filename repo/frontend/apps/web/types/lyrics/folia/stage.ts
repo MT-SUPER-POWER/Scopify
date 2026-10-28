@@ -12,15 +12,15 @@ import type {
   VisualizerBackgroundMode,
 } from "@/components/lyrics/folia/src/types";
 import type { MotionValue } from "framer-motion";
-import type { RhineBackgroundTuning } from "@/types/rhineBackground";
+import type { RhineBackgroundTuning } from "@/types/lyrics/rhine/background";
 import type { VisualizerBackgroundConfig } from "@/components/lyrics/folia/src/components/visualizer/backgrounds/definition";
 import type {
   VisualizerTuningBundle,
   VisualizerTuningMap,
   VisualizerTuningMode,
 } from "@/components/lyrics/folia/src/components/visualizer/tuningRegistry";
-import type { LyricVisualizerMode } from "@/types/lyrics";
-import type { FoliaStageAssets } from "@/types/foliaAssets";
+import type { LyricVisualizerMode } from "@/types/lyrics/model";
+import type { FoliaStageAssets } from "@/types/lyrics/folia/assets";
 import type { PlaybackPresentationTrack } from "@/types/playback/projection";
 import type { DesktopPlaybackWallpaperLayers } from "@scopify/desktop-contract";
 import type { FoliaStageTheme, FoliaThemeVariant } from "@scopify/ui/folia";

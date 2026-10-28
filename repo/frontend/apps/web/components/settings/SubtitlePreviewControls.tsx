@@ -5,7 +5,7 @@ import { Textarea } from "@scopify/ui/shadcn/components/textarea";
 import { useId } from "react";
 import { SUBTITLE_PREVIEW_SCENES } from "@/constants/subtitle-preview";
 import { useI18n } from "@/store/module/i18n";
-import type { SubtitlePreviewControlsProps } from "@/types/subtitle-preview";
+import type { SubtitlePreviewControlsProps } from "@/types/lyrics/subtitlePreview";
 
 export function SubtitlePreviewControls(props: SubtitlePreviewControlsProps) {
   const { t } = useI18n();

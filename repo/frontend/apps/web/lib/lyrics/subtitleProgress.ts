@@ -1,4 +1,4 @@
-import type { LyricDisplayLine } from "@/types/lyrics";
+import type { LyricDisplayLine } from "@/types/lyrics/model";
 
 const graphemes = (text: string) =>
   Array.from(

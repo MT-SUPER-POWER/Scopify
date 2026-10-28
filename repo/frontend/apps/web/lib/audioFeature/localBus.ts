@@ -1,4 +1,4 @@
-import type { LyricAudioBands } from "@/types/lyrics";
+import type { LyricAudioBands } from "@/types/lyrics/model";
 
 const frameListeners = new Set<(bands: LyricAudioBands) => void>();
 const demandListeners = new Set<(active: boolean) => void>();

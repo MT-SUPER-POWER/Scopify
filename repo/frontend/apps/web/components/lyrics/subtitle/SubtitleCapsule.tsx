@@ -8,7 +8,7 @@ import { SubtitleFillText } from "./SubtitleFillText";
 import { CompanionSubtitleFillText } from "@/components/lyrics/companion/CompanionSubtitleFillText";
 import { LYRICS_PREVIEW_FONTS } from "@/constants/appearance";
 import { useSubtitleEntrance } from "@/hooks/settings/useSubtitleEntrance";
-import type { SubtitleCapsuleProps } from "@/types/subtitle-preview";
+import type { SubtitleCapsuleProps } from "@/types/lyrics/subtitlePreview";
 import styles from "./subtitle-capsule.module.css";
 
 // Adapted from subtitle-app's SubtitleOverlay.vue. No store or host IPC dependency.

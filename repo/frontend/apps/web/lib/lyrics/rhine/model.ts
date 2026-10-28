@@ -6,7 +6,7 @@ import { CardAppearance } from "./appearance";
 import { configureInternalOptics } from "./internalOptics";
 import { themeMaterial } from "./themeMaterial";
 import { RhineSongPlate } from "./songPlate";
-import type { RhineArchiveTrack } from "@/types/rhineBackground";
+import type { RhineArchiveTrack } from "@/types/lyrics/rhine/background";
 
 const arraySurfaces = new Set([
   "Frosted_Polymer",

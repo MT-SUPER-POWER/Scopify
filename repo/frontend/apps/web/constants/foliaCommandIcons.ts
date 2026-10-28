@@ -24,7 +24,7 @@ import {
   PiShootingStar,
 } from "react-icons/pi";
 import type { IconType } from "react-icons";
-import type { LyricVisualizerMode } from "@/types/lyrics";
+import type { LyricVisualizerMode } from "@/types/lyrics/model";
 
 export const FOLIA_VISUALIZER_ICONS: Record<LyricVisualizerMode, IconType> = {
   archive: PiArchive,

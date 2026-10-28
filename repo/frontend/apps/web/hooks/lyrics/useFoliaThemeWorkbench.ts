@@ -4,7 +4,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { areFoliaThemesEqual } from "@/lib/lyrics/foliaThemeDraft";
 import { useLyricStageStore } from "@/store/module/lyrics";
-import type { FoliaThemePendingAction, FoliaThemeSaveState } from "@/types/components/lyrics";
+import type { FoliaThemePendingAction, FoliaThemeSaveState } from "@/types/lyrics/components";
 import { getFoliaStageTheme } from "@scopify/ui/folia";
 
 export function useFoliaThemeWorkbench(isOpen: boolean, onClose: () => void) {

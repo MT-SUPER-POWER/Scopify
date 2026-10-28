@@ -1,6 +1,6 @@
 import type { useFoliaStageSettingsPanel } from "@/hooks/player/useFoliaStageSettingsPanel";
-import type { FoliaStageAssets } from "@/types/foliaAssets";
-import type { FoliaStageEditSection } from "@/types/foliaStage";
+import type { FoliaStageAssets } from "@/types/lyrics/folia/assets";
+import type { FoliaStageEditSection } from "@/types/lyrics/folia/stage";
 import type { Theme } from "@scopify/ui/folia";
 
 export type FoliaVisualSettingsModel = ReturnType<typeof useFoliaStageSettingsPanel>;

@@ -7,7 +7,7 @@ import { FoliaThemeLibraryItem } from "@/components/lyrics/FoliaThemeLibraryItem
 import { createFoliaStageTheme } from "@scopify/ui/folia";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useLyricStageStore } from "@/store/module/lyrics";
-import type { FoliaThemeLibraryListProps } from "@/types/components/lyrics";
+import type { FoliaThemeLibraryListProps } from "@/types/lyrics/components";
 
 export function FoliaThemeLibraryList({
   activeThemeId,

@@ -10,7 +10,7 @@ import {
   DialogFooter,
 } from "@scopify/ui/shadcn/components/dialog";
 import { useI18n } from "@/store/module/i18n";
-import type { SubtitleThemeDeleteProps } from "@/types/subtitle-preview";
+import type { SubtitleThemeDeleteProps } from "@/types/lyrics/subtitlePreview";
 
 export function SubtitleThemeDeleteDialog({
   themes,

@@ -8,7 +8,7 @@ import { FoliaThemeIdentityControls } from "@/components/lyrics/FoliaThemeIdenti
 import { FoliaThemeJsonTransfer } from "@/components/lyrics/FoliaThemeJsonTransfer";
 import { useLyricStageStore } from "@/store/module/lyrics";
 import { useI18n } from "@/store/module/i18n";
-import type { FoliaThemeEditorPanelProps, FoliaThemeEditorTab } from "@/types/components/lyrics";
+import type { FoliaThemeEditorPanelProps, FoliaThemeEditorTab } from "@/types/lyrics/components";
 
 export function FoliaThemeEditorPanel({
   draftTheme,

@@ -7,7 +7,7 @@ import { useEffect, useRef } from "react";
 import { cn } from "@/lib/utils";
 import { isPersonalFmCommandSelected } from "@/lib/commandWorkspace/personalFmCommands";
 import { usePersonalFmStore } from "@/store/module/personalFm";
-import type { FoliaCommandListProps } from "@/types/foliaCommands";
+import type { FoliaCommandListProps } from "@/types/lyrics/folia/commands";
 
 export function FoliaCommandList({
   entries,

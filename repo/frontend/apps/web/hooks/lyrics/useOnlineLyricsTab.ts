@@ -24,7 +24,7 @@ import type {
   ImportedLyricOverride,
   LyricExportFormat,
   LyricSourceSelection,
-} from "@/types/lyrics";
+} from "@/types/lyrics/model";
 import type { NeteaseLyric } from "@/types/song/api";
 
 export function useOnlineLyricsTab() {

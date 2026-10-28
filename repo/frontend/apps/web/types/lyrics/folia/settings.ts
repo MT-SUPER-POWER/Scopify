@@ -1,4 +1,4 @@
-import type { FoliaStageEditSection } from "@/types/foliaStage";
+import type { FoliaStageEditSection } from "@/types/lyrics/folia/stage";
 
 export interface FoliaSettingsStore {
   stagePanelOpen: boolean;

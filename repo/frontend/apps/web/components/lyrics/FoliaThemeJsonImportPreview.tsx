@@ -4,8 +4,8 @@ import { AlertCircle, CheckCircle2 } from "lucide-react";
 import { useI18n } from "@/store/module/i18n";
 
 import { colorWithAlpha } from "@/components/lyrics/folia/src/components/visualizer/colorMix";
-import type { FoliaThemeColors } from "@/types/foliaStage";
-import type { FoliaThemeJsonImportPreviewProps } from "@/types/components/lyrics";
+import type { FoliaThemeColors } from "@/types/lyrics/folia/stage";
+import type { FoliaThemeJsonImportPreviewProps } from "@/types/lyrics/components";
 
 const COLOR_FIELDS = [
   ["backgroundColor", "folia.options.aiThemeQuickEditBackground"],

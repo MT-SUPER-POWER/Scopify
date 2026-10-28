@@ -8,7 +8,7 @@ import { useFoliaSettingsStore } from "@/store/module/foliaSettings";
 import { useLyricStageStore } from "@/store/module/lyrics";
 import { useUiStore } from "@/store/module/ui";
 import { useI18n } from "@/store/module/i18n";
-import type { FoliaCommandEntry, FoliaCommandGroup } from "@/types/foliaCommands";
+import type { FoliaCommandEntry, FoliaCommandGroup } from "@/types/lyrics/folia/commands";
 
 export function useFoliaCommands(group: FoliaCommandGroup | null, query: string) {
   const { t } = useI18n();

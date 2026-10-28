@@ -7,7 +7,7 @@ import {
 } from "@scopify/ui/scopify/components/folia-panel/controls";
 
 import { useFoliaThemeCarousel } from "@/hooks/lyrics/useFoliaThemeCarousel";
-import type { FoliaPanelThemeProps } from "@/types/components/lyrics";
+import type { FoliaPanelThemeProps } from "@/types/lyrics/components";
 import { FoliaThemeRecord } from "@/components/lyrics/FoliaThemeRecord";
 import { useI18n } from "@/store/module/i18n";
 import { useLyricStageStore } from "@/store/module/lyrics";

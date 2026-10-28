@@ -10,7 +10,7 @@ import {
 
 import { Switch } from "@scopify/ui/shadcn/components/switch";
 import { LYRICS_PREVIEW_FONTS } from "@/constants/appearance";
-import type { SubtitleSettingsEditorProps } from "@/types/subtitle-preview";
+import type { SubtitleSettingsEditorProps } from "@/types/lyrics/subtitlePreview";
 import { useI18n } from "@/store/module/i18n";
 import type { LyricsPreviewFont, LyricsPreviewSettings } from "@/types/appearance";
 import { AppearanceRange } from "./AppearanceRange";

@@ -1,6 +1,6 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useI18n } from "@/store/module/i18n";
-import type { SubtitleSettingsEditorProps } from "@/types/subtitle-preview";
+import type { SubtitleSettingsEditorProps } from "@/types/lyrics/subtitlePreview";
 import { SubtitleLayoutSettings } from "./SubtitleLayoutSettings";
 import { SubtitleEffectsSettings } from "./SubtitleEffectsSettings";
 import { SubtitleFillSettings } from "./SubtitleFillSettings";

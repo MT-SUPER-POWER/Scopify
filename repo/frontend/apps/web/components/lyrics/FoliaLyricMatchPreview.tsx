@@ -3,7 +3,7 @@
 import { LoaderCircle, Music2 } from "lucide-react";
 
 import { useI18n } from "@/store/module/i18n";
-import type { FoliaLyricMatchPreviewProps } from "@/types/components/lyrics";
+import type { FoliaLyricMatchPreviewProps } from "@/types/lyrics/components";
 
 export function FoliaLyricMatchPreview({
   candidate,

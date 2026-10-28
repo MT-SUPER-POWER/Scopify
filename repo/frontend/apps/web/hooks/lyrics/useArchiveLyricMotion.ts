@@ -2,7 +2,7 @@
 
 import { useLayoutEffect, useRef } from "react";
 import { useAnimationFrame, useMotionValue, useReducedMotion, useTransform } from "framer-motion";
-import type { ArchiveLyricMotionOptions } from "@/types/archiveLyrics";
+import type { ArchiveLyricMotionOptions } from "@/types/lyrics/archive";
 
 export function useArchiveLyricMotion({ identity, paused, staticMode }: ArchiveLyricMotionOptions) {
   const reducedMotion = useReducedMotion();

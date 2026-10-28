@@ -9,7 +9,7 @@ import type {
   StoredMonetPortraitImage,
   TemperaLayerImage,
 } from "@/components/lyrics/folia/src/types";
-import type { FoliaStoredAssets, StoredUploadedFoliaFont } from "@/types/foliaAssets";
+import type { FoliaStoredAssets, StoredUploadedFoliaFont } from "@/types/lyrics/folia/assets";
 
 const assetStore = createStore("scopify-folia-stage", "assets");
 const ASSET_KEYS = {

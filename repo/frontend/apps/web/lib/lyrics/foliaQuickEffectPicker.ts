@@ -1,4 +1,4 @@
-import type { FoliaQuickEffectPickerPosition } from "@/types/foliaStage";
+import type { FoliaQuickEffectPickerPosition } from "@/types/lyrics/folia/stage";
 
 const MENU_MAX_HEIGHT = 180;
 const MENU_WIDTH = 116;

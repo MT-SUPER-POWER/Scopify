@@ -21,7 +21,11 @@ import {
 import { adaptNeteaseLyric } from "@/lib/lyrics/neteaseLyricAdapter";
 import { usePlayerStore } from "@/store/module/player";
 import { useI18n } from "@/store/module/i18n";
-import type { LyricDisplayLine, LyricMatchCandidate, LyricMatchOverride } from "@/types/lyrics";
+import type {
+  LyricDisplayLine,
+  LyricMatchCandidate,
+  LyricMatchOverride,
+} from "@/types/lyrics/model";
 
 export function useLyricMatch(isOpen: boolean) {
   const { t } = useI18n();

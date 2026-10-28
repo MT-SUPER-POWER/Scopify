@@ -4,7 +4,7 @@ import { Moon, Sun, Trash2 } from "lucide-react";
 
 import { useLyricStageStore } from "@/store/module/lyrics";
 import { useI18n } from "@/store/module/i18n";
-import type { FoliaThemeIdentityControlsProps } from "@/types/components/lyrics";
+import type { FoliaThemeIdentityControlsProps } from "@/types/lyrics/components";
 
 export function FoliaThemeIdentityControls({
   draftTheme,

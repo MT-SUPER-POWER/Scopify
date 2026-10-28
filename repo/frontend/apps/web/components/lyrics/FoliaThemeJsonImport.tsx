@@ -5,7 +5,7 @@ import { useI18n } from "@/store/module/i18n";
 
 import { colorWithAlpha } from "@/components/lyrics/folia/src/components/visualizer/colorMix";
 import { FoliaThemeJsonImportPreview } from "@/components/lyrics/FoliaThemeJsonImportPreview";
-import type { FoliaThemeJsonImportProps } from "@/types/components/lyrics";
+import type { FoliaThemeJsonImportProps } from "@/types/lyrics/components";
 
 export function FoliaThemeJsonImport({
   colors,

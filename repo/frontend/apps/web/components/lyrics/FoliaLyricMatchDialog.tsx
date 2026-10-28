@@ -8,7 +8,7 @@ import { FoliaLyricMatchPreview } from "@/components/lyrics/FoliaLyricMatchPrevi
 import { FoliaLyricMatchSearch } from "@/components/lyrics/FoliaLyricMatchSearch";
 import { useLyricMatch } from "@/hooks/lyrics/useLyricMatch";
 import { useI18n } from "@/store/module/i18n";
-import type { FoliaLyricMatchDialogProps } from "@/types/components/lyrics";
+import type { FoliaLyricMatchDialogProps } from "@/types/lyrics/components";
 
 export function FoliaLyricMatchDialog({ isOpen, onClose, theme }: FoliaLyricMatchDialogProps) {
   const { t } = useI18n();

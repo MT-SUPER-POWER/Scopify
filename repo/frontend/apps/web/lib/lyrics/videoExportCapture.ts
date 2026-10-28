@@ -1,4 +1,4 @@
-import type { VideoExportCropGeometry, VideoExportPreset } from "@/types/videoExport";
+import type { VideoExportCropGeometry, VideoExportPreset } from "@/types/lyrics/videoExport";
 
 const EXPORT_FRAME_RATE = 60;
 

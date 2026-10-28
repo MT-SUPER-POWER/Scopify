@@ -1,4 +1,4 @@
-import type { SubtitlePlayback } from "./subtitle-preview";
+import type { SubtitlePlayback } from "@/types/lyrics/subtitlePreview";
 import type { Line as FoliaLine } from "@/components/lyrics/folia/src/types";
 
 export type {

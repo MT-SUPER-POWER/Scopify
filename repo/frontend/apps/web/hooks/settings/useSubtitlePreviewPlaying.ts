@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { subtitlePlaybackPosition } from "@/lib/settings/subtitlePlayback";
-import type { SubtitlePlayback } from "@/types/subtitle-preview";
+import type { SubtitlePlayback } from "@/types/lyrics/subtitlePreview";
 
 export function useSubtitlePreviewPlaying(
   playback: SubtitlePlayback,

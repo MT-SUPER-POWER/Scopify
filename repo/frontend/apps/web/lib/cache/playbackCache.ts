@@ -10,7 +10,7 @@ import type {
   ImportedLyricOverride,
   LyricMatchOverride,
   LyricSourceSelection,
-} from "@/types/lyrics";
+} from "@/types/lyrics/model";
 import type { MusicQuality } from "@/types/player/model";
 import type { ImmerseType, NeteaseLyric } from "@/types/song/api";
 

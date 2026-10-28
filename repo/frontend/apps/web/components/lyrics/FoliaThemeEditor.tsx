@@ -7,7 +7,7 @@ import { FoliaThemeEditorPanel } from "@/components/lyrics/FoliaThemeEditorPanel
 import type { Theme } from "@/components/lyrics/folia/src/types";
 import { useMediaQuery } from "@/lib/hooks/useMediaQuery";
 import { useLyricStageStore } from "@/store/module/lyrics";
-import type { FoliaThemeEditorProps } from "@/types/components/lyrics";
+import type { FoliaThemeEditorProps } from "@/types/lyrics/components";
 import { getFoliaThemeColors } from "@scopify/ui/folia";
 import {
   ResizableHandle,

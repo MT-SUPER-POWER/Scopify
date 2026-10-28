@@ -6,8 +6,8 @@ import { FoliaSubtitleSettingsSection } from "@/components/lyrics/FoliaSubtitleS
 import { FoliaBackgroundSettingsSection } from "@/components/lyrics/FoliaBackgroundSettingsSection";
 import { FoliaVisualizerSettingsSection } from "@/components/lyrics/FoliaVisualizerSettingsSection";
 import { FoliaGlobalSettingsCard } from "@/components/lyrics/FoliaGlobalSettingsCard";
-import type { FoliaStageEditSection } from "@/types/foliaStage";
-import type { FoliaVisualSettingsPanelProps } from "@/types/foliaVisualSettings";
+import type { FoliaStageEditSection } from "@/types/lyrics/folia/stage";
+import type { FoliaVisualSettingsPanelProps } from "@/types/lyrics/folia/visualSettings";
 import {
   DEFAULT_VISUALIZER_BACKGROUND_MODE,
   getVisualizerBackgroundRegistryEntry,

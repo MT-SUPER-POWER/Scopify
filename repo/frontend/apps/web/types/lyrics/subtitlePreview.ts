@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import type { Line as FoliaLine } from "@/components/lyrics/folia/src/types";
-import type { LyricsPreviewSettings } from "./appearance";
+import type { LyricsPreviewSettings } from "@/types/appearance";
 
 export interface SubtitleSettingsEditorProps {
   settings: LyricsPreviewSettings;

@@ -1,6 +1,6 @@
 "use client";
 
-import type { FoliaVisualSettingsSectionProps } from "@/types/foliaVisualSettings";
+import type { FoliaVisualSettingsSectionProps } from "@/types/lyrics/folia/visualSettings";
 import { FoliaPartitaSettingsSection } from "@/components/lyrics/FoliaPartitaSettingsSection";
 import { FoliaRandomSettingsSection } from "@/components/lyrics/FoliaRandomSettingsSection";
 import { useLyricStageStore } from "@/store/module/lyrics";

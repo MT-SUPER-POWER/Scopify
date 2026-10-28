@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import { RHINE_GLOW } from "@/constants/rhineBackground";
-import type { RhineGlowUniforms } from "@/types/rhineRuntime";
+import type { RhineGlowUniforms } from "@/types/lyrics/rhine/runtime";
 
 export function createGlowUniforms(): RhineGlowUniforms {
   return {

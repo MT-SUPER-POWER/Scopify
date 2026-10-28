@@ -1,6 +1,6 @@
 import type { AudioFeatureFrameV1 } from "@scopify/desktop-contract";
 
-import type { LyricAudioBands } from "@/types/lyrics";
+import type { LyricAudioBands } from "@/types/lyrics/model";
 
 export interface AudioFeatureStreamIdentity {
   authorityId: string;

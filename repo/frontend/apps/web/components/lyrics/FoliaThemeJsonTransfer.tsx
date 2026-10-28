@@ -11,7 +11,7 @@ import type {
   FoliaThemeImportMode,
   FoliaThemeJsonTransferProps,
   FoliaThemeJsonValidation,
-} from "@/types/components/lyrics";
+} from "@/types/lyrics/components";
 
 export function FoliaThemeJsonTransfer({ onSelectTheme, theme }: FoliaThemeJsonTransferProps) {
   const { t } = useI18n();

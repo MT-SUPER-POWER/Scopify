@@ -30,7 +30,7 @@ import { usePlaybackProjection } from "@/hooks/player/usePlaybackProjection";
 import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
 import { runtime } from "@/lib/runtime";
 import { useI18n } from "@/store/module/i18n";
-import type { LyricData } from "@/types/lyrics";
+import type { LyricData } from "@/types/lyrics/model";
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ UI ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 

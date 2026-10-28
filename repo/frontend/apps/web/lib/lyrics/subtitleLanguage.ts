@@ -1,4 +1,4 @@
-import type { LyricDisplayLine } from "@/types/lyrics";
+import type { LyricDisplayLine } from "@/types/lyrics/model";
 
 const HAN = /\p{Script=Han}/u;
 const JAPANESE = /[\p{Script=Hiragana}\p{Script=Katakana}]/u;

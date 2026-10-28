@@ -6,7 +6,7 @@ import { getLyric } from "@/lib/api/music";
 import { buildLyricExport, downloadLyricExport } from "@/lib/lyrics/export";
 import { useI18n } from "@/store/module/i18n";
 import type { SongDetail } from "@/types/song/api";
-import type { LyricExportFormat } from "@/types/lyrics";
+import type { LyricExportFormat } from "@/types/lyrics/model";
 
 export function useSearchLyricExport(song: SongDetail) {
   const { t } = useI18n();

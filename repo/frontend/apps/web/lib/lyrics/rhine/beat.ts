@@ -1,4 +1,4 @@
-import type { RhineBeatFrame } from "@/types/rhineRuntime";
+import type { RhineBeatFrame } from "@/types/lyrics/rhine/runtime";
 
 // The shared analyser publishes byte decibel magnitudes from 0 Hz to Nyquist.
 // 48 kHz is the usual output rate; at 44.1 kHz every band sits 8% lower.

@@ -30,7 +30,7 @@ import type {
   PlaybackAuthorityProviderProps,
   PlaybackAuthoritySessionIdentity,
 } from "@/types/playback/authority";
-import type { LyricData } from "@/types/lyrics";
+import type { LyricData } from "@/types/lyrics/model";
 import type { PlaybackProjectionSource } from "@/types/playback/projection";
 
 const DEFAULT_AUTHORITY_CONNECTION_ID = "main-renderer-playback-authority";

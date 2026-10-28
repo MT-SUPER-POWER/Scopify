@@ -1,4 +1,4 @@
-import type { FoliaStageTheme } from "@/types/foliaStage";
+import type { FoliaStageTheme } from "@/types/lyrics/folia/stage";
 
 export const areFoliaThemesEqual = (left: FoliaStageTheme, right: FoliaStageTheme) =>
   left.id === right.id &&

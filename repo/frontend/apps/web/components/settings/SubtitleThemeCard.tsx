@@ -1,4 +1,4 @@
-import type { SubtitleThemeCardProps } from "@/types/subtitle-preview";
+import type { SubtitleThemeCardProps } from "@/types/lyrics/subtitlePreview";
 import { ThemeAssetCard } from "./ThemeAssetCard";
 
 export function SubtitleThemeCard({

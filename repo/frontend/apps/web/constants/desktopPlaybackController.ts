@@ -1,5 +1,5 @@
 import type { VisualizerBackgroundMode } from "@/components/lyrics/folia/src/types";
-import type { LyricVisualizerMode } from "@/types/lyrics";
+import type { LyricVisualizerMode } from "@/types/lyrics/model";
 
 export const DESKTOP_PLAYBACK_CONTROLLER_THEME_EDITOR_PATH =
   "/?desktopPlaybackController=edit-folia-theme";

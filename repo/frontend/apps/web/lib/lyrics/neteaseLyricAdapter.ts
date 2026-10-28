@@ -6,7 +6,7 @@ import type {
   LyricMetadata,
   LyricTimedCredit,
   LyricWord,
-} from "@/types/lyrics";
+} from "@/types/lyrics/model";
 
 import { buildSyntheticTimedWords } from "./syntheticWordTiming";
 import { extractAwlrcContainer, parseAwlrcText } from "./awlrc";

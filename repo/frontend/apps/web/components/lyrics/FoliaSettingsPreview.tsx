@@ -10,7 +10,7 @@ import VisualizerRenderer from "@/components/lyrics/folia/src/components/visuali
 import { getVisualizerModeLabel } from "@/components/lyrics/folia/src/components/visualizer/registry";
 import { useFoliaSettingsPreview } from "@/hooks/lyrics/useFoliaSettingsPreview";
 import { useLyricStageStore } from "@/store/module/lyrics";
-import type { FoliaSettingsPreviewProps } from "@/types/components/lyrics";
+import type { FoliaSettingsPreviewProps } from "@/types/lyrics/components";
 import { cn } from "@/lib/utils";
 
 export function FoliaSettingsPreview({

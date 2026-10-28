@@ -62,7 +62,7 @@ export function themeMaterial(
   return amount;
 }
 
-import type { Baseline } from "@/types/rhineRuntime";
+import type { Baseline } from "@/types/lyrics/rhine/runtime";
 const scenes = new WeakMap<THREE.Scene, Baseline>();
 const background = new THREE.Color("#11181b"),
   floorColor = new THREE.Color("#192125"),

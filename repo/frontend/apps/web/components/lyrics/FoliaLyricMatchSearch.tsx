@@ -4,7 +4,7 @@ import { LoaderCircle, Search } from "lucide-react";
 
 import { FoliaLyricMatchResults } from "@/components/lyrics/FoliaLyricMatchResults";
 import { useI18n } from "@/store/module/i18n";
-import type { FoliaLyricMatchSearchProps } from "@/types/components/lyrics";
+import type { FoliaLyricMatchSearchProps } from "@/types/lyrics/components";
 
 export function FoliaLyricMatchSearch({
   candidates,

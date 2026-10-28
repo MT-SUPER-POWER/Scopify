@@ -1,4 +1,4 @@
-import type { FoliaCommandEntry, FoliaCommandGroup } from "@/types/foliaCommands";
+import type { FoliaCommandEntry, FoliaCommandGroup } from "@/types/lyrics/folia/commands";
 import type { SongDetail } from "@/types/song/api";
 import type { Album, Artist, Category, Playlist, Podcast, Song, Voice } from "@/types/search/model";
 import type { DragEvent, KeyboardEvent, RefObject } from "react";

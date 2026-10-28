@@ -3,7 +3,7 @@ import type {
   LyricDisplayLine,
   LyricMetadata,
   LyricWord,
-} from "@/types/lyrics";
+} from "@/types/lyrics/model";
 
 const CONTAINER = /\[awlrc:(.+)\]/;
 const LINE = /^\[(\d{1,3}(?::\d{1,3}){0,2})\.(\d{1,3})\](.*)$/;

@@ -2,7 +2,7 @@
 
 import { FoliaThemeRecord } from "@/components/lyrics/FoliaThemeRecord";
 import { useI18n } from "@/store/module/i18n";
-import type { FoliaThemeLibraryItemProps } from "@/types/components/lyrics";
+import type { FoliaThemeLibraryItemProps } from "@/types/lyrics/components";
 
 export function FoliaThemeLibraryItem({
   activeThemeId,

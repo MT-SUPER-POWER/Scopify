@@ -12,7 +12,7 @@ import {
   resolveRandomVisualizerPool,
 } from "@/lib/lyrics/randomVisualizerPool";
 import { useLyricStageStore } from "@/store/module/lyrics";
-import type { FoliaPresentationSurfaceProps } from "@/types/foliaStage";
+import type { FoliaPresentationSurfaceProps } from "@/types/lyrics/folia/stage";
 
 export function FoliaPresentationSurface({
   appearance,

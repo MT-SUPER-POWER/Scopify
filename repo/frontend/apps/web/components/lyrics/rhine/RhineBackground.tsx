@@ -3,7 +3,7 @@
 import { DEFAULT_RHINE_BACKGROUND_TUNING } from "@/constants/rhineBackground";
 import { useRhineBackground } from "@/hooks/lyrics/useRhineBackground";
 import { useI18n } from "@/store/module/i18n";
-import type { RhineBackgroundProps } from "@/types/rhineBackground";
+import type { RhineBackgroundProps } from "@/types/lyrics/rhine/background";
 import styles from "./RhineBackground.module.css";
 
 export default function RhineBackground(props: RhineBackgroundProps) {

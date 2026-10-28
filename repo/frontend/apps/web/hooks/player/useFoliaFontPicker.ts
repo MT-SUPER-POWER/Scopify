@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { useLyricStageStore } from "@/store/module/lyrics";
-import type { FoliaLocalFontData, FoliaStageAssets } from "@/types/foliaAssets";
+import type { FoliaLocalFontData, FoliaStageAssets } from "@/types/lyrics/folia/assets";
 
 export function useFoliaFontPicker(
   target: "lyrics" | "subtitle",

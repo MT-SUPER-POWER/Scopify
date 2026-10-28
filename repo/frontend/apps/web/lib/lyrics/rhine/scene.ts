@@ -7,8 +7,8 @@ import {
   RHINE_ROWS,
   RHINE_SHOWCASE_TIMING,
 } from "@/constants/rhineBackground";
-import type { RhineAudioSample, RhineSceneInput } from "@/types/rhineBackground";
-import type { RhineCell, RhineFieldPulse, RhineShowcaseCard } from "@/types/rhineRuntime";
+import type { RhineAudioSample, RhineSceneInput } from "@/types/lyrics/rhine/background";
+import type { RhineCell, RhineFieldPulse, RhineShowcaseCard } from "@/types/lyrics/rhine/runtime";
 import { RhineBeatField } from "./beatField";
 import { InstanceUpdates } from "./instanceUpdates";
 import { RhineModel } from "./model";

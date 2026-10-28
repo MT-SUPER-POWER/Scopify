@@ -1,6 +1,6 @@
 import type { SongSearchResource } from "@/types/search/api";
 import type { NeteaseLyric, SongDetail } from "@/types/song/api";
-import type { LyricMatchCandidate } from "@/types/lyrics";
+import type { LyricMatchCandidate } from "@/types/lyrics/model";
 
 export function buildLyricMatchQuery(song: SongDetail): string {
   return [song.name, song.ar.map((artist) => artist.name).join(" ")].filter(Boolean).join(" ");

@@ -1,7 +1,7 @@
 "use client";
 
 import { colorWithAlpha } from "@/components/lyrics/folia/src/components/visualizer/colorMix";
-import type { FoliaSettingsSwitchProps } from "@/types/components/lyrics";
+import type { FoliaSettingsSwitchProps } from "@/types/lyrics/components";
 
 /** Compact on/off switch for Folia settings rows, painted from the stage theme. */
 export function FoliaSettingsSwitch({ checked, label, onChange, theme }: FoliaSettingsSwitchProps) {

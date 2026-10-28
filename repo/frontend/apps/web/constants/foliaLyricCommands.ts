@@ -1,4 +1,4 @@
-import type { FoliaCommandEntry } from "@/types/foliaCommands";
+import type { FoliaCommandEntry } from "@/types/lyrics/folia/commands";
 
 export const FOLIA_LYRIC_COMMANDS: Omit<FoliaCommandEntry, "path">[] = [
   {

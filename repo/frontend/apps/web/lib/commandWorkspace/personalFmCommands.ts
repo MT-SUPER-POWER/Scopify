@@ -3,7 +3,7 @@ import {
   PERSONAL_FM_SCENES,
   PERSONAL_FM_SCENE_CATEGORY_LABELS,
 } from "@/constants/personalFm";
-import type { FoliaCommandEntry } from "@/types/foliaCommands";
+import type { FoliaCommandEntry } from "@/types/lyrics/folia/commands";
 import type {
   PersonalFmCommandAction,
   PersonalFmCommandEntry,

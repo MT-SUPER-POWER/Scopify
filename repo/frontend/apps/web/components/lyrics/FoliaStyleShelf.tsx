@@ -14,7 +14,7 @@ import {
 } from "@/components/lyrics/folia/src/components/visualizer/registry";
 import { useLyricStageStore } from "@/store/module/lyrics";
 import { useI18n } from "@/store/module/i18n";
-import type { FoliaStyleShelfProps } from "@/types/foliaVisualSettings";
+import type { FoliaStyleShelfProps } from "@/types/lyrics/folia/visualSettings";
 import { useMediaQuery } from "@/lib/hooks/useMediaQuery";
 
 export function FoliaStyleShelf({ assets, theme, onSectionChange }: FoliaStyleShelfProps) {

@@ -26,8 +26,8 @@ import { hasVisualizerTuningMode } from "@/components/lyrics/folia/src/component
 import type { VisualizerBackgroundActions } from "@/components/lyrics/folia/src/components/visualizer/backgrounds/definition";
 import { useLyricStageStore } from "@/store/module/lyrics";
 import { useI18n } from "@/store/module/i18n";
-import type { FoliaStageAssets } from "@/types/foliaAssets";
-import type { FoliaStageEditSection } from "@/types/foliaStage";
+import type { FoliaStageAssets } from "@/types/lyrics/folia/assets";
+import type { FoliaStageEditSection } from "@/types/lyrics/folia/stage";
 
 const FONT_SCALE_OPTIONS = [
   { label: "90%", value: 0.9 },

@@ -11,7 +11,7 @@ import { FoliaThemeWorkbenchHeader } from "@/components/lyrics/FoliaThemeWorkben
 import { FoliaThemeWorkbenchLayout } from "@/components/lyrics/FoliaThemeWorkbenchLayout";
 import { useFoliaThemeWorkbench } from "@/hooks/lyrics/useFoliaThemeWorkbench";
 import { useI18n } from "@/store/module/i18n";
-import type { FoliaThemeLibraryDialogProps } from "@/types/components/lyrics";
+import type { FoliaThemeLibraryDialogProps } from "@/types/lyrics/components";
 import { FoliaStudioWindow } from "@scopify/ui/scopify/components/folia-studio/window";
 
 export function FoliaThemeLibraryDialog({

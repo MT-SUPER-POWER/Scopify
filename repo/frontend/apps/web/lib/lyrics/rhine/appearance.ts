@@ -5,7 +5,7 @@ import { glassRevealGLSL, frostedTransmissionGLSL, FROSTED_ROUGHNESS } from "./g
 import { internalOpticsFragment } from "./internalOptics";
 import { themeMaterial } from "./themeMaterial";
 
-import type { Surface, Palette } from "@/types/rhineRuntime";
+import type { Surface, Palette } from "@/types/lyrics/rhine/runtime";
 
 // Rhine Music Database lights the extracted file's shell, not its fittings or artwork.
 const glowSurfaces = new Set(["Frosted_Polymer", "Ivory_Edges", "Optical_Diffuser"]);

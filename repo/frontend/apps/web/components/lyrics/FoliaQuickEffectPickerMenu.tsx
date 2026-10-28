@@ -3,7 +3,7 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { ChevronRight } from "lucide-react";
 
-import type { FoliaQuickEffectPickerMenuProps } from "@/types/components/lyrics";
+import type { FoliaQuickEffectPickerMenuProps } from "@/types/lyrics/components";
 
 export function FoliaQuickEffectPickerMenu<Value extends string>({
   ariaLabel,

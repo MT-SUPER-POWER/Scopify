@@ -1,4 +1,4 @@
-import type { LyricVisualizerMode } from "@/types/lyrics";
+import type { LyricVisualizerMode } from "@/types/lyrics/model";
 
 export const FOLIA_VISUALIZER_DESCRIPTIONS: Record<LyricVisualizerMode, string> = {
   archive: "档案与磁带风格的歌词排版",

@@ -6,7 +6,7 @@ import { buildAppStyle } from "@/components/lyrics/folia/src/components/app/pres
 import FloatingPlayerControls from "@/components/lyrics/folia/src/components/FloatingPlayerControls";
 import { PlayerState } from "@/components/lyrics/folia/src/types";
 import { useFoliaSettingsStore } from "@/store/module/foliaSettings";
-import type { LyricStageProps } from "@/types/components/lyrics";
+import type { LyricStageProps } from "@/types/lyrics/components";
 import { useFoliaPlaybackBridge } from "@/hooks/player/useFoliaPlaybackBridge";
 import { useFoliaPresentationAppearance } from "@/hooks/player/useFoliaPresentationAppearance";
 import { useFoliaStageControls } from "@/hooks/lyrics/useFoliaStageControls";

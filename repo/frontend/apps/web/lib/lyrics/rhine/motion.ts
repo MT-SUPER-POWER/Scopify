@@ -1,4 +1,4 @@
-import type { RhineAudioSample } from "@/types/rhineBackground";
+import type { RhineAudioSample } from "@/types/lyrics/rhine/background";
 
 export const smooth = (value: number) => {
   const t = Math.min(1, Math.max(0, value));

@@ -24,7 +24,7 @@ import { FoliaPanelTheme } from "@/components/lyrics/FoliaPanelTheme";
 import { useFoliaPanelControls } from "@/hooks/player/useFoliaPanelControls";
 import { useAudioEqualizerStore } from "@/store/module/audioEqualizer";
 import { useI18n } from "@/store/module/i18n";
-import type { FoliaPanelControlsProps } from "@/types/components/lyrics";
+import type { FoliaPanelControlsProps } from "@/types/lyrics/components";
 
 // The controls tab (Folia panelTab/ControlsTab.tsx): three groups — sound (volume and three
 // tiles), appearance (lyric style and background) and theme. Folia's middle tile is automix, which

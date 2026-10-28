@@ -8,7 +8,7 @@ import {
   SelectValue,
 } from "@scopify/ui/shadcn/components/select";
 
-import type { SubtitleSettingsEditorProps } from "@/types/subtitle-preview";
+import type { SubtitleSettingsEditorProps } from "@/types/lyrics/subtitlePreview";
 import { useI18n } from "@/store/module/i18n";
 import type { LyricsPreviewSettings } from "@/types/appearance";
 import { AppearanceRange } from "./AppearanceRange";

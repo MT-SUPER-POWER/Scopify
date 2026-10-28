@@ -9,7 +9,7 @@ import { systemPlaybackClock } from "@/lib/playbackProjection/clock";
 import { createElectronPlaybackReplicaTransport } from "@/lib/playbackProjection/electronTransport";
 import { createPlaybackReplica } from "@/lib/playbackProjection/replica";
 import { runtime } from "@/lib/runtime";
-import type { LyricData } from "@/types/lyrics";
+import type { LyricData } from "@/types/lyrics/model";
 import type { PlaybackProjectionSource } from "@/types/playback/projection";
 
 type SwappablePlaybackSource<TLyrics> = PlaybackProjectionSource<TLyrics> & {

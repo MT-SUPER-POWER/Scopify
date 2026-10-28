@@ -31,7 +31,7 @@ import {
   uploadAndRegisterFoliaFont,
 } from "@/lib/lyrics/foliaAssetStorage";
 import { useLyricStageStore } from "@/store/module/lyrics";
-import type { FoliaStageAssets, FoliaStageAssetMutationResult } from "@/types/foliaAssets";
+import type { FoliaStageAssets, FoliaStageAssetMutationResult } from "@/types/lyrics/folia/assets";
 
 export function useFoliaStageAssets(): FoliaStageAssets {
   const [cappellaCustomAvatarImages, setCappellaCustomAvatarImages] = useState<

@@ -2,7 +2,7 @@
 
 import { SubtitleCapsule } from "@/components/lyrics/subtitle/SubtitleCapsule";
 import { useI18n } from "@/store/module/i18n";
-import type { LyricsStylePreviewProps } from "@/types/subtitle-preview";
+import type { LyricsStylePreviewProps } from "@/types/lyrics/subtitlePreview";
 
 export function LyricsStylePreview({
   note,

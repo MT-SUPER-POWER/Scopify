@@ -2,7 +2,7 @@ import type {
   RhineBackgroundTuning,
   RhineQuality,
   RhineQualitySettings,
-} from "@/types/rhineBackground";
+} from "@/types/lyrics/rhine/background";
 
 export const DEFAULT_RHINE_BACKGROUND_TUNING: RhineBackgroundTuning = {
   colorMode: "auto",

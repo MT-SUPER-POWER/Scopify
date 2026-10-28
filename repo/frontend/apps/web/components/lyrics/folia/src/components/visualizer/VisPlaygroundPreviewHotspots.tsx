@@ -6,9 +6,9 @@ import { colorWithAlpha } from "./colorMix";
 import type {
   FoliaPreviewHotspot as HotspotConfig,
   FoliaPreviewHotspotsProps as VisPlaygroundPreviewHotspotsProps,
-} from "@/types/foliaVisualSettings";
-import type { FoliaStageEditSection as VisPlaygroundEditSection } from "@/types/foliaStage";
-export type { FoliaStageEditSection as VisPlaygroundEditSection } from "@/types/foliaStage";
+} from "@/types/lyrics/folia/visualSettings";
+import type { FoliaStageEditSection as VisPlaygroundEditSection } from "@/types/lyrics/folia/stage";
+export type { FoliaStageEditSection as VisPlaygroundEditSection } from "@/types/lyrics/folia/stage";
 
 const VisPlaygroundPreviewHotspots: React.FC<VisPlaygroundPreviewHotspotsProps> = ({
   activeSection,

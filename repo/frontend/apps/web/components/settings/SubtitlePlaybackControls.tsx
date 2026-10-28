@@ -18,7 +18,7 @@ import {
 import { MoreHorizontal, Pause, Play, RotateCcw } from "lucide-react";
 import { useSubtitlePreviewPlaying } from "@/hooks/settings/useSubtitlePreviewPlaying";
 import { useI18n } from "@/store/module/i18n";
-import type { SubtitlePlaybackControlsProps } from "@/types/subtitle-preview";
+import type { SubtitlePlaybackControlsProps } from "@/types/lyrics/subtitlePreview";
 
 export function SubtitlePlaybackControls({
   playback,

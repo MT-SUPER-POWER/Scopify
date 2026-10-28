@@ -15,7 +15,7 @@ import { FoliaPopover } from "@scopify/ui/scopify/components/folia-panel/popover
 import { useOnlineLyricsTab } from "@/hooks/lyrics/useOnlineLyricsTab";
 import { useI18n } from "@/store/module/i18n";
 import { usePlayerStore } from "@/store/module/player";
-import type { FoliaLyricsControlsProps } from "@/types/components/lyrics";
+import type { FoliaLyricsControlsProps } from "@/types/lyrics/components";
 import type { ReplayGainMode } from "@/types/player/model";
 
 // The lyrics tab (Folia panelTab/SourceTab.tsx, LyricTimelineOffsetControl.tsx, LyricFileButton.tsx,

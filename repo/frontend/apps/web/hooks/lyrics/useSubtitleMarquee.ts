@@ -3,7 +3,7 @@
 import { useEffect, useRef } from "react";
 import { computeMarqueeOffset } from "@/lib/lyrics/desktopLyricLayout";
 import { subtitlePlaybackPosition } from "@/lib/settings/subtitlePlayback";
-import type { SubtitlePlayback } from "@/types/subtitle-preview";
+import type { SubtitlePlayback } from "@/types/lyrics/subtitlePreview";
 
 /**
  * 单行字幕超出容器时，按本句播放进度把内容横向滚到末尾。

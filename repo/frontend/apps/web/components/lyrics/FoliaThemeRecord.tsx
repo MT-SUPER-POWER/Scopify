@@ -1,6 +1,6 @@
 import { Disc3 } from "lucide-react";
 
-import type { FoliaStageTheme } from "@/types/foliaStage";
+import type { FoliaStageTheme } from "@/types/lyrics/folia/stage";
 
 interface FoliaThemeRecordProps {
   size?: "compact" | "library";

@@ -2,7 +2,7 @@ import type {
   Line as FoliaLine,
   LyricData as FoliaLyricData,
 } from "@/components/lyrics/folia/src/types";
-import type { LyricChorusRange, LyricData } from "@/types/lyrics";
+import type { LyricChorusRange, LyricData } from "@/types/lyrics/model";
 
 import { detectRepeatedChorusTexts } from "./chorusRanges";
 import { isPureMusicLyricLines } from "./pureMusic";

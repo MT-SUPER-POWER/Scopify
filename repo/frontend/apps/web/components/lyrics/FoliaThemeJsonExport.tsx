@@ -4,7 +4,7 @@ import { Clipboard, Download } from "lucide-react";
 import { useI18n } from "@/store/module/i18n";
 
 import { colorWithAlpha } from "@/components/lyrics/folia/src/components/visualizer/colorMix";
-import type { FoliaThemeJsonExportProps } from "@/types/components/lyrics";
+import type { FoliaThemeJsonExportProps } from "@/types/lyrics/components";
 
 export function FoliaThemeJsonExport({
   colors,

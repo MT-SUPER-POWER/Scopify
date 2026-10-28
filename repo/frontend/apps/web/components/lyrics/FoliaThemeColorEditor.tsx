@@ -5,8 +5,8 @@ import { useState } from "react";
 import { onAccentColor } from "@scopify/ui/scopify/components/folia-panel/tokens";
 import { useI18n } from "@/store/module/i18n";
 
-import type { FoliaThemeColorEditorProps } from "@/types/components/lyrics";
-import type { FoliaThemeColors } from "@/types/foliaStage";
+import type { FoliaThemeColorEditorProps } from "@/types/lyrics/components";
+import type { FoliaThemeColors } from "@/types/lyrics/folia/stage";
 
 const COLOR_FIELDS = [
   ["backgroundColor", "folia.options.aiThemeQuickEditBackground"],

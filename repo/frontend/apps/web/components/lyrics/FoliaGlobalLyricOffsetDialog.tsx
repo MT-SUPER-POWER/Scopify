@@ -11,7 +11,7 @@ import { FoliaGlobalLyricOffsetRuler } from "@/components/lyrics/FoliaGlobalLyri
 import { useFoliaPlaybackBridge } from "@/hooks/player/useFoliaPlaybackBridge";
 import { useLyricStageStore } from "@/store/module/lyrics";
 import { useI18n } from "@/store/module/i18n";
-import type { FoliaGlobalLyricOffsetDialogProps } from "@/types/components/lyrics";
+import type { FoliaGlobalLyricOffsetDialogProps } from "@/types/lyrics/components";
 
 const LIMIT_MS = 2000;
 const STEPS = [50, 10, 1];

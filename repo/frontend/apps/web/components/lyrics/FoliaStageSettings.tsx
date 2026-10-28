@@ -40,8 +40,8 @@ import { useFoliaPanelControls } from "@/hooks/player/useFoliaPanelControls";
 import { useFoliaSettingsStore } from "@/store/module/foliaSettings";
 import { useI18n } from "@/store/module/i18n";
 import { usePlayerStore } from "@/store/module/player";
-import type { FoliaStageSettingsProps } from "@/types/components/lyrics";
-import type { FoliaPanelTab } from "@/types/foliaStage";
+import type { FoliaStageSettingsProps } from "@/types/lyrics/components";
+import type { FoliaPanelTab } from "@/types/lyrics/folia/stage";
 
 // The playback stage's panel (Folia components/UnifiedPanel.tsx): which tabs there are for the
 // playing song and what each one is given. How it looks lives in the shared Folia panel kit

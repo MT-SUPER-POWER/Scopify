@@ -1,5 +1,5 @@
 import type * as THREE from "three";
-import type { RhineRhythmStyle } from "@/types/rhineBackground";
+import type { RhineRhythmStyle } from "@/types/lyrics/rhine/background";
 
 export type Surface = THREE.MeshPhysicalMaterial;
 export interface Palette {

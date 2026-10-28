@@ -1,4 +1,4 @@
-import type { LyricWord } from "@/types/lyrics";
+import type { LyricWord } from "@/types/lyrics/model";
 
 const MINIMUM_LINE_DURATION_MS = 100;
 const MINIMUM_WORD_DURATION_MS = 50;

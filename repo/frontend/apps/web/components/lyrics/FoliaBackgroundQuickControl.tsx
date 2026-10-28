@@ -10,7 +10,7 @@ import {
 import type { VisualizerBackgroundActions } from "@/components/lyrics/folia/src/components/visualizer/backgrounds/definition";
 import { useLyricStageStore } from "@/store/module/lyrics";
 
-import type { FoliaBackgroundQuickControlProps } from "@/types/components/lyrics";
+import type { FoliaBackgroundQuickControlProps } from "@/types/lyrics/components";
 
 export function FoliaBackgroundQuickControl({
   assets,

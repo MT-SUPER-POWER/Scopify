@@ -23,8 +23,8 @@ import { useFoliaPanelControls } from "@/hooks/player/useFoliaPanelControls";
 import { useFoliaRandomPool } from "@/hooks/lyrics/useFoliaRandomPool";
 import { useI18n } from "@/store/module/i18n";
 import { useLyricStageStore } from "@/store/module/lyrics";
-import type { FoliaStageEditSection } from "@/types/foliaStage";
-import type { LyricVisualizerMode } from "@/types/lyrics";
+import type { FoliaStageEditSection } from "@/types/lyrics/folia/stage";
+import type { LyricVisualizerMode } from "@/types/lyrics/model";
 
 // The controls tab's appearance group (Folia panelTab/controls/AppearanceSection.tsx): the lyric
 // style and background rows. Each is "‹ glyph caption/mode⌄ ›"; the middle opens every mode as a
@@ -33,7 +33,7 @@ import type { LyricVisualizerMode } from "@/types/lyrics";
 // Folia draws live frozen previews in the pictures; until those exist here each picture shows the
 // mode's glyph, which is also what Folia shows before an image is ready.
 
-import type { FoliaPanelAppearanceProps } from "@/types/components/lyrics";
+import type { FoliaPanelAppearanceProps } from "@/types/lyrics/components";
 import { INTENSITY_VISUALIZER_MODES } from "@/constants/foliaPanel";
 import {
   drawStyleGlyph,

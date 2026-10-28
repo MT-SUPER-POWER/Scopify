@@ -5,7 +5,7 @@ import {
   FoliaSettingsRange,
   FoliaSettingsToggle,
 } from "@scopify/ui/scopify/components/folia-studio/settings";
-import type { FoliaVisualSettingsSectionProps } from "@/types/foliaVisualSettings";
+import type { FoliaVisualSettingsSectionProps } from "@/types/lyrics/folia/visualSettings";
 
 /** The cloud-step group shown in Folia's lyric-style studio. Keep the two stagger bounds ordered. */
 export function FoliaPartitaSettingsSection({ model: m }: FoliaVisualSettingsSectionProps) {

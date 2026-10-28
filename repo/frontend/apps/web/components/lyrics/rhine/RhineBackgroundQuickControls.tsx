@@ -8,7 +8,7 @@ import {
 import { getSteppedMode } from "@scopify/ui/scopify/components/folia-panel/mode-stepper-row";
 import { DEFAULT_RHINE_BACKGROUND_TUNING } from "@/constants/rhineBackground";
 import type { VisualizerBackgroundQuickControlsProps } from "@/components/lyrics/folia/src/components/visualizer/backgrounds/definition";
-import type { RhineBackgroundTuning } from "@/types/rhineBackground";
+import type { RhineBackgroundTuning } from "@/types/lyrics/rhine/background";
 
 const COLOR_MODES = ["auto", "light", "dark"] as const;
 const RHYTHM_STYLES = ["legacy", "wave", "lift", "beat"] as const;

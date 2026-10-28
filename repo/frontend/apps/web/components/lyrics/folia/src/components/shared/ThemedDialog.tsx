@@ -1,5 +1,5 @@
 import { useFoliaModalFocus } from "@/hooks/lyrics/useFoliaModalFocus";
-import type { FoliaThemedDialogProps } from "@/types/components/lyrics";
+import type { FoliaThemedDialogProps } from "@/types/lyrics/components";
 import React, { useRef } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { X } from "lucide-react";

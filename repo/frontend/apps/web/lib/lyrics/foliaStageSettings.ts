@@ -25,7 +25,7 @@ import {
   getFoliaStageTheme,
   normalizeFoliaStageThemes,
 } from "@scopify/ui/folia";
-import type { FoliaStageSettings } from "@/types/foliaStage";
+import type { FoliaStageSettings } from "@/types/lyrics/folia/stage";
 import { DEFAULT_RHINE_BACKGROUND_TUNING } from "@/constants/rhineBackground";
 
 const NUMERIC_RANGES = {

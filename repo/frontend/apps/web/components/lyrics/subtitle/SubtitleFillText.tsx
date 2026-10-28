@@ -2,7 +2,7 @@
 
 import { useMemo, type CSSProperties } from "react";
 import { splitLyricGraphemes } from "@/components/lyrics/folia/src/utils/lyrics/graphemeTiming";
-import type { SubtitleFillTextProps } from "@/types/subtitle-preview";
+import type { SubtitleFillTextProps } from "@/types/lyrics/subtitlePreview";
 import styles from "./subtitle-capsule.module.css";
 
 export function SubtitleFillText({ text, settings, progress }: SubtitleFillTextProps) {

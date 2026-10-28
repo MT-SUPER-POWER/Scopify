@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import type { RhineArchiveTrack } from "@/types/rhineBackground";
+import type { RhineArchiveTrack } from "@/types/lyrics/rhine/background";
 
 const WIDTH = 1536;
 const HEIGHT = 1104;

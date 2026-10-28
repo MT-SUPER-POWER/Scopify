@@ -1,7 +1,7 @@
 "use client";
 
 import { Switch } from "@scopify/ui/shadcn/components/switch";
-import type { SubtitleSettingsEditorProps } from "@/types/subtitle-preview";
+import type { SubtitleSettingsEditorProps } from "@/types/lyrics/subtitlePreview";
 import { useI18n } from "@/store/module/i18n";
 import { SettingRow, SettingSection } from "./SettingsUI";
 import { AppearanceRange } from "./AppearanceRange";

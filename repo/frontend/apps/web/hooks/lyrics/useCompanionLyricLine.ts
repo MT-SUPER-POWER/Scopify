@@ -12,7 +12,7 @@ import { createCompanionLyricClock } from "@/lib/lyrics/companionLyricClock";
 import { isChineseSubtitleText } from "@/lib/lyrics/subtitleLanguage";
 import { useLyricStageStore } from "@/store/module/lyrics";
 import type { Line as FoliaLine } from "@/components/lyrics/folia/src/types";
-import type { LyricChorusRange, LyricData } from "@/types/lyrics";
+import type { LyricChorusRange, LyricData } from "@/types/lyrics/model";
 
 export const INTERLUDE_FULL_TEXT = "......";
 const EMPTY_CHORUS_RANGES: LyricChorusRange[] = [];

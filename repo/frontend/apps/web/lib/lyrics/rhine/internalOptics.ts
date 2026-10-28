@@ -1,7 +1,7 @@
 // Adapted from RhineLabUI (d9ecb6c); see SOURCE.md and LICENSE.RhineLabUI.
 import * as THREE from "three";
 
-import type { OpticalSurface } from "@/types/rhineRuntime";
+import type { OpticalSurface } from "@/types/lyrics/rhine/runtime";
 const surfaces: Record<string, OpticalSurface> = {
   Optical_Glass_Body: {
     color: "#929894",

@@ -6,7 +6,7 @@ import {
   SelectValue,
 } from "@scopify/ui/shadcn/components/select";
 import { useI18n } from "@/store/module/i18n";
-import type { SubtitlePaletteFieldsProps } from "@/types/subtitle-preview";
+import type { SubtitlePaletteFieldsProps } from "@/types/lyrics/subtitlePreview";
 import { AppearanceRange } from "./AppearanceRange";
 import { SettingRow } from "./SettingsUI";
 import { ThemeColorControl } from "./ThemeColorControl";

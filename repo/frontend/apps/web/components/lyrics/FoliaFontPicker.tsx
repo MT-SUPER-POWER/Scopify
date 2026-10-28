@@ -7,7 +7,7 @@ import { useI18n } from "@/store/module/i18n";
 
 import { useFoliaFontPicker } from "@/hooks/player/useFoliaFontPicker";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import type { FoliaFontPickerProps } from "@/types/components/lyrics";
+import type { FoliaFontPickerProps } from "@/types/lyrics/components";
 import { useFoliaModalFocus } from "@/hooks/lyrics/useFoliaModalFocus";
 import { useLyricStageStore } from "@/store/module/lyrics";
 

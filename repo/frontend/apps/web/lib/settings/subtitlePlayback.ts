@@ -1,4 +1,4 @@
-import type { SubtitlePlayback } from "@/types/subtitle-preview";
+import type { SubtitlePlayback } from "@/types/lyrics/subtitlePreview";
 
 export function subtitlePlaybackPosition(
   playback: SubtitlePlayback,

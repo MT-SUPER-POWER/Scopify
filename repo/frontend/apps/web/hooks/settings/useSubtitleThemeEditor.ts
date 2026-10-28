@@ -11,7 +11,7 @@ import type {
   SavedSubtitleTheme,
   SubtitlePalette,
   SubtitleThemeEditorProps,
-} from "@/types/subtitle-preview";
+} from "@/types/lyrics/subtitlePreview";
 
 export function useSubtitleThemeEditor({
   themeId,

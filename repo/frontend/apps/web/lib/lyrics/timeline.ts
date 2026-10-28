@@ -1,4 +1,4 @@
-import type { LyricDisplayLine, LyricWord } from "@/types/lyrics";
+import type { LyricDisplayLine, LyricWord } from "@/types/lyrics/model";
 import type { Line as FoliaLine } from "@/components/lyrics/folia/src/types";
 
 /** Positive offsets delay lyrics; negative offsets advance them. */

@@ -1,6 +1,6 @@
 import { downloadBlob, sanitizeDownloadFileName } from "@/lib/web/download";
 import type { NeteaseLyric, SongDetail } from "@/types/song/api";
-import type { LyricExportFormat } from "@/types/lyrics";
+import type { LyricExportFormat } from "@/types/lyrics/model";
 
 export function buildLyricExport(song: SongDetail, lyric: NeteaseLyric, format: LyricExportFormat) {
   const content = lyric[format]?.lyric?.trim();

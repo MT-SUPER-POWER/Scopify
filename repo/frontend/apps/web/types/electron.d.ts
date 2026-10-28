@@ -1,6 +1,6 @@
 import type { DesktopBridge } from "@scopify/desktop-contract";
 
-import type { LyricData } from "@/types/lyrics";
+import type { LyricData } from "@/types/lyrics/model";
 
 declare global {
   interface Window {

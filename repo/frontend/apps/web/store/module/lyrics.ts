@@ -19,7 +19,7 @@ import {
   isBuiltinFoliaStageTheme,
   normalizeFoliaStageTheme,
 } from "@scopify/ui/folia";
-import type { FoliaStageSettings, FoliaStageStore } from "@/types/foliaStage";
+import type { FoliaStageSettings, FoliaStageStore } from "@/types/lyrics/folia/stage";
 
 const tuningDefaults = createDefaultFoliaStageSettings().tunings;
 

@@ -6,7 +6,7 @@ import { FoliaCommandList } from "@/components/commandWorkspace/FoliaCommandList
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useFoliaCommands } from "@/hooks/commandWorkspace/useFoliaCommands";
 import { useLyricStageStore } from "@/store/module/lyrics";
-import type { CommandWorkspaceFoliaProps } from "@/types/foliaCommands";
+import type { CommandWorkspaceFoliaProps } from "@/types/lyrics/folia/commands";
 
 export function CommandWorkspaceFolia({
   group,

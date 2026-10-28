@@ -6,7 +6,7 @@ import { useI18n } from "@/store/module/i18n";
 
 import { FoliaThemeRecord } from "@/components/lyrics/FoliaThemeRecord";
 import { useLyricStageStore } from "@/store/module/lyrics";
-import type { FoliaThemeQuickPickerProps } from "@/types/components/lyrics";
+import type { FoliaThemeQuickPickerProps } from "@/types/lyrics/components";
 
 export function FoliaThemeQuickPicker({ onOpenThemeLibrary, theme }: FoliaThemeQuickPickerProps) {
   const { t } = useI18n();

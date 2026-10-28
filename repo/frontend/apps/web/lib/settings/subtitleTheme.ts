@@ -1,6 +1,6 @@
 import { SUBTITLE_THEME_EDITOR_PATH } from "@/constants/appearanceRoutes";
 import type { LyricsPreviewSettings } from "@/types/appearance";
-import type { SavedSubtitleTheme, SubtitlePalette } from "@/types/subtitle-preview";
+import type { SavedSubtitleTheme, SubtitlePalette } from "@/types/lyrics/subtitlePreview";
 import { subtitlePalette } from "./subtitlePalette";
 
 export function subtitleThemePatch(theme: SavedSubtitleTheme): SubtitlePalette {

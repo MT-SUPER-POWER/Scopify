@@ -1,4 +1,4 @@
-import type { LyricVisualizerMode } from "@/types/lyrics";
+import type { LyricVisualizerMode } from "@/types/lyrics/model";
 
 /** The styles random mode draws from: the saved pool, or every style when it holds none we know. */
 export function resolveRandomVisualizerPool(

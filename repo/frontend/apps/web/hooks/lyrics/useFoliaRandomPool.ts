@@ -13,7 +13,7 @@ import {
 } from "@/lib/lyrics/randomVisualizerPool";
 import { useI18n } from "@/store/module/i18n";
 import { useLyricStageStore } from "@/store/module/lyrics";
-import type { LyricVisualizerMode } from "@/types/lyrics";
+import type { LyricVisualizerMode } from "@/types/lyrics/model";
 
 /**
  * The random pool as the panel shows it (Folia visualizer/random/useRandomPool.ts): every style in

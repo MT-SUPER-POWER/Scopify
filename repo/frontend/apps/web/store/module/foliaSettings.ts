@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import type { FoliaSettingsStore } from "@/types/foliaSettings";
+import type { FoliaSettingsStore } from "@/types/lyrics/folia/settings";
 
 /** Transient global surfaces; opening settings never changes Stage visibility. */
 export const useFoliaSettingsStore = create<FoliaSettingsStore>((set, get) => ({

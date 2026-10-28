@@ -11,7 +11,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { useI18n } from "@/store/module/i18n";
-import type { FoliaThemeUnsavedDialogProps } from "@/types/components/lyrics";
+import type { FoliaThemeUnsavedDialogProps } from "@/types/lyrics/components";
 
 export function FoliaThemeUnsavedDialog({
   onCancel,

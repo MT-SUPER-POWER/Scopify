@@ -1,5 +1,5 @@
 import type { KeyboardEvent } from "react";
-import type { FoliaCommandAction, FoliaCommandEntry } from "@/types/foliaCommands";
+import type { FoliaCommandAction, FoliaCommandEntry } from "@/types/lyrics/folia/commands";
 import type { PersonalFmSelection } from "@/types/personalFm";
 
 export type PersonalFmCommandAction = Extract<FoliaCommandAction, { kind: "personal-fm" }>;

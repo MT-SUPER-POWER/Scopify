@@ -1,5 +1,5 @@
 import React from "react";
-import type { RhineBackgroundTuning } from "@/types/rhineBackground";
+import type { RhineBackgroundTuning } from "@/types/lyrics/rhine/background";
 import type { MotionValue } from "framer-motion";
 import type { TranslationKey } from "@/lib/i18n";
 import type { TranslateFn } from "@/types/i18n.generated";

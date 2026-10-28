@@ -10,12 +10,12 @@ import { createPortal } from "react-dom";
 import { useI18n } from "@/store/module/i18n";
 import { createCroppedVideoStream } from "@/lib/lyrics/videoExportCapture";
 import { runtime } from "@/lib/runtime";
-import type { FoliaVideoExportDialogProps } from "@/types/components/lyrics";
+import type { FoliaVideoExportDialogProps } from "@/types/lyrics/components";
 import type {
   ExportStatus,
   VideoExportPlaybackRestore,
   VideoExportPreset,
-} from "@/types/videoExport";
+} from "@/types/lyrics/videoExport";
 
 const PRESETS = [
   { id: "720p", width: 1280, height: 720 },

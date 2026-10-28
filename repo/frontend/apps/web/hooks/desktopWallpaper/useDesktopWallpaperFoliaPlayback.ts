@@ -17,7 +17,7 @@ import type {
   DesktopWallpaperAudioMotionValues,
   DesktopWallpaperFoliaPlaybackState,
 } from "@/types/desktopPlaybackWallpaper";
-import type { LyricData } from "@/types/lyrics";
+import type { LyricData } from "@/types/lyrics/model";
 
 export function useDesktopWallpaperFoliaPlayback(
   lyricOffsetMs: number,

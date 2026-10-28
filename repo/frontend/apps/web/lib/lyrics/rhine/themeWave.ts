@@ -1,5 +1,5 @@
 // Adapted from RhineLabUI (d9ecb6c) theme-motion.ts; see SOURCE.md and LICENSE.RhineLabUI.
-import type { RhineThemeCell } from "@/types/rhineRuntime";
+import type { RhineThemeCell } from "@/types/lyrics/rhine/runtime";
 
 const ease = (value: number) => {
   const t = Math.min(1, Math.max(0, value));

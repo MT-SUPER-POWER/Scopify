@@ -8,7 +8,7 @@ import { adaptNeteaseLyric } from "@/lib/lyrics/neteaseLyricAdapter";
 import { adaptLyricDataToFolia } from "@/lib/lyrics/foliaLyricAdapter";
 import { decideSongCommit, isInstrumentalConfirmed } from "@/lib/lyrics/folia/songHandover";
 import type { NeteaseLyric } from "@/types/song/api";
-import type { LyricData } from "@/types/lyrics";
+import type { LyricData } from "@/types/lyrics/model";
 
 describe("isPureMusicLyricText", () => {
   const notices = [

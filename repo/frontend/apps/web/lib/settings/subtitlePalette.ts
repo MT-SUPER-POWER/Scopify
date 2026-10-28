@@ -1,4 +1,4 @@
-import type { SubtitlePalette } from "@/types/subtitle-preview";
+import type { SubtitlePalette } from "@/types/lyrics/subtitlePreview";
 export function subtitlePalette(settings: SubtitlePalette): SubtitlePalette {
   const {
     color,

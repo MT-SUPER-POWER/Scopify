@@ -15,7 +15,7 @@ import { usePersonalFmDislike } from "@/hooks/personalFm/usePersonalFmDislike";
 import { isPersonalFmPlaybackSource } from "@/constants/personalFm";
 import { useLyricStageStore } from "@/store/module/lyrics";
 import { usePlayerStore } from "@/store/module/player";
-import type { LyricVisualizerMode } from "@/types/lyrics";
+import type { LyricVisualizerMode } from "@/types/lyrics/model";
 
 export function useFoliaPanelControls() {
   const playback = usePlaybackProjection();

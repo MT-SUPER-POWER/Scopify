@@ -2,7 +2,7 @@ import { colorWithAlpha } from "@/components/lyrics/folia/src/components/visuali
 import type {
   FoliaVisualizerPresetGroupProps,
   FoliaVisualizerPresetOption,
-} from "@/types/components/lyrics";
+} from "@/types/lyrics/components";
 
 export type VisualizerPresetOption<T> = FoliaVisualizerPresetOption<T>;
 

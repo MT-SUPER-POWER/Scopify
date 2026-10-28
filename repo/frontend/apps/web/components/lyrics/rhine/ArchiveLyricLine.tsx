@@ -3,7 +3,7 @@
 import { memo, useMemo } from "react";
 import { motion, useTransform } from "framer-motion";
 import { archiveDisplayWords, archiveWordProgress } from "@/lib/lyrics/rhine/archiveLyrics";
-import type { ArchiveLyricLineProps, ArchiveWordProps } from "@/types/archiveLyrics";
+import type { ArchiveLyricLineProps, ArchiveWordProps } from "@/types/lyrics/archive";
 import styles from "./VisualizerArchive.module.css";
 
 const ArchiveWord = memo(function ArchiveWord({ word, currentTime }: ArchiveWordProps) {
