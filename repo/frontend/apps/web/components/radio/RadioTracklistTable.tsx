@@ -25,7 +25,7 @@ import { useMediaQuery } from "@/lib/hooks/useMediaQuery";
 import { cn } from "@/lib/utils";
 import { usePlayerStore } from "@/store";
 import { useI18n } from "@/store/module/i18n";
-import type { RadioTracklistTableProps } from "@/types/components/radio";
+import type { RadioTracklistTableProps } from "@/types/radio/components";
 
 type RadioSortKey = "title" | "progress" | "updatedAt" | "playCount" | "duration";
 

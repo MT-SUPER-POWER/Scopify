@@ -3,7 +3,7 @@
 import { MediaInfoBadge } from "@/components/shared/MediaInfoBadge";
 import { cn } from "@/lib/utils";
 import { useI18n } from "@/store/module/i18n";
-import type { RadioProgramPlaybackProgress } from "@/types/radio";
+import type { RadioProgramPlaybackProgress } from "@/types/radio/model";
 
 interface RadioProgramPlaybackBadgeProps {
   progress: RadioProgramPlaybackProgress;

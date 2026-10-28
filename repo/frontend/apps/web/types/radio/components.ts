@@ -1,5 +1,5 @@
 import type { SongDetail } from "@/types/api/music";
-import type { RadioDetail, RadioProgram } from "@/types/api/radio";
+import type { RadioDetail, RadioProgram } from "@/types/radio/api";
 import type { ReactNode } from "react";
 
 export interface PodcastContextMenuProps {

@@ -1,5 +1,5 @@
 import type { SongDetail } from "@/types/api/music";
-import type { RadioDetail, RadioHost, RadioProgram } from "@/types/api/radio";
+import type { RadioDetail, RadioHost, RadioProgram } from "@/types/radio/api";
 
 export interface RadioContent {
   host?: RadioHost;

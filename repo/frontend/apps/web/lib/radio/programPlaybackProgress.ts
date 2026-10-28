@@ -1,7 +1,7 @@
 import type {
   RadioProgramPlaybackProgress,
   RadioProgramPlaybackProgressInput,
-} from "@/types/radio";
+} from "@/types/radio/model";
 
 /** Normalizes a DJ program's cloud listening record into a display state. */
 export function getRadioProgramPlaybackProgress({

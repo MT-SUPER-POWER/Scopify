@@ -16,7 +16,7 @@ import {
   useRadioSubscriptionsQuery,
 } from "@/hooks/radio/useRadioSubscriptionsQuery";
 import { useI18n } from "@/store/module/i18n";
-import type { PodcastContextMenuProps } from "@/types/components/radio";
+import type { PodcastContextMenuProps } from "@/types/radio/components";
 
 export function getPodcastContextMenuAction(isActive = false, isPlaying = false) {
   return isActive && isPlaying ? "pause" : "play";

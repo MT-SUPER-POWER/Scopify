@@ -25,7 +25,7 @@ import type {
   RadioTracklistColumnResizeDragState,
   RadioTracklistColumnVisibility,
   RadioTracklistResizableColumnId,
-} from "@/types/radio";
+} from "@/types/radio/model";
 
 export function useRadioTracklistColumnLayout(visibility: RadioTracklistColumnVisibility) {
   const { showPlayCountColumn, showUpdatedAtColumn } = visibility;

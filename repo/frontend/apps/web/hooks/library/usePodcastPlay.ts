@@ -7,7 +7,7 @@ import { getRadioDetail, getRadioPrograms } from "@/lib/api/radio";
 import { usePlayerStore } from "@/store";
 import { useI18n } from "@/store/module/i18n";
 import { pruneSongDetail, type SongDetail } from "@/types/api/music";
-import type { RadioDetail, RadioDetailResponse, RadioProgram } from "@/types/api/radio";
+import type { RadioDetail, RadioDetailResponse, RadioProgram } from "@/types/radio/api";
 
 function toRadioTrack(program: RadioProgram, radio: RadioDetail): SongDetail {
   const track = pruneSongDetail(program.mainSong);

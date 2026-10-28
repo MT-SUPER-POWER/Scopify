@@ -8,7 +8,7 @@ import type {
   CommandWorkspaceSearchItem,
   CommandWorkspaceTrackList,
 } from "@/types/commandWorkspace";
-import type { RadioProgram } from "@/types/api/radio";
+import type { RadioProgram } from "@/types/radio/api";
 
 export async function loadCommandWorkspaceTrackList(
   item: CommandWorkspaceSearchItem,

@@ -6,7 +6,7 @@ import type {
   RadioProgramDetailResponse,
   RadioSublistResponse,
   RadioSubscriptionResponse,
-} from "@/types/api/radio";
+} from "@/types/radio/api";
 
 export function getRadioDetail(id: number | string) {
   return request.get<RadioDetailResponse>("/dj/detail", { params: { rid: id } });

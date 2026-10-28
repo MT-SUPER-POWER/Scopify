@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 import type { CloudUploadProgress } from "@/types/api/cloud";
 import type { SongDetail } from "@/types/api/music";
 import type { RecommendedPodcast } from "@/types/api/voicelist";
-import type { RadioDetail } from "@/types/api/radio";
+import type { RadioDetail } from "@/types/radio/api";
 import type { PodcastViewMode } from "@/types/library";
 
 export interface LibraryContentStateProps {

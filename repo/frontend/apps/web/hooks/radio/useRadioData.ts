@@ -21,9 +21,9 @@ import type {
   RadioHost,
   RadioProgram,
   RadioProgramsResponse,
-} from "@/types/api/radio";
+} from "@/types/radio/api";
 import type { PlaylistInfo } from "@/types/playlist";
-import type { RadioContent } from "@/types/radio";
+import type { RadioContent } from "@/types/radio/model";
 
 export {
   getSubscribedRadioIds,

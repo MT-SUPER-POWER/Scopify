@@ -4,7 +4,7 @@ import type {
   RadioTracklistColumnVisibility,
   RadioTracklistColumnWidths,
   RadioTracklistResizableColumnId,
-} from "@/types/radio";
+} from "@/types/radio/model";
 
 export const RADIO_TRACKLIST_INDEX_COLUMN_WIDTH = 56;
 

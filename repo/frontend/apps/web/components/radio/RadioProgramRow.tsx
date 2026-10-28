@@ -8,7 +8,7 @@ import { TrackIndexCell } from "@/components/shared/TrackIndexCell";
 import { TableCell, TableRow } from "@/components/ui/table";
 import { getRadioProgramPlaybackProgress } from "@/lib/radio/programPlaybackProgress";
 import { cn, formatDate, formatDuration, formatPlayCount } from "@/lib/utils";
-import type { RadioProgramRowProps } from "@/types/components/radio";
+import type { RadioProgramRowProps } from "@/types/radio/components";
 import { getSizedImageUrl } from "@/lib/music/imageUrl";
 
 export function RadioProgramRow({

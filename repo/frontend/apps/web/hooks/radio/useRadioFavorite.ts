@@ -8,7 +8,7 @@ import { useRequireLoginAction } from "@/lib/hooks/useRequireLoginAction";
 import { musicQueryKeys } from "@/lib/query/queryKeys";
 import { useUserStore } from "@/store";
 import { useI18n } from "@/store/module/i18n";
-import type { RadioSubscriptionVariables } from "@/types/radio";
+import type { RadioSubscriptionVariables } from "@/types/radio/model";
 
 export function invalidateRadioFavoriteCaches(queryClient: QueryClient, userId: number) {
   return Promise.all([

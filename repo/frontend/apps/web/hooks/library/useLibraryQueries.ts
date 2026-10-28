@@ -23,7 +23,7 @@ import type {
   RecommendedPodcast,
   SubscribedVoiceList,
 } from "@/types/api/voicelist";
-import type { RadioDetail } from "@/types/api/radio";
+import type { RadioDetail } from "@/types/radio/api";
 import { getRecentSong, getRecentSongEntries } from "@/types/api/user";
 import type { LibraryMediaItem } from "@/types/library";
 import type { Artist, Song, Voice } from "@/types/search";
