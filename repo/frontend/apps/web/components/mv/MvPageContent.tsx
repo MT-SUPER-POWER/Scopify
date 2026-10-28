@@ -5,6 +5,7 @@ import { MvComments } from "./MvComments";
 import { MvInfo } from "./MvInfo";
 import { MvSimilarContent } from "./MvSimilarContent";
 import { MvPlayer } from "./MvPlayer";
+import { MvInfoSkeleton, MvSimilarSkeleton } from "./MvSkeletons";
 import { QueryBoundary } from "@/components/shared/QueryBoundary";
 import { QueryPending } from "@/components/shared/QueryPending";
 import type { MvPageContentProps } from "@/types/components/mv";
@@ -33,7 +34,7 @@ export function MvPageContent({ mvid }: MvPageContentProps) {
   return (
     <div
       className={cn(
-        "mx-auto grid w-full gap-x-6 text-content xl:grid-cols-[minmax(0,1fr)_402px]",
+        "mx-auto grid w-full gap-x-6 text-content xl:grid-cols-[minmax(0,1fr)_402px] xl:grid-rows-[min-content_1fr]",
         isTheater ? "max-w-none pb-10" : "max-w-400 p-6 pb-10",
       )}
     >
@@ -43,7 +44,20 @@ export function MvPageContent({ mvid }: MvPageContentProps) {
         className={cn("min-w-0 xl:col-start-1 xl:row-start-1", isTheater && "col-span-full")}
       >
         {detailQuery.isPending ? (
-          <QueryPending isPaused={detailQuery.fetchStatus === "paused"} />
+          <div
+            className={cn(
+              "overflow-hidden rounded-xl",
+              isTheater
+                ? "h-[min(70dvh,calc(100dvh-12rem))] min-h-64 w-full"
+                : "aspect-video w-full",
+            )}
+          >
+            {detailQuery.fetchStatus === "paused" ? (
+              <QueryPending isPaused />
+            ) : (
+              <Skeleton className="size-full bg-skeleton" />
+            )}
+          </div>
         ) : (
           <MvPlayer
             mvid={mvid}
@@ -62,10 +76,7 @@ export function MvPageContent({ mvid }: MvPageContentProps) {
         {detail ? (
           <MvInfo detail={detail} isSubscribed={Boolean(detailQuery.data?.subed)} />
         ) : (
-          <div className="mt-5 space-y-3">
-            <Skeleton className="h-8 w-2/3 bg-skeleton" />
-            <Skeleton className="h-4 w-1/3 bg-skeleton" />
-          </div>
+          <MvInfoSkeleton />
         )}
 
         <MvComments mvid={mvid} />
@@ -85,6 +96,8 @@ export function MvPageContent({ mvid }: MvPageContentProps) {
               detail={detail}
               onNextChange={handleNextChange}
             />
+          ) : detailQuery.isPending && detailQuery.fetchStatus !== "paused" ? (
+            <MvSimilarSkeleton />
           ) : null}
         </QueryBoundary>
       </aside>
