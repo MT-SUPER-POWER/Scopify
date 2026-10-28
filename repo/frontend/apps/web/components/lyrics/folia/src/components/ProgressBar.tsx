@@ -1,7 +1,7 @@
 import React, { useCallback, useLayoutEffect, useRef } from "react";
 import { MotionValue, useMotionValueEvent } from "framer-motion";
 import { ProgressRangeMarkers } from "@/components/shared/ProgressRangeMarkers";
-import type { ProgressRangeMarker } from "@/types/components/slider";
+import type { ProgressRangeMarker } from "@/types/shared/sliderComponents";
 
 interface ProgressBarProps {
   currentTime: MotionValue<number>;

@@ -1,4 +1,4 @@
-import type { ProgressRangeMarkersProps } from "@/types/components/slider";
+import type { ProgressRangeMarkersProps } from "@/types/shared/sliderComponents";
 
 export function ProgressRangeMarkers({
   appearance = "pin",

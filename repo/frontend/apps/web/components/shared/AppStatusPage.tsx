@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 
-import type { AppStatusPageProps } from "@/types/components/error";
+import type { AppStatusPageProps } from "@/types/shared/errorComponents";
 
 export function AppStatusPage({
   description,

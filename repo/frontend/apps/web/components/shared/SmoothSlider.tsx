@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { ProgressRangeMarkers } from "@/components/shared/ProgressRangeMarkers";
-import type { SmoothSliderProps } from "@/types/components/slider";
+import type { SmoothSliderProps } from "@/types/shared/sliderComponents";
 
 export const SmoothSlider = ({
   ariaLabel,

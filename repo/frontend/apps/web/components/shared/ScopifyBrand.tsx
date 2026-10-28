@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { cn } from "@/lib/utils";
-import type { ScopifyBrandProps } from "@/types/components/brand";
+import type { ScopifyBrandProps } from "@/types/shared/brandComponents";
 
 export function ScopifyBrand({
   className,

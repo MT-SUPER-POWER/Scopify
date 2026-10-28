@@ -4,7 +4,7 @@ import "./globals.css";
 
 import { ErrorFallback } from "@/components/shared/ErrorFallback";
 import { useI18n } from "@/store/module/i18n";
-import type { ErrorFallbackProps } from "@/types/components/error";
+import type { ErrorFallbackProps } from "@/types/shared/errorComponents";
 
 export default function GlobalError({ error, reset }: ErrorFallbackProps) {
   const { locale, t } = useI18n();

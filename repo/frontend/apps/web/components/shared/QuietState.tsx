@@ -1,5 +1,5 @@
 import { cn } from "@/lib/utils";
-import type { QuietStateProps } from "@/types/components/quietState";
+import type { QuietStateProps } from "@/types/shared/quietStateComponents";
 
 /** 空、未登录与失败状态共用的低调占位：淡图标 + 一行说明，可选一个次要操作。 */
 export function QuietState({
