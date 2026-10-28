@@ -1,6 +1,6 @@
 import type { NeteaseLyric } from "@/types/api/music";
 import { getVoiceLyric } from "@/lib/api/voicelist";
-import type { VoiceLyricDocument, VoiceLyricSentence } from "@/types/api/voicelist";
+import type { VoiceLyricDocument, VoiceLyricSentence } from "@/types/voice/api";
 
 const MINIMUM_DURATION_MS = 1;
 

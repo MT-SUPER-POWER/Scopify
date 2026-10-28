@@ -1,4 +1,4 @@
-import type { VoiceListSearchItem, VoiceListSearchResponse } from "@/types/api/voicelist";
+import type { VoiceListSearchItem, VoiceListSearchResponse } from "@/types/voice/api";
 import type { Podcast } from "@/types/search";
 
 function getResourceTitle(title: string | undefined) {

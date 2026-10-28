@@ -10,7 +10,7 @@ import type {
   VoiceListDetailResponse,
   VoiceListSearchResponse,
   VoiceLikeResponse,
-} from "@/types/api/voicelist";
+} from "@/types/voice/api";
 
 export function getSubscribedVoiceLists(limit = 200) {
   return request.get<SubscribedVoiceListsResponse>("/voicelist/my/subscribed", {

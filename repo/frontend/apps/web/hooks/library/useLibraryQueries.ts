@@ -22,7 +22,7 @@ import type {
   LikedVoice,
   RecommendedPodcast,
   SubscribedVoiceList,
-} from "@/types/api/voicelist";
+} from "@/types/voice/api";
 import type { RadioDetail } from "@/types/radio/api";
 import { getRecentSong, getRecentSongEntries } from "@/types/api/user";
 import type { LibraryMediaItem } from "@/types/library";

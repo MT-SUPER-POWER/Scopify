@@ -6,7 +6,7 @@ import { LoaderCircle, ScrollText } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn, formatDuration } from "@/lib/utils";
 import { useI18n } from "@/store/module/i18n";
-import type { VoiceLyricSentence } from "@/types/api/voicelist";
+import type { VoiceLyricSentence } from "@/types/voice/api";
 import type { Voice } from "@/types/search";
 
 interface VoiceTranscriptPanelProps {

@@ -3,7 +3,7 @@ import type {
   RecommendedVoice,
   RecommendedVoiceArtist,
   RecommendedVoiceSong,
-} from "@/types/api/voicelist";
+} from "@/types/voice/api";
 import type { Artist, Song, Voice } from "@/types/search";
 
 function toArtist(source: RecommendedVoiceArtist): Artist {
