@@ -3,8 +3,8 @@
 import { Grid2X2, List } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useI18n } from "@/store/module/i18n";
-import type { PodcastViewToggleProps } from "@/types/components/library";
-import type { PodcastViewMode } from "@/types/library";
+import type { PodcastViewToggleProps } from "@/types/library/components";
+import type { PodcastViewMode } from "@/types/library/model";
 
 const viewIcons: Record<PodcastViewMode, typeof List> = {
   cards: Grid2X2,

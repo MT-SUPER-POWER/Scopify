@@ -13,7 +13,7 @@ import { CLOUD_SONG_FALLBACK_COVER } from "@/constants/cloud";
 import { useCloudDrive } from "@/hooks/library/useCloudDrive";
 import { useI18n } from "@/store/module/i18n";
 import type { SongDetail } from "@/types/song/api";
-import type { CloudTrackActions } from "@/types/components/library";
+import type { CloudTrackActions } from "@/types/library/components";
 import type { PlaylistInfo } from "@/types/playlist/model";
 
 const EMPTY_TRACKS: SongDetail[] = [];

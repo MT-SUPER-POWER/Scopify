@@ -8,7 +8,7 @@ import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
 import { cn } from "@/lib/utils";
 import { useI18n } from "@/store/module/i18n";
 import { usePodcastPlay } from "@/hooks/library/usePodcastPlay";
-import type { PodcastRecommendationsProps } from "@/types/components/library";
+import type { PodcastRecommendationsProps } from "@/types/library/components";
 
 const RECOMMENDATIONS_PER_PAGE = 5;
 

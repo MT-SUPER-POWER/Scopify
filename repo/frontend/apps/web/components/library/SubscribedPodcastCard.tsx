@@ -7,7 +7,7 @@ import { PodcastContextMenu } from "@/components/shared/PodcastContextMenu";
 import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
 import { cn, formatDate, formatNumber } from "@/lib/utils";
 import { useI18n } from "@/store/module/i18n";
-import type { SubscribedPodcastCardProps } from "@/types/components/library";
+import type { SubscribedPodcastCardProps } from "@/types/library/components";
 
 export function SubscribedPodcastCard({
   isActive,

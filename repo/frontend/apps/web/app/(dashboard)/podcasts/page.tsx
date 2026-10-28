@@ -20,7 +20,7 @@ import {
 } from "@/hooks/library/useLibraryQueries";
 import { useLoginStatus } from "@/lib/hooks/useLoginStatus";
 import { useI18n } from "@/store/module/i18n";
-import type { PodcastLibraryTab, PodcastViewMode } from "@/types/library";
+import type { PodcastLibraryTab, PodcastViewMode } from "@/types/library/model";
 
 function isPodcastLibraryTab(value: string): value is PodcastLibraryTab {
   return value === "subscribed" || value === "created" || value === "liked";

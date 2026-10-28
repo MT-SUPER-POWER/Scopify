@@ -4,7 +4,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@scopify/ui/shadcn/comp
 import { formatCacheSize } from "@/lib/cache/presentation";
 import { cn } from "@/lib/utils";
 import { useI18n } from "@/store/module/i18n";
-import type { CloudStorageRingProps } from "@/types/components/library";
+import type { CloudStorageRingProps } from "@/types/library/components";
 
 // 与右侧 PanelsTopLeft（size-5、描边约 1.7px）保持同等视觉重量。
 const RING_SIZE = 18;

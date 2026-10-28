@@ -7,7 +7,7 @@ import { Table, TableBody, TableHead, TableHeader, TableRow } from "@/components
 import { useInfiniteScrollTrigger } from "@/hooks/search/useInfiniteScrollTrigger";
 import { useI18n } from "@/store/module/i18n";
 import type { PodcastsViewProps } from "@/types/search/components";
-import type { PodcastViewMode } from "@/types/library";
+import type { PodcastViewMode } from "@/types/library/model";
 import { PodcastCard } from "./PodcastCard";
 import { PodcastRow } from "./PodcastRow";
 import { SearchCategoryHeader } from "./SearchCategoryHeader";

@@ -4,7 +4,7 @@ import { LoaderCircle, Upload } from "lucide-react";
 import { useRef } from "react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@scopify/ui/shadcn/components/tooltip";
 import { useI18n } from "@/store/module/i18n";
-import type { CloudDriveActionsProps } from "@/types/components/library";
+import type { CloudDriveActionsProps } from "@/types/library/components";
 
 const CLOUD_UPLOAD_ACCEPT = "audio/*,.mp3,.flac,.m4a,.ogg,.wav,.ape,.wma,.aac";
 

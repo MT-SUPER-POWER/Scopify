@@ -21,7 +21,7 @@ import {
   pruneCloudSong,
   type CloudDriveData,
   type CloudUploadProgress,
-} from "@/types/api/cloud";
+} from "@/types/library/cloudApi";
 import type { SongDetail } from "@/types/song/api";
 
 const CLOUD_PAGE_SIZE = 200;

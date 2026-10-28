@@ -16,7 +16,7 @@ import { usePodcastPlay } from "@/hooks/library/usePodcastPlay";
 import { cn, formatDate, formatPlayCount } from "@/lib/utils";
 import { usePlayerStore } from "@/store";
 import { useI18n } from "@/store/module/i18n";
-import type { SubscribedPodcastTableProps } from "@/types/components/library";
+import type { SubscribedPodcastTableProps } from "@/types/library/components";
 
 type PodcastSortKey = "title" | "playCount" | "voiceCount" | "updatedAt";
 

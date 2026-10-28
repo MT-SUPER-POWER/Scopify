@@ -1,9 +1,9 @@
 import type { ReactNode } from "react";
-import type { CloudUploadProgress } from "@/types/api/cloud";
+import type { CloudUploadProgress } from "@/types/library/cloudApi";
 import type { SongDetail } from "@/types/song/api";
 import type { RecommendedPodcast } from "@/types/voice/api";
 import type { RadioDetail } from "@/types/radio/api";
-import type { PodcastViewMode } from "@/types/library";
+import type { PodcastViewMode } from "@/types/library/model";
 
 export interface LibraryContentStateProps {
   children: ReactNode;

@@ -2,7 +2,7 @@
 
 import { NetworkRetryState } from "@/components/shared/NetworkRetryState";
 import { useI18n } from "@/store/module/i18n";
-import type { LibraryContentStateProps } from "@/types/components/library";
+import type { LibraryContentStateProps } from "@/types/library/components";
 import { LibraryLoading } from "./LibraryLoading";
 
 export function LibraryContentState({

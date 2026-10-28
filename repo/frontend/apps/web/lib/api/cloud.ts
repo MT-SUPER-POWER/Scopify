@@ -2,7 +2,7 @@ import type {
   CloudDownloadResponse,
   CloudLyricResponse,
   UserCloudResponse,
-} from "@/types/api/cloud";
+} from "@/types/library/cloudApi";
 import request, { requestConfig } from "../web/request";
 
 /** 大文件上传不受用户网络超时设置限制。 */

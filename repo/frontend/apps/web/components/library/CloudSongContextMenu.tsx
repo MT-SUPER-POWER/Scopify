@@ -13,8 +13,8 @@ import {
   ContextMenuTrigger,
 } from "@/components/ui/context-menu";
 import { useSongContextMenuActions } from "@/hooks/song/useSongContextMenuActions";
-import { isCloudSongMatched } from "@/types/api/cloud";
-import type { CloudSongContextMenuProps } from "@/types/components/library";
+import { isCloudSongMatched } from "@/types/library/cloudApi";
+import type { CloudSongContextMenuProps } from "@/types/library/components";
 import type { SongContextMenuActionsProps } from "@/types/song/contextMenuComponents";
 
 /** 云盘文件专用菜单：只保留对上传文件有意义的操作，并接入云盘自己的接口。 */

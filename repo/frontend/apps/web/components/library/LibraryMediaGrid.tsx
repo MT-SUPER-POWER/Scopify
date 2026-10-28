@@ -2,7 +2,7 @@ import { Clock, Disc3 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { formatDate } from "@/lib/utils";
-import type { LibraryMediaItem } from "@/types/library";
+import type { LibraryMediaItem } from "@/types/library/model";
 
 interface LibraryMediaGridProps {
   items: LibraryMediaItem[];

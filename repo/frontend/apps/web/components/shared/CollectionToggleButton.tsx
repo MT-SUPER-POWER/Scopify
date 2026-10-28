@@ -9,7 +9,7 @@ import {
   TooltipTrigger,
 } from "@scopify/ui/shadcn/components/tooltip";
 import { cn } from "@/lib/utils";
-import type { CollectionToggleButtonProps } from "@/types/components/collection";
+import type { CollectionToggleButtonProps } from "@/types/library/collectionComponents";
 
 export function CollectionToggleButton({
   isCollected,

@@ -15,7 +15,7 @@ import { CLOUD_SONG_FALLBACK_COVER } from "@/constants/cloud";
 import { useCloudMatchSearch } from "@/hooks/library/useCloudMatchSearch";
 import { cn, formatDuration } from "@/lib/utils";
 import { useI18n } from "@/store/module/i18n";
-import type { CloudMatchDialogProps } from "@/types/components/library";
+import type { CloudMatchDialogProps } from "@/types/library/components";
 
 export function CloudMatchDialog({ busy, onClose, onConfirm, song }: CloudMatchDialogProps) {
   const { t } = useI18n();

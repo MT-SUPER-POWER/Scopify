@@ -3,7 +3,7 @@
 import { SubscribedPodcastCard } from "@/components/library/SubscribedPodcastCard";
 import { usePodcastPlay } from "@/hooks/library/usePodcastPlay";
 import { usePlayerStore } from "@/store";
-import type { SubscribedPodcastGridProps } from "@/types/components/library";
+import type { SubscribedPodcastGridProps } from "@/types/library/components";
 
 export function SubscribedPodcastGrid({ podcasts }: SubscribedPodcastGridProps) {
   const { handlePlayPodcast, loadingPodcastId } = usePodcastPlay();
