@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import type { UserFansGroupItem } from "@/types/api/fansGroup";
+import type { UserFansGroupItem } from "@/types/fansGroup/api";
 import type { UpdateUserProfilePayload } from "@/types/api/profileUpdate";
 import type { NeteaseUser } from "@/types/api/user";
 import type {

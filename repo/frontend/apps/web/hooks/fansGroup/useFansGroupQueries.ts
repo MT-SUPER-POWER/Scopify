@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { getFansGroupDetail, getUserFansGroups } from "@/lib/api/fansGroup";
 import { musicQueryKeys } from "@/lib/query/queryKeys";
 import { useUserStore } from "@/store/module/user";
-import type { UserFansGroupItem } from "@/types/api/fansGroup";
+import type { UserFansGroupItem } from "@/types/fansGroup/api";
 
 export interface UseUserFansGroupsOptions {
   enabled?: boolean;

@@ -1,4 +1,4 @@
-export * from "./api/fansGroup";
+export * from "@/types/fansGroup/api";
 
 /**
  * 视图层统一使用的乐迷团综合实体

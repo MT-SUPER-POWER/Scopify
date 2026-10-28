@@ -1,5 +1,5 @@
 import request from "@/lib/web/request";
-import type { FansGroupDetailResponse, UserFansGroupsResponse } from "@/types/api/fansGroup";
+import type { FansGroupDetailResponse, UserFansGroupsResponse } from "@/types/fansGroup/api";
 
 /**
  * 获取当前登录用户已加入的全部歌手乐迷团列表

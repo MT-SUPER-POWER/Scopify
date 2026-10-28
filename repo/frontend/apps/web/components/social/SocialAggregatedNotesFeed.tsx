@@ -3,7 +3,7 @@
 import { useCallback } from "react";
 import { useInfiniteScrollTrigger } from "@/hooks/search/useInfiniteScrollTrigger";
 import { useSocialAggregatedNotes } from "@/hooks/social/useSocialNotes";
-import type { UserFansGroupItem } from "@/types/api/fansGroup";
+import type { UserFansGroupItem } from "@/types/fansGroup/api";
 import { uniqueById } from "@/lib/social/normalize";
 import { useI18n } from "@/store/module/i18n";
 import { SocialNoteGrid } from "./SocialNoteGrid";
