@@ -20,7 +20,7 @@ const IGNORED_DIRECTORIES = new Set([
 ]);
 
 const WEB_RUNTIME_COMPOSITION_ROOT = "repo/frontend/apps/web/lib/runtime/index.ts";
-const WEB_ELECTRON_DECLARATION = "repo/frontend/apps/web/types/electron.d.ts";
+const WEB_ELECTRON_DECLARATION = "repo/frontend/apps/web/types/desktop/electron.d.ts";
 const BANNED_WEB_RUNTIME_PATTERNS = [
   { expression: /\bwindow\s*\.\s*electronAPI\b/, label: "window.electronAPI" },
   { expression: /\bIS_ELECTRON\b/, label: "IS_ELECTRON" },

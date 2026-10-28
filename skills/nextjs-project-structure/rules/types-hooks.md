@@ -11,7 +11,7 @@
 - 先按业务领域建目录，再按层次拆文件：领域主文件用固定名 `model.ts`（业务实体）、`api.ts`（请求/响应）、`components.ts`（复用 Props）；同一领域有更多主题时用 `<主题>.ts`、`<主题>Api.ts`、`<主题>Components.ts`
 - 领域目录名尽量与 `components/` 下的业务目录一致，不要在 `types/` 根目录直接放业务文件
 - 不设 `types/index.ts` 或领域聚合出口，直接 `import { DocPageProps } from "@/types/doc/components"`，避免命名冲突和循环依赖
-- 生成文件 `i18n.generated.d.ts` 与全局声明 `electron.d.ts` 是仅有的两个根目录文件
+- 生成文件 `i18n.generated.d.ts` 是 `types/` 根目录仅有的文件；全局声明也放进对应领域（如 `desktop/electron.d.ts`）
 
 ### 文件划分示例
 
