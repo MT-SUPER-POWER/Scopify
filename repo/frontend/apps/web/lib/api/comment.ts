@@ -3,7 +3,7 @@ import type {
   MusicCommentParams,
   NewCommentParams,
   NewCommentResponse,
-} from "@/types/api/comment";
+} from "@/types/comment/api";
 import type { SongComment } from "@/types/api/music";
 import request, { requestConfig } from "../web/request";
 

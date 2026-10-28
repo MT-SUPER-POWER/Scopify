@@ -7,7 +7,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { cn } from "@/lib/utils";
 import emojiData from "@/resources/emoji.json";
 import { useI18n } from "@/store/module/i18n";
-import type { CommentInputBoxProps } from "@/types/components/comment";
+import type { CommentInputBoxProps } from "@/types/comment/components";
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ COMPONENT ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 

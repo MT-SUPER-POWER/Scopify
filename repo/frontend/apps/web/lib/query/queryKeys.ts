@@ -1,4 +1,4 @@
-import type { CommentResourceKind } from "@/types/api/comment";
+import type { CommentResourceKind } from "@/types/comment/api";
 import { mvQueryKeys } from "@/lib/query/mvQueryKeys";
 
 export const musicQueryKeys = {

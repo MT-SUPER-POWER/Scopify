@@ -10,7 +10,7 @@ import {
 import { LikeButton } from "@/components/ui/LikeButton";
 import { resolveCommentIpLocation } from "@/lib/comment/commentResource";
 import { useI18n } from "@/store/module/i18n";
-import type { CommentItemProps } from "@/types/components/comment";
+import type { CommentItemProps } from "@/types/comment/components";
 import { renderEmojiContent } from "./renderEmojiContent";
 import { getSizedImageUrl } from "@/lib/music/imageUrl";
 

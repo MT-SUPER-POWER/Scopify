@@ -4,7 +4,7 @@ import Image from "next/image";
 import { ThumbsUp } from "lucide-react";
 import { getSizedImageUrl } from "@/lib/music/imageUrl";
 import { cn } from "@/lib/utils";
-import type { CommentPreviewListProps } from "@/types/comment";
+import type { CommentPreviewListProps } from "@/types/comment/model";
 
 /** 只读的评论预览列表（头像、昵称、点赞数与正文），用于正在播放面板、MV 页等摘要位置。 */
 export function CommentPreviewList({ comments, className }: CommentPreviewListProps) {

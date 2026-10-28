@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useI18n } from "@/store/module/i18n";
-import type { CommentHeaderArtist, CommentHeaderProps } from "@/types/components/comment";
+import type { CommentHeaderArtist, CommentHeaderProps } from "@/types/comment/components";
 
 function ArtistAvatar({ artist }: { artist: CommentHeaderArtist }) {
   const initial = artist.name.trim().charAt(0).toUpperCase() || "A";

@@ -1,5 +1,5 @@
 import type { NeteaseComment } from "@/types/api/music";
-import type { CommentHeaderArtist } from "@/types/components/comment";
+import type { CommentHeaderArtist } from "@/types/comment/components";
 
 export interface CommentResourceHeaderData {
   albumName?: string;

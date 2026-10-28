@@ -1,4 +1,4 @@
-import type { MusicCommentParams } from "@/types/api/comment";
+import type { MusicCommentParams } from "@/types/comment/api";
 import type { MvFirstParams, MvListParams, MvPaginationParams, MvTopParams } from "@/types/mv/api";
 
 export const mvQueryKeys = {

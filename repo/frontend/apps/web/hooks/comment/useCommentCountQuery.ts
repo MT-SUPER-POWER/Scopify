@@ -11,7 +11,7 @@ import {
   getVoiceComments,
 } from "@/lib/api/comment";
 import { musicQueryKeys } from "@/lib/query/queryKeys";
-import { COMMENT_RESOURCE_TYPE, type CommentResourceKind } from "@/types/api/comment";
+import { COMMENT_RESOURCE_TYPE, type CommentResourceKind } from "@/types/comment/api";
 
 const COMMENT_COUNT_STALE_TIME_MS = 2 * 60 * 1000;
 

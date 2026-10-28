@@ -35,9 +35,9 @@ import {
   COMMENT_RESOURCE_TYPE,
   type CommentResourceKind,
   type CommentResourceRef,
-} from "@/types/api/comment";
+} from "@/types/comment/api";
 import type { NeteaseComment, SongDetail } from "@/types/api/music";
-import type { CommentResourceHeaderData } from "@/types/comment";
+import type { CommentResourceHeaderData } from "@/types/comment/model";
 
 const LIMIT = 20;
 const FALLBACK_COVER =

@@ -7,7 +7,7 @@ import { getArtistMVs } from "@/lib/api/artist";
 import { getMVComments } from "@/lib/api/comment";
 import { getMVDetail, getMVDetailInfo, getMVUrl, getSubscribedMVs } from "@/lib/api/mv";
 import { musicQueryKeys } from "@/lib/query/queryKeys";
-import type { MusicCommentParams } from "@/types/api/comment";
+import type { MusicCommentParams } from "@/types/comment/api";
 import type { MvPaginationParams } from "@/types/mv/api";
 import type { MvQueryId, MvQueryOptions } from "@/types/mv/model";
 

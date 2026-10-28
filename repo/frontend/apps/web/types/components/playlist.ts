@@ -1,7 +1,7 @@
 import type { HTMLAttributes, ReactNode, RefObject } from "react";
 
 import type { SongDetail } from "@/types/api/music";
-import type { CommentResourceKind } from "@/types/api/comment";
+import type { CommentResourceKind } from "@/types/comment/api";
 import type { PlaylistInfo } from "@/types/playlist";
 import type { CloudTrackActions } from "@/types/components/library";
 
