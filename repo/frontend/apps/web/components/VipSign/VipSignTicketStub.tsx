@@ -3,7 +3,7 @@
 import { Play } from "lucide-react";
 import Image from "next/image";
 import { useI18n } from "@/store/module/i18n";
-import type { VipSignTicketStubProps } from "@/types/components/vipSign";
+import type { VipSignTicketStubProps } from "@/types/vipSign/components";
 import styles from "./VipSignTicket.module.css";
 
 export function VipSignTicketStub({ todayRecord, onPlay, isPlaying }: VipSignTicketStubProps) {

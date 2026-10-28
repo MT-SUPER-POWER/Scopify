@@ -16,7 +16,7 @@ import { useLoginStatus } from "@/lib/hooks/useLoginStatus";
 import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
 import { runtime } from "@/lib/runtime";
 import { useI18n } from "@/store/module/i18n";
-import type { VipSignDetail } from "@/types/api/vipSign";
+import type { VipSignDetail } from "@/types/vipSign/api";
 import type { ProfileMenuProps } from "@/types/user/profileMenuComponents";
 
 export function ProfileMenu({ children }: ProfileMenuProps) {

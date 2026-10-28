@@ -1,7 +1,7 @@
 "use client";
 
 import { useI18n } from "@/store/module/i18n";
-import type { VipSignTicketContentProps } from "@/types/components/vipSign";
+import type { VipSignTicketContentProps } from "@/types/vipSign/components";
 import styles from "./VipSignTicket.module.css";
 
 export function VipSignTicketContent({ todayRecord }: VipSignTicketContentProps) {

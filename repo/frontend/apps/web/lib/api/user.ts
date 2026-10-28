@@ -136,7 +136,7 @@ import type {
   VipSignHistoryResponse,
   VipSignInfoResponse,
   VipSignResponse,
-} from "@/types/api/vipSign";
+} from "@/types/vipSign/api";
 
 /** 网易乐签 - VIP签到 POST /vip/sign */
 export function vipSign() {

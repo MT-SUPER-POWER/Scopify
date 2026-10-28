@@ -3,7 +3,7 @@
 import { Dialog } from "radix-ui";
 import { X } from "lucide-react";
 import { useI18n } from "@/store/module/i18n";
-import type { VipSignModalProps } from "@/types/components/vipSign";
+import type { VipSignModalProps } from "@/types/vipSign/components";
 import { VipSignTicket } from "./VipSignTicket";
 import styles from "./VipSignTicket.module.css";
 

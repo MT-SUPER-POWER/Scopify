@@ -6,7 +6,7 @@ import { useRef } from "react";
 import { useTicketInteraction } from "@/hooks/vipSign/useTicketInteraction";
 import { useTicketPlayback } from "@/hooks/vipSign/useTicketPlayback";
 import { useI18n } from "@/store/module/i18n";
-import type { VipSignTicketProps } from "@/types/components/vipSign";
+import type { VipSignTicketProps } from "@/types/vipSign/components";
 import { TicketPaper } from "./TicketPaper";
 import { TicketCurl } from "./TicketCurl";
 import { VipSignTicketContent } from "./VipSignTicketContent";

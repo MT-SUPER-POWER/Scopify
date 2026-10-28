@@ -1,4 +1,4 @@
-import type { VipSignHistoryItem } from "@/types/api/vipSign";
+import type { VipSignHistoryItem } from "@/types/vipSign/api";
 
 export function getVipSignTodayRecord(records: VipSignHistoryItem[]) {
   return records.find((record) => record.today === true);

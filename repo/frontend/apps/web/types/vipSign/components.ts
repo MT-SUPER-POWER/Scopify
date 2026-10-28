@@ -1,6 +1,6 @@
 import type { MouseEvent, RefObject } from "react";
 import type { MotionValue } from "framer-motion";
-import type { VipSignDetail, VipSignHistory, VipSignHistoryItem } from "@/types/api/vipSign";
+import type { VipSignDetail, VipSignHistory, VipSignHistoryItem } from "@/types/vipSign/api";
 
 export interface VipSignModalProps {
   open: boolean;

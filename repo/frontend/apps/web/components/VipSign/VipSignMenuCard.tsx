@@ -2,7 +2,7 @@ import { CalendarDays, Circle } from "lucide-react";
 import { useMemo } from "react";
 import { cn } from "@/lib/utils";
 import { useI18n } from "@/store/module/i18n";
-import type { VipSignMenuCardProps } from "@/types/components/vipSign";
+import type { VipSignMenuCardProps } from "@/types/vipSign/components";
 
 export function VipSignMenuCard({
   actionLabel,

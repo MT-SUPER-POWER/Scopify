@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import type { TicketCurlProps } from "@/types/components/vipSign";
+import type { TicketCurlProps } from "@/types/vipSign/components";
 import styles from "@/components/VipSign/VipSignTicket.module.css";
 
 const STRIPS = 48;

@@ -7,7 +7,7 @@ import { vipSign, vipSignDetail, vipSignHistory } from "@/lib/api/user";
 import { useLoginStatus } from "@/lib/hooks/useLoginStatus";
 import { getVipSignTodayRecord, hasVipSignedToday } from "@/lib/vipSign";
 import { useUserStore } from "@/store";
-import type { VipSignDetail, VipSignHistoryResponse } from "@/types/api/vipSign";
+import type { VipSignDetail, VipSignHistoryResponse } from "@/types/vipSign/api";
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ QUERY KEYS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 

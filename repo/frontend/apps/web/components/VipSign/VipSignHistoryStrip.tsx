@@ -1,7 +1,7 @@
 import { Check } from "lucide-react";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
-import type { VipSignHistoryStripProps } from "@/types/components/vipSign";
+import type { VipSignHistoryStripProps } from "@/types/vipSign/components";
 
 export function VipSignHistoryStrip({ records, onSelectSignDay }: VipSignHistoryStripProps) {
   if (records.length === 0) return null;

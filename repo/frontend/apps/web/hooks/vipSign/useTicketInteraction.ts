@@ -2,7 +2,7 @@
 
 import { animate, useMotionValue, useReducedMotion, useSpring, useTransform } from "framer-motion";
 import { useEffect, useRef, useState, type PointerEvent } from "react";
-import type { TicketPointerOrigin, TicketReturnAnimation } from "@/types/components/vipSign";
+import type { TicketPointerOrigin, TicketReturnAnimation } from "@/types/vipSign/components";
 
 /** Tilt stays outside React's render loop; a captured pointer owns each tear gesture. */
 export function useTicketInteraction(onClose: () => void) {
