@@ -4,7 +4,7 @@ import Link from "next/link";
 import { Disc3 } from "lucide-react";
 import { useFriendsStore } from "@/store/module/friends";
 import { useI18n } from "@/store/module/i18n";
-import type { PrivateMessageCardProps } from "@/types/components/privateMessages";
+import type { PrivateMessageCardProps } from "@/types/messages/components";
 
 export function PrivateMessageCard({ attachment }: PrivateMessageCardProps) {
   const { t } = useI18n();

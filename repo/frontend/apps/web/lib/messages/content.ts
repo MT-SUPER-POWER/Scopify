@@ -1,4 +1,4 @@
-import type { MessageAttachment, PrivateMessageContent } from "@/types/privateMessages";
+import type { MessageAttachment, PrivateMessageContent } from "@/types/messages/model";
 
 function record(value: unknown): Record<string, unknown> {
   return value && typeof value === "object" && !Array.isArray(value)

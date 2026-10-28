@@ -15,7 +15,7 @@ import { getBackendBaseUrl } from "@/lib/web/request";
 import { runtime } from "@/lib/runtime";
 import { useFriendsStore } from "@/store/module/friends";
 import { useNotificationStore } from "@/store/module/notifications";
-import type { MessagePeer, PrivateMessage } from "@/types/privateMessages";
+import type { MessagePeer, PrivateMessage } from "@/types/messages/model";
 
 export function usePrivateConversation(accountId: string, peer: MessagePeer) {
   const queryClient = useQueryClient();

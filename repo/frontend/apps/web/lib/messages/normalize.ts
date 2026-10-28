@@ -3,8 +3,8 @@ import type {
   PrivateMessageUser,
   RawPrivateConversation,
   RawPrivateMessage,
-} from "@/types/api/privateMessages";
-import type { MessagePeer, PrivateConversation, PrivateMessage } from "@/types/privateMessages";
+} from "@/types/messages/api";
+import type { MessagePeer, PrivateConversation, PrivateMessage } from "@/types/messages/model";
 import { messageImage, parsePrivateContent } from "./content";
 
 export function messagePeer(user: PrivateMessageUser | undefined): MessagePeer | null {

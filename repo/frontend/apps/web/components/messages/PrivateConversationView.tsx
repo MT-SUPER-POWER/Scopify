@@ -7,7 +7,7 @@ import { INBOX_SCROLL_CLASS } from "@/constants/inbox";
 import { usePrivateConversation } from "@/hooks/messages/usePrivateConversation";
 import { useConversationScroll } from "@/hooks/messages/useConversationScroll";
 import { useI18n } from "@/store/module/i18n";
-import type { PrivateConversationViewProps } from "@/types/components/privateMessages";
+import type { PrivateConversationViewProps } from "@/types/messages/components";
 import { PrivateMessageBubble } from "./PrivateMessageBubble";
 import { PrivateMessageComposer } from "./PrivateMessageComposer";
 

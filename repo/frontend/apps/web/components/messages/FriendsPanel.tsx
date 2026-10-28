@@ -8,7 +8,7 @@ import { usePrivateConversations } from "@/hooks/messages/usePrivateConversation
 import { conversationUnread } from "@/lib/messages/normalize";
 import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
 import { useI18n } from "@/store/module/i18n";
-import type { FriendsPanelProps } from "@/types/components/privateMessages";
+import type { FriendsPanelProps } from "@/types/messages/components";
 import { ConversationRow } from "./ConversationRow";
 import { PrivateConversationView } from "./PrivateConversationView";
 

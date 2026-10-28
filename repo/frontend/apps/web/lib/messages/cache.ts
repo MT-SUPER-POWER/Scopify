@@ -1,5 +1,5 @@
 import type { InfiniteData, QueryClient } from "@tanstack/react-query";
-import type { PrivateConversationResponse } from "@/types/api/privateMessages";
+import type { PrivateConversationResponse } from "@/types/messages/api";
 
 // 私信会话列表的 React Query 缓存管理
 

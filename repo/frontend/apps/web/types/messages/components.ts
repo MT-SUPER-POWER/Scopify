@@ -4,7 +4,7 @@ import type {
   MessagePeer,
   PrivateConversation,
   PrivateMessage,
-} from "@/types/privateMessages";
+} from "@/types/messages/model";
 
 export interface FriendsPanelProps {
   accountId: string | null;

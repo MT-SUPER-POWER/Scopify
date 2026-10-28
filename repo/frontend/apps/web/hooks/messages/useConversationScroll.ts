@@ -1,7 +1,7 @@
 "use client";
 
 import { useLayoutEffect, useRef } from "react";
-import type { ConversationScrollPosition, PrivateMessage } from "@/types/privateMessages";
+import type { ConversationScrollPosition, PrivateMessage } from "@/types/messages/model";
 
 export function useConversationScroll(messages: PrivateMessage[]) {
   const rootRef = useRef<HTMLDivElement>(null);

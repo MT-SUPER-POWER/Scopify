@@ -5,7 +5,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@scopify/ui/shadcn/componen
 import { renderEmojiContent } from "@/components/Comment/renderEmojiContent";
 import { cn } from "@/lib/utils";
 import { useI18n } from "@/store/module/i18n";
-import type { PrivateMessageBubbleProps } from "@/types/components/privateMessages";
+import type { PrivateMessageBubbleProps } from "@/types/messages/components";
 import { PrivateMessageCard } from "./PrivateMessageCard";
 
 export function PrivateMessageBubble({ message }: PrivateMessageBubbleProps) {

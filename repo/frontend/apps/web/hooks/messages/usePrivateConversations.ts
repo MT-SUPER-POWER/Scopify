@@ -4,7 +4,7 @@ import { useInfiniteQuery } from "@tanstack/react-query";
 import { getPrivateConversations } from "@/lib/api/privateMessages";
 import { normalizeConversation } from "@/lib/messages/normalize";
 import { getBackendBaseUrl } from "@/lib/web/request";
-import type { PrivateConversation } from "@/types/privateMessages";
+import type { PrivateConversation } from "@/types/messages/model";
 
 export function usePrivateConversations(accountId: string | null, enabled: boolean) {
   const query = useInfiniteQuery({

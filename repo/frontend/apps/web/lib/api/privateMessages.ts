@@ -3,7 +3,7 @@ import type {
   PrivateConversationResponse,
   PrivateHistoryResponse,
   PrivateSendResponse,
-} from "@/types/api/privateMessages";
+} from "@/types/messages/api";
 
 export function getPrivateConversations(offset: number, signal?: AbortSignal) {
   return requestData<PrivateConversationResponse>({

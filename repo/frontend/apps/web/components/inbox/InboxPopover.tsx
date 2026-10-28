@@ -13,7 +13,7 @@ import {
 } from "@scopify/ui/shadcn/components/sheet";
 import { useIsMobile } from "@scopify/ui/shadcn/hooks/use-mobile";
 import { useI18n } from "@/store/module/i18n";
-import type { InboxPopoverProps } from "@/types/components/inbox";
+import type { InboxPopoverProps } from "@/types/messages/inboxComponents";
 
 export function InboxPopover({
   children,

@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import type { FriendsPanelState } from "@/types/privateMessages";
+import type { FriendsPanelState } from "@/types/messages/model";
 
 export const useFriendsStore = create<FriendsPanelState>((set) => ({
   ownerId: null,

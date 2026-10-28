@@ -5,7 +5,7 @@ import { Button } from "@scopify/ui/shadcn/components/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@scopify/ui/shadcn/components/popover";
 import { MESSAGE_EMOJI } from "@/constants/inbox";
 import { useI18n } from "@/store/module/i18n";
-import type { PrivateMessageComposerProps } from "@/types/components/privateMessages";
+import type { PrivateMessageComposerProps } from "@/types/messages/components";
 
 export function PrivateMessageComposer({
   value,

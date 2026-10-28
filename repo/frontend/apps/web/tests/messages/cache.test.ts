@@ -1,7 +1,7 @@
 import { describe, expect, it } from "bun:test";
 import { QueryClient } from "@tanstack/react-query";
 import { clearConversationsUnreadInCache } from "@/lib/messages/cache";
-import type { PrivateConversationResponse } from "@/types/api/privateMessages";
+import type { PrivateConversationResponse } from "@/types/messages/api";
 
 // 私信缓存未读数重置测试
 
