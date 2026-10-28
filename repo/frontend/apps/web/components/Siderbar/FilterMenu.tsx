@@ -21,7 +21,7 @@ import {
 import { cn } from "@/lib/utils";
 import { useUiStore } from "@/store";
 import { useI18n } from "@/store/module/i18n";
-import type { FilterAction, FilterState } from "@/types/sidebar/shellComponents";
+import type { FilterAction, FilterState } from "@/types/sidebar/containerComponents";
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ CONSTANTS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
