@@ -1,5 +1,5 @@
 import type { SongDetail } from "@/types/api/music";
-import type { MvSummary } from "@/types/api/mv";
+import type { MvSummary } from "@/types/mv/api";
 import type { MusicSheet } from "@/types/api/songResources";
 import type {
   Album,

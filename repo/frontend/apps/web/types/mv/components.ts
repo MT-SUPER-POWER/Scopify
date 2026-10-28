@@ -1,6 +1,6 @@
 import type { NeteaseComment } from "@/types/api/music";
 import type { ReactNode } from "react";
-import type { MvArtist, MvDetail, MvResolution, MvSummary } from "@/types/api/mv";
+import type { MvArtist, MvDetail, MvResolution, MvSummary } from "@/types/mv/api";
 
 export interface MvListItemProps {
   mv: MvSummary;

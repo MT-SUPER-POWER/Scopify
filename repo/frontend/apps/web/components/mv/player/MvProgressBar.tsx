@@ -2,7 +2,7 @@
 
 import { useRef, useState } from "react";
 import { cn, formatDuration } from "@/lib/utils";
-import type { MvProgressBarProps } from "@/types/components/mv";
+import type { MvProgressBarProps } from "@/types/mv/components";
 
 /**
  * YouTube 式进度条：悬停加粗并显示时间提示，可点击或拖动跳转；

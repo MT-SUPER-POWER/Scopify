@@ -9,7 +9,7 @@ import { useMVDetailInfoQuery } from "@/hooks/mv/useMVQueries";
 import { useLoginStatus } from "@/lib/hooks/useLoginStatus";
 import { cn, formatPlayCount } from "@/lib/utils";
 import { useI18n } from "@/store/module/i18n";
-import type { MvInfoProps } from "@/types/components/mv";
+import type { MvInfoProps } from "@/types/mv/components";
 
 const ACTION_BTN =
   "flex h-9 shrink-0 items-center gap-2 rounded-full px-4 text-sm font-medium transition-colors disabled:opacity-50";

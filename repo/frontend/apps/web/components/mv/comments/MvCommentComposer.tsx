@@ -6,7 +6,7 @@ import { getSizedImageUrl } from "@/lib/music/imageUrl";
 import { cn } from "@/lib/utils";
 import { useUserStore } from "@/store";
 import { useI18n } from "@/store/module/i18n";
-import type { MvCommentComposerProps } from "@/types/components/mv";
+import type { MvCommentComposerProps } from "@/types/mv/components";
 
 /** 网易云评论的字数上限。 */
 const MAX_LENGTH = 140;

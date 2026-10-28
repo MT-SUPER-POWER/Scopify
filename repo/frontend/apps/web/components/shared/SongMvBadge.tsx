@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useI18n } from "@/store/module/i18n";
-import type { SongMvBadgeProps } from "@/types/components/mv";
+import type { SongMvBadgeProps } from "@/types/mv/components";
 
 /** 歌名旁的「MV」小标签，点击进入 MV 页；不触发所在歌曲行的单击/双击播放。 */
 export function SongMvBadge({ mvId }: SongMvBadgeProps) {

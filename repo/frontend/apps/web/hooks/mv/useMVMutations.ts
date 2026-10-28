@@ -4,7 +4,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/hooks/auth/useAuth";
 import { subscribeMV, toggleLikeMV } from "@/lib/api/mv";
 import { musicQueryKeys } from "@/lib/query/queryKeys";
-import type { MvLikeVariables, MvSubscriptionVariables } from "@/types/mv";
+import type { MvLikeVariables, MvSubscriptionVariables } from "@/types/mv/model";
 
 export function useMVSubscriptionMutation() {
   const { accountId } = useAuth();

@@ -18,7 +18,7 @@ import { getSizedImageUrl } from "@/lib/music/imageUrl";
 import { getMvArtistNames, getMvCover } from "@/lib/music/mvCover";
 import { cn, formatDuration, formatPlayCount } from "@/lib/utils";
 import { useI18n } from "@/store/module/i18n";
-import type { MvCardProps } from "@/types/components/mv";
+import type { MvCardProps } from "@/types/mv/components";
 
 /** 悬停多久后开始播放预览，避免鼠标划过时到处起播。 */
 const PREVIEW_DELAY_MS = 600;

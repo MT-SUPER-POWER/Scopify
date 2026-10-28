@@ -5,7 +5,7 @@ import { MvArtistAvatar } from "./MvArtistAvatar";
 import { useArtistFollow } from "@/hooks/artist/useArtistFollow";
 import { cn, formatPlayCount } from "@/lib/utils";
 import { useI18n } from "@/store/module/i18n";
-import type { MvChannelProps } from "@/types/components/mv";
+import type { MvChannelProps } from "@/types/mv/components";
 
 /** MV 页标题下的艺人行（参考 YouTube 频道行）：头像、名字、粉丝数与关注按钮。 */
 export function MvChannel({ artist }: MvChannelProps) {

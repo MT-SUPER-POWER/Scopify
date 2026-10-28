@@ -12,8 +12,8 @@ import {
   getTopMVs,
 } from "@/lib/api/mv";
 import { musicQueryKeys } from "@/lib/query/queryKeys";
-import type { MvFirstParams, MvListParams, MvPaginationParams, MvTopParams } from "@/types/api/mv";
-import type { MvQueryId, MvQueryOptions } from "@/types/mv";
+import type { MvFirstParams, MvListParams, MvPaginationParams, MvTopParams } from "@/types/mv/api";
+import type { MvQueryId, MvQueryOptions } from "@/types/mv/model";
 
 export function useAllMVsQuery(params: MvListParams = {}, options: MvQueryOptions = {}) {
   return useQuery({

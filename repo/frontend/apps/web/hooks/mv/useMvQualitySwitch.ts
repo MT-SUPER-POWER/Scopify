@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useState, type RefObject, type SyntheticEvent } from "react";
-import type { MvQualityPlaybackSnapshot } from "@/types/mv";
+import type { MvQualityPlaybackSnapshot } from "@/types/mv/model";
 import { restoreMvQualityPlayback } from "@/lib/music/mvQuality";
 
 /** 换源前保存媒体状态，在新源元数据就绪时恢复。 */

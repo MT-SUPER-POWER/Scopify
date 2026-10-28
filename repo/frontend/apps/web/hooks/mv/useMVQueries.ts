@@ -8,8 +8,8 @@ import { getMVComments } from "@/lib/api/comment";
 import { getMVDetail, getMVDetailInfo, getMVUrl, getSubscribedMVs } from "@/lib/api/mv";
 import { musicQueryKeys } from "@/lib/query/queryKeys";
 import type { MusicCommentParams } from "@/types/api/comment";
-import type { MvPaginationParams } from "@/types/api/mv";
-import type { MvQueryId, MvQueryOptions } from "@/types/mv";
+import type { MvPaginationParams } from "@/types/mv/api";
+import type { MvQueryId, MvQueryOptions } from "@/types/mv/model";
 
 export function useMVDetailQuery(mvid: MvQueryId, options: MvQueryOptions = {}) {
   const { accountId } = useAuth();

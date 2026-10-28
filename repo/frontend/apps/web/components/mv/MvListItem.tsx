@@ -7,7 +7,7 @@ import { getSizedImageUrl } from "@/lib/music/imageUrl";
 import { getMvArtistNames, getMvCover } from "@/lib/music/mvCover";
 import { cn, formatDuration, formatPlayCount } from "@/lib/utils";
 import { useI18n } from "@/store/module/i18n";
-import type { MvListItemProps } from "@/types/components/mv";
+import type { MvListItemProps } from "@/types/mv/components";
 
 const ROW_CLASS =
   "group flex w-full items-start gap-2 rounded-lg p-1 text-left transition-colors hover:bg-content/5";

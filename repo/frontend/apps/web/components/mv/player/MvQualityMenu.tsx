@@ -3,7 +3,7 @@
 import { ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useI18n } from "@/store/module/i18n";
-import type { MvQualityMenuProps } from "@/types/components/mv";
+import type { MvQualityMenuProps } from "@/types/mv/components";
 
 /** 原生选择器在播放器真全屏内仍可用，并保留键盘选择行为。 */
 export function MvQualityMenu({ resolutions, current, onChange }: MvQualityMenuProps) {

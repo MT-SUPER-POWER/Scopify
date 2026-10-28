@@ -2,7 +2,7 @@
 
 import { Volume1, Volume2, VolumeX } from "lucide-react";
 import { useI18n } from "@/store/module/i18n";
-import type { MvVolumeControlProps } from "@/types/components/mv";
+import type { MvVolumeControlProps } from "@/types/mv/components";
 
 const CONTROL_BTN =
   "flex size-10 items-center justify-center rounded-full text-white transition-colors hover:bg-white/15";

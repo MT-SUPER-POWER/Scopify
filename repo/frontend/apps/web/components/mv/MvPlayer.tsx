@@ -23,7 +23,7 @@ import { useMvQualitySwitch } from "@/hooks/mv/useMvQualitySwitch";
 import { getMvResolutions } from "@/lib/music/mvQuality";
 import { cn, formatDuration } from "@/lib/utils";
 import { useI18n } from "@/store/module/i18n";
-import type { MvPlayerProps } from "@/types/components/mv";
+import type { MvPlayerProps } from "@/types/mv/components";
 
 const CONTROLS_IDLE_MS = 2_500;
 const VOLUME_STORAGE_KEY = "scopify-mv-volume";

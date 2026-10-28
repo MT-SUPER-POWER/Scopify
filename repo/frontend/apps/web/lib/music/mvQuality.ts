@@ -1,5 +1,5 @@
-import type { MvResolution } from "@/types/api/mv";
-import type { MvQualityPlaybackSnapshot, MvQualityPlaybackTarget } from "@/types/mv";
+import type { MvResolution } from "@/types/mv/api";
+import type { MvQualityPlaybackSnapshot, MvQualityPlaybackTarget } from "@/types/mv/model";
 
 /** 只列出接口提供的档位，以及播放地址返回的实际分辨率。 */
 export function getMvResolutions(resolutions: MvResolution[], current: number) {

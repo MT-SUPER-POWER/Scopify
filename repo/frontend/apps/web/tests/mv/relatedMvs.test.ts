@@ -1,6 +1,6 @@
 import { describe, expect, it } from "bun:test";
 import { getRelatedMvKeyword, getRelatedMvs } from "@/lib/music/relatedMvs";
-import type { MvSummary } from "@/types/api/mv";
+import type { MvSummary } from "@/types/mv/api";
 
 describe("search-backed related MVs", () => {
   it("searches the current title with the main artist", () => {

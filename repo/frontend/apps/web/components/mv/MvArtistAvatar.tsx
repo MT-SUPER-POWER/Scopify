@@ -4,7 +4,7 @@ import Image from "next/image";
 import { useArtistDetailQuery } from "@/hooks/artist/useArtistQueries";
 import { getSizedImageUrl } from "@/lib/music/imageUrl";
 import { cn } from "@/lib/utils";
-import type { MvArtistAvatarProps } from "@/types/components/mv";
+import type { MvArtistAvatarProps } from "@/types/mv/components";
 
 /**
  * MV 艺人的圆形头像。MV 列表接口不带头像，按艺人 id 取详情（公共缓存、跨卡片共享）；

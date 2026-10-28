@@ -1,7 +1,7 @@
 "use client";
 
 import { type RefObject, useCallback, useEffect, useState } from "react";
-import type { MvVideoState } from "@/types/mv";
+import type { MvVideoState } from "@/types/mv/model";
 
 const INITIAL_STATE: MvVideoState = {
   buffered: 0,

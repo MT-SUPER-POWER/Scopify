@@ -15,7 +15,7 @@ import { resolveCommentIpLocation } from "@/lib/comment/commentResource";
 import { getSizedImageUrl } from "@/lib/music/imageUrl";
 import { cn, formatPlayCount } from "@/lib/utils";
 import { useI18n } from "@/store/module/i18n";
-import type { MvCommentItemProps } from "@/types/components/mv";
+import type { MvCommentItemProps } from "@/types/mv/components";
 
 /**
  * YouTube 式评论条目：头像、「@昵称 · 时间」、正文，下方点赞与「回复」；

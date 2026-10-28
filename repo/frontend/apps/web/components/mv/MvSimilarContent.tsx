@@ -10,7 +10,7 @@ import { useInfiniteMvSearchQuery } from "@/hooks/search/useSearchQueries";
 import { useInfiniteScrollTrigger } from "@/hooks/search/useInfiniteScrollTrigger";
 import { getRelatedMvKeyword, getRelatedMvs } from "@/lib/music/relatedMvs";
 import { useI18n } from "@/store/module/i18n";
-import type { MvSimilarContentProps } from "@/types/components/mv";
+import type { MvSimilarContentProps } from "@/types/mv/components";
 
 export function MvSimilarContent({ mvid, detail, onNextChange }: MvSimilarContentProps) {
   const { t } = useI18n();

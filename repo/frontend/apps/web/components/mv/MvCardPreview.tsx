@@ -4,7 +4,7 @@ import { VolumeX } from "lucide-react";
 import { useState } from "react";
 import { useMVUrlQuery } from "@/hooks/mv/useMVQueries";
 import { cn } from "@/lib/utils";
-import type { MvCardPreviewProps } from "@/types/components/mv";
+import type { MvCardPreviewProps } from "@/types/mv/components";
 
 /** 悬停预览用的低清晰度，起播快、流量小。 */
 const PREVIEW_RESOLUTION = 480;

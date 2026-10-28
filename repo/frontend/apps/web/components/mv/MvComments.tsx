@@ -16,7 +16,7 @@ import { getCommentHref } from "@/lib/comment/commentResource";
 import { useLoginStatus } from "@/lib/hooks/useLoginStatus";
 import { useUserStore } from "@/store";
 import { useI18n } from "@/store/module/i18n";
-import type { MvCommentsProps } from "@/types/components/mv";
+import type { MvCommentsProps } from "@/types/mv/components";
 
 type MvCommentSort = "hot" | "latest";
 

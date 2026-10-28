@@ -13,7 +13,7 @@ import type {
   RecommendedMvsResponse,
   SimilarMvsResponse,
   SubscribedMvsResponse,
-} from "@/types/api/mv";
+} from "@/types/mv/api";
 
 /** 全部 MV，可按地区、类型和排序筛选。 */
 export function getAllMVs(params: MvListParams = {}, signal?: AbortSignal) {

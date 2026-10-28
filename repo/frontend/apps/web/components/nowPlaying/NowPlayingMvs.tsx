@@ -6,7 +6,7 @@ import { useArtistMVsQuery, useMVDetailQuery } from "@/hooks/mv/useMVQueries";
 import { useSongMvId } from "@/hooks/song/useSongMvId";
 import { useNowPlayingMv } from "@/hooks/ui/useNowPlayingMv";
 import { useI18n } from "@/store/module/i18n";
-import type { MvSummary } from "@/types/api/mv";
+import type { MvSummary } from "@/types/mv/api";
 import type { NowPlayingSectionProps } from "@/types/components/nowPlaying";
 
 const MV_LIMIT = 4;

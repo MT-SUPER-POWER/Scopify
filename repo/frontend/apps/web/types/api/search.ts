@@ -1,4 +1,4 @@
-import type { MvSummary } from "@/types/api/mv";
+import type { MvSummary } from "@/types/mv/api";
 
 export interface SearchArtistSource {
   albumSize?: number;
