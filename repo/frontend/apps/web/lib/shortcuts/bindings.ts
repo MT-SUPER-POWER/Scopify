@@ -11,18 +11,17 @@ export function getEffectiveShortcutBinding(
 }
 
 export function getShortcutBindingLabel(binding: ShortcutBinding | null): string {
-  return getShortcutBindingParts(binding).join(" ");
+  return getShortcutBindingParts(binding).join(isMacPlatform() ? " " : " + ");
 }
 
 export function getShortcutBindingParts(binding: ShortcutBinding | null): string[] {
   if (!binding) return [];
 
   const mac = isMacPlatform();
-  const modifier = mac ? "⌘" : "⌃";
   return [
-    binding.primary ? modifier : null,
-    binding.alt ? "⌥" : null,
-    binding.shift ? "⇧" : null,
+    binding.primary ? (mac ? "⌘" : "Ctrl") : null,
+    binding.alt ? (mac ? "⌥" : "Alt") : null,
+    binding.shift ? (mac ? "⇧" : "Shift") : null,
     getKeyLabel(binding.key),
   ].filter((part): part is string => Boolean(part));
 }
@@ -82,6 +81,16 @@ export function findShortcutConflict(
 }
 
 function getKeyLabel(key: string) {
+  if (!isMacPlatform()) {
+    if (key === "Space") return "Space";
+    if (key === "Enter" || key === "NumpadEnter") return "Enter";
+    if (key === "Escape") return "Esc";
+    if (key === "Backspace") return "Backspace";
+    if (key === "Delete") return "Delete";
+    if (key === "Tab") return "Tab";
+    if (key === "ControlLeft" || key === "ControlRight") return "Ctrl";
+    if (key === "MetaLeft" || key === "MetaRight") return "Win";
+  }
   if (SHORTCUT_KEY_LABELS[key]) return SHORTCUT_KEY_LABELS[key];
   if (key === "Enter" || key === "NumpadEnter") return "↩";
   if (key === "Escape") return "⎋";
