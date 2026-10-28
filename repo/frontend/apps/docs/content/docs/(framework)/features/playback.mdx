@@ -7,6 +7,10 @@ import playbackQueueScreenshot from "../../../../assets/features/playback-queue-
 import nowPlayingPanelScreenshot from "../../../../assets/features/now-playing-panel.png";
 import mvPlayerScreenshot from "../../../../assets/features/mv-player-current.png";
 import mvTheaterScreenshot from "../../../../assets/features/mv-theater-current.png";
+import mvSettingsScreenshot from "../../../../assets/features/mv-settings-current.png";
+import mvSpeedScreenshot from "../../../../assets/features/mv-speed-current.png";
+import mvTheaterControlsScreenshot from "../../../../assets/features/mv-theater-controls-current.png";
+import mvTheaterPlaybarScreenshot from "../../../../assets/features/mv-theater-playbar-current.png";
 import mvWebFullscreenScreenshot from "../../../../assets/features/mv-web-fullscreen-current.png";
 import mvFullscreenScreenshot from "../../../../assets/features/mv-fullscreen-current.png";
 import mvCommentsScreenshot from "../../../../assets/features/mv-comments-current.png";
@@ -44,17 +48,51 @@ import mvCommentsScreenshot from "../../../../assets/features/mv-comments-curren
 
 ## MV 播放与评论
 
-有 MV 的歌曲可以从正在播放面板进入 MV 播放页，也可以从 [MV 搜索](/docs/features/search) 打开。播放页将视频、歌曲信息与互动操作组合在一起，提供清晰度选择、剧场模式、网页全屏和全屏；切换清晰度时保留播放进度。歌单和专辑也可进入 MV 预览，逐首浏览相关视频。
+有 MV 的歌曲可以从正在播放面板进入 MV 播放页，也可以从 [MV 搜索](/docs/features/search) 打开。播放页将视频、歌曲信息与互动操作组合在一起，提供画质、倍速、自动续播、剧场模式、网页全屏和全屏。歌单和专辑也可进入 MV 预览，逐首浏览相关视频。
 
 <figure>
   <img className="h-auto w-full rounded-xl border" src={mvPlayerScreenshot.src} alt="MV 普通播放布局，展示视频播放器、清晰度、视频信息和评论入口" />
-  <figcaption>普通播放布局把播放控制、视频信息和评论放在同一条浏览路径中。</figcaption>
+  <figcaption>剧场模式关闭：视频与相似 MV 并排，下方保留详情、评论及底部播放栏。</figcaption>
 </figure>
+
+### 播放器设置
+
+点击视频右下角的齿轮打开「播放器设置」，统一调整画质、播放速度和「自动播放下一个」。画质支持自动选择与视频提供的清晰度，切换时保留进度；开启自动续播后，播完会接着播放可用的下一支相似 MV。
+
+<figure>
+  <img className="h-auto w-full rounded-xl border" src={mvSettingsScreenshot.src} alt="完整客户端窗口，MV 播放器设置展开画质、播放速度和自动播放下一个" />
+  <figcaption>播放器设置集中在齿轮菜单中，不必离开视频。</figcaption>
+</figure>
+
+播放速度提供 0.5×、0.75×、正常、1.25×、1.5×、1.75× 和 2×。
+
+<figure>
+  <img className="h-auto w-full rounded-xl border" src={mvSpeedScreenshot.src} alt="完整客户端窗口，MV 播放速度菜单展示 0.5 倍至 2 倍选项" />
+  <figcaption>展开播放速度，按观看习惯选择倍速。</figcaption>
+</figure>
+
+### 剧场模式与底部播放栏
+
+点击齿轮旁的「剧场模式」按钮展开菜单，或按 `T` 直接切换。开启后视频横跨内容区域，详情与相似 MV 移到下方，并默认隐藏应用底部播放栏，为画面留出更多空间；视频自身的进度、音量和播放控制仍然保留。
 
 <figure>
   <img className="h-auto w-full rounded-xl border" src={mvTheaterScreenshot.src} alt="MV 剧场模式，宽幅播放器横跨内容区域" />
-  <figcaption>剧场模式放宽播放器，保留视频下方的详情内容。</figcaption>
+  <figcaption>同一画面的剧场模式：播放器放大，底部播放栏隐藏，顶部导航与左侧栏仍可使用。</figcaption>
 </figure>
+
+在剧场模式菜单中打开「显示播放条」，可以保留底部歌曲播放栏；关闭则重新收起。退出剧场模式或离开 MV 页面时，底部播放栏恢复显示。
+
+<figure>
+  <img className="h-auto w-full rounded-xl border" src={mvTheaterControlsScreenshot.src} alt="完整客户端窗口，剧场模式已开启，显示播放条开关关闭" />
+  <figcaption>剧场模式菜单可独立控制底部播放栏的显示与隐藏。</figcaption>
+</figure>
+
+<figure>
+  <img className="h-auto w-full rounded-xl border" src={mvTheaterPlaybarScreenshot.src} alt="完整客户端窗口，剧场模式开启且底部歌曲播放栏显示" />
+  <figcaption>打开「显示播放条」后，宽幅视频与底部歌曲播放栏同时保留。</figcaption>
+</figure>
+
+### 网页全屏与系统全屏
 
 <figure>
   <img className="h-auto w-full rounded-xl border" src={mvWebFullscreenScreenshot.src} alt="MV 网页全屏模式，播放器覆盖整个客户端窗口" />
@@ -73,4 +111,4 @@ import mvCommentsScreenshot from "../../../../assets/features/mv-comments-curren
   <figcaption>评论直接接在视频信息下方，也可进入完整评论页。</figcaption>
 </figure>
 
-在 MV 播放器中，`T` 切换剧场模式，`W` 切换网页全屏，`F` 切换全屏，`Esc` 退出网页全屏。
+在 MV 播放器中，`Space` / `K` 播放或暂停，`J` / `L` 后退或前进 10 秒，`←` / `→` 调整 5 秒，`↑` / `↓` 调整音量，`M` 静音；`T` 切换剧场模式，`W` 切换网页全屏，`F` 切换全屏，`Esc` 关闭展开的菜单或退出网页全屏。输入评论时不会触发这些单键快捷键。
