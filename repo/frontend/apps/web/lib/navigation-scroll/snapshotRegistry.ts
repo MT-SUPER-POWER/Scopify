@@ -4,7 +4,7 @@ import type {
   NavigationScrollSnapshotRecord,
   NavigationScrollSnapshotRegistryLike,
   NavigationScrollSnapshotRegistryOptions,
-} from "@/types/app/navigationScroll";
+} from "@/types/core/navigationScroll";
 
 const DEFAULT_MAX_ENTRIES = 80;
 const DEFAULT_STORAGE_KEY = "scopify.navigation-scroll.snapshots.v1";

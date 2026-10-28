@@ -1,5 +1,5 @@
 import type { TranslationKey } from "@/lib/i18n";
-import type { PlaybackProgressRefreshRate } from "@/types/app/performance";
+import type { PlaybackProgressRefreshRate } from "@/types/core/performance";
 
 export const PERFORMANCE_STORAGE_KEY = "performance-storage";
 

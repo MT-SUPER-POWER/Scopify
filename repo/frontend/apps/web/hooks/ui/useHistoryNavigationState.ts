@@ -1,7 +1,7 @@
 "use client";
 
 import { useSyncExternalStore } from "react";
-import type { HistoryNavigationState } from "@/types/app/ui";
+import type { HistoryNavigationState } from "@/types/core/ui";
 
 interface NavigationApi extends EventTarget {
   canGoBack: boolean;

@@ -1,5 +1,5 @@
 import type { AxiosRequestConfig } from "axios";
-import type { LogMetadata } from "@/types/app/logging";
+import type { LogMetadata } from "@/types/core/logging";
 
 export type ApiErrorKind = "unauthenticated" | NetworkErrorKind;
 export interface ApiErrorOptions {

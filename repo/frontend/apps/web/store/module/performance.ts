@@ -6,7 +6,7 @@ import {
   PERFORMANCE_STORAGE_KEY,
   PLAYBACK_PROGRESS_REFRESH_RATES,
 } from "@/constants/performance";
-import type { PerformanceStore, PlaybackProgressRefreshRate } from "@/types/app/performance";
+import type { PerformanceStore, PlaybackProgressRefreshRate } from "@/types/core/performance";
 
 function isProgressRefreshRate(value: unknown): value is PlaybackProgressRefreshRate {
   return PLAYBACK_PROGRESS_REFRESH_RATES.some((rate) => rate === value);

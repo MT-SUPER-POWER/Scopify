@@ -1,6 +1,6 @@
 import { useRouter as useNextRouter } from "next/navigation";
 import { useCallback } from "react";
-import type { QueryParams } from "@/types/app/router";
+import type { QueryParams } from "@/types/core/router";
 
 /**
  * 辅助函数：将对象转换为 URL 查询字符串并拼接到 URL 后

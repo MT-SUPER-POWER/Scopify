@@ -2,7 +2,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { TIME_PERSISTENCE_STORAGE_KEY } from "@/constants/playbackPersistence";
-import type { TimeStore } from "@/types/app/time";
+import type { TimeStore } from "@/types/core/time";
 
 export const useTimeStore = create<TimeStore>()(
   persist(
