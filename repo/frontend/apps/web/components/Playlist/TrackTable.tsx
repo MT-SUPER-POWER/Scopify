@@ -16,7 +16,7 @@ import { usePathname, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
 
-import type { PlaylistTrackDeleteRequest, TracklistTableProps } from "@/types/components/playlist";
+import type { PlaylistTrackDeleteRequest, TracklistTableProps } from "@/types/playlist/components";
 
 import {
   useNavigationScrollRestorationAdapter,

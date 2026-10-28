@@ -2,7 +2,7 @@ import type { MouseEvent, ReactNode } from "react";
 import type { NeteaseAlbum } from "@/types/album/api";
 import type { NeteaseBanner } from "@/types/api/banner";
 import type { SongDetail } from "@/types/song/api";
-import type { RecommendPlaylist } from "@/types/api/playlist";
+import type { RecommendPlaylist } from "@/types/playlist/api";
 import type { ToplistDetailItem } from "@/types/api/toplist";
 import type { CarouselDirection, HomePlaybackActions } from "@/types/home";
 import type { Artist, Voice } from "@/types/search/model";

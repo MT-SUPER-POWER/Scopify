@@ -2,7 +2,7 @@
 
 import { useEffect, useLayoutEffect, useState } from "react";
 import { usePrimaryScrollSurface } from "@/components/shared/NavigationScrollProvider";
-import type { PlaylistStickyControlsOptions } from "@/types/playlist";
+import type { PlaylistStickyControlsOptions } from "@/types/playlist/model";
 
 export function usePlaylistStickyControls({
   actionBarRef,

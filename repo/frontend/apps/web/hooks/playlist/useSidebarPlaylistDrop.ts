@@ -6,7 +6,7 @@ import { useTrackDropTarget } from "@/hooks/playlist/useTrackDropTarget";
 import { isRealUser } from "@/lib/hooks/useLoginStatus";
 import { useUserStore } from "@/store";
 import { useAppDragStore } from "@/store/module/appDrag";
-import type { NeteasePlaylist } from "@/types/api/playlist";
+import type { NeteasePlaylist } from "@/types/playlist/api";
 
 export function useSidebarPlaylistDrop(playlist: NeteasePlaylist) {
   const user = useUserStore((state) => state.user);

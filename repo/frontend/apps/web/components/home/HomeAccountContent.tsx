@@ -8,7 +8,7 @@ import {
   useRecentPlaylistsQuery,
 } from "@/hooks/home/useHomeQueries";
 import { useLoginStatus } from "@/lib/hooks/useLoginStatus";
-import { pruneRecommendPlaylist, type RawRecommendPlaylist } from "@/types/api/playlist";
+import { pruneRecommendPlaylist, type RawRecommendPlaylist } from "@/types/playlist/api";
 import type { HomeQueryContentProps } from "@/types/components/home";
 
 export function HomeRecentPlaylistsContent({ actions }: HomeQueryContentProps) {

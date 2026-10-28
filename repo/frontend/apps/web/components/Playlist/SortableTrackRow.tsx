@@ -3,7 +3,7 @@
 import { forwardRef, useCallback, useMemo } from "react";
 import { TrackRow } from "@/components/Playlist/TrackRow";
 import { useSortableListItem } from "@/hooks/playlist/useSortableListItem";
-import type { SortableTrackRowProps } from "@/types/components/playlist";
+import type { SortableTrackRowProps } from "@/types/playlist/components";
 
 export const SortableTrackRow = forwardRef<HTMLTableRowElement, SortableTrackRowProps>(
   function SortableTrackRow({ allowReorder, onRowElementChange, ...props }, ref) {

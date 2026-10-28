@@ -13,7 +13,7 @@ import { UpdatePlaylistDialog } from "@/components/Playlist/PlaylistForm";
 import { usePlaylistManagement } from "@/hooks/playlist/usePlaylistManagement";
 import { cn } from "@/lib/utils";
 import { useI18n } from "@/store/module/i18n";
-import type { PlaylistMoreMenuProps } from "@/types/components/playlist";
+import type { PlaylistMoreMenuProps } from "@/types/playlist/components";
 
 export function PlaylistMoreMenu({ playlistId, playlistInfo, isSticky }: PlaylistMoreMenuProps) {
   const { t } = useI18n();

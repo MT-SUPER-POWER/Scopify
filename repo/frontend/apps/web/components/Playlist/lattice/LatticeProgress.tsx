@@ -5,7 +5,7 @@ import type { CSSProperties } from "react";
 import { usePlaybackCommands } from "@/hooks/player/usePlaybackCommands";
 import { usePlaybackPosition, usePlaybackProjection } from "@/hooks/player/usePlaybackProjection";
 import { useI18n } from "@/store/module/i18n";
-import type { LatticeProgressProps } from "@/types/components/playlistLattice";
+import type { LatticeProgressProps } from "@/types/playlist/latticeComponents";
 import styles from "./LatticeControls.module.css";
 
 const time = (milliseconds: number) => {

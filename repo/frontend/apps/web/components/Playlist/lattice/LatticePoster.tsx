@@ -4,7 +4,7 @@ import { lazy, memo, Suspense, useEffect, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { useLatticeExpansionSettled } from "@/hooks/playlist/useLatticeExpansionSettled";
 import { useI18n } from "@/store/module/i18n";
-import type { LatticePosterProps } from "@/types/components/playlistLattice";
+import type { LatticePosterProps } from "@/types/playlist/latticeComponents";
 import { LatticePosterArtwork } from "./LatticePosterArtwork";
 import { LatticePlaybackControls } from "./LatticePlaybackControls";
 import styles from "./PlaylistLattice.module.css";

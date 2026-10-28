@@ -9,7 +9,7 @@ import { useVoiceLike } from "@/hooks/voice/useVoiceLike";
 import { useLoginStatus } from "@/lib/hooks/useLoginStatus";
 import { usePlayerStore, useUserStore } from "@/store";
 import { useI18n } from "@/store/module/i18n";
-import type { NeteasePlaylist } from "@/types/api/playlist";
+import type { NeteasePlaylist } from "@/types/playlist/api";
 import type { SongContextMenuActionsProps } from "@/types/song/contextMenuComponents";
 
 export function useSongContextMenuActions({

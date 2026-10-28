@@ -1,5 +1,5 @@
 import { getUserPlaylist } from "@/lib/api/playlist";
-import type { RawNeteasePlaylist } from "@/types/api/playlist";
+import type { RawNeteasePlaylist } from "@/types/playlist/api";
 
 /** Fetch every page before presenting a library order for editing. */
 export async function fetchUserPlaylists(userId: number) {

@@ -3,7 +3,7 @@
 import { useCallback, useMemo, useRef, useState } from "react";
 import { canRemoveTracksFromPlaylist } from "@/lib/playlist/playlistTrackRemovalPermission";
 import { useUserStore } from "@/store";
-import type { PlaylistContentPresentationOptions } from "@/types/components/playlist";
+import type { PlaylistContentPresentationOptions } from "@/types/playlist/components";
 
 export function usePlaylistContentPresentation({
   playlistInfo,

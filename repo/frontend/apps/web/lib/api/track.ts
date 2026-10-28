@@ -4,7 +4,7 @@ import type {
   PlaylistTrackMutationVariables,
   PlaylistTrackUpdateResponse,
   PlaylistTrackResponsePayload,
-} from "@/types/api/playlist";
+} from "@/types/playlist/api";
 
 import request, { requestConfig, requestData } from "../web/request";
 import { ApiError } from "../web/apiError";

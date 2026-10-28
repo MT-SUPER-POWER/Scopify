@@ -1,4 +1,4 @@
-import type { MeasureText } from "@/types/playlistLatticeLyrics";
+import type { MeasureText } from "@/types/playlist/latticeLyrics";
 import type { Texture } from "pixi.js";
 
 // src/components/app/lattice/lyrics/latticeLyricRaster.ts

@@ -13,7 +13,7 @@ import {
 import { useI18n } from "@/store/module/i18n";
 import { useUiStore } from "@/store/module/ui";
 import { useLatticePreferences } from "@/store/module/lattice";
-import type { LatticeToolbarProps } from "@/types/components/playlistLattice";
+import type { LatticeToolbarProps } from "@/types/playlist/latticeComponents";
 import styles from "./PlaylistLattice.module.css";
 
 export function LatticeToolbar({

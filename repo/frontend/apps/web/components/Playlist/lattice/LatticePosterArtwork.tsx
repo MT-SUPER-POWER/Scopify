@@ -2,7 +2,7 @@
 
 import { ArrowUpRight, Disc3 } from "lucide-react";
 import { getSizedImageUrl } from "@/lib/music/imageUrl";
-import type { LatticePosterArtworkProps } from "@/types/components/playlistLattice";
+import type { LatticePosterArtworkProps } from "@/types/playlist/latticeComponents";
 import styles from "./PlaylistLattice.module.css";
 
 export function LatticePosterArtwork({

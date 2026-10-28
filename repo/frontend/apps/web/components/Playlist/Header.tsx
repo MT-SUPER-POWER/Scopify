@@ -6,7 +6,7 @@ import React from "react";
 import { HeaderDescription } from "@/components/shared/HeaderDescription";
 import { ResponsiveHeaderTitle } from "@/components/shared/ResponsiveHeaderTitle";
 import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
-import type { PlaylistInfo } from "@/types/playlist";
+import type { PlaylistInfo } from "@/types/playlist/model";
 
 const DailyCalendarCover = ({ dailyDate }: { dailyDate?: string }) => {
   const requestedDate = dailyDate ? new Date(`${dailyDate}T00:00:00`) : new Date();

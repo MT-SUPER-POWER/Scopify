@@ -1,7 +1,7 @@
 import type {
   PlaylistHighQualityTagsResponse,
   UpdatePlaylistParams,
-} from "@/types/api/playlistTags";
+} from "@/types/playlist/tagsApi";
 import type {
   DailyRecommendationDislikeResponse,
   HistoricalDailyRecommendationDetailResponse,
@@ -17,7 +17,7 @@ import type {
   PlaylistOrderUpdateParams,
   SongOrderUpdateParams,
   PlaylistTrackUpdateResponse,
-} from "@/types/api/playlist";
+} from "@/types/playlist/api";
 import request, { requestConfig } from "../web/request";
 import { measureImageDimensions } from "@/lib/image/measureImage";
 

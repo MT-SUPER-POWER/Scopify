@@ -17,7 +17,7 @@ import { usePlayerStore } from "@/store/module/player";
 import { useUiStore } from "@/store/module/ui";
 import { useI18n } from "@/store/module/i18n";
 import { isPersonalFmPlaybackSource } from "@/constants/personalFm";
-import type { LatticePlaybackControlsProps } from "@/types/components/playlistLattice";
+import type { LatticePlaybackControlsProps } from "@/types/playlist/latticeComponents";
 import { LatticeProgress } from "./LatticeProgress";
 import styles from "./LatticeControls.module.css";
 

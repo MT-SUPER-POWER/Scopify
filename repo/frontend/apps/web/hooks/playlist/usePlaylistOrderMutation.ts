@@ -10,8 +10,8 @@ import { clearPageCache } from "@/lib/cache/pageCache";
 import { musicQueryKeys } from "@/lib/query/queryKeys";
 import { useUserStore } from "@/store";
 import { useI18n } from "@/store/module/i18n";
-import { prunePlaylist, type PlaylistContent } from "@/types/api/playlist";
-import type { InlineOrderMove } from "@/types/playlistOrder";
+import { prunePlaylist, type PlaylistContent } from "@/types/playlist/api";
+import type { InlineOrderMove } from "@/types/playlist/order";
 
 export function usePlaylistOrderMutation() {
   const queryClient = useQueryClient();

@@ -10,7 +10,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@scopify/ui/shadcn/comp
 import { useRecentSongsQuery } from "@/hooks/library/useLibraryQueries";
 import { useLoginStatus } from "@/lib/hooks/useLoginStatus";
 import { useI18n } from "@/store/module/i18n";
-import type { PlaylistInfo } from "@/types/playlist";
+import type { PlaylistInfo } from "@/types/playlist/model";
 
 export default function RecentSongsPage() {
   const { t } = useI18n();

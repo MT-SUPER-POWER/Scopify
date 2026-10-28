@@ -14,7 +14,7 @@ import { useCloudDrive } from "@/hooks/library/useCloudDrive";
 import { useI18n } from "@/store/module/i18n";
 import type { SongDetail } from "@/types/song/api";
 import type { CloudTrackActions } from "@/types/components/library";
-import type { PlaylistInfo } from "@/types/playlist";
+import type { PlaylistInfo } from "@/types/playlist/model";
 
 const EMPTY_TRACKS: SongDetail[] = [];
 

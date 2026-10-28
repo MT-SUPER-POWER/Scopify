@@ -1,4 +1,4 @@
-import type { Pixi } from "@/types/playlistLatticeLyrics";
+import type { Pixi } from "@/types/playlist/latticeLyrics";
 import type { Filter, Texture, UniformGroup } from "pixi.js";
 
 // src/components/app/lattice/lyrics/latticeLyricFilters.ts

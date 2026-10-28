@@ -8,7 +8,7 @@ import { TableCell } from "@/components/ui/table";
 import { LikeButton } from "@/components/ui/LikeButton";
 import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
 import { formatDate, formatDuration } from "@/lib/utils";
-import type { TrackRowCellsProps } from "@/types/components/playlist";
+import type { TrackRowCellsProps } from "@/types/playlist/components";
 
 /** Keep the expensive cells independent of drag/context-menu DOM event props. */
 export const TrackRowCells = memo(function TrackRowCells({

@@ -8,7 +8,7 @@ import { usePlaylistContentQuery } from "@/hooks/playlist/usePlaylistContentQuer
 import { resolveDailyRecommendationRequest } from "@/lib/playlist/dailyRecommendationRequest";
 import { getMainColorFromImage } from "@/lib/web/imageColor";
 import { useI18n } from "@/store/module/i18n";
-import type { PlaylistInfo } from "@/types/playlist";
+import type { PlaylistInfo } from "@/types/playlist/model";
 
 const colorCache = new Map<string, string>([["daily", "#c42b2b"]]);
 const COLOR_CACHE_LIMIT = 15;

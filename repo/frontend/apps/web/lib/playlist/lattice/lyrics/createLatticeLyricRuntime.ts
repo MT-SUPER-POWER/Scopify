@@ -1,4 +1,4 @@
-import type { Track, LatticeLyricInput, LatticeLyricRuntime } from "@/types/playlistLatticeLyrics";
+import type { Track, LatticeLyricInput, LatticeLyricRuntime } from "@/types/playlist/latticeLyrics";
 import { cubicBezier } from "framer-motion";
 import { loadPixi } from "@/lib/lyrics/folia/loadPixi";
 import { resolveSingleTrackSubtitleMode } from "@/components/lyrics/folia/src/utils/lyrics/alternateText";

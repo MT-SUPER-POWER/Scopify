@@ -1,6 +1,6 @@
 import PlaylistHeader from "@/components/Playlist/Header";
 import PlaylistHeaderSkeleton from "@/components/Playlist/HeaderSkeleton";
-import type { PlaylistHeroProps } from "@/types/components/playlist";
+import type { PlaylistHeroProps } from "@/types/playlist/components";
 
 export function PlaylistHero({
   isLoading,

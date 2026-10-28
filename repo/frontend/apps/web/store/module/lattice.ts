@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import type { LatticePreferences, LatticeViewState } from "@/types/playlistLattice";
+import type { LatticePreferences, LatticeViewState } from "@/types/playlist/lattice";
 
 export const useLatticePreferences = create<LatticePreferences>()(
   persist(

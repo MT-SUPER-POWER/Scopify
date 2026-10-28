@@ -2,7 +2,7 @@ import type {
   UpdateUserProfilePayload,
   UpdateUserProfileResponse,
 } from "@/types/user/profileUpdateApi";
-import type { UserPlaylistResponse } from "@/types/api/playlist";
+import type { UserPlaylistResponse } from "@/types/playlist/api";
 import type {
   IUserDetail,
   RecentPlaylistsResponse,

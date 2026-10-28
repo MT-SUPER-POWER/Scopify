@@ -6,12 +6,12 @@ import { clearPageCache } from "@/lib/cache/pageCache";
 import { musicQueryKeys } from "@/lib/query/queryKeys";
 import { reportActionFailure } from "@/lib/web/errorTracking";
 import { useUserStore } from "@/store/module/user";
-import type { SongLikeMutationVariables } from "@/types/api/playlist";
+import type { SongLikeMutationVariables } from "@/types/playlist/api";
 import type {
   SongLikeMutationContext,
   SongLikeMutationDependencies,
   SongLikeMutationMessages,
-} from "@/types/playlist";
+} from "@/types/playlist/model";
 
 const DEFAULT_DEPENDENCIES: SongLikeMutationDependencies = {
   clearPageCache,

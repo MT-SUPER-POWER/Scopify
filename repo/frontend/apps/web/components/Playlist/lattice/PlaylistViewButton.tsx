@@ -3,7 +3,7 @@
 import { PanelsTopLeft } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@scopify/ui/shadcn/components/tooltip";
 import { useI18n } from "@/store/module/i18n";
-import type { PlaylistViewButtonProps } from "@/types/components/playlistLattice";
+import type { PlaylistViewButtonProps } from "@/types/playlist/latticeComponents";
 
 export function PlaylistViewButton({ onOpen, disabled }: PlaylistViewButtonProps) {
   const { t } = useI18n();

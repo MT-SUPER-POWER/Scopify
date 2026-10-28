@@ -1,5 +1,5 @@
 import { Skeleton } from "@scopify/ui/shadcn/components/skeleton";
-import type { PlaylistHeaderSkeletonProps } from "@/types/components/playlist";
+import type { PlaylistHeaderSkeletonProps } from "@/types/playlist/components";
 
 export default function PlaylistHeaderSkeleton({
   showActions = true,

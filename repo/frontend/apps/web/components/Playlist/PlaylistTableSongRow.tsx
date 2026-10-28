@@ -5,7 +5,7 @@ import dynamic from "next/dynamic";
 import { CloudSongContextMenu } from "@/components/library/CloudSongContextMenu";
 import { SongContextMenu } from "@/components/shared/SongContextMenu";
 import { SortableTrackRow } from "@/components/Playlist/SortableTrackRow";
-import type { PlaylistTableSongRowProps } from "@/types/components/playlist";
+import type { PlaylistTableSongRowProps } from "@/types/playlist/components";
 
 const SimilarSongsDialog = dynamic(
   () => import("@/components/song/SimilarSongsDialog").then((module) => module.SimilarSongsDialog),

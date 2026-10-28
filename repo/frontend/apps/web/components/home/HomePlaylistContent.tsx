@@ -9,7 +9,7 @@ import {
 } from "@/hooks/home/useHomeQueries";
 import { useLoginStatus } from "@/lib/hooks/useLoginStatus";
 import { selectFallbackSource, toFallbackSource } from "@/lib/query/fallbackSource";
-import { pruneRecommendPlaylist } from "@/types/api/playlist";
+import { pruneRecommendPlaylist } from "@/types/playlist/api";
 import type { HomeGreetingContentProps, HomeQueryContentProps } from "@/types/components/home";
 
 export function HomeGreetingContent({ actions, greeting, dateInfo }: HomeGreetingContentProps) {

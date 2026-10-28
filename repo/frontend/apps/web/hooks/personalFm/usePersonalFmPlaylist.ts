@@ -19,7 +19,7 @@ import { ensurePersonalFmOnEntry } from "@/lib/personalFm/entry";
 import { usePersonalFmStore } from "@/store/module/personalFm";
 import { usePlayerStore } from "@/store/module/player";
 import type { SongDetail } from "@/types/song/api";
-import type { PlaylistInfo } from "@/types/playlist";
+import type { PlaylistInfo } from "@/types/playlist/model";
 
 export function usePersonalFmPlaylist() {
   const { t } = useI18n();

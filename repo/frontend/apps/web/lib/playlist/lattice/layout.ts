@@ -6,7 +6,7 @@ import type {
   ReflowTile,
   QueueInstance,
   LatticeGeometry,
-} from "@/types/playlistLattice";
+} from "@/types/playlist/lattice";
 // Pure geometry for the poster wall: an infinite lattice of repeated cells, plus the
 // anchored expansion reflow that pushes neighbours aside.
 

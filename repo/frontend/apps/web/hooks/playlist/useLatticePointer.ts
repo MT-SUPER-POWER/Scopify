@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useRef } from "react";
 import type { MouseEvent, PointerEvent } from "react";
 import { animate } from "framer-motion";
-import type { LatticePointerOptions, LatticeDrag } from "@/types/playlistLattice";
+import type { LatticePointerOptions, LatticeDrag } from "@/types/playlist/lattice";
 
 export function useLatticePointer({
   fieldRef,

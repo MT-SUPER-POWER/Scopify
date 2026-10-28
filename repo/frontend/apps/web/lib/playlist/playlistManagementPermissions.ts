@@ -1,4 +1,4 @@
-import type { RawNeteasePlaylist } from "@/types/api/playlist";
+import type { RawNeteasePlaylist } from "@/types/playlist/api";
 
 export function getPlaylistManagementPermissions(
   playlist: RawNeteasePlaylist | undefined,

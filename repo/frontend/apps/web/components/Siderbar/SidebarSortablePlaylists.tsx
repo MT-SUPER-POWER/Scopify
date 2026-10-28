@@ -7,7 +7,7 @@ import { useInlinePlaylistOrder } from "@/hooks/playlist/useInlinePlaylistOrder"
 import { useUserStore } from "@/store";
 import { useI18n } from "@/store/module/i18n";
 import type { SidebarSortablePlaylistsProps } from "@/types/components/sidebar";
-import type { NeteasePlaylist } from "@/types/api/playlist";
+import type { NeteasePlaylist } from "@/types/playlist/api";
 import { CollapsibleLibraryGroup } from "./CollapsibleLibraryGroup";
 import { SortableLibraryItem } from "./SortableLibraryItem";
 

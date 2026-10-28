@@ -4,7 +4,7 @@ import { forwardRef, memo } from "react";
 import { TableRow } from "@/components/ui/table";
 import { TrackRowCells } from "@/components/Playlist/TrackRowCells";
 import { cn } from "@/lib/utils";
-import type { TrackRowProps } from "@/types/components/playlist";
+import type { TrackRowProps } from "@/types/playlist/components";
 
 export const TrackRow = memo(
   forwardRef<HTMLTableRowElement, TrackRowProps>(function TrackRow(

@@ -3,7 +3,7 @@
 import { useCallback, useLayoutEffect, useRef, useState } from "react";
 import { animate, useReducedMotion } from "framer-motion";
 import { useLatticePointer } from "@/hooks/playlist/useLatticePointer";
-import type { Bounds, LatticeCamera, LatticeViewport, ReflowTile } from "@/types/playlistLattice";
+import type { Bounds, LatticeCamera, LatticeViewport, ReflowTile } from "@/types/playlist/lattice";
 
 // The wall fills the pane; keep focused posters below the overlaid h-16 Header.
 const HEADER_INSET = 64;

@@ -5,7 +5,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { updatePlaylistTrack } from "@/lib/api/track";
 import { clearPageCache } from "@/lib/cache/pageCache";
 import { reportActionFailure } from "@/lib/web/errorTracking";
-import type { PlaylistTrackMutationVariables } from "@/types/api/playlist";
+import type { PlaylistTrackMutationVariables } from "@/types/playlist/api";
 
 /** Mutation entry point for all add/remove playlist-track operations. */
 export function usePlaylistTrackMutation() {

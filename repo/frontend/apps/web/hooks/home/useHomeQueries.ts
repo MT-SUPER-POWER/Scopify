@@ -17,7 +17,7 @@ import { getRecommendedVoiceLists } from "@/lib/api/voicelist";
 import { musicQueryKeys } from "@/lib/query/queryKeys";
 import { useUserStore } from "@/store";
 import type { NeteaseAlbum } from "@/types/album/api";
-import { prunePlaylistTracks } from "@/types/api/playlist";
+import { prunePlaylistTracks } from "@/types/playlist/api";
 
 export function usePersonalizedPlaylistsQuery(limit = 100, boundary = true) {
   return useQuery({

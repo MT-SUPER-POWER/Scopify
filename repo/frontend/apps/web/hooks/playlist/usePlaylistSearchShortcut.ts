@@ -4,7 +4,7 @@ import { useCallback } from "react";
 
 import { useShortcutCommands } from "@/hooks/shortcuts/useShortcutCommands";
 import { useInWindowShortcuts } from "@/hooks/shortcuts/useInWindowShortcuts";
-import type { PlaylistSearchShortcutOptions } from "@/types/components/playlist";
+import type { PlaylistSearchShortcutOptions } from "@/types/playlist/components";
 
 const PLAYLIST_SEARCH_SHORTCUT_COMMAND_IDS = ["focus-playlist-search"] as const;
 

@@ -7,7 +7,7 @@ import type {
   LatticeGeometry,
   QueueInstance,
   WallMetrics,
-} from "@/types/playlistLattice";
+} from "@/types/playlist/lattice";
 import { getInstanceBlock, locateInstanceAt } from "./layout";
 
 // Directional focus movement. The lattice has no edge, so a step always lands somewhere; the

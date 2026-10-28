@@ -1,4 +1,4 @@
-import type { LatticeLyricRuntime } from "@/types/playlistLatticeLyrics";
+import type { LatticeLyricRuntime } from "@/types/playlist/latticeLyrics";
 
 // src/components/app/lattice/lyrics/latticeLyricSession.ts
 /** Owns cancellation across async Pixi initialization and React StrictMode remounts. */

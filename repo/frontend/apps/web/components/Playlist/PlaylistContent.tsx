@@ -10,7 +10,7 @@ import { useRouteRestorationPlaceholder } from "@/components/shared/NavigationSc
 import { DASHBOARD_MAIN_STICKY_TOP } from "@/constants/layout";
 import { usePlaylistContentPresentation } from "@/hooks/playlist/usePlaylistContentPresentation";
 import { useI18n } from "@/store/module/i18n";
-import type { PlaylistContentProps } from "@/types/components/playlist";
+import type { PlaylistContentProps } from "@/types/playlist/components";
 
 export function PlaylistContent({
   actionSlot,

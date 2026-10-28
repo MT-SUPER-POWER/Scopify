@@ -16,7 +16,7 @@ import { usePathname, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { enUS, zhCN, zhTW } from "react-day-picker/locale";
 import { toast } from "sonner";
-import type { PlaylistActionsProps } from "@/types/components/playlist";
+import type { PlaylistActionsProps } from "@/types/playlist/components";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import {

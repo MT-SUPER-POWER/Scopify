@@ -17,7 +17,7 @@ import {
   type PlaylistContent,
   type PlaylistContentRequest,
   type RawNeteasePlaylist,
-} from "@/types/api/playlist";
+} from "@/types/playlist/api";
 
 function getHistoricalSongs(
   response: HistoricalDailyRecommendationDetailResponse,

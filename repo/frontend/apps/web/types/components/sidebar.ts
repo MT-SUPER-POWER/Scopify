@@ -48,7 +48,7 @@ export interface SortableLibraryItemProps extends SidebarLibraryItemProps {
   locked: boolean;
   playlist: NeteasePlaylist;
 }
-import type { NeteasePlaylist } from "@/types/api/playlist";
+import type { NeteasePlaylist } from "@/types/playlist/api";
 
 export interface CollapsibleLibraryGroupProps {
   title: string;

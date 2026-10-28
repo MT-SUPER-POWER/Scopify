@@ -22,7 +22,7 @@ import type {
   RadioProgram,
   RadioProgramsResponse,
 } from "@/types/radio/api";
-import type { PlaylistInfo } from "@/types/playlist";
+import type { PlaylistInfo } from "@/types/playlist/model";
 import type { RadioContent } from "@/types/radio/model";
 
 export {

@@ -6,8 +6,8 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { getPlaylistHighQualityTags } from "@/lib/api/playlist";
 import { cn } from "@/lib/utils";
 import { useI18n } from "@/store/module/i18n";
-import type { PlaylistTag } from "@/types/api/playlistTags";
-import type { PlaylistTagSelectorProps } from "@/types/components/playlist";
+import type { PlaylistTag } from "@/types/playlist/tagsApi";
+import type { PlaylistTagSelectorProps } from "@/types/playlist/components";
 
 export function PlaylistTagSelector({ value, maxSelected, onChange }: PlaylistTagSelectorProps) {
   const { t } = useI18n();

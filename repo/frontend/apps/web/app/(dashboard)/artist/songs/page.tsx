@@ -8,7 +8,7 @@ import { NetworkRetryState } from "@/components/shared/NetworkRetryState";
 import { useArtistData } from "@/hooks/artist/useArtistData";
 import { useArtistPopularSongsTheme } from "@/hooks/artist/useArtistPopularSongsTheme";
 import { useI18n } from "@/store/module/i18n";
-import type { PlaylistInfo } from "@/types/playlist";
+import type { PlaylistInfo } from "@/types/playlist/model";
 
 export default function ArtistPopularSongsPage() {
   const { t } = useI18n();

@@ -12,7 +12,7 @@ import {
   locateNearestInstance,
 } from "@/lib/playlist/lattice/layout";
 import { findAdjacentInstance, findNearestInstance } from "@/lib/playlist/lattice/wallNavigation";
-import type { QueueInstance, WallDirection } from "@/types/playlistLattice";
+import type { QueueInstance, WallDirection } from "@/types/playlist/lattice";
 
 const metrics = { cellSize: 128, gap: 8 };
 

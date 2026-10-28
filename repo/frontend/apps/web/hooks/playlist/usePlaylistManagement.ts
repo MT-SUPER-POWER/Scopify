@@ -13,8 +13,8 @@ import { getPlaylistManagementPermissions } from "@/lib/playlist/playlistManagem
 import { musicQueryKeys } from "@/lib/query/queryKeys";
 import { useUserStore } from "@/store";
 import { useI18n } from "@/store/module/i18n";
-import type { PlaylistUpdateInput } from "@/types/playlist";
-import type { RawNeteasePlaylist } from "@/types/api/playlist";
+import type { PlaylistUpdateInput } from "@/types/playlist/model";
+import type { RawNeteasePlaylist } from "@/types/playlist/api";
 
 export function usePlaylistManagement(playlistId: number | string, detail?: RawNeteasePlaylist) {
   const { t } = useI18n();

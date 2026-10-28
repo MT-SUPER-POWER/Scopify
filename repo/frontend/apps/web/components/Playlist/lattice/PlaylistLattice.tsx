@@ -8,7 +8,7 @@ import { useLatticePreferences } from "@/store/module/lattice";
 import { usePlayerStore } from "@/store";
 import { useI18n } from "@/store/module/i18n";
 import type { SongDetail } from "@/types/song/api";
-import type { PlaylistLatticeProps } from "@/types/components/playlistLattice";
+import type { PlaylistLatticeProps } from "@/types/playlist/latticeComponents";
 import { LatticeToolbar } from "./LatticeToolbar";
 import { LatticePoster } from "./LatticePoster";
 import styles from "./PlaylistLattice.module.css";

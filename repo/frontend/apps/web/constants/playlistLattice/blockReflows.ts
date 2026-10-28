@@ -1,6 +1,6 @@
 // src/components/app/lattice/blockReflows.ts
 
-import type { BlockSlot } from "@/types/playlistLattice";
+import type { BlockSlot } from "@/types/playlist/lattice";
 
 // Generated data. For each base template, one layout per slot that could be expanded: the
 // expanded card takes the 6x6 gear and the other eleven fall back to smaller gears so the

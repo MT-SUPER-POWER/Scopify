@@ -4,7 +4,7 @@ import type {
   LyricPiece,
   LatticeLineLayout,
   LatticeLyricInput,
-} from "@/types/playlistLatticeLyrics";
+} from "@/types/playlist/latticeLyrics";
 import type { Line } from "@/components/lyrics/folia/src/types";
 import {
   buildMonetDisplayTokens,

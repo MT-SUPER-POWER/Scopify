@@ -8,7 +8,7 @@ import { TableCell } from "@/components/ui/table";
 import { CLOUD_SONG_FALLBACK_COVER } from "@/constants/cloud";
 import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
 import { cn } from "@/lib/utils";
-import type { TrackTitleCellProps } from "@/types/components/playlist";
+import type { TrackTitleCellProps } from "@/types/playlist/components";
 import { getSizedImageUrl } from "@/lib/music/imageUrl";
 
 export function TrackTitleCell({ track, isActive }: TrackTitleCellProps) {

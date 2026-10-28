@@ -6,8 +6,8 @@ import { useFoliaPlaybackBridge } from "@/hooks/player/useFoliaPlaybackBridge";
 import { useFoliaPresentationAppearance } from "@/hooks/player/useFoliaPresentationAppearance";
 import { useFontsEpoch } from "@/components/lyrics/folia/src/hooks/useFontsEpoch";
 import { useLatticeLyricCanvas } from "@/hooks/playlist/useLatticeLyricCanvas";
-import type { LatticeLyricsProps } from "@/types/components/playlistLattice";
-import type { LatticeLyricInput } from "@/types/playlistLatticeLyrics";
+import type { LatticeLyricsProps } from "@/types/playlist/latticeComponents";
+import type { LatticeLyricInput } from "@/types/playlist/latticeLyrics";
 import styles from "./PlaylistLattice.module.css";
 
 export default function LatticeLyrics({ track }: LatticeLyricsProps) {

@@ -3,7 +3,7 @@ import type {
   ParkedRuntime,
   LatticeLyricInput,
   LatticeLyricRuntime,
-} from "@/types/playlistLatticeLyrics";
+} from "@/types/playlist/latticeLyrics";
 import { useEffect, useRef, useState, type RefObject } from "react";
 import { createLatticeLyricRuntime } from "@/lib/playlist/lattice/lyrics/createLatticeLyricRuntime";
 import { startLatticeLyricSession } from "@/lib/playlist/lattice/lyrics/latticeLyricSession";

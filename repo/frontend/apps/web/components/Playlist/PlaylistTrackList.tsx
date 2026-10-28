@@ -6,7 +6,7 @@ import { StackedDragThumbnail } from "@/components/shared/StackedDragThumbnail";
 import { useInlinePlaylistOrder } from "@/hooks/playlist/useInlinePlaylistOrder";
 import { useTrackSelection } from "@/hooks/playlist/useTrackSelection";
 import { useAppDragStore } from "@/store/module/appDrag";
-import type { PlaylistTrackListProps } from "@/types/components/playlist";
+import type { PlaylistTrackListProps } from "@/types/playlist/components";
 
 export function PlaylistTrackList({ playlistId, tracks = [], ...props }: PlaylistTrackListProps) {
   const order = useInlinePlaylistOrder(tracks, playlistId ?? undefined);

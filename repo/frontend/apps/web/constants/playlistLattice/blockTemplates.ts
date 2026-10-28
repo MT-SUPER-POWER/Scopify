@@ -5,7 +5,7 @@ import { BLOCK_REFLOWS } from "./blockReflows";
 // Slot layouts for one 12x8 block. Each template covers the block exactly - no gaps - because
 // expansion makes room by re-gearing the cards rather than by shoving them aside.
 
-import type { BlockSlot } from "@/types/playlistLattice";
+import type { BlockSlot } from "@/types/playlist/lattice";
 
 export const BLOCK_COLS = 12;
 export const BLOCK_ROWS = 8;

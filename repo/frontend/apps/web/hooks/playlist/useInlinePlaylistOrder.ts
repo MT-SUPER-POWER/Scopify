@@ -4,7 +4,7 @@ import { arrayMove } from "@dnd-kit/sortable";
 import { useRef, useState } from "react";
 import { usePlaylistOrderMutation } from "@/hooks/playlist/usePlaylistOrderMutation";
 import { useUserStore } from "@/store";
-import type { InlineOrderDraft } from "@/types/playlistOrder";
+import type { InlineOrderDraft } from "@/types/playlist/order";
 
 export function useInlinePlaylistOrder<T extends { id: number }>(items: T[], playlistId?: string) {
   const mutation = usePlaylistOrderMutation();

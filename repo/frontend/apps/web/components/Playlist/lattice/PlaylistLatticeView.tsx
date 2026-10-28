@@ -3,7 +3,7 @@
 import dynamic from "next/dynamic";
 import { createPortal } from "react-dom";
 import { usePlaylistLatticeView } from "@/hooks/playlist/usePlaylistLatticeView";
-import type { PlaylistLatticeViewProps } from "@/types/components/playlistLattice";
+import type { PlaylistLatticeViewProps } from "@/types/playlist/latticeComponents";
 
 const PlaylistLattice = dynamic(() => import("./PlaylistLattice"), { ssr: false });
 

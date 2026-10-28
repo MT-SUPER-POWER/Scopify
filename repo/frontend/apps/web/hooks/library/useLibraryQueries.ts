@@ -15,7 +15,7 @@ import { getRecentSongs } from "@/lib/api/user";
 import { useLoginStatus } from "@/lib/hooks/useLoginStatus";
 import { musicQueryKeys } from "@/lib/query/queryKeys";
 import { useUserStore } from "@/store";
-import { prunePlaylist, type NeteasePlaylist, type RawNeteasePlaylist } from "@/types/api/playlist";
+import { prunePlaylist, type NeteasePlaylist, type RawNeteasePlaylist } from "@/types/playlist/api";
 import { pruneSongDetail, type SongDetail } from "@/types/song/api";
 import type {
   CreatedVoiceList,

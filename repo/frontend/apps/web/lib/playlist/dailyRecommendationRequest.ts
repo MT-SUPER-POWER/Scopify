@@ -1,4 +1,4 @@
-import type { DailyRecommendationRequest } from "@/types/playlist";
+import type { DailyRecommendationRequest } from "@/types/playlist/model";
 
 const DAILY_DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
 
