@@ -3,7 +3,7 @@
 import { ArrowUpRight } from "lucide-react";
 import { Button } from "@scopify/ui/shadcn/components/button";
 import { useI18n } from "@/store/module/i18n";
-import type { LoginDeviceCardProps } from "@/types/components/loginDevices";
+import type { LoginDeviceCardProps } from "@/types/devices/components";
 import { DeviceIllustration } from "./DeviceIllustration";
 import styles from "./LoginDevices.module.css";
 

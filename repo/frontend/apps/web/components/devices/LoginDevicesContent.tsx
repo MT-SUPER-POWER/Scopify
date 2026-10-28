@@ -3,7 +3,7 @@ import { ChevronDown } from "lucide-react";
 import { Button } from "@scopify/ui/shadcn/components/button";
 import { useDevicePresentation } from "@/hooks/devices/useDevicePresentation";
 import { useI18n } from "@/store/module/i18n";
-import type { LoginDeviceContentProps } from "@/types/components/loginDevices";
+import type { LoginDeviceContentProps } from "@/types/devices/components";
 import { CurrentDeviceCard } from "./CurrentDeviceCard";
 import { LoginDeviceStage } from "./LoginDeviceStage";
 import { LoginDeviceCard } from "./LoginDeviceCard";

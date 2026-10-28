@@ -3,7 +3,7 @@ import type {
   DeviceActionResponse,
   KickoffDeviceParams,
   LoginDevicesResponse,
-} from "@/types/api/devices";
+} from "@/types/devices/api";
 
 const authenticated = { requiresMusicSession: true, expectedBusinessCodes: [200] };
 

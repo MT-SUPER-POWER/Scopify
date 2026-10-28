@@ -1,6 +1,6 @@
 import { runtime } from "@/lib/runtime";
 import { getBackendBaseUrl } from "@/lib/web/request";
-import type { FreshLoginDevice } from "@/types/devices";
+import type { FreshLoginDevice } from "@/types/devices/model";
 
 const ID_KEY = "scopify-device-id";
 const NAME_KEY = "scopify-device-name:";

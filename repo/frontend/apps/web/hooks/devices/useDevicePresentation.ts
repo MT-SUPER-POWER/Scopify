@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import type { DeviceAction, LoginDevice, LoginDeviceView } from "@/types/devices";
+import type { DeviceAction, LoginDevice, LoginDeviceView } from "@/types/devices/model";
 export function useDevicePresentation(devices: LoginDevice[]) {
   const [view, setView] = useState<LoginDeviceView>("all");
   const [expanded, setExpanded] = useState(false);

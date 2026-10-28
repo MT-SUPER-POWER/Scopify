@@ -7,7 +7,7 @@ import { getBackendBaseUrl } from "@/lib/web/request";
 import { useUserStore } from "@/store/module/user";
 import { usePlayerStore } from "@/store";
 import { useI18n } from "@/store/module/i18n";
-import type { DeviceKickoffInput } from "@/types/devices";
+import type { DeviceKickoffInput } from "@/types/devices/model";
 import { getDeviceSessionScope } from "./useDeviceSession";
 
 export function useDeviceActions(scope: string) {

@@ -1,5 +1,5 @@
 import Image from "next/image";
-import type { DeviceIllustrationProps } from "@/types/components/loginDevices";
+import type { DeviceIllustrationProps } from "@/types/devices/components";
 import styles from "./LoginDevices.module.css";
 
 export function DeviceIllustration({ kind, tone, hero = false }: DeviceIllustrationProps) {

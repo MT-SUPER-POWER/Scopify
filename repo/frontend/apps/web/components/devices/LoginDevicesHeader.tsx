@@ -2,7 +2,7 @@
 import { RefreshCw } from "lucide-react";
 import { Button } from "@scopify/ui/shadcn/components/button";
 import { useI18n } from "@/store/module/i18n";
-import type { LoginDevicesHeaderProps } from "@/types/components/loginDevices";
+import type { LoginDevicesHeaderProps } from "@/types/devices/components";
 import styles from "./LoginDevices.module.css";
 export function LoginDevicesHeader({
   allowance,

@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { useI18n } from "@/store/module/i18n";
-import type { DeviceActionDialogProps } from "@/types/components/loginDevices";
+import type { DeviceActionDialogProps } from "@/types/devices/components";
 import { useDeviceActions } from "./useDeviceActions";
 export function useDeviceActionForm({ action, scope, onClose }: DeviceActionDialogProps) {
   const { t } = useI18n();

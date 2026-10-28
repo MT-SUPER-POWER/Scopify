@@ -9,7 +9,7 @@ import {
 import { getBackendBaseUrl } from "@/lib/web/request";
 import { useUserStore } from "@/store/module/user";
 import type { NeteaseUserSource } from "@/types/user/api";
-import type { FreshLoginDevice } from "@/types/devices";
+import type { FreshLoginDevice } from "@/types/devices/model";
 
 /** Verify the account, then synchronize the name once per fresh login, before closing the login window. */
 export async function completeFreshLogin(

@@ -11,7 +11,7 @@ import {
   SheetTitle,
 } from "@scopify/ui/shadcn/components/sheet";
 import { useI18n } from "@/store/module/i18n";
-import type { LoginDeviceDetailsProps } from "@/types/components/loginDevices";
+import type { LoginDeviceDetailsProps } from "@/types/devices/components";
 import { DeviceIllustration } from "./DeviceIllustration";
 import styles from "./LoginDevices.module.css";
 

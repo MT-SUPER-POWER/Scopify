@@ -12,7 +12,7 @@ import {
 } from "@scopify/ui/shadcn/components/dialog";
 import { useDeviceActionForm } from "@/hooks/devices/useDeviceActionForm";
 import { useI18n } from "@/store/module/i18n";
-import type { DeviceActionDialogProps } from "@/types/components/loginDevices";
+import type { DeviceActionDialogProps } from "@/types/devices/components";
 export function DeviceActionDialog(props: DeviceActionDialogProps) {
   const { action, onClose } = props;
   const form = useDeviceActionForm(props);

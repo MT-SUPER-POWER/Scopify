@@ -1,7 +1,7 @@
 "use client";
 
 import { useI18n } from "@/store/module/i18n";
-import type { LoginDeviceStageProps } from "@/types/components/loginDevices";
+import type { LoginDeviceStageProps } from "@/types/devices/components";
 import { DeviceIllustration } from "./DeviceIllustration";
 import styles from "./LoginDevices.module.css";
 

@@ -4,7 +4,7 @@ import type {
   LoginDeviceKind,
   LoginDeviceSnapshot,
   LoginDeviceTone,
-} from "@/types/devices";
+} from "@/types/devices/model";
 export interface DeviceIllustrationProps {
   kind: LoginDeviceKind;
   tone: LoginDeviceTone;
