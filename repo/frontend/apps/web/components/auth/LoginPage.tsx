@@ -22,7 +22,7 @@ import { runtime } from "@/lib/runtime";
 import { cn } from "@/lib/utils";
 import { sendCaptcha } from "@/lib/web/auth";
 import { useI18n } from "@/store/module/i18n";
-import type { LoginHydrationGateProps, LoginMode } from "@/types/login";
+import type { LoginHydrationGateProps, LoginMode } from "@/types/auth/login";
 
 let hydrationReady = false;
 let hydrationPromise: Promise<void> | null = null;

@@ -7,7 +7,7 @@ import type {
   QrCheckResponse,
   QrCreateResponse,
   QrKeyResponse,
-} from "@/types/api/login";
+} from "@/types/auth/loginApi";
 
 import request, { requestConfig } from "../web/request";
 

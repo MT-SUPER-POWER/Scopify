@@ -4,7 +4,7 @@ import Image from "next/image";
 import { Button } from "@scopify/ui/shadcn/components/button";
 import { useQrLogin } from "@/hooks/auth/useQrLogin";
 import { useI18n } from "@/store/module/i18n";
-import type { QrLoginProps } from "@/types/login";
+import type { QrLoginProps } from "@/types/auth/login";
 export function QrLogin(props: QrLoginProps) {
   const { t } = useI18n();
   const { qrImg, qrStatus, qrStatusText, refresh } = useQrLogin(props);

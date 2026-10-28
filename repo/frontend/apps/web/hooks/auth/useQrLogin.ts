@@ -7,7 +7,7 @@ import { runtime } from "@/lib/runtime";
 import { createFreshLoginDevice } from "@/lib/devices/clientIdentity";
 import { completeFreshLogin } from "@/lib/devices/completeLogin";
 import { useI18n } from "@/store/module/i18n";
-import type { QrLoginProps, QrStatus } from "@/types/login";
+import type { QrLoginProps, QrStatus } from "@/types/auth/login";
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 export function useQrLogin({ onSuccess, deviceName }: QrLoginProps) {
   const smartRouter = useSmartRouter();

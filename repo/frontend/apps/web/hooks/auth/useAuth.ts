@@ -8,7 +8,7 @@ import {
   MUSIC_SESSION_CHANGED_EVENT,
 } from "@/lib/web/musicSessionCredential";
 import { syncUserSessionFromCookie } from "@/lib/web/sessionHydration";
-import type { AuthStatus, LoginType } from "@/types/auth";
+import type { AuthStatus, LoginType } from "@/types/auth/model";
 import type { NeteaseUser } from "@/types/user/api";
 
 /**
