@@ -23,7 +23,7 @@ export const DEFAULT_BACKGROUND: BackgroundSettings = {
   preset: "sand",
   intensity: 70,
   height: 360,
-  rotation: "fixed",
+  rotation: "schedule",
   customTop: "#E0CCAC",
   customBottom: "#78685C",
 };
