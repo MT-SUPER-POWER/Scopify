@@ -3,7 +3,7 @@
 import { NewAlbumsSection } from "@/components/home/NewAlbumsSection";
 import { NewSongsSection } from "@/components/home/NewSongsSection";
 import { ToplistSection } from "@/components/home/ToplistSection";
-import { QueryPending } from "@/components/shared/QueryPending";
+import { HomeSectionPending } from "@/components/home/HomeSectionPending";
 import {
   useNewAlbumsQuery,
   useNewSongsQuery,
@@ -15,7 +15,14 @@ import type { HomeQueryContentProps } from "@/types/components/home";
 
 export function HomeNewAlbumsContent({ actions }: HomeQueryContentProps) {
   const query = useNewAlbumsQuery();
-  if (query.isPending) return <QueryPending isPaused={query.fetchStatus === "paused"} />;
+  if (query.isPending)
+    return (
+      <HomeSectionPending
+        isPaused={query.fetchStatus === "paused"}
+        kind="grid"
+        titleKey="home.newAlbums"
+      />
+    );
   const albums = (query.data?.albums ?? []).filter((album) => Boolean(album?.id && album.name));
   return (
     <NewAlbumsSection
@@ -28,7 +35,14 @@ export function HomeNewAlbumsContent({ actions }: HomeQueryContentProps) {
 
 export function HomeNewSongsContent({ actions }: HomeQueryContentProps) {
   const query = useNewSongsQuery();
-  if (query.isPending) return <QueryPending isPaused={query.fetchStatus === "paused"} />;
+  if (query.isPending)
+    return (
+      <HomeSectionPending
+        isPaused={query.fetchStatus === "paused"}
+        kind="songs"
+        titleKey="home.newSongs"
+      />
+    );
   const songs = (query.data?.result ?? [])
     .map((item) => pruneSongDetail(item.song))
     .filter((song) => Boolean(song?.id));
@@ -43,7 +57,14 @@ export function HomeNewSongsContent({ actions }: HomeQueryContentProps) {
 
 export function HomeToplistsContent({ actions }: HomeQueryContentProps) {
   const query = useToplistDetailQuery();
-  if (query.isPending) return <QueryPending isPaused={query.fetchStatus === "paused"} />;
+  if (query.isPending)
+    return (
+      <HomeSectionPending
+        isPaused={query.fetchStatus === "paused"}
+        kind="toplists"
+        titleKey="home.toplists"
+      />
+    );
   const list = query.data?.list ?? [];
   const ids = [19723756, 3779629, 3778678, 2884035];
   const charts = new Map(list.map((item) => [item.id, item]));

@@ -2,7 +2,7 @@
 
 import { ArtistTopSongsSection } from "@/components/home/ArtistTopSongsSection";
 import { SuggestedArtists } from "@/components/home/SuggestedArtists";
-import { QueryPending } from "@/components/shared/QueryPending";
+import { HomeSectionPending } from "@/components/home/HomeSectionPending";
 import { useHotArtistsQuery, useFollowedArtistsQuery } from "@/hooks/home/useHomeQueries";
 import { useLoginStatus } from "@/lib/hooks/useLoginStatus";
 import { selectFallbackSource, toFallbackSource } from "@/lib/query/fallbackSource";
@@ -11,7 +11,14 @@ import type { HomeQueryContentProps } from "@/types/components/home";
 
 export function HomeSuggestedArtistsContent() {
   const query = useHotArtistsQuery();
-  if (query.isPending) return <QueryPending isPaused={query.fetchStatus === "paused"} />;
+  if (query.isPending)
+    return (
+      <HomeSectionPending
+        isPaused={query.fetchStatus === "paused"}
+        kind="artist"
+        titleKey="home.suggestedArtists"
+      />
+    );
   return <SuggestedArtists artists={query.data?.artists ?? []} />;
 }
 
@@ -37,7 +44,10 @@ export function HomeArtistTopSongsContent({ actions }: HomeQueryContentProps) {
     ],
     (items) => items.length > 0,
   );
-  if (result.isPending) return <QueryPending isPaused={result.isPaused} />;
+  if (result.isPending)
+    return (
+      <HomeSectionPending isPaused={result.isPaused} kind="grid" titleKey="home.artistTopSongs" />
+    );
   return (
     <ArtistTopSongsSection
       artists={result.data ?? []}

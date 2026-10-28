@@ -2,7 +2,7 @@
 
 import { HomeGreetingSection } from "@/components/home/HomeGreetingSection";
 import { PersonalizedPlaylists } from "@/components/home/PersonalizedPlaylists";
-import { QueryPending } from "@/components/shared/QueryPending";
+import { HomeSectionPending } from "@/components/home/HomeSectionPending";
 import {
   usePersonalizedPlaylistsQuery,
   useRecommendedPlaylistsQuery,
@@ -14,7 +14,14 @@ import type { HomeGreetingContentProps, HomeQueryContentProps } from "@/types/co
 
 export function HomeGreetingContent({ actions, greeting, dateInfo }: HomeGreetingContentProps) {
   const query = usePersonalizedPlaylistsQuery();
-  if (query.isPending) return <QueryPending isPaused={query.fetchStatus === "paused"} />;
+  if (query.isPending)
+    return (
+      <HomeSectionPending
+        isPaused={query.fetchStatus === "paused"}
+        kind="greeting"
+        title={greeting}
+      />
+    );
   return (
     <HomeGreetingSection
       greeting={greeting}
@@ -36,7 +43,7 @@ export function HomePlaylistContent({ actions }: HomeQueryContentProps) {
     toFallbackSource(personalized, personalized.data?.result),
   ];
   const result = selectFallbackSource(sources, (items) => items.length > 0);
-  if (result.isPending) return <QueryPending isPaused={result.isPaused} />;
+  if (result.isPending) return <HomeSectionPending isPaused={result.isPaused} kind="grid" />;
   return (
     <PersonalizedPlaylists
       playlists={(result.data ?? []).map(pruneRecommendPlaylist)}
