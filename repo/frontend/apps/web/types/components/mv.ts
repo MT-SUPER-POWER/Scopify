@@ -10,8 +10,8 @@ export interface MvListItemProps {
   isActive?: boolean;
   /** 艺人前的小标签，例如「本曲 MV」。 */
   badge?: ReactNode;
-  /** sm 用于窄面板，md 用于 MV 页侧栏。 */
-  size?: "sm" | "md";
+  /** sm 用于窄面板，md 与 lg 用于 MV 页侧栏。 */
+  size?: "sm" | "md" | "lg";
 }
 
 export interface MvCardProps {
@@ -24,12 +24,19 @@ export interface MvPageContentProps {
 
 export interface MvSimilarContentProps extends MvPageContentProps {
   detail: MvDetail;
+  isTheater: boolean;
   onNextChange: (id: number | null) => void;
+}
+
+export interface MvSimilarSkeletonProps {
+  isTheater?: boolean;
 }
 
 export interface MvPlayerProps {
   mvid: number;
   isTheater: boolean;
+  isPlayerBarHidden: boolean;
+  onTogglePlayerBar: () => void;
   onToggleTheater: () => void;
   resolutions: MvResolution[];
   poster?: string;

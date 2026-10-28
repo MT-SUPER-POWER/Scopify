@@ -9566,6 +9566,18 @@ export interface TranslateFn {
    */
   (key: "playerBar.lyrics", params?: TranslationParams): string;
   /**
+   * zh-CN: 显示播放条
+   * zh-TW: 顯示播放列
+   * en-US: Show player bar
+   */
+  (key: "playerBar.show", params?: TranslationParams): string;
+  /**
+   * zh-CN: 隐藏播放条
+   * zh-TW: 隱藏播放列
+   * en-US: Hide player bar
+   */
+  (key: "playerBar.hide", params?: TranslationParams): string;
+  /**
    * zh-CN: 置顶显示
    * zh-TW: 置頂顯示
    * en-US: Keep on top

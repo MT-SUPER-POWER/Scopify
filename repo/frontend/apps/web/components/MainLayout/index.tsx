@@ -90,6 +90,7 @@ function MainLayoutInner({ children }: { children?: ReactNode }) {
   // Zustand Stores
   const clearSearchQuery = useSearchStore((s) => s.clearQuery);
   const isCollapsed = useUiStore((s) => s.isCollapsed);
+  const isPlayerBarHidden = useUiStore((s) => s.isPlayerBarHidden);
   const setIsCollapsed = useUiStore((s) => s.setIsCollapsed);
   const setIsNowPlayingPanelOpen = useUiStore((s) => s.setIsNowPlayingPanelOpen);
   const setIsFullscreen = useUiStore((s) => s.setIsFullscreen);
@@ -273,7 +274,7 @@ function MainLayoutInner({ children }: { children?: ReactNode }) {
         )}
       </main>
 
-      <footer data-track-drag-chrome>
+      <footer data-track-drag-chrome hidden={isPlayerBarHidden}>
         <PlayerBar />
       </footer>
     </div>

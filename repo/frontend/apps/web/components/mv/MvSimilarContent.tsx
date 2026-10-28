@@ -12,7 +12,7 @@ import { getRelatedMvKeyword, getRelatedMvs } from "@/lib/music/relatedMvs";
 import { useI18n } from "@/store/module/i18n";
 import type { MvSimilarContentProps } from "@/types/components/mv";
 
-export function MvSimilarContent({ mvid, detail, onNextChange }: MvSimilarContentProps) {
+export function MvSimilarContent({ mvid, detail, isTheater, onNextChange }: MvSimilarContentProps) {
   const { t } = useI18n();
   const keyword = getRelatedMvKeyword(detail);
   const query = useInfiniteMvSearchQuery(keyword, 20, true, true);
@@ -32,7 +32,11 @@ export function MvSimilarContent({ mvid, detail, onNextChange }: MvSimilarConten
     return () => onNextChange(null);
   }, [nextId, onNextChange]);
   if (query.isPending)
-    return query.fetchStatus === "paused" ? <QueryPending isPaused /> : <MvSimilarSkeleton />;
+    return query.fetchStatus === "paused" ? (
+      <QueryPending isPaused />
+    ) : (
+      <MvSimilarSkeleton isTheater={isTheater} />
+    );
   if (!mvs.length && !query.hasNextPage) return null;
   return (
     <>
@@ -40,7 +44,7 @@ export function MvSimilarContent({ mvid, detail, onNextChange }: MvSimilarConten
       <ul className="-mx-1 flex flex-col gap-1">
         {mvs.map((item) => (
           <li key={item.id}>
-            <MvListItem mv={item} href={`/mv?id=${item.id}`} size="md" />
+            <MvListItem mv={item} href={`/mv?id=${item.id}`} size={isTheater ? "lg" : "md"} />
           </li>
         ))}
       </ul>
