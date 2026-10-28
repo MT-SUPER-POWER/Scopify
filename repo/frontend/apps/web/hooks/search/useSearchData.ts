@@ -27,7 +27,7 @@ import type {
   SearchResultPlaylist,
   SearchArtistSource,
   SongSearchResource,
-} from "@/types/api/search";
+} from "@/types/search/api";
 import type {
   Album,
   Artist,
@@ -36,7 +36,7 @@ import type {
   Playlist,
   Podcast,
   Song,
-} from "@/types/search";
+} from "@/types/search/model";
 
 function isValidPicUrl(url: string | null | undefined): url is string {
   return typeof url === "string" && url.startsWith("http");

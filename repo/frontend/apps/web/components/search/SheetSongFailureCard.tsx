@@ -2,7 +2,7 @@
 
 import { Card, CardContent } from "@scopify/ui/shadcn/components/card";
 import { QueryFailure } from "@/components/shared/QueryFailure";
-import type { SheetSongFailureCardProps } from "@/types/components/search";
+import type { SheetSongFailureCardProps } from "@/types/search/components";
 
 export function SheetSongFailureCard({ song, error, onRetry }: SheetSongFailureCardProps) {
   return (

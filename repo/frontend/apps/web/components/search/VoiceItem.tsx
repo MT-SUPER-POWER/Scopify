@@ -10,7 +10,7 @@ import { toVoiceSongDetail } from "@/lib/search/voiceSong";
 import { cn, formatDuration } from "@/lib/utils";
 import { usePlayerStore } from "@/store";
 import { useI18n } from "@/store/module/i18n";
-import type { VoiceItemProps } from "@/types/components/search";
+import type { VoiceItemProps } from "@/types/search/components";
 
 const FALLBACK_COVER =
   "https://images.unsplash.com/photo-1590602847861-f357a9332bbc?q=80&w=160&auto=format&fit=crop";

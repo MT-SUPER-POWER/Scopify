@@ -1,5 +1,5 @@
 import { useI18n } from "@/store/module/i18n";
-import type { VoiceListProps } from "@/types/components/search";
+import type { VoiceListProps } from "@/types/search/components";
 import { VoiceItem } from "./VoiceItem";
 
 export function VoiceList({

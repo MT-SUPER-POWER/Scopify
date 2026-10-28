@@ -1,6 +1,6 @@
 import { LoaderCircle } from "lucide-react";
 import { useInfiniteScrollTrigger } from "@/hooks/search/useInfiniteScrollTrigger";
-import type { VoicesViewProps } from "@/types/components/search";
+import type { VoicesViewProps } from "@/types/search/components";
 import { SearchCategoryHeader } from "./SearchCategoryHeader";
 import { VoiceList } from "./VoiceList";
 

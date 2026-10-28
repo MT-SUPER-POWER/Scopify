@@ -1,4 +1,4 @@
-import { CATEGORIES, type Category } from "@/types/search";
+import { CATEGORIES, type Category } from "@/types/search/model";
 
 const SEARCH_CATEGORY_PARAM = "tab";
 

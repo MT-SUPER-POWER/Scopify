@@ -5,7 +5,7 @@ import type React from "react";
 import { ArtistInlineLinks } from "@/components/shared/ArtistInlineLinks";
 import { SongVipBadge } from "@/components/shared/SongVipBadge";
 import { cn } from "@/lib/utils";
-import type { Song } from "@/types/search";
+import type { Song } from "@/types/search/model";
 
 /** ms → mm:ss */
 function formatDuration(ms: number): string {

@@ -1,5 +1,5 @@
 import type { VoiceListSearchItem, VoiceListSearchResponse } from "@/types/voice/api";
-import type { Podcast } from "@/types/search";
+import type { Podcast } from "@/types/search/model";
 
 function getResourceTitle(title: string | undefined) {
   return title?.replace(/^播客\s*[:：]\s*/, "");

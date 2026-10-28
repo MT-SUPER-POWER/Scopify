@@ -31,7 +31,7 @@ import { cn, formatDuration } from "@/lib/utils";
 import { usePlayerStore, useUserStore } from "@/store";
 import { useI18n } from "@/store/module/i18n";
 import type { SongDetail } from "@/types/api/music";
-import type { Song } from "@/types/search";
+import type { Song } from "@/types/search/model";
 import { getSizedImageUrl } from "@/lib/music/imageUrl";
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ UTILS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━

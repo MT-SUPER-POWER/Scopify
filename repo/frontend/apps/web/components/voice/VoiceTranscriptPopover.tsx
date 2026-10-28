@@ -3,7 +3,7 @@
 import { VoiceTranscriptPanel } from "@/components/voice/VoiceTranscriptPanel";
 import { Popover, PopoverAnchor, PopoverContent } from "@/components/ui/popover";
 import { useVoiceTranscriptQuery } from "@/hooks/voice/useVoiceTranscriptQuery";
-import type { Voice } from "@/types/search";
+import type { Voice } from "@/types/search/model";
 
 interface VoiceTranscriptPopoverProps {
   children: React.ReactNode;

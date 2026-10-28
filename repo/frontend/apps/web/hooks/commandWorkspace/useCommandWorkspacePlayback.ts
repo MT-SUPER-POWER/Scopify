@@ -5,7 +5,7 @@ import { toCommandWorkspaceSongDetail } from "@/lib/commandWorkspace/trackList";
 import { toVoiceSongDetail } from "@/lib/search/voiceSong";
 import { usePlayerStore } from "@/store";
 import type { SongDetail } from "@/types/api/music";
-import type { Song, Voice } from "@/types/search";
+import type { Song, Voice } from "@/types/search/model";
 
 export function useCommandWorkspacePlayback() {
   const appendQueueItems = usePlayerStore((state) => state.appendQueueItems);

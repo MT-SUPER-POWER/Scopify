@@ -5,7 +5,7 @@ import type { SongDetail } from "@/types/api/music";
 import type { RecommendPlaylist } from "@/types/api/playlist";
 import type { ToplistDetailItem } from "@/types/api/toplist";
 import type { CarouselDirection, HomePlaybackActions } from "@/types/home";
-import type { Artist, Voice } from "@/types/search";
+import type { Artist, Voice } from "@/types/search/model";
 import type { TranslationKey } from "@/lib/i18n";
 
 export interface HomeSectionPendingProps {

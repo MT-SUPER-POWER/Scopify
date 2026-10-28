@@ -4,7 +4,7 @@ import type {
   CommandWorkspaceSearchFilter,
   CommandWorkspaceSearchItem,
 } from "@/types/commandWorkspace";
-import type { Category, SearchResults, SearchRecentEntry } from "@/types/search";
+import type { Category, SearchResults, SearchRecentEntry } from "@/types/search/model";
 
 export function buildCommandWorkspaceSearchHref(
   keywords: string,

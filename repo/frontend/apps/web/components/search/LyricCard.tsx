@@ -15,7 +15,7 @@ import { getSizedImageUrl } from "@/lib/music/imageUrl";
 import { songToSongDetail } from "@/lib/search/lyricSearch";
 import { cn, formatDuration } from "@/lib/utils";
 import { useI18n } from "@/store/module/i18n";
-import type { LyricCardProps } from "@/types/components/search";
+import type { LyricCardProps } from "@/types/search/components";
 import { SearchLyricDialog } from "./SearchLyricDialog";
 import { SearchLyricSnippet } from "./SearchLyricSnippet";
 

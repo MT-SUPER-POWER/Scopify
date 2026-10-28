@@ -11,7 +11,7 @@ import { getPodcastDestination } from "@/lib/search/podcastDestination";
 import { cn, formatPlayCount } from "@/lib/utils";
 import { usePlayerStore } from "@/store";
 import { useI18n } from "@/store/module/i18n";
-import type { PodcastRowProps } from "@/types/components/search";
+import type { PodcastRowProps } from "@/types/search/components";
 export function PodcastRow({ index, podcast }: PodcastRowProps) {
   const { t } = useI18n();
   const router = useSmartRouter();

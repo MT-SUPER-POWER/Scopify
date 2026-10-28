@@ -7,7 +7,7 @@ import type {
   PlaylistSearchResponse,
   SongSearchResponse,
   VoiceSearchResponse,
-} from "@/types/api/search";
+} from "@/types/search/api";
 import request from "../web/request";
 
 /**

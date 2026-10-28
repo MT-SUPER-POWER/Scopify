@@ -5,7 +5,7 @@ import { HomeSectionPending } from "@/components/home/HomeSectionPending";
 import { useRecommendedVoiceListsQuery } from "@/hooks/home/useHomeQueries";
 import { toRecommendedVoice } from "@/lib/home/voiceAdapter";
 import { useI18n } from "@/store/module/i18n";
-import type { Voice } from "@/types/search";
+import type { Voice } from "@/types/search/model";
 
 export function HomeVoicesContent() {
   const { t } = useI18n();

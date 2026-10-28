@@ -5,7 +5,7 @@ import {
   getCommandWorkspaceSearchFilterForCategory,
   resolveCommandWorkspaceSearchEntry,
 } from "@/lib/commandWorkspace/search";
-import { CATEGORIES } from "@/types/search";
+import { CATEGORIES } from "@/types/search/model";
 
 describe("command workspace search constraints", () => {
   it("covers every search-page tab in the same order", () => {

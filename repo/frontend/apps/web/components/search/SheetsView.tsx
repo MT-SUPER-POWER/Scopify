@@ -17,7 +17,7 @@ import { mapSheetSearchSong } from "@/lib/search/sheetSongAdapter";
 import { useI18n } from "@/store/module/i18n";
 import type { SongDetail } from "@/types/api/music";
 import type { MusicSheet } from "@/types/api/songResources";
-import type { SheetsViewProps } from "@/types/components/search";
+import type { SheetsViewProps } from "@/types/search/components";
 import { SearchCategoryHeader } from "./SearchCategoryHeader";
 import { SheetSongFailureCard } from "./SheetSongFailureCard";
 import { SheetSongResultCard } from "./SheetSongResultCard";

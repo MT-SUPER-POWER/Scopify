@@ -1,7 +1,7 @@
-import type { CategoryTabsProps } from "@/types/components/search";
+import type { CategoryTabsProps } from "@/types/search/components";
 import { cn } from "@/lib/utils";
 import { useI18n } from "@/store/module/i18n";
-import { CATEGORIES, type Category } from "@/types/search";
+import { CATEGORIES, type Category } from "@/types/search/model";
 
 export function CategoryTabs({ active, onChange }: CategoryTabsProps) {
   const { t } = useI18n();

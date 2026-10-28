@@ -1,7 +1,7 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import type { HighlightedLyricTextProps, SearchLyricSnippetProps } from "@/types/components/search";
+import type { HighlightedLyricTextProps, SearchLyricSnippetProps } from "@/types/search/components";
 
 function escapeRegExp(string: string) {
   return string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");

@@ -11,7 +11,7 @@ import type {
   SearchBestMatch,
   Song,
   Voice,
-} from "@/types/search";
+} from "@/types/search/model";
 import type { ReactNode } from "react";
 
 export interface AllViewProps {

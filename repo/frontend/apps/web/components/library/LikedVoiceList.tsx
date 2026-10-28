@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { VoiceList } from "@/components/search/VoiceList";
 import { VoiceTranscriptDialog } from "@/components/voice/VoiceTranscriptDialog";
-import type { Voice } from "@/types/search";
+import type { Voice } from "@/types/search/model";
 
 interface LikedVoiceListProps {
   voices: Voice[];

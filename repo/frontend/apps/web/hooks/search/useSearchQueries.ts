@@ -26,7 +26,7 @@ import type {
   PlaylistSearchResponse,
   SongSearchResponse,
   VoiceSearchResponse,
-} from "@/types/api/search";
+} from "@/types/search/api";
 import type { VoiceListSearchResponse } from "@/types/voice/api";
 
 function isEnabled(keyword: string, enabled: boolean) {

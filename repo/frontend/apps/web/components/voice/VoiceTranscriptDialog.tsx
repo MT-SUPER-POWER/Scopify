@@ -12,7 +12,7 @@ import {
 import { VoiceTranscriptPanel } from "@/components/voice/VoiceTranscriptPanel";
 import { useVoiceTranscriptQuery } from "@/hooks/voice/useVoiceTranscriptQuery";
 import { useI18n } from "@/store/module/i18n";
-import type { Voice } from "@/types/search";
+import type { Voice } from "@/types/search/model";
 
 interface VoiceTranscriptDialogProps {
   onOpenChange: (open: boolean) => void;

@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 import { normalizeSearchRecentEntries, upsertSearchRecentEntry } from "@/lib/search/searchHistory";
-import type { SearchRecentEntry } from "@/types/search";
+import type { SearchRecentEntry } from "@/types/search/model";
 
 interface SearchStore {
   query: string;

@@ -26,7 +26,7 @@ import type {
 import type { RadioDetail } from "@/types/radio/api";
 import { getRecentSong, getRecentSongEntries } from "@/types/api/user";
 import type { LibraryMediaItem } from "@/types/library";
-import type { Artist, Song, Voice } from "@/types/search";
+import type { Artist, Song, Voice } from "@/types/search/model";
 
 function findLikedPlaylist(playlists: RawNeteasePlaylist[], userId: number) {
   return (

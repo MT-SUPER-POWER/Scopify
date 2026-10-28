@@ -4,7 +4,7 @@ import type {
   RecommendedVoiceArtist,
   RecommendedVoiceSong,
 } from "@/types/voice/api";
-import type { Artist, Song, Voice } from "@/types/search";
+import type { Artist, Song, Voice } from "@/types/search/model";
 
 function toArtist(source: RecommendedVoiceArtist): Artist {
   return {

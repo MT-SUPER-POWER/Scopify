@@ -8,7 +8,7 @@ import { SongVipBadge } from "@/components/shared/SongVipBadge";
 import { usePlayerStore } from "@/store";
 import { useI18n } from "@/store/module/i18n";
 import type { SongDetail } from "@/types/api/music";
-import type { SearchBestMatch, Song } from "@/types/search";
+import type { SearchBestMatch, Song } from "@/types/search/model";
 
 interface Props {
   bestMatch: SearchBestMatch | null;

@@ -1,7 +1,7 @@
 "use client";
 
 import { useI18n } from "@/store/module/i18n";
-import type { SearchCategoryHeaderProps } from "@/types/components/search";
+import type { SearchCategoryHeaderProps } from "@/types/search/components";
 
 const categoryTitleKeys = {
   Albums: "search.section.searchAlbums",

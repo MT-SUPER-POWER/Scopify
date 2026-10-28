@@ -5,7 +5,7 @@ import { Card, CardContent } from "@scopify/ui/shadcn/components/card";
 import { getSizedImageUrl } from "@/lib/music/imageUrl";
 import { useI18n } from "@/store/module/i18n";
 import type { MusicSheet } from "@/types/api/songResources";
-import type { SheetSongResultCardProps } from "@/types/components/search";
+import type { SheetSongResultCardProps } from "@/types/search/components";
 
 const VISIBLE_SHEETS = 3;
 

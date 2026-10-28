@@ -1,4 +1,4 @@
-import { CATEGORIES, type Category, type SearchRecentEntry } from "@/types/search";
+import { CATEGORIES, type Category, type SearchRecentEntry } from "@/types/search/model";
 
 const MAX_SEARCH_RECENT_ENTRIES = 20;
 

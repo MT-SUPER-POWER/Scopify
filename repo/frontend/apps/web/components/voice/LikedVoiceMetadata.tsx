@@ -1,6 +1,6 @@
 import { formatPlayCount } from "@/lib/utils";
 import { useI18n } from "@/store/module/i18n";
-import type { Voice } from "@/types/search";
+import type { Voice } from "@/types/search/model";
 
 function formatVoiceDate(timestamp: number, locale: string) {
   return new Intl.DateTimeFormat(locale, {

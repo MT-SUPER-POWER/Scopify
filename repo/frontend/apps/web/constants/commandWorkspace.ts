@@ -1,5 +1,5 @@
 import type { CommandWorkspaceSearchFilter } from "@/types/commandWorkspace";
-import { CATEGORIES, type Category } from "@/types/search";
+import { CATEGORIES, type Category } from "@/types/search/model";
 
 const SEARCH_FILTERS_BY_CATEGORY = {
   Songs: { category: "Songs", id: "song", label: "歌曲", token: "@song" },

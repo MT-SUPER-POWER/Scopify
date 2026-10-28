@@ -5,7 +5,7 @@ import Image from "next/image";
 import type React from "react";
 import { cn } from "@/lib/utils";
 import { useI18n } from "@/store/module/i18n";
-import type { Album } from "@/types/search";
+import type { Album } from "@/types/search/model";
 
 export function AlbumCard({
   album,

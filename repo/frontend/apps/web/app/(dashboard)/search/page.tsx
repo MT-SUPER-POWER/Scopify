@@ -18,7 +18,7 @@ import { useSearchData } from "@/hooks/search/useSearchData";
 import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
 import { buildSearchCategoryUrl, getSearchCategory } from "@/lib/search/searchCategory";
 import { useI18n } from "@/store/module/i18n";
-import type { Category } from "@/types/search";
+import type { Category } from "@/types/search/model";
 
 export default function SearchPage() {
   const { t } = useI18n();

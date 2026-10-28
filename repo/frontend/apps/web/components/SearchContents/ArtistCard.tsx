@@ -2,7 +2,7 @@
 
 import { User } from "lucide-react";
 import { useI18n } from "@/store/module/i18n";
-import type { Artist } from "@/types/search";
+import type { Artist } from "@/types/search/model";
 import { getSizedImageUrl } from "@/lib/music/imageUrl";
 
 export function ArtistCard({ artist, onClick }: { artist: Artist; onClick?: () => void }) {

@@ -4,7 +4,7 @@ import { LoaderCircle } from "lucide-react";
 import { MvCard } from "@/components/mv/MvCard";
 import { useInfiniteScrollTrigger } from "@/hooks/search/useInfiniteScrollTrigger";
 import { useI18n } from "@/store/module/i18n";
-import type { MvsViewProps } from "@/types/components/search";
+import type { MvsViewProps } from "@/types/search/components";
 import { SearchCategoryHeader } from "./SearchCategoryHeader";
 
 /** 搜索结果的 MV 分类：16:9 卡片网格，滚动到底自动加载下一页。 */

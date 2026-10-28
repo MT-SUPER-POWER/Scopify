@@ -10,7 +10,7 @@ import type {
   CommandWorkspaceDirectSearchProps,
   CommandWorkspaceSearchFilter,
 } from "@/types/commandWorkspace";
-import type { SearchRecentEntry } from "@/types/search";
+import type { SearchRecentEntry } from "@/types/search/model";
 
 export function useCommandWorkspaceDirectSearch({
   initialQuery,

@@ -1,5 +1,5 @@
 import type { SongDetail } from "@/types/api/music";
-import type { Song } from "@/types/search";
+import type { Song } from "@/types/search/model";
 
 export function songToSongDetail(song: Song): SongDetail {
   const picUrl = song.album?.picUrl || song.artists?.[0]?.picUrl || "";

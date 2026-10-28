@@ -3,7 +3,7 @@ import { searchSuggest } from "@/lib/api/search";
 import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
 import { buildSearchUrl } from "@/lib/search/searchCategory";
 import { useSearchStore } from "@/store/module/search";
-import type { SearchRecentEntry } from "@/types/search";
+import type { SearchRecentEntry } from "@/types/search/model";
 import type { SuggestItem } from "../SearchHelper";
 
 interface UseSearchLogicProps {

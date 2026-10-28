@@ -4,7 +4,7 @@ import { Download, LoaderCircle } from "lucide-react";
 import { Button } from "@scopify/ui/shadcn/components/button";
 import { useSearchLyricExport } from "@/hooks/search/useSearchLyricExport";
 import { useI18n } from "@/store/module/i18n";
-import type { SearchLyricActionsProps } from "@/types/components/search";
+import type { SearchLyricActionsProps } from "@/types/search/components";
 
 export function SearchLyricActions({ song }: SearchLyricActionsProps) {
   const { t } = useI18n();

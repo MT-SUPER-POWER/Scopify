@@ -1,6 +1,6 @@
-import type { VoiceSearchItem, VoiceSearchProgram, VoiceSearchResponse } from "@/types/api/search";
+import type { VoiceSearchItem, VoiceSearchProgram, VoiceSearchResponse } from "@/types/search/api";
 import { resolveCoverUrl } from "@/lib/music/resolveCoverUrl";
-import type { Artist, Song, Voice } from "@/types/search";
+import type { Artist, Song, Voice } from "@/types/search/model";
 
 function toVoiceSearchArtist(source: {
   id?: number;

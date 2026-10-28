@@ -9,7 +9,7 @@ import { getPodcastDestination } from "@/lib/search/podcastDestination";
 import { cn } from "@/lib/utils";
 import { usePlayerStore } from "@/store";
 import { useI18n } from "@/store/module/i18n";
-import type { PodcastCardProps } from "@/types/components/search";
+import type { PodcastCardProps } from "@/types/search/components";
 import { PodcastContextMenu } from "@/components/shared/PodcastContextMenu";
 
 const FALLBACK_COVER =

@@ -4,7 +4,7 @@ import { Loader2, Pause, Play } from "lucide-react";
 import type React from "react";
 import { cn } from "@/lib/utils";
 import { useI18n } from "@/store/module/i18n";
-import type { Playlist } from "@/types/search";
+import type { Playlist } from "@/types/search/model";
 import { getSizedImageUrl } from "@/lib/music/imageUrl";
 
 /** 格式化播放量 (例如 123456 -> 123.5K) */

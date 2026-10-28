@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import type { InfiniteScrollTriggerOptions } from "@/types/components/search";
+import type { InfiniteScrollTriggerOptions } from "@/types/search/components";
 
 export function useInfiniteScrollTrigger({ enabled, onIntersect }: InfiniteScrollTriggerOptions) {
   const targetRef = useRef<HTMLDivElement>(null);

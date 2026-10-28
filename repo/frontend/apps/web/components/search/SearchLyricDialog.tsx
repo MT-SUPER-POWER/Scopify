@@ -14,7 +14,7 @@ import { SongVipBadge } from "@/components/shared/SongVipBadge";
 import { getSizedImageUrl } from "@/lib/music/imageUrl";
 import { formatDuration } from "@/lib/utils";
 import { useI18n } from "@/store/module/i18n";
-import type { SearchLyricDialogProps } from "@/types/components/search";
+import type { SearchLyricDialogProps } from "@/types/search/components";
 import { SearchLyricActions } from "./SearchLyricActions";
 import { SearchLyricSnippet } from "./SearchLyricSnippet";
 

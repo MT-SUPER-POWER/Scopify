@@ -1,4 +1,4 @@
-import type { SongSearchResource } from "@/types/api/search";
+import type { SongSearchResource } from "@/types/search/api";
 import type { NeteaseLyric, SongDetail } from "@/types/api/music";
 import type { LyricMatchCandidate } from "@/types/lyrics";
 

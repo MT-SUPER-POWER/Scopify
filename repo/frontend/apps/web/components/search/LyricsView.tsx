@@ -7,7 +7,7 @@ import { songToSongDetail } from "@/lib/search/lyricSearch";
 import { usePlayerStore } from "@/store";
 import { useI18n } from "@/store/module/i18n";
 import type { SongDetail } from "@/types/api/music";
-import type { LyricsViewProps } from "@/types/components/search";
+import type { LyricsViewProps } from "@/types/search/components";
 import { LyricCard } from "./LyricCard";
 import { SearchCategoryHeader } from "./SearchCategoryHeader";
 

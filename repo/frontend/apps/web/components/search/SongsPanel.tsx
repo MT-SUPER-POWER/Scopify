@@ -1,5 +1,5 @@
 import { useI18n } from "@/store/module/i18n";
-import type { Song } from "@/types/search";
+import type { Song } from "@/types/search/model";
 import { SongItem } from "./SongItem";
 
 interface Props {

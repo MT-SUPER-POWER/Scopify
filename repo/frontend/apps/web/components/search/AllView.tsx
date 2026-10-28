@@ -4,7 +4,7 @@ import { MvCard } from "@/components/mv/MvCard";
 import { PlaylistCard } from "@/components/SearchContents/PlaylistCard";
 import { SectionHeader } from "@/components/SearchContents/SectionHeader";
 import { useI18n } from "@/store/module/i18n";
-import type { AllViewProps } from "@/types/components/search";
+import type { AllViewProps } from "@/types/search/components";
 import { BestMatchCard } from "./BestMatchCard";
 import { PodcastCard } from "./PodcastCard";
 import { SongsPanel } from "./SongsPanel";

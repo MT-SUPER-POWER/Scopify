@@ -1,5 +1,5 @@
 import { cn } from "@/lib/utils";
-import type { Category } from "@/types/search";
+import type { Category } from "@/types/search/model";
 
 const CARD_COUNT = 6;
 

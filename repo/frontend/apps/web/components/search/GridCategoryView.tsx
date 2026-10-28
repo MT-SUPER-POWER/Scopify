@@ -4,7 +4,7 @@ import { ArtistCard } from "@/components/SearchContents/ArtistCard";
 import { PlaylistCard } from "@/components/SearchContents/PlaylistCard";
 import { useInfiniteScrollTrigger } from "@/hooks/search/useInfiniteScrollTrigger";
 import { useI18n } from "@/store/module/i18n";
-import type { GridCategoryViewProps } from "@/types/components/search";
+import type { GridCategoryViewProps } from "@/types/search/components";
 import { SearchCategoryHeader } from "./SearchCategoryHeader";
 
 export function GridCategoryView({

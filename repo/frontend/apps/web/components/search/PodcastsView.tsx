@@ -6,7 +6,7 @@ import { PodcastViewToggle } from "@/components/library/PodcastViewToggle";
 import { Table, TableBody, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useInfiniteScrollTrigger } from "@/hooks/search/useInfiniteScrollTrigger";
 import { useI18n } from "@/store/module/i18n";
-import type { PodcastsViewProps } from "@/types/components/search";
+import type { PodcastsViewProps } from "@/types/search/components";
 import type { PodcastViewMode } from "@/types/library";
 import { PodcastCard } from "./PodcastCard";
 import { PodcastRow } from "./PodcastRow";
