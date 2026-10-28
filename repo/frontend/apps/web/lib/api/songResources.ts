@@ -3,7 +3,7 @@ import type {
   SheetPreviewResponse,
   SongSheetListResponse,
   SongWikiResponse,
-} from "@/types/api/songResources";
+} from "@/types/songResources/api";
 
 export async function getSongWiki(id: number, signal?: AbortSignal) {
   return (await request.get<SongWikiResponse>("/song/wiki/info", { params: { id }, signal })).data;

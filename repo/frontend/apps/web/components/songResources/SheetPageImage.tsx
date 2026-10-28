@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Button } from "@scopify/ui/shadcn/components/button";
 import { useI18n } from "@/store/module/i18n";
-import type { SheetPageImageProps } from "@/types/components/songResources";
+import type { SheetPageImageProps } from "@/types/songResources/components";
 
 export function SheetPageImage({ url, label }: SheetPageImageProps) {
   const { t } = useI18n();

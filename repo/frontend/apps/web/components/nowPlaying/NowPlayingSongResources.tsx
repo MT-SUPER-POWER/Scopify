@@ -7,7 +7,7 @@ import { SongWikiSection } from "@/components/songResources/SongWikiSection";
 import { SongSheetsSection } from "@/components/songResources/SongSheetsSection";
 import { useI18n } from "@/store/module/i18n";
 import type { NowPlayingSectionProps } from "@/types/components/nowPlaying";
-import type { SongResourceTab } from "@/types/components/songResources";
+import type { SongResourceTab } from "@/types/songResources/components";
 
 export function NowPlayingSongResources({ song }: NowPlayingSectionProps) {
   const { t } = useI18n();

@@ -9,7 +9,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@scopify/ui/shadcn/components/tabs";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useI18n } from "@/store/module/i18n";
-import type { SongResourcesDialogProps } from "@/types/components/songResources";
+import type { SongResourcesDialogProps } from "@/types/songResources/components";
 import { SongWikiSection } from "./SongWikiSection";
 import { SongSheetsSection } from "./SongSheetsSection";
 

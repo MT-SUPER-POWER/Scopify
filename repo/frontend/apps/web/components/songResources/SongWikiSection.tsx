@@ -7,7 +7,7 @@ import { QuietState } from "@/components/shared/QuietState";
 import { useAuth } from "@/hooks/auth/useAuth";
 import { useSongWikiQuery } from "@/hooks/song/useSongResources";
 import { useI18n } from "@/store/module/i18n";
-import type { SongResourceSectionProps } from "@/types/components/songResources";
+import type { SongResourceSectionProps } from "@/types/songResources/components";
 
 export function SongWikiSection(props: SongResourceSectionProps) {
   const { userId, isAuthenticated } = useAuth();

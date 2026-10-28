@@ -3,8 +3,8 @@ import type {
   SheetPreviewResponse,
   SongSheetListResponse,
   SongWikiResponse,
-} from "@/types/api/songResources";
-import type { SongWikiSection } from "@/types/songResources";
+} from "@/types/songResources/api";
+import type { SongWikiSection } from "@/types/songResources/model";
 
 export function normalizeSongWiki(response: SongWikiResponse): SongWikiSection[] {
   if (!Array.isArray(response.data?.blocks)) throw new Error("Invalid song wiki response");

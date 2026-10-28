@@ -2,7 +2,7 @@
 
 import { ChevronRight, FileMusic } from "lucide-react";
 import { useI18n } from "@/store/module/i18n";
-import type { MusicSheetRowProps } from "@/types/components/songResources";
+import type { MusicSheetRowProps } from "@/types/songResources/components";
 
 export function MusicSheetRow({ sheet, onSelect }: MusicSheetRowProps) {
   const { t } = useI18n();

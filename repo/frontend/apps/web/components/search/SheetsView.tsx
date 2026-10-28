@@ -16,7 +16,7 @@ import { useRequireLoginAction } from "@/lib/hooks/useRequireLoginAction";
 import { mapSheetSearchSong } from "@/lib/search/sheetSongAdapter";
 import { useI18n } from "@/store/module/i18n";
 import type { SongDetail } from "@/types/song/api";
-import type { MusicSheet } from "@/types/api/songResources";
+import type { MusicSheet } from "@/types/songResources/api";
 import type { SheetsViewProps } from "@/types/search/components";
 import { SearchCategoryHeader } from "./SearchCategoryHeader";
 import { SheetSongFailureCard } from "./SheetSongFailureCard";

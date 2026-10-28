@@ -8,8 +8,8 @@ import { QuietState } from "@/components/shared/QuietState";
 import { useSongSheetsQuery } from "@/hooks/song/useSongResources";
 import { useRequireLoginAction } from "@/lib/hooks/useRequireLoginAction";
 import { useI18n } from "@/store/module/i18n";
-import type { MusicSheet } from "@/types/api/songResources";
-import type { SongResourceSectionProps } from "@/types/components/songResources";
+import type { MusicSheet } from "@/types/songResources/api";
+import type { SongResourceSectionProps } from "@/types/songResources/components";
 import { MusicSheetRow } from "./MusicSheetRow";
 import { SheetPreviewDialog } from "./SheetPreviewDialog";
 

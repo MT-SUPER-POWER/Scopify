@@ -1,5 +1,5 @@
 import type { SongDetail } from "@/types/song/api";
-import type { MusicSheet } from "@/types/api/songResources";
+import type { MusicSheet } from "@/types/songResources/api";
 
 export interface SongResourceSectionProps {
   songId: number;

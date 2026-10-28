@@ -19,7 +19,7 @@ import { useI18n } from "@/store/module/i18n";
 import type {
   SheetPreviewContentProps,
   SheetPreviewDialogProps,
-} from "@/types/components/songResources";
+} from "@/types/songResources/components";
 import { SheetPageImage } from "./SheetPageImage";
 
 export function SheetPreviewDialog({ sheet, onClose }: SheetPreviewDialogProps) {
