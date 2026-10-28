@@ -6,9 +6,9 @@ import { changeComment, likeComment } from "@/lib/api/social";
 import { patchEvent, socialKey } from "@/lib/social/cache";
 import { useSocialAccount } from "./useSocialQueries";
 import { useI18n } from "@/store/module/i18n";
-import type { SocialComment, SocialEvent, SocialCommentDraft } from "@/types/social";
+import type { SocialComment, SocialEvent, SocialCommentDraft } from "@/types/social/model";
 import type { InfiniteData } from "@tanstack/react-query";
-import type { SocialCommentPage } from "@/types/social";
+import type { SocialCommentPage } from "@/types/social/model";
 
 export function useSocialCommentWriter(event: SocialEvent) {
   const { account } = useSocialAccount(),

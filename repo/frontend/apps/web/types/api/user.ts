@@ -324,4 +324,4 @@ export const pruneUser = (raw: NeteaseUserSource | null | undefined): NeteaseUse
 };
 
 export * from "./userMedal";
-export * from "./userSocialStatus";
+export * from "@/types/social/userStatusApi";

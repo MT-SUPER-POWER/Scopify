@@ -6,7 +6,7 @@ import { SocialFeed } from "@/components/social/SocialFeed";
 import { SocialPeople } from "@/components/social/SocialPeople";
 import { profileHref } from "@/lib/social/normalize";
 import { useI18n } from "@/store/module/i18n";
-import type { SocialProfileBodyProps } from "@/types/components/social";
+import type { SocialProfileBodyProps } from "@/types/social/components";
 import { SocialProfilePlaylists } from "./SocialProfilePlaylists";
 import { ProfileFansGroupGrid } from "./ProfileFansGroupGrid";
 import s from "@/components/social/Social.module.css";

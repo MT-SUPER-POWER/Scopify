@@ -5,7 +5,7 @@ import { useSocialEventActions } from "@/hooks/social/useSocialActions";
 import { eventHref } from "@/lib/social/normalize";
 import { formatSocialTime } from "@/lib/social/time";
 import { useI18n } from "@/store/module/i18n";
-import type { SocialEventProps } from "@/types/components/social";
+import type { SocialEventProps } from "@/types/social/components";
 import { SocialAvatar, SocialAuthor } from "./SocialPrimitives";
 import { SocialEventActions } from "./SocialEventActions";
 import { SocialEventMedia } from "./SocialEventMedia";

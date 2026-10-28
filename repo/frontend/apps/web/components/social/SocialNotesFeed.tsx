@@ -5,7 +5,7 @@ import { useInfiniteScrollTrigger } from "@/hooks/search/useInfiniteScrollTrigge
 import { useSocialNotes } from "@/hooks/social/useSocialNotes";
 import { uniqueById } from "@/lib/social/normalize";
 import { useI18n } from "@/store/module/i18n";
-import type { SocialNotesFeedProps } from "@/types/components/social";
+import type { SocialNotesFeedProps } from "@/types/social/components";
 import { SocialNoteGrid } from "./SocialNoteGrid";
 import { SocialLoadMore, SocialState } from "./SocialPrimitives";
 

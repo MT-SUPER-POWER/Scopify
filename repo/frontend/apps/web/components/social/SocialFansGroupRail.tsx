@@ -7,7 +7,7 @@ import { useI18n } from "@/store/module/i18n";
 import type {
   SocialFansGroupRailItemProps,
   SocialFansGroupRailProps,
-} from "@/types/components/social";
+} from "@/types/social/components";
 
 /**
  * 动态页乐迷团筛选：一行可横向滚动的胶囊。

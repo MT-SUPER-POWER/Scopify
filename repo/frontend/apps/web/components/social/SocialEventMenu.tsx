@@ -17,7 +17,7 @@ import {
 import { useSocialAccount } from "@/hooks/social/useSocialQueries";
 import { useSocialShare } from "@/hooks/social/useSocialShare";
 import { useI18n } from "@/store/module/i18n";
-import type { SocialEventMenuProps } from "@/types/components/social";
+import type { SocialEventMenuProps } from "@/types/social/components";
 import s from "./Social.module.css";
 
 export function SocialEventMenu({ event, pending, onDelete }: SocialEventMenuProps) {

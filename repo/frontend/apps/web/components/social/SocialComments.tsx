@@ -13,8 +13,8 @@ import { useSocialCommentActions, useSocialCommentWriter } from "@/hooks/social/
 import { useRequireLoginAction } from "@/lib/hooks/useRequireLoginAction";
 import { uniqueById } from "@/lib/social/normalize";
 import { useI18n } from "@/store/module/i18n";
-import type { SocialEventProps, SocialCommentRowProps } from "@/types/components/social";
-import type { SocialComment } from "@/types/social";
+import type { SocialEventProps, SocialCommentRowProps } from "@/types/social/components";
+import type { SocialComment } from "@/types/social/model";
 import {
   SocialAuthor,
   SocialAvatar,

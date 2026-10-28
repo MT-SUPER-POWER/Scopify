@@ -4,7 +4,7 @@ import { Disc3, ListPlus, LoaderCircle, Play } from "lucide-react";
 import Link from "next/link";
 import { useSocialPlayback } from "@/hooks/social/useSocialPlayback";
 import { useI18n } from "@/store/module/i18n";
-import type { SocialResourceProps } from "@/types/components/social";
+import type { SocialResourceProps } from "@/types/social/components";
 import s from "./Social.module.css";
 
 export function SocialResourceCard({ resource, compact }: SocialResourceProps) {

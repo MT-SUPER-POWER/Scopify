@@ -13,7 +13,7 @@ import { EditUserProfileDialog } from "./EditUserProfileDialog";
 import { SocialProfileHero } from "./SocialProfileHero";
 import { SocialProfileBody } from "./SocialProfileBody";
 import { SocialProfileAside } from "./SocialProfileAside";
-import type { SocialFeedProps } from "@/types/components/social";
+import type { SocialFeedProps } from "@/types/social/components";
 import s from "@/components/social/Social.module.css";
 
 export function SocialProfilePage() {

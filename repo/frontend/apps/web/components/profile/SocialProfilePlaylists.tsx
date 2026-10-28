@@ -6,7 +6,7 @@ import { useSocialPlaylists } from "@/hooks/social/useSocialQueries";
 import { uniqueById } from "@/lib/social/normalize";
 import { useI18n } from "@/store/module/i18n";
 import { SocialLoadMore, SocialState } from "@/components/social/SocialPrimitives";
-import type { SocialFeedProps } from "@/types/components/social";
+import type { SocialFeedProps } from "@/types/social/components";
 import s from "@/components/social/Social.module.css";
 
 export function SocialProfilePlaylists({ uid = "" }: SocialFeedProps) {

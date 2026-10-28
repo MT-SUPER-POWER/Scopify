@@ -13,7 +13,7 @@ import type {
   SocialLoadMoreProps,
   SocialStateProps,
   SocialUserProps,
-} from "@/types/components/social";
+} from "@/types/social/components";
 import s from "./Social.module.css";
 
 export function SocialAvatar({ user, size, linked = true, className = "" }: SocialAvatarProps) {

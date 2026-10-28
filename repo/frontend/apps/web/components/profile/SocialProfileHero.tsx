@@ -5,7 +5,7 @@ import Link from "next/link";
 import { FollowButton, SocialAvatar } from "@/components/social/SocialPrimitives";
 import { profileHref } from "@/lib/social/normalize";
 import { useI18n } from "@/store/module/i18n";
-import type { SocialProfileHeroProps } from "@/types/components/social";
+import type { SocialProfileHeroProps } from "@/types/social/components";
 import s from "@/components/social/Social.module.css";
 
 export function SocialProfileHero({ user, isSelf, onEdit, onMessage }: SocialProfileHeroProps) {

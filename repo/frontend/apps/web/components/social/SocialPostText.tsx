@@ -2,7 +2,7 @@
 
 import { useId, useState } from "react";
 import { useI18n } from "@/store/module/i18n";
-import type { SocialPostTextProps } from "@/types/components/social";
+import type { SocialPostTextProps } from "@/types/social/components";
 import { SocialInlineText } from "./SocialInlineText";
 import s from "./Social.module.css";
 

@@ -9,7 +9,7 @@ import { usePlayerStore } from "@/store/module/player";
 import { useI18n } from "@/store/module/i18n";
 import { pruneSongDetail } from "@/types/api/music";
 import type { RawSongDetail } from "@/types/api/music";
-import type { SocialResource } from "@/types/social";
+import type { SocialResource } from "@/types/social/model";
 
 export function useSocialPlayback(resource: SocialResource) {
   const [pending, setPending] = useState(false);

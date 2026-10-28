@@ -11,7 +11,7 @@ import type {
   SocialEventTarget,
   SocialProfileTab,
   SocialProfile,
-} from "@/types/social";
+} from "@/types/social/model";
 
 export interface SocialUserProps {
   user: SocialUser;

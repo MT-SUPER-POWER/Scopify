@@ -1,6 +1,6 @@
 import { pruneUser } from "@/types/api/user";
 import type { SongDetail } from "@/types/api/music";
-import type { SocialRawObject } from "@/types/api/social";
+import type { SocialRawObject } from "@/types/social/api";
 import type {
   SocialComment,
   SocialEvent,
@@ -10,7 +10,7 @@ import type {
   SocialProfile,
   SocialResource,
   SocialUser,
-} from "@/types/social";
+} from "@/types/social/model";
 
 export function object(value: unknown): SocialRawObject {
   return value && typeof value === "object" && !Array.isArray(value)

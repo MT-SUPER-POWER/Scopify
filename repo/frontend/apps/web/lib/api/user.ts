@@ -182,7 +182,7 @@ import type {
   UserSocialStatusRcmdResponse,
   UserSocialStatusResponse,
   UserSocialStatusSupportResponse,
-} from "@/types/api/userSocialStatus";
+} from "@/types/social/userStatusApi";
 
 /**
  * 用户徽章

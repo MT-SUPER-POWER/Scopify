@@ -4,7 +4,7 @@ import { useInfiniteQuery, useQuery, useQueryClient } from "@tanstack/react-quer
 import * as api from "@/lib/api/social";
 import { findEvent, socialKey } from "@/lib/social/cache";
 import { useUserStore } from "@/store/module/user";
-import type { SocialEventTarget, SocialPeopleMode } from "@/types/social";
+import type { SocialEventTarget, SocialPeopleMode } from "@/types/social/model";
 
 export function useSocialAccount() {
   const uid = useUserStore((s) => s.user?.userId);

@@ -4,7 +4,7 @@ import { Search } from "lucide-react";
 import { useState } from "react";
 import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
 import { useI18n } from "@/store/module/i18n";
-import type { SocialSearchFormProps } from "@/types/components/social";
+import type { SocialSearchFormProps } from "@/types/social/components";
 import s from "./Social.module.css";
 
 export function SocialSearchForm({ query = "" }: SocialSearchFormProps) {

@@ -9,7 +9,7 @@ import {
   DialogTitle,
 } from "@scopify/ui/shadcn/components/dialog";
 import { useI18n } from "@/store/module/i18n";
-import type { SocialEventProps } from "@/types/components/social";
+import type { SocialEventProps } from "@/types/social/components";
 import s from "./Social.module.css";
 
 export function SocialEventMedia({ event }: SocialEventProps) {

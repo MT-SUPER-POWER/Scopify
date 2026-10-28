@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useSocialPlaylists } from "@/hooks/social/useSocialQueries";
 import { profileHref, uniqueById } from "@/lib/social/normalize";
 import { useI18n } from "@/store/module/i18n";
-import type { SocialProfileAsideProps } from "@/types/components/social";
+import type { SocialProfileAsideProps } from "@/types/social/components";
 import { SocialState } from "@/components/social/SocialPrimitives";
 import s from "@/components/social/Social.module.css";
 

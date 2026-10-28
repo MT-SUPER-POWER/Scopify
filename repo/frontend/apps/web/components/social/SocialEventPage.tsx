@@ -3,7 +3,7 @@
 import { useSearchParams } from "next/navigation";
 import { useSocialAccount, useSocialEvent } from "@/hooks/social/useSocialQueries";
 import { useI18n } from "@/store/module/i18n";
-import type { SocialEventDetailProps } from "@/types/components/social";
+import type { SocialEventDetailProps } from "@/types/social/components";
 import { SocialEventCard } from "./SocialEventCard";
 import { SocialComments } from "./SocialComments";
 import { SocialLogin, SocialState } from "./SocialPrimitives";

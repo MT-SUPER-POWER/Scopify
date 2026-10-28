@@ -9,7 +9,7 @@ import { useSocialPostModal } from "@/hooks/social/useSocialPostModal";
 import { useRequireLoginAction } from "@/lib/hooks/useRequireLoginAction";
 import { getSizedImageUrl } from "@/lib/music/imageUrl";
 import { useI18n } from "@/store/module/i18n";
-import type { SocialNoteTileProps, SocialResourceProps } from "@/types/components/social";
+import type { SocialNoteTileProps, SocialResourceProps } from "@/types/social/components";
 import { SocialAuthor, SocialAvatar } from "./SocialPrimitives";
 import { SocialInlineText } from "./SocialInlineText";
 import s from "./Social.module.css";

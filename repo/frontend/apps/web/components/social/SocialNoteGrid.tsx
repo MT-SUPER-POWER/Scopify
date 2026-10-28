@@ -1,8 +1,8 @@
 "use client";
 
 import { useMasonryColumns } from "@/hooks/ui/useMasonryColumns";
-import type { SocialNoteGridProps } from "@/types/components/social";
-import type { SocialEvent } from "@/types/social";
+import type { SocialNoteGridProps } from "@/types/social/components";
+import type { SocialEvent } from "@/types/social/model";
 import { SocialNoteTile } from "./SocialNoteTile";
 import s from "./Social.module.css";
 

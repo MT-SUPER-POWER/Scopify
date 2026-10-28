@@ -10,7 +10,7 @@ import {
 } from "@/lib/api/user";
 import { musicQueryKeys } from "@/lib/query/queryKeys";
 import { useUserStore } from "@/store/module/user";
-import type { UserSocialStatusEditParams } from "@/types/api/userSocialStatus";
+import type { UserSocialStatusEditParams } from "@/types/social/userStatusApi";
 
 export interface UseUserSocialStatusQueryOptions {
   enabled?: boolean;

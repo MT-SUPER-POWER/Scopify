@@ -3,7 +3,7 @@
 import { useSocialAccount, useSocialPeople } from "@/hooks/social/useSocialQueries";
 import { uniqueById } from "@/lib/social/normalize";
 import { useI18n } from "@/store/module/i18n";
-import type { SocialPeopleProps } from "@/types/components/social";
+import type { SocialPeopleProps } from "@/types/social/components";
 import {
   FollowButton,
   SocialAuthor,

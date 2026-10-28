@@ -1,7 +1,7 @@
 import { requestData } from "@/lib/web/request";
 import { ApiError } from "@/lib/web/apiError";
 import * as n from "@/lib/social/normalize";
-import type { SocialRawResponse, SocialRequestParams } from "@/types/api/social";
+import type { SocialRawResponse, SocialRequestParams } from "@/types/social/api";
 import type {
   SocialCommentInput,
   SocialEventPage,
@@ -13,7 +13,7 @@ import type {
   SocialMessagePage,
   SocialResource,
   SocialGroup,
-} from "@/types/social";
+} from "@/types/social/model";
 import type { UpdateUserProfilePayload } from "@/types/api/profileUpdate";
 
 function businessResult(response: SocialRawResponse) {

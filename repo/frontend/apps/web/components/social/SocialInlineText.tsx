@@ -1,4 +1,4 @@
-import type { SocialInlineTextProps } from "@/types/components/social";
+import type { SocialInlineTextProps } from "@/types/social/components";
 import s from "./Social.module.css";
 
 /** 话题只做文本着色，暂不提供话题链接或独立点击行为。 */

@@ -26,8 +26,8 @@ import type {
   SocialCommentRowProps,
   SocialEventProps,
   SocialPostViewProps,
-} from "@/types/components/social";
-import type { SocialComment } from "@/types/social";
+} from "@/types/social/components";
+import type { SocialComment } from "@/types/social/model";
 import { SocialComposer } from "./SocialComposer";
 import { SocialEventCard } from "./SocialEventCard";
 import { SocialEventMenu } from "./SocialEventMenu";

@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { useI18n } from "@/store/module/i18n";
-import type { EditUserProfileDialogProps } from "@/types/components/social";
+import type { EditUserProfileDialogProps } from "@/types/social/components";
 import {
   Dialog,
   DialogContent,

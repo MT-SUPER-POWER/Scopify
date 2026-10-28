@@ -12,7 +12,7 @@ import { useSocialAccount, useSocialMessages } from "@/hooks/social/useSocialQue
 import { useSocialSendMessage } from "@/hooks/social/useSocialConversation";
 import { uniqueById } from "@/lib/social/normalize";
 import { useI18n } from "@/store/module/i18n";
-import type { SocialMessageDialogProps } from "@/types/components/social";
+import type { SocialMessageDialogProps } from "@/types/social/components";
 import { SocialAvatar, SocialLoadMore, SocialState } from "./SocialPrimitives";
 import { SocialResourceCard } from "./SocialResourceCard";
 import s from "./Social.module.css";

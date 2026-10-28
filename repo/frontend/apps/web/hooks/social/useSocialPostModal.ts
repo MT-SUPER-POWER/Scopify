@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import type { SocialEventTarget } from "@/types/social";
+import type { SocialEventTarget } from "@/types/social/model";
 
 const POST_PARAM = "post";
 const POST_UID_PARAM = "postUid";

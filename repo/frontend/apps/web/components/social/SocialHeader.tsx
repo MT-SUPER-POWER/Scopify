@@ -10,7 +10,7 @@ import { useSocialAccount } from "@/hooks/social/useSocialQueries";
 import { useSocialGroup } from "@/hooks/social/useSocialNotes";
 import { socialKey } from "@/lib/social/cache";
 import { useI18n } from "@/store/module/i18n";
-import type { SocialHeaderProps } from "@/types/components/social";
+import type { SocialHeaderProps } from "@/types/social/components";
 import { SocialPublishButton } from "./SocialPublishButton";
 import s from "./Social.module.css";
 

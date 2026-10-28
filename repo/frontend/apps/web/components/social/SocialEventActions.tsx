@@ -13,7 +13,7 @@ import { useSocialShare } from "@/hooks/social/useSocialShare";
 import { useRequireLoginAction } from "@/lib/hooks/useRequireLoginAction";
 import { eventHref } from "@/lib/social/normalize";
 import { useI18n } from "@/store/module/i18n";
-import type { SocialEventActionsProps } from "@/types/components/social";
+import type { SocialEventActionsProps } from "@/types/social/components";
 import { SocialComposer } from "./SocialComposer";
 import s from "./Social.module.css";
 

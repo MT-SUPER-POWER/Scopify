@@ -6,7 +6,7 @@ import type {
   SocialPeoplePage,
   SocialProfile,
   SocialUser,
-} from "@/types/social";
+} from "@/types/social/model";
 
 export const socialKey = (account: string, kind: string, ...parts: (string | undefined)[]) =>
   ["social", account, kind, ...parts] as const;
