@@ -4,7 +4,7 @@ import { CloudOff, RefreshCw } from "lucide-react";
 import { Button } from "@scopify/ui/shadcn/components/button";
 
 import { QuietState } from "@/components/shared/QuietState";
-import type { NetworkRetryStateProps } from "@/types/components/network";
+import type { NetworkRetryStateProps } from "@/types/network/components";
 
 export function NetworkRetryState({
   actionLabel,

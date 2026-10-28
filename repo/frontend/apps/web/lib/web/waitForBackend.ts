@@ -1,6 +1,6 @@
 import axios from "axios";
 
-import type { BackendPingResult } from "@/types/network";
+import type { BackendPingResult } from "@/types/network/model";
 
 interface BackendVersionPayload {
   code?: unknown;

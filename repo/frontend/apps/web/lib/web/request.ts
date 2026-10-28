@@ -1,7 +1,7 @@
 import axios, { type InternalAxiosRequestConfig } from "axios";
 
 import { networkConfigOverrideSchema, type WebConfig } from "@/types/settings/config";
-import type { ScopifyRequestConfig } from "@/types/network";
+import type { ScopifyRequestConfig } from "@/types/network/model";
 
 import {
   WEB_BACKEND_SETTINGS_KEY,

@@ -24,7 +24,7 @@ import { webConfig } from "@/lib/web/env";
 import { pingBackend, probeBackend } from "@/lib/web/waitForBackend";
 import { useI18nStore } from "@/store/module/i18n";
 import type { WebConfig } from "@/types/settings/config";
-import type { BackendPingResult } from "@/types/network";
+import type { BackendPingResult } from "@/types/network/model";
 import type { SettingsConfig } from "@/types/settings/model";
 import type { CachePreferences } from "@/types/cache/model";
 

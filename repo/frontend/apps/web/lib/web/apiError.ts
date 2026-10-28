@@ -1,6 +1,6 @@
 import { isAxiosError } from "axios";
 
-import type { ApiErrorKind, ApiErrorOptions, ScopifyRequestConfig } from "@/types/network";
+import type { ApiErrorKind, ApiErrorOptions, ScopifyRequestConfig } from "@/types/network/model";
 
 export class ApiError extends Error {
   readonly config?: ScopifyRequestConfig;

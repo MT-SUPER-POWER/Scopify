@@ -1,5 +1,5 @@
 import { isAxiosError } from "axios";
-import type { ClassifiedNetworkError } from "@/types/network";
+import type { ClassifiedNetworkError } from "@/types/network/model";
 
 interface ErrorLike {
   code?: string;
