@@ -2,7 +2,7 @@ import { execFileSync } from "node:child_process";
 import { existsSync, readFileSync } from "node:fs";
 import path from "node:path";
 import { parseChangelog } from "./parse-changelog";
-import type { UpdatesManifest } from "../types/updates";
+import type { UpdatesManifest } from "@/types/updates/model";
 
 export const workspaceRoot = path.resolve(
   process.cwd(),

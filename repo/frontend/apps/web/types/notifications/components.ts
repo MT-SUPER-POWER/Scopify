@@ -1,6 +1,6 @@
 import type { NotificationFilter, NotificationListItem } from "@/types/notifications/model";
 import type { NotificationPreferences } from "@scopify/desktop-contract";
-import type { AppUpdateState } from "@/types/updater";
+import type { AppUpdateState } from "@/types/updates/updater";
 
 export interface NotificationPreferenceSectionProps {
   preferences: NotificationPreferences;

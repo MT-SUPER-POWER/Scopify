@@ -4,7 +4,7 @@ import { X } from "lucide-react";
 import { DialogDescription, DialogTitle } from "@scopify/ui/shadcn/components/dialog";
 import { UPDATES, UPDATES_CHANGELOG_URL } from "@/constants/updates";
 import { useI18n } from "@/store/module/i18n";
-import type { UpdatesHeaderProps } from "@/types/updates";
+import type { UpdatesHeaderProps } from "@/types/updates/model";
 import styles from "./WhatsNewModal.module.css";
 
 export function UpdatesHeader({ release, onClose }: UpdatesHeaderProps) {

@@ -17,7 +17,7 @@ import {
   type LegacyBrowserPlaybackStorage,
 } from "@/lib/cache/browserCacheStorage";
 import type { CachePreferences } from "@/types/cache";
-import type { AppUpdateState } from "@/types/updater";
+import type { AppUpdateState } from "@/types/updates/updater";
 
 import type { WebRuntime } from "../types";
 import { createBrowserNotifications } from "@/lib/notifications/browser";

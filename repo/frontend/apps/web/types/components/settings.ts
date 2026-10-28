@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import type { AppUpdateState } from "@/types/updater";
+import type { AppUpdateState } from "@/types/updates/updater";
 import type {
   DesktopBackendStatus,
   DesktopHostConfig,

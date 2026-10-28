@@ -1,5 +1,5 @@
 import { UPDATE_GROUPS } from "../constants/updateCategories";
-import type { UpdateRelease } from "../types/updates";
+import type { UpdateRelease } from "@/types/updates/model";
 
 const RELEASE =
   /^## (?:v(\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?)|未发布|unreleased)(?: — (\d{4}-\d{2}-\d{2}))?$/i;

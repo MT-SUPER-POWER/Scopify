@@ -1,4 +1,4 @@
-import type { UpdatesManifest } from "@/types/updates";
+import type { UpdatesManifest } from "@/types/updates/model";
 
 export const UPDATES_SEEN_KEY = "scopify:updates:last-seen";
 export const UPDATE_COMMIT_URL = "https://github.com/MT-SUPER-POWER/Scopify/commit/";

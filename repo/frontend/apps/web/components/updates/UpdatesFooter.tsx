@@ -9,7 +9,7 @@ import {
 } from "@scopify/ui/shadcn/components/select";
 import { UPDATES, UPDATES_UNRELEASED_KEY } from "@/constants/updates";
 import { useI18n } from "@/store/module/i18n";
-import type { UpdatesFooterProps } from "@/types/updates";
+import type { UpdatesFooterProps } from "@/types/updates/model";
 import styles from "./WhatsNewModal.module.css";
 
 export function UpdatesFooter({ releaseKey, onReleaseChange, onClose }: UpdatesFooterProps) {
