@@ -1,6 +1,7 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
+import { useEffect } from "react";
 import { fetchUserPlaylists } from "@/hooks/library/fetchUserPlaylists";
 import { getUserAlbumSublist } from "@/lib/api/album";
 import { getFollowedArtists } from "@/lib/api/artist";
@@ -313,24 +314,36 @@ export function useCreatedPodcastsQuery() {
 export function useUserPlaylistsQuery() {
   const { isLoggedIn, userId } = useLibrarySession();
 
-  return useQuery({
+  const query = useQuery({
     enabled: isLoggedIn && Boolean(userId),
     queryKey: musicQueryKeys.library.playlists(userId ?? 0),
+    meta: { persist: true, scope: "account" },
     queryFn: async (): Promise<NeteasePlaylist[]> => {
-      if (!userId) return [];
+      if (!userId) throw new Error("Missing user ID.");
+      return (await fetchUserPlaylists(userId)).map(prunePlaylist);
+    },
+  });
+  useEffect(() => {
+    if (!isLoggedIn || !userId || query.data === undefined) return;
+    if (Number(useUserStore.getState().user?.userId) !== userId) return;
+    useUserStore.setState({ playlist: query.data });
+  }, [isLoggedIn, query.data, userId]);
+  return query;
+}
 
-      const [rawPlaylists, likeListResponse] = await Promise.all([
-        fetchUserPlaylists(userId),
-        getUserLikeLists(userId),
-      ]);
-
-      const cleanPlaylists = rawPlaylists.map(prunePlaylist);
-
-      const store = useUserStore.getState();
-      store.setPlayList(rawPlaylists);
-      store.setLikeListIDs(likeListResponse.data.ids ?? []);
-
-      return cleanPlaylists;
+export function useUserLikedSongIdsQuery() {
+  const { isLoggedIn, userId } = useLibrarySession();
+  return useQuery({
+    enabled: isLoggedIn && Boolean(userId),
+    queryKey: musicQueryKeys.library.likedSongIds(userId ?? 0),
+    meta: { scope: "account" },
+    queryFn: async () => {
+      if (!userId) throw new Error("Missing user ID.");
+      const response = await getUserLikeLists(userId);
+      if (!Array.isArray(response.data.ids)) throw new Error("Unable to load liked songs.");
+      if (Number(useUserStore.getState().user?.userId) === userId)
+        useUserStore.getState().setLikeListIDs(response.data.ids);
+      return response.data.ids;
     },
   });
 }

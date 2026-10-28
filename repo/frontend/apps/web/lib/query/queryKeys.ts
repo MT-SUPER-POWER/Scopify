@@ -44,6 +44,7 @@ export const musicQueryKeys = {
     createdPodcasts: (userId: number) => ["library", "podcasts", "created", userId] as const,
     likedVoices: (userId: number) => ["library", "podcasts", "liked-voices", userId] as const,
     likedPlaylist: (userId: number) => ["library", "liked-playlist", userId] as const,
+    likedSongIds: (userId: number) => ["library", "liked-song-ids", userId] as const,
     playlists: (userId: number) => ["library", "playlists", userId] as const,
     recentSongs: (userId: number) => ["library", "recent-songs", userId] as const,
     recommendedPodcasts: (userId: number) =>
