@@ -17,6 +17,7 @@ export function useSongWikiQuery(songId: number) {
     queryKey: musicQueryKeys.song.wiki(songId, isAuthenticated ? (userId ?? 0) : 0),
     queryFn: async ({ signal }) => normalizeSongWiki(await getSongWiki(songId, signal)),
     enabled: songId > 0,
+    meta: { persist: true, scope: "account" },
     staleTime: 5 * 60_000,
     throwOnError: throwQueryErrorWithoutData,
   });
@@ -26,6 +27,7 @@ export function useSongSheetsQuery(songId: number) {
     queryKey: musicQueryKeys.song.sheets(songId),
     queryFn: async ({ signal }) => normalizeSongSheets(await getSongSheets(songId, signal)),
     enabled: songId > 0,
+    meta: { persist: true, scope: "public" },
     staleTime: 5 * 60_000,
     throwOnError: throwQueryErrorWithoutData,
   });
@@ -38,6 +40,7 @@ export function useSongSheetsQueries(songIds: number[]) {
       queryFn: async ({ signal }: { signal: AbortSignal }) =>
         normalizeSongSheets(await getSongSheets(songId, signal)),
       enabled: songId > 0,
+      meta: { persist: true, scope: "public" },
       staleTime: 5 * 60_000,
     })),
   });

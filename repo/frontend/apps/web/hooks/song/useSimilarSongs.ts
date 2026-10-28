@@ -11,7 +11,8 @@ export function useSimilarSongs(songId: number, open: boolean) {
   return useQuery({
     queryKey: musicQueryKeys.song.similar(songId, userId),
     enabled: open && songId > 0,
-    staleTime: 60_000,
+    meta: { persist: true, scope: "account" },
+    staleTime: 5 * 60_000,
     retry: false,
     queryFn: async ({ signal }) => {
       const response = await getSimilarSongs(songId, signal);

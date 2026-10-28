@@ -13,6 +13,7 @@ export function useSongMvId(song: SongDetail) {
   const needsLookup = song.mv === undefined && song.id > 0;
   const query = useQuery({
     enabled: needsLookup,
+    meta: { persist: true, scope: "public" },
     queryKey: musicQueryKeys.song.mvId(song.id),
     queryFn: async () => {
       const response = await getSongDetail(song.id);

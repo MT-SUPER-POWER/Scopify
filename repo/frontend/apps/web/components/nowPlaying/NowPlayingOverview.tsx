@@ -48,8 +48,8 @@ export function NowPlayingOverview({ song, onCoverVisibleChange }: NowPlayingOve
         <NowPlayingArtistCard key={song.ar?.[0]?.id} song={song} />
         <NowPlayingMvs song={song} />
         <NowPlayingCredits song={song} />
-        <NowPlayingSongResources key={song.id} song={song} />
-        <NowPlayingHotComments key={song.id} song={song} />
+        <NowPlayingSongResources key={`resources-${song.id}`} song={song} />
+        <NowPlayingHotComments key={`comments-${song.id}`} song={song} />
         <NowPlayingNextUp />
         <NowPlayingSimilarSongs song={song} />
       </div>
