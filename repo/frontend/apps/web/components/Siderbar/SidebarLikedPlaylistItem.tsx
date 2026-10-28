@@ -2,7 +2,7 @@
 
 import { useSidebarPlaylistDrop } from "@/hooks/playlist/useSidebarPlaylistDrop";
 import { useI18n } from "@/store/module/i18n";
-import type { SidebarLikedPlaylistItemProps } from "@/types/components/sidebar";
+import type { SidebarLikedPlaylistItemProps } from "@/types/sidebar/components";
 import { LibraryItem } from "./LibraryItem";
 
 export function SidebarLikedPlaylistItem({ playlist, isCollapsed }: SidebarLikedPlaylistItemProps) {

@@ -29,7 +29,7 @@ import type {
   SidebarConfirmDialogProps,
   SidebarPendingPlaylist,
   SiderBarMenuProps,
-} from "@/types/components/sidebar";
+} from "@/types/sidebar/components";
 import { useQueryClient, type QueryClient } from "@tanstack/react-query";
 import {
   AlertDialog,

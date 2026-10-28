@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { cn } from "@/lib/utils";
 
-import type { CollapsibleLibraryGroupProps } from "@/types/components/sidebar";
+import type { CollapsibleLibraryGroupProps } from "@/types/sidebar/components";
 
 export function CollapsibleLibraryGroup({
   title,

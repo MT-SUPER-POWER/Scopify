@@ -12,7 +12,7 @@ import { usePersonalFmStore } from "@/store/module/personalFm";
 import { usePlayerStore } from "@/store/module/player";
 import { LibraryItem } from "./LibraryItem";
 
-import type { SidebarPlaylistLibraryProps } from "@/types/components/sidebar";
+import type { SidebarPlaylistLibraryProps } from "@/types/sidebar/components";
 
 export function PersonalFmPlaylistItem({ isCollapsed }: SidebarPlaylistLibraryProps) {
   const { t } = useI18n();

@@ -8,7 +8,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { cn } from "@/lib/utils";
-import type { SidebarPlaylistConfirmDialogProps } from "@/types/components/sidebar";
+import type { SidebarPlaylistConfirmDialogProps } from "@/types/sidebar/components";
 
 export function SidebarPlaylistConfirmDialog({
   open,

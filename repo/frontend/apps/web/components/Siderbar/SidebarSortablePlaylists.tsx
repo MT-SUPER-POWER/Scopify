@@ -6,7 +6,7 @@ import { DragThumbnail } from "@/components/shared/DragThumbnail";
 import { useInlinePlaylistOrder } from "@/hooks/playlist/useInlinePlaylistOrder";
 import { useUserStore } from "@/store";
 import { useI18n } from "@/store/module/i18n";
-import type { SidebarSortablePlaylistsProps } from "@/types/components/sidebar";
+import type { SidebarSortablePlaylistsProps } from "@/types/sidebar/components";
 import type { NeteasePlaylist } from "@/types/playlist/api";
 import { CollapsibleLibraryGroup } from "./CollapsibleLibraryGroup";
 import { SortableLibraryItem } from "./SortableLibraryItem";

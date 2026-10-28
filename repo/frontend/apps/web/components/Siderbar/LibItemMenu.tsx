@@ -17,7 +17,7 @@ import { getCommentHref } from "@/lib/comment/commentResource";
 import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
 import { formatCompactCount } from "@/lib/utils";
 import { useI18n } from "@/store/module/i18n";
-import type { LibItemMenuProps } from "@/types/components/Siderbar";
+import type { LibItemMenuProps } from "@/types/sidebar/shellComponents";
 import { SidebarPlaylistManagement } from "./SidebarPlaylistManagement";
 
 function LibItemContextMenu({ children, playlistID }: LibItemMenuProps) {

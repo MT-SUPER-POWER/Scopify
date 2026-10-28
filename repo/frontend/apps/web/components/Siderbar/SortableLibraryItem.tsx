@@ -3,7 +3,7 @@
 import { LibraryItem } from "@/components/Siderbar/LibraryItem";
 import { useSortableListItem } from "@/hooks/playlist/useSortableListItem";
 import { useSidebarPlaylistDrop } from "@/hooks/playlist/useSidebarPlaylistDrop";
-import type { SortableLibraryItemProps } from "@/types/components/sidebar";
+import type { SortableLibraryItemProps } from "@/types/sidebar/components";
 
 export function SortableLibraryItem({ locked, playlist, ...props }: SortableLibraryItemProps) {
   const drop = useSidebarPlaylistDrop(playlist);

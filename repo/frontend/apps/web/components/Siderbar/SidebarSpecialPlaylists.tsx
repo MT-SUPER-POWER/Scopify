@@ -2,7 +2,7 @@
 
 import { useSidebarPlaylists } from "@/hooks/sidebar/useSidebarPlaylists";
 import { useI18n } from "@/store/module/i18n";
-import type { SidebarPlaylistLibraryProps } from "@/types/components/sidebar";
+import type { SidebarPlaylistLibraryProps } from "@/types/sidebar/components";
 import { CollapsibleLibraryGroup } from "./CollapsibleLibraryGroup";
 import { PersonalFmPlaylistItem } from "./PersonalFmPlaylistItem";
 import { SidebarLikedPlaylistItem } from "./SidebarLikedPlaylistItem";

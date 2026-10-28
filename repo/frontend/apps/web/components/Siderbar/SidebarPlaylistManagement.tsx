@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/context-menu";
 import { usePlaylistManagement } from "@/hooks/playlist/usePlaylistManagement";
 import { useI18n } from "@/store/module/i18n";
-import type { SidebarPlaylistManagementProps } from "@/types/components/sidebar";
+import type { SidebarPlaylistManagementProps } from "@/types/sidebar/components";
 import { SidebarPlaylistConfirmDialog } from "./SidebarPlaylistConfirmDialog";
 
 export function SidebarPlaylistManagement({

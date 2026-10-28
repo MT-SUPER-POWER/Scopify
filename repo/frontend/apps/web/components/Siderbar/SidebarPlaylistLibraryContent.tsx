@@ -5,7 +5,7 @@ import type { ReactNode } from "react";
 import { useSidebarPlaylists } from "@/hooks/sidebar/useSidebarPlaylists";
 import { useLoginStatus } from "@/lib/hooks/useLoginStatus";
 import { useI18n } from "@/store/module/i18n";
-import type { SidebarPlaylistLibraryProps } from "@/types/components/sidebar";
+import type { SidebarPlaylistLibraryProps } from "@/types/sidebar/components";
 import { SidebarPlaylistSkeleton } from "./SidebarPlaylistSkeleton";
 import { SidebarSortablePlaylists } from "./SidebarSortablePlaylists";
 import { SidebarLibraryStateCard } from "./SidebarLibraryStateCard";

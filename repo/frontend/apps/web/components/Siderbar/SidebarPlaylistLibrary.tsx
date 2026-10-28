@@ -7,7 +7,7 @@ import { useLoginStatus } from "@/lib/hooks/useLoginStatus";
 import { useRequireLoginAction } from "@/lib/hooks/useRequireLoginAction";
 import { cn } from "@/lib/utils";
 import { useI18n } from "@/store/module/i18n";
-import type { SidebarPlaylistLibraryProps } from "@/types/components/sidebar";
+import type { SidebarPlaylistLibraryProps } from "@/types/sidebar/components";
 import { SidebarSpecialPlaylists } from "./SidebarSpecialPlaylists";
 import { SidebarPlaylistLibraryContent } from "./SidebarPlaylistLibraryContent";
 

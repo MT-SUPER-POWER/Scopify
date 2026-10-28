@@ -3,7 +3,7 @@ import Link from "next/link";
 import React from "react";
 import { PlayingAnimation } from "@/components/shared/PlayingAnimation";
 import { usePlayerStore } from "@/store";
-import type { SidebarLibraryItemProps } from "@/types/components/sidebar";
+import type { SidebarLibraryItemProps } from "@/types/sidebar/components";
 import LibItemContextMenu from "./LibItemMenu";
 
 export const LibraryItem = ({
