@@ -10,7 +10,7 @@ import type {
   AudioFeatureSamplerOptions,
   PlaybackFeatureIdentity,
   PlaybackFeaturePublisher,
-} from "@/types/audioFeaturePublisher";
+} from "@/types/audio/featurePublisher";
 
 /** Adds a versioned transport envelope to analyser-derived audio values. */
 export class AudioFeatureSampler implements PlaybackFeaturePublisher {

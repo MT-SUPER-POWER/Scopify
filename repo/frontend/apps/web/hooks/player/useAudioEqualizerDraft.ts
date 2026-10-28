@@ -11,7 +11,7 @@ import type {
   AudioEqualizerPresetId,
   AudioEqualizerSettings,
   AudioEqualizerUserPresetId,
-} from "@/types/audioEqualizer";
+} from "@/types/audio/equalizer";
 
 export const isUserPresetId = (value: AudioEqualizerModeId): value is AudioEqualizerUserPresetId =>
   value.startsWith("user:");

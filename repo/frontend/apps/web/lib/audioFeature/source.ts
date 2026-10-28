@@ -4,7 +4,7 @@ import type {
   AnalyserAudioFeatureSourceOptions,
   AudioFeatureSource,
   AudioFeatureSourceSamplerOptions,
-} from "@/types/audioFeaturePublisher";
+} from "@/types/audio/featurePublisher";
 
 export const AUDIO_FEATURE_SAMPLE_INTERVAL_MS = 33;
 export const AUDIO_FEATURE_MAX_SPECTRUM_BINS = 256;

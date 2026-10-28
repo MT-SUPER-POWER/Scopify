@@ -12,7 +12,7 @@ import { useI18n } from "@/store/module/i18n";
 import type {
   AudioSettingsDialogProps,
   AudioSettingsTabButtonProps,
-} from "@/types/components/audioSettingsDialog";
+} from "@/types/audio/settingsDialogComponents";
 
 export function AudioSettingsDialog({ children }: AudioSettingsDialogProps) {
   const { t } = useI18n();

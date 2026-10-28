@@ -14,7 +14,7 @@ import type {
   AudioEqualizerUserPresetId,
   AudioEqualizerPresetId,
   AudioEqualizerSettings,
-} from "@/types/audioEqualizer";
+} from "@/types/audio/equalizer";
 
 const normalizeEffects = (value: unknown): AudioEffectSettings => {
   const candidate = value && typeof value === "object" ? (value as Record<string, unknown>) : {};

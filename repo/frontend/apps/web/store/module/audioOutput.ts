@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 
-import type { AudioOutputStore } from "@/types/audioOutput";
+import type { AudioOutputStore } from "@/types/audio/output";
 
 export const useAudioOutputStore = create<AudioOutputStore>()(
   persist(

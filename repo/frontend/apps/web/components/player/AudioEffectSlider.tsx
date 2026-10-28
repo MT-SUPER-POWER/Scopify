@@ -11,7 +11,7 @@ import {
   toEffectSliderPosition,
 } from "@/lib/player/audioEffectControls";
 import { cn } from "@/lib/utils";
-import type { AudioEffectSliderProps } from "@/types/components/audioEqualizerPanel";
+import type { AudioEffectSliderProps } from "@/types/audio/equalizerPanelComponents";
 
 /** One effect: label and value on a line, a slim slider under it; the value resets when changed. */
 export function AudioEffectSlider({

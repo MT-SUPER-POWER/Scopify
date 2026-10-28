@@ -11,7 +11,7 @@ import type {
   AudioEqualizerModeId,
   AudioEqualizerStore,
   AudioEqualizerUserPresetId,
-} from "@/types/audioEqualizer";
+} from "@/types/audio/equalizer";
 
 const CUSTOM_SLOT_IDS: AudioEqualizerCustomSlotId[] = ["custom-1", "custom-2", "custom-3"];
 const customSlotIndex = (preset: AudioEqualizerModeId) =>

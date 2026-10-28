@@ -27,11 +27,11 @@ import { isUserPresetId, useAudioEqualizerDraft } from "@/hooks/player/useAudioE
 import { cn } from "@/lib/utils";
 import { useAudioEqualizerStore } from "@/store/module/audioEqualizer";
 import { useI18n } from "@/store/module/i18n";
-import type { AudioEqualizerModeId, AudioEqualizerPresetId } from "@/types/audioEqualizer";
+import type { AudioEqualizerModeId, AudioEqualizerPresetId } from "@/types/audio/equalizer";
 import type {
   AudioEqualizerPanelProps,
   AudioEqualizerPanelSectionProps,
-} from "@/types/components/audioEqualizerPanel";
+} from "@/types/audio/equalizerPanelComponents";
 
 const PRESET_IDS: AudioEqualizerPresetId[] = ["flat", "lofi", "radio", "vinyl", "vocal", "bass"];
 

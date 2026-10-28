@@ -1,5 +1,5 @@
 import { AUDIO_EQUALIZER_BANDS } from "@/constants/audioEqualizer";
-import type { AudioEqualizerSettings } from "@/types/audioEqualizer";
+import type { AudioEqualizerSettings } from "@/types/audio/equalizer";
 
 const resolveFilterFrequency = (context: AudioContext, frequency: number) =>
   Math.min(frequency, context.sampleRate * 0.475);

@@ -2,7 +2,7 @@ import type {
   AudioFeatureStream,
   AudioFeatureStreamIdentity,
   AudioFeatureStreamOptions,
-} from "@/types/audioFeaturePublisher";
+} from "@/types/audio/featurePublisher";
 
 let fallbackStreamOrdinal = 0;
 

@@ -1,6 +1,6 @@
-import type { AudioEffectSettings, AudioPostEffectsGraph } from "@/types/audioEqualizer";
+import type { AudioEffectSettings, AudioPostEffectsGraph } from "@/types/audio/equalizer";
 
-export type { AudioPostEffectsGraph } from "@/types/audioEqualizer";
+export type { AudioPostEffectsGraph } from "@/types/audio/equalizer";
 
 const createDriveCurve = (amount: number) => {
   const curve = new Float32Array(1024);

@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import { isAudioOutputSelectionSupported } from "@/lib/player/audioOutput";
-import type { AudioDeviceOption, AudioOutputDevicesErrorKey } from "@/types/audioOutput";
+import type { AudioDeviceOption, AudioOutputDevicesErrorKey } from "@/types/audio/output";
 
 let cachedDevices: MediaDeviceInfo[] | null = null;
 

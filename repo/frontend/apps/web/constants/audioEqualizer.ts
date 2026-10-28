@@ -5,7 +5,7 @@ import type {
   AudioEffectSettings,
   AudioEqualizerPresetId,
   AudioEqualizerSettings,
-} from "@/types/audioEqualizer";
+} from "@/types/audio/equalizer";
 
 export const AUDIO_EQUALIZER_MIN_GAIN_DB = -12;
 export const AUDIO_EQUALIZER_MAX_GAIN_DB = 12;

@@ -1,4 +1,4 @@
-import type { AudioEffectControl } from "@/types/audioEqualizer";
+import type { AudioEffectControl } from "@/types/audio/equalizer";
 
 /** Effect sliders run over 0–1000 so log-scaled controls (Hz) get an even feel. */
 export const AUDIO_EFFECT_SLIDER_MAX = 1000;

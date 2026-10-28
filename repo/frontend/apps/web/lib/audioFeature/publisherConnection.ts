@@ -1,7 +1,7 @@
 import type {
   AudioFeaturePublisherConnection,
   AudioFeaturePublisherConnectionOptions,
-} from "@/types/audioFeaturePublisher";
+} from "@/types/audio/featurePublisher";
 
 const NOOP = () => {};
 const DEFAULT_TIMER = {

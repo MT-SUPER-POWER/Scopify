@@ -1,6 +1,6 @@
 import type { CSSProperties, ReactNode } from "react";
 
-import type { AudioEffectControl } from "@/types/audioEqualizer";
+import type { AudioEffectControl } from "@/types/audio/equalizer";
 
 export interface AudioEqualizerPanelProps {
   /** Overrides the theme's --primary as the accent (Folia themes). */
