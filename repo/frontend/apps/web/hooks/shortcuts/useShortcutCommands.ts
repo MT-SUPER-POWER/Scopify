@@ -4,7 +4,7 @@ import { useCallback } from "react";
 import { useLatticeView } from "@/store/module/lattice";
 import { getCommandDefinition } from "@/constants/shortcuts";
 import { useShortcutActionContext } from "@/hooks/shortcuts/useShortcutActionContext";
-import type { ShortcutCommandExecutorOptions, ShortcutCommandId } from "@/types/shortcuts";
+import type { ShortcutCommandExecutorOptions, ShortcutCommandId } from "@/types/shortcuts/model";
 
 export function useShortcutCommands(options?: ShortcutCommandExecutorOptions) {
   const actionContext = useShortcutActionContext(options);

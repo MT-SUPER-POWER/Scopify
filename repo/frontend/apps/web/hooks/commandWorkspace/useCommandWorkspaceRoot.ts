@@ -16,7 +16,7 @@ import type {
   CommandWorkspaceRootPage,
   CommandWorkspaceRootProps,
 } from "@/types/commandWorkspace/model";
-import type { ShortcutCommandId } from "@/types/shortcuts";
+import type { ShortcutCommandId } from "@/types/shortcuts/model";
 
 export function useCommandWorkspaceRoot({
   onClose,

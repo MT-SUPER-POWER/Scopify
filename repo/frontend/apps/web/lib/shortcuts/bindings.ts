@@ -1,6 +1,10 @@
 import { SHORTCUT_KEY_LABELS } from "@/constants/shortcutKeys";
 import { getCommandDefinition, SHORTCUT_COMMANDS } from "@/constants/shortcuts";
-import type { ShortcutBinding, ShortcutCommandId, ShortcutOverrides } from "@/types/shortcuts";
+import type {
+  ShortcutBinding,
+  ShortcutCommandId,
+  ShortcutOverrides,
+} from "@/types/shortcuts/model";
 
 export function getEffectiveShortcutBinding(
   commandId: ShortcutCommandId,

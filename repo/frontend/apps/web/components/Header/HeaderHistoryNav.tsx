@@ -8,7 +8,7 @@ import { runtime } from "@/lib/runtime";
 import { cn } from "@/lib/utils";
 import { useI18n } from "@/store/module/i18n";
 import { headerStyles } from "@/styles";
-import type { ShortcutCommandId } from "@/types/shortcuts";
+import type { ShortcutCommandId } from "@/types/shortcuts/model";
 import {
   Tooltip,
   TooltipContent,

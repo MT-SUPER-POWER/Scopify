@@ -8,7 +8,7 @@ import type {
   ShortcutAssignmentResult,
   ShortcutBinding,
   ShortcutCommandId,
-} from "@/types/shortcuts";
+} from "@/types/shortcuts/model";
 
 export function useShortcutRegistry() {
   const overrides = useShortcutStore((state) => state.overrides);

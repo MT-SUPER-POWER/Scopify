@@ -1,7 +1,7 @@
 import { ShortcutCommandIcon } from "@/components/shortcuts/ShortcutCommandIcon";
 import { ShortcutKeycaps } from "@/components/shortcuts/ShortcutKeycaps";
 import { useI18n } from "@/store/module/i18n";
-import type { ShortcutHelpCommand } from "@/types/components/shortcuts";
+import type { ShortcutHelpCommand } from "@/types/shortcuts/components";
 
 interface ShortcutHelpSectionProps {
   commands: ShortcutHelpCommand[];

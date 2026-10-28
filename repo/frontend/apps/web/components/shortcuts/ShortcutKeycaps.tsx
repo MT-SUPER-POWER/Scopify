@@ -1,5 +1,5 @@
 import { getShortcutBindingParts } from "@/lib/shortcuts/bindings";
-import type { ShortcutBinding } from "@/types/shortcuts";
+import type { ShortcutBinding } from "@/types/shortcuts/model";
 
 interface ShortcutKeycapsProps {
   binding: ShortcutBinding;

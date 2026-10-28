@@ -8,8 +8,8 @@ import { SHORTCUT_GROUP_LABEL_KEYS, SHORTCUT_GROUPS } from "@/constants/shortcut
 import { useShortcutRegistry } from "@/hooks/shortcuts/useShortcutRegistry";
 import { useI18n } from "@/store/module/i18n";
 import { useUiStore } from "@/store/module/ui";
-import type { ShortcutCommandId } from "@/types/shortcuts";
-import type { ShortcutHelpCommand } from "@/types/components/shortcuts";
+import type { ShortcutCommandId } from "@/types/shortcuts/model";
+import type { ShortcutHelpCommand } from "@/types/shortcuts/components";
 
 const RECOMMENDED_COMMAND_IDS = [
   "open-command-palette",

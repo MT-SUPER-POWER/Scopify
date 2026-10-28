@@ -3,7 +3,7 @@ import type { SongDetail } from "@/types/song/api";
 import type { Album, Artist, Category, Playlist, Podcast, Song, Voice } from "@/types/search/model";
 import type { DragEvent, KeyboardEvent, RefObject } from "react";
 import type { LucideIcon } from "lucide-react";
-import type { ShortcutBinding, ShortcutCommandId } from "@/types/shortcuts";
+import type { ShortcutBinding, ShortcutCommandId } from "@/types/shortcuts/model";
 import type { SearchRecentEntry } from "@/types/search/model";
 
 export type CommandWorkspacePage =

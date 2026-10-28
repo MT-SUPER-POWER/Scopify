@@ -6,7 +6,7 @@ import {
 } from "@/constants/shortcuts";
 import { isShortcutCommandAvailable } from "@/lib/shortcuts/availability";
 import { findShortcutConflict, getEffectiveShortcutBinding } from "@/lib/shortcuts/bindings";
-import type { ShortcutActionContext } from "@/types/shortcuts";
+import type { ShortcutActionContext } from "@/types/shortcuts/model";
 
 function actionRecorder() {
   const calls: [string, unknown[]][] = [];

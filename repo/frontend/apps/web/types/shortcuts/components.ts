@@ -4,7 +4,7 @@ import type {
   ShortcutBinding,
   ShortcutCommandDefinition,
   ShortcutCommandId,
-} from "@/types/shortcuts";
+} from "@/types/shortcuts/model";
 
 export interface RegisteredShortcutCommand extends ShortcutCommandDefinition {
   binding: ShortcutBinding | null;

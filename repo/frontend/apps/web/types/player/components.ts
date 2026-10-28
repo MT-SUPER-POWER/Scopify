@@ -2,7 +2,7 @@ import type { CSSProperties, MouseEventHandler, ReactNode } from "react";
 import type { SongDetail } from "@/types/song/api";
 import type { ProgressRangeMarker } from "@/types/components/slider";
 import type { SongStatsEnrichmentStatus } from "@/types/song/stats";
-import type { ShortcutCommandId } from "@/types/shortcuts";
+import type { ShortcutCommandId } from "@/types/shortcuts/model";
 
 export interface PlaybackProgressBarProps {
   ariaLabel?: string;

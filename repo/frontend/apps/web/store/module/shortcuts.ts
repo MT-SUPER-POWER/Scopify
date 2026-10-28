@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
-import type { ShortcutStoreState } from "@/types/shortcuts";
+import type { ShortcutStoreState } from "@/types/shortcuts/model";
 
 export const useShortcutStore = create<ShortcutStoreState>()(
   persist(

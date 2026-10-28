@@ -8,7 +8,7 @@ import { useShortcutStore } from "@/store/module/shortcuts";
 import { useFoliaSettingsStore } from "@/store/module/foliaSettings";
 import { useLyricStageStore } from "@/store/module/lyrics";
 import { useUiStore } from "@/store/module/ui";
-import type { InWindowShortcutsOptions, ShortcutCommandDefinition } from "@/types/shortcuts";
+import type { InWindowShortcutsOptions, ShortcutCommandDefinition } from "@/types/shortcuts/model";
 import { useShortcutCommands } from "./useShortcutCommands";
 
 export function useInWindowShortcuts({

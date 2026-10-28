@@ -18,7 +18,10 @@ import { useAudioEqualizerStore } from "@/store/module/audioEqualizer";
 import { useAudioOutputStore } from "@/store/module/audioOutput";
 import { useDesktopSubtitleControl } from "@/store/module/desktopSubtitleControl";
 import { useLatticePreferences, useLatticeView } from "@/store/module/lattice";
-import type { ShortcutActionContext, ShortcutCommandExecutorOptions } from "@/types/shortcuts";
+import type {
+  ShortcutActionContext,
+  ShortcutCommandExecutorOptions,
+} from "@/types/shortcuts/model";
 
 let muteRestoreLevel: number | null = null;
 

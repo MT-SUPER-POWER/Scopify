@@ -1,7 +1,7 @@
 import { expect, mock, test } from "bun:test";
 import { createElement } from "react";
 import { renderToString } from "react-dom/server";
-import type { ShortcutActionContext, ShortcutCommandId } from "@/types/shortcuts";
+import type { ShortcutActionContext, ShortcutCommandId } from "@/types/shortcuts/model";
 
 let playback = { durationMs: 10000, volume: 98 };
 let sampledPosition = 9800;

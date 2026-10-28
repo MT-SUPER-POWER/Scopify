@@ -7,7 +7,7 @@ import { ShortcutKeycaps } from "@/components/shortcuts/ShortcutKeycaps";
 import { SHORTCUT_COMMANDS } from "@/constants/shortcuts";
 import { getShortcutBindingFromEvent } from "@/lib/shortcuts/bindings";
 import { useI18n } from "@/store/module/i18n";
-import type { ShortcutBindingRowProps } from "@/types/components/shortcuts";
+import type { ShortcutBindingRowProps } from "@/types/shortcuts/components";
 
 export function ShortcutBindingRow({
   command,

@@ -38,7 +38,7 @@ import type {
   ShortcutCommandContract,
   ShortcutCommandDefinition,
   ShortcutGroup,
-} from "@/types/shortcuts";
+} from "@/types/shortcuts/model";
 
 export const SHORTCUT_COMMAND_DEFINITIONS = [
   {

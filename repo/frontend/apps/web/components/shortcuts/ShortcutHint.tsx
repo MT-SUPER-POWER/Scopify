@@ -5,7 +5,7 @@ import { useI18n } from "@/store/module/i18n";
 
 import { getEffectiveShortcutBinding, getShortcutBindingLabel } from "@/lib/shortcuts/bindings";
 import { useShortcutStore } from "@/store/module/shortcuts";
-import type { ShortcutHintProps } from "@/types/components/shortcuts";
+import type { ShortcutHintProps } from "@/types/shortcuts/components";
 
 /** Renders an action label with its effective, user-customized shortcut. */
 export function ShortcutHint({ commandId, label }: ShortcutHintProps) {
