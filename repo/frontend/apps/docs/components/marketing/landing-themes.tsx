@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 
-import { LandingChapterLabel } from "@/components/marketing/landing-chapter-label";
 import { LandingReveal } from "@/components/marketing/landing-reveal";
 import { LandingThemePreview } from "@/components/marketing/landing-theme-preview";
 import { LANDING_THEME_DEFAULT_INTENSITY, LANDING_THEME_PRESETS } from "@/constants/marketing";
@@ -36,10 +35,9 @@ export function LandingThemes() {
     >
       <div className="grid items-center gap-14 lg:grid-cols-[minmax(0,0.75fr)_minmax(0,1.25fr)] lg:gap-20">
         <LandingReveal>
-          <LandingChapterLabel chapter="variation" />
           <h2
             id="landing-themes-title"
-            className="landing-display mt-6 text-[clamp(2.2rem,4.8vw,4.2rem)] leading-[1.1] font-semibold tracking-[-0.04em] text-white"
+            className="landing-display text-[clamp(2.2rem,4.8vw,4.2rem)] leading-[1.1] font-semibold tracking-[-0.04em] text-white"
           >
             颜色，
             <br />

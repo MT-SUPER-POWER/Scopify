@@ -1,10 +1,6 @@
 import { ArrowUpRight, Download, Globe } from "lucide-react";
-import Image from "next/image";
 import Link from "next/link";
 
-import scopifyLogo from "@/assets/logo.png";
-import { ScopifyWordmark } from "@/components/layout/scopify-wordmark";
-import { LandingChapterLabel } from "@/components/marketing/landing-chapter-label";
 import { LandingReveal } from "@/components/marketing/landing-reveal";
 import {
   LANDING_GITHUB_URL,
@@ -40,18 +36,17 @@ export function LandingFinale() {
           className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(42%_46%_at_50%_52%,rgba(5,6,11,0.62),transparent_78%)]"
         />
         <LandingReveal className="flex flex-col items-center">
-          <LandingChapterLabel chapter="outro" />
-          <div role="img" aria-label="Scopify" className="mt-[5svh] flex items-center gap-3">
-            <Image src={scopifyLogo} alt="" className="size-12 object-contain sm:size-14" />
-            <ScopifyWordmark tone="on-dark" className="w-36 sm:w-40" />
-          </div>
           <h2
             id="landing-finale-title"
-            className="landing-display mt-[4svh] text-[clamp(2.4rem,min(7vw,11svh),6.4rem)] leading-[1.08] font-semibold tracking-[-0.045em] text-white"
+            className="landing-display text-[clamp(2.4rem,min(7vw,11svh),6.4rem)] leading-[1.08] font-semibold tracking-[-0.045em] text-white"
           >
-            每一句，
+            <span className="relative inline-block">
+              每一句<span className="absolute left-full">，</span>
+            </span>
             <br />
-            <span className="landing-shimmer">都有自己的样子。</span>
+            <span className="landing-shimmer relative inline-block">
+              都有自己的样子<span className="absolute left-full text-white">。</span>
+            </span>
           </h2>
           <p className="mt-[3svh] text-sm text-white/55 sm:text-base">
             Scopify · 网易云音乐的开源桌面客户端
