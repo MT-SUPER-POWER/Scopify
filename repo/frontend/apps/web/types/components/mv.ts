@@ -58,10 +58,17 @@ export interface MvVolumeControlProps {
   onToggleMute: () => void;
 }
 
-export interface MvQualityMenuProps {
+export interface MvSettingsMenuProps {
   resolutions: number[];
   current: number;
-  onChange: (resolution: number) => void;
+  quality: number | null;
+  playbackRate: number;
+  autoNext: boolean;
+  onQualityChange: (resolution: number | null) => void;
+  onPlaybackRateChange: (rate: number) => void;
+  onAutoNextChange: (value: boolean) => void;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
 }
 
 export interface MvInfoProps {

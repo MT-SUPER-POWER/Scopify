@@ -1,5 +1,14 @@
 export type MvQueryId = number | string | null | undefined;
 
+export interface MvPlaybackPreferences {
+  autoNext: boolean;
+  playbackRate: number;
+  quality: number | null;
+  setAutoNext: (value: boolean) => void;
+  setPlaybackRate: (value: number) => void;
+  setQuality: (value: number | null) => void;
+}
+
 export type MvQualityPlaybackTarget = Pick<
   HTMLVideoElement,
   "volume" | "muted" | "playbackRate" | "currentTime" | "duration" | "pause"

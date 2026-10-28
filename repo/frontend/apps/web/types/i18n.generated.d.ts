@@ -365,6 +365,36 @@ export interface TranslateFn {
    */
   (key: "mv.quality", params?: TranslationParams): string;
   /**
+   * zh-CN: 播放器设置
+   * zh-TW: 播放器設定
+   * en-US: Player settings
+   */
+  (key: "mv.player.settings", params?: TranslationParams): string;
+  /**
+   * zh-CN: 自动
+   * zh-TW: 自動
+   * en-US: Auto
+   */
+  (key: "mv.player.auto", params?: TranslationParams): string;
+  /**
+   * zh-CN: 播放速度
+   * zh-TW: 播放速度
+   * en-US: Playback speed
+   */
+  (key: "mv.player.speed", params?: TranslationParams): string;
+  /**
+   * zh-CN: 正常
+   * zh-TW: 正常
+   * en-US: Normal
+   */
+  (key: "mv.player.normal", params?: TranslationParams): string;
+  /**
+   * zh-CN: 自动播放下一个
+   * zh-TW: 自動播放下一個
+   * en-US: Autoplay next
+   */
+  (key: "mv.player.autoNext", params?: TranslationParams): string;
+  /**
    * zh-CN: 播放
    * zh-TW: 播放
    * en-US: Play

@@ -16,7 +16,7 @@ import {
 import { Popover as PopoverPrimitive } from "radix-ui";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { MvProgressBar } from "./player/MvProgressBar";
-import { MvQualityMenu } from "./player/MvQualityMenu";
+import { MvSettingsMenu } from "./player/MvSettingsMenu";
 import { MvVolumeControl } from "./player/MvVolumeControl";
 import { useMVUrlQuery } from "@/hooks/mv/useMVQueries";
 import { useMvSongExclusivity } from "@/hooks/mv/useMvSongExclusivity";
@@ -25,6 +25,7 @@ import { useMvQualitySwitch } from "@/hooks/mv/useMvQualitySwitch";
 import { getMvResolutions } from "@/lib/music/mvQuality";
 import { cn, formatDuration } from "@/lib/utils";
 import { useI18n } from "@/store/module/i18n";
+import { useMvPlaybackStore } from "@/store/module/mvPlayback";
 import type { MvPlayerProps } from "@/types/components/mv";
 
 const CONTROLS_IDLE_MS = 2_500;
@@ -65,7 +66,15 @@ export function MvPlayer({
 }: MvPlayerProps) {
   const { t } = useI18n();
   const { videoRef, handleVideoPlay } = useMvSongExclusivity();
-  const { resolution, autoPlay, changeResolution, restorePlayback } = useMvQualitySwitch(videoRef);
+  const { resolution, autoPlay, changeResolution, restorePlayback } = useMvQualitySwitch(
+    videoRef,
+    resolutions,
+  );
+  const quality = useMvPlaybackStore((state) => state.quality);
+  const playbackRate = useMvPlaybackStore((state) => state.playbackRate);
+  const setPlaybackRate = useMvPlaybackStore((state) => state.setPlaybackRate);
+  const autoNext = useMvPlaybackStore((state) => state.autoNext);
+  const setAutoNext = useMvPlaybackStore((state) => state.setAutoNext);
   const urlQuery = useMVUrlQuery(mvid, resolution);
   const url = urlQuery.data?.data?.url ?? null;
   const currentResolution = urlQuery.data?.data?.r || resolution;
@@ -77,7 +86,8 @@ export function MvPlayer({
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [isIdle, setIsIdle] = useState(false);
   const [isTheaterMenuOpen, setIsTheaterMenuOpen] = useState(false);
-  const showControls = !isIdle || video.isPaused || isTheaterMenuOpen;
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const showControls = !isIdle || video.isPaused || isTheaterMenuOpen || isSettingsOpen;
 
   const togglePlay = useCallback(() => {
     const element = videoRef.current;
@@ -144,7 +154,7 @@ export function MvPlayer({
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
-      if (isTheaterMenuOpen) return;
+      if (isTheaterMenuOpen || isSettingsOpen) return;
       if (event.ctrlKey || event.metaKey || event.altKey || event.shiftKey) return;
       if (isTypingTarget(event.target) || document.querySelector("[role=dialog]")) return;
       const actions: Record<string, () => void> = {
@@ -177,6 +187,7 @@ export function MvPlayer({
   }, [
     onToggleTheater,
     isTheaterMenuOpen,
+    isSettingsOpen,
     isWebFullscreen,
     seekBy,
     setVolume,
@@ -218,9 +229,10 @@ export function MvPlayer({
           onPlay={handleVideoPlay}
           onClick={togglePlay}
           onDoubleClick={toggleFullscreen}
-          onEnded={onNext}
+          onEnded={autoNext ? onNext : undefined}
           onLoadedMetadata={(event) => {
             event.currentTarget.volume = readStoredVolume();
+            event.currentTarget.playbackRate = playbackRate;
             restorePlayback(event);
           }}
           className="size-full object-contain"
@@ -282,10 +294,20 @@ export function MvPlayer({
             </span>
 
             <div className="ml-auto flex items-center gap-1">
-              <MvQualityMenu
+              <MvSettingsMenu
                 resolutions={available}
                 current={currentResolution}
-                onChange={changeResolution}
+                quality={quality}
+                playbackRate={playbackRate}
+                autoNext={autoNext}
+                onQualityChange={changeResolution}
+                onPlaybackRateChange={(rate) => {
+                  setPlaybackRate(rate);
+                  if (videoRef.current) videoRef.current.playbackRate = rate;
+                }}
+                onAutoNextChange={setAutoNext}
+                open={isSettingsOpen}
+                onOpenChange={setIsSettingsOpen}
               />
               <PopoverPrimitive.Root open={isTheaterMenuOpen} onOpenChange={setIsTheaterMenuOpen}>
                 <PopoverPrimitive.Trigger asChild>
