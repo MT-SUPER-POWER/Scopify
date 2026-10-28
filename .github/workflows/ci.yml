@@ -20,9 +20,9 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  quality-gate:
-    name: Typecheck, Format, Lint and Test
-    if: github.event.pull_request.draft == false
+  commitlint:
+    name: Lint commit messages
+    if: github.event_name == 'pull_request' && github.event.pull_request.draft == false
     runs-on: ubuntu-latest
 
     steps:
@@ -32,63 +32,97 @@ jobs:
           submodules: false
           fetch-depth: 0
 
-      - name: Checkout backend API submodule only
-        run: git submodule update --init --depth 1 repo/backend/api-enhanced
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 24
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-
-      - name: Setup Bun (script and test runtime)
-        uses: oven-sh/setup-bun@v2
-        with:
-          bun-version: 1.3.11
-
-      - name: Resolve pnpm store path
-        id: pnpm-store
-        run: echo "path=$(pnpm store path --silent)" >> "$GITHUB_OUTPUT"
-
-      - name: Cache pnpm store
-        uses: actions/cache@v4
-        with:
-          path: ${{ steps.pnpm-store.outputs.path }}
-          key: ${{ runner.os }}-pnpm-${{ hashFiles('pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-pnpm-
-
-      - name: Cache Turbo build outputs
-        uses: actions/cache@v4
-        with:
-          path: .turbo
-          key: ${{ runner.os }}-turbo-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-turbo-
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
-      - name: Verify shared package quality coverage
-        run: pnpm run check:packages
+      - name: Setup workspace
+        uses: ./.github/actions/setup-workspace
 
       - name: Lint commit messages
-        if: github.event_name == 'pull_request'
         run: pnpm exec commitlint --from ${{ github.event.pull_request.base.sha }} --to ${{ github.event.pull_request.head.sha }} --verbose
+
+  typecheck:
+    name: Typecheck
+    if: github.event.pull_request.draft == false
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          submodules: false
+
+      - name: Setup workspace
+        uses: ./.github/actions/setup-workspace
 
       - name: Run Typecheck
         run: pnpm run typecheck
 
+  format:
+    name: Format
+    if: github.event.pull_request.draft == false
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          submodules: false
+
+      - name: Setup workspace
+        uses: ./.github/actions/setup-workspace
+
       - name: Run Format Check
         run: pnpm run format:check
 
+  lint:
+    name: Lint
+    if: github.event.pull_request.draft == false
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          submodules: false
+
+      - name: Setup workspace
+        uses: ./.github/actions/setup-workspace
+
+      # `pnpm run lint` 已包含架构检查与共享包质量覆盖检查。
       - name: Run Lint
         run: pnpm run lint
+
+  test:
+    name: Test
+    if: github.event.pull_request.draft == false
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          submodules: false
+
+      - name: Setup workspace
+        uses: ./.github/actions/setup-workspace
 
       - name: Run Workspace Governance Tests
         run: pnpm run test
 
       - name: Run Shared Package Tests
         run: pnpm run test:packages
+
+  quality-gate:
+    name: Typecheck, Format, Lint and Test
+    if: always() && github.event.pull_request.draft == false
+    needs: [commitlint, typecheck, format, lint, test]
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Require all quality checks to pass
+        env:
+          RESULTS: ${{ toJSON(needs.*.result) }}
+        run: |
+          echo "${RESULTS}"
+          if echo "${RESULTS}" | grep -qE '"(failure|cancelled)"'; then
+            echo "::error::One or more quality checks did not pass."
+            exit 1
+          fi
