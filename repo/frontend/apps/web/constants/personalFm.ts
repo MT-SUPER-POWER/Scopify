@@ -3,7 +3,7 @@ import type {
   PersonalFmModeId,
   PersonalFmSceneCategory,
   PersonalFmSelection,
-} from "@/types/personalFm";
+} from "@/types/personalFm/model";
 
 export const PERSONAL_FM_PLAYBACK_SOURCE_ID = "personal-fm";
 export const PERSONAL_FM_REFILL_THRESHOLD = 2;

@@ -14,7 +14,7 @@ import { getPersonalFmRemainingCount, selectNewPersonalFmQueueItems } from "@/li
 import { useI18nStore } from "@/store/module/i18n";
 import { usePlayerStore } from "@/store/module/player";
 import { pruneSongDetail, type SongDetail } from "@/types/song/api";
-import type { PersonalFmSelection, PersonalFmStore } from "@/types/personalFm";
+import type { PersonalFmSelection, PersonalFmStore } from "@/types/personalFm/model";
 
 const PERSONAL_FM_STORAGE_KEY = "scopify-personal-fm";
 let refillPromise: Promise<boolean> | null = null;

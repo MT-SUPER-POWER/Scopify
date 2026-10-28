@@ -3,7 +3,7 @@ import type {
   PersonalFmModeParams,
   PersonalFmResponse,
   PersonalFmTrashResponse,
-} from "@/types/api/personalFm";
+} from "@/types/personalFm/api";
 
 export function getPersonalFm() {
   return request.get<PersonalFmResponse>(

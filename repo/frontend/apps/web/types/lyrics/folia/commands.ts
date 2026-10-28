@@ -1,5 +1,5 @@
 import type { SubtitleContentMode } from "@/components/lyrics/folia/src/types";
-import type { PersonalFmModeId, PersonalFmSceneCategory } from "@/types/personalFm";
+import type { PersonalFmModeId, PersonalFmSceneCategory } from "@/types/personalFm/model";
 import type { FoliaStageEditSection } from "@/types/lyrics/folia/stage";
 import type { LyricVisualizerMode } from "@/types/lyrics/model";
 

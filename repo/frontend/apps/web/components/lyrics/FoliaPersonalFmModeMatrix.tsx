@@ -13,7 +13,7 @@ import {
 import { useI18n } from "@/store/module/i18n";
 import { useHorizontalDragScroll } from "@/hooks/ui/useHorizontalDragScroll";
 import { usePersonalFmStore } from "@/store/module/personalFm";
-import type { PersonalFmModeId, PersonalFmSceneCategory } from "@/types/personalFm";
+import type { PersonalFmModeId, PersonalFmSceneCategory } from "@/types/personalFm/model";
 
 interface FoliaPersonalFmModeMatrixProps {
   compact?: boolean;

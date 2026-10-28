@@ -14,7 +14,7 @@ import { cn } from "@/lib/utils";
 import { useI18n } from "@/store/module/i18n";
 import { usePersonalFmStore } from "@/store/module/personalFm";
 import { usePlayerStore } from "@/store/module/player";
-import type { PersonalFmModeId, PersonalFmSceneCategory } from "@/types/personalFm";
+import type { PersonalFmModeId, PersonalFmSceneCategory } from "@/types/personalFm/model";
 
 const SCENE_CATEGORIES: readonly PersonalFmSceneCategory[] = [
   "mood",
