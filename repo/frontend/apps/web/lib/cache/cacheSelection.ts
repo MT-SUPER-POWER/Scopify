@@ -1,5 +1,5 @@
 import { CACHE_SCOPE_CATEGORIES, getCacheSelectionKey } from "@/constants/cache";
-import type { CacheScope, CacheSelectionKey, CacheStats } from "@/types/cache";
+import type { CacheScope, CacheSelectionKey, CacheStats } from "@/types/cache/model";
 
 export function getCacheSelectionSummary(
   stats: CacheStats | null,

@@ -3,7 +3,7 @@
 import { FolderOpen } from "lucide-react";
 import { runtime } from "@/lib/runtime";
 import { useI18n } from "@/store/module/i18n";
-import type { CachePreferences } from "@/types/cache";
+import type { CachePreferences } from "@/types/cache/model";
 import type { StorageSettingsTabProps } from "@/types/settings/components";
 import { CacheSummaryRow } from "./CacheSummaryRow";
 import { PageCacheAdvancedControls } from "./PageCacheAdvancedControls";

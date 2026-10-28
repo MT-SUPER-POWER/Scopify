@@ -3,7 +3,7 @@
 import { useEffect, useId, useRef } from "react";
 import { Check, Minus } from "lucide-react";
 import { cn } from "@/lib/utils";
-import type { CacheCheckboxProps } from "@/types/components/cache";
+import type { CacheCheckboxProps } from "@/types/cache/components";
 
 export function CacheCheckbox({
   checked,

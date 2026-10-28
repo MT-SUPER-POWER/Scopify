@@ -16,7 +16,7 @@ import {
   type BrowserCacheStorage,
   type LegacyBrowserPlaybackStorage,
 } from "@/lib/cache/browserCacheStorage";
-import type { CachePreferences } from "@/types/cache";
+import type { CachePreferences } from "@/types/cache/model";
 import type { AppUpdateState } from "@/types/updates/updater";
 
 import type { WebRuntime } from "../types";

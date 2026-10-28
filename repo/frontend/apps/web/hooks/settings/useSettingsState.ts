@@ -26,7 +26,7 @@ import { useI18nStore } from "@/store/module/i18n";
 import type { WebConfig } from "@/types/settings/config";
 import type { BackendPingResult } from "@/types/network";
 import type { SettingsConfig } from "@/types/settings/model";
-import type { CachePreferences } from "@/types/cache";
+import type { CachePreferences } from "@/types/cache/model";
 
 export const WEB_NETWORK_SETTINGS_KEY = "momo-web-network-settings";
 export const WEB_BACKEND_SETTINGS_KEY = "momo-web-backend-settings";

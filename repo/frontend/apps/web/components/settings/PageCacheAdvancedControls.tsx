@@ -1,7 +1,7 @@
 "use client";
 
 import { useI18n } from "@/store/module/i18n";
-import type { PageCachePreferences } from "@/types/cache";
+import type { PageCachePreferences } from "@/types/cache/model";
 import type { CacheAdvancedScopeControlsProps } from "@/types/settings/components";
 import { SettingInput, SettingRow, Toggle } from "./SettingsUI";
 

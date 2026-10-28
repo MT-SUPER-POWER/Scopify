@@ -44,7 +44,7 @@ import type {
 } from "@/types/desktop/taskbarLyric";
 import type { AppUpdateState } from "@/types/updates/updater";
 import type { LyricData } from "@/types/lyrics/model";
-import type { CachePreferences } from "@/types/cache";
+import type { CachePreferences } from "@/types/cache/model";
 
 export type RuntimeUnsubscribe = () => void;
 export type RuntimeKind = "browser" | "desktop";

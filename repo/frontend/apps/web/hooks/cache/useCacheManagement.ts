@@ -14,7 +14,7 @@ import type {
   CacheScope,
   CacheSelectionKey,
   CacheStats,
-} from "@/types/cache";
+} from "@/types/cache/model";
 
 export function useCacheManagement() {
   const [stats, setStats] = useState<CacheStats | null>(null);

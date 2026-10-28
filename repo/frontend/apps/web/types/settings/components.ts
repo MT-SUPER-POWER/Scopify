@@ -15,8 +15,8 @@ import type {
   WebSettingsChangeHandler,
 } from "@/types/settings/model";
 import type { BackendPingResult } from "@/types/network";
-import type { CacheStats } from "@/types/cache";
-import type { CachePreferences } from "@/types/cache";
+import type { CacheStats } from "@/types/cache/model";
+import type { CachePreferences } from "@/types/cache/model";
 
 export interface GeneralSettingsTabProps {
   config: SettingsConfig;

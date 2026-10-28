@@ -1,4 +1,4 @@
-import type { CacheCategory, CacheScope, CacheSelectionKey } from "@/types/cache";
+import type { CacheCategory, CacheScope, CacheSelectionKey } from "@/types/cache/model";
 
 export const CACHE_SCOPE_CATEGORIES: Record<CacheScope, readonly CacheCategory[]> = {
   page: ["album", "artist", "daily", "playlist", "search", "other"],

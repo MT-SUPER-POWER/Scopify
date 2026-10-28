@@ -4,7 +4,7 @@ import type {
   CacheSelectionSummary,
   CacheSelectionKey,
   CacheStats,
-} from "@/types/cache";
+} from "@/types/cache/model";
 
 export interface CacheCleanupPageProps {
   error: string | null;

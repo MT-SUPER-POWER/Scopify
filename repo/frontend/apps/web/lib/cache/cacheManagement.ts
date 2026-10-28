@@ -1,5 +1,5 @@
 import { runtime } from "@/lib/runtime";
-import type { CacheClearRequest, CachePreferences, CacheStats } from "@/types/cache";
+import type { CacheClearRequest, CachePreferences, CacheStats } from "@/types/cache/model";
 
 /**
  * The UI only needs cache-management intents. Keeping this façade separate from

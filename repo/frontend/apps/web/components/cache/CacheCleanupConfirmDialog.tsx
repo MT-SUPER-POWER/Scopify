@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { formatCacheSize } from "@/lib/cache/presentation";
 import { useI18n } from "@/store/module/i18n";
-import type { CacheCleanupConfirmDialogProps } from "@/types/components/cache";
+import type { CacheCleanupConfirmDialogProps } from "@/types/cache/components";
 
 export function CacheCleanupConfirmDialog({
   containsLyricData,

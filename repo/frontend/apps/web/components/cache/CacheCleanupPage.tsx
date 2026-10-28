@@ -9,8 +9,8 @@ import { formatCacheSize } from "@/lib/cache/presentation";
 import { getCacheScopeSelectionState } from "@/lib/cache/cacheSelection";
 import { cn } from "@/lib/utils";
 import { useI18n } from "@/store/module/i18n";
-import type { CacheCategory } from "@/types/cache";
-import type { CacheCleanupPageProps } from "@/types/components/cache";
+import type { CacheCategory } from "@/types/cache/model";
+import type { CacheCleanupPageProps } from "@/types/cache/components";
 import { CacheCheckbox } from "./CacheCheckbox";
 import { CacheCleanupConfirmDialog } from "./CacheCleanupConfirmDialog";
 
