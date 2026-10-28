@@ -4,7 +4,7 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { useRef } from "react";
 
 import { useQueryDevtoolsCornerSnap } from "@/hooks/useQueryDevtoolsCornerSnap";
-import type { QueryDevtoolsCorner } from "@/types/components/queryDevtools";
+import type { QueryDevtoolsCorner } from "@/types/query/devtoolsComponents";
 
 function getPanelPosition(corner: QueryDevtoolsCorner) {
   return corner.startsWith("top") ? "top" : "bottom";

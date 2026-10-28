@@ -4,7 +4,7 @@ import { WifiOff } from "lucide-react";
 import { Skeleton } from "@scopify/ui/shadcn/components/skeleton";
 import { QuietState } from "@/components/shared/QuietState";
 import { useI18n } from "@/store/module/i18n";
-import type { QueryPendingProps } from "@/types/components/queryBoundary";
+import type { QueryPendingProps } from "@/types/query/boundaryComponents";
 
 export function QueryPending({ isPaused }: QueryPendingProps) {
   const { t } = useI18n();

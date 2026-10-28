@@ -1,6 +1,6 @@
 import { describe, expect, it } from "bun:test";
 import { selectFallbackSource } from "@/lib/query/fallbackSource";
-import type { QueryFallbackSource } from "@/types/queryBoundary";
+import type { QueryFallbackSource } from "@/types/query/boundary";
 
 function source(overrides: Partial<QueryFallbackSource<string[]>>): QueryFallbackSource<string[]> {
   return {

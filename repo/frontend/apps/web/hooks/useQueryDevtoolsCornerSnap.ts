@@ -7,7 +7,7 @@ import type { RefObject } from "react";
 import type {
   QueryDevtoolsActivePointer,
   QueryDevtoolsCorner,
-} from "@/types/components/queryDevtools";
+} from "@/types/query/devtoolsComponents";
 
 const CORNER_STORAGE_KEY = "scopify-query-devtools-corner";
 const DRAG_THRESHOLD_PX = 6;

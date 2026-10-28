@@ -1,4 +1,4 @@
-import type { QueryFallbackSource } from "@/types/queryBoundary";
+import type { QueryFallbackSource } from "@/types/query/boundary";
 
 export function toFallbackSource<T>(
   query: Omit<QueryFallbackSource<unknown>, "data">,

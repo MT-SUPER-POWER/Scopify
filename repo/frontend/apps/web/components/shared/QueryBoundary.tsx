@@ -9,7 +9,7 @@ import type {
   QueryBoundaryProps,
   QueryRenderBoundaryProps,
   QueryRenderBoundaryState,
-} from "@/types/components/queryBoundary";
+} from "@/types/query/boundaryComponents";
 
 class QueryRenderBoundary extends Component<QueryRenderBoundaryProps, QueryRenderBoundaryState> {
   state: QueryRenderBoundaryState = { error: null };

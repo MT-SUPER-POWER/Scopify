@@ -7,7 +7,7 @@ import { QuietState } from "@/components/shared/QuietState";
 import { getQueryFailureKind } from "@/lib/query/errorPolicy";
 import { isApiError } from "@/lib/web/apiError";
 import { useI18n } from "@/store/module/i18n";
-import type { QueryFailureProps } from "@/types/components/queryBoundary";
+import type { QueryFailureProps } from "@/types/query/boundaryComponents";
 
 export function QueryFailure({ error, onRetry, title, compact }: QueryFailureProps) {
   const { t } = useI18n();
