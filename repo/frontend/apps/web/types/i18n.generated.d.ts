@@ -5804,6 +5804,12 @@ export interface TranslateFn {
    */
   (key: "subtitleControl.title", params?: TranslationParams): string;
   /**
+   * zh-CN: 桌面歌词与音乐
+   * zh-TW: 桌面歌詞與音樂
+   * en-US: Desktop lyrics & music
+   */
+  (key: "subtitleControl.popoverTitle", params?: TranslationParams): string;
+  /**
    * zh-CN: 切换桌面小歌词
    * zh-TW: 切換桌面小歌詞
    * en-US: Toggle desktop subtitles

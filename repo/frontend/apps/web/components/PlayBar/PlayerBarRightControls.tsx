@@ -1,8 +1,7 @@
 "use client";
 
 import { VolumeControl } from "./VolumeControl";
-import { DesktopPlaybackControllerLauncher } from "@/components/desktopWallpaper/DesktopPlaybackControllerLauncher";
-import { DesktopSubtitleControl } from "@/components/player/DesktopSubtitleControl";
+import { DesktopControlPopover } from "@/components/player/DesktopControlPopover";
 import { PersonalFmControlPanel } from "@/components/player/PersonalFmControlPanel";
 import { AudioOutputDeviceControl } from "@/components/PlayBar/AudioOutputDeviceControl";
 import { AudioSettingsButton } from "@/components/PlayBar/AudioSettingsButton";
@@ -25,11 +24,8 @@ export function PlayerBarRightControls({ isLyricStageBar = false }: { isLyricSta
         isLyricStageBar ? "min-w-0" : "flex-1 md:flex-none md:justify-self-end",
       )}
     >
-      {/* 桌面歌词控制器 */}
-      <DesktopSubtitleControl />
-
-      {/* 桌面音乐控制器 */}
-      <DesktopPlaybackControllerLauncher />
+      {/* 桌面小歌词 + 桌面音乐 */}
+      <DesktopControlPopover />
 
       {/* Lyric Stage 开关 */}
       <LyricStageButton />

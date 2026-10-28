@@ -2,6 +2,7 @@ import { defineMessages } from "./define";
 export const subtitleControlMessages = defineMessages(
   {
     "subtitleControl.title": "桌面小歌词控制",
+    "subtitleControl.popoverTitle": "桌面歌词与音乐",
     "subtitleControl.toggle": "切换桌面小歌词",
     "subtitleControl.enabled": "显示桌面小歌词",
     "subtitleControl.style": "歌词样式",
@@ -11,6 +12,7 @@ export const subtitleControlMessages = defineMessages(
   },
   {
     "subtitleControl.title": "桌面小歌詞控制",
+    "subtitleControl.popoverTitle": "桌面歌詞與音樂",
     "subtitleControl.toggle": "切換桌面小歌詞",
     "subtitleControl.enabled": "顯示桌面小歌詞",
     "subtitleControl.style": "歌詞樣式",
@@ -20,6 +22,7 @@ export const subtitleControlMessages = defineMessages(
   },
   {
     "subtitleControl.title": "Desktop subtitle controls",
+    "subtitleControl.popoverTitle": "Desktop lyrics & music",
     "subtitleControl.toggle": "Toggle desktop subtitles",
     "subtitleControl.enabled": "Show desktop subtitles",
     "subtitleControl.style": "Lyric style",
