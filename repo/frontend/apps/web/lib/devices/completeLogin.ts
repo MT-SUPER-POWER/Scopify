@@ -8,7 +8,7 @@ import {
 } from "@/lib/web/musicSessionCredential";
 import { getBackendBaseUrl } from "@/lib/web/request";
 import { useUserStore } from "@/store/module/user";
-import type { NeteaseUserSource } from "@/types/api/user";
+import type { NeteaseUserSource } from "@/types/user/api";
 import type { FreshLoginDevice } from "@/types/devices";
 
 /** Verify the account, then synchronize the name once per fresh login, before closing the login window. */

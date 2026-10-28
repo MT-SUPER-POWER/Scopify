@@ -16,7 +16,7 @@ import {
 
 import { getLocationName } from "@/constants/location";
 import { useI18n } from "@/store/module/i18n";
-import type { UserHeroMetadataProps } from "@/types/components/profile";
+import type { UserHeroMetadataProps } from "@/types/user/profileComponents";
 
 export function UserHeroMetadata({ userInfo }: UserHeroMetadataProps) {
   const { t } = useI18n();

@@ -1,4 +1,4 @@
-import type { NeteaseUser } from "./user";
+import type { NeteaseUser } from "@/types/user/api";
 
 export interface SongUrlMatchResponse {
   code: number;

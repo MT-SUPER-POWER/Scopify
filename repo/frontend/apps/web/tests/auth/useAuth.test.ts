@@ -1,6 +1,6 @@
 import { describe, expect, it } from "bun:test";
 import { getAuthStatus } from "@/hooks/auth/useAuth";
-import { pruneUser } from "@/types/api/user";
+import { pruneUser } from "@/types/user/api";
 
 describe("getAuthStatus (以 Cookie 凭据为核心的用户认证标准)", () => {
   const validUser = pruneUser({

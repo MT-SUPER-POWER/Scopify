@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import type { UserFansGroupItem } from "@/types/fansGroup/api";
-import type { UpdateUserProfilePayload } from "@/types/api/profileUpdate";
-import type { NeteaseUser } from "@/types/api/user";
+import type { UpdateUserProfilePayload } from "@/types/user/profileUpdateApi";
+import type { NeteaseUser } from "@/types/user/api";
 import type {
   SocialEvent,
   SocialComment,

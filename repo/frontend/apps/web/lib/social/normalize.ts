@@ -1,4 +1,4 @@
-import { pruneUser } from "@/types/api/user";
+import { pruneUser } from "@/types/user/api";
 import type { SongDetail } from "@/types/api/music";
 import type { SocialRawObject } from "@/types/social/api";
 import type {

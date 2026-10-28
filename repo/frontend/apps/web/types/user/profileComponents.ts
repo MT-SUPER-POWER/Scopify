@@ -1,5 +1,5 @@
-import type { UserPlaylist } from "@/types/profile";
-import type { NeteaseUser } from "@/types/api/user";
+import type { UserPlaylist } from "@/types/user/profile";
+import type { NeteaseUser } from "@/types/user/api";
 
 export interface PublicPlaylistGridProps {
   onClickPlaylist: (playlist: UserPlaylist) => void;

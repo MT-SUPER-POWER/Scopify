@@ -32,7 +32,7 @@ export interface AuthStatus {
   accountId: string | null;
 
   /** 用户完整资料对象 */
-  user: import("@/types/api/user").NeteaseUser | null;
+  user: import("@/types/user/api").NeteaseUser | null;
 
   /** 登录方式元数据（仅作信息展示，不参与鉴权判定） */
   loginType: LoginType;

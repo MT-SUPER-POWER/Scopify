@@ -7,7 +7,7 @@ import { getBackendBaseUrl } from "@/lib/web/request";
 import { pruneSongDetail, type RawSongDetail, type SongDetail } from "@/types/api/music";
 import { type NeteasePlaylist, type RawNeteasePlaylist, prunePlaylist } from "@/types/api/playlist";
 import type { NeteaseUserAlbum } from "@/types/album/releaseApi";
-import { type NeteaseUser, type NeteaseUserSource, pruneUser } from "@/types/api/user";
+import { type NeteaseUser, type NeteaseUserSource, pruneUser } from "@/types/user/api";
 import type { FollowedArtist } from "@/types/artist/model";
 
 type UserStore = {

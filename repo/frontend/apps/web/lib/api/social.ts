@@ -14,7 +14,7 @@ import type {
   SocialResource,
   SocialGroup,
 } from "@/types/social/model";
-import type { UpdateUserProfilePayload } from "@/types/api/profileUpdate";
+import type { UpdateUserProfilePayload } from "@/types/user/profileUpdateApi";
 
 function businessResult(response: SocialRawResponse) {
   if (response?.code !== 200)

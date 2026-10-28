@@ -5,7 +5,7 @@ import {
   MUSIC_SESSION_CHANGED_EVENT,
 } from "@/lib/web/musicSessionCredential";
 import { useUserStore } from "@/store/module/user";
-import type { NeteaseUserSource } from "@/types/api/user";
+import type { NeteaseUserSource } from "@/types/user/api";
 
 /**
  * 依据本地已有的 music_cookie 静默拉取网易云账号画像并回填 UserStore

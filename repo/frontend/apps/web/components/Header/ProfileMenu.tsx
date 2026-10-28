@@ -17,7 +17,7 @@ import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
 import { runtime } from "@/lib/runtime";
 import { useI18n } from "@/store/module/i18n";
 import type { VipSignDetail } from "@/types/api/vipSign";
-import type { ProfileMenuProps } from "@/types/components/profileMenu";
+import type { ProfileMenuProps } from "@/types/user/profileMenuComponents";
 
 export function ProfileMenu({ children }: ProfileMenuProps) {
   const { t } = useI18n();

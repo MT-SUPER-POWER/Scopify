@@ -2,7 +2,7 @@ import { Activity, Clock3, Disc3, Headphones, Trophy, Users } from "lucide-react
 
 import { formatListeningDuration } from "@/lib/listeningReport/normalize";
 import { useI18n } from "@/store/module/i18n";
-import type { UserHeroStatsProps } from "@/types/components/profile";
+import type { UserHeroStatsProps } from "@/types/user/profileComponents";
 
 export function UserHeroStats({ playlistCount, userInfo }: UserHeroStatsProps) {
   const { t } = useI18n();

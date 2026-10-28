@@ -3,7 +3,7 @@
 import { MoreHorizontal, Settings } from "lucide-react";
 import React, { useState } from "react";
 import { cn } from "@/lib/utils";
-import type { UserActionBarProps } from "@/types/components/userActionBar";
+import type { UserActionBarProps } from "@/types/user/actionBarComponents";
 
 export function ActionBar({ isSelf, onEdit }: UserActionBarProps) {
   const [isFollowing, setIsFollowing] = useState(false);

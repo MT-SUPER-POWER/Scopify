@@ -1,6 +1,6 @@
 import request from "@/lib/web/request";
 import { clearMusicSessionCredential } from "@/lib/web/musicSessionCredential";
-import type { NeteaseUser } from "@/types/api/user";
+import type { NeteaseUser } from "@/types/user/api";
 
 export interface LoginInfo {
   isLoggedIn: boolean;

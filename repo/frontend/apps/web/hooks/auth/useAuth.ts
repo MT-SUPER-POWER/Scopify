@@ -9,7 +9,7 @@ import {
 } from "@/lib/web/musicSessionCredential";
 import { syncUserSessionFromCookie } from "@/lib/web/sessionHydration";
 import type { AuthStatus, LoginType } from "@/types/auth";
-import type { NeteaseUser } from "@/types/api/user";
+import type { NeteaseUser } from "@/types/user/api";
 
 /**
  * 统一认证状态管理 Hook

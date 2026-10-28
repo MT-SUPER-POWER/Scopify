@@ -5,7 +5,7 @@ import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import { UserVipBadge } from "@/components/shared/UserVipBadge";
 import { useUserStore } from "@/store";
 import { useI18n } from "@/store/module/i18n";
-import type { ProfileMenuIdentityProps } from "@/types/components/profileMenu";
+import type { ProfileMenuIdentityProps } from "@/types/user/profileMenuComponents";
 import { getSizedImageUrl } from "@/lib/music/imageUrl";
 
 export function ProfileMenuIdentity({ isLoggedIn, onLogin }: ProfileMenuIdentityProps) {

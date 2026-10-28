@@ -20,7 +20,7 @@ import { runtime } from "@/lib/runtime";
 import { usePlayerStore, useUserStore } from "@/store";
 import { useFriendsStore } from "@/store/module/friends";
 import { useI18n } from "@/store/module/i18n";
-import type { ProfileMenuNavigationProps } from "@/types/components/profileMenu";
+import type { ProfileMenuNavigationProps } from "@/types/user/profileMenuComponents";
 
 const itemClassName =
   "group min-h-11 cursor-pointer gap-4 rounded-lg px-3 text-sm font-normal text-content transition-colors focus:bg-content/5 focus:text-content";

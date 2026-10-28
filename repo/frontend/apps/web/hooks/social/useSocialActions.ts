@@ -8,7 +8,7 @@ import { useSocialAccount } from "./useSocialQueries";
 import { useI18n } from "@/store/module/i18n";
 import { useUserStore } from "@/store/module/user";
 import type { SocialEvent, SocialPublishInput, SocialUser } from "@/types/social/model";
-import type { UpdateUserProfilePayload } from "@/types/api/profileUpdate";
+import type { UpdateUserProfilePayload } from "@/types/user/profileUpdateApi";
 
 export function useSocialFollow(user: SocialUser) {
   const client = useQueryClient(),

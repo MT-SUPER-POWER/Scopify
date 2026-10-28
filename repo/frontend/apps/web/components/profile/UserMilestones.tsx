@@ -1,5 +1,5 @@
 import { Calendar, Headphones, Trophy } from "lucide-react";
-import type { NeteaseUser } from "@/types/api/user";
+import type { NeteaseUser } from "@/types/user/api";
 import { useI18n } from "@/store/module/i18n";
 
 interface Props {

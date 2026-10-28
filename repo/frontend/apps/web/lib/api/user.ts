@@ -1,7 +1,7 @@
 import type {
   UpdateUserProfilePayload,
   UpdateUserProfileResponse,
-} from "@/types/api/profileUpdate";
+} from "@/types/user/profileUpdateApi";
 import type { UserPlaylistResponse } from "@/types/api/playlist";
 import type {
   IUserDetail,
@@ -10,7 +10,7 @@ import type {
   UserAccountResponse,
   UserFollowsResponse,
   UserRecordResponse,
-} from "@/types/api/user";
+} from "@/types/user/api";
 import request, { requestConfig } from "../web/request";
 
 // /user/detail
@@ -175,7 +175,7 @@ export function vipSignHistory() {
 // 用户徽章与社交状态
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-import type { UserMedalResponse } from "@/types/api/userMedal";
+import type { UserMedalResponse } from "@/types/user/medalApi";
 import type {
   UserSocialStatusEditParams,
   UserSocialStatusEditResponse,

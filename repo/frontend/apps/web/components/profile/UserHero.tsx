@@ -3,7 +3,7 @@ import Image from "next/image";
 import { UserHeroMetadata } from "@/components/profile/UserHeroMetadata";
 import { UserHeroStats } from "@/components/profile/UserHeroStats";
 import { UserVipBadge } from "@/components/shared/UserVipBadge";
-import type { UserHeroProps } from "@/types/components/profile";
+import type { UserHeroProps } from "@/types/user/profileComponents";
 
 export function UserHero({ userInfo, playlistCount }: UserHeroProps) {
   return (

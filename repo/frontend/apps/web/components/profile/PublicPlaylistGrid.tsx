@@ -2,7 +2,7 @@ import { ListMusic, Music2, Play } from "lucide-react";
 import Image from "next/image";
 import { formatRelativeTime } from "@/lib/utils";
 import { useI18n } from "@/store/module/i18n";
-import type { PublicPlaylistGridProps } from "@/types/components/profile";
+import type { PublicPlaylistGridProps } from "@/types/user/profileComponents";
 
 export function PublicPlaylistGrid({ playlists, onClickPlaylist }: PublicPlaylistGridProps) {
   const { t } = useI18n();

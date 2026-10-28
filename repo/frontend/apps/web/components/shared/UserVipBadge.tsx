@@ -1,6 +1,6 @@
 import { MediaInfoBadge } from "@/components/shared/MediaInfoBadge";
 import { hasVipMembership } from "@/lib/vip";
-import type { UserVipBadgeProps } from "@/types/components/userVipBadge";
+import type { UserVipBadgeProps } from "@/types/user/vipBadgeComponents";
 
 export function UserVipBadge({ vipType, className }: UserVipBadgeProps) {
   if (!hasVipMembership(vipType)) return null;

@@ -20,8 +20,8 @@ import {
   getRecentSongHistoryCount,
   type NeteaseUser,
   pruneUser,
-} from "@/types/api/user";
-import type { UserPlaylist } from "@/types/profile";
+} from "@/types/user/api";
+import type { UserPlaylist } from "@/types/user/profile";
 
 function toUserPlaylist(
   playlist: RawNeteasePlaylist,

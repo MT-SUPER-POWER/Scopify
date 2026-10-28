@@ -1,4 +1,4 @@
-import type { NeteaseUser } from "@/types/api/user";
+import type { NeteaseUser } from "@/types/user/api";
 import type { SongDetail } from "@/types/api/music";
 
 export interface SocialUser {
