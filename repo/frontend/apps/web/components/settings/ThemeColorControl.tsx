@@ -3,7 +3,7 @@
 import { HexColorInput, HexColorPicker } from "react-colorful";
 import { Button } from "@scopify/ui/shadcn/components/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@scopify/ui/shadcn/components/popover";
-import type { ThemeColorControlProps } from "@/types/appearance-theme-editor";
+import type { ThemeColorControlProps } from "@/types/appearance/themeEditor";
 import { SettingRow } from "./SettingsUI";
 
 export function ThemeColorControl({

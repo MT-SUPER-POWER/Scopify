@@ -4,7 +4,7 @@ import { RotateCcw } from "lucide-react";
 import { Badge } from "@scopify/ui/shadcn/components/badge";
 import { Button } from "@scopify/ui/shadcn/components/button";
 import { useI18n } from "@/store/module/i18n";
-import type { ThemeEditorFrameProps } from "@/types/appearance-theme-editor";
+import type { ThemeEditorFrameProps } from "@/types/appearance/themeEditor";
 
 export function ThemeEditorFrame({
   title,

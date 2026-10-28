@@ -10,7 +10,7 @@ import {
 
 import type { SubtitleSettingsEditorProps } from "@/types/lyrics/subtitlePreview";
 import { useI18n } from "@/store/module/i18n";
-import type { LyricsPreviewSettings } from "@/types/appearance";
+import type { LyricsPreviewSettings } from "@/types/appearance/model";
 import { AppearanceRange } from "./AppearanceRange";
 import { SettingRow, SettingSection } from "./SettingsUI";
 

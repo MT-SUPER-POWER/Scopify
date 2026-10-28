@@ -1,7 +1,7 @@
 import { BACKGROUND_PRESETS } from "@/constants/appearance";
 import { useAppearanceStore } from "@/store/module/appearance";
 import { useI18n } from "@/store/module/i18n";
-import type { ThemeOption } from "@/types/appearance";
+import type { ThemeOption } from "@/types/appearance/model";
 
 export function useThemeOptions(): ThemeOption[] {
   const { t } = useI18n();

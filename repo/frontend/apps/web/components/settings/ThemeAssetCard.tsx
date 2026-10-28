@@ -1,7 +1,7 @@
 import { Check, Eye, Pencil } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useI18n } from "@/store/module/i18n";
-import type { ThemeAssetCardProps } from "@/types/appearance-theme-editor";
+import type { ThemeAssetCardProps } from "@/types/appearance/themeEditor";
 
 export function ThemeAssetCard({
   name,

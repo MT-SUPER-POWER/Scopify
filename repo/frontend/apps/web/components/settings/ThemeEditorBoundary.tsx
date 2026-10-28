@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import type { ThemeEditorBoundaryProps } from "@/types/appearance-theme-editor";
+import type { ThemeEditorBoundaryProps } from "@/types/appearance/themeEditor";
 
 // Drafts must be initialized after the persisted stores have hydrated on the client.
 export function ThemeEditorBoundary({ children }: ThemeEditorBoundaryProps) {

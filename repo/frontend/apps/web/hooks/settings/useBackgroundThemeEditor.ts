@@ -10,8 +10,8 @@ import {
 import { isThemeNameValid, uniqueThemeName } from "@/lib/settings/themeNames";
 import { useAppearanceStore } from "@/store/module/appearance";
 import { useI18n } from "@/store/module/i18n";
-import type { BackgroundTheme, SavedBackgroundTheme } from "@/types/appearance";
-import type { BackgroundThemeEditorProps } from "@/types/appearance-theme-editor";
+import type { BackgroundTheme, SavedBackgroundTheme } from "@/types/appearance/model";
+import type { BackgroundThemeEditorProps } from "@/types/appearance/themeEditor";
 
 export function useBackgroundThemeEditor({ themeId, copyFrom }: BackgroundThemeEditorProps) {
   const { t } = useI18n();

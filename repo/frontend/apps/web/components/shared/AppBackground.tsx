@@ -3,7 +3,7 @@
 import { useAppearanceBackground } from "@/hooks/settings/useAppearanceBackground";
 import { backgroundGradient } from "@/lib/settings/appearance";
 import { cn } from "@/lib/utils";
-import type { AppBackgroundProps } from "@/types/appearance";
+import type { AppBackgroundProps } from "@/types/appearance/model";
 
 export function AppBackground({ className, fit = "page" }: AppBackgroundProps) {
   const { settings, palette } = useAppearanceBackground();

@@ -6,7 +6,7 @@ import { BACKGROUND_THEME_EDITOR_PATH } from "@/constants/appearanceRoutes";
 import { SETTINGS_ACTION_BUTTON_CLASS_NAME } from "@/constants/settings";
 import { useBackgroundThemeEditor } from "@/hooks/settings/useBackgroundThemeEditor";
 import { useI18n } from "@/store/module/i18n";
-import type { BackgroundThemeEditorProps } from "@/types/appearance-theme-editor";
+import type { BackgroundThemeEditorProps } from "@/types/appearance/themeEditor";
 import { AppearancePreview } from "./AppearancePreview";
 import { SettingSection } from "./SettingsUI";
 import { ThemeEditorBoundary } from "./ThemeEditorBoundary";

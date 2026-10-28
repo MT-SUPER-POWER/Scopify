@@ -1,7 +1,7 @@
 import { useId } from "react";
 import { Input } from "@scopify/ui/shadcn/components/input";
 import { useI18n } from "@/store/module/i18n";
-import type { ThemeNameFieldProps } from "@/types/appearance-theme-editor";
+import type { ThemeNameFieldProps } from "@/types/appearance/themeEditor";
 
 export function ThemeNameField({ value, valid, onChange, label }: ThemeNameFieldProps) {
   const { t } = useI18n();

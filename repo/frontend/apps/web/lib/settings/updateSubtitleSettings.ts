@@ -1,4 +1,4 @@
-import type { LyricsPreviewSettings } from "@/types/appearance";
+import type { LyricsPreviewSettings } from "@/types/appearance/model";
 
 export function updateSubtitleSettings(
   settings: LyricsPreviewSettings,

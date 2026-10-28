@@ -12,7 +12,7 @@ import {
 import { useAppearanceBackground } from "@/hooks/settings/useAppearanceBackground";
 import { useAppearanceStore } from "@/store/module/appearance";
 import { useI18n } from "@/store/module/i18n";
-import type { ThemeBulkDeleteDialogProps } from "@/types/appearance";
+import type { ThemeBulkDeleteDialogProps } from "@/types/appearance/model";
 
 export function ThemeBulkDeleteDialog({ themes, onClose, onConfirm }: ThemeBulkDeleteDialogProps) {
   const { t } = useI18n();

@@ -6,7 +6,7 @@ import { Plus, Trash2 } from "lucide-react";
 import { Button } from "@scopify/ui/shadcn/components/button";
 import { useAppearanceStore } from "@/store/module/appearance";
 import { useI18n } from "@/store/module/i18n";
-import type { SavedBackgroundTheme, SavedThemeLibraryProps } from "@/types/appearance";
+import type { SavedBackgroundTheme, SavedThemeLibraryProps } from "@/types/appearance/model";
 import { ThemeCard } from "./ThemeCard";
 import { ThemeBulkDeleteDialog } from "./ThemeBulkDeleteDialog";
 

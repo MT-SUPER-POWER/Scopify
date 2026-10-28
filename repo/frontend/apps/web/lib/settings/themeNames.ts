@@ -1,4 +1,4 @@
-import type { NamedTheme } from "@/types/appearance-theme-editor";
+import type { NamedTheme } from "@/types/appearance/themeEditor";
 
 export function isThemeNameValid(theme: NamedTheme, themes: readonly NamedTheme[]) {
   const name = theme.name.trim();

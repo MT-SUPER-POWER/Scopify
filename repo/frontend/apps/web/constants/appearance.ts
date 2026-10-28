@@ -1,4 +1,8 @@
-import type { BackgroundSettings, LyricsPreviewSettings, ThemeTimeSlot } from "@/types/appearance";
+import type {
+  BackgroundSettings,
+  LyricsPreviewSettings,
+  ThemeTimeSlot,
+} from "@/types/appearance/model";
 
 export const DEFAULT_THEME_SCHEDULE: ThemeTimeSlot[] = [
   { start: 0, themeId: "lavender" },

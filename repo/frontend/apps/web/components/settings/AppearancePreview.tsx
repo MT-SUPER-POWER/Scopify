@@ -3,7 +3,7 @@
 import { BackgroundPreviewContext } from "@/lib/settings/backgroundPreviewContext";
 import { usePreviewScale } from "@/hooks/settings/usePreviewScale";
 import { useI18n } from "@/store/module/i18n";
-import type { AppearancePreviewProps } from "@/types/appearance";
+import type { AppearancePreviewProps } from "@/types/appearance/model";
 
 const PREVIEW_WIDTH = 1100;
 const PREVIEW_HEIGHT = 800;

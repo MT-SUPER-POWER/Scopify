@@ -1,5 +1,5 @@
 import { useId } from "react";
-import type { AppearanceRangeProps } from "@/types/appearance";
+import type { AppearanceRangeProps } from "@/types/appearance/model";
 
 export function AppearanceRange({
   label,

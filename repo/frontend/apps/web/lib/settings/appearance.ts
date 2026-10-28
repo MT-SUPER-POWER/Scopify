@@ -4,7 +4,7 @@ import type {
   BackgroundSettings,
   SavedBackgroundTheme,
   ThemeTimeSlot,
-} from "@/types/appearance";
+} from "@/types/appearance/model";
 
 export function resolveBackgroundPalette(
   settings: BackgroundSettings,

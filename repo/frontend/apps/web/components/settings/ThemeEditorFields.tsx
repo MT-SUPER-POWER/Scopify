@@ -1,5 +1,5 @@
 import { useI18n } from "@/store/module/i18n";
-import type { ThemeEditorFieldsProps } from "@/types/appearance";
+import type { ThemeEditorFieldsProps } from "@/types/appearance/model";
 import { SettingRow } from "./SettingsUI";
 import { ThemeColorControl } from "./ThemeColorControl";
 import { AppearanceRange } from "./AppearanceRange";

@@ -1,5 +1,5 @@
 import { formatThemeTime } from "@/lib/settings/appearance";
-import type { ThemeTimelineProps } from "@/types/appearance";
+import type { ThemeTimelineProps } from "@/types/appearance/model";
 
 export function ThemeTimeline({ slots, options }: ThemeTimelineProps) {
   return (

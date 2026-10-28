@@ -1,4 +1,4 @@
-import type { ThemeCardProps } from "@/types/appearance";
+import type { ThemeCardProps } from "@/types/appearance/model";
 import { ThemeAssetCard } from "./ThemeAssetCard";
 
 export function ThemeCard({

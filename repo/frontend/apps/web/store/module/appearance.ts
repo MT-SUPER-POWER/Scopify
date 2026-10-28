@@ -11,7 +11,7 @@ import {
 import { applyBackgroundTheme, isValidThemeSchedule } from "@/lib/settings/appearance";
 import { isThemeNameValid } from "@/lib/settings/themeNames";
 import { updateSubtitleSettings } from "@/lib/settings/updateSubtitleSettings";
-import type { AppearanceStore } from "@/types/appearance";
+import type { AppearanceStore } from "@/types/appearance/model";
 
 export const useAppearanceStore = create<AppearanceStore>()(
   persist(

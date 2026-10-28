@@ -9,7 +9,7 @@ import {
 } from "@scopify/ui/shadcn/components/select";
 import { formatThemeTime } from "@/lib/settings/appearance";
 import { useI18n } from "@/store/module/i18n";
-import type { ThemeScheduleEditorProps } from "@/types/appearance";
+import type { ThemeScheduleEditorProps } from "@/types/appearance/model";
 import { ThemeTimeline } from "./ThemeTimeline";
 
 export function ThemeScheduleEditor({ slots, options, onChange }: ThemeScheduleEditorProps) {

@@ -15,7 +15,7 @@ import { useAppearanceBackground } from "@/hooks/settings/useAppearanceBackgroun
 import { useThemeOptions } from "@/hooks/settings/useThemeOptions";
 import { useAppearanceStore } from "@/store/module/appearance";
 import { useI18n } from "@/store/module/i18n";
-import type { ThemeRotationDialogProps } from "@/types/appearance";
+import type { ThemeRotationDialogProps } from "@/types/appearance/model";
 import { SettingRow } from "./SettingsUI";
 import { ThemeRotationDialog } from "./ThemeRotationDialog";
 import { ThemeTimeline } from "./ThemeTimeline";

@@ -1,4 +1,4 @@
-import type { LyricsPreviewSettings } from "@/types/appearance";
+import type { LyricsPreviewSettings } from "@/types/appearance/model";
 
 /** 顶栏高度：左侧歌曲信息、中间播放控制、右侧锁定等按钮。 */
 export const DESKTOP_LYRIC_HEADER_HEIGHT = 44;
