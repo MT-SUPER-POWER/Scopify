@@ -42,7 +42,7 @@ import type {
   TaskbarLyricPreferences,
   TaskbarLyricPreferencesUpdate,
 } from "@/types/desktop/taskbarLyric";
-import type { AppUpdateState } from "@/types/updates/updater";
+import type { AppUpdateState } from "@/types/desktop/updater";
 import type { LyricData } from "@/types/lyrics/model";
 import type { CachePreferences } from "@/types/cache/model";
 

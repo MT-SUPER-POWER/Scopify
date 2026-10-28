@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { runtime } from "@/lib/runtime";
-import type { AppUpdateState } from "@/types/updates/updater";
+import type { AppUpdateState } from "@/types/desktop/updater";
 
 const initialState: AppUpdateState = {
   status: "idle",

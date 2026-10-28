@@ -1,5 +1,5 @@
 import type { TranslationKey } from "@/lib/i18n";
-import type { AppUpdateStatus } from "@/types/updates/updater";
+import type { AppUpdateStatus } from "@/types/desktop/updater";
 
 // Shared renderer metadata for update status labels and unread-version persistence.
 export const UPDATE_SEEN_VERSION_KEY = "scopify-update-seen-version";
