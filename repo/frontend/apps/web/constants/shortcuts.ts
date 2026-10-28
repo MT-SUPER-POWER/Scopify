@@ -312,7 +312,7 @@ export const SHORTCUT_COMMAND_DEFINITIONS = [
     execute: (context) => context.desktop.toggleDesktopController(),
     group: "interface",
     labelKey: "shortcuts.command.toggleDesktopController",
-    defaultBinding: { key: "KeyD", primary: true, alt: true },
+    defaultBinding: { key: "KeyW", primary: true, alt: true },
   },
   {
     id: "toggle-desktop-music-mode",
