@@ -4,7 +4,7 @@ import type { TranslationKey } from "@/lib/i18n";
 import type {
   CommandWorkspaceRootPage,
   CommandWorkspaceUsageCounts,
-} from "@/types/commandWorkspace";
+} from "@/types/commandWorkspace/model";
 
 export interface ShortcutCommandIconProps {
   className?: string;

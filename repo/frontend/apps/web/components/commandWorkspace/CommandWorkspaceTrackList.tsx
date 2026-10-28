@@ -6,7 +6,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn, formatDuration } from "@/lib/utils";
 import { usePlayerStore } from "@/store";
 import type { SongDetail } from "@/types/song/api";
-import type { CommandWorkspaceTrackListProps } from "@/types/commandWorkspace";
+import type { CommandWorkspaceTrackListProps } from "@/types/commandWorkspace/model";
 
 export function CommandWorkspaceTrackList({
   onAppend,

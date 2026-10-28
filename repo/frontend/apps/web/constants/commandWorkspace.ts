@@ -1,4 +1,4 @@
-import type { CommandWorkspaceSearchFilter } from "@/types/commandWorkspace";
+import type { CommandWorkspaceSearchFilter } from "@/types/commandWorkspace/model";
 import { CATEGORIES, type Category } from "@/types/search/model";
 
 const SEARCH_FILTERS_BY_CATEGORY = {

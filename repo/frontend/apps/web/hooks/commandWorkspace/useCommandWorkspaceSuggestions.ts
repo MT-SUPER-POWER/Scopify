@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { searchSuggest } from "@/lib/api/search";
-import type { CommandWorkspaceSearchSuggestion } from "@/types/commandWorkspace";
+import type { CommandWorkspaceSearchSuggestion } from "@/types/commandWorkspace/model";
 
 export function useCommandWorkspaceSuggestions(query: string) {
   const [suggestions, setSuggestions] = useState<CommandWorkspaceSearchSuggestion[]>([]);

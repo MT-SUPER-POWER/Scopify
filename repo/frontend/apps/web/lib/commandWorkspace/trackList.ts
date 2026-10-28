@@ -7,7 +7,7 @@ import { pruneSongDetail, type SongDetail } from "@/types/song/api";
 import type {
   CommandWorkspaceSearchItem,
   CommandWorkspaceTrackList,
-} from "@/types/commandWorkspace";
+} from "@/types/commandWorkspace/model";
 import type { RadioProgram } from "@/types/radio/api";
 
 export async function loadCommandWorkspaceTrackList(

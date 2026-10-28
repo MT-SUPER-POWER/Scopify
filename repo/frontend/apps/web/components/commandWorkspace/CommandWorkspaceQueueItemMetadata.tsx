@@ -1,7 +1,7 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import type { CommandWorkspaceQueueItemMetadataProps } from "@/types/commandWorkspace";
+import type { CommandWorkspaceQueueItemMetadataProps } from "@/types/commandWorkspace/model";
 
 export function CommandWorkspaceQueueItemMetadata({
   index,

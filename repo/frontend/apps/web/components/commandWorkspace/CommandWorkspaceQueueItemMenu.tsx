@@ -8,7 +8,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import type { CommandWorkspaceQueueItemMenuProps } from "@/types/commandWorkspace";
+import type { CommandWorkspaceQueueItemMenuProps } from "@/types/commandWorkspace/model";
 
 export function CommandWorkspaceQueueItemMenu({
   index,

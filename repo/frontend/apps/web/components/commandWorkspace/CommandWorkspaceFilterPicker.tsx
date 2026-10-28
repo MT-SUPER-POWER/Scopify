@@ -3,7 +3,7 @@
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { AtSign } from "lucide-react";
 import { cn } from "@/lib/utils";
-import type { CommandWorkspaceFilterPickerProps } from "@/types/commandWorkspace";
+import type { CommandWorkspaceFilterPickerProps } from "@/types/commandWorkspace/model";
 
 export function CommandWorkspaceFilterPicker({
   filters,

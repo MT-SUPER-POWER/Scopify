@@ -3,7 +3,7 @@
 import { useEffect, useRef } from "react";
 import { isPersonalFmCommandSelected } from "@/lib/commandWorkspace/personalFmCommands";
 import { cn } from "@/lib/utils";
-import type { CommandWorkspaceFmMatrixProps } from "@/types/commandWorkspacePersonalFm";
+import type { CommandWorkspaceFmMatrixProps } from "@/types/commandWorkspace/personalFm";
 
 export function CommandWorkspaceFmMatrix({
   groups,

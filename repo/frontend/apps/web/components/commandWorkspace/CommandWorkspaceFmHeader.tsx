@@ -2,7 +2,7 @@
 
 import { CircleHelp, Search, X } from "lucide-react";
 import { useI18n } from "@/store/module/i18n";
-import type { CommandWorkspaceFmHeaderProps } from "@/types/commandWorkspacePersonalFm";
+import type { CommandWorkspaceFmHeaderProps } from "@/types/commandWorkspace/personalFm";
 
 export function CommandWorkspaceFmHeader({
   query,

@@ -1,4 +1,4 @@
-import type { CommandWorkspaceRootPage } from "@/types/commandWorkspace";
+import type { CommandWorkspaceRootPage } from "@/types/commandWorkspace/model";
 
 export const COMMAND_WORKSPACE_ROOT_PAGES = [
   {

@@ -3,7 +3,7 @@
 import { CommandWorkspaceQueryInput } from "@/components/commandWorkspace/CommandWorkspaceQueryInput";
 import { CommandWorkspaceDirectSearchResults } from "@/components/commandWorkspace/CommandWorkspaceDirectSearchResults";
 import { useCommandWorkspaceDirectSearch } from "@/hooks/commandWorkspace/useCommandWorkspaceDirectSearch";
-import type { CommandWorkspaceDirectSearchProps } from "@/types/commandWorkspace";
+import type { CommandWorkspaceDirectSearchProps } from "@/types/commandWorkspace/model";
 
 export function CommandWorkspaceDirectSearch(props: CommandWorkspaceDirectSearchProps) {
   const model = useCommandWorkspaceDirectSearch(props);

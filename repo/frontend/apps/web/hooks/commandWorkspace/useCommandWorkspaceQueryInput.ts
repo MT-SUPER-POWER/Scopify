@@ -5,7 +5,7 @@ import { COMMAND_WORKSPACE_SEARCH_FILTERS } from "@/constants/commandWorkspace";
 import type {
   CommandWorkspaceQueryInputProps,
   CommandWorkspaceSearchFilter,
-} from "@/types/commandWorkspace";
+} from "@/types/commandWorkspace/model";
 
 export function useCommandWorkspaceQueryInput({
   filter,

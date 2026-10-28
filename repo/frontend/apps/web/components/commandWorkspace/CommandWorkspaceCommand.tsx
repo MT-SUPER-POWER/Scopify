@@ -19,7 +19,7 @@ import type {
   CommandWorkspaceCommandProps,
   CommandWorkspacePage,
   CommandWorkspaceSearchItem,
-} from "@/types/commandWorkspace";
+} from "@/types/commandWorkspace/model";
 
 export function CommandWorkspaceCommand({ onClose, onLeaveCommand }: CommandWorkspaceCommandProps) {
   const [page, setPage] = useState<CommandWorkspacePage>("root");

@@ -8,7 +8,7 @@ import { CommandWorkspaceFmMatrix } from "@/components/commandWorkspace/CommandW
 import { CommandWorkspaceQueue } from "@/components/commandWorkspace/CommandWorkspaceQueue";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useCommandWorkspacePersonalFm } from "@/hooks/commandWorkspace/useCommandWorkspacePersonalFm";
-import type { CommandWorkspacePersonalFmProps } from "@/types/commandWorkspacePersonalFm";
+import type { CommandWorkspacePersonalFmProps } from "@/types/commandWorkspace/personalFm";
 
 export function CommandWorkspacePersonalFm({ onBack, onClose }: CommandWorkspacePersonalFmProps) {
   const model = useCommandWorkspacePersonalFm(onBack);

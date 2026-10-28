@@ -5,7 +5,7 @@ import { CommandWorkspaceIcon } from "@/components/commandWorkspace/CommandWorks
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { getShortcutBindingLabel } from "@/lib/shortcuts/bindings";
 import { cn } from "@/lib/utils";
-import type { CommandWorkspaceRootListProps } from "@/types/commandWorkspace";
+import type { CommandWorkspaceRootListProps } from "@/types/commandWorkspace/model";
 
 export function CommandWorkspaceRootList({
   items,

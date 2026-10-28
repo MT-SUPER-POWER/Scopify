@@ -4,7 +4,7 @@ import { CommandWorkspaceRootList } from "@/components/commandWorkspace/CommandW
 import { CommandWorkspaceRootFooter } from "@/components/commandWorkspace/CommandWorkspaceRootFooter";
 import { CommandWorkspaceRootInput } from "@/components/commandWorkspace/CommandWorkspaceRootInput";
 import { useCommandWorkspaceRoot } from "@/hooks/commandWorkspace/useCommandWorkspaceRoot";
-import type { CommandWorkspaceRootProps } from "@/types/commandWorkspace";
+import type { CommandWorkspaceRootProps } from "@/types/commandWorkspace/model";
 
 export function CommandWorkspaceRoot(props: CommandWorkspaceRootProps) {
   const model = useCommandWorkspaceRoot(props);

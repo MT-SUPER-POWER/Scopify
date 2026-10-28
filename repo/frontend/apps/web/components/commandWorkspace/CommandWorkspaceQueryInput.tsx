@@ -3,7 +3,7 @@
 import { Search, X } from "lucide-react";
 import { CommandWorkspaceFilterPicker } from "@/components/commandWorkspace/CommandWorkspaceFilterPicker";
 import { useCommandWorkspaceQueryInput } from "@/hooks/commandWorkspace/useCommandWorkspaceQueryInput";
-import type { CommandWorkspaceQueryInputProps } from "@/types/commandWorkspace";
+import type { CommandWorkspaceQueryInputProps } from "@/types/commandWorkspace/model";
 
 export function CommandWorkspaceQueryInput({
   autoFocus = false,

@@ -17,7 +17,7 @@ import { useI18n } from "@/store/module/i18n";
 import type {
   PersonalFmCommandEntry,
   PersonalFmCommandGroup,
-} from "@/types/commandWorkspacePersonalFm";
+} from "@/types/commandWorkspace/personalFm";
 
 export function useCommandWorkspacePersonalFm(onBack: () => void) {
   const { t } = useI18n();

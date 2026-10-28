@@ -6,7 +6,7 @@ import { CommandWorkspaceSearchResultList } from "@/components/commandWorkspace/
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { COMMAND_WORKSPACE_SEARCH_CATEGORY_HINT } from "@/constants/commandWorkspace";
 import { useCommandWorkspaceSearch } from "@/hooks/commandWorkspace/useCommandWorkspaceSearch";
-import type { CommandWorkspaceSearchProps } from "@/types/commandWorkspace";
+import type { CommandWorkspaceSearchProps } from "@/types/commandWorkspace/model";
 
 export function CommandWorkspaceSearch(props: CommandWorkspaceSearchProps) {
   const {

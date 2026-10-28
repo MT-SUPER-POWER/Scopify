@@ -11,7 +11,7 @@ import { usePlayerStore } from "@/store";
 import type {
   CommandWorkspaceQueueDropTarget,
   CommandWorkspaceQueueProps,
-} from "@/types/commandWorkspace";
+} from "@/types/commandWorkspace/model";
 
 export function CommandWorkspaceQueue({ onClose }: CommandWorkspaceQueueProps) {
   const router = useRouter();

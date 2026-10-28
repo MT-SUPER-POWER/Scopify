@@ -9,7 +9,7 @@ import { useSearchStore } from "@/store/module/search";
 import type {
   CommandWorkspaceDirectSearchProps,
   CommandWorkspaceSearchFilter,
-} from "@/types/commandWorkspace";
+} from "@/types/commandWorkspace/model";
 import type { SearchRecentEntry } from "@/types/search/model";
 
 export function useCommandWorkspaceDirectSearch({

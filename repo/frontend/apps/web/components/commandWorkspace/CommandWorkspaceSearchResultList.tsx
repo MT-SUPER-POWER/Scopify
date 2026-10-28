@@ -7,7 +7,7 @@ import { usePlayerStore } from "@/store";
 import type {
   CommandWorkspaceSearchItem,
   CommandWorkspaceSearchResultListProps,
-} from "@/types/commandWorkspace";
+} from "@/types/commandWorkspace/model";
 
 export function CommandWorkspaceSearchResultList({
   items,

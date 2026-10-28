@@ -6,7 +6,7 @@ import { loadCommandWorkspaceTrackList } from "@/lib/commandWorkspace/trackList"
 import type {
   CommandWorkspaceSearchItem,
   CommandWorkspaceTrackList,
-} from "@/types/commandWorkspace";
+} from "@/types/commandWorkspace/model";
 
 export function useCommandWorkspaceTrackList() {
   const [trackList, setTrackList] = useState<CommandWorkspaceTrackList | null>(null);

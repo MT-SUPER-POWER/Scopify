@@ -6,7 +6,7 @@ import { CommandWorkspaceQueueItemMenu } from "@/components/commandWorkspace/Com
 import { CommandWorkspaceQueueItemMetadata } from "@/components/commandWorkspace/CommandWorkspaceQueueItemMetadata";
 import { PlayingAnimation } from "@/components/shared/PlayingAnimation";
 import { cn, formatDuration } from "@/lib/utils";
-import type { CommandWorkspaceQueueItemProps } from "@/types/commandWorkspace";
+import type { CommandWorkspaceQueueItemProps } from "@/types/commandWorkspace/model";
 
 export function CommandWorkspaceQueueItem({
   index,

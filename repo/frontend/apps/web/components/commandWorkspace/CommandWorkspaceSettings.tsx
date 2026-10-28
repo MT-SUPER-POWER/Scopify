@@ -11,7 +11,7 @@ import { cn } from "@/lib/utils";
 import type {
   CommandWorkspaceSettingsItem,
   CommandWorkspaceSettingsProps,
-} from "@/types/commandWorkspace";
+} from "@/types/commandWorkspace/model";
 
 export function CommandWorkspaceSettings({
   onClose,

@@ -1,5 +1,5 @@
 import { Command } from "lucide-react";
-import type { CommandWorkspaceRootInputProps } from "@/types/commandWorkspace";
+import type { CommandWorkspaceRootInputProps } from "@/types/commandWorkspace/model";
 
 export function CommandWorkspaceRootInput({
   inputRef,

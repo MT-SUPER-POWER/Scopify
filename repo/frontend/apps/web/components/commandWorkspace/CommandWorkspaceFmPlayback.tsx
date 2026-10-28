@@ -3,7 +3,7 @@
 import { ListMusic, SkipBack, SkipForward } from "lucide-react";
 import { usePlaybackCommands } from "@/hooks/player/usePlaybackCommands";
 import { usePlaybackProjection } from "@/hooks/player/usePlaybackProjection";
-import type { CommandWorkspaceFmPlaybackProps } from "@/types/commandWorkspacePersonalFm";
+import type { CommandWorkspaceFmPlaybackProps } from "@/types/commandWorkspace/personalFm";
 
 export function CommandWorkspaceFmPlayback({
   isLoading,

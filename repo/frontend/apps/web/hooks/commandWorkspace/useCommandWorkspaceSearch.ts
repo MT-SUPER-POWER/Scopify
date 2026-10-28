@@ -15,7 +15,7 @@ import type {
   CommandWorkspaceSearchProps,
   CommandWorkspaceSearchFilter,
   CommandWorkspaceSearchItem,
-} from "@/types/commandWorkspace";
+} from "@/types/commandWorkspace/model";
 
 export function useCommandWorkspaceSearch({
   onClose,

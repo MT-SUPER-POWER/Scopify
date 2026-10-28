@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import type { UseCommandWorkspaceNavigationOptions } from "@/types/commandWorkspace";
+import type { UseCommandWorkspaceNavigationOptions } from "@/types/commandWorkspace/model";
 
 export function useCommandWorkspaceNavigation({
   onBack,

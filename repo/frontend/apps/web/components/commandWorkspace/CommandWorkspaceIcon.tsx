@@ -1,7 +1,7 @@
 import { getFoliaCommandIcon } from "@/constants/foliaCommandIcons";
 import { ListMusic, PlayCircle, RectangleEllipsis, Search, Settings2 } from "lucide-react";
 import { ShortcutCommandIcon } from "@/components/shortcuts/ShortcutCommandIcon";
-import type { CommandWorkspaceIconProps } from "@/types/commandWorkspace";
+import type { CommandWorkspaceIconProps } from "@/types/commandWorkspace/model";
 
 export function CommandWorkspaceIcon({ id }: CommandWorkspaceIconProps) {
   if (id.startsWith("personal-fm") || id.startsWith("folia-")) {

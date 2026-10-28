@@ -3,7 +3,7 @@ import { buildSearchUrl } from "@/lib/search/searchCategory";
 import type {
   CommandWorkspaceSearchFilter,
   CommandWorkspaceSearchItem,
-} from "@/types/commandWorkspace";
+} from "@/types/commandWorkspace/model";
 import type { Category, SearchResults, SearchRecentEntry } from "@/types/search/model";
 
 export function buildCommandWorkspaceSearchHref(

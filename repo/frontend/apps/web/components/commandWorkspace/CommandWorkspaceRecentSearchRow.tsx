@@ -1,7 +1,7 @@
 import { Clock3, Trash2 } from "lucide-react";
 import { getCommandWorkspaceSearchFilterForCategory } from "@/lib/commandWorkspace/search";
 import { cn } from "@/lib/utils";
-import type { CommandWorkspaceRecentSearchRowProps } from "@/types/commandWorkspace";
+import type { CommandWorkspaceRecentSearchRowProps } from "@/types/commandWorkspace/model";
 
 export function CommandWorkspaceRecentSearchRow({
   item,

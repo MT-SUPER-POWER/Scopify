@@ -1,7 +1,7 @@
 "use client";
 
 import { CircleHelp } from "lucide-react";
-import type { CommandWorkspaceHelpProps } from "@/types/commandWorkspace";
+import type { CommandWorkspaceHelpProps } from "@/types/commandWorkspace/model";
 
 export function CommandWorkspaceHelp({ page }: CommandWorkspaceHelpProps) {
   const details =

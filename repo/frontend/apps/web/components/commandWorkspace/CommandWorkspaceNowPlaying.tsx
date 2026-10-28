@@ -23,7 +23,7 @@ import { usePlaybackPosition, usePlaybackProjection } from "@/hooks/player/usePl
 import { cn, formatDuration } from "@/lib/utils";
 import { usePlayerStore } from "@/store";
 import { useUiStore } from "@/store/module/ui";
-import type { CommandWorkspaceNowPlayingProps } from "@/types/commandWorkspace";
+import type { CommandWorkspaceNowPlayingProps } from "@/types/commandWorkspace/model";
 
 export function CommandWorkspaceNowPlaying({ onClose }: CommandWorkspaceNowPlayingProps) {
   const router = useRouter();

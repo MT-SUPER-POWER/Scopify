@@ -7,7 +7,7 @@ import type { FoliaCommandEntry } from "@/types/lyrics/folia/commands";
 import type {
   PersonalFmCommandAction,
   PersonalFmCommandEntry,
-} from "@/types/commandWorkspacePersonalFm";
+} from "@/types/commandWorkspace/personalFm";
 import type { PersonalFmSelection } from "@/types/personalFm/model";
 import type { TranslateFn } from "@/types/i18n.generated";
 

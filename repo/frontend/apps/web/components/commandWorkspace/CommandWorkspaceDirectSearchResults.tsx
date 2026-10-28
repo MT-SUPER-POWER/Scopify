@@ -4,7 +4,7 @@ import { CornerDownLeft, Search } from "lucide-react";
 import { CommandWorkspaceRecentSearchRow } from "@/components/commandWorkspace/CommandWorkspaceRecentSearchRow";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
-import type { CommandWorkspaceDirectSearchResultsProps } from "@/types/commandWorkspace";
+import type { CommandWorkspaceDirectSearchResultsProps } from "@/types/commandWorkspace/model";
 
 export function CommandWorkspaceDirectSearchResults({
   isLoading,
