@@ -1,6 +1,6 @@
 "use client";
 
-import type { UpdateProgressRingProps } from "@/types/components/notifications";
+import type { UpdateProgressRingProps } from "@/types/notifications/components";
 
 const RADIUS = 18;
 const CIRCUMFERENCE = 2 * Math.PI * RADIUS;

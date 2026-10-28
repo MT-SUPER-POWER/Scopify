@@ -5,7 +5,7 @@ import { useNotificationStore } from "@/store/module/notifications";
 import { useUpdateNotification } from "./useUpdateNotification";
 import { runtime } from "@/lib/runtime";
 import { performNotificationAction } from "@/lib/notifications/actions";
-import type { NotificationFilter, NotificationListItem } from "@/types/notifications";
+import type { NotificationFilter, NotificationListItem } from "@/types/notifications/model";
 
 export function useNotificationCenter() {
   const snapshot = useNotificationStore((state) => state.snapshot);

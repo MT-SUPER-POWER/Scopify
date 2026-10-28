@@ -1,4 +1,4 @@
-import type { NotificationListItem } from "@/types/notifications";
+import type { NotificationListItem } from "@/types/notifications/model";
 
 const REPORT_PATH = "/recent/report";
 

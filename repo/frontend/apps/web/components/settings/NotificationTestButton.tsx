@@ -3,7 +3,7 @@
 import { LoaderCircle, Send } from "lucide-react";
 import { Button } from "@scopify/ui/shadcn/components/button";
 import { useI18n } from "@/store/module/i18n";
-import type { NotificationTestButtonProps } from "@/types/components/notifications";
+import type { NotificationTestButtonProps } from "@/types/notifications/components";
 
 export function NotificationTestButton({ disabled, testing, onTest }: NotificationTestButtonProps) {
   const { t } = useI18n();

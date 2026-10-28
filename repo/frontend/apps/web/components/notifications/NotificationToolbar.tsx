@@ -5,7 +5,7 @@ import { Switch } from "@scopify/ui/shadcn/components/switch";
 import { cn } from "@/lib/utils";
 import { useI18n } from "@/store/module/i18n";
 import { useNotificationStore } from "@/store/module/notifications";
-import type { NotificationToolbarProps } from "@/types/components/notifications";
+import type { NotificationToolbarProps } from "@/types/notifications/components";
 
 const filters = ["all", "comments", "mentions", "notices", "reports", "updates"] as const;
 const actionClass =

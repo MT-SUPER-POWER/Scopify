@@ -2,7 +2,7 @@
 
 import { Switch } from "@scopify/ui/shadcn/components/switch";
 import { useI18n } from "@/store/module/i18n";
-import type { NotificationDeliverySettingsProps } from "@/types/components/notifications";
+import type { NotificationDeliverySettingsProps } from "@/types/notifications/components";
 import { NotificationTestButton } from "./NotificationTestButton";
 import { SettingInput, SettingRow, SettingSection } from "./SettingsUI";
 

@@ -8,7 +8,7 @@ import { useNotificationStore } from "@/store/module/notifications";
 import { useI18n } from "@/store/module/i18n";
 import { runtime } from "@/lib/runtime";
 import { performNotificationAction } from "@/lib/notifications/actions";
-import type { NotificationPanelProps } from "@/types/components/notifications";
+import type { NotificationPanelProps } from "@/types/notifications/components";
 import { NotificationList } from "./NotificationList";
 import { NotificationToolbar } from "./NotificationToolbar";
 

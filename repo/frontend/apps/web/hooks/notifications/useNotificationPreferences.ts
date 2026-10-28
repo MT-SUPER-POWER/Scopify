@@ -7,7 +7,7 @@ import { runtime } from "@/lib/runtime";
 import { performNotificationAction } from "@/lib/notifications/actions";
 import { useNotificationStore } from "@/store/module/notifications";
 import { useI18n } from "@/store/module/i18n";
-import type { NotificationPreferencesDraft } from "@/types/notifications";
+import type { NotificationPreferencesDraft } from "@/types/notifications/model";
 
 export function useNotificationPreferences() {
   const store = useNotificationStore();

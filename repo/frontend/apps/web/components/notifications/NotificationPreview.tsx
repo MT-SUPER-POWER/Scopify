@@ -1,7 +1,7 @@
 "use client";
 
 import { useI18n } from "@/store/module/i18n";
-import type { NotificationPreviewProps } from "@/types/components/notifications";
+import type { NotificationPreviewProps } from "@/types/notifications/components";
 
 export function NotificationPreview({ item }: NotificationPreviewProps) {
   const { t } = useI18n();

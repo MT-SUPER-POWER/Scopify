@@ -2,7 +2,7 @@
 
 import { AtSign, BarChart3, Bell, Download, MessageCircle } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@scopify/ui/shadcn/components/avatar";
-import type { NotificationAvatarProps } from "@/types/components/notifications";
+import type { NotificationAvatarProps } from "@/types/notifications/components";
 
 export function NotificationAvatar({ item }: NotificationAvatarProps) {
   const Icon =

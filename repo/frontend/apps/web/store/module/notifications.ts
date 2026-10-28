@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import type { NotificationUiState } from "@/types/notifications";
+import type { NotificationUiState } from "@/types/notifications/model";
 
 export const useNotificationStore = create<NotificationUiState>((set) => ({
   accountId: null,

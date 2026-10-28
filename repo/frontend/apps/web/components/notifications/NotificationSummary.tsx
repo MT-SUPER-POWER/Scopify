@@ -1,7 +1,7 @@
 "use client";
 
 import { useI18n } from "@/store/module/i18n";
-import type { NotificationSummaryProps } from "@/types/components/notifications";
+import type { NotificationSummaryProps } from "@/types/notifications/components";
 
 export function NotificationSummary({
   item,

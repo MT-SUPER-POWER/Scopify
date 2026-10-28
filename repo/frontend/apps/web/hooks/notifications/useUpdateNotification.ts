@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useAppUpdater } from "@/hooks/settings/useAppUpdater";
 import { UPDATE_SEEN_VERSION_KEY } from "@/constants/updater";
 import { useI18n } from "@/store/module/i18n";
-import type { NotificationListItem } from "@/types/notifications";
+import type { NotificationListItem } from "@/types/notifications/model";
 
 export function useUpdateNotification() {
   const updater = useAppUpdater();

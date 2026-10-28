@@ -2,7 +2,7 @@
 
 import { BellRing } from "lucide-react";
 import { useI18n } from "@/store/module/i18n";
-import type { NotificationPanelProps } from "@/types/components/notifications";
+import type { NotificationPanelProps } from "@/types/notifications/components";
 import { NotificationRow } from "./NotificationRow";
 import { socialNotificationHref } from "@/lib/social/notificationTarget";
 

@@ -1,5 +1,5 @@
 import request, { requestConfig } from "@/lib/web/request";
-import type { NotificationRequest } from "@/types/api/notifications";
+import type { NotificationRequest } from "@/types/notifications/api";
 
 export async function requestNotificationSource({
   path,

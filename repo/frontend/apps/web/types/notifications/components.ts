@@ -1,4 +1,4 @@
-import type { NotificationFilter, NotificationListItem } from "@/types/notifications";
+import type { NotificationFilter, NotificationListItem } from "@/types/notifications/model";
 import type { NotificationPreferences } from "@scopify/desktop-contract";
 import type { AppUpdateState } from "@/types/updater";
 
