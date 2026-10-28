@@ -3,7 +3,7 @@
 import { AnimatePresence, motion } from "motion/react";
 
 import { useCarouselSwipe } from "@/hooks/home/useCarouselSwipe";
-import type { CarouselDotNavigationProps } from "@/types/components/home";
+import type { CarouselDotNavigationProps } from "@/types/home/components";
 
 const DOT_OFFSETS = [-2, -1, 0, 1, 2];
 const DOT_STEP = 20;

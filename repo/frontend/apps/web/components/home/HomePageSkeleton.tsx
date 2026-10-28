@@ -1,7 +1,7 @@
 "use client";
 
 import { Skeleton } from "@scopify/ui/shadcn/components/skeleton";
-import type { GridCardSkeletonProps } from "@/types/components/home";
+import type { GridCardSkeletonProps } from "@/types/home/components";
 import { cn } from "@/lib/utils";
 
 // ==========================================

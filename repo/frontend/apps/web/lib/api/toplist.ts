@@ -1,4 +1,4 @@
-import type { ToplistDetailResponse } from "@/types/api/toplist";
+import type { ToplistDetailResponse } from "@/types/home/toplistApi";
 import request, { requestConfig } from "@/lib/web/request";
 
 /**

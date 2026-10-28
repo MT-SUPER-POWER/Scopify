@@ -9,7 +9,7 @@ import {
 } from "@/hooks/home/useHomeQueries";
 import { useLoginStatus } from "@/lib/hooks/useLoginStatus";
 import { pruneRecommendPlaylist, type RawRecommendPlaylist } from "@/types/playlist/api";
-import type { HomeQueryContentProps } from "@/types/components/home";
+import type { HomeQueryContentProps } from "@/types/home/components";
 
 export function HomeRecentPlaylistsContent({ actions }: HomeQueryContentProps) {
   const isLogin = useLoginStatus();

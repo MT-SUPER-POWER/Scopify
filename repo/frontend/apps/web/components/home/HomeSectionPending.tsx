@@ -9,7 +9,7 @@ import {
 } from "@/components/home/HomePageSkeleton";
 import { QueryPending } from "@/components/shared/QueryPending";
 import { useI18n } from "@/store/module/i18n";
-import type { HomeSectionPendingProps } from "@/types/components/home";
+import type { HomeSectionPendingProps } from "@/types/home/components";
 
 export function HomeSectionPending({ isPaused, kind, title, titleKey }: HomeSectionPendingProps) {
   const { t } = useI18n();

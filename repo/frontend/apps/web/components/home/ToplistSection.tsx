@@ -2,7 +2,7 @@
 
 import { ToplistCard } from "@/components/home/ToplistCard";
 import { useI18n } from "@/store/module/i18n";
-import type { ToplistSectionProps } from "@/types/components/home";
+import type { ToplistSectionProps } from "@/types/home/components";
 
 export function ToplistSection({ loadingPlayId, onPlayToplist, toplists }: ToplistSectionProps) {
   const { t } = useI18n();

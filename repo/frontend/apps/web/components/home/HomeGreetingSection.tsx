@@ -10,7 +10,7 @@ import { CollapsibleSection } from "@/components/home/CollapsibleSection";
 import { SectionPagination } from "@/components/home/SectionPagination";
 import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
 import { useI18n } from "@/store/module/i18n";
-import type { HomeGreetingSectionProps } from "@/types/components/home";
+import type { HomeGreetingSectionProps } from "@/types/home/components";
 
 const DEFAULT_PAGE_SIZE = 9;
 

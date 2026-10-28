@@ -9,7 +9,7 @@ import { SectionPagination } from "@/components/home/SectionPagination";
 import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
 import { formatPlayCount } from "@/lib/utils";
 import { useI18n } from "@/store/module/i18n";
-import type { PersonalizedPlaylistsProps } from "@/types/components/home";
+import type { PersonalizedPlaylistsProps } from "@/types/home/components";
 
 const DEFAULT_PAGE_SIZE = 10;
 

@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
 import { useI18n } from "@/store/module/i18n";
 
 import { useSectionCollapse } from "@/hooks/home/useSectionCollapse";
-import type { CollapsibleSectionProps } from "@/types/components/home";
+import type { CollapsibleSectionProps } from "@/types/home/components";
 
 export function CollapsibleSection({
   title,

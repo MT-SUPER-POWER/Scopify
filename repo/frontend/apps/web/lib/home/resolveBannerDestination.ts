@@ -1,5 +1,5 @@
-import type { NeteaseBanner } from "@/types/api/banner";
-import type { BannerDestination, BannerTargetKind } from "@/types/home";
+import type { NeteaseBanner } from "@/types/home/bannerApi";
+import type { BannerDestination, BannerTargetKind } from "@/types/home/model";
 
 const ORPHEUS_TARGET_KINDS: Record<string, BannerTargetKind> = {
   album: "album",

@@ -1,4 +1,4 @@
-import type { BannerResponse } from "@/types/api/banner";
+import type { BannerResponse } from "@/types/home/bannerApi";
 
 import request from "../web/request";
 

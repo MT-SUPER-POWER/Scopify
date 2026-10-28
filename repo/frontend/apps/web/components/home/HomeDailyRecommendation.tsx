@@ -3,7 +3,7 @@
 import { Play } from "lucide-react";
 import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
 import { useI18n } from "@/store/module/i18n";
-import type { HomeDailyRecommendationProps } from "@/types/components/home";
+import type { HomeDailyRecommendationProps } from "@/types/home/components";
 
 export function HomeDailyRecommendation({ dateInfo }: HomeDailyRecommendationProps) {
   const { t } = useI18n();

@@ -1,10 +1,10 @@
 import type { MouseEvent, ReactNode } from "react";
 import type { NeteaseAlbum } from "@/types/album/api";
-import type { NeteaseBanner } from "@/types/api/banner";
+import type { NeteaseBanner } from "@/types/home/bannerApi";
 import type { SongDetail } from "@/types/song/api";
 import type { RecommendPlaylist } from "@/types/playlist/api";
-import type { ToplistDetailItem } from "@/types/api/toplist";
-import type { CarouselDirection, HomePlaybackActions } from "@/types/home";
+import type { ToplistDetailItem } from "@/types/home/toplistApi";
+import type { CarouselDirection, HomePlaybackActions } from "@/types/home/model";
 import type { Artist, Voice } from "@/types/search/model";
 import type { TranslationKey } from "@/lib/i18n";
 

@@ -9,7 +9,7 @@ import { useHomeBanners } from "@/hooks/home/useHomeBanners";
 import { useCarouselSwipe } from "@/hooks/home/useCarouselSwipe";
 import { cn } from "@/lib/utils";
 import { useI18n } from "@/store/module/i18n";
-import type { CarouselDirection } from "@/types/home";
+import type { CarouselDirection } from "@/types/home/model";
 
 const AUTO_PLAY_INTERVAL = 6_000;
 

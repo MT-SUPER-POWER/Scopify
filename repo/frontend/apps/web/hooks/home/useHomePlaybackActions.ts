@@ -8,7 +8,7 @@ import { getPlaylistAllTracks } from "@/lib/api/playlist";
 import { usePlayerStore } from "@/store";
 import { useI18n } from "@/store/module/i18n";
 import { pruneSongDetail, type SongDetail } from "@/types/song/api";
-import type { HomePlaybackActions } from "@/types/home";
+import type { HomePlaybackActions } from "@/types/home/model";
 
 /** 首页各栏目共用播放动作；读取 Query 的状态不参与此 hook。 */
 export function useHomePlaybackActions(): HomePlaybackActions {

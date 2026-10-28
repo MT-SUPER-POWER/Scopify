@@ -8,7 +8,7 @@ import { useToplistTracksQuery } from "@/hooks/home/useHomeQueries";
 import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
 import { cn } from "@/lib/utils";
 import type { SongDetail } from "@/types/song/api";
-import type { ToplistDetailItem } from "@/types/api/toplist";
+import type { ToplistDetailItem } from "@/types/home/toplistApi";
 
 interface ToplistCardProps {
   isLoading?: boolean;

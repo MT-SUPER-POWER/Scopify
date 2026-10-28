@@ -2,7 +2,7 @@
 
 import { useRef, useState, type MouseEvent, type PointerEvent } from "react";
 
-import type { CarouselSwipeOptions } from "@/types/home";
+import type { CarouselSwipeOptions } from "@/types/home/model";
 
 const DEFAULT_THRESHOLD = 48;
 const DRAG_START_THRESHOLD = 6;

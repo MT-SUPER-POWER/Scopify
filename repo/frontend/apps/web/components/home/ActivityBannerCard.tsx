@@ -2,7 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 
 import { resolveBannerDestination } from "@/lib/home/resolveBannerDestination";
-import type { ActivityBannerCardProps } from "@/types/components/home";
+import type { ActivityBannerCardProps } from "@/types/home/components";
 
 export function ActivityBannerCard({
   banner,

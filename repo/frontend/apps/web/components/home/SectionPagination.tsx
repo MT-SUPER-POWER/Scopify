@@ -3,7 +3,7 @@
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useI18n } from "@/store/module/i18n";
-import type { SectionPaginationProps } from "@/types/components/home";
+import type { SectionPaginationProps } from "@/types/home/components";
 
 export function SectionPagination({
   className,

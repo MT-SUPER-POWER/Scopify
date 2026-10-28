@@ -8,7 +8,7 @@ import { GridCard } from "@/components/home/GridCard";
 import { SectionPagination } from "@/components/home/SectionPagination";
 import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
 import { useI18n } from "@/store/module/i18n";
-import type { FollowedAlbumsSectionProps } from "@/types/components/home";
+import type { FollowedAlbumsSectionProps } from "@/types/home/components";
 
 const DEFAULT_PAGE_SIZE = 10;
 

@@ -4,7 +4,7 @@ import { Music2, Play } from "lucide-react";
 import Image from "next/image";
 import { cn, formatPlayCount } from "@/lib/utils";
 
-import type { GridCardProps } from "@/types/components/home";
+import type { GridCardProps } from "@/types/home/components";
 
 export function GridCard({
   id,

@@ -10,7 +10,7 @@ import {
 import { useLoginStatus } from "@/lib/hooks/useLoginStatus";
 import { selectFallbackSource, toFallbackSource } from "@/lib/query/fallbackSource";
 import { pruneRecommendPlaylist } from "@/types/playlist/api";
-import type { HomeGreetingContentProps, HomeQueryContentProps } from "@/types/components/home";
+import type { HomeGreetingContentProps, HomeQueryContentProps } from "@/types/home/components";
 
 export function HomeGreetingContent({ actions, greeting, dateInfo }: HomeGreetingContentProps) {
   const query = usePersonalizedPlaylistsQuery();

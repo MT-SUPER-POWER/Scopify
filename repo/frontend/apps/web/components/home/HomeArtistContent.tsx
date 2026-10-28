@@ -6,8 +6,8 @@ import { HomeSectionPending } from "@/components/home/HomeSectionPending";
 import { useHotArtistsQuery, useFollowedArtistsQuery } from "@/hooks/home/useHomeQueries";
 import { useLoginStatus } from "@/lib/hooks/useLoginStatus";
 import { selectFallbackSource, toFallbackSource } from "@/lib/query/fallbackSource";
-import type { ArtistTopListItem } from "@/types/home";
-import type { HomeQueryContentProps } from "@/types/components/home";
+import type { ArtistTopListItem } from "@/types/home/model";
+import type { HomeQueryContentProps } from "@/types/home/components";
 
 export function HomeSuggestedArtistsContent() {
   const query = useHotArtistsQuery();

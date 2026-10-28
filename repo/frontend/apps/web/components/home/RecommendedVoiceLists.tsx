@@ -10,7 +10,7 @@ import { VoiceList } from "@/components/search/VoiceList";
 import { VoiceTranscriptDialog } from "@/components/voice/VoiceTranscriptDialog";
 import { cn } from "@/lib/utils";
 import { useI18n } from "@/store/module/i18n";
-import type { RecommendedVoiceListsProps } from "@/types/components/home";
+import type { RecommendedVoiceListsProps } from "@/types/home/components";
 import type { Voice } from "@/types/search/model";
 
 const DEFAULT_PAGE_SIZE = 6;

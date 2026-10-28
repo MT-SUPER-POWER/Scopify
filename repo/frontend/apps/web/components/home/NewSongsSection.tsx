@@ -8,7 +8,7 @@ import { CollapsibleSection } from "@/components/home/CollapsibleSection";
 import { SectionPagination } from "@/components/home/SectionPagination";
 import { NewSongItem } from "@/components/home/NewSongItem";
 import { useI18n } from "@/store/module/i18n";
-import type { NewSongsSectionProps } from "@/types/components/home";
+import type { NewSongsSectionProps } from "@/types/home/components";
 
 const DEFAULT_PAGE_SIZE = 6;
 
