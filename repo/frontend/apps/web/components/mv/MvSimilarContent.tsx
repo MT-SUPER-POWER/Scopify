@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo } from "react";
 import { LoaderCircle } from "lucide-react";
 import { MvListItem } from "@/components/mv/MvListItem";
+import { MvSimilarSkeleton } from "@/components/mv/MvSkeletons";
 import { QueryFailure } from "@/components/shared/QueryFailure";
 import { QueryPending } from "@/components/shared/QueryPending";
 import { useInfiniteMvSearchQuery } from "@/hooks/search/useSearchQueries";
@@ -30,7 +31,8 @@ export function MvSimilarContent({ mvid, detail, onNextChange }: MvSimilarConten
     onNextChange(nextId);
     return () => onNextChange(null);
   }, [nextId, onNextChange]);
-  if (query.isPending) return <QueryPending isPaused={query.fetchStatus === "paused"} />;
+  if (query.isPending)
+    return query.fetchStatus === "paused" ? <QueryPending isPaused /> : <MvSimilarSkeleton />;
   if (!mvs.length && !query.hasNextPage) return null;
   return (
     <>

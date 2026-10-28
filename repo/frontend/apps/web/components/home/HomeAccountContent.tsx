@@ -2,7 +2,7 @@
 
 import { FollowedAlbumsSection } from "@/components/home/FollowedAlbumsSection";
 import { RecentlyPlayedPlaylists } from "@/components/home/RecentlyPlayedPlaylists";
-import { QueryPending } from "@/components/shared/QueryPending";
+import { HomeSectionPending } from "@/components/home/HomeSectionPending";
 import {
   useFollowedArtistsAlbumsQuery,
   useRecentPlaylistsQuery,
@@ -15,7 +15,14 @@ export function HomeRecentPlaylistsContent({ actions }: HomeQueryContentProps) {
   const isLogin = useLoginStatus();
   const query = useRecentPlaylistsQuery(isLogin);
   if (!isLogin) return null;
-  if (query.isPending) return <QueryPending isPaused={query.fetchStatus === "paused"} />;
+  if (query.isPending)
+    return (
+      <HomeSectionPending
+        isPaused={query.fetchStatus === "paused"}
+        kind="grid"
+        titleKey="home.recentlyPlayedPlaylists"
+      />
+    );
   const playlists = (query.data?.data?.list ?? [])
     .map((entry) => entry.data)
     .filter((item): item is RawRecommendPlaylist => Boolean(item?.id && item.name))
@@ -33,7 +40,14 @@ export function HomeFollowedAlbumsContent({ actions }: HomeQueryContentProps) {
   const isLogin = useLoginStatus();
   const query = useFollowedArtistsAlbumsQuery(isLogin);
   if (!isLogin) return null;
-  if (query.isPending) return <QueryPending isPaused={query.fetchStatus === "paused"} />;
+  if (query.isPending)
+    return (
+      <HomeSectionPending
+        isPaused={query.fetchStatus === "paused"}
+        kind="grid"
+        titleKey="home.followedArtistsAlbums"
+      />
+    );
   return (
     <FollowedAlbumsSection
       albums={(query.data ?? []).filter((album) => Boolean(album?.id && album.name))}
