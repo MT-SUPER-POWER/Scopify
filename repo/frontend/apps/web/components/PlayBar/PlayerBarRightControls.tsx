@@ -21,7 +21,7 @@ export function PlayerBarRightControls({ isLyricStageBar = false }: { isLyricSta
     <div
       className={cn(
         "flex items-center justify-end gap-2 text-content-muted lg:gap-3",
-        isLyricStageBar ? "min-w-0" : "flex-1 md:flex-none md:justify-self-end",
+        isLyricStageBar ? "min-w-0" : "flex-1 pr-4 md:flex-none md:justify-self-end lg:pr-3",
       )}
     >
       {/* 桌面小歌词 + 桌面音乐 */}

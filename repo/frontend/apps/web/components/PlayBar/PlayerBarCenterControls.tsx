@@ -45,14 +45,14 @@ export function PlayerBarCenterControls({ isLyricStageBar = false }: PlayerBarCe
   return (
     <div
       className={cn(
-        "flex min-w-0 flex-col items-center justify-center gap-1.5",
+        "flex min-w-0 flex-col items-center justify-center gap-2.5",
         isLyricStageBar
           ? "w-[clamp(280px,40vw,560px)]"
           : "flex-2 md:w-[clamp(280px,40vw,560px)] md:flex-none",
       )}
     >
       <TooltipProvider>
-        <div className="mt-1 flex items-center gap-4 lg:gap-5">
+        <div className="flex items-center gap-4 lg:gap-5">
           <Tooltip>
             <TooltipTrigger asChild>
               <button
@@ -97,7 +97,7 @@ export function PlayerBarCenterControls({ isLyricStageBar = false }: PlayerBarCe
                 aria-label={playbackActionLabel}
                 onClick={() => void commands.toggle()}
                 disabled={!playback.canControl}
-                className="flex size-9 items-center justify-center rounded-full bg-content text-surface transition-all hover:scale-105 hover:bg-content/90 active:scale-95 disabled:opacity-40 lg:size-10"
+                className="flex size-9 items-center justify-center rounded-full bg-content text-surface transition-all hover:scale-105 hover:bg-content/90 active:scale-95 disabled:opacity-40"
               >
                 {isPlaying ? (
                   <Pause className="size-4 fill-current lg:size-5" />
