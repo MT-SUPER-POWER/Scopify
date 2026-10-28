@@ -9,7 +9,7 @@ import { useSettingsSectionNavigation } from "@/hooks/settings/useSettingsSectio
 import { runtime } from "@/lib/runtime";
 import { parseSettingsTab } from "@/lib/settings/tabs";
 import { useI18n } from "@/store/module/i18n";
-import type { SettingsTabId } from "@/types/settings";
+import type { SettingsTabId } from "@/types/settings/model";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
 import { DesktopSettingsTab } from "./DesktopSettingsTab";
 import { GeneralSettingsTab } from "./GeneralSettingsTab";

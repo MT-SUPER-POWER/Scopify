@@ -4,7 +4,7 @@ import { Cable, CircleAlert, CircleCheck, LoaderCircle, RotateCw } from "lucide-
 import { toast } from "sonner";
 
 import { useI18n } from "@/store/module/i18n";
-import type { McpRuntimeControlsProps } from "@/types/components/settings";
+import type { McpRuntimeControlsProps } from "@/types/settings/components";
 import { SettingRow } from "./SettingsUI";
 
 /** Runs a real MCP protocol probe and keeps restart as a separate recovery action. */

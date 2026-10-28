@@ -1,7 +1,7 @@
 import path from "node:path";
 import type { NextConfig } from "next";
 
-import { DEFAULT_WEB_CONFIG } from "./types/config";
+import { DEFAULT_WEB_CONFIG } from "@/types/settings/config";
 import { buildReleaseNotes } from "./scripts/release-notes";
 
 function envNumber(value: string | undefined, fallback: number) {

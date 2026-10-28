@@ -11,7 +11,7 @@ import {
 import { CircleCheck, CircleX, LoaderCircle, Radio } from "lucide-react";
 import { SETTINGS_ACTION_BUTTON_CLASS_NAME } from "@/constants/settings";
 import type { DesktopProxyMode } from "@scopify/desktop-contract";
-import type { NetworkSettingsTabProps } from "@/types/components/settings";
+import type { NetworkSettingsTabProps } from "@/types/settings/components";
 import { isBackendHostInputValid } from "@/lib/web/backendUrl";
 import { useI18n } from "@/store/module/i18n";
 import { SettingInput, SettingRow, SettingSection } from "./SettingsUI";

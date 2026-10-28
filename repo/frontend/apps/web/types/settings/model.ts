@@ -1,5 +1,5 @@
 import type { DesktopHostConfig } from "@scopify/desktop-contract";
-import type { WebConfig } from "@/types/config";
+import type { WebConfig } from "@/types/settings/config";
 import type { TranslationKey } from "@/lib/i18n";
 
 export type SettingsTabId =

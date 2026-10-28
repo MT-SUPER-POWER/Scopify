@@ -2,7 +2,7 @@
 
 import { useI18n } from "@/store/module/i18n";
 import type { PageCachePreferences } from "@/types/cache";
-import type { CacheAdvancedScopeControlsProps } from "@/types/components/settings";
+import type { CacheAdvancedScopeControlsProps } from "@/types/settings/components";
 import { SettingInput, SettingRow, Toggle } from "./SettingsUI";
 
 export function PageCacheAdvancedControls({

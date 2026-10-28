@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import { useNavigationScroll } from "@/components/shared/NavigationScrollProvider";
 import { parseSettingsTab } from "@/lib/settings/tabs";
-import type { SettingsTabId } from "@/types/settings";
+import type { SettingsTabId } from "@/types/settings/model";
 
 /** Resolve settings anchors only after the requested tab and its content are mounted. */
 export function useSettingsSectionNavigation(activeTab: SettingsTabId, ready: boolean) {

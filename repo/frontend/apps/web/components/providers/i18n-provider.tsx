@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import { useI18nStore } from "@/store/module/i18n";
-import type { WebConfig } from "@/types/config";
+import type { WebConfig } from "@/types/settings/config";
 
 export function I18nProvider({ children }: { children: React.ReactNode }) {
   const locale = useI18nStore((state) => state.locale);

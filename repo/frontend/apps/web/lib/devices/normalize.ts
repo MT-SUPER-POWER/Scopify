@@ -1,6 +1,6 @@
 import { translate } from "@/lib/i18n";
 import type { LoginDevicesResponse } from "@/types/devices/api";
-import type { AppLocale } from "@/types/config";
+import type { AppLocale } from "@/types/settings/config";
 import type { LoginDeviceSnapshot } from "@/types/devices/model";
 
 export function normalizeLoginDevices(

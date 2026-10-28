@@ -1,4 +1,4 @@
-import type { BackendProtocol, WebConfig } from "@/types/config";
+import type { BackendProtocol, WebConfig } from "@/types/settings/config";
 
 export type BackendConfigResolution =
   { backend: WebConfig["backend"]; ok: true; url: string } | { message: string; ok: false };

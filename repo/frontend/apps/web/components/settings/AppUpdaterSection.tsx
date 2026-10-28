@@ -2,7 +2,7 @@
 
 import { useAppUpdater } from "@/hooks/settings/useAppUpdater";
 import { useI18n } from "@/store/module/i18n";
-import type { AppUpdaterSectionProps } from "@/types/components/settings";
+import type { AppUpdaterSectionProps } from "@/types/settings/components";
 import { AppUpdaterStatus } from "./AppUpdaterStatus";
 import { SettingRow, SettingSection, Toggle } from "./SettingsUI";
 

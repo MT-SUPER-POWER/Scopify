@@ -3,7 +3,7 @@
 import { Download, ExternalLink, RefreshCw, RotateCcw } from "lucide-react";
 import { UpdateProgressRing } from "@/components/notifications/UpdateProgressRing";
 import { useI18n } from "@/store/module/i18n";
-import type { AppUpdaterStatusProps } from "@/types/components/settings";
+import type { AppUpdaterStatusProps } from "@/types/settings/components";
 import { SettingButton } from "./SettingsUI";
 
 export function AppUpdaterActions({

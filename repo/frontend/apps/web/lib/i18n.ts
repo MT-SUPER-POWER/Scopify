@@ -1,5 +1,5 @@
 import { messages } from "@/constants/i18n";
-import type { AppLocale } from "@/types/config";
+import type { AppLocale } from "@/types/settings/config";
 
 export { messages };
 

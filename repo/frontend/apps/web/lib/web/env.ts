@@ -1,5 +1,5 @@
-import type { WebConfig } from "@/types/config";
-import { DEFAULT_WEB_CONFIG } from "@/types/config";
+import type { WebConfig } from "@/types/settings/config";
+import { DEFAULT_WEB_CONFIG } from "@/types/settings/config";
 
 export const webConfig: WebConfig = {
   app: {

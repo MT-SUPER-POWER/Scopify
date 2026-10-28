@@ -1,4 +1,4 @@
-import type { SettingsTabDefinition } from "@/types/settings";
+import type { SettingsTabDefinition } from "@/types/settings/model";
 
 export const SETTINGS_TABS: readonly SettingsTabDefinition[] = [
   { id: "general", labelKey: "settings.tab.general" },

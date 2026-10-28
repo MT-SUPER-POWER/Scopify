@@ -6,7 +6,7 @@ import { toast } from "sonner";
 import { runtime } from "@/lib/runtime";
 import { SettingInput, SettingRow, SettingSection, Toggle } from "./SettingsUI";
 import { BackendStatusIndicator } from "./BackendStatusIndicator";
-import type { LocalBackendSettingsSectionProps } from "@/types/components/settings";
+import type { LocalBackendSettingsSectionProps } from "@/types/settings/components";
 import { useI18n } from "@/store/module/i18n";
 
 export function LocalBackendSettingsSection({

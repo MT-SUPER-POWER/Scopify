@@ -3,7 +3,7 @@
 import { UPDATE_STATUS_LABEL_KEYS } from "@/constants/updater";
 import { cn } from "@/lib/utils";
 import { useI18n } from "@/store/module/i18n";
-import type { AppUpdaterStatusProps } from "@/types/components/settings";
+import type { AppUpdaterStatusProps } from "@/types/settings/components";
 import { AppUpdaterActions } from "./AppUpdaterActions";
 import { SettingRow } from "./SettingsUI";
 

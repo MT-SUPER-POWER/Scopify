@@ -13,7 +13,7 @@ import { runtime } from "@/lib/runtime";
 import { useI18n } from "@/store/module/i18n";
 import { useLogDirectory } from "@/hooks/settings/useLogDirectory";
 import type { DesktopLogLevel } from "@scopify/desktop-contract";
-import type { DesktopSettingsTabProps } from "@/types/components/settings";
+import type { DesktopSettingsTabProps } from "@/types/settings/components";
 import { AppUpdaterSection } from "./AppUpdaterSection";
 import { DesktopLyricSection } from "./DesktopLyricSection";
 import { DynamicIslandSection } from "./DynamicIslandSection";

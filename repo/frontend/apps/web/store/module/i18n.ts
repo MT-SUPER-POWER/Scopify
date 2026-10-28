@@ -4,7 +4,7 @@ import { useCallback } from "react";
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 import { type TranslationKey, type TranslationParams, translate } from "@/lib/i18n";
-import { type AppLocale, DEFAULT_WEB_CONFIG } from "@/types/config";
+import { type AppLocale, DEFAULT_WEB_CONFIG } from "@/types/settings/config";
 import type { TranslateFn } from "@/types/i18n.generated";
 
 interface I18nStore {

@@ -3,7 +3,7 @@
 import { Copy, KeyRound, LoaderCircle } from "lucide-react";
 
 import { useI18n } from "@/store/module/i18n";
-import type { McpClientConfigurationPreviewProps } from "@/types/components/settings";
+import type { McpClientConfigurationPreviewProps } from "@/types/settings/components";
 
 /** Small syntax-rendered JSON preview for the current valid MCP credential. */
 export function McpClientConfigurationPreview({

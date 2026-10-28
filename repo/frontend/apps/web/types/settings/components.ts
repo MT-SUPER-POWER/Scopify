@@ -13,7 +13,7 @@ import type {
   DesktopSettingsChangeHandler,
   SettingsConfig,
   WebSettingsChangeHandler,
-} from "@/types/settings";
+} from "@/types/settings/model";
 import type { BackendPingResult } from "@/types/network";
 import type { CacheStats } from "@/types/cache";
 import type { CachePreferences } from "@/types/cache";

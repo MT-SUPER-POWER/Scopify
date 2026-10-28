@@ -20,7 +20,7 @@ import type React from "react";
 import { createPortal } from "react-dom";
 import { MCP_PLAYBACK_CAPABILITIES, type McpCapability } from "@scopify/desktop-contract";
 import { useI18n } from "@/store/module/i18n";
-import type { McpCapabilitiesModalProps } from "@/types/components/settings";
+import type { McpCapabilitiesModalProps } from "@/types/settings/components";
 import { Toggle } from "./SettingsUI";
 
 // 完全对齐 Ctrl + / 快捷键帮助界面的沉浸式深色二级弹窗，Portal 挂载至 document.body

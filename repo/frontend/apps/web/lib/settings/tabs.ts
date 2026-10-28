@@ -1,5 +1,5 @@
 import { SETTINGS_TABS } from "@/constants/settings";
-import type { SettingsTabId } from "@/types/settings";
+import type { SettingsTabId } from "@/types/settings/model";
 
 export function parseSettingsTab(value: string | string[] | undefined): SettingsTabId {
   const candidate = typeof value === "string" ? value : "";

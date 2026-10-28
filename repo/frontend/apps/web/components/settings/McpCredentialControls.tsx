@@ -6,7 +6,7 @@ import { toast } from "sonner";
 
 import { Popover, PopoverAnchor, PopoverContent } from "@/components/ui/popover";
 import { useI18n } from "@/store/module/i18n";
-import type { McpCredentialControlsProps } from "@/types/components/settings";
+import type { McpCredentialControlsProps } from "@/types/settings/components";
 import { McpClientConfigurationPreview } from "./McpClientConfigurationPreview";
 import { SettingRow } from "./SettingsUI";
 

@@ -1,5 +1,5 @@
-import type { WebConfig } from "@/types/config";
-import type { SettingsConfig } from "@/types/settings";
+import type { WebConfig } from "@/types/settings/config";
+import type { SettingsConfig } from "@/types/settings/model";
 
 /**
  * Keeps the renderer's API target independent from Desktop-owned local backend

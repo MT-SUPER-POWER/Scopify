@@ -17,7 +17,7 @@ import type {
   SaveConfirmModalProps,
   SettingButtonProps,
   SettingSectionProps,
-} from "@/types/components/settings";
+} from "@/types/settings/components";
 
 export function Toggle({ enabled, onChange }: { enabled: boolean; onChange: () => void }) {
   return (

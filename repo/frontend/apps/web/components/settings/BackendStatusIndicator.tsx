@@ -2,7 +2,7 @@
 
 import { cn } from "@/lib/utils";
 import { useI18n } from "@/store/module/i18n";
-import type { BackendStatusIndicatorProps } from "@/types/components/settings";
+import type { BackendStatusIndicatorProps } from "@/types/settings/components";
 
 export function BackendStatusIndicator({ status }: BackendStatusIndicatorProps) {
   const { t } = useI18n();
