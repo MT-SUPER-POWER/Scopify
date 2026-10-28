@@ -1,5 +1,5 @@
 import { getFoliaCommandIcon } from "@/constants/foliaCommandIcons";
-import { ListMusic, PlayCircle, RectangleEllipsis, Search, Settings2 } from "lucide-react";
+import { ListMusic, PlayCircle, Power, RectangleEllipsis, Search, Settings2 } from "lucide-react";
 import { ShortcutCommandIcon } from "@/components/shortcuts/ShortcutCommandIcon";
 import type { CommandWorkspaceIconProps } from "@/types/commandWorkspace";
 
@@ -13,5 +13,6 @@ export function CommandWorkspaceIcon({ id }: CommandWorkspaceIconProps) {
   if (id === "queue") return <ListMusic className="size-4" />;
   if (id === "settings") return <Settings2 className="size-4" />;
   if (id === "dynamic-island") return <RectangleEllipsis className="size-4" />;
+  if (id === "exit-app") return <Power className="size-4" />;
   return <ShortcutCommandIcon commandId={id} />;
 }
