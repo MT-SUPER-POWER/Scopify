@@ -4,35 +4,29 @@ description: 浏览动态与乐迷团，收发私信，在通知中心处理互�
 ---
 
 import privateMessagesScreenshot from "../../../../assets/features/private-messages.png";
-import notificationsScreenshot from "../../../../assets/features/notifications.png";
-import socialFeedScreenshot from "../../../../assets/features/social-feed.png";
-import fanClubsScreenshot from "../../../../assets/features/social-fan-clubs.png";
-import socialMusicShareScreenshot from "../../../../assets/features/social-music-share.png";
+import notificationsScreenshot from "../../../../assets/features/notifications-current.png";
+import socialMasonryScreenshot from "../../../../assets/features/social-masonry-current.png";
+import socialDetailScreenshot from "../../../../assets/features/social-detail-current.png";
 import socialComposerScreenshot from "../../../../assets/features/social-composer.png";
 
 [← 产品能力总览](/docs/features)
 
 ## 动态与乐迷团
 
-社交页把朋友动态、热门话题与乐迷团笔记放进同一条浏览路径。动态支持文字与音乐分享、转发、点赞、评论回复和删除自己的内容；音乐附件复用播放器与队列，可以直接播放。同时提供关注 / 粉丝列表和用户搜索。
+社交页提供关注动态与乐迷团笔记。乐迷团笔记以卡片瀑布流展示，点击卡片可在浮层中查看详情；可以按加入的团筛选，聚合动态会标明来源。动态支持文字与音乐分享、转发、点赞、评论回复和删除自己的内容；音乐附件复用播放器与队列，可以直接播放。同时提供关注 / 粉丝列表和用户搜索。
 
 <figure>
-  <img className="rounded-xl border" src={socialFeedScreenshot.src} alt="Scopify 社交动态页面" />
-  <figcaption>动态流把朋友分享与音乐播放连在一起。</figcaption>
+  <img className="h-auto w-full rounded-xl border" src={socialMasonryScreenshot.src} alt="乐迷团动态瀑布流，顶部可按乐迷团筛选，卡片展示图片与音乐" />
+  <figcaption>乐迷团笔记以瀑布流展示，顶部可切换不同乐迷团。</figcaption>
 </figure>
 
 <figure>
-  <img className="rounded-xl border" src={fanClubsScreenshot.src} alt="登录后的乐迷团页面，显示已加入的乐迷团与图文笔记" />
-  <figcaption>切换「关注」与「乐迷团」，按已加入的乐迷团浏览笔记，右侧保留关注用户与热门话题。</figcaption>
+  <img className="h-auto w-full rounded-xl border" src={socialDetailScreenshot.src} alt="动态详情浮层，左侧展示图片，右侧展示正文、音乐卡片和评论" />
+  <figcaption>点击动态打开详情浮层，查看图片、音乐附件与评论，关闭后继续浏览。</figcaption>
 </figure>
 
 <figure>
-  <img className="rounded-xl border" src={socialMusicShareScreenshot.src} alt="乐迷团笔记中的歌曲卡片、播放与加入队列按钮，以及评论、转发和点赞入口" />
-  <figcaption>笔记中的歌曲可以直接播放或加入队列，下方提供评论、转发、点赞与分享入口。</figcaption>
-</figure>
-
-<figure>
-  <img className="rounded-xl border" src={socialComposerScreenshot.src} alt="动态编辑器附上当前播放歌曲的待发布状态" />
+  <img className="h-auto w-full rounded-xl border" src={socialComposerScreenshot.src} alt="动态编辑器附上当前播放歌曲的待发布状态" />
   <figcaption>动态编辑器支持添加音乐和附上正在播放的歌曲；图中是尚未发布的编辑状态。</figcaption>
 </figure>
 
@@ -41,7 +35,7 @@ import socialComposerScreenshot from "../../../../assets/features/social-compose
 私信位于好友图标下，独立显示未读会话，支持历史消息、文字与表情，以及歌曲、专辑、歌单分享卡片，并提供一键全部已读。
 
 <figure>
-  <img className="rounded-xl border" src={privateMessagesScreenshot.src} alt="登录后的私信会话，展示歌手消息、专辑卡片与消息输入框" />
+  <img className="h-auto w-full rounded-xl border" src={privateMessagesScreenshot.src} alt="登录后的私信会话，展示歌手消息、专辑卡片与消息输入框" />
   <figcaption>从右上角进入私信，查看历史消息与音乐卡片，通过底部输入框和表情入口回复。</figcaption>
 </figure>
 
@@ -50,6 +44,6 @@ import socialComposerScreenshot from "../../../../assets/features/social-compose
 铃铛汇总互动、报告与更新通知，按日期分组，支持未读筛选和显式已读。桌面端可通过通知设置配置免打扰与隐私预览，系统提醒点击后直接回到对应内容。
 
 <figure>
-  <img className="rounded-xl border" src={notificationsScreenshot.src} alt="Scopify 通知中心" />
+  <img className="h-auto w-full rounded-xl border" src={notificationsScreenshot.src} alt="Scopify 通知中心" />
   <figcaption>通知中心统一承载互动、报告与更新提醒。</figcaption>
 </figure>

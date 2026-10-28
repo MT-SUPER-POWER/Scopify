@@ -3,22 +3,24 @@ title: 内容发现
 description: 浏览推荐、歌单、歌手与播客声音。
 ---
 
-import commentScreenshot from "../../../../assets/features/comment.png";
-import discoveryScreenshot from "../../../../assets/features/discovery-home.png";
-import playlistScreenshot from "../../../../assets/features/Playlist.png";
-import latticeScreenshot from "../../../../assets/features/playlist-lattice.png";
-import personalFmScreenshot from "../../../../assets/features/personal-fm.png";
-import podcastsScreenshot from "../../../../assets/features/podcasts.png";
+import commentScreenshot from "../../../../assets/features/comment-current.png";
+import appLayoutScreenshot from "../../../../assets/features/app-layout-current.png";
+import playlistScreenshot from "../../../../assets/features/playlist-current.png";
+import latticeScreenshot from "../../../../assets/features/playlist-lattice-current.png";
+import personalFmScreenshot from "../../../../assets/features/personal-fm-current.png";
+import podcastsScreenshot from "../../../../assets/features/podcasts-current.png";
 
 [← 产品能力总览](/docs/features)
 
 ## 首页与推荐
 
+新版主界面将导航、内容和播放上下文分为三个区域：左侧浏览音乐库与歌单，中间探索推荐和内容，右侧「正在播放」面板展示当前歌曲、歌词和队列。顶栏整合首页、搜索与账户入口，底部播放栏在浏览各页面时始终可用；侧栏与右侧面板都可以收起。
+
 首页把每日推荐、个性化歌单、活动内容、播客声音和推荐歌手放在一条连续的浏览路径中。用户可以先试听或查看内容，再进入歌单、专辑和歌手页面继续探索。
 
 <figure>
-  <img className="rounded-xl border" src={discoveryScreenshot.src} alt="Scopify 首页的推荐内容、播客声音和播放栏" />
-  <figcaption>首页同时承担内容推荐、快速播放和继续浏览的入口。</figcaption>
+  <img className="h-auto w-full rounded-xl border" src={appLayoutScreenshot.src} alt="Scopify 新版主界面，左侧导航、中间首页推荐、右侧正在播放面板与底部播放栏" />
+  <figcaption>新版布局将浏览与播放上下文并排呈现，完整窗口包含导航、推荐内容、正在播放面板和播放栏。</figcaption>
 </figure>
 
 ## 歌单管理与 Lattice 视图
@@ -26,7 +28,7 @@ import podcastsScreenshot from "../../../../assets/features/podcasts.png";
 歌单与专辑的操作区可以把当前页面的歌曲切换为 Lattice 拼贴视图：一面 Folia 风格的海报墙，支持拖动浏览、封面展开、直接播放和定位当前歌曲，返回列表时保留搜索与滚动位置。
 
 <figure>
-  <img className="rounded-xl border" src={latticeScreenshot.src} alt="Scopify 歌单 Lattice 拼贴视图" />
+  <img className="h-auto w-full rounded-xl border" src={latticeScreenshot.src} alt="Scopify 歌单 Lattice 拼贴视图" />
   <figcaption>Lattice 把歌单变成可以拖动浏览的海报墙。</figcaption>
 </figure>
 
@@ -43,12 +45,12 @@ import podcastsScreenshot from "../../../../assets/features/podcasts.png";
 ## 歌单与评论
 
 <figure>
-  <img className="rounded-xl border" src={playlistScreenshot.src} alt="Scopify 歌单详情页面" />
+  <img className="h-auto w-full rounded-xl border" src={playlistScreenshot.src} alt="Scopify 歌单详情页面" />
   <figcaption>歌单详情集中展示资料、曲目和播放入口。</figcaption>
 </figure>
 
 <figure>
-  <img className="rounded-xl border" src={commentScreenshot.src} alt="Scopify 音乐评论页面" />
+  <img className="h-auto w-full rounded-xl border" src={commentScreenshot.src} alt="Scopify 音乐评论页面" />
   <figcaption>评论让歌曲和歌单的浏览过程延伸到社区内容。</figcaption>
 </figure>
 
@@ -59,7 +61,7 @@ import podcastsScreenshot from "../../../../assets/features/podcasts.png";
 场景与模式（默认、熟悉、探索、拼图，以及情绪、场景、曲风、语种）收纳在 PlayBar 的控制面板中，只在 FM 播放时出现。私人 FM 歌单里的歌曲可通过右键菜单选择「不喜欢 / 减少推荐」，反馈会进入既有的负反馈流程，不影响普通歌单。
 
 <figure>
-  <img className="rounded-xl border" src={personalFmScreenshot.src} alt="Scopify 私人 FM 歌单与模式控制面板" />
+  <img className="h-auto w-full rounded-xl border" src={personalFmScreenshot.src} alt="Scopify 私人 FM 歌单与模式控制面板" />
   <figcaption>私人 FM 把推荐流变成可浏览、可调整风格的歌单。</figcaption>
 </figure>
 
@@ -68,6 +70,6 @@ import podcastsScreenshot from "../../../../assets/features/podcasts.png";
 播客声音在首页中支持独立刷新，电台与播客节目表格支持按多个维度排序，单集页面提供独立的详情与播放入口。
 
 <figure>
-  <img className="rounded-xl border" src={podcastsScreenshot.src} alt="Scopify 播客与电台页面" />
+  <img className="h-auto w-full rounded-xl border" src={podcastsScreenshot.src} alt="Scopify 播客与电台页面" />
   <figcaption>播客资料库集中管理订阅的节目和单集。</figcaption>
 </figure>
