@@ -211,6 +211,7 @@ request.interceptors.response.use((response) => {
 });
 
 request.interceptors.response.use(undefined, (error: unknown) => {
+  if (axios.isCancel(error)) return Promise.reject(error);
   const apiError = toApiError(error);
   const config = apiError.config;
 
