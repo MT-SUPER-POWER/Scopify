@@ -4,7 +4,7 @@ import { useState } from "react";
 
 import { FoliaThemeEditor } from "@/components/lyrics/FoliaThemeEditor";
 import { FoliaThemeLibraryList } from "@/components/lyrics/FoliaThemeLibraryList";
-import { useMediaQuery } from "@/lib/hooks/useMediaQuery";
+import { useMediaQuery } from "@/hooks/ui/useMediaQuery";
 import type {
   FoliaThemeLibraryPanelHandle,
   FoliaThemeWorkbenchLayoutProps,

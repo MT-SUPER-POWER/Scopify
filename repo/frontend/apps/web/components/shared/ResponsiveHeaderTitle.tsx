@@ -6,7 +6,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@scopify/ui/shadcn/components/tooltip";
-import { useElementOverflow } from "@/lib/hooks/useElementOverflow";
+import { useElementOverflow } from "@/hooks/ui/useElementOverflow";
 import { cn } from "@/lib/utils";
 
 interface ResponsiveHeaderTitleProps {

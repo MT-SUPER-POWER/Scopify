@@ -1,7 +1,7 @@
 "use client";
 
 import { NOW_PLAYING_PANEL_MEDIA_QUERY } from "@/constants/layout";
-import { useMediaQuery } from "@/lib/hooks/useMediaQuery";
+import { useMediaQuery } from "@/hooks/ui/useMediaQuery";
 import { usePlayerStore } from "@/store";
 import { useUiStore } from "@/store/module/ui";
 

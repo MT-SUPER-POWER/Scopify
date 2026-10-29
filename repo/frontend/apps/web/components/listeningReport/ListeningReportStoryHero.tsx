@@ -4,7 +4,7 @@ import { IconPhoto, IconPlayerPlayFilled } from "@tabler/icons-react";
 import { useMemo, useState } from "react";
 
 import { useReportSongPlayback } from "@/hooks/listeningReport/useReportSongPlayback";
-import { useMediaQuery } from "@/lib/hooks/useMediaQuery";
+import { useMediaQuery } from "@/hooks/ui/useMediaQuery";
 import {
   buildListeningReportNarrative,
   extractHeroCovers,

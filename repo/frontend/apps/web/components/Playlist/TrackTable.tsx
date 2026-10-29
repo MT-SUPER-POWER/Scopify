@@ -39,7 +39,7 @@ import { useDailyRecommendationMutation } from "@/hooks/playlist/useDailyRecomme
 import { usePlaylistTrackMutation } from "@/hooks/playlist/usePlaylistTrackMutation";
 import { useTracklistColumnLayout } from "@/hooks/playlist/useTracklistColumnLayout";
 import { useTrackSelection } from "@/hooks/playlist/useTrackSelection";
-import { useMediaQuery } from "@/lib/hooks/useMediaQuery";
+import { useMediaQuery } from "@/hooks/ui/useMediaQuery";
 import { clearPageCache } from "@/lib/cache/pageCache";
 import { cn } from "@/lib/utils";
 import { reportActionFailure } from "@/lib/web/errorTracking";

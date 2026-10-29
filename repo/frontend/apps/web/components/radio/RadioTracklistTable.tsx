@@ -21,7 +21,7 @@ import {
 } from "@/hooks/player/usePlaybackProjection";
 import { useRadioTracklistColumnLayout } from "@/hooks/radio/useRadioTracklistColumnLayout";
 import { useRadioTracklistStickyHeader } from "@/hooks/radio/useRadioTracklistStickyHeader";
-import { useMediaQuery } from "@/lib/hooks/useMediaQuery";
+import { useMediaQuery } from "@/hooks/ui/useMediaQuery";
 import { cn } from "@/lib/utils";
 import { usePlayerStore } from "@/store";
 import { useI18n } from "@/store/module/i18n";

@@ -15,7 +15,7 @@ import {
 import { useLyricStageStore } from "@/store/module/lyrics";
 import { useI18n } from "@/store/module/i18n";
 import type { FoliaStyleShelfProps } from "@/types/lyrics/folia/visualSettings";
-import { useMediaQuery } from "@/lib/hooks/useMediaQuery";
+import { useMediaQuery } from "@/hooks/ui/useMediaQuery";
 
 export function FoliaStyleShelf({ assets, theme, onSectionChange }: FoliaStyleShelfProps) {
   const { t } = useI18n();
