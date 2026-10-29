@@ -11,31 +11,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { useI18n } from "@/store/module/i18n";
-
-// 定义表单数据结构
-export interface PlaylistFormData {
-  name: string;
-  desc?: string;
-  tags?: string[];
-  coverFile?: File | null; // 实际上传的文件对象
-}
-
-export interface UpdatePlaylistInitialData {
-  name?: string;
-  desc?: string;
-  description?: string | null;
-  tags?: string[];
-  coverUrl?: string;
-  coverImgUrl?: string;
-  cover?: string;
-}
-
-interface UpdatePlaylistDialogProps {
-  open: boolean;
-  initialData?: UpdatePlaylistInitialData;
-  onConfirm: (data: PlaylistFormData) => void;
-  onCancel: () => void;
-}
+import type { UpdatePlaylistDialogProps } from "@/types/playlist/components";
 
 export function UpdatePlaylistDialog({
   open,
