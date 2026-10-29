@@ -1,107 +1,20 @@
 "use client";
 
-import { Globe2, Music2, Search, X } from "lucide-react";
+import { Globe2, Music2, X } from "lucide-react";
 import { useState } from "react";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogTitle,
-} from "@scopify/ui/shadcn/components/dialog";
 import { useSocialPublish } from "@/hooks/social/useSocialActions";
-import { useSocialAccount, useSocialResourceSearch } from "@/hooks/social/useSocialQueries";
+import { useSocialAccount } from "@/hooks/social/useSocialQueries";
 import { useRequireLoginAction } from "@/lib/hooks/useRequireLoginAction";
 import { usePlayerStore } from "@/store/module/player";
 import { useUserStore } from "@/store/module/user";
 import { useI18n } from "@/store/module/i18n";
-import type { SocialComposerProps, SocialResourcePickerProps } from "@/types/social/components";
+import type { SocialComposerProps } from "@/types/social/components";
 import type { SocialResource } from "@/types/social/model";
-import { SocialAvatar, SocialState } from "./SocialPrimitives";
+import { SocialAvatar } from "./SocialPrimitives";
 import { SocialResourceCard } from "./SocialResourceCard";
+import { SocialResourcePicker } from "./SocialResourcePicker";
 import s from "./Social.module.css";
 
-export function SocialResourcePicker({ open, onClose, onSelect }: SocialResourcePickerProps) {
-  const { t } = useI18n();
-  const [input, setInput] = useState(""),
-    [query, setQuery] = useState(""),
-    [kind, setKind] = useState<"song" | "playlist">("song");
-  const result = useSocialResourceSearch(query, kind, open);
-  return (
-    <Dialog
-      open={open}
-      onOpenChange={(value) => {
-        if (!value) onClose();
-      }}
-    >
-      <DialogContent className={s.dialog + " sm:max-w-xl"}>
-        <DialogTitle>{t("social.chooseMusic")}</DialogTitle>
-        <DialogDescription className="sr-only">{t("social.searchMusic")}</DialogDescription>
-        <form
-          className={s.search}
-          onSubmit={(e) => {
-            e.preventDefault();
-            setQuery(input.trim());
-          }}
-        >
-          <Search />
-          <input
-            autoFocus
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            aria-label={t("social.searchMusic")}
-            placeholder={t("social.searchMusic")}
-          />
-          <button type="submit" className={s.textButton} disabled={!input.trim()}>
-            {t("social.search")}
-          </button>
-        </form>
-        <div className={s.tabs}>
-          {(["song", "playlist"] as const).map((item) => (
-            <button
-              type="button"
-              key={item}
-              className={s.tab}
-              data-active={kind === item}
-              onClick={() => setKind(item)}
-            >
-              {t(item === "song" ? "social.song" : "social.playlist")}
-            </button>
-          ))}
-        </div>
-        {query && (
-          <SocialState
-            loading={result.isPending}
-            error={result.isError}
-            onRetry={() => void result.refetch()}
-            empty={!result.data?.length ? t("social.emptySearch") : undefined}
-          >
-            <div>
-              {result.data?.map((item) => (
-                <button
-                  key={item.id}
-                  type="button"
-                  className={s.person + " w-full text-left"}
-                  onClick={() => {
-                    onSelect(item);
-                    onClose();
-                  }}
-                >
-                  <span className={s.cover}>
-                    {item.cover ? <img src={item.cover} alt="" loading="lazy" /> : <Music2 />}
-                  </span>
-                  <span className={s.personText}>
-                    <strong>{item.name}</strong>
-                    <p>{item.subtitle}</p>
-                  </span>
-                </button>
-              ))}
-            </div>
-          </SocialState>
-        )}
-      </DialogContent>
-    </Dialog>
-  );
-}
 export function SocialComposer({ forwarded, onDone }: SocialComposerProps) {
   const { t } = useI18n(),
     { uid } = useSocialAccount();
