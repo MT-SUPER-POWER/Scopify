@@ -4,6 +4,10 @@ import type {
 } from "@/types/playlist/tagsApi";
 import type {
   DailyRecommendationDislikeResponse,
+  DailyCategoryConfigsResponse,
+  DailyCategorySongsResponse,
+  DailyCategoryUpdateResponse,
+  DailyCategoryConfigUpdate,
   HistoricalDailyRecommendationDetailResponse,
   HistoricalDailyRecommendationsResponse,
   LikeListResponse,
@@ -249,5 +253,33 @@ export function getHistoricalDailyRecommendationDetail(date: string) {
   return request.get<HistoricalDailyRecommendationDetailResponse>(
     "/history/recommend/songs/detail",
     requestConfig({ params: { date }, requiresMusicSession: true }),
+  );
+}
+
+/** 获取当前账号的每日风格推荐歌曲。 */
+export function getDailyCategorySongs() {
+  return request.get<DailyCategorySongsResponse>(
+    "/recommend/category/songs",
+    requestConfig({ requiresMusicSession: true, expectedBusinessCodes: [200] }),
+  );
+}
+
+/** 获取每日风格推荐的分类与标签配置。 */
+export function getDailyCategoryConfigs() {
+  return request.get<DailyCategoryConfigsResponse>(
+    "/recommend/category/configs",
+    requestConfig({ requiresMusicSession: true, expectedBusinessCodes: [200] }),
+  );
+}
+
+/** 保存同一分类下的风格标签。 */
+export function setDailyCategoryConfig({ category, tags }: DailyCategoryConfigUpdate) {
+  return request.get<DailyCategoryUpdateResponse>(
+    "/recommend/category/set",
+    requestConfig({
+      params: { category, tags: tags.join(",") },
+      requiresMusicSession: true,
+      expectedBusinessCodes: [200],
+    }),
   );
 }

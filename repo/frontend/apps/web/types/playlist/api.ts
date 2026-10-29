@@ -267,6 +267,40 @@ export interface DailyRecommendationDislikeResponse {
   data?: RawSongDetail;
 }
 
+export interface DailyCategoryTag {
+  categoryId: number;
+  tagId: number;
+  tagName: string;
+}
+
+export interface DailyCategory {
+  categoryId: number;
+  categoryName: string;
+  tagVOList: DailyCategoryTag[];
+}
+
+export interface DailyCategoryConfigsResponse {
+  code: number;
+  data: { categorys: DailyCategory[] };
+  message?: string;
+}
+
+export interface DailyCategorySongsResponse {
+  code: number;
+  data: { dailySongs: RawSongDetail[]; tags: DailyCategory; videoUrl?: string | null };
+  message?: string;
+}
+
+export interface DailyCategoryUpdateResponse {
+  code: number;
+  message?: string;
+}
+
+export interface DailyCategoryConfigUpdate {
+  category: number;
+  tags: number[];
+}
+
 /** `/history/recommend/songs` 提供的历史日推日期与会员提示信息。 */
 export interface HistoricalDailyRecommendationData {
   dates?: string[];
