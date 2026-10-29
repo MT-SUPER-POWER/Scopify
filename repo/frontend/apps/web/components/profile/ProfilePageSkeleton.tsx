@@ -62,7 +62,7 @@ export function ProfileSkeletonContent() {
             <div className={s.profileShelf}>
               {Array.from({ length: 6 }, (_, index) => (
                 <div key={index} className={s.playlistTile}>
-                  <Skeleton className={`${bar} mb-3 aspect-square w-full rounded-[9px]`} />
+                  <Skeleton className={`${s.cover} ${bar}`} />
                   <Skeleton className={`${bar} h-4 w-3/4`} />
                   <Skeleton className={`${bar} mt-2 h-3 w-1/2`} />
                 </div>

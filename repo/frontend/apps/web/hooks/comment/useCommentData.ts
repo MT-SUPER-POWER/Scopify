@@ -320,18 +320,22 @@ export function useCommentData(resourceRef?: CommentResourceRef) {
   }, [cursor, fetchComments, hasMore, isLoading, offset, resource]);
 
   const patchThread = useCallback((parentId: number, patch: Partial<CommentThread>) => {
-    setThreads((previous) => ({
-      ...previous,
-      [parentId]: {
+    setThreads((previous) => {
+      const current = previous[parentId] ?? {
         comments: [],
         hasMore: false,
         isLoading: false,
         loaded: false,
         total: 0,
-        ...previous[parentId],
-        ...patch,
-      },
-    }));
+      };
+      return {
+        ...previous,
+        [parentId]: {
+          ...current,
+          ...patch,
+        },
+      };
+    });
   }, []);
 
   /** 取一层楼的回复：默认取首页，more 为 true 时接着往后取。已取过的首页不会重复请求。 */
