@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { Check, ListFilter, Loader2 } from "lucide-react";
 import { useEffect, useRef, type ReactNode } from "react";
 import { CommentComposer } from "@/components/Comment/CommentComposer";
@@ -33,7 +32,7 @@ const SORT_LABEL_KEY = {
  * YouTube 式评论区（MV 页与评论页共用）：「N 条评论」与排序方式、常驻输入框、
  * 评论条目内联回复与「N 条回复」楼中楼；滚动到底自动加载下一页。
  */
-export function CommentSection({ data, openPageHref }: CommentSectionProps) {
+export function CommentSection({ data }: CommentSectionProps) {
   const { t } = useI18n();
   const isLogin = useLoginStatus();
   const currentUserId = useUserStore((state) => state.user?.userId);
@@ -126,15 +125,6 @@ export function CommentSection({ data, openPageHref }: CommentSectionProps) {
             ))}
           </DropdownMenuContent>
         </DropdownMenu>
-        {openPageHref && (
-          <Link
-            href={openPageHref}
-            scroll={false}
-            className="ml-auto text-sm font-medium text-content-muted transition-colors hover:text-content"
-          >
-            {t("mv.comments.openPage")}
-          </Link>
-        )}
       </div>
 
       <div className="mt-6">

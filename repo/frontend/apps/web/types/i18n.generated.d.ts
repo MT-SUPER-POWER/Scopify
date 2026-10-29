@@ -533,12 +533,6 @@ export interface TranslateFn {
    */
   (key: "mv.comments.count", params?: TranslationParams): string;
   /**
-   * zh-CN: 在评论页查看
-   * zh-TW: 在評論頁查看
-   * en-US: Open comments page
-   */
-  (key: "mv.comments.openPage", params?: TranslationParams): string;
-  /**
    * zh-CN: 排序方式
    * zh-TW: 排序方式
    * en-US: Sort by
