@@ -43,49 +43,47 @@ export function CommentHeaderSkeleton({ tagLabel }: CommentHeaderSkeletonProps) 
   );
 }
 
-/** 评论列表首次加载骨架：标签栏 / 排序按钮与评论行沿用 CommentItem 的类。 */
+/** 「N 条评论」标题的占位，h2 的字号和真实标题一致。 */
+export function CommentCountSkeleton() {
+  return (
+    <h2 aria-busy="true" className="text-xl font-bold text-content">
+      <Bar className="w-28" />
+    </h2>
+  );
+}
+
+/** 评论列表首次加载骨架：每行沿用 MvCommentItem 的结构与字号，行高与真实评论一致。 */
 export function CommentListSkeleton() {
   return (
-    <div aria-busy="true" className="w-full">
-      <div className="mb-6 flex items-center justify-between border-b border-border pb-3">
-        <Skeleton className="h-9 w-56 rounded-md bg-skeleton" />
-        <Skeleton className="h-[30px] w-24 rounded-lg bg-skeleton" />
-      </div>
-      <div className="space-y-6">
-        {ROWS.map((lines, row) => (
-          <div key={row} className="group flex gap-4">
-            <Skeleton className="mt-1 size-10 shrink-0 rounded-full bg-skeleton" />
-            <div className="flex-1 border-b border-content/5 pb-6 group-last:border-0">
-              <div className="mb-1 flex items-baseline gap-2">
-                {/* 真实名字是 button 包 span，行高由 button 的 24px 撑起，这里保持同样的嵌套 */}
-                <span>
-                  <span className="text-sm font-bold">
-                    <Bar className="w-24" />
-                  </span>
+    <div aria-busy="true" className="mt-8 flex flex-col gap-6">
+      {ROWS.map((lines, row) => (
+        <div key={row} className="flex gap-4">
+          <Skeleton className="size-10 shrink-0 rounded-full bg-skeleton" />
+          <div className="min-w-0 flex-1">
+            <div className="flex items-baseline gap-1.5 text-xs">
+              <span className="text-[13px] font-medium">
+                <Bar className="w-24" />
+              </span>
+              <span>
+                <Bar className="w-14" />
+              </span>
+            </div>
+            <div className="mt-1 text-sm leading-5">
+              {LINE_WIDTHS.slice(0, lines).map((width, index) => (
+                <span key={index}>
+                  {index > 0 && <br />}
+                  <Bar className={index === lines - 1 && lines > 1 ? "w-2/5" : width} />
                 </span>
-              </div>
-              <div className="text-sm leading-relaxed">
-                {LINE_WIDTHS.slice(0, lines).map((width, index) => (
-                  <span key={index}>
-                    {index > 0 && <br />}
-                    <Bar className={index === lines - 1 && lines > 1 ? "w-2/5" : width} />
-                  </span>
-                ))}
-              </div>
-              <div className="mt-3 flex items-center justify-between">
-                <span className="text-xs">
-                  <Bar className="w-20" />
-                </span>
-                <div className="flex items-center gap-5">
-                  {[0, 1, 2].map((icon) => (
-                    <Skeleton key={icon} className="size-4 rounded-full bg-skeleton" />
-                  ))}
-                </div>
-              </div>
+              ))}
+            </div>
+            <div className="mt-1 -ml-2 flex h-8 items-center">
+              <Skeleton className="mx-2 size-4 rounded-full bg-skeleton" />
+              <Skeleton className="ml-1 h-4 w-10 rounded-md bg-skeleton" />
             </div>
           </div>
-        ))}
-      </div>
+          <div className="size-9 shrink-0" />
+        </div>
+      ))}
     </div>
   );
 }
