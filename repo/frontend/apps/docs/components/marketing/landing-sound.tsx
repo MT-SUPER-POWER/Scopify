@@ -6,6 +6,7 @@ import { type CSSProperties, useRef } from "react";
 import { LandingEqualizer } from "@/components/marketing/landing-equalizer";
 import { LandingQualityLadder } from "@/components/marketing/landing-quality-ladder";
 import { LandingReveal } from "@/components/marketing/landing-reveal";
+import { LandingSoundPortal } from "@/components/marketing/landing-sound-portal";
 import {
   LANDING_EQ_BANDS,
   LANDING_QUALITY_TIERS,
@@ -14,7 +15,7 @@ import {
 import { SOUND_STAGE_SECTION_VH, useLandingSoundStage } from "@/hooks/use-landing-sound-stage";
 
 /**
- * 副歌：音质阶梯 + 可以上手推的十段均衡器。屏幕够大时整屏钉住，
+ * 副歌：音质阶梯 + 可以上手推的十段均衡器。屏幕够大时整屏钉住，先穿过一枚胶囊入口，
  * 往下滚把阶梯一路推到「超清母带」，再后退淡出，让下一章从底部升上来。
  */
 export function LandingSound() {
@@ -31,6 +32,7 @@ export function LandingSound() {
       style={{ "--sound-section-h": `${SOUND_STAGE_SECTION_VH}vh` } as CSSProperties}
     >
       <div className="landing-pin:sticky landing-pin:top-0 landing-pin:h-svh landing-pin:overflow-hidden landing-pin:pt-16 landing-pin:pb-20 flex min-h-svh items-center">
+        <LandingSoundPortal portal={stage.portal} />
         <motion.div
           className="landing-pin:py-0 mx-auto grid w-full max-w-360 items-center gap-14 px-5 py-32 sm:px-8 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] lg:gap-20 lg:px-12"
           style={{
