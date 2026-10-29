@@ -153,3 +153,9 @@ export interface LandingCoverCrop {
   x: number;
   y: number;
 }
+
+/** 尾声片尾字幕里的一行：职务与署名。 */
+export interface LandingCredit {
+  name: string;
+  role: string;
+}

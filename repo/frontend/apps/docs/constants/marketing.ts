@@ -23,6 +23,7 @@ import settingsGeneralScreenshot from "@/assets/features/settings-general.png";
 import settingsShortcutsScreenshot from "@/assets/features/settings-shortcuts.png";
 import visualThemeEditorScreenshot from "@/assets/features/visualThemEditor.png";
 import type {
+  LandingCredit,
   LandingChapter,
   LandingCoverCrop,
   LandingDayMoment,
@@ -305,3 +306,19 @@ export const LANDING_FILM_SCREENSHOTS: readonly LandingScreenshot[] = [
   { alt: "Scopify 通过 MCP 接入 AI 助手", src: mcpScreenshot },
   { alt: "Scopify 快捷搜索", src: searchModalScreenshot },
 ];
+
+/** 尾声开头的片尾字幕：像电影散场一样把这首「歌」的演职员表滚过去，最后道一声谢。 */
+export const LANDING_CREDITS: readonly LandingCredit[] = [
+  { role: "主演", name: "你，和你听过的每一首歌" },
+  { role: "歌词动画", name: `Folia · ${LANDING_VISUALIZER_MODES.length} 种` },
+  { role: "音源", name: "网易云音乐" },
+  { role: "音质", name: `${LANDING_QUALITY_TIERS.length} 档，一路到超清母带` },
+  { role: "均衡", name: `${LANDING_EQ_BANDS.length} 段均衡器` },
+  { role: "桌面端", name: "Electron" },
+  { role: "界面", name: "Next.js · React" },
+  { role: "截图", name: "全部截自正在运行的客户端" },
+  { role: "开源协议", name: "AGPL-3.0" },
+];
+
+/** 片尾字幕滚完后的最后一行。 */
+export const LANDING_CREDITS_THANKS = "感谢收听";
