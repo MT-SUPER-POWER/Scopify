@@ -4,7 +4,6 @@ import audioEqualizerScreenshot from "@/assets/features/audio-equalizer.png";
 import audioQualityScreenshot from "@/assets/features/audio-quality.png";
 import commentScreenshot from "@/assets/features/comment.png";
 import desktopMusicScreenshot from "@/assets/features/desktopMusic.png";
-import desktopControllerScreenshot from "@/assets/features/desktop-controller.png";
 import discoveryScreenshot from "@/assets/features/discovery-home.png";
 import dynamicIslandScreenshot from "@/assets/features/dynamic-island.png";
 import libraryScreenshot from "@/assets/features/library-liked.png";
@@ -176,16 +175,6 @@ export const LANDING_DAY_MOMENTS: readonly LandingDayMoment[] = [
     screenshot: { alt: "Scopify 灵动岛与任务栏歌词设置", src: dynamicIslandScreenshot },
   },
   {
-    scene: "留白",
-    feature: "桌面音乐控制器",
-    sentence: "收起主窗口，把封面、进度和正在唱的一句留在独立控制器里，也能搭配桌面音乐壁纸使用。",
-    screenshot: {
-      alt: "Scopify 独立桌面音乐控制器与同步歌词",
-      src: desktopControllerScreenshot,
-      fit: "contain",
-    },
-  },
-  {
     scene: "沉浸",
     feature: "Folia 全屏歌词",
     sentence: "夜晚是 Folia 的主场：全屏、关灯，让每一句歌词换一种样子出场。",
@@ -303,7 +292,6 @@ export const LANDING_FILM_SCREENSHOTS: readonly LandingScreenshot[] = [
   { alt: "Scopify 桌面歌词与音乐控制", src: desktopMusicScreenshot },
   { alt: "Scopify 私人 FM", src: personalFmScreenshot },
   { alt: "Scopify 灵动岛与任务栏歌词设置", src: dynamicIslandScreenshot },
-  { alt: "Scopify 独立桌面音乐控制器", src: desktopControllerScreenshot, fit: "contain" },
   { alt: "Scopify 喜欢的音乐", src: libraryScreenshot },
   { alt: "Scopify 歌词样式编辑器", src: lyricStyleEditorScreenshot },
   { alt: "Scopify 十段均衡器", src: audioEqualizerScreenshot },
