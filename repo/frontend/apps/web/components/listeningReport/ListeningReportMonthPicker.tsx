@@ -4,15 +4,10 @@ import { IconChevronLeft, IconChevronRight } from "@tabler/icons-react";
 import { useMemo } from "react";
 
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import type { MonthOption } from "@/lib/listeningReport/dateHelpers";
 import { getAvailableMonths } from "@/lib/listeningReport/dateHelpers";
 import { cn } from "@/lib/utils";
 import { useI18n } from "@/store/module/i18n";
-
-export interface ListeningReportMonthPickerProps {
-  onSelectMonth: (month: MonthOption) => void;
-  selectedMonthKey: string;
-}
+import type { ListeningReportMonthPickerProps } from "@/types/listeningReport/components";
 
 export function ListeningReportMonthPicker({
   onSelectMonth,

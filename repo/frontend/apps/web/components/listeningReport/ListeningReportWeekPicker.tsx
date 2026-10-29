@@ -4,13 +4,9 @@ import { IconChevronLeft, IconChevronRight } from "@tabler/icons-react";
 import { useMemo } from "react";
 
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { getAvailableWeeks, type WeekOption } from "@/lib/listeningReport/dateHelpers";
+import { getAvailableWeeks } from "@/lib/listeningReport/dateHelpers";
 import { cn } from "@/lib/utils";
-
-export interface ListeningReportWeekPickerProps {
-  onSelectWeek: (week: WeekOption) => void;
-  selectedWeekKey: string;
-}
+import type { ListeningReportWeekPickerProps } from "@/types/listeningReport/components";
 
 export function ListeningReportWeekPicker({
   onSelectWeek,

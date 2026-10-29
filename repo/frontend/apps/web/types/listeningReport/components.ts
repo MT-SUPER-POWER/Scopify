@@ -1,4 +1,4 @@
-import type { MonthOption } from "@/lib/listeningReport/dateHelpers";
+import type { MonthOption, WeekOption } from "@/lib/listeningReport/dateHelpers";
 import type { SongPlayRankItem, TodayListeningSongDTO } from "@/types/listeningReport/api";
 import type { ListeningReportSummary } from "@/types/listeningReport/model";
 import type { ListeningReportFooterSummary } from "@/types/listeningReport/narrative";
@@ -12,8 +12,13 @@ export interface ListeningReportGrandFinaleBannerProps {
 }
 
 export interface ListeningReportMonthPickerProps {
-  onSelectMonth: (option: MonthOption) => void;
+  onSelectMonth: (month: MonthOption) => void;
   selectedMonthKey: string;
+}
+
+export interface ListeningReportWeekPickerProps {
+  onSelectWeek: (week: WeekOption) => void;
+  selectedWeekKey: string;
 }
 
 export interface ListeningReportPosterModalProps {
@@ -48,12 +53,7 @@ export interface ListeningReportTimeOfDayRadarProps {
 }
 
 export interface ListeningReportHeroPosterMuralProps {
-  posters: Array<{
-    artist: string;
-    id: string | number;
-    imageUrl: string;
-    title: string;
-  }>;
+  covers: string[];
 }
 
 export interface ListeningReportHonorProps {

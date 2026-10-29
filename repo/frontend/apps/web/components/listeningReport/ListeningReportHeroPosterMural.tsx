@@ -2,9 +2,7 @@
 
 import { useMemo } from "react";
 
-export interface ListeningReportHeroPosterMuralProps {
-  covers: string[];
-}
+import type { ListeningReportHeroPosterMuralProps } from "@/types/listeningReport/components";
 
 export function ListeningReportHeroPosterMural({ covers }: ListeningReportHeroPosterMuralProps) {
   // 分布成 3 ~ 4 列海报柱，并双倍复制构建无缝垂直跑马灯列阵
