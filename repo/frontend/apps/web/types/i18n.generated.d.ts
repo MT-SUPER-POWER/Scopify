@@ -2339,12 +2339,6 @@ export interface TranslateFn {
    */
   (key: "common.action.reload", params?: TranslationParams): string;
   /**
-   * zh-CN: 刷新
-   * zh-TW: 重新整理
-   * en-US: Refresh
-   */
-  (key: "common.action.refresh", params?: TranslationParams): string;
-  /**
    * zh-CN: 登录
    * zh-TW: 登入
    * en-US: Login
@@ -2362,12 +2356,6 @@ export interface TranslateFn {
    * en-US: Close
    */
   (key: "common.action.close", params?: TranslationParams): string;
-  /**
-   * zh-CN: 搜索
-   * zh-TW: 搜尋
-   * en-US: Search
-   */
-  (key: "common.action.search", params?: TranslationParams): string;
   /**
    * zh-CN: 清空
    * zh-TW: 清空
@@ -2399,47 +2387,11 @@ export interface TranslateFn {
    */
   (key: "common.action.showLess", params?: TranslationParams): string;
   /**
-   * zh-CN: 选择
-   * zh-TW: 選擇
-   * en-US: Select
-   */
-  (key: "common.action.select", params?: TranslationParams): string;
-  /**
-   * zh-CN: 关注
-   * zh-TW: 關注
-   * en-US: Follow
-   */
-  (key: "common.action.follow", params?: TranslationParams): string;
-  /**
-   * zh-CN: 已关注
-   * zh-TW: 已關注
-   * en-US: Following
-   */
-  (key: "common.action.following", params?: TranslationParams): string;
-  /**
    * zh-CN: 回复
    * zh-TW: 回覆
    * en-US: Reply
    */
   (key: "common.action.reply", params?: TranslationParams): string;
-  /**
-   * zh-CN: 发布
-   * zh-TW: 發佈
-   * en-US: Publish
-   */
-  (key: "common.action.publish", params?: TranslationParams): string;
-  /**
-   * zh-CN: 举报
-   * zh-TW: 檢舉
-   * en-US: Report
-   */
-  (key: "common.action.report", params?: TranslationParams): string;
-  /**
-   * zh-CN: 删除
-   * zh-TW: 刪除
-   * en-US: Delete
-   */
-  (key: "common.action.delete", params?: TranslationParams): string;
   /**
    * zh-CN: 播放
    * zh-TW: 播放
@@ -2458,72 +2410,6 @@ export interface TranslateFn {
    * en-US: Unlike
    */
   (key: "common.action.unlike", params?: TranslationParams): string;
-  /**
-   * zh-CN: 最小化
-   * zh-TW: 最小化
-   * en-US: Minimize
-   */
-  (key: "common.action.minimize", params?: TranslationParams): string;
-  /**
-   * zh-CN: 退出
-   * zh-TW: 退出
-   * en-US: Exit
-   */
-  (key: "common.action.exit", params?: TranslationParams): string;
-  /**
-   * zh-CN: 列表
-   * zh-TW: 列表
-   * en-US: List
-   */
-  (key: "common.label.list", params?: TranslationParams): string;
-  /**
-   * zh-CN: 单曲
-   * zh-TW: 單曲
-   * en-US: Track
-   */
-  (key: "common.label.track", params?: TranslationParams): string;
-  /**
-   * zh-CN: 专辑
-   * zh-TW: 專輯
-   * en-US: Album
-   */
-  (key: "common.label.album", params?: TranslationParams): string;
-  /**
-   * zh-CN: 歌手
-   * zh-TW: 歌手
-   * en-US: Artists
-   */
-  (key: "common.label.artists", params?: TranslationParams): string;
-  /**
-   * zh-CN: 歌手
-   * zh-TW: 歌手
-   * en-US: Artist
-   */
-  (key: "common.label.artist", params?: TranslationParams): string;
-  /**
-   * zh-CN: 歌单
-   * zh-TW: 歌單
-   * en-US: Playlists
-   */
-  (key: "common.label.playlists", params?: TranslationParams): string;
-  /**
-   * zh-CN: 歌曲
-   * zh-TW: 歌曲
-   * en-US: Songs
-   */
-  (key: "common.label.songs", params?: TranslationParams): string;
-  /**
-   * zh-CN: 队列
-   * zh-TW: 佇列
-   * en-US: Queue
-   */
-  (key: "common.label.queue", params?: TranslationParams): string;
-  /**
-   * zh-CN: 封面
-   * zh-TW: 封面
-   * en-US: Cover
-   */
-  (key: "common.label.cover", params?: TranslationParams): string;
   /**
    * zh-CN: 加载中...
    * zh-TW: 載入中...
@@ -2578,12 +2464,6 @@ export interface TranslateFn {
    * en-US: You've reached the end of the queue
    */
   (key: "common.message.endOfQueue", params?: TranslationParams): string;
-  /**
-   * zh-CN: 获取歌曲播放地址或歌词失败
-   * zh-TW: 取得歌曲播放位址或歌詞失敗
-   * en-US: Failed to load the song stream or lyrics
-   */
-  (key: "common.message.playbackLoadFailed", params?: TranslationParams): string;
   /**
    * zh-CN: 当前歌曲播放失败，已为你切到下一首
    * zh-TW: 目前歌曲播放失敗，已為你切到下一首
@@ -2693,12 +2573,6 @@ export interface TranslateFn {
    */
   (key: "settings.section.frontend", params?: TranslationParams): string;
   /**
-   * zh-CN: 缓存
-   * zh-TW: 快取
-   * en-US: Cache
-   */
-  (key: "settings.section.cache", params?: TranslationParams): string;
-  /**
    * zh-CN: 通用设置
    * zh-TW: 通用設定
    * en-US: General Settings
@@ -2747,30 +2621,6 @@ export interface TranslateFn {
    */
   (key: "settings.mcp.port.sublabel", params?: TranslationParams): string;
   /**
-   * zh-CN: 允许读取播放状态
-   * zh-TW: 允許讀取播放狀態
-   * en-US: Allow playback reads
-   */
-  (key: "settings.mcp.read.label", params?: TranslationParams): string;
-  /**
-   * zh-CN: 允许读取当前歌曲、进度和播放状态，不会提供播放地址或登录信息。
-   * zh-TW: 允許讀取目前歌曲、進度和播放狀態，不會提供播放位址或登入資訊。
-   * en-US: Allows the current track, progress, and playback state without exposing URLs or sign-in data.
-   */
-  (key: "settings.mcp.read.sublabel", params?: TranslationParams): string;
-  /**
-   * zh-CN: 允许控制播放
-   * zh-TW: 允許控制播放
-   * en-US: Allow playback control
-   */
-  (key: "settings.mcp.control.label", params?: TranslationParams): string;
-  /**
-   * zh-CN: 允许播放、暂停、切歌、跳转和调节音量。
-   * zh-TW: 允許播放、暫停、切歌、跳轉和調整音量。
-   * en-US: Allows play, pause, track changes, seeking, and volume changes.
-   */
-  (key: "settings.mcp.control.sublabel", params?: TranslationParams): string;
-  /**
    * zh-CN: 受控能力与工具权限
    * zh-TW: 受控能力與工具權限
    * en-US: Controlled Capabilities & Tools
@@ -2818,18 +2668,6 @@ export interface TranslateFn {
    * en-US: Audio Playback Tools (playback)
    */
   (key: "settings.mcp.modal.group.playback", params?: TranslationParams): string;
-  /**
-   * zh-CN: 配置 MCP 音频播放工具所允许的状态读取与控制操作。
-   * zh-TW: 設定 MCP 音訊播放工具所允許的狀態讀取與控制操作。
-   * en-US: Configure permitted read and control operations for the MCP playback tool.
-   */
-  (key: "settings.mcp.modal.group.playback.desc", params?: TranslationParams): string;
-  /**
-   * zh-CN: 完成
-   * zh-TW: 完成
-   * en-US: Done
-   */
-  (key: "settings.mcp.modal.close", params?: TranslationParams): string;
   /**
    * zh-CN: 读取播放状态
    * zh-TW: 讀取播放狀態
@@ -2938,60 +2776,6 @@ export interface TranslateFn {
    * en-US: Tool set_volume. Allows AI to set player volume from 0 to 100.
    */
   (key: "settings.mcp.capability.controlVolume.sublabel", params?: TranslationParams): string;
-  /**
-   * zh-CN: 服务状态
-   * zh-TW: 服務狀態
-   * en-US: Service status
-   */
-  (key: "settings.mcp.status.label", params?: TranslationParams): string;
-  /**
-   * zh-CN: 服务状态来自桌面端主进程。保存配置后会自动应用新的策略。
-   * zh-TW: 服務狀態來自桌面版主程序。儲存設定後會自動套用新的策略。
-   * en-US: Status comes from the Desktop Main process. Saving applies the updated policy automatically.
-   */
-  (key: "settings.mcp.status.sublabel", params?: TranslationParams): string;
-  /**
-   * zh-CN: 当前环境不可用
-   * zh-TW: 目前環境不可用
-   * en-US: Unavailable in this environment
-   */
-  (key: "settings.mcp.status.unavailable", params?: TranslationParams): string;
-  /**
-   * zh-CN: 已停止
-   * zh-TW: 已停止
-   * en-US: Stopped
-   */
-  (key: "settings.mcp.status.stopped", params?: TranslationParams): string;
-  /**
-   * zh-CN: 启动中
-   * zh-TW: 啟動中
-   * en-US: Starting
-   */
-  (key: "settings.mcp.status.starting", params?: TranslationParams): string;
-  /**
-   * zh-CN: 正在监听
-   * zh-TW: 正在監聽
-   * en-US: Listening
-   */
-  (key: "settings.mcp.status.listening", params?: TranslationParams): string;
-  /**
-   * zh-CN: 启动失败
-   * zh-TW: 啟動失敗
-   * en-US: Failed to start
-   */
-  (key: "settings.mcp.status.error", params?: TranslationParams): string;
-  /**
-   * zh-CN: 本地连接地址
-   * zh-TW: 本機連線位址
-   * en-US: Local endpoint
-   */
-  (key: "settings.mcp.endpoint.label", params?: TranslationParams): string;
-  /**
-   * zh-CN: 仅限本机 MCP 客户端使用。
-   * zh-TW: 僅限本機 MCP 用戶端使用。
-   * en-US: For local MCP clients only.
-   */
-  (key: "settings.mcp.endpoint.sublabel", params?: TranslationParams): string;
   /**
    * zh-CN: 测试 MCP 连接
    * zh-TW: 測試 MCP 連線
@@ -3509,30 +3293,6 @@ export interface TranslateFn {
    */
   (key: "settings.timeout.sublabel", params?: TranslationParams): string;
   /**
-   * zh-CN: 最大重试次数
-   * zh-TW: 最大重試次數
-   * en-US: Max Retries
-   */
-  (key: "settings.maxRetries.label", params?: TranslationParams): string;
-  /**
-   * zh-CN: 请求失败后的自动重试次数。
-   * zh-TW: 請求失敗後的自動重試次數。
-   * en-US: Number of times to retry a failed request.
-   */
-  (key: "settings.maxRetries.sublabel", params?: TranslationParams): string;
-  /**
-   * zh-CN: 重试间隔 (ms)
-   * zh-TW: 重試間隔 (ms)
-   * en-US: Retry Delay (ms)
-   */
-  (key: "settings.retryDelay.label", params?: TranslationParams): string;
-  /**
-   * zh-CN: 两次重试之间的等待时间。
-   * zh-TW: 兩次重試之間的等待時間。
-   * en-US: Delay between retry attempts.
-   */
-  (key: "settings.retryDelay.sublabel", params?: TranslationParams): string;
-  /**
    * zh-CN: 随机中国 IP
    * zh-TW: 隨機中國 IP
    * en-US: Use Random CN IPs
@@ -3869,12 +3629,6 @@ export interface TranslateFn {
    */
   (key: "settings.backendPing.invalidResponse", params?: TranslationParams): string;
   /**
-   * zh-CN: 正在加载设置...
-   * zh-TW: 正在載入設定...
-   * en-US: Loading settings...
-   */
-  (key: "settings.loading", params?: TranslationParams): string;
-  /**
    * zh-CN: 保存更改
    * zh-TW: 儲存變更
    * en-US: Save Changes
@@ -3946,30 +3700,6 @@ export interface TranslateFn {
    * en-US: Update Status
    */
   (key: "settings.updater.status", params?: TranslationParams): string;
-  /**
-   * zh-CN: 检查 GitHub Release 中的最新客户端版本。
-   * zh-TW: 檢查 GitHub Release 中的最新客戶端版本。
-   * en-US: Check GitHub Releases for the latest client version.
-   */
-  (key: "settings.updater.statusHint", params?: TranslationParams): string;
-  /**
-   * zh-CN: 版本 {{version}}
-   * zh-TW: 版本 {{version}}
-   * en-US: Version {{version}}
-   */
-  (key: "settings.updater.version", params?: TranslationParams): string;
-  /**
-   * zh-CN: 更新消息
-   * zh-TW: 更新訊息
-   * en-US: Update Message
-   */
-  (key: "settings.updater.message", params?: TranslationParams): string;
-  /**
-   * zh-CN: 更新操作
-   * zh-TW: 更新操作
-   * en-US: Update Action
-   */
-  (key: "settings.updater.action", params?: TranslationParams): string;
   /**
    * zh-CN: 检查更新
    * zh-TW: 檢查更新
@@ -4043,12 +3773,6 @@ export interface TranslateFn {
    */
   (key: "settings.updater.currentVersion", params?: TranslationParams): string;
   /**
-   * zh-CN: 发现新版本 {{version}}
-   * zh-TW: 發現新版本 {{version}}
-   * en-US: New version {{version}} available
-   */
-  (key: "settings.updater.availableVersion", params?: TranslationParams): string;
-  /**
    * zh-CN: 最近检查
    * zh-TW: 最近檢查
    * en-US: Last checked
@@ -4090,12 +3814,6 @@ export interface TranslateFn {
    * en-US: Downloading
    */
   (key: "settings.updater.state.downloading", params?: TranslationParams): string;
-  /**
-   * zh-CN: 下载中 {{percent}}%
-   * zh-TW: 下載中 {{percent}}%
-   * en-US: Downloading {{percent}}%
-   */
-  (key: "settings.updater.state.downloadingProgress", params?: TranslationParams): string;
   /**
    * zh-CN: 等待安装
    * zh-TW: 等待安裝
@@ -4156,18 +3874,6 @@ export interface TranslateFn {
    * en-US: Clear cache
    */
   (key: "settings.cache.manage", params?: TranslationParams): string;
-  /**
-   * zh-CN: 高级设置
-   * zh-TW: 進階設定
-   * en-US: Advanced settings
-   */
-  (key: "settings.cache.advanced", params?: TranslationParams): string;
-  /**
-   * zh-CN: 缓存设置
-   * zh-TW: 快取設定
-   * en-US: Cache settings
-   */
-  (key: "settings.cache.advancedSection", params?: TranslationParams): string;
   /**
    * zh-CN: 播放数据缓存包括临时播放地址和歌词，不包含音频文件。
    * zh-TW: 播放資料快取包含臨時播放位址與歌詞，不包含音訊檔案。
@@ -4300,18 +4006,6 @@ export interface TranslateFn {
    * en-US: Clear Cache
    */
   (key: "settings.cache.cleanup.title", params?: TranslationParams): string;
-  /**
-   * zh-CN: 选择要删除的数据类别；清理后无法恢复。
-   * zh-TW: 選擇要刪除的資料類別；清理後無法復原。
-   * en-US: Choose data categories to delete. Cleared data cannot be recovered.
-   */
-  (key: "settings.cache.cleanup.subtitle", params?: TranslationParams): string;
-  /**
-   * zh-CN: 返回存储设置
-   * zh-TW: 返回儲存空間設定
-   * en-US: Back to storage settings
-   */
-  (key: "settings.cache.cleanup.back", params?: TranslationParams): string;
   /**
    * zh-CN: 刷新
    * zh-TW: 重新整理
@@ -4508,24 +4202,6 @@ export interface TranslateFn {
     params?: TranslationParams,
   ): string;
   /**
-   * zh-CN: 桌面歌词测试
-   * zh-TW: 桌面歌詞測試
-   * en-US: Desktop Lyrics Test
-   */
-  (key: "settings.desktopLyrics.test.label", params?: TranslationParams): string;
-  /**
-   * zh-CN: 测试独立桌面歌词悬浮窗口的开/关显示与悬浮功能。
-   * zh-TW: 測試獨立桌面歌詞懸浮視窗的開/關顯示與懸浮功能。
-   * en-US: Test opening or closing the standalone floating desktop lyrics window.
-   */
-  (key: "settings.desktopLyrics.test.sublabel", params?: TranslationParams): string;
-  /**
-   * zh-CN: 开/关桌面歌词
-   * zh-TW: 開/關桌面歌詞
-   * en-US: Toggle Desktop Lyrics
-   */
-  (key: "settings.desktopLyrics.test.button", params?: TranslationParams): string;
-  /**
    * zh-CN: 保持窗口置顶
    * zh-TW: 保持視窗置頂
    * en-US: Always on Top
@@ -4550,18 +4226,6 @@ export interface TranslateFn {
    */
   (key: "settings.desktopLyrics.locked.sublabel", params?: TranslationParams): string;
   /**
-   * zh-CN: 隐藏任务栏图标
-   * zh-TW: 隱藏工作列圖示
-   * en-US: Skip Taskbar
-   */
-  (key: "settings.desktopLyrics.skipTaskbar.label", params?: TranslationParams): string;
-  /**
-   * zh-CN: 不在操作系统任务栏中单独显示桌面歌词窗口图标。
-   * zh-TW: 不在作業系統工作列中單獨顯示桌面歌詞視窗圖示。
-   * en-US: Do not show a separate icon for the lyrics window on the OS taskbar.
-   */
-  (key: "settings.desktopLyrics.skipTaskbar.sublabel", params?: TranslationParams): string;
-  /**
    * zh-CN: 外观与样式
    * zh-TW: 外觀與樣式
    * en-US: Appearance
@@ -4573,12 +4237,6 @@ export interface TranslateFn {
    * en-US: App background
    */
   (key: "appearance.background", params?: TranslationParams): string;
-  /**
-   * zh-CN: 背景主题
-   * zh-TW: 背景主題
-   * en-US: Background theme
-   */
-  (key: "appearance.presets", params?: TranslationParams): string;
   /**
    * zh-CN: 雾银
    * zh-TW: 霧銀
@@ -4658,30 +4316,6 @@ export interface TranslateFn {
    */
   (key: "appearance.rotation.daily", params?: TranslationParams): string;
   /**
-   * zh-CN: 恢复默认
-   * zh-TW: 恢復預設
-   * en-US: Reset
-   */
-  (key: "appearance.reset", params?: TranslationParams): string;
-  /**
-   * zh-CN: 重置背景样式
-   * zh-TW: 重設背景樣式
-   * en-US: Reset background style
-   */
-  (key: "appearance.reset.background", params?: TranslationParams): string;
-  /**
-   * zh-CN: 重置歌词样式
-   * zh-TW: 重設歌詞樣式
-   * en-US: Reset lyrics style
-   */
-  (key: "appearance.reset.lyrics", params?: TranslationParams): string;
-  /**
-   * zh-CN: 实时生效，自动保存
-   * zh-TW: 即時生效，自動儲存
-   * en-US: Applied live and saved automatically
-   */
-  (key: "appearance.saved", params?: TranslationParams): string;
-  /**
    * zh-CN: 实时预览
    * zh-TW: 即時預覽
    * en-US: Live preview
@@ -4700,12 +4334,6 @@ export interface TranslateFn {
    */
   (key: "appearance.preview.current", params?: TranslationParams): string;
   /**
-   * zh-CN: 字幕歌词
-   * zh-TW: 字幕歌詞
-   * en-US: Subtitle lyrics
-   */
-  (key: "appearance.lyrics", params?: TranslationParams): string;
-  /**
    * zh-CN: 歌词预览
    * zh-TW: 歌詞預覽
    * en-US: Lyrics preview
@@ -4717,12 +4345,6 @@ export interface TranslateFn {
    * en-US: Styles sync to desktop subtitles; this preview uses simulated timing.
    */
   (key: "appearance.lyrics.note", params?: TranslationParams): string;
-  /**
-   * zh-CN: 让音乐，留在生活里
-   * zh-TW: 讓音樂，留在生活裡
-   * en-US: Let the music stay with you
-   */
-  (key: "appearance.lyrics.text", params?: TranslationParams): string;
   /**
    * zh-CN: 字体
    * zh-TW: 字型
@@ -4802,35 +4424,11 @@ export interface TranslateFn {
    */
   (key: "themeEditor.missing", params?: TranslationParams): string;
   /**
-   * zh-CN: 当前主题
-   * zh-TW: 目前主題
-   * en-US: Current theme
-   */
-  (key: "themeEditor.current", params?: TranslationParams): string;
-  /**
-   * zh-CN: 背景主题编辑
-   * zh-TW: 背景主題編輯
-   * en-US: Background theme editor
-   */
-  (key: "themeEditor.background", params?: TranslationParams): string;
-  /**
    * zh-CN: 编辑
    * zh-TW: 編輯
    * en-US: Edit
    */
   (key: "themeEditor.edit", params?: TranslationParams): string;
-  /**
-   * zh-CN: 字幕样式编辑
-   * zh-TW: 字幕樣式編輯
-   * en-US: Subtitle style editor
-   */
-  (key: "themeEditor.subtitle", params?: TranslationParams): string;
-  /**
-   * zh-CN: 字幕配色编辑
-   * zh-TW: 字幕配色編輯
-   * en-US: Subtitle palette editor
-   */
-  (key: "themeEditor.palette", params?: TranslationParams): string;
   /**
    * zh-CN: 字幕样式
    * zh-TW: 字幕樣式
@@ -4843,12 +4441,6 @@ export interface TranslateFn {
    * en-US: Subtitle palette
    */
   (key: "themeEditor.paletteLabel", params?: TranslationParams): string;
-  /**
-   * zh-CN: 主题操作
-   * zh-TW: 主題操作
-   * en-US: Theme actions
-   */
-  (key: "themeEditor.themeActions", params?: TranslationParams): string;
   /**
    * zh-CN: 有未保存的修改，离开页面后不会保留。
    * zh-TW: 有未儲存的修改，離開頁面後不會保留。
@@ -4867,12 +4459,6 @@ export interface TranslateFn {
    * en-US: Revert changes
    */
   (key: "themeEditor.reset", params?: TranslationParams): string;
-  /**
-   * zh-CN: 编辑当前主题
-   * zh-TW: 編輯目前主題
-   * en-US: Edit current theme
-   */
-  (key: "themeEditor.editCurrent", params?: TranslationParams): string;
   /**
    * zh-CN: 精选主题
    * zh-TW: 精選主題
@@ -4897,12 +4483,6 @@ export interface TranslateFn {
    * en-US: Keep your favorite colors as your own themes.
    */
   (key: "appearance.library.empty", params?: TranslationParams): string;
-  /**
-   * zh-CN: 编辑主题
-   * zh-TW: 編輯主題
-   * en-US: Edit theme
-   */
-  (key: "appearance.theme.edit", params?: TranslationParams): string;
   /**
    * zh-CN: 主题名称
    * zh-TW: 主題名稱
@@ -4934,41 +4514,17 @@ export interface TranslateFn {
    */
   (key: "appearance.theme.saveAs", params?: TranslationParams): string;
   /**
-   * zh-CN: 保存当前配色
-   * zh-TW: 儲存目前配色
-   * en-US: Save current style
-   */
-  (key: "appearance.theme.saveCurrent", params?: TranslationParams): string;
-  /**
    * zh-CN: 取消
    * zh-TW: 取消
    * en-US: Cancel
    */
   (key: "appearance.theme.cancel", params?: TranslationParams): string;
   /**
-   * zh-CN: 删除主题
-   * zh-TW: 刪除主題
-   * en-US: Delete theme
-   */
-  (key: "appearance.theme.delete", params?: TranslationParams): string;
-  /**
-   * zh-CN: 再次点击删除 · 轮换引用将改为雾银
-   * zh-TW: 再次點擊刪除 · 輪替引用將改為霧銀
-   * en-US: Click again to delete · Rotation entries will use Silver
-   */
-  (key: "appearance.theme.confirmDelete", params?: TranslationParams): string;
-  /**
    * zh-CN: 请输入名称，且不要与已有主题重名。
    * zh-TW: 請輸入名稱，且不要與已有主題重名。
    * en-US: Enter a unique theme name.
    */
   (key: "appearance.theme.nameError", params?: TranslationParams): string;
-  /**
-   * zh-CN: 保存在此设备
-   * zh-TW: 儲存在此裝置
-   * en-US: Saved on this device
-   */
-  (key: "appearance.theme.local", params?: TranslationParams): string;
   /**
    * zh-CN: 按时段切换
    * zh-TW: 按時段切換
@@ -7838,18 +7394,6 @@ export interface TranslateFn {
    */
   (key: "network.action.refresh", params?: TranslationParams): string;
   /**
-   * zh-CN: 网络诊断
-   * zh-TW: 網路診斷
-   * en-US: Network diagnostics
-   */
-  (key: "network.action.diagnose", params?: TranslationParams): string;
-  /**
-   * zh-CN: 当前网络异常，请检查网络连接
-   * zh-TW: 目前網路異常，請檢查網路連線
-   * en-US: Network unavailable. Please check your connection.
-   */
-  (key: "network.toast.unavailable", params?: TranslationParams): string;
-  /**
    * zh-CN: 上一首
    * zh-TW: 上一首
    * en-US: Previous
@@ -8420,24 +7964,6 @@ export interface TranslateFn {
    */
   (key: "ui.close", params?: TranslationParams): string;
   /**
-   * zh-CN: 保存
-   * zh-TW: 儲存
-   * en-US: Save
-   */
-  (key: "ui.save", params?: TranslationParams): string;
-  /**
-   * zh-CN: 默认
-   * zh-TW: 預設
-   * en-US: Default
-   */
-  (key: "ui.default", params?: TranslationParams): string;
-  /**
-   * zh-CN: 加载中...
-   * zh-TW: 載入中...
-   * en-US: Loading...
-   */
-  (key: "ui.loading", params?: TranslationParams): string;
-  /**
    * zh-CN: 上一首
    * zh-TW: 上一首
    * en-US: Previous
@@ -8461,12 +7987,6 @@ export interface TranslateFn {
    * en-US: Pause
    */
   (key: "ui.pause", params?: TranslationParams): string;
-  /**
-   * zh-CN: 循环模式
-   * zh-TW: 循環模式
-   * en-US: Loop Mode
-   */
-  (key: "ui.loopMode", params?: TranslationParams): string;
   /**
    * zh-CN: 随机播放：开启
    * zh-TW: 隨機播放：開啟
@@ -8510,30 +8030,6 @@ export interface TranslateFn {
    */
   (key: "ui.hideLyrics", params?: TranslationParams): string;
   /**
-   * zh-CN: 音质设置
-   * zh-TW: 音質設定
-   * en-US: Audio quality
-   */
-  (key: "ui.audioQuality", params?: TranslationParams): string;
-  /**
-   * zh-CN: 开启桌面音乐壁纸
-   * zh-TW: 開啟桌面音樂桌布
-   * en-US: Enable desktop music wallpaper
-   */
-  (key: "ui.enableDesktopMusicWallpaper", params?: TranslationParams): string;
-  /**
-   * zh-CN: 关闭桌面音乐壁纸
-   * zh-TW: 關閉桌面音樂桌布
-   * en-US: Disable desktop music wallpaper
-   */
-  (key: "ui.disableDesktopMusicWallpaper", params?: TranslationParams): string;
-  /**
-   * zh-CN: 桌面音乐壁纸切换失败
-   * zh-TW: 桌面音樂桌布切換失敗
-   * en-US: Desktop music wallpaper failed to switch
-   */
-  (key: "ui.desktopMusicWallpaperFailed", params?: TranslationParams): string;
-  /**
    * zh-CN: 进入全屏
    * zh-TW: 進入全螢幕
    * en-US: Enter fullscreen
@@ -8545,12 +8041,6 @@ export interface TranslateFn {
    * en-US: Exit fullscreen
    */
   (key: "ui.exitFullscreen", params?: TranslationParams): string;
-  /**
-   * zh-CN: 蓝牙设备
-   * zh-TW: 藍牙裝置
-   * en-US: Bluetooth devices
-   */
-  (key: "ui.bluetooth", params?: TranslationParams): string;
   /**
    * zh-CN: 取消静音
    * zh-TW: 取消靜音
@@ -8570,29 +8060,11 @@ export interface TranslateFn {
    */
   (key: "ui.volume", params?: TranslationParams): string;
   /**
-   * zh-CN: 静音
-   * zh-TW: 靜音
-   * en-US: Mute
-   */
-  (key: "ui.mute", params?: TranslationParams): string;
-  /**
-   * zh-CN: 实时预览
-   * zh-TW: 即時預覽
-   * en-US: Live Preview
-   */
-  (key: "ui.livePreview", params?: TranslationParams): string;
-  /**
    * zh-CN: 返回主页
    * zh-TW: 返回首頁
    * en-US: Back to Home
    */
   (key: "ui.backToHome", params?: TranslationParams): string;
-  /**
-   * zh-CN: 当前主题
-   * zh-TW: 目前主題
-   * en-US: Current Theme
-   */
-  (key: "ui.currentTheme", params?: TranslationParams): string;
   /**
    * zh-CN: 显示播放条
    * zh-TW: 顯示播放列
@@ -21167,18 +20639,6 @@ export interface TranslateFn {
    */
   (key: "folia.aiHelp.prompt", params?: TranslationParams): string;
   /**
-   * zh-CN: 键盘快捷键
-   * zh-TW: 鍵盤快速鍵
-   * en-US: Keyboard Shortcuts
-   */
-  (key: "shortcuts.title", params?: TranslationParams): string;
-  /**
-   * zh-CN: 快捷键在 Scopify 窗口聚焦时生效。
-   * zh-TW: 快速鍵會在 Scopify 視窗聚焦時生效。
-   * en-US: Shortcuts are active while the Scopify window is focused.
-   */
-  (key: "shortcuts.subtitle", params?: TranslationParams): string;
-  /**
    * zh-CN: 搜索命令
    * zh-TW: 搜尋命令
    * en-US: Search commands
@@ -21473,12 +20933,6 @@ export interface TranslateFn {
    */
   (key: "shortcuts.command.openCommandPalette", params?: TranslationParams): string;
   /**
-   * zh-CN: 快捷键帮助
-   * zh-TW: 快速鍵說明
-   * en-US: Keyboard Shortcut Help
-   */
-  (key: "shortcuts.help.title", params?: TranslationParams): string;
-  /**
    * zh-CN: 快捷键
    * zh-TW: 快速鍵
    * en-US: Shortcuts
@@ -21496,24 +20950,6 @@ export interface TranslateFn {
    * en-US: Recommended
    */
   (key: "shortcuts.help.recommended", params?: TranslationParams): string;
-  /**
-   * zh-CN: 搜索命令
-   * zh-TW: 搜尋命令
-   * en-US: Search commands
-   */
-  (key: "shortcuts.commandPalette.placeholder", params?: TranslationParams): string;
-  /**
-   * zh-CN: 命令
-   * zh-TW: 命令
-   * en-US: Commands
-   */
-  (key: "shortcuts.commandPalette.title", params?: TranslationParams): string;
-  /**
-   * zh-CN: 没有匹配的命令
-   * zh-TW: 沒有相符的命令
-   * en-US: No matching commands
-   */
-  (key: "shortcuts.commandPalette.empty", params?: TranslationParams): string;
   /**
    * zh-CN: 最近播放
    * zh-TW: 最近播放
@@ -22180,18 +21616,6 @@ export interface TranslateFn {
    * en-US: Notifications
    */
   (key: "notifications.title", params?: TranslationParams): string;
-  /**
-   * zh-CN: 暂无新通知
-   * zh-TW: 目前沒有新通知
-   * en-US: No new notifications
-   */
-  (key: "notifications.empty.title", params?: TranslationParams): string;
-  /**
-   * zh-CN: 有新的桌面端版本时，会在这里提醒你。
-   * zh-TW: 有新的桌面版時，會在這裡提醒你。
-   * en-US: New desktop releases will appear here.
-   */
-  (key: "notifications.empty.description", params?: TranslationParams): string;
   /**
    * zh-CN: 发现新版本
    * zh-TW: 發現新版本

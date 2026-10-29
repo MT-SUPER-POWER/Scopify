@@ -2,8 +2,6 @@
 export const updaterMessages = {
   "zh-CN": {
     "notifications.title": "通知",
-    "notifications.empty.title": "暂无新通知",
-    "notifications.empty.description": "有新的桌面端版本时，会在这里提醒你。",
     "notifications.updater.available.title": "发现新版本",
     "notifications.updater.available.description": "Scopify {{version}} 已准备好下载。",
     "notifications.updater.downloading.title": "正在下载更新",
@@ -20,8 +18,6 @@ export const updaterMessages = {
   },
   "zh-TW": {
     "notifications.title": "通知",
-    "notifications.empty.title": "目前沒有新通知",
-    "notifications.empty.description": "有新的桌面版時，會在這裡提醒你。",
     "notifications.updater.available.title": "發現新版本",
     "notifications.updater.available.description": "Scopify {{version}} 已準備好下載。",
     "notifications.updater.downloading.title": "正在下載更新",
@@ -38,8 +34,6 @@ export const updaterMessages = {
   },
   "en-US": {
     "notifications.title": "Notifications",
-    "notifications.empty.title": "No new notifications",
-    "notifications.empty.description": "New desktop releases will appear here.",
     "notifications.updater.available.title": "Update available",
     "notifications.updater.available.description": "Scopify {{version}} is ready to download.",
     "notifications.updater.downloading.title": "Downloading update",

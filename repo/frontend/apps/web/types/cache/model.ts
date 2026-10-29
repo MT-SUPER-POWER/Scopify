@@ -4,8 +4,6 @@ import type {
   ClearDesktopCacheRequest,
   DesktopCacheStats,
 } from "@scopify/desktop-contract";
-import type { NeteaseLyric } from "@/types/song/api";
-import type { MusicQuality } from "@/types/player/model";
 
 export type { CacheCategory, CacheScope } from "@scopify/desktop-contract";
 
@@ -32,15 +30,6 @@ export interface PlaybackCachePreferences extends CacheScopePreferences {
 export interface CachePreferences {
   page: PageCachePreferences;
   playback: PlaybackCachePreferences;
-}
-
-/** Legacy shared playback record retained only to read pre-split cache entries. */
-export interface PlaybackSongCacheEntry {
-  cachedAt: number;
-  lyric: NeteaseLyric | null;
-  lyricCachedAt?: number;
-  url: Partial<Record<MusicQuality, string>>;
-  urlCachedAt?: Partial<Record<MusicQuality, number>>;
 }
 
 export interface CacheSelectionSummary {

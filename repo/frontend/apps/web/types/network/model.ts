@@ -10,12 +10,6 @@ export interface ApiErrorOptions {
   status?: number;
 }
 
-export interface ClassifiedNetworkError {
-  kind: NetworkErrorKind;
-  message: string;
-  retryable: boolean;
-}
-
 export type NetworkErrorKind = "backend" | "business" | "network" | "offline" | "timeout";
 
 export type BackendPingFailureReason = "invalid-response" | "network" | "server" | "timeout";

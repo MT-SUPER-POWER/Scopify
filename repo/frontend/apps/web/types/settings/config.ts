@@ -88,11 +88,3 @@ export const webConfigSchema = z.preprocess(
 export type AppLocale = z.output<typeof appLocaleSchema>;
 export type BackendProtocol = z.output<typeof backendProtocolSchema>;
 export type WebConfig = z.output<typeof webConfigSchema>;
-
-export function isAppLocale(value: unknown): value is AppLocale {
-  return appLocaleSchema.safeParse(value).success;
-}
-
-export function normalizeWebConfig(input?: unknown): WebConfig {
-  return webConfigSchema.parse(input ?? {});
-}

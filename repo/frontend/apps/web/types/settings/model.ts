@@ -10,10 +10,6 @@ export interface SettingsTabDefinition {
   labelKey: TranslationKey;
 }
 
-export interface SettingsPageRouteProps {
-  searchParams: Promise<{ tab?: string | string[] }>;
-}
-
 export interface SettingsConfig {
   desktop: DesktopHostConfig | null;
   web: WebConfig;
