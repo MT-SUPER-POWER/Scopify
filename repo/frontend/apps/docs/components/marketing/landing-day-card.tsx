@@ -1,17 +1,7 @@
 import { getImageProps } from "next/image";
 
 import { CURVED_CARD_LIFT, placeOnCylinder } from "@/lib/marketing/curved-track";
-import type { LandingCurvedTrackLayout, LandingDayMoment } from "@/types/marketing";
-
-interface LandingDayCardProps {
-  /** 卡片中心在曲面上的弧长坐标。 */
-  center: number;
-  index: number;
-  layout: LandingCurvedTrackLayout;
-  moment: LandingDayMoment;
-  /** 接近该章节后才开始加载截图。 */
-  showImage: boolean;
-}
+import type { LandingDayCardProps } from "@/types/marketing";
 
 const CAPTION_GAP = 26;
 
@@ -23,7 +13,13 @@ export function LandingDayCard({ center, index, layout, moment, showImage }: Lan
   const { cardHeight, cardWidth, radius, stripCount } = layout;
   const stripWidth = cardWidth / stripCount;
   const { src: image } = moment.screenshot;
-  const coverScale = Math.max(cardWidth / image.width, cardHeight / image.height);
+  const contain = moment.screenshot.fit === "contain";
+  const coverScale = (contain ? Math.min : Math.max)(
+    cardWidth / image.width,
+    cardHeight / image.height,
+  );
+  const imageLeft = contain ? (cardWidth - image.width * coverScale) / 2 : 0;
+  const imageTop = contain ? (cardHeight - image.height * coverScale) / 2 : 0;
   const backgroundSize = `${image.width * coverScale}px ${image.height * coverScale}px`;
   const {
     props: { src: imageUrl },
@@ -50,7 +46,7 @@ export function LandingDayCard({ center, index, layout, moment, showImage }: Lan
             } ${isLast ? "rounded-r-2xl border-r" : ""}`}
             style={{
               backgroundImage: showImage ? `url(${imageUrl})` : undefined,
-              backgroundPosition: `${-stripIndex * stripWidth}px 0px`,
+              backgroundPosition: `${imageLeft - stripIndex * stripWidth}px ${imageTop}px`,
               backgroundSize,
               height: cardHeight,
               marginLeft: -width / 2,

@@ -15,14 +15,28 @@ export interface LandingFoliaTimeline {
 export interface LandingScreenshot {
   alt: string;
   src: StaticImageData;
+  /** 独立的小窗口完整呈现，避免按整屏截图裁切。 */
+  fit?: "contain";
 }
 
-/** “六个场景”中的单个使用场景。 */
+/** 曲面屏中的单个使用场景。 */
 export interface LandingDayMoment {
   feature: string;
   scene: string;
   screenshot: LandingScreenshot;
   sentence: string;
+}
+
+export interface LandingDayCardProps {
+  center: number;
+  index: number;
+  layout: LandingCurvedTrackLayout;
+  moment: LandingDayMoment;
+  showImage: boolean;
+}
+
+export interface LandingDayIntroProps {
+  layout: LandingCurvedTrackLayout;
 }
 
 /** 与客户端「外观 → 精选主题」一致的背景渐变预设。 */
@@ -62,7 +76,7 @@ export interface LandingChapter {
   title: string;
 }
 
-/** 「六个场景」内凹曲面轨道的几何；长度单位为 px，弧长坐标以初始视口中心为 0。 */
+/** 使用场景内凹曲面轨道的几何；长度单位为 px，弧长坐标以初始视口中心为 0。 */
 export interface LandingCurvedTrackLayout {
   cardCenters: readonly number[];
   cardHeight: number;

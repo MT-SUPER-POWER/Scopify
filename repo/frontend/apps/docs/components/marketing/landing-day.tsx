@@ -11,7 +11,7 @@ import { SOUND_STAGE_EXIT_VH } from "@/hooks/use-landing-sound-stage";
 
 /**
  * 桥段：整块画面是一面内凹的「带鱼屏」。纵向滚动换算成沿弧面的横移，
- * 六个场景从右侧弯进视野、在正中放平，再从左侧弯出去。
+ * 使用场景从右侧弯进视野、在正中放平，再从左侧弯出去。
  * 副歌钉住时，这一章向上叠进它的退场段，从底部升上来盖住正在后退的上一屏。
  */
 export function LandingDay() {

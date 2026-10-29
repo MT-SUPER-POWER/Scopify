@@ -4,7 +4,9 @@ import audioEqualizerScreenshot from "@/assets/features/audio-equalizer.png";
 import audioQualityScreenshot from "@/assets/features/audio-quality.png";
 import commentScreenshot from "@/assets/features/comment.png";
 import desktopMusicScreenshot from "@/assets/features/desktopMusic.png";
+import desktopControllerScreenshot from "@/assets/features/desktop-controller.png";
 import discoveryScreenshot from "@/assets/features/discovery-home.png";
+import dynamicIslandScreenshot from "@/assets/features/dynamic-island.png";
 import libraryScreenshot from "@/assets/features/library-liked.png";
 import lyricDynamicScreenshot from "@/assets/features/lyricDynamic.png";
 import lyricPanelScreenshot from "@/assets/features/lyricPanelController.png";
@@ -14,6 +16,7 @@ import foliaStageScreenshot from "@/assets/features/lyrics-folia-stage.png";
 import mainScreenshot from "@/assets/features/main.png";
 import mcpScreenshot from "@/assets/features/MCP.png";
 import playlistScreenshot from "@/assets/features/Playlist.png";
+import personalFmScreenshot from "@/assets/features/personal-fm.png";
 import profileScreenshot from "@/assets/features/profile.png";
 import searchModalScreenshot from "@/assets/features/SearchModal.png";
 import searchResultScreenshot from "@/assets/features/SearchResult.png";
@@ -149,6 +152,12 @@ export const LANDING_DAY_MOMENTS: readonly LandingDayMoment[] = [
     screenshot: { alt: "Scopify 快捷搜索弹窗", src: searchModalScreenshot },
   },
   {
+    scene: "随听",
+    feature: "私人 FM",
+    sentence: "不想选歌时，把下一首交给私人 FM。先听听推荐，也可以随时回到熟悉的播放队列。",
+    screenshot: { alt: "Scopify 私人 FM 推荐歌单", src: personalFmScreenshot },
+  },
+  {
     scene: "闲翻",
     feature: "评论",
     sentence: "午休的片刻，翻翻评论区，看看别人在这首歌里留下了什么。",
@@ -157,8 +166,24 @@ export const LANDING_DAY_MOMENTS: readonly LandingDayMoment[] = [
   {
     scene: "专注",
     feature: "桌面歌词",
-    sentence: "午后开着文档写东西，桌面歌词安静地浮在角落，鼠标可以直接穿过它。",
-    screenshot: { alt: "Scopify 桌面歌词", src: desktopMusicScreenshot },
+    sentence: "午后开着文档写东西，让歌词浮在角落；译文、置顶与鼠标穿透，都能按自己的习惯调整。",
+    screenshot: { alt: "Scopify 桌面歌词与音乐控制面板", src: desktopMusicScreenshot },
+  },
+  {
+    scene: "抬眼",
+    feature: "灵动岛 · 任务栏歌词",
+    sentence: "歌词也可以待在屏幕顶边或任务栏里。灵动岛的大小、换行动画和非遮挡模式，由你决定。",
+    screenshot: { alt: "Scopify 灵动岛与任务栏歌词设置", src: dynamicIslandScreenshot },
+  },
+  {
+    scene: "留白",
+    feature: "桌面音乐控制器",
+    sentence: "收起主窗口，把封面、进度和正在唱的一句留在独立控制器里，也能搭配桌面音乐壁纸使用。",
+    screenshot: {
+      alt: "Scopify 独立桌面音乐控制器与同步歌词",
+      src: desktopControllerScreenshot,
+      fit: "contain",
+    },
   },
   {
     scene: "沉浸",
@@ -170,7 +195,13 @@ export const LANDING_DAY_MOMENTS: readonly LandingDayMoment[] = [
     scene: "夜听",
     feature: "ReplayGain",
     sentence: "深夜把音量调低一点，ReplayGain 帮你把每首歌的响度放平，不会被下一首吓到。",
-    screenshot: { alt: "Scopify 音质与响度设置", src: audioQualityScreenshot },
+    screenshot: { alt: "Scopify 歌词面板中的 ReplayGain 音频增益设置", src: lyricPanelScreenshot },
+  },
+  {
+    scene: "对话",
+    feature: "MCP · AI 助手",
+    sentence: "把音乐接入你常用的 AI 助手。通过本地 MCP 连接控制播放，并单独配置可用的工具权限。",
+    screenshot: { alt: "Scopify 本地 MCP 连接与工具权限入口", src: mcpScreenshot },
   },
 ];
 
@@ -223,7 +254,7 @@ export const LANDING_CHAPTERS: readonly LandingChapter[] = [
   {
     id: "bridge",
     movement: "Bridge",
-    title: "桥段 · 六个场景",
+    title: "桥段 · 听歌的日常",
     intensity: 0.5,
     palette: palette("#1a110b", "#5a3a22", "#f0b878"),
   },
@@ -269,7 +300,10 @@ export const LANDING_FILM_SCREENSHOTS: readonly LandingScreenshot[] = [
   { alt: "Scopify 首页推荐", src: discoveryScreenshot },
   { alt: "Scopify 视觉主题编辑器", src: visualThemeEditorScreenshot },
   { alt: "Scopify 搜索结果", src: searchResultScreenshot },
-  { alt: "Scopify 桌面歌词", src: desktopMusicScreenshot },
+  { alt: "Scopify 桌面歌词与音乐控制", src: desktopMusicScreenshot },
+  { alt: "Scopify 私人 FM", src: personalFmScreenshot },
+  { alt: "Scopify 灵动岛与任务栏歌词设置", src: dynamicIslandScreenshot },
+  { alt: "Scopify 独立桌面音乐控制器", src: desktopControllerScreenshot, fit: "contain" },
   { alt: "Scopify 喜欢的音乐", src: libraryScreenshot },
   { alt: "Scopify 歌词样式编辑器", src: lyricStyleEditorScreenshot },
   { alt: "Scopify 十段均衡器", src: audioEqualizerScreenshot },

@@ -61,7 +61,7 @@ export function LandingFilmWall() {
                     alt={screenshot.alt}
                     fill
                     sizes="27vw"
-                    className="object-cover object-top-left transition-transform duration-700 group-hover:scale-105"
+                    className={`${screenshot.fit === "contain" ? "object-contain" : "object-cover object-top-left"} transition-transform duration-700 group-hover:scale-105`}
                   />
                 </div>
               ))}
