@@ -54,13 +54,6 @@ export function getRecentSongEntries(response: RecentSongsResponse): RecentSongH
   return response.data?.list ?? response.list ?? [];
 }
 
-export function getRecentSongHistoryCount(response: RecentSongsResponse): number {
-  const total = response.data?.total;
-  return typeof total === "number" && Number.isFinite(total) && total >= 0
-    ? total
-    : getRecentSongEntries(response).length;
-}
-
 export interface IUserDetail {
   level: number;
   listenSongs: number;
@@ -139,18 +132,6 @@ export interface UserAccountResponse {
   code: number;
   account?: UserAccount;
   profile?: UserAccountProfile;
-}
-
-/**
- * The verified success branch of `GET /user/account`.
- *
- * The endpoint can return an authentication failure as an HTTP 200 response,
- * so callers must verify `code` before relying on account or profile fields.
- */
-export interface UserAccountSuccessResponse extends UserAccountResponse {
-  code: 200;
-  account: UserAccount;
-  profile: UserAccountProfile;
 }
 
 export interface IUserFollow {

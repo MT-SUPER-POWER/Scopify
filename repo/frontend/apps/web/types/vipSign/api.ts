@@ -114,6 +114,3 @@ export interface VipSignResponse {
 }
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ LEGACY TYPE ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-/** @deprecated 使用 VipSignDetail 代替 */
-export type VipSignRecord = VipSignDetail;

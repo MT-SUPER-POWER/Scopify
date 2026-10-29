@@ -1,6 +1,6 @@
 import type { MouseEvent, RefObject } from "react";
 import type { MotionValue } from "framer-motion";
-import type { VipSignDetail, VipSignHistory, VipSignHistoryItem } from "@/types/vipSign/api";
+import type { VipSignDetail, VipSignHistory } from "@/types/vipSign/api";
 
 export interface VipSignModalProps {
   open: boolean;
@@ -48,9 +48,4 @@ export interface TicketCurlProps {
   source: RefObject<HTMLDivElement | null>;
   progress: MotionValue<number>;
   direction: MotionValue<number>;
-}
-
-export interface VipSignHistoryStripProps {
-  records: VipSignHistoryItem[];
-  onSelectSignDay: (signTime: number) => void;
 }

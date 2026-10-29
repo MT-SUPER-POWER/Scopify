@@ -9,7 +9,6 @@ import type {
   SocialUser,
   SocialPeopleMode,
   SocialEventTarget,
-  SocialProfileTab,
   SocialProfile,
   SocialPlaylist,
 } from "@/types/social/model";
@@ -129,9 +128,6 @@ export interface SocialDialogProps {
   open: boolean;
   onClose: () => void;
 }
-export interface SocialForwardDialogProps extends SocialDialogProps {
-  event: SocialEvent;
-}
 export interface SocialMessageDialogProps extends SocialDialogProps {
   user: SocialUser;
 }
@@ -140,11 +136,6 @@ export interface SocialEventDetailProps {
 }
 export interface SocialResourcePickerProps extends SocialDialogProps {
   onSelect: (resource: SocialResource) => void;
-}
-export interface SocialProfileContentProps {
-  uid: string;
-  tab: SocialProfileTab;
-  isSelf: boolean;
 }
 export interface SocialProfileHeroProps {
   user: SocialProfile;

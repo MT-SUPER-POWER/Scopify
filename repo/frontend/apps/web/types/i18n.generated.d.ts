@@ -707,12 +707,6 @@ export interface TranslateFn {
    */
   (key: "devices.loginName", params?: TranslationParams): string;
   /**
-   * zh-CN: 登录后同步到账号，方便你在设备列表中辨认。
-   * zh-TW: 登入後同步到帳號，方便你在裝置清單中辨認。
-   * en-US: Saved to your account after sign-in so you can recognize this device.
-   */
-  (key: "devices.loginNameHint", params?: TranslationParams): string;
-  /**
    * zh-CN: 刷新设备列表
    * zh-TW: 重新整理裝置清單
    * en-US: Refresh devices
@@ -887,29 +881,11 @@ export interface TranslateFn {
    */
   (key: "devices.title", params?: TranslationParams): string;
   /**
-   * zh-CN: 账号与设备
-   * zh-TW: 帳號與裝置
-   * en-US: Account & devices
-   */
-  (key: "devices.account", params?: TranslationParams): string;
-  /**
    * zh-CN: 管理已登录账号的设备，查看最近活动，让每一次登录都有迹可循。
    * zh-TW: 管理已登入帳號的裝置，查看最近活動，讓每一次登入都有跡可循。
    * en-US: Manage your signed-in devices and explore their recent activity.
    */
   (key: "devices.subtitle", params?: TranslationParams): string;
-  /**
-   * zh-CN: 设计预览
-   * zh-TW: 設計預覽
-   * en-US: Design preview
-   */
-  (key: "devices.preview", params?: TranslationParams): string;
-  /**
-   * zh-CN: 以下为示例设备，仅用于预览页面。
-   * zh-TW: 以下為範例裝置，僅用於預覽頁面。
-   * en-US: Sample devices for a preview of this page.
-   */
-  (key: "devices.previewNote", params?: TranslationParams): string;
   /**
    * zh-CN: 当前设备
    * zh-TW: 目前裝置
@@ -929,23 +905,11 @@ export interface TranslateFn {
    */
   (key: "devices.rename", params?: TranslationParams): string;
   /**
-   * zh-CN: 功能接入后可用
-   * zh-TW: 功能接入後可用
-   * en-US: Available after integration
-   */
-  (key: "devices.soon", params?: TranslationParams): string;
-  /**
    * zh-CN: 设备额度
    * zh-TW: 裝置額度
    * en-US: Device allowance
    */
   (key: "devices.allowance", params?: TranslationParams): string;
-  /**
-   * zh-CN: 示例额度 · 以账号实际信息为准
-   * zh-TW: 範例額度 · 以帳號實際資訊為準
-   * en-US: Sample allowance · actual account limits may vary
-   */
-  (key: "devices.allowanceNote", params?: TranslationParams): string;
   /**
    * zh-CN: 其他登录设备
    * zh-TW: 其他登入裝置
@@ -964,18 +928,6 @@ export interface TranslateFn {
    * en-US: All devices
    */
   (key: "devices.all", params?: TranslationParams): string;
-  /**
-   * zh-CN: 手机
-   * zh-TW: 手機
-   * en-US: Phones
-   */
-  (key: "devices.mobile", params?: TranslationParams): string;
-  /**
-   * zh-CN: 电脑
-   * zh-TW: 電腦
-   * en-US: Computers
-   */
-  (key: "devices.computer", params?: TranslationParams): string;
   /**
    * zh-CN: 设备详情
    * zh-TW: 裝置詳情
@@ -1019,18 +971,6 @@ export interface TranslateFn {
    */
   (key: "devices.signOut", params?: TranslationParams): string;
   /**
-   * zh-CN: 预览内容为示例信息，不代表实际登录状态。
-   * zh-TW: 預覽內容為範例資訊，不代表實際登入狀態。
-   * en-US: Sample information; this does not reflect a live session.
-   */
-  (key: "devices.detailsNote", params?: TranslationParams): string;
-  /**
-   * zh-CN: 名称修改与设备下线将在功能接入后开放。
-   * zh-TW: 名稱修改與裝置登出將在功能接入後開放。
-   * en-US: Renaming and signing out devices will be available after integration.
-   */
-  (key: "devices.noActions", params?: TranslationParams): string;
-  /**
    * zh-CN: 查看较早的记录
    * zh-TW: 查看較早的紀錄
    * en-US: View older records
@@ -1043,107 +983,11 @@ export interface TranslateFn {
    */
   (key: "devices.less", params?: TranslationParams): string;
   /**
-   * zh-CN: 设备名称与最近活动，帮你辨认每一次登录。
-   * zh-TW: 裝置名稱與最近活動，幫你辨認每一次登入。
-   * en-US: Device names and recent activity help you recognize every sign-in.
-   */
-  (key: "devices.footer", params?: TranslationParams): string;
-  /**
-   * zh-CN: 没有这类示例设备
-   * zh-TW: 沒有這類範例裝置
-   * en-US: No sample devices in this category
-   */
-  (key: "devices.empty", params?: TranslationParams): string;
-  /**
    * zh-CN: 关闭设备详情
    * zh-TW: 關閉裝置詳情
    * en-US: Close device details
    */
   (key: "devices.close", params?: TranslationParams): string;
-  /**
-   * zh-CN: 你的设备，一目了然
-   * zh-TW: 你的裝置，一目了然
-   * en-US: Your devices, at a glance
-   */
-  (key: "devices.entryTitle", params?: TranslationParams): string;
-  /**
-   * zh-CN: 查看登录设备、最近活动与设备名称。
-   * zh-TW: 查看登入裝置、最近活動與裝置名稱。
-   * en-US: Explore signed-in devices, recent activity and device names.
-   */
-  (key: "devices.entryNote", params?: TranslationParams): string;
-  /**
-   * zh-CN: 查看登录设备
-   * zh-TW: 查看登入裝置
-   * en-US: View devices
-   */
-  (key: "devices.entryAction", params?: TranslationParams): string;
-  /**
-   * zh-CN: 返回账号与设备
-   * zh-TW: 返回帳號與裝置
-   * en-US: Back to account & devices
-   */
-  (key: "devices.back", params?: TranslationParams): string;
-  /**
-   * zh-CN: 刚刚
-   * zh-TW: 剛剛
-   * en-US: Just now
-   */
-  (key: "devices.time.now", params?: TranslationParams): string;
-  /**
-   * zh-CN: 今天 18:32
-   * zh-TW: 今天 18:32
-   * en-US: Today, 18:32
-   */
-  (key: "devices.time.recent", params?: TranslationParams): string;
-  /**
-   * zh-CN: 昨天 21:08
-   * zh-TW: 昨天 21:08
-   * en-US: Yesterday, 21:08
-   */
-  (key: "devices.time.yesterday", params?: TranslationParams): string;
-  /**
-   * zh-CN: 3 天前
-   * zh-TW: 3 天前
-   * en-US: 3 days ago
-   */
-  (key: "devices.time.days", params?: TranslationParams): string;
-  /**
-   * zh-CN: 更早
-   * zh-TW: 更早
-   * en-US: Earlier
-   */
-  (key: "devices.time.earlier", params?: TranslationParams): string;
-  /**
-   * zh-CN: 未知地区
-   * zh-TW: 未知地區
-   * en-US: Unknown region
-   */
-  (key: "devices.region.unknown", params?: TranslationParams): string;
-  /**
-   * zh-CN: 浙江
-   * zh-TW: 浙江
-   * en-US: Zhejiang
-   */
-  (key: "devices.region.example", params?: TranslationParams): string;
-  /**
-   * zh-CN: 扫码登录
-   * zh-TW: 掃碼登入
-   * en-US: QR code
-   */
-  (key: "devices.login.qr", params?: TranslationParams): string;
-  /**
-   * zh-CN: 快速登录
-   * zh-TW: 快速登入
-   * en-US: Quick sign-in
-   */
-  (key: "devices.login.quick", params?: TranslationParams): string;
-  /**
-   * zh-CN: 验证码登录
-   * zh-TW: 驗證碼登入
-   * en-US: Verification code
-   */
-  (key: "devices.login.sms", params?: TranslationParams): string;
   /**
    * zh-CN: 消息、互动与听歌时光
    * zh-TW: 訊息、互動與聽歌時光
@@ -1817,12 +1661,6 @@ export interface TranslateFn {
    */
   (key: "social.searchResults", params?: TranslationParams): string;
   /**
-   * zh-CN: 刷新失败，仍显示上次加载的动态。
-   * zh-TW: 重新整理失敗，仍顯示上次載入的動態。
-   * en-US: Couldn't refresh. Your previously loaded posts are still here.
-   */
-  (key: "social.refreshFailed", params?: TranslationParams): string;
-  /**
    * zh-CN: 展开全文
    * zh-TW: 展開全文
    * en-US: Show more
@@ -1835,23 +1673,11 @@ export interface TranslateFn {
    */
   (key: "social.showLess", params?: TranslationParams): string;
   /**
-   * zh-CN: 朋友动态
-   * zh-TW: 朋友動態
-   * en-US: Your feed
-   */
-  (key: "social.feed", params?: TranslationParams): string;
-  /**
    * zh-CN: 关注的人
    * zh-TW: 關注的人
    * en-US: Following
    */
   (key: "social.following", params?: TranslationParams): string;
-  /**
-   * zh-CN: 我的主页
-   * zh-TW: 我的主頁
-   * en-US: My profile
-   */
-  (key: "social.myProfile", params?: TranslationParams): string;
   /**
    * zh-CN: 粉丝
    * zh-TW: 粉絲
@@ -1900,24 +1726,6 @@ export interface TranslateFn {
    * en-US: Playlists
    */
   (key: "social.playlists", params?: TranslationParams): string;
-  /**
-   * zh-CN: 关于
-   * zh-TW: 關於
-   * en-US: About
-   */
-  (key: "social.about", params?: TranslationParams): string;
-  /**
-   * zh-CN: 返回动态
-   * zh-TW: 返回動態
-   * en-US: Back to activity
-   */
-  (key: "social.back", params?: TranslationParams): string;
-  /**
-   * zh-CN: 查看用户主页
-   * zh-TW: 查看使用者主頁
-   * en-US: View profile
-   */
-  (key: "social.backProfile", params?: TranslationParams): string;
   /**
    * zh-CN: 编辑资料
    * zh-TW: 編輯資料
@@ -1973,18 +1781,6 @@ export interface TranslateFn {
    */
   (key: "social.public", params?: TranslationParams): string;
   /**
-   * zh-CN: 最多 140 字
-   * zh-TW: 最多 140 字
-   * en-US: Up to 140 characters
-   */
-  (key: "social.limit", params?: TranslationParams): string;
-  /**
-   * zh-CN: 分享文字、歌曲或歌单
-   * zh-TW: 分享文字、歌曲或歌單
-   * en-US: Share a thought, song or playlist
-   */
-  (key: "social.shareHint", params?: TranslationParams): string;
-  /**
    * zh-CN: 搜索用户
    * zh-TW: 搜尋使用者
    * en-US: Search people
@@ -2026,12 +1822,6 @@ export interface TranslateFn {
    * en-US: Load more
    */
   (key: "social.loadMore", params?: TranslationParams): string;
-  /**
-   * zh-CN: 已经到底了
-   * zh-TW: 已經到底了
-   * en-US: You're all caught up
-   */
-  (key: "social.end", params?: TranslationParams): string;
   /**
    * zh-CN: 重试
    * zh-TW: 重試
@@ -2327,18 +2117,6 @@ export interface TranslateFn {
    */
   (key: "social.joined", params?: TranslationParams): string;
   /**
-   * zh-CN: 等级
-   * zh-TW: 等級
-   * en-US: Level
-   */
-  (key: "social.level", params?: TranslationParams): string;
-  /**
-   * zh-CN: 累计听过
-   * zh-TW: 累計聽過
-   * en-US: Songs heard
-   */
-  (key: "social.listened", params?: TranslationParams): string;
-  /**
    * zh-CN: {{count}} 首歌曲
    * zh-TW: {{count}} 首歌曲
    * en-US: {{count}} tracks
@@ -2356,12 +2134,6 @@ export interface TranslateFn {
    * en-US: Saved playlists
    */
   (key: "social.saved", params?: TranslationParams): string;
-  /**
-   * zh-CN: 最近播放
-   * zh-TW: 最近播放
-   * en-US: Recently played
-   */
-  (key: "social.recent", params?: TranslationParams): string;
   /**
    * zh-CN: 概览
    * zh-TW: 概覽
@@ -2477,29 +2249,11 @@ export interface TranslateFn {
    */
   (key: "social.refreshMessages", params?: TranslationParams): string;
   /**
-   * zh-CN: 关注喜欢的用户，他们的音乐故事会在这里相遇。
-   * zh-TW: 關注喜歡的使用者，在這裡遇見他們的音樂故事。
-   * en-US: Follow people to discover their music stories.
-   */
-  (key: "social.followingEmpty", params?: TranslationParams): string;
-  /**
-   * zh-CN: 来自网易云的朋友动态
-   * zh-TW: 來自網易雲的朋友動態
-   * en-US: Your NetEase friends' activity
-   */
-  (key: "social.feedDescription", params?: TranslationParams): string;
-  /**
    * zh-CN: 更多操作
    * zh-TW: 更多操作
    * en-US: More actions
    */
   (key: "social.more", params?: TranslationParams): string;
-  /**
-   * zh-CN: 乐迷团
-   * zh-TW: 樂迷團
-   * en-US: Fans Group
-   */
-  (key: "social.fansGroup", params?: TranslationParams): string;
   /**
    * zh-CN: 全部
    * zh-TW: 全部
@@ -6290,12 +6044,6 @@ export interface TranslateFn {
    */
   (key: "login.qr.success", params?: TranslationParams): string;
   /**
-   * zh-CN: 登录状态异常
-   * zh-TW: 登入狀態異常
-   * en-US: Abnormal login status
-   */
-  (key: "login.qr.statusError", params?: TranslationParams): string;
-  /**
    * zh-CN: 网络请求失败
    * zh-TW: 網路請求失敗
    * en-US: Network request failed
@@ -6332,12 +6080,6 @@ export interface TranslateFn {
    */
   (key: "login.qr.scanHint", params?: TranslationParams): string;
   /**
-   * zh-CN: 登录状态异常，请重新登录
-   * zh-TW: 登入狀態異常，請重新登入
-   * en-US: Abnormal login status. Please sign in again.
-   */
-  (key: "login.qr.toast.statusError", params?: TranslationParams): string;
-  /**
    * zh-CN: 登录成功
    * zh-TW: 登入成功
    * en-US: Login successful
@@ -6349,12 +6091,6 @@ export interface TranslateFn {
    * en-US: Please log in to use this feature
    */
   (key: "login.required.toast", params?: TranslationParams): string;
-  /**
-   * zh-CN: Logo
-   * zh-TW: Logo
-   * en-US: Logo
-   */
-  (key: "login.logoAlt", params?: TranslationParams): string;
   /**
    * zh-CN: 筛选
    * zh-TW: 篩選
@@ -7874,42 +7610,6 @@ export interface TranslateFn {
    */
   (key: "profile.menu.aboutMe", params?: TranslationParams): string;
   /**
-   * zh-CN: 无效的用户 ID
-   * zh-TW: 無效的使用者 ID
-   * en-US: Invalid User ID
-   */
-  (key: "profile.page.invalidUserId", params?: TranslationParams): string;
-  /**
-   * zh-CN: 最近播放歌曲
-   * zh-TW: 最近播放歌曲
-   * en-US: Recent Songs
-   */
-  (key: "profile.page.recentSongs", params?: TranslationParams): string;
-  /**
-   * zh-CN: 暂无播放记录
-   * zh-TW: 暫無播放紀錄
-   * en-US: No playback history available
-   */
-  (key: "profile.page.noRecentSongs", params?: TranslationParams): string;
-  /**
-   * zh-CN: 最近播放歌单
-   * zh-TW: 最近播放歌單
-   * en-US: Recent Playlists
-   */
-  (key: "profile.page.recentPlaylists", params?: TranslationParams): string;
-  /**
-   * zh-CN: 暂无歌单记录
-   * zh-TW: 暫無歌單紀錄
-   * en-US: No playlist records available
-   */
-  (key: "profile.page.noRecentPlaylists", params?: TranslationParams): string;
-  /**
-   * zh-CN: 公开歌单
-   * zh-TW: 公開歌單
-   * en-US: Public Playlists
-   */
-  (key: "profile.page.publicPlaylists", params?: TranslationParams): string;
-  /**
    * zh-CN: 个人信息已更新
    * zh-TW: 個人資訊已更新
    * en-US: Profile updated
@@ -7964,36 +7664,6 @@ export interface TranslateFn {
    */
   (key: "profile.edit.genderFemale", params?: TranslationParams): string;
   /**
-   * zh-CN: 头像
-   * zh-TW: 頭像
-   * en-US: Avatar
-   */
-  (key: "profile.avatarAlt", params?: TranslationParams): string;
-  /**
-   * zh-CN: 等级
-   * zh-TW: 等級
-   * en-US: Level
-   */
-  (key: "profile.stats.level", params?: TranslationParams): string;
-  /**
-   * zh-CN: 累计听歌
-   * zh-TW: 累計聽歌
-   * en-US: Total listened
-   */
-  (key: "profile.stats.listenSongs", params?: TranslationParams): string;
-  /**
-   * zh-CN: 入村陪伴
-   * zh-TW: 入村陪伴
-   * en-US: Days as member
-   */
-  (key: "profile.stats.createDays", params?: TranslationParams): string;
-  /**
-   * zh-CN: 签到
-   * zh-TW: 簽到
-   * en-US: Check-in
-   */
-  (key: "vipSign.title", params?: TranslationParams): string;
-  /**
    * zh-CN: 每日乐签
    * zh-TW: 每日樂簽
    * en-US: Daily Music Ticket
@@ -8024,41 +7694,11 @@ export interface TranslateFn {
    */
   (key: "vipSign.playFailed", params?: TranslationParams): string;
   /**
-   * zh-CN: 今天已签到
-   * zh-TW: 今天已簽到
-   * en-US: Already checked in today
-   */
-  (key: "vipSign.alreadySigned", params?: TranslationParams): string;
-  /**
-   * zh-CN: 非黑胶会员无法签到
-   * zh-TW: 非黑膠會員無法簽到
-   * en-US: VIP membership required
-   */
-  (key: "vipSign.notMember", params?: TranslationParams): string;
-  /**
-   * zh-CN: 连续签到 {{days}} 天
-   * zh-TW: 連續簽到 {{days}} 天
-   * en-US: {{days}} consecutive days
-   */
-  (key: "vipSign.consecutiveDays", params?: TranslationParams): string;
-  /**
    * zh-CN: 今日推荐
    * zh-TW: 今日推薦
    * en-US: Today's Pick
    */
   (key: "vipSign.recommendedSong", params?: TranslationParams): string;
-  /**
-   * zh-CN: 签到成功
-   * zh-TW: 簽到成功
-   * en-US: Check-in successful!
-   */
-  (key: "vipSign.success", params?: TranslationParams): string;
-  /**
-   * zh-CN: 签到失败: {{message}}
-   * zh-TW: 簽到失敗: {{message}}
-   * en-US: Check-in failed: {{message}}
-   */
-  (key: "vipSign.failed", params?: TranslationParams): string;
   /**
    * zh-CN: 本月累计打卡
    * zh-TW: 本月累計打卡
@@ -8072,29 +7712,11 @@ export interface TranslateFn {
    */
   (key: "vipSign.days", params?: TranslationParams): string;
   /**
-   * zh-CN: 云音乐APP扫码去会员中心
-   * zh-TW: 雲音樂APP掃碼去會員中心
-   * en-US: Scan with Cloud Music App to VIP Center
-   */
-  (key: "vipSign.qrGuide", params?: TranslationParams): string;
-  /**
    * zh-CN: 会员每日打卡得成长值
    * zh-TW: 會員每日打卡得成長值
    * en-US: Check in daily for membership growth value
    */
   (key: "vipSign.qrHint", params?: TranslationParams): string;
-  /**
-   * zh-CN: 月
-   * zh-TW: 月
-   * en-US: M
-   */
-  (key: "vipSign.month", params?: TranslationParams): string;
-  /**
-   * zh-CN: 日
-   * zh-TW: 日
-   * en-US: D
-   */
-  (key: "vipSign.day", params?: TranslationParams): string;
   /**
    * zh-CN: - 来自 @{{nickname}} 的评论
    * zh-TW: - 來自 @{{nickname}} 的評論
