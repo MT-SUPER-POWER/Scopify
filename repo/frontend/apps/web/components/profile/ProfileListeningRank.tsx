@@ -13,11 +13,13 @@ import s from "@/components/social/Social.module.css";
 
 const PERIODS: ListeningRankPeriod[] = ["week", "all"];
 
-export function ProfileListeningRank({ uid }: ProfileListeningRankProps) {
+export function ProfileListeningRank({ uid, isSelf }: ProfileListeningRankProps) {
   const { t } = useI18n();
   const [period, setPeriod] = useState<ListeningRankPeriod>("week");
   const query = useUserListeningRank(uid, period);
   const songs = query.data?.songs ?? [];
+  // 听歌排行是否可见由对方的隐私设置决定：别人未公开时整块不显示，加载中也先不占位
+  if (!isSelf && !query.isError && (query.isPending || query.data?.restricted)) return null;
   async function play(index: number) {
     try {
       const player = usePlayerStore.getState();

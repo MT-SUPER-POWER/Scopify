@@ -158,6 +158,7 @@ export interface SocialCommentsSkeletonProps {
 }
 export interface ProfileListeningRankProps {
   uid: string;
+  isSelf: boolean;
 }
 export interface ProfilePlaylistShelvesProps {
   uid: string;

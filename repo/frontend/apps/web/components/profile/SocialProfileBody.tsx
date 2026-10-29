@@ -41,7 +41,7 @@ export function SocialProfileBody({ user, tab, isSelf }: SocialProfileBodyProps)
       </nav>
       {tab === "overview" ? (
         <div className={s.profileOverview}>
-          <ProfileListeningRank uid={user.id} />
+          <ProfileListeningRank uid={user.id} isSelf={isSelf} />
           <ProfilePlaylistShelves uid={user.id} />
           {isSelf && <ProfileFansGroupGrid />}
         </div>
