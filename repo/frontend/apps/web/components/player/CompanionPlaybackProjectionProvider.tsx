@@ -10,11 +10,10 @@ import { createElectronPlaybackReplicaTransport } from "@/lib/playbackProjection
 import { createPlaybackReplica } from "@/lib/playbackProjection/replica";
 import { runtime } from "@/lib/runtime";
 import type { LyricData } from "@/types/lyrics/model";
-import type { PlaybackProjectionSource } from "@/types/playback/projection";
-
-type SwappablePlaybackSource<TLyrics> = PlaybackProjectionSource<TLyrics> & {
-  replaceSource(source: PlaybackProjectionSource<TLyrics>): void;
-};
+import type {
+  PlaybackProjectionSource,
+  SwappablePlaybackSource,
+} from "@/types/playback/projection";
 
 /** Installs one Electron Replica only for companion routes; dashboard owns a nested local Replica. */
 export function CompanionPlaybackProjectionProvider({ children }: { children: React.ReactNode }) {

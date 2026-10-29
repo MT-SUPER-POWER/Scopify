@@ -47,3 +47,7 @@ export interface PlaybackReplicaOptions {
   disconnectAfterMs?: number;
   dispatchCommand?: PlaybackCommandDispatcher;
 }
+
+export type SwappablePlaybackSource<TLyrics> = PlaybackProjectionSource<TLyrics> & {
+  replaceSource(source: PlaybackProjectionSource<TLyrics>): void;
+};
