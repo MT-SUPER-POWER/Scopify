@@ -11,6 +11,7 @@ import {
   DialogTitle,
 } from "@scopify/ui/shadcn/components/dialog";
 import { Input } from "@scopify/ui/shadcn/components/input";
+import { QueryFailure } from "@/components/shared/QueryFailure";
 import { CLOUD_SONG_FALLBACK_COVER } from "@/constants/cloud";
 import { useCloudMatchSearch } from "@/hooks/library/useCloudMatchSearch";
 import { cn, formatDuration } from "@/lib/utils";
@@ -19,8 +20,18 @@ import type { CloudMatchDialogProps } from "@/types/library/components";
 
 export function CloudMatchDialog({ busy, onClose, onConfirm, song }: CloudMatchDialogProps) {
   const { t } = useI18n();
-  const { candidates, isLoading, query, search, selectedId, setQuery, setSelectedId } =
-    useCloudMatchSearch(song);
+  const {
+    candidates,
+    error,
+    hasResult,
+    isLoading,
+    query,
+    retry,
+    search,
+    selectedId,
+    setQuery,
+    setSelectedId,
+  } = useCloudMatchSearch(song);
 
   return (
     <Dialog
@@ -40,7 +51,7 @@ export function CloudMatchDialog({ busy, onClose, onConfirm, song }: CloudMatchD
           className="flex gap-2"
           onSubmit={(event) => {
             event.preventDefault();
-            void search(query);
+            search(query);
           }}
         >
           <Input
@@ -59,7 +70,8 @@ export function CloudMatchDialog({ busy, onClose, onConfirm, song }: CloudMatchD
           </Button>
         </form>
         <div className="-mx-2 max-h-80 min-h-40 overflow-y-auto">
-          {!isLoading && candidates.length === 0 && (
+          {error && <QueryFailure compact error={error} onRetry={retry} />}
+          {hasResult && !isLoading && candidates.length === 0 && (
             <p className="py-12 text-center text-sm text-content-muted">
               {t("library.cloud.matchEmpty")}
             </p>

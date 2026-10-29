@@ -23183,12 +23183,6 @@ export interface TranslateFn {
    */
   (key: "library.cloud.matchEmpty", params?: TranslationParams): string;
   /**
-   * zh-CN: 搜索失败，请稍后重试
-   * zh-TW: 搜尋失敗，請稍後重試
-   * en-US: Search failed. Try again later.
-   */
-  (key: "library.cloud.matchSearchFailed", params?: TranslationParams): string;
-  /**
    * zh-CN: 匹配
    * zh-TW: 匹配
    * en-US: Match

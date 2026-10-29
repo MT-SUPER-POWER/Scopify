@@ -80,6 +80,8 @@ export const musicQueryKeys = {
   search: {
     albums: (keyword: string, limit: number) => ["search", "albums", keyword, limit] as const,
     artists: (keyword: string, limit: number) => ["search", "artists", keyword, limit] as const,
+    cloudMatch: (keyword: string, limit: number) =>
+      ["search", "cloud-match", keyword, limit] as const,
     complex: (keyword: string) => ["search", "complex", keyword] as const,
     lyrics: (keyword: string, limit: number) => ["search", "lyrics", keyword, limit] as const,
     mvs: (keyword: string, limit: number) => ["search", "mvs", keyword, limit] as const,
