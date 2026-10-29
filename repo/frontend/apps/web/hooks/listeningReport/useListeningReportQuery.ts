@@ -6,10 +6,8 @@ import {
   getListeningReport,
   getListeningSongPlayRank,
   getTodayListeningSongs,
-  getTotalListeningDuration,
 } from "@/lib/api/listeningReport";
 import { getListeningReportSummary } from "@/lib/listeningReport/reportSummary";
-import { getListeningDurationSeconds } from "@/lib/listeningReport/normalize";
 import { musicQueryKeys } from "@/lib/query/queryKeys";
 import { useLoginStatus } from "@/lib/hooks/useLoginStatus";
 import { useUserStore } from "@/store";
@@ -76,21 +74,5 @@ export function useTodayListeningSongsQuery() {
     },
     refetchOnWindowFocus: true,
     staleTime: 15_000,
-  });
-}
-
-/** Loads the account's all-time total listening duration. */
-export function useTotalListeningDurationQuery() {
-  const isLoggedIn = useLoginStatus();
-  const userId = useUserStore((state) => state.user?.userId ?? 0);
-
-  return useQuery({
-    enabled: isLoggedIn,
-    queryKey: musicQueryKeys.listeningReport.total(userId),
-    queryFn: async () => {
-      const response = await getTotalListeningDuration();
-      return getListeningDurationSeconds(response);
-    },
-    staleTime: 120_000,
   });
 }

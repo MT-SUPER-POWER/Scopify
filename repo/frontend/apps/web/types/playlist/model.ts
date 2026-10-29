@@ -1,5 +1,3 @@
-import type { RefObject } from "react";
-
 export interface PlaylistInfo {
   description?: string;
   specialType?: number;
@@ -20,13 +18,6 @@ export interface PlaylistInfo {
   likesLabel?: string;
   totalSongsLabel?: string;
   subscribed?: boolean | null;
-}
-
-export interface PlaylistStickyControlsOptions {
-  actionBarRef: RefObject<HTMLDivElement | null>;
-  enabled: boolean;
-  sentinelRef: RefObject<HTMLDivElement | null>;
-  topOffset: number;
 }
 
 /** Separates the selected historical day from the date used to key the daily cache. */

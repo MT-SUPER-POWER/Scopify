@@ -5,13 +5,3 @@ export interface NeteaseUserAlbum {
   size: number; // 专辑包含的歌曲数量
   id: number; // 专辑ID
 }
-
-export const pruneNeteaseUserAlbum = (album: NeteaseUserAlbum) => {
-  return {
-    subTime: album.subTime,
-    picUrl: album.picUrl,
-    name: album.name,
-    size: album.size,
-    id: album.id,
-  };
-};

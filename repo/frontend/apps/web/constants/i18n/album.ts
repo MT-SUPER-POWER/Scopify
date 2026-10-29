@@ -2,7 +2,6 @@ import { defineMessages } from "./define";
 
 export const albumMessages = defineMessages(
   {
-    "album.toast.fetchFailed": "获取专辑详情失败",
     "album.toast.refreshFailed": "暂时无法刷新专辑，请检查网络后重试",
     "album.toast.subscribeSuccess": "已收藏专辑",
     "album.toast.unsubscribeSuccess": "已取消收藏专辑",
@@ -22,8 +21,6 @@ export const albumMessages = defineMessages(
     "album.meta.unknownAlbum": "未知专辑",
     "album.meta.unknownArtist": "未知歌手",
     "album.meta.type": "专辑",
-    "album.searchPlaceholder": "在专辑中搜索...",
-    "album.listLabel": "列表",
     "album.totalSongs": "{{count}} 首歌",
     "album.coverAlt": "专辑封面",
     "album.description.title": "专辑简介",
@@ -31,7 +28,6 @@ export const albumMessages = defineMessages(
     "album.meta.publisher": "发行",
   },
   {
-    "album.toast.fetchFailed": "取得專輯詳情失敗",
     "album.toast.refreshFailed": "暫時無法重新整理專輯，請檢查網路後再試",
     "album.toast.subscribeSuccess": "已收藏專輯",
     "album.toast.unsubscribeSuccess": "已取消收藏專輯",
@@ -51,8 +47,6 @@ export const albumMessages = defineMessages(
     "album.meta.unknownAlbum": "未知專輯",
     "album.meta.unknownArtist": "未知歌手",
     "album.meta.type": "專輯",
-    "album.searchPlaceholder": "在專輯中搜尋...",
-    "album.listLabel": "列表",
     "album.totalSongs": "{{count}} 首歌",
     "album.coverAlt": "專輯封面",
     "album.description.title": "專輯簡介",
@@ -60,7 +54,6 @@ export const albumMessages = defineMessages(
     "album.meta.publisher": "發行",
   },
   {
-    "album.toast.fetchFailed": "Failed to load album details",
     "album.toast.refreshFailed":
       "Couldn't refresh this album. Check your connection and try again.",
     "album.toast.subscribeSuccess": "Album saved",
@@ -81,8 +74,6 @@ export const albumMessages = defineMessages(
     "album.meta.unknownAlbum": "Unknown Album",
     "album.meta.unknownArtist": "Unknown Artist",
     "album.meta.type": "Album",
-    "album.searchPlaceholder": "Search in album...",
-    "album.listLabel": "List",
     "album.totalSongs": "{{count}} songs",
     "album.coverAlt": "Album Cover",
     "album.description.title": "About this album",

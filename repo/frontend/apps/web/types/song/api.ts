@@ -24,11 +24,6 @@ export interface SongRedCountResponse {
   };
 }
 
-export interface SongCommentTotalResponse {
-  code: number;
-  total?: number;
-}
-
 export interface SongDynamicCoverData {
   videoPlayUrl?: string;
   dynamicCoverUrl?: string;

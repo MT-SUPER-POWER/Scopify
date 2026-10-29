@@ -1,6 +1,3 @@
-import type { MonthOption } from "@/lib/listeningReport/dateHelpers";
-import type { ListeningReportSummary } from "@/types/listeningReport/model";
-
 export interface ListeningReportDominantTimeOfDay {
   label: string;
   period: string | null;
@@ -22,11 +19,6 @@ export interface ListeningReportNarrative {
   eyebrow: string;
   headline: string;
   subtitle: string;
-}
-
-export interface ListeningReportNarrativeInput {
-  fallbackMonth: MonthOption;
-  summary: ListeningReportSummary | null | undefined;
 }
 
 export interface ListeningReportFooterSummary {

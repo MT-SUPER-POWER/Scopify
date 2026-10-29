@@ -23,8 +23,6 @@ export interface LatticeDrag {
   vy: number;
 }
 
-export type TileSpan = { cols: number; rows: number };
-
 export type WallMetrics = { cellSize: number; gap: number };
 
 export type Bounds = {

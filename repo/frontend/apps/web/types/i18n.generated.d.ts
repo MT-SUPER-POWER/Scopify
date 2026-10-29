@@ -437,12 +437,6 @@ export interface TranslateFn {
    */
   (key: "mv.player.theater", params?: TranslationParams): string;
   /**
-   * zh-CN: 退出剧场模式
-   * zh-TW: 退出劇場模式
-   * en-US: Exit theater mode
-   */
-  (key: "mv.player.exitTheater", params?: TranslationParams): string;
-  /**
    * zh-CN: 网页全屏
    * zh-TW: 網頁全螢幕
    * en-US: Fill window
@@ -466,18 +460,6 @@ export interface TranslateFn {
    * en-US: Exit full screen
    */
   (key: "mv.player.exitFullscreen", params?: TranslationParams): string;
-  /**
-   * zh-CN: {{count}}次播放
-   * zh-TW: {{count}}次播放
-   * en-US: {{count}} plays
-   */
-  (key: "mv.meta.plays", params?: TranslationParams): string;
-  /**
-   * zh-CN: 发布于 {{date}}
-   * zh-TW: 發佈於 {{date}}
-   * en-US: Released {{date}}
-   */
-  (key: "mv.meta.published", params?: TranslationParams): string;
   /**
    * zh-CN: {{count}}次观看
    * zh-TW: {{count}}次觀看
@@ -580,12 +562,6 @@ export interface TranslateFn {
    * en-US: Log in first
    */
   (key: "mv.toast.loginRequired", params?: TranslationParams): string;
-  /**
-   * zh-CN: 精彩评论
-   * zh-TW: 精彩評論
-   * en-US: Top comments
-   */
-  (key: "mv.section.comments", params?: TranslationParams): string;
   /**
    * zh-CN: 相似 MV
    * zh-TW: 相似 MV
@@ -5792,12 +5768,6 @@ export interface TranslateFn {
    */
   (key: "contextMenu.addToLiked", params?: TranslationParams): string;
   /**
-   * zh-CN: 收藏播客
-   * zh-TW: 收藏播客
-   * en-US: Favorite Podcast
-   */
-  (key: "contextMenu.favoritePodcast", params?: TranslationParams): string;
-  /**
    * zh-CN: 从喜欢中移除
    * zh-TW: 從喜歡中移除
    * en-US: Remove from Liked Songs
@@ -6092,48 +6062,6 @@ export interface TranslateFn {
    */
   (key: "login.required.toast", params?: TranslationParams): string;
   /**
-   * zh-CN: 筛选
-   * zh-TW: 篩選
-   * en-US: Filter
-   */
-  (key: "sidebar.filter.title", params?: TranslationParams): string;
-  /**
-   * zh-CN: 歌单
-   * zh-TW: 歌單
-   * en-US: Playlists
-   */
-  (key: "sidebar.filter.playlistTitle", params?: TranslationParams): string;
-  /**
-   * zh-CN: 全部
-   * zh-TW: 全部
-   * en-US: All
-   */
-  (key: "sidebar.filter.all", params?: TranslationParams): string;
-  /**
-   * zh-CN: 创建
-   * zh-TW: 建立
-   * en-US: Created
-   */
-  (key: "sidebar.filter.created", params?: TranslationParams): string;
-  /**
-   * zh-CN: 收藏
-   * zh-TW: 收藏
-   * en-US: Subscribed
-   */
-  (key: "sidebar.filter.subscribed", params?: TranslationParams): string;
-  /**
-   * zh-CN: 歌手
-   * zh-TW: 歌手
-   * en-US: Artists
-   */
-  (key: "sidebar.filter.artists", params?: TranslationParams): string;
-  /**
-   * zh-CN: 创建歌单
-   * zh-TW: 建立歌單
-   * en-US: Create Playlist
-   */
-  (key: "sidebar.filter.createPlaylists", params?: TranslationParams): string;
-  /**
    * zh-CN: 展开侧边栏
    * zh-TW: 展開側邊欄
    * en-US: Expand Sidebar
@@ -6230,30 +6158,6 @@ export interface TranslateFn {
    */
   (key: "sidebar.group.playlists", params?: TranslationParams): string;
   /**
-   * zh-CN: 关注的歌手
-   * zh-TW: 關注的歌手
-   * en-US: Followed Artists
-   */
-  (key: "sidebar.artist.followed", params?: TranslationParams): string;
-  /**
-   * zh-CN: 加载关注歌手失败
-   * zh-TW: 載入關注歌手失敗
-   * en-US: Failed to load followed artists
-   */
-  (key: "sidebar.artist.fetchFailed", params?: TranslationParams): string;
-  /**
-   * zh-CN: 你还没有关注任何歌手
-   * zh-TW: 你還沒有關注任何歌手
-   * en-US: You haven't followed any artists yet
-   */
-  (key: "sidebar.artist.emptyTitle", params?: TranslationParams): string;
-  /**
-   * zh-CN: 在歌手页关注歌手后，这里就会显示。
-   * zh-TW: 在歌手頁關注歌手後，這裡就會顯示。
-   * en-US: Follow artists on their profile pages to see them here.
-   */
-  (key: "sidebar.artist.emptySubtitle", params?: TranslationParams): string;
-  /**
    * zh-CN: 歌单 · 你
    * zh-TW: 歌單 · 你
    * en-US: Playlist • You
@@ -6266,23 +6170,11 @@ export interface TranslateFn {
    */
   (key: "sidebar.playlist.byCreator", params?: TranslationParams): string;
   /**
-   * zh-CN: 专辑 · {{name}}
-   * zh-TW: 專輯 · {{name}}
-   * en-US: Album • {{name}}
-   */
-  (key: "sidebar.Album.byCreator", params?: TranslationParams): string;
-  /**
    * zh-CN: 获取歌单失败，请稍后再试
    * zh-TW: 取得歌單失敗，請稍後再試
    * en-US: Failed to load playlists. Please try again later.
    */
   (key: "sidebar.toast.fetchFailed", params?: TranslationParams): string;
-  /**
-   * zh-CN: 后端服务尚未就绪，正在尝试继续加载…
-   * zh-TW: 後端服務尚未就緒，正在嘗試繼續載入…
-   * en-US: The backend is not ready yet. Continuing to load in the background…
-   */
-  (key: "sidebar.toast.backendNotReady", params?: TranslationParams): string;
   /**
    * zh-CN: 侧边栏
    * zh-TW: 側邊欄
@@ -6392,12 +6284,6 @@ export interface TranslateFn {
    */
   (key: "sidebar.lib.updateFailed", params?: TranslationParams): string;
   /**
-   * zh-CN: 更新歌单时发生错误
-   * zh-TW: 更新歌單時發生錯誤
-   * en-US: An unexpected error occurred while updating the playlist
-   */
-  (key: "sidebar.lib.updateUnexpectedError", params?: TranslationParams): string;
-  /**
    * zh-CN: 此歌单中没有歌曲
    * zh-TW: 此歌單中沒有歌曲
    * en-US: No tracks found in this playlist
@@ -6494,101 +6380,11 @@ export interface TranslateFn {
    */
   (key: "playlist.drop.unliked", params?: TranslationParams): string;
   /**
-   * zh-CN: 调整歌单顺序
-   * zh-TW: 調整歌單順序
-   * en-US: Reorder playlists
-   */
-  (key: "playlist.order.playlists", params?: TranslationParams): string;
-  /**
-   * zh-CN: 调整歌曲顺序
-   * zh-TW: 調整歌曲順序
-   * en-US: Reorder songs
-   */
-  (key: "playlist.order.tracks", params?: TranslationParams): string;
-  /**
-   * zh-CN: 拖动手柄或使用上下按钮调整顺序，保存后同步到网易云。
-   * zh-TW: 拖動手柄或使用上下按鈕調整順序，儲存後同步到網易雲。
-   * en-US: Drag the handles or use the arrow buttons, then save to sync with NetEase Cloud Music.
-   */
-  (key: "playlist.order.hint", params?: TranslationParams): string;
-  /**
-   * zh-CN: 在创建、收藏分组内拖动或使用上下按钮调整顺序；喜欢的音乐保持原位。保存后同步到网易云。
-   * zh-TW: 在建立、收藏分組內拖動或使用上下按鈕調整順序；喜歡的音樂保持原位。儲存後同步到網易雲。
-   * en-US: Reorder within your created or subscribed playlists using drag handles or arrows. Liked Music stays in place. Save to sync with NetEase Cloud Music.
-   */
-  (key: "playlist.order.libraryHint", params?: TranslationParams): string;
-  /**
-   * zh-CN: 排序列表
-   * zh-TW: 排序列表
-   * en-US: Order list
-   */
-  (key: "playlist.order.list", params?: TranslationParams): string;
-  /**
-   * zh-CN: 拖动调整顺序
-   * zh-TW: 拖動調整順序
-   * en-US: Drag to reorder
-   */
-  (key: "playlist.order.drag", params?: TranslationParams): string;
-  /**
-   * zh-CN: 喜欢的音乐保持原位
-   * zh-TW: 喜歡的音樂保持原位
-   * en-US: Liked Music stays in place
-   */
-  (key: "playlist.order.locked", params?: TranslationParams): string;
-  /**
-   * zh-CN: 上移 {{name}}
-   * zh-TW: 上移 {{name}}
-   * en-US: Move {{name}} up
-   */
-  (key: "playlist.order.up", params?: TranslationParams): string;
-  /**
-   * zh-CN: 下移 {{name}}
-   * zh-TW: 下移 {{name}}
-   * en-US: Move {{name}} down
-   */
-  (key: "playlist.order.down", params?: TranslationParams): string;
-  /**
-   * zh-CN: 加载完整列表…
-   * zh-TW: 載入完整列表…
-   * en-US: Loading the complete list…
-   */
-  (key: "playlist.order.loading", params?: TranslationParams): string;
-  /**
-   * zh-CN: 保存顺序
-   * zh-TW: 儲存順序
-   * en-US: Save order
-   */
-  (key: "playlist.order.save", params?: TranslationParams): string;
-  /**
-   * zh-CN: 正在保存…
-   * zh-TW: 正在儲存…
-   * en-US: Saving…
-   */
-  (key: "playlist.order.saving", params?: TranslationParams): string;
-  /**
-   * zh-CN: 顺序已保存
-   * zh-TW: 順序已儲存
-   * en-US: Order saved
-   */
-  (key: "playlist.order.saved", params?: TranslationParams): string;
-  /**
    * zh-CN: 顺序保存失败，已恢复原顺序
    * zh-TW: 順序儲存失敗，已恢復原順序
    * en-US: Could not save the order. The previous order has been restored.
    */
   (key: "playlist.order.reverted", params?: TranslationParams): string;
-  /**
-   * zh-CN: 加载排序列表失败。
-   * zh-TW: 載入排序列表失敗。
-   * en-US: Unable to load the order list.
-   */
-  (key: "playlist.order.loadFailed", params?: TranslationParams): string;
-  /**
-   * zh-CN: 保存失败，调整已保留，请重试。
-   * zh-TW: 儲存失敗，調整已保留，請重試。
-   * en-US: Save failed. Your changes are preserved; please retry.
-   */
-  (key: "playlist.order.saveFailed", params?: TranslationParams): string;
   /**
    * zh-CN: 只能调整自己创建的歌单中的歌曲顺序。
    * zh-TW: 只能調整自己建立的歌單中的歌曲順序。
@@ -6607,12 +6403,6 @@ export interface TranslateFn {
    * en-US: The list has changed. Close and reopen the order dialog.
    */
   (key: "playlist.order.changed", params?: TranslationParams): string;
-  /**
-   * zh-CN: 歌曲 {{id}}（暂无详情）
-   * zh-TW: 歌曲 {{id}}（暫無詳情）
-   * en-US: Song {{id}} (details unavailable)
-   */
-  (key: "playlist.order.unknownTrack", params?: TranslationParams): string;
   /**
    * zh-CN: 为你的歌单添加名称
    * zh-TW: 為你的歌單新增名稱
@@ -6734,18 +6524,6 @@ export interface TranslateFn {
    */
   (key: "playlist.table.queueAdded", params?: TranslationParams): string;
   /**
-   * zh-CN: 已添加到喜欢
-   * zh-TW: 已加入喜歡
-   * en-US: Added to Liked Songs
-   */
-  (key: "playlist.table.likedAdded", params?: TranslationParams): string;
-  /**
-   * zh-CN: 已取消喜欢
-   * zh-TW: 已取消喜歡
-   * en-US: Removed from Liked Songs
-   */
-  (key: "playlist.table.likedRemoved", params?: TranslationParams): string;
-  /**
    * zh-CN: 操作失败，请稍后再试
    * zh-TW: 操作失敗，請稍後再試
    * en-US: Operation failed. Please try again later.
@@ -6854,18 +6632,6 @@ export interface TranslateFn {
    */
   (key: "playlist.actions.historyDate", params?: TranslationParams): string;
   /**
-   * zh-CN: 今日推荐
-   * zh-TW: 今日推薦
-   * en-US: Today's recommendations
-   */
-  (key: "playlist.actions.currentDaily", params?: TranslationParams): string;
-  /**
-   * zh-CN: 加载历史日推...
-   * zh-TW: 正在載入歷史日推...
-   * en-US: Loading daily history...
-   */
-  (key: "playlist.actions.historyLoading", params?: TranslationParams): string;
-  /**
    * zh-CN: 加载历史日推失败，请确认已登录且开通黑胶VIP。
    * zh-TW: 載入歷史日推失敗，請確認已登入且開通黑膠VIP。
    * en-US: Couldn't load daily history. Confirm that you're signed in and have Black Vinyl VIP.
@@ -6901,18 +6667,6 @@ export interface TranslateFn {
    * en-US: Daily Recommendations · {{date}}
    */
   (key: "playlist.meta.historicalDailyTitle", params?: TranslationParams): string;
-  /**
-   * zh-CN: 历史日推
-   * zh-TW: 歷史日推
-   * en-US: Daily History
-   */
-  (key: "playlist.history.title", params?: TranslationParams): string;
-  /**
-   * zh-CN: 暂无可查看的历史日推
-   * zh-TW: 暫無可查看的歷史日推
-   * en-US: No daily recommendation history is available
-   */
-  (key: "playlist.history.empty", params?: TranslationParams): string;
   /**
    * zh-CN: 为你推荐
    * zh-TW: 為你推薦
@@ -7010,23 +6764,11 @@ export interface TranslateFn {
    */
   (key: "search.modal.recentSearches", params?: TranslationParams): string;
   /**
-   * zh-CN: 最近搜索
-   * zh-TW: 最近搜尋
-   * en-US: Recent Search
-   */
-  (key: "search.modal.recentSearch", params?: TranslationParams): string;
-  /**
    * zh-CN: 相关建议
    * zh-TW: 相關建議
    * en-US: Related Suggestions
    */
   (key: "search.modal.relatedSuggestions", params?: TranslationParams): string;
-  /**
-   * zh-CN: 没有找到相关内容
-   * zh-TW: 沒有找到相關內容
-   * en-US: No related results found
-   */
-  (key: "search.modal.noResults", params?: TranslationParams): string;
   /**
    * zh-CN: 最佳匹配
    * zh-TW: 最佳匹配
@@ -7310,41 +7052,17 @@ export interface TranslateFn {
    */
   (key: "search.voice.transcript", params?: TranslationParams): string;
   /**
-   * zh-CN: 综合搜索失败，请稍后再试
-   * zh-TW: 綜合搜尋失敗，請稍後再試
-   * en-US: Comprehensive search failed. Please try again.
-   */
-  (key: "search.hook.failedAll", params?: TranslationParams): string;
-  /**
-   * zh-CN: {{category}} 搜索失败
-   * zh-TW: {{category}} 搜尋失敗
-   * en-US: {{category}} search failed
-   */
-  (key: "search.hook.failedCategory", params?: TranslationParams): string;
-  /**
    * zh-CN: 未知歌手
    * zh-TW: 未知歌手
    * en-US: Unknown Artist
    */
   (key: "search.song.unknownArtist", params?: TranslationParams): string;
   /**
-   * zh-CN: 匹配歌词
-   * zh-TW: 匹配歌詞
-   * en-US: Matched lyrics
-   */
-  (key: "search.lyrics.matchedSnippet", params?: TranslationParams): string;
-  /**
    * zh-CN: 展开完整歌词
    * zh-TW: 展開完整歌詞
    * en-US: View full lyrics
    */
   (key: "search.lyrics.viewFull", params?: TranslationParams): string;
-  /**
-   * zh-CN: 收起完整歌词
-   * zh-TW: 收起完整歌詞
-   * en-US: Collapse lyrics
-   */
-  (key: "search.lyrics.collapseFull", params?: TranslationParams): string;
   /**
    * zh-CN: 已点赞
    * zh-TW: 已按讚
@@ -7730,12 +7448,6 @@ export interface TranslateFn {
    */
   (key: "vipSign.qrAlt", params?: TranslationParams): string;
   /**
-   * zh-CN: 获取专辑详情失败
-   * zh-TW: 取得專輯詳情失敗
-   * en-US: Failed to load album details
-   */
-  (key: "album.toast.fetchFailed", params?: TranslationParams): string;
-  /**
    * zh-CN: 暂时无法刷新专辑，请检查网络后重试
    * zh-TW: 暫時無法重新整理專輯，請檢查網路後再試
    * en-US: Couldn't refresh this album. Check your connection and try again.
@@ -7850,18 +7562,6 @@ export interface TranslateFn {
    */
   (key: "album.meta.type", params?: TranslationParams): string;
   /**
-   * zh-CN: 在专辑中搜索...
-   * zh-TW: 在專輯中搜尋...
-   * en-US: Search in album...
-   */
-  (key: "album.searchPlaceholder", params?: TranslationParams): string;
-  /**
-   * zh-CN: 列表
-   * zh-TW: 列表
-   * en-US: List
-   */
-  (key: "album.listLabel", params?: TranslationParams): string;
-  /**
    * zh-CN: {{count}} 首歌
    * zh-TW: {{count}} 首歌
    * en-US: {{count}} songs
@@ -7970,12 +7670,6 @@ export interface TranslateFn {
    */
   (key: "artist.action.unfollow", params?: TranslationParams): string;
   /**
-   * zh-CN: 加载歌手数据失败
-   * zh-TW: 載入歌手資料失敗
-   * en-US: Failed to load artist data
-   */
-  (key: "artist.toast.fetchFailed", params?: TranslationParams): string;
-  /**
    * zh-CN: 专辑为空
    * zh-TW: 專輯為空
    * en-US: Album is empty
@@ -7987,24 +7681,6 @@ export interface TranslateFn {
    * en-US: Failed to load album
    */
   (key: "artist.toast.loadAlbumFailed", params?: TranslationParams): string;
-  /**
-   * zh-CN: 已添加到喜欢的歌曲
-   * zh-TW: 已加入喜歡的歌曲
-   * en-US: Added to liked songs
-   */
-  (key: "artist.track.likedAdded", params?: TranslationParams): string;
-  /**
-   * zh-CN: 已从喜欢的歌曲中移除
-   * zh-TW: 已從喜歡的歌曲中移除
-   * en-US: Removed from liked songs
-   */
-  (key: "artist.track.likedRemoved", params?: TranslationParams): string;
-  /**
-   * zh-CN: 操作失败，请稍后再试
-   * zh-TW: 操作失敗，請稍後再試
-   * en-US: Operation failed. Please try again later.
-   */
-  (key: "artist.track.operationFailed", params?: TranslationParams): string;
   /**
    * zh-CN: 歌曲已在队列中
    * zh-TW: 歌曲已在佇列中
@@ -8054,18 +7730,6 @@ export interface TranslateFn {
    */
   (key: "artist.action.copyLink", params?: TranslationParams): string;
   /**
-   * zh-CN: 乐迷团 · Lv.{{level}}
-   * zh-TW: 樂迷團 · Lv.{{level}}
-   * en-US: Fans · Lv.{{level}}
-   */
-  (key: "artist.fansGroup.joined", params?: TranslationParams): string;
-  /**
-   * zh-CN: 乐迷团
-   * zh-TW: 樂迷團
-   * en-US: Fans Group
-   */
-  (key: "artist.fansGroup.join", params?: TranslationParams): string;
-  /**
    * zh-CN: 晚上好
    * zh-TW: 晚上好
    * en-US: Good Night
@@ -8096,12 +7760,6 @@ export interface TranslateFn {
    */
   (key: "home.dailyRecommendations", params?: TranslationParams): string;
   /**
-   * zh-CN: 刷新首页内容
-   * zh-TW: 重新整理首頁內容
-   * en-US: Refresh home content
-   */
-  (key: "home.refreshTitle", params?: TranslationParams): string;
-  /**
    * zh-CN: 为 {{name}} 推荐
    * zh-TW: 為 {{name}} 推薦
    * en-US: Made for {{name}}
@@ -8113,12 +7771,6 @@ export interface TranslateFn {
    * en-US: You
    */
   (key: "home.you", params?: TranslationParams): string;
-  /**
-   * zh-CN: 正在加载推荐...
-   * zh-TW: 正在載入推薦...
-   * en-US: Loading recommendations...
-   */
-  (key: "home.loadingRecommendations", params?: TranslationParams): string;
   /**
    * zh-CN: 音乐推荐轮播图
    * zh-TW: 音樂推薦輪播圖
@@ -8270,29 +7922,11 @@ export interface TranslateFn {
    */
   (key: "home.artistTopSongs", params?: TranslationParams): string;
   /**
-   * zh-CN: 收录艺人的最热歌曲。
-   * zh-TW: 收錄藝人的最熱歌曲。
-   * en-US: The most popular songs from artists.
-   */
-  (key: "home.artistTopSongsSubtitle", params?: TranslationParams): string;
-  /**
    * zh-CN: 关注歌手的专辑
    * zh-TW: 關注歌手的專輯
    * en-US: Albums by Followed Artists
    */
   (key: "home.followedArtistsAlbums", params?: TranslationParams): string;
-  /**
-   * zh-CN: 试听
-   * zh-TW: 試聽
-   * en-US: Preview
-   */
-  (key: "home.listenPreview", params?: TranslationParams): string;
-  /**
-   * zh-CN: {{artist}} 热门精选
-   * zh-TW: {{artist}} 熱門精選
-   * en-US: Best of {{artist}}
-   */
-  (key: "home.artistSummary", params?: TranslationParams): string;
   /**
    * zh-CN: 精选最热单曲
    * zh-TW: 精選最熱單曲
@@ -22139,12 +21773,6 @@ export interface TranslateFn {
    */
   (key: "shortcuts.commandPalette.empty", params?: TranslationParams): string;
   /**
-   * zh-CN: 喜欢的音乐
-   * zh-TW: 喜歡的音樂
-   * en-US: Liked Songs
-   */
-  (key: "library.title.liked", params?: TranslationParams): string;
-  /**
    * zh-CN: 最近播放
    * zh-TW: 最近播放
    * en-US: Recently Played
@@ -22175,48 +21803,6 @@ export interface TranslateFn {
    */
   (key: "library.listeningReport.entry", params?: TranslationParams): string;
   /**
-   * zh-CN: 返回最近播放
-   * zh-TW: 返回最近播放
-   * en-US: Back to recently played
-   */
-  (key: "library.listeningReport.back", params?: TranslationParams): string;
-  /**
-   * zh-CN: LISTENING REPORT
-   * zh-TW: LISTENING REPORT
-   * en-US: LISTENING REPORT
-   */
-  (key: "library.listeningReport.eyebrow", params?: TranslationParams): string;
-  /**
-   * zh-CN: 你的每一段收听，都有回响。
-   * zh-TW: 你的每一段收聽，都有回響。
-   * en-US: Every listening moment leaves an echo.
-   */
-  (key: "library.listeningReport.pageLabel", params?: TranslationParams): string;
-  /**
-   * zh-CN: 本周听歌足迹
-   * zh-TW: 本週聽歌足跡
-   * en-US: This week's listening
-   */
-  (key: "library.listeningReport.title.week", params?: TranslationParams): string;
-  /**
-   * zh-CN: 本月听歌足迹
-   * zh-TW: 本月聽歌足跡
-   * en-US: This month's listening
-   */
-  (key: "library.listeningReport.title.month", params?: TranslationParams): string;
-  /**
-   * zh-CN: 年度听歌足迹
-   * zh-TW: 年度聽歌足跡
-   * en-US: This year's listening
-   */
-  (key: "library.listeningReport.title.year", params?: TranslationParams): string;
-  /**
-   * zh-CN: 从你的真实播放记录中，回看这一段时间的音乐陪伴。
-   * zh-TW: 從你的真實播放記錄中，回看這一段時間的音樂陪伴。
-   * en-US: Look back on the music that kept you company this period.
-   */
-  (key: "library.listeningReport.subtitle", params?: TranslationParams): string;
-  /**
    * zh-CN: 周
    * zh-TW: 週
    * en-US: Week
@@ -22235,24 +21821,6 @@ export interface TranslateFn {
    */
   (key: "library.listeningReport.period.year", params?: TranslationParams): string;
   /**
-   * zh-CN: 本周概览
-   * zh-TW: 本週概覽
-   * en-US: This week at a glance
-   */
-  (key: "library.listeningReport.current.week", params?: TranslationParams): string;
-  /**
-   * zh-CN: 本月概览
-   * zh-TW: 本月概覽
-   * en-US: This month at a glance
-   */
-  (key: "library.listeningReport.current.month", params?: TranslationParams): string;
-  /**
-   * zh-CN: 年度概览
-   * zh-TW: 年度概覽
-   * en-US: This year at a glance
-   */
-  (key: "library.listeningReport.current.year", params?: TranslationParams): string;
-  /**
    * zh-CN: 数据来自网易云音乐听歌足迹
    * zh-TW: 資料來自網易雲音樂聽歌足跡
    * en-US: Synced from NetEase Cloud Music listening history
@@ -22265,59 +21833,11 @@ export interface TranslateFn {
    */
   (key: "library.listeningReport.refresh", params?: TranslationParams): string;
   /**
-   * zh-CN: 听歌时长
-   * zh-TW: 聽歌時長
-   * en-US: Listening time
-   */
-  (key: "library.listeningReport.metric.duration", params?: TranslationParams): string;
-  /**
-   * zh-CN: 听过歌曲
-   * zh-TW: 聽過歌曲
-   * en-US: Songs played
-   */
-  (key: "library.listeningReport.metric.songs", params?: TranslationParams): string;
-  /**
-   * zh-CN: 播放次数
-   * zh-TW: 播放次數
-   * en-US: Play count
-   */
-  (key: "library.listeningReport.metric.plays", params?: TranslationParams): string;
-  /**
-   * zh-CN: 活跃天数
-   * zh-TW: 活躍天數
-   * en-US: Active days
-   */
-  (key: "library.listeningReport.metric.activeDays", params?: TranslationParams): string;
-  /**
-   * zh-CN: {{hours}} 小时 {{minutes}} 分钟
-   * zh-TW: {{hours}} 小時 {{minutes}} 分鐘
-   * en-US: {{hours}}h {{minutes}}m
-   */
-  (key: "library.listeningReport.durationValue", params?: TranslationParams): string;
-  /**
    * zh-CN: 这个周期还没有可展示的听歌数据。
    * zh-TW: 這個週期還沒有可展示的聽歌資料。
    * en-US: There is no listening data to show for this period yet.
    */
   (key: "library.listeningReport.empty", params?: TranslationParams): string;
-  /**
-   * zh-CN: 本期高频单曲
-   * zh-TW: 本期高頻單曲
-   * en-US: Most played song
-   */
-  (key: "library.listeningReport.topSong", params?: TranslationParams): string;
-  /**
-   * zh-CN: 钟爱歌手
-   * zh-TW: 鍾愛歌手
-   * en-US: Top artist
-   */
-  (key: "library.listeningReport.topArtist", params?: TranslationParams): string;
-  /**
-   * zh-CN: 偏爱风格
-   * zh-TW: 偏愛風格
-   * en-US: Favorite style
-   */
-  (key: "library.listeningReport.topStyle", params?: TranslationParams): string;
   /**
    * zh-CN: 选择月份
    * zh-TW: 選擇月份
@@ -22342,78 +21862,6 @@ export interface TranslateFn {
    * en-US: This month
    */
   (key: "library.listeningReport.currentMonth", params?: TranslationParams): string;
-  /**
-   * zh-CN: 全部月份
-   * zh-TW: 全部月份
-   * en-US: All months
-   */
-  (key: "library.listeningReport.allMonths", params?: TranslationParams): string;
-  /**
-   * zh-CN: 音乐人格
-   * zh-TW: 音樂人格
-   * en-US: Music Persona
-   */
-  (key: "library.listeningReport.metric.persona", params?: TranslationParams): string;
-  /**
-   * zh-CN: 音乐探索者
-   * zh-TW: 音樂探索者
-   * en-US: Music Explorer
-   */
-  (key: "library.listeningReport.metric.personaDefault", params?: TranslationParams): string;
-  /**
-   * zh-CN: 天
-   * zh-TW: 天
-   * en-US: days
-   */
-  (key: "library.listeningReport.metric.daysUnit", params?: TranslationParams): string;
-  /**
-   * zh-CN: 首
-   * zh-TW: 首
-   * en-US: songs
-   */
-  (key: "library.listeningReport.metric.songsUnit", params?: TranslationParams): string;
-  /**
-   * zh-CN: 分钟
-   * zh-TW: 分鐘
-   * en-US: mins
-   */
-  (key: "library.listeningReport.metric.minutesUnit", params?: TranslationParams): string;
-  /**
-   * zh-CN: 小时
-   * zh-TW: 小時
-   * en-US: hrs
-   */
-  (key: "library.listeningReport.metric.hoursUnit", params?: TranslationParams): string;
-  /**
-   * zh-CN: 每日收听趋势
-   * zh-TW: 每日收聽趨勢
-   * en-US: Daily Listening Activity
-   */
-  (key: "library.listeningReport.chart.dailyActivity", params?: TranslationParams): string;
-  /**
-   * zh-CN: 记录每一天的专注与沉浸
-   * zh-TW: 記錄每一天的專注與沉浸
-   * en-US: Every day of focus and immersion
-   */
-  (key: "library.listeningReport.chart.dailySubtitle", params?: TranslationParams): string;
-  /**
-   * zh-CN: 24小时作息偏好
-   * zh-TW: 24小時作息偏好
-   * en-US: 24h Listening Habit
-   */
-  (key: "library.listeningReport.chart.timeOfDay", params?: TranslationParams): string;
-  /**
-   * zh-CN: 音乐在你的日常时段流动
-   * zh-TW: 音樂在你的日常時段流動
-   * en-US: When music flowed through your day
-   */
-  (key: "library.listeningReport.chart.timeOfDaySubtitle", params?: TranslationParams): string;
-  /**
-   * zh-CN: 峰值
-   * zh-TW: 峰值
-   * en-US: Peak
-   */
-  (key: "library.listeningReport.chart.peak", params?: TranslationParams): string;
   /**
    * zh-CN: 清晨 (05:00 - 08:00)
    * zh-TW: 清晨 (05:00 - 08:00)
@@ -22451,60 +21899,6 @@ export interface TranslateFn {
    */
   (key: "library.listeningReport.timeOfDay.deep_night", params?: TranslationParams): string;
   /**
-   * zh-CN: 高频单曲 Top 榜
-   * zh-TW: 高頻單曲 Top 榜
-   * en-US: Top Songs
-   */
-  (key: "library.listeningReport.topSongsRank", params?: TranslationParams): string;
-  /**
-   * zh-CN: 在这个时间段里无限循环的声音
-   * zh-TW: 在這個時間段裡無限循環的聲音
-   * en-US: Your most replayed sounds this period
-   */
-  (key: "library.listeningReport.topSongsSubtitle", params?: TranslationParams): string;
-  /**
-   * zh-CN: 最爱歌手
-   * zh-TW: 最愛歌手
-   * en-US: Top Artists
-   */
-  (key: "library.listeningReport.topArtistsRank", params?: TranslationParams): string;
-  /**
-   * zh-CN: 陪伴你最久的声音创作者
-   * zh-TW: 陪伴你最久的聲音創作者
-   * en-US: Creators who kept you company
-   */
-  (key: "library.listeningReport.topArtistsSubtitle", params?: TranslationParams): string;
-  /**
-   * zh-CN: 音乐品味画像
-   * zh-TW: 音樂品味畫像
-   * en-US: Taste Profile
-   */
-  (key: "library.listeningReport.tasteBreakdown", params?: TranslationParams): string;
-  /**
-   * zh-CN: 曲风、语言与时代偏好
-   * zh-TW: 曲風、語言與時代偏好
-   * en-US: Genres, languages, and eras
-   */
-  (key: "library.listeningReport.tasteSubtitle", params?: TranslationParams): string;
-  /**
-   * zh-CN: 曲风流派
-   * zh-TW: 曲風流派
-   * en-US: Genres
-   */
-  (key: "library.listeningReport.genres", params?: TranslationParams): string;
-  /**
-   * zh-CN: 语种偏好
-   * zh-TW: 語種偏好
-   * en-US: Languages
-   */
-  (key: "library.listeningReport.languages", params?: TranslationParams): string;
-  /**
-   * zh-CN: 年代跨度
-   * zh-TW: 年代跨度
-   * en-US: Eras
-   */
-  (key: "library.listeningReport.eras", params?: TranslationParams): string;
-  /**
    * zh-CN: 今日收听轨迹
    * zh-TW: 今日收聽軌跡
    * en-US: Today's Listening Timeline
@@ -22534,18 +21928,6 @@ export interface TranslateFn {
    * en-US: Songs you like will appear here.
    */
   (key: "library.empty.liked.description", params?: TranslationParams): string;
-  /**
-   * zh-CN: 还没有播放记录
-   * zh-TW: 還沒有播放記錄
-   * en-US: No listening history yet
-   */
-  (key: "library.empty.recent.title", params?: TranslationParams): string;
-  /**
-   * zh-CN: 播放歌曲后，它们会显示在这里。
-   * zh-TW: 播放歌曲後，它們會顯示在這裡。
-   * en-US: Songs you play will appear here.
-   */
-  (key: "library.empty.recent.description", params?: TranslationParams): string;
   /**
    * zh-CN: 还没有收藏内容
    * zh-TW: 還沒有收藏內容
@@ -22901,29 +22283,11 @@ export interface TranslateFn {
    */
   (key: "library.podcasts.subscribers", params?: TranslationParams): string;
   /**
-   * zh-CN: 新增 {{count}}
-   * zh-TW: 新增 {{count}}
-   * en-US: {{count}} new
-   */
-  (key: "library.podcasts.newVoices", params?: TranslationParams): string;
-  /**
    * zh-CN: 最近播放
    * zh-TW: 最近播放
    * en-US: Recently played
    */
   (key: "library.podcasts.recentPlay", params?: TranslationParams): string;
-  /**
-   * zh-CN: 更新于 {{date}}
-   * zh-TW: 更新於 {{date}}
-   * en-US: Updated {{date}}
-   */
-  (key: "library.podcasts.updatedAt", params?: TranslationParams): string;
-  /**
-   * zh-CN: 购买播客
-   * zh-TW: 購買播客
-   * en-US: Purchased Podcasts
-   */
-  (key: "library.podcasts.purchased", params?: TranslationParams): string;
   /**
    * zh-CN: 喜欢的声音
    * zh-TW: 喜歡的聲音

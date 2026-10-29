@@ -1,4 +1,4 @@
-import type { RawSongDetail, SongDetail } from "@/types/song/api";
+import type { RawSongDetail } from "@/types/song/api";
 
 export interface ArtistCoverTheme {
   cover: string;
@@ -44,11 +44,4 @@ export interface FollowedArtist {
   avatarUrl?: string;
   picUrl?: string;
   img1v1Url?: string;
-}
-
-export interface ArtistCachePayload {
-  artist: ArtistInfo | null;
-  popularTracks: SongDetail[];
-  hotTracksQueue: SongDetail[];
-  discography: Album[];
 }

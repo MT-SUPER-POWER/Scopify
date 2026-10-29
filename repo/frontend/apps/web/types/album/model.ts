@@ -1,10 +1,5 @@
 import type { SongDetail } from "@/types/song/api";
 
-export interface AlbumDetailData {
-  info: AlbumInfo;
-  tracks: SongDetail[];
-}
-
 export interface AlbumInfo {
   artistAvatar: string;
   artistId: number | string | undefined;

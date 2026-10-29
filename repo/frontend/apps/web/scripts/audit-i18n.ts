@@ -2,10 +2,7 @@ import { readFileSync } from "node:fs";
 import { join, relative } from "node:path";
 
 const roots = ["app", "components"];
-const ignoredFiles = new Set([
-  "app\\(dashboard)\\me\\page.tsx",
-  "components\\Playlist\\ControlPanel.tsx",
-]);
+const ignoredFiles = new Set(["app\\(dashboard)\\me\\page.tsx"]);
 const allowPatterns = [
   /Scopify/,
   /GitHub/i,

@@ -4,10 +4,8 @@ import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/hooks/auth/useAuth";
 import { throwQueryErrorWithoutData } from "@/lib/query/errorPolicy";
 import { getArtistMVs } from "@/lib/api/artist";
-import { getMVComments } from "@/lib/api/comment";
-import { getMVDetail, getMVDetailInfo, getMVUrl, getSubscribedMVs } from "@/lib/api/mv";
+import { getMVDetail, getMVDetailInfo, getMVUrl } from "@/lib/api/mv";
 import { musicQueryKeys } from "@/lib/query/queryKeys";
-import type { MusicCommentParams } from "@/types/comment/api";
 import type { MvPaginationParams } from "@/types/mv/api";
 import type { MvQueryId, MvQueryOptions } from "@/types/mv/model";
 
@@ -71,39 +69,5 @@ export function useArtistMVsQuery(
       return (await getArtistMVs(id, params.limit ?? 30, params.offset ?? 0, signal)).data;
     },
     meta: { persist: true, scope: "public" },
-  });
-}
-
-export function useSubscribedMVsQuery(
-  params: MvPaginationParams = {},
-  options: MvQueryOptions = {},
-) {
-  const { accountId } = useAuth();
-  return useQuery({
-    enabled: (options.enabled ?? true) && Boolean(accountId),
-    queryKey: musicQueryKeys.mv.subscribed(accountId ?? "", params),
-    queryFn: async ({ signal }) => {
-      if (!accountId) throw new Error("An authenticated music account is required.");
-      return (await getSubscribedMVs(params, signal)).data;
-    },
-    meta: { persist: false, scope: "account" },
-  });
-}
-
-export function useMVCommentsQuery(
-  mvid: MvQueryId,
-  params: Omit<MusicCommentParams, "id"> = {},
-  options: MvQueryOptions = {},
-) {
-  const { accountId } = useAuth();
-  const id = mvid ? String(mvid) : "";
-  return useQuery({
-    enabled: (options.enabled ?? true) && Boolean(id),
-    queryKey: musicQueryKeys.mv.comments(id, accountId ?? "", params),
-    queryFn: async ({ signal }) => {
-      if (!id) throw new Error("MV ID is required.");
-      return (await getMVComments({ ...params, id }, signal)).data;
-    },
-    meta: { persist: false, scope: "account" },
   });
 }
