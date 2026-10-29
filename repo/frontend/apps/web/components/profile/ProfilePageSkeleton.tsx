@@ -3,7 +3,7 @@ import s from "@/components/social/Social.module.css";
 
 const bar = "bg-skeleton";
 
-/** 与真实主页同一套布局类，头像、数据带、标签、栏目位置一一对应，加载完成时不跳动。 */
+/** 与真实主页同一套布局类，头像、名字行、标签、栏目位置一一对应，加载完成时不跳动。 */
 export function ProfileSkeletonContent() {
   return (
     <div aria-busy="true">
@@ -11,20 +11,20 @@ export function ProfileSkeletonContent() {
         <div className={s.profileIdentityRow}>
           <Skeleton className={`${s.avatar} ${bar}`} />
           <div className={s.profileIdentityText}>
-            <Skeleton className={`${bar} mb-3 h-12 w-2/5 max-w-md`} />
-            <Skeleton className={`${bar} h-4 w-3/5 max-w-sm`} />
-            <Skeleton className={`${bar} mt-2 h-3 w-24`} />
-          </div>
-        </div>
-        <div className={s.profileStats}>
-          {Array.from({ length: 5 }, (_, index) => (
-            <div key={index} className={s.profileStat}>
-              <Skeleton className={`${bar} h-6 w-14`} />
-              <Skeleton className={`${bar} mt-1 h-3 w-10`} />
+            <div className={s.profileTitleRow}>
+              <div className={s.profileNameSkeleton}>
+                <Skeleton className={`${bar} h-[0.7em] w-full`} />
+              </div>
+              <div className={s.profileHeroActions}>
+                <Skeleton className={`${bar} h-9 w-24 rounded-full`} />
+              </div>
             </div>
-          ))}
-          <div className={s.profileHeroActions}>
-            <Skeleton className={`${bar} h-9 w-24 rounded-full`} />
+            <div className="flex h-[21px] items-center">
+              <Skeleton className={`${bar} h-3.5 w-3/5 max-w-sm`} />
+            </div>
+            <div className="mt-2.5 flex h-[21px] items-center">
+              <Skeleton className={`${bar} h-3.5 w-2/5 max-w-xs`} />
+            </div>
           </div>
         </div>
       </section>
@@ -75,10 +75,10 @@ export function ProfileSkeletonContent() {
   );
 }
 
+/** 加载占位不带背景光，光晕等真实主页数据到达后再出现。 */
 export function ProfilePageSkeleton() {
   return (
     <div className={`${s.page} ${s.profilePage}`}>
-      <div className={s.profileGlow} aria-hidden="true" />
       <div className={s.profileShell}>
         <ProfileSkeletonContent />
       </div>

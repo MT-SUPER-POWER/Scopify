@@ -861,9 +861,19 @@
       color-mix(in oklab, var(--profile-tint, var(--secondary)) 62%, var(--card)) 0%,
       var(--card) 100%
     );
+  animation: profileGlowIn 0.5s ease-out both;
+}
+@keyframes profileGlowIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 .profileHero {
   min-width: 0;
+  padding-bottom: 28px;
 }
 .profileIdentityRow {
   display: grid;
@@ -881,13 +891,20 @@
 .profileIdentityText {
   min-width: 0;
 }
+.profileTitleRow {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px 20px;
+  margin-bottom: 10px;
+}
 .profileIdentityText h1 {
+  min-width: 0;
   font-size: clamp(32px, 5cqw, 64px);
   line-height: 1.1;
   letter-spacing: -0.03em;
   font-weight: 800;
   overflow-wrap: anywhere;
-  margin-bottom: 12px;
 }
 .profileIdentityText .bio {
   max-width: 780px;
@@ -898,42 +915,34 @@
   -webkit-line-clamp: 2;
   overflow: hidden;
 }
-.profileJoined {
-  margin-top: 8px;
-  font-size: 13px;
-  color: var(--social-muted);
-}
-.profileStats {
+.profileFacts {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  gap: 16px 44px;
-  padding: 28px 0 24px;
-}
-.profileStat {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-.profileStat strong {
-  font-size: 24px;
-  line-height: 1.2;
-  font-weight: 750;
-  letter-spacing: -0.02em;
-  font-variant-numeric: tabular-nums;
-}
-.profileStat span {
-  font-size: 12px;
+  margin-top: 10px;
+  font-size: 14px;
+  line-height: 1.5;
   color: var(--social-muted);
 }
-a.profileStat:hover strong {
+.profileFacts > span + span::before {
+  content: "·";
+  margin-inline: 8px;
+}
+.profileFacts a:hover {
   color: var(--primary);
 }
 .profileHeroActions {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
-  margin-left: auto;
+}
+.profileNameSkeleton {
+  display: flex;
+  align-items: center;
+  width: 40%;
+  max-width: 28rem;
+  height: 1.1em;
+  font-size: clamp(32px, 5cqw, 64px);
 }
 .profileMain {
   min-width: 0;
@@ -1082,9 +1091,8 @@ li:nth-child(-n + 3) > .rankRow .rankNo {
   .profileShelf > :nth-child(n + 4) {
     display: none;
   }
-  .profileHeroActions {
-    margin-left: 0;
-    width: 100%;
+  .profileTitleRow {
+    grid-template-columns: minmax(0, 1fr);
   }
 }
 @container (max-width: 500px) {
@@ -1099,8 +1107,8 @@ li:nth-child(-n + 3) > .rankRow .rankNo {
   .profileIdentityText h1 {
     font-size: 28px;
   }
-  .profileStats {
-    gap: 14px 28px;
+  .profileNameSkeleton {
+    font-size: 28px;
   }
   .profileShelf {
     grid-template-columns: repeat(2, minmax(0, 1fr));

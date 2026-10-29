@@ -152,7 +152,6 @@ export interface SocialProfileHeroProps {
   onEdit: () => void;
   onMessage: () => void;
 }
-export type ProfileStatsBandProps = SocialProfileHeroProps;
 export interface SocialCommentsSkeletonProps {
   variant: "modal" | "page";
 }

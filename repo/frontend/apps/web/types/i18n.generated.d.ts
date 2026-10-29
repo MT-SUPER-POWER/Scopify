@@ -2405,6 +2405,12 @@ export interface TranslateFn {
    */
   (key: "social.rankEmpty", params?: TranslationParams): string;
   /**
+   * zh-CN: 累计听过 {{count}} 首
+   * zh-TW: 累計聽過 {{count}} 首
+   * en-US: {{count}} songs heard
+   */
+  (key: "social.listenedCount", params?: TranslationParams): string;
+  /**
    * zh-CN: 无法找到该用户
    * zh-TW: 找不到該使用者
    * en-US: This profile is unavailable

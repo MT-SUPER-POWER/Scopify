@@ -46,7 +46,7 @@ function SocialProfileContent({ uid = "" }: SocialFeedProps) {
       className={s.page + " " + s.profilePage}
       style={tint ? ({ "--profile-tint": tint } as CSSProperties) : undefined}
     >
-      <div className={s.profileGlow} aria-hidden="true" />
+      {user && <div className={s.profileGlow} aria-hidden="true" />}
       <div className={s.profileShell}>
         {!uid ? (
           self ? (
