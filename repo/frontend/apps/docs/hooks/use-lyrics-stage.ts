@@ -81,7 +81,7 @@ const toModePosition = (progress: number) =>
 
 /**
  * 歌词舞台的滚动编排：镜头从远处推近舞台（远处只是一片虚着的光，推近时对焦、铺满整屏）、
- * 驱动声场里的追光，按 14 种动画的顺序逐一切换；每一场换上自己的灯光颜色，换场时追光暗一下再亮起。
+ * 驱动声场里的追光，按节目单上动画的顺序逐一切换；每一场换上自己的灯光颜色，换场时追光暗一下再亮起。
  * 同时给出滚轮的转动位置，并提供跳到某种动画、以及拖动滚轮时按连续位置滚动页面的方法。
  */
 export function useLyricsStage(sectionRef: RefObject<HTMLElement | null>) {

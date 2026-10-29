@@ -17,7 +17,7 @@ import { useMediaQuery } from "@/hooks/use-media-query";
 
 /**
  * 主歌：一座被追光点亮的歌词舞台。镜头穿过前奏的窗口后，舞台先是远处一小片虚着的光，
- * 往下滚镜头一路推近，直到舞台铺满整屏、追光全亮，14 种歌词动画再按列表顺序逐一登场。
+ * 往下滚镜头一路推近，直到舞台铺满整屏、追光全亮，所有歌词动画再按列表顺序逐一登场。
  */
 export function LandingLyricsStage() {
   const sectionRef = useRef<HTMLElement>(null);

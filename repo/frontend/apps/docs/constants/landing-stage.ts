@@ -10,6 +10,7 @@ import type { LandingStageScene } from "@/types/marketing";
 export const LANDING_STAGE_SCENES: Readonly<Record<string, LandingStageScene>> = {
   classic: { accent: "#7fd8ff", verse: ["光从这一句流过，", "照亮下一个字。"] },
   cadenza: { accent: "#b69cff", verse: ["闭上眼睛，", "旋律有了形状。"] },
+  hanabi: { accent: "#ffcf4a", verse: ["夜空炸开的一瞬，", "整条河都亮了。"] },
   partita: { accent: "#dfe6ff", verse: ["一个音一级台阶，", "走到云的上面。"] },
   fume: { accent: "#f2c38b", verse: ["名字像烟，", "升起来又散开。"] },
   tilt: { accent: "#ff9cbc", verse: ["靠近一点，", "这句只说给你听。"] },
