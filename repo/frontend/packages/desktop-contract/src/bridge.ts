@@ -42,7 +42,7 @@ import type {
   DesktopCacheStats,
 } from "./cache";
 
-export const DESKTOP_BRIDGE_PROTOCOL_VERSION = 27;
+export const DESKTOP_BRIDGE_PROTOCOL_VERSION = 28;
 
 export interface DesktopVideoExportSource {
   id: string;
@@ -199,6 +199,7 @@ export interface DesktopBridge<TLyrics = unknown> {
   toggleDeveloperTools(): Promise<boolean>;
   quitAndInstallUpdate(): void;
   relaunchApp(): void;
+  reloadMainWindow(): void;
   restartMcp(): Promise<McpStatus>;
   restartBackend(): Promise<DesktopBackendStatus>;
   rotateMcpCredential(): Promise<McpClientConfiguration>;

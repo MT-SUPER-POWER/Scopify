@@ -117,6 +117,7 @@ export interface ShortcutActionContext {
     toggleAudioOutputDevice(): void;
   };
   desktop: {
+    reloadWindow(): void;
     toggleDynamicIsland(): void;
     toggleTaskbarLyric(): void;
     toggleDesktopSubtitle(): void;

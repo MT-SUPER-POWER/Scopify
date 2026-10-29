@@ -197,6 +197,7 @@ export function createElectronRuntime(bridge: ScopifyDesktopBridge): WebRuntime 
     },
     window: {
       minimize: () => bridge.minimizeApp(),
+      reload: () => bridge.reloadMainWindow(),
       onFullscreenChanged: (callback) => bridge.onFullScreenChanged(callback),
       onVisibilityChanged: (callback) => bridge.onWindowVisibilityChanged(callback),
       setFullscreen: async (fullscreen) => {

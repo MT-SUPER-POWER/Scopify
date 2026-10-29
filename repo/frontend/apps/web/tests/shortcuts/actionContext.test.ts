@@ -57,7 +57,11 @@ const search = {
   },
 };
 const lattice = { active: false, controller: null as { open(): void; close(): void } | null };
-const desktop = { isDesktop: false, dynamicIsland: { toggle: mock(() => {}) } };
+const desktop = {
+  isDesktop: false,
+  dynamicIsland: { toggle: mock(() => {}) },
+  window: { reload: mock(() => {}) },
+};
 
 mock.module("next/navigation", () => ({ useRouter: () => router }));
 mock.module("@/hooks/player/usePlaybackCommands", () => ({ usePlaybackCommands: () => commands }));
@@ -150,6 +154,9 @@ test("action context reads live state and preserves command behavior", () => {
   desktop.isDesktop = true;
   execute("toggle-dynamic-island");
   expect(desktop.dynamicIsland.toggle).toHaveBeenCalledTimes(1);
+
+  execute("reload-window");
+  expect(desktop.window.reload).toHaveBeenCalledTimes(1);
 
   const open = mock(() => {});
   lattice.controller = { open, close() {} };

@@ -229,6 +229,7 @@ export interface RuntimeUpdates {
 
 export interface RuntimeWindowControls {
   minimize(): void;
+  reload(): void;
   onFullscreenChanged(callback: (isFullscreen: boolean) => void): RuntimeUnsubscribe;
   onVisibilityChanged(callback: (isVisible: boolean) => void): RuntimeUnsubscribe;
   setFullscreen(fullscreen: boolean): Promise<void>;

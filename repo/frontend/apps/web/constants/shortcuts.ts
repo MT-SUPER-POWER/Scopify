@@ -22,6 +22,7 @@ import {
   PanelRight,
   PlayCircle,
   RectangleEllipsis,
+  RotateCw,
   Rewind,
   Search,
   Settings2,
@@ -339,6 +340,15 @@ export const SHORTCUT_COMMAND_DEFINITIONS = [
     group: "interface",
     labelKey: "shortcuts.command.toggleDeveloperTools",
     defaultBinding: { key: "F12" },
+  },
+  {
+    id: "reload-window",
+    icon: RotateCw,
+    execute: (context) => context.desktop.reloadWindow(),
+    group: "interface",
+    labelKey: "shortcuts.command.reloadWindow",
+    keywords: "重新加载 重新載入 重载 重載 刷新 窗口 視窗 reload window refresh",
+    defaultBinding: null,
   },
   {
     id: "open-current-track-comments",

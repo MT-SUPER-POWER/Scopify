@@ -157,6 +157,7 @@ const electronAPI: DesktopBridge = {
   relaunchApp: () => {
     ipcRenderer.send("relaunch-app");
   },
+  reloadMainWindow: () => ipcRenderer.send("main-window-reload"),
   restartMcp: (): Promise<McpStatus> => ipcRenderer.invoke("mcp:restart"),
   restartBackend: (): Promise<DesktopBackendStatus> => ipcRenderer.invoke("backend:restart"),
   getMcpClientConfiguration: (): Promise<McpClientConfiguration> =>

@@ -31,8 +31,8 @@ function actionRecorder() {
 
 describe("shortcut command contracts", () => {
   test("every command has a unique ID, icon and executable declaration", () => {
-    expect(SHORTCUT_COMMANDS).toHaveLength(41);
-    expect(new Set(SHORTCUT_COMMANDS.map(({ id }) => id)).size).toBe(41);
+    expect(SHORTCUT_COMMANDS).toHaveLength(42);
+    expect(new Set(SHORTCUT_COMMANDS.map(({ id }) => id)).size).toBe(42);
     for (const command of SHORTCUT_COMMANDS) {
       expect(getCommandDefinition(command.id)).toBe(command);
       expect(command.icon).toBeTruthy();
@@ -53,6 +53,7 @@ describe("shortcut command contracts", () => {
     ["toggle-stage-settings", "folia.toggleStageSettings", []],
     ["open-folia-theme-library", "folia.openFoliaThemeLibrary", []],
     ["toggle-desktop-music-mode", "desktop.toggleDesktopMusicMode", []],
+    ["reload-window", "desktop.reloadWindow", []],
     ["focus-playlist-search", "playlist.focusSearch", []],
     ["open-current-track-comments", "track.openCurrentComments", []],
   ] as const)("%s routes to its domain capability", (id, action, args) => {
@@ -90,6 +91,7 @@ describe("shortcut command contracts", () => {
     ])
       expect(visibleIds).not.toContain(id);
     expect(visibleIds).toContain("toggle-stage-settings");
+    expect(visibleIds).toContain("reload-window");
     expect(DESKTOP_PLAYBACK_CONTROLLER_SHORTCUT_COMMAND_IDS).toHaveLength(16);
     expect(DESKTOP_PLAYBACK_CONTROLLER_SHORTCUT_COMMAND_IDS).toContain("toggle-playback");
     expect(DESKTOP_PLAYBACK_CONTROLLER_SHORTCUT_COMMAND_IDS).not.toContain("toggle-sidebar");

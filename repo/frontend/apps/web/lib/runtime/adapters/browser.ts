@@ -58,6 +58,7 @@ const PLAYBACK_CATEGORIES = new Set<CacheCategory>([
 ]);
 
 export interface BrowserRuntimeEnvironment {
+  readonly location?: Pick<Location, "reload">;
   readonly document?: {
     cookie: string;
     readonly documentElement: { requestFullscreen?(): Promise<void> };
@@ -112,6 +113,7 @@ function unsupportedDesktopIconVisibilityState(): DesktopIconVisibilityState {
 
 function getDefaultEnvironment(): BrowserRuntimeEnvironment {
   return {
+    location: typeof window === "undefined" ? undefined : window.location,
     document: typeof document === "undefined" ? undefined : document,
     storage: typeof localStorage === "undefined" ? undefined : localStorage,
   };
@@ -488,6 +490,7 @@ export function createBrowserRuntime(
     },
     window: {
       minimize: NOOP,
+      reload: () => environment.location?.reload(),
       onFullscreenChanged: (callback) => {
         const doc = environment.document;
         if (!doc) return NOOP;

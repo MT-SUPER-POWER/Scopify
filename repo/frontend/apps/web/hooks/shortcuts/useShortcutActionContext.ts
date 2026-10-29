@@ -133,6 +133,7 @@ export function useShortcutActionContext(
         toggleAudioOutputDevice: () => useAudioOutputStore.getState().togglePopover(),
       },
       desktop: {
+        reloadWindow: () => runtime.window.reload(),
         toggleDynamicIsland: () => {
           if (runtime.isDesktop) void runtime.dynamicIsland.toggle();
         },
