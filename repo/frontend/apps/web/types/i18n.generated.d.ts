@@ -7688,59 +7688,17 @@ export interface TranslateFn {
    */
   (key: "comments.page.voice-listTag", params?: TranslationParams): string;
   /**
-   * zh-CN: 全部评论
-   * zh-TW: 全部評論
-   * en-US: All Comments
-   */
-  (key: "comments.page.allComments", params?: TranslationParams): string;
-  /**
    * zh-CN: 精彩评论
    * zh-TW: 精彩評論
    * en-US: Hot Comments
    */
   (key: "comments.page.hotComments", params?: TranslationParams): string;
   /**
-   * zh-CN: 最新评论
-   * zh-TW: 最新評論
-   * en-US: Latest Comments
-   */
-  (key: "comments.page.latestComments", params?: TranslationParams): string;
-  /**
    * zh-CN: 还没有评论，来成为第一个评论的人吧！
    * zh-TW: 還沒有評論，來成為第一個評論的人吧！
    * en-US: No comments yet. Be the first to comment!
    */
   (key: "comments.page.noComments", params?: TranslationParams): string;
-  /**
-   * zh-CN: 向下滚动以加载更多...
-   * zh-TW: 向下捲動以載入更多...
-   * en-US: Scroll down to load more...
-   */
-  (key: "comments.page.loadMore", params?: TranslationParams): string;
-  /**
-   * zh-CN: 已经到底了！
-   * zh-TW: 已經到底了！
-   * en-US: Already at the bottom!
-   */
-  (key: "comments.page.end", params?: TranslationParams): string;
-  /**
-   * zh-CN: 发表评论
-   * zh-TW: 發表評論
-   * en-US: Add Comment
-   */
-  (key: "comments.page.addComment", params?: TranslationParams): string;
-  /**
-   * zh-CN: 回复评论
-   * zh-TW: 回覆評論
-   * en-US: Reply Comment
-   */
-  (key: "comments.page.replyComment", params?: TranslationParams): string;
-  /**
-   * zh-CN: 回复给:
-   * zh-TW: 回覆給:
-   * en-US: Replying to:
-   */
-  (key: "comments.page.replyingTo", params?: TranslationParams): string;
   /**
    * zh-CN: 回复 @{{name}}:
    * zh-TW: 回覆 @{{name}}:
@@ -7753,18 +7711,6 @@ export interface TranslateFn {
    * en-US: Cancel
    */
   (key: "comments.input.cancel", params?: TranslationParams): string;
-  /**
-   * zh-CN: 写下你的回复...
-   * zh-TW: 寫下你的回覆...
-   * en-US: Write your reply...
-   */
-  (key: "comments.input.replyPlaceholder", params?: TranslationParams): string;
-  /**
-   * zh-CN: 说点什么吧...
-   * zh-TW: 說點什麼吧...
-   * en-US: Say something...
-   */
-  (key: "comments.input.publishPlaceholder", params?: TranslationParams): string;
   /**
    * zh-CN: {{count}} 条回复
    * zh-TW: {{count}} 則回覆
@@ -7808,18 +7754,6 @@ export interface TranslateFn {
    */
   (key: "comments.item.delete", params?: TranslationParams): string;
   /**
-   * zh-CN: IP属地: {{location}}
-   * zh-TW: IP屬地: {{location}}
-   * en-US: IP: {{location}}
-   */
-  (key: "comments.item.ipLocation", params?: TranslationParams): string;
-  /**
-   * zh-CN: 排序
-   * zh-TW: 排序
-   * en-US: Sort
-   */
-  (key: "comments.sort.title", params?: TranslationParams): string;
-  /**
    * zh-CN: 默认排序
    * zh-TW: 預設排序
    * en-US: Default
@@ -7831,18 +7765,6 @@ export interface TranslateFn {
    * en-US: Latest
    */
   (key: "comments.sort.latest", params?: TranslationParams): string;
-  /**
-   * zh-CN: 最早发布
-   * zh-TW: 最早發佈
-   * en-US: Oldest
-   */
-  (key: "comments.sort.oldest", params?: TranslationParams): string;
-  /**
-   * zh-CN: 点赞最多
-   * zh-TW: 按讚最多
-   * en-US: Most Liked
-   */
-  (key: "comments.sort.mostLiked", params?: TranslationParams): string;
   /**
    * zh-CN: 播放队列
    * zh-TW: 播放佇列
