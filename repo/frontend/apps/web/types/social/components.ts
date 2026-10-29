@@ -149,6 +149,9 @@ export interface SocialProfileHeroProps {
   onEdit: () => void;
   onMessage: () => void;
 }
+export interface ProfileListeningRankProps {
+  uid: string;
+}
 export interface SocialProfileBodyProps {
   user: SocialProfile;
   tab: string;

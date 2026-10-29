@@ -2369,6 +2369,36 @@ export interface TranslateFn {
    */
   (key: "social.recent", params?: TranslationParams): string;
   /**
+   * zh-CN: 听歌排行
+   * zh-TW: 聽歌排行
+   * en-US: Top tracks
+   */
+  (key: "social.topTracks", params?: TranslationParams): string;
+  /**
+   * zh-CN: 本周
+   * zh-TW: 本週
+   * en-US: This week
+   */
+  (key: "social.thisWeek", params?: TranslationParams): string;
+  /**
+   * zh-CN: 所有时间
+   * zh-TW: 所有時間
+   * en-US: All time
+   */
+  (key: "social.allTime", params?: TranslationParams): string;
+  /**
+   * zh-CN: 对方未公开听歌排行
+   * zh-TW: 對方未公開聽歌排行
+   * en-US: Listening history is private
+   */
+  (key: "social.rankHidden", params?: TranslationParams): string;
+  /**
+   * zh-CN: 还没有听歌记录
+   * zh-TW: 還沒有聽歌記錄
+   * en-US: No listening history yet
+   */
+  (key: "social.rankEmpty", params?: TranslationParams): string;
+  /**
    * zh-CN: 无法找到该用户
    * zh-TW: 找不到該使用者
    * en-US: This profile is unavailable
