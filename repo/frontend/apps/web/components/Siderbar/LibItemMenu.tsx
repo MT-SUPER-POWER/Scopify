@@ -14,7 +14,7 @@ import {
 import { useCommentCountQuery } from "@/hooks/comment/useCommentCountQuery";
 import { useSidebarPlaylistPlayback } from "@/hooks/sidebar/useSidebarPlaylistPlayback";
 import { getCommentHref } from "@/lib/comment/commentResource";
-import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
+import { useSmartRouter } from "@/hooks/core/useSmartRouter";
 import { formatCompactCount } from "@/lib/utils";
 import { useI18n } from "@/store/module/i18n";
 import type { LibItemMenuProps } from "@/types/sidebar/containerComponents";

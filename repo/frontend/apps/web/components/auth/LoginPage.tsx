@@ -17,7 +17,7 @@ import { createFreshLoginDevice, resolveLocalDeviceName } from "@/lib/devices/cl
 import { completeFreshLogin } from "@/lib/devices/completeLogin";
 import { loginByCellphone } from "@/lib/api/login";
 import { useLoginStatus } from "@/hooks/auth/useLoginStatus";
-import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
+import { useSmartRouter } from "@/hooks/core/useSmartRouter";
 import { runtime } from "@/lib/runtime";
 import { cn } from "@/lib/utils";
 import { sendCaptcha } from "@/lib/web/auth";

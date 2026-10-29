@@ -6,7 +6,7 @@ import { useCoverThemeColor } from "@/hooks/playlist/useCoverThemeColor";
 import { useSocialAccount, useSocialProfile } from "@/hooks/social/useSocialQueries";
 import { useSocialEditProfile } from "@/hooks/social/useSocialActions";
 import { useRequireLoginAction } from "@/hooks/auth/useRequireLoginAction";
-import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
+import { useSmartRouter } from "@/hooks/core/useSmartRouter";
 import { getSizedImageUrl } from "@/lib/music/imageUrl";
 import { useI18n } from "@/store/module/i18n";
 import { SocialLogin, SocialState } from "@/components/social/SocialPrimitives";

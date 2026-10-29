@@ -1,6 +1,6 @@
 "use client";
 
-import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
+import { useSmartRouter } from "@/hooks/core/useSmartRouter";
 import type { ArtistInlineLinksProps } from "@/types/artist/components";
 
 export function ArtistInlineLinks({ artists, className }: ArtistInlineLinksProps) {

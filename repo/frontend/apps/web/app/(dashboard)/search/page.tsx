@@ -15,7 +15,7 @@ import { SongsView } from "@/components/search/SongsView";
 import { VoicesView } from "@/components/search/VoicesView";
 import { usePlayActions } from "@/hooks/search/usePlayActions";
 import { useSearchData } from "@/hooks/search/useSearchData";
-import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
+import { useSmartRouter } from "@/hooks/core/useSmartRouter";
 import { buildSearchCategoryUrl, getSearchCategory } from "@/lib/search/searchCategory";
 import { useI18n } from "@/store/module/i18n";
 import type { Category } from "@/types/search/model";

@@ -15,7 +15,7 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
-import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
+import { useSmartRouter } from "@/hooks/core/useSmartRouter";
 import { runtime } from "@/lib/runtime";
 import { usePlayerStore, useUserStore } from "@/store";
 import { useFriendsStore } from "@/store/module/friends";

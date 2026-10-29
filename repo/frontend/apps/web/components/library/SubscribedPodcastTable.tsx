@@ -11,7 +11,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
+import { useSmartRouter } from "@/hooks/core/useSmartRouter";
 import { usePodcastPlay } from "@/hooks/library/usePodcastPlay";
 import { cn, formatDate, formatPlayCount } from "@/lib/utils";
 import { usePlayerStore } from "@/store";

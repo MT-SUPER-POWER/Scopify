@@ -8,7 +8,7 @@ import { useEffect, useState } from "react";
 import { HomeDailyRecommendation } from "@/components/home/HomeDailyRecommendation";
 import { CollapsibleSection } from "@/components/home/CollapsibleSection";
 import { SectionPagination } from "@/components/home/SectionPagination";
-import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
+import { useSmartRouter } from "@/hooks/core/useSmartRouter";
 import { useI18n } from "@/store/module/i18n";
 import type { HomeGreetingSectionProps } from "@/types/home/components";
 

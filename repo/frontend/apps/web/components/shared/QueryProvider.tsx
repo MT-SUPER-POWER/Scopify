@@ -12,7 +12,7 @@ import { useEffect, useState } from "react";
 
 import { pageTtlMs } from "@/lib/cache/pageCache";
 import { QueryDevtools } from "@/components/shared/QueryDevtools";
-import { useRendererErrorReporting } from "@/lib/hooks/useRendererErrorReporting";
+import { useRendererErrorReporting } from "@/hooks/core/useRendererErrorReporting";
 import { queryPersister } from "@/lib/query/persister";
 import { MUSIC_SESSION_EXPIRED_EVENT } from "@/lib/query/session";
 import { runtime } from "@/lib/runtime";

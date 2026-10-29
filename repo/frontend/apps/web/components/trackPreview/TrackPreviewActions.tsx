@@ -3,7 +3,7 @@
 import { Heart, Link2, ListPlus, MonitorPlay, Play } from "lucide-react";
 import { toast } from "sonner";
 import { useSongLikeMutation } from "@/hooks/playlist/useSongLikeMutation";
-import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
+import { useSmartRouter } from "@/hooks/core/useSmartRouter";
 import { cn } from "@/lib/utils";
 import { usePlayerStore, useUserStore } from "@/store";
 import { useI18n } from "@/store/module/i18n";

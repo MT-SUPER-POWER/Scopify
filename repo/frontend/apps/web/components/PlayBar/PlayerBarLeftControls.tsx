@@ -11,7 +11,7 @@ import { usePlaybackCommands } from "@/hooks/player/usePlaybackCommands";
 import { usePlaybackProjection } from "@/hooks/player/usePlaybackProjection";
 import { useSongStatsEnrichment } from "@/hooks/player/useSongStatsEnrichment";
 import { getCommentHref } from "@/lib/comment/commentResource";
-import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
+import { useSmartRouter } from "@/hooks/core/useSmartRouter";
 import { resolveCoverUrl } from "@/lib/music/resolveCoverUrl";
 import { cn } from "@/lib/utils";
 import { usePlayerStore } from "@/store";

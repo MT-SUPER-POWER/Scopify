@@ -27,7 +27,7 @@ import { VolumeControl } from "@/components/PlayBar/VolumeControl";
 import { useDesktopPlaybackWallpaperController } from "@/hooks/desktopWallpaper/useDesktopPlaybackWallpaperController";
 import { usePlaybackCommands } from "@/hooks/player/usePlaybackCommands";
 import { usePlaybackProjection } from "@/hooks/player/usePlaybackProjection";
-import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
+import { useSmartRouter } from "@/hooks/core/useSmartRouter";
 import { runtime } from "@/lib/runtime";
 import { useI18n } from "@/store/module/i18n";
 import type { LyricData } from "@/types/lyrics/model";

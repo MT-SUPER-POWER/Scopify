@@ -9,7 +9,7 @@ import { MvInfoSkeleton, MvSimilarSkeleton } from "./MvSkeletons";
 import { QueryBoundary } from "@/components/shared/QueryBoundary";
 import { QueryPending } from "@/components/shared/QueryPending";
 import type { MvPageContentProps } from "@/types/mv/components";
-import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
+import { useSmartRouter } from "@/hooks/core/useSmartRouter";
 import { useMVDetailQuery } from "@/hooks/mv/useMVQueries";
 import { getSizedImageUrl } from "@/lib/music/imageUrl";
 import { getMvCover } from "@/lib/music/mvCover";

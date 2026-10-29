@@ -6,7 +6,7 @@ import { SongMvBadge } from "@/components/shared/SongMvBadge";
 import { SongVipBadge } from "@/components/shared/SongVipBadge";
 import { TableCell } from "@/components/ui/table";
 import { CLOUD_SONG_FALLBACK_COVER } from "@/constants/cloud";
-import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
+import { useSmartRouter } from "@/hooks/core/useSmartRouter";
 import { cn } from "@/lib/utils";
 import type { TrackTitleCellProps } from "@/types/playlist/components";
 import { getSizedImageUrl } from "@/lib/music/imageUrl";

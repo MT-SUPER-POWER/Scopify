@@ -10,7 +10,7 @@ import { PopularTracks } from "@/components/artist/PopularTracks";
 import { NetworkRetryState } from "@/components/shared/NetworkRetryState";
 import { useArtistData } from "@/hooks/artist/useArtistData";
 import { useArtistPlay } from "@/hooks/artist/useArtistPlay";
-import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
+import { useSmartRouter } from "@/hooks/core/useSmartRouter";
 import { useI18n } from "@/store/module/i18n";
 
 export default function ArtistPage() {

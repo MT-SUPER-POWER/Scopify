@@ -4,7 +4,7 @@ import { ListMusic, Pause, Play, Radio } from "lucide-react";
 import Image from "next/image";
 import { PlayingAnimation } from "@/components/shared/PlayingAnimation";
 import { usePodcastPlay } from "@/hooks/library/usePodcastPlay";
-import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
+import { useSmartRouter } from "@/hooks/core/useSmartRouter";
 import { getPodcastDestination } from "@/lib/search/podcastDestination";
 import { cn } from "@/lib/utils";
 import { usePlayerStore } from "@/store";

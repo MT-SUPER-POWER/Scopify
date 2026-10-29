@@ -5,7 +5,7 @@ import React from "react";
 
 import { HeaderDescription } from "@/components/shared/HeaderDescription";
 import { ResponsiveHeaderTitle } from "@/components/shared/ResponsiveHeaderTitle";
-import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
+import { useSmartRouter } from "@/hooks/core/useSmartRouter";
 import type { PlaylistInfo } from "@/types/playlist/model";
 
 const DailyCalendarCover = ({ dailyDate }: { dailyDate?: string }) => {

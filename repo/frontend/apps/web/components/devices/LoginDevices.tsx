@@ -4,7 +4,7 @@ import { useI18n } from "@/store/module/i18n";
 import { Button } from "@scopify/ui/shadcn/components/button";
 import { openLoginWindowOrFallback } from "@/lib/runtime/login";
 import { runtime } from "@/lib/runtime";
-import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
+import { useSmartRouter } from "@/hooks/core/useSmartRouter";
 import { LoginDevicesHeader } from "./LoginDevicesHeader";
 import { LoginDevicesContent } from "./LoginDevicesContent";
 import styles from "./LoginDevices.module.css";

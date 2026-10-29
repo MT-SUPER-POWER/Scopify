@@ -35,7 +35,7 @@ import { useHistoricalDailyRecommendations } from "@/hooks/playlist/useHistorica
 import { usePlaylistSearchShortcut } from "@/hooks/playlist/usePlaylistSearchShortcut";
 import { subscribePlaylist } from "@/lib/api/playlist";
 import { useRequireLoginAction } from "@/hooks/auth/useRequireLoginAction";
-import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
+import { useSmartRouter } from "@/hooks/core/useSmartRouter";
 import { getCommentHref } from "@/lib/comment/commentResource";
 import { cn, formatCompactCount } from "@/lib/utils";
 import { usePlayerStore, useUserStore } from "@/store";

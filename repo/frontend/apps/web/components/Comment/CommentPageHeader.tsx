@@ -3,7 +3,7 @@
 import { CommentHeader } from "@/components/Comment/CommentHeader";
 import { CommentHeaderSkeleton } from "@/components/Comment/CommentPageSkeleton";
 import { useCommentHeader } from "@/hooks/comment/useCommentHeader";
-import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
+import { useSmartRouter } from "@/hooks/core/useSmartRouter";
 import { useI18n } from "@/store/module/i18n";
 import type { CommentPageHeaderProps } from "@/types/comment/components";
 

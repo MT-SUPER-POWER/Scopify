@@ -6,7 +6,7 @@ import { ScrollArea } from "@scopify/ui/shadcn/components/scroll-area";
 import { INBOX_SCROLL_CLASS } from "@/constants/inbox";
 import { usePrivateConversations } from "@/hooks/messages/usePrivateConversations";
 import { conversationUnread } from "@/lib/messages/normalize";
-import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
+import { useSmartRouter } from "@/hooks/core/useSmartRouter";
 import { useI18n } from "@/store/module/i18n";
 import type { FriendsPanelProps } from "@/types/messages/components";
 import { ConversationRow } from "./ConversationRow";

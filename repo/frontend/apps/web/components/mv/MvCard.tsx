@@ -13,7 +13,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
+import { useSmartRouter } from "@/hooks/core/useSmartRouter";
 import { getSizedImageUrl } from "@/lib/music/imageUrl";
 import { getMvArtistNames, getMvCover } from "@/lib/music/mvCover";
 import { cn, formatDuration, formatPlayCount } from "@/lib/utils";

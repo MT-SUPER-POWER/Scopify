@@ -7,7 +7,7 @@ import PlaylistLoading from "@/components/Playlist/PlaylistLoading";
 import TracklistTable from "@/components/Playlist/TrackTable";
 import { NetworkRetryState } from "@/components/shared/NetworkRetryState";
 import { useAlbumData } from "@/hooks/album/useAlbumData";
-import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
+import { useSmartRouter } from "@/hooks/core/useSmartRouter";
 import { useI18n } from "@/store/module/i18n";
 
 export default function AlbumPage() {

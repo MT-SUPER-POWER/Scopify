@@ -2,7 +2,7 @@
 
 import { type KeyboardEvent, useCallback, useEffect, useRef, useState } from "react";
 import { useCommandWorkspaceSuggestions } from "@/hooks/commandWorkspace/useCommandWorkspaceSuggestions";
-import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
+import { useSmartRouter } from "@/hooks/core/useSmartRouter";
 import { resolveCommandWorkspaceSearchEntry } from "@/lib/commandWorkspace/search";
 import { buildSearchUrl } from "@/lib/search/searchCategory";
 import { useSearchStore } from "@/store/module/search";

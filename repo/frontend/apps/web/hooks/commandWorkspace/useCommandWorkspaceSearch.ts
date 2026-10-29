@@ -8,7 +8,7 @@ import {
 } from "@/lib/commandWorkspace/search";
 import { toCommandWorkspaceSongDetail } from "@/lib/commandWorkspace/trackList";
 import { toVoiceSongDetail } from "@/lib/search/voiceSong";
-import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
+import { useSmartRouter } from "@/hooks/core/useSmartRouter";
 import { useCommandWorkspacePlayback } from "@/hooks/commandWorkspace/useCommandWorkspacePlayback";
 import { useSearchData } from "@/hooks/search/useSearchData";
 import type {

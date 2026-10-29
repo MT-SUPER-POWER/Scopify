@@ -6,7 +6,7 @@ import { PlayingAnimation } from "@/components/shared/PlayingAnimation";
 import { PodcastContextMenu } from "@/components/shared/PodcastContextMenu";
 import { TableCell, TableRow } from "@/components/ui/table";
 import { usePodcastPlay } from "@/hooks/library/usePodcastPlay";
-import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
+import { useSmartRouter } from "@/hooks/core/useSmartRouter";
 import { getPodcastDestination } from "@/lib/search/podcastDestination";
 import { cn, formatPlayCount } from "@/lib/utils";
 import { usePlayerStore } from "@/store";

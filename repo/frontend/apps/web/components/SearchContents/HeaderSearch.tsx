@@ -5,7 +5,7 @@ import { AnimatePresence, motion } from "motion/react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { searchDefault, searchSuggest } from "@/lib/api/search";
 import { getCommandWorkspaceSearchFilterForCategory } from "@/lib/commandWorkspace/search";
-import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
+import { useSmartRouter } from "@/hooks/core/useSmartRouter";
 import { buildSearchUrl } from "@/lib/search/searchCategory";
 import { cn } from "@/lib/utils";
 import { useI18n } from "@/store/module/i18n";

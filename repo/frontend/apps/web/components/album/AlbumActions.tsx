@@ -8,7 +8,7 @@ import { CollectionToggleButton } from "@/components/shared/CollectionToggleButt
 import { TrackPreviewButton } from "@/components/trackPreview/TrackPreviewButton";
 import { useCommentCountQuery } from "@/hooks/comment/useCommentCountQuery";
 import { getCommentHref } from "@/lib/comment/commentResource";
-import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
+import { useSmartRouter } from "@/hooks/core/useSmartRouter";
 import { formatCompactCount } from "@/lib/utils";
 import { useI18n } from "@/store/module/i18n";
 import type { AlbumActionsProps } from "@/types/album/model";

@@ -5,7 +5,7 @@ import { usePlaylist } from "@/hooks/playlist/usePlaylistData";
 import { useI18n } from "@/store/module/i18n";
 import { useSearchParams } from "next/navigation";
 import { DailyCategoryPage } from "@/components/Playlist/DailyCategoryPage";
-import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
+import { useSmartRouter } from "@/hooks/core/useSmartRouter";
 import { DailyRecommendationSwitch } from "@/components/Playlist/DailyRecommendationSwitch";
 
 export default function PlaylistPage() {

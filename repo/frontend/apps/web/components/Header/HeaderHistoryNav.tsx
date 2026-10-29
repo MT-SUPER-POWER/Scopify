@@ -3,7 +3,7 @@
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { ShortcutHint } from "@/components/shortcuts/ShortcutHint";
 import { useHistoryNavigationState } from "@/hooks/ui/useHistoryNavigationState";
-import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
+import { useSmartRouter } from "@/hooks/core/useSmartRouter";
 import { runtime } from "@/lib/runtime";
 import { cn } from "@/lib/utils";
 import { useI18n } from "@/store/module/i18n";

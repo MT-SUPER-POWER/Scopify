@@ -8,7 +8,7 @@ import { DailyCategorySelector } from "@/components/Playlist/DailyCategorySelect
 import { DailyRecommendationSwitch } from "@/components/Playlist/DailyRecommendationSwitch";
 import { QueryBoundary } from "@/components/shared/QueryBoundary";
 import { useDailyCategorySongs } from "@/hooks/playlist/useDailyCategoryRecommendations";
-import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
+import { useSmartRouter } from "@/hooks/core/useSmartRouter";
 import { useUserStore } from "@/store";
 import { useI18n } from "@/store/module/i18n";
 import { pruneSongDetail } from "@/types/song/api";

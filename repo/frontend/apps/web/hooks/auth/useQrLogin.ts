@@ -2,7 +2,7 @@
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { checkQR, createQR, getQRKey } from "@/lib/api/login";
-import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
+import { useSmartRouter } from "@/hooks/core/useSmartRouter";
 import { runtime } from "@/lib/runtime";
 import { createFreshLoginDevice } from "@/lib/devices/clientIdentity";
 import { completeFreshLogin } from "@/lib/devices/completeLogin";

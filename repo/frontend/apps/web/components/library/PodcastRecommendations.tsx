@@ -4,7 +4,7 @@ import { ChevronLeft, ChevronRight, RefreshCw } from "lucide-react";
 import { useEffect, useState } from "react";
 import { GridCard } from "@/components/home/GridCard";
 import { NetworkRetryState } from "@/components/shared/NetworkRetryState";
-import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
+import { useSmartRouter } from "@/hooks/core/useSmartRouter";
 import { cn } from "@/lib/utils";
 import { useI18n } from "@/store/module/i18n";
 import { usePodcastPlay } from "@/hooks/library/usePodcastPlay";

@@ -7,7 +7,7 @@ import dynamic from "next/dynamic";
 import { type ReactNode, useEffect, useRef, useState } from "react";
 import { useDefaultLayout, usePanelRef } from "react-resizable-panels";
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
-import { useStoreHydration } from "@/lib/hooks/useStoreHydration";
+import { useStoreHydration } from "@/hooks/core/useStoreHydration";
 import { KeyboardShortcutHelp } from "@/components/shortcuts/KeyboardShortcutHelp";
 import { getDashboardLoadingPlaceholder } from "@/components/shared/DashboardRouteSkeleton";
 import { PlaybackMediaRuntimeProvider } from "@/components/player/PlaybackMediaRuntimeProvider";

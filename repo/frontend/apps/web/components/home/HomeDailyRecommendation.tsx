@@ -1,7 +1,7 @@
 "use client";
 
 import { Play } from "lucide-react";
-import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
+import { useSmartRouter } from "@/hooks/core/useSmartRouter";
 import { useI18n } from "@/store/module/i18n";
 import type { HomeDailyRecommendationProps } from "@/types/home/components";
 

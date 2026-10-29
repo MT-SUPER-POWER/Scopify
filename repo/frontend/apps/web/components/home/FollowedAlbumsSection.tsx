@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { CollapsibleSection } from "@/components/home/CollapsibleSection";
 import { GridCard } from "@/components/home/GridCard";
 import { SectionPagination } from "@/components/home/SectionPagination";
-import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
+import { useSmartRouter } from "@/hooks/core/useSmartRouter";
 import { useI18n } from "@/store/module/i18n";
 import type { FollowedAlbumsSectionProps } from "@/types/home/components";
 

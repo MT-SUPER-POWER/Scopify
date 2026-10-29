@@ -5,7 +5,7 @@ import Image from "next/image";
 import { memo, useCallback, useEffect, useMemo, useState } from "react";
 
 import { useToplistTracksQuery } from "@/hooks/home/useHomeQueries";
-import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
+import { useSmartRouter } from "@/hooks/core/useSmartRouter";
 import { cn } from "@/lib/utils";
 import type { SongDetail } from "@/types/song/api";
 import type { ToplistDetailItem } from "@/types/home/toplistApi";

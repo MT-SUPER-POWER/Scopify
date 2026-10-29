@@ -3,7 +3,7 @@
 import { Bell } from "lucide-react";
 import { InboxPopover } from "@/components/inbox/InboxPopover";
 import { useNotificationCenter } from "@/hooks/notifications/useNotificationCenter";
-import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
+import { useSmartRouter } from "@/hooks/core/useSmartRouter";
 import { useI18n } from "@/store/module/i18n";
 import { NotificationPanel } from "./NotificationPanel";
 import { UpdateProgressRing } from "./UpdateProgressRing";

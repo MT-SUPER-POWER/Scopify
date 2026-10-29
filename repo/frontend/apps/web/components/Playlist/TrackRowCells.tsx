@@ -6,7 +6,7 @@ import { TrackTitleCell } from "@/components/Playlist/TrackTitleCell";
 import { TrackIndexCell } from "@/components/shared/TrackIndexCell";
 import { TableCell } from "@/components/ui/table";
 import { LikeButton } from "@/components/ui/LikeButton";
-import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
+import { useSmartRouter } from "@/hooks/core/useSmartRouter";
 import { formatDate, formatDuration } from "@/lib/utils";
 import type { TrackRowCellsProps } from "@/types/playlist/components";
 

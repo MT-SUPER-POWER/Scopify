@@ -4,7 +4,7 @@ import { CalendarDays, Headphones, ListMusic, Pause, Play, Radio, Users } from "
 import Image from "next/image";
 import { PlayingAnimation } from "@/components/shared/PlayingAnimation";
 import { PodcastContextMenu } from "@/components/shared/PodcastContextMenu";
-import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
+import { useSmartRouter } from "@/hooks/core/useSmartRouter";
 import { cn, formatDate, formatNumber } from "@/lib/utils";
 import { useI18n } from "@/store/module/i18n";
 import type { SubscribedPodcastCardProps } from "@/types/library/components";
