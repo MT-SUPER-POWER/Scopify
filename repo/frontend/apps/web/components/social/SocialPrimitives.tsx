@@ -91,15 +91,12 @@ export function SocialState({ loading, error, empty, onRetry, children }: Social
 }
 export function SocialLoadMore({ more, pending, error, onLoad }: SocialLoadMoreProps) {
   const { t } = useI18n();
+  if (!more && !error) return null;
   return (
     <div className={s.loadMore}>
-      {more || error ? (
-        <button type="button" className={s.button} disabled={pending} onClick={onLoad}>
-          {t(pending ? "social.loading" : error ? "social.retry" : "social.loadMore")}
-        </button>
-      ) : (
-        t("social.end")
-      )}
+      <button type="button" className={s.button} disabled={pending} onClick={onLoad}>
+        {t(pending ? "social.loading" : error ? "social.retry" : "social.loadMore")}
+      </button>
     </div>
   );
 }
