@@ -2,7 +2,7 @@
 
 import React from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { useSidebarNarrow } from "@/lib/hooks/useSidebarNarrow";
+import { useSidebarNarrow } from "@/hooks/sidebar/useSidebarNarrow";
 import { LibraryNavigation } from "./LibraryNavigation";
 import { SiderBarMenuMemo } from "./SiderbarMenu";
 import { SidebarPlaylistLibrary } from "./SidebarPlaylistLibrary";

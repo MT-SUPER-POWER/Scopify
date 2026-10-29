@@ -78,7 +78,7 @@ Web Path alias：`@/` → `repo/frontend/apps/web/`，例如 `@/types/…`、`@/
 | 场景 | 目录 |
 | --- | --- |
 | 页面数据与交互 | `hooks/<领域>/` |
-| 登录态、路由、Electron 等 | `lib/hooks/` |
+| 登录态、路由、store 水合等应用级能力 | `hooks/auth/`、`hooks/core/` |
 
 不要在 `components/` 下新建 `hook/` 目录（历史遗留除外，改动时迁出）。
 
