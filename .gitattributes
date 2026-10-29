@@ -33,3 +33,6 @@
 *.webp binary
 *.woff binary
 *.woff2 binary
+
+# Git hooks run under sh; a CRLF checkout would leave a carriage return on every command.
+.husky/* text eol=lf
