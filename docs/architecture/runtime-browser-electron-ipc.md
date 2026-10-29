@@ -16,7 +16,7 @@ const cached = await runtime.cache.get("playlist:123");
 
 组件不必为同一个业务动作分别写 `if (isElectron)`、浏览器 API 和 IPC 调用。
 
-**重要边界：** `WebRuntime` 是业务层的统一接口；`DesktopBridge` 是 *Electron Preload 向 Renderer 暴露的 API 的类型契约*。它们不是同一层，不要求方法逐一同名，也不表示每一个桌面能力都必须有真正等价的浏览器实现。
+**重要边界：** `WebRuntime` 是业务层的统一接口；`DesktopBridge` 是 _Electron Preload 向 Renderer 暴露的 API 的类型契约_。它们不是同一层，不要求方法逐一同名，也不表示每一个桌面能力都必须有真正等价的浏览器实现。
 
 ## 二、总览：初始化分流与执行路径
 
