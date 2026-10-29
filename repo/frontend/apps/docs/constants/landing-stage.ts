@@ -10,7 +10,6 @@ import type { LandingStageScene } from "@/types/marketing";
 export const LANDING_STAGE_SCENES: Readonly<Record<string, LandingStageScene>> = {
   classic: { accent: "#7fd8ff", verse: ["光从这一句流过，", "照亮下一个字。"] },
   cadenza: { accent: "#b69cff", verse: ["闭上眼睛，", "旋律有了形状。"] },
-  hanabi: { accent: "#ffcf4a", verse: ["夜空炸开的一瞬，", "整条河都亮了。"] },
   partita: { accent: "#dfe6ff", verse: ["一个音一级台阶，", "走到云的上面。"] },
   fume: { accent: "#f2c38b", verse: ["名字像烟，", "升起来又散开。"] },
   tilt: { accent: "#ff9cbc", verse: ["靠近一点，", "这句只说给你听。"] },
@@ -22,5 +21,6 @@ export const LANDING_STAGE_SCENES: Readonly<Record<string, LandingStageScene>> =
   sonnet: { accent: "#ff8f8f", verse: ["十四行诗，", "写给今晚的耳朵。"] },
   still: { accent: "#d6dbe6", verse: ["什么都不动，", "只有声音经过这里。"] },
   archive: { accent: "#d8c39d", verse: ["听过的每一首，", "都整齐地归档。"] },
+  hanabi: { accent: "#ffcf4a", verse: ["夜空炸开的一瞬，", "整条河都亮了。"] },
   tempera: { accent: "#ff7fd6", verse: ["最后一笔，", "颜色凝在纸上。"] },
 };

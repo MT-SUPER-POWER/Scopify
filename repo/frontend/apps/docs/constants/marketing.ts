@@ -70,7 +70,6 @@ export const LANDING_FOLIA_STAGE_SCREENSHOT: LandingScreenshot = {
 export const LANDING_VISUALIZER_MODES: readonly LandingVisualizerMode[] = [
   { label: "流光", value: "classic" },
   { label: "心象", value: "cadenza" },
-  { label: "花火", value: "hanabi" },
   { label: "云阶", value: "partita" },
   { label: "浮名", value: "fume" },
   { label: "倾诉", value: "tilt" },
@@ -82,6 +81,7 @@ export const LANDING_VISUALIZER_MODES: readonly LandingVisualizerMode[] = [
   { label: "商籁", value: "sonnet" },
   { label: "静止", value: "still" },
   { label: "档案", value: "archive" },
+  { label: "花火", value: "hanabi" },
   { label: "凝彩", value: "tempera" },
 ];
 
