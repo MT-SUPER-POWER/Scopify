@@ -1,32 +1,52 @@
 import path from "node:path";
 
+/**
+ * 有 `lint` 脚本、会在 CI 的 `turbo run lint` 里检查的工作区。
+ * 暂存文件落在哪个工作区，就在那个目录下用它自己的 ESLint 配置检查。
+ */
+const ESLINT_WORKSPACES = [
+  "repo/frontend/apps/web",
+  "repo/frontend/apps/docs",
+  "repo/frontend/packages/desktop-contract",
+  "repo/frontend/packages/notification-core",
+  "repo/frontend/packages/playback-core",
+  "repo/frontend/packages/ui",
+];
+const WEB_WORKSPACE = "repo/frontend/apps/web";
+const LINTABLE = /\.(js|jsx|ts|tsx|mjs)$/;
+
+const toPosix = (file) => file.replaceAll("\\", "/");
+const quote = (files) => files.map((file) => `"${toPosix(file)}"`).join(" ");
+const relativeToRoot = (file) => toPosix(path.relative(process.cwd(), file));
+const workspaceOf = (file) => {
+  const relative = relativeToRoot(file);
+  return ESLINT_WORKSPACES.find((workspace) => relative.startsWith(`${workspace}/`));
+};
+
 export default {
   "**/*.{js,ts,cjs,mjs,jsx,tsx,json,jsonc,css,yml}": (filenames) => {
     if (!filenames.length) return [];
-    const commands = [];
-
     // 1. Format all staged files with Prettier
-    const quotedAll = filenames.map((f) => `"${f.replaceAll("\\", "/")}"`).join(" ");
-    commands.push(`prettier --write ${quotedAll}`);
+    const commands = [`prettier --write ${quote(filenames)}`];
 
-    // 2. Filter web JS/TS files for ESLint
-    const webCodeFiles = filenames.filter((f) => {
-      const normalized = f.replaceAll("\\", "/");
-      const isWeb =
-        normalized.includes("/repo/frontend/apps/web/") ||
-        normalized.startsWith("repo/frontend/apps/web/");
-      return isWeb && /\.(js|jsx|ts|tsx|mjs)$/.test(f);
-    });
-
-    if (webCodeFiles.length > 0) {
-      const webDir = path.resolve(process.cwd(), "repo/frontend/apps/web");
-      const relFiles = webCodeFiles
-        .map((f) => path.relative(webDir, f))
-        .map((f) => `"${f.replaceAll("\\", "/")}"`)
-        .join(" ");
+    // 2. ESLint each workspace's staged JS/TS files with that workspace's own config
+    const byWorkspace = new Map();
+    for (const file of filenames.filter((name) => LINTABLE.test(name))) {
+      const workspace = workspaceOf(file);
+      if (!workspace) continue;
+      byWorkspace.set(workspace, [...(byWorkspace.get(workspace) ?? []), file]);
+    }
+    for (const [workspace, files] of byWorkspace) {
+      const workspaceDir = path.resolve(process.cwd(), workspace);
+      const relFiles = files.map((file) => path.relative(workspaceDir, file));
       commands.push(
-        `pnpm --dir repo/frontend/apps/web exec eslint --fix --max-warnings 0 --no-warn-ignored ${relFiles}`,
+        `pnpm --dir ${workspace} exec eslint --fix --max-warnings 0 --no-warn-ignored ${quote(relFiles)}`,
       );
+    }
+
+    // 3. Web 的主题硬编码检查（CI 的 lint 也会跑）：扫整个 Web 源码，只需一两秒
+    if (filenames.some((file) => workspaceOf(file) === WEB_WORKSPACE)) {
+      commands.push(`pnpm --dir ${WEB_WORKSPACE} run lint:theme`);
     }
 
     return commands;
@@ -35,7 +55,6 @@ export default {
   // so editing one cell never re-pads the whole table.
   "**/*.{md,mdx}": (filenames) => {
     if (!filenames.length) return [];
-    const quotedAll = filenames.map((f) => `"${f.replaceAll("\\", "/")}"`).join(" ");
-    return [`prettier --write ${quotedAll}`];
+    return [`prettier --write ${quote(filenames)}`];
   },
 };
