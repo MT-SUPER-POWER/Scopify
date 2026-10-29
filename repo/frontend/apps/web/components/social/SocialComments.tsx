@@ -22,6 +22,7 @@ import {
   SocialLogin,
   SocialState,
 } from "./SocialPrimitives";
+import { SocialCommentsSkeleton } from "./SocialCommentsSkeleton";
 import s from "./Social.module.css";
 
 function CommentRow({ event, comment, onReply }: SocialCommentRowProps) {
@@ -191,6 +192,7 @@ export function SocialComments({ event }: SocialEventProps) {
       </form>
       <SocialState
         loading={query.isPending}
+        skeleton={<SocialCommentsSkeleton variant="page" />}
         error={query.isError && !comments.length}
         empty={!comments.length ? t("social.emptyComments") : undefined}
         onRetry={() => void query.refetch()}

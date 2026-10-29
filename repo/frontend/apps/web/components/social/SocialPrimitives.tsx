@@ -74,8 +74,16 @@ export function FollowButton({ user, className = "" }: SocialUserProps) {
     </button>
   );
 }
-export function SocialState({ loading, error, empty, onRetry, children }: SocialStateProps) {
+export function SocialState({
+  loading,
+  error,
+  empty,
+  onRetry,
+  skeleton,
+  children,
+}: SocialStateProps) {
   const { t } = useI18n();
+  if (loading && skeleton) return skeleton;
   if (!loading && !error && !empty) return children;
   return (
     <div className={s.state} role={error ? "alert" : "status"}>

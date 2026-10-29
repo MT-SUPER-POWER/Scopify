@@ -41,6 +41,7 @@ import {
   SocialState,
 } from "./SocialPrimitives";
 import { SocialResourceCard } from "./SocialResourceCard";
+import { SocialCommentsSkeleton } from "./SocialCommentsSkeleton";
 import s from "./Social.module.css";
 
 /**
@@ -182,6 +183,7 @@ function SocialPostView({ event, onDeleted }: SocialPostViewProps) {
               </h3>
               <SocialState
                 loading={comments.isPending}
+                skeleton={<SocialCommentsSkeleton variant="modal" />}
                 error={comments.isError && !items.length}
                 empty={!items.length ? t("social.emptyComments") : undefined}
                 onRetry={() => void comments.refetch()}

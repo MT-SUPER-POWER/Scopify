@@ -115,6 +115,8 @@ export interface SocialStateProps {
   error?: boolean;
   empty?: string;
   onRetry?: () => void;
+  /** 首次加载时代替转圈的骨架 */
+  skeleton?: ReactNode;
   children?: ReactNode;
 }
 export interface SocialLoadMoreProps {
@@ -151,6 +153,9 @@ export interface SocialProfileHeroProps {
   onMessage: () => void;
 }
 export type ProfileStatsBandProps = SocialProfileHeroProps;
+export interface SocialCommentsSkeletonProps {
+  variant: "modal" | "page";
+}
 export interface ProfileListeningRankProps {
   uid: string;
 }
