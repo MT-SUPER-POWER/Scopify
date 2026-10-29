@@ -85,6 +85,7 @@ export const musicQueryKeys = {
     mvs: (keyword: string, limit: number) => ["search", "mvs", keyword, limit] as const,
     playlists: (keyword: string, limit: number) => ["search", "playlists", keyword, limit] as const,
     songs: (keyword: string, limit: number) => ["search", "songs", keyword, limit] as const,
+    suggest: (keyword: string) => ["search", "suggest", keyword] as const,
     voices: (keyword: string, limit: number) => ["search", "voices", keyword, limit] as const,
     voiceLists: (keyword: string, limit: number) =>
       ["search", "voice-lists", keyword, limit] as const,

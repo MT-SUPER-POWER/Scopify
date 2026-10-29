@@ -1,41 +1,36 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
+import { useDebouncedValue } from "@/hooks/ui/useDebouncedValue";
 import { searchSuggest } from "@/lib/api/search";
+import { musicQueryKeys } from "@/lib/query/queryKeys";
 import type { CommandWorkspaceSearchSuggestion } from "@/types/commandWorkspace/model";
 
+/** 输入停顿多久（ms）后才去请求联想词。 */
+const SUGGEST_DEBOUNCE_MS = 200;
+
+/**
+ * 命令面板的搜索联想。联想只是输入时的辅助：请求失败不抛给边界、也不伪造空结果，
+ * 只是不给出联想，面板照常用输入的原文作为候选。
+ */
 export function useCommandWorkspaceSuggestions(query: string) {
-  const [suggestions, setSuggestions] = useState<CommandWorkspaceSearchSuggestion[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
+  const keyword = query.trim();
+  const debouncedKeyword = useDebouncedValue(keyword, SUGGEST_DEBOUNCE_MS);
+  const suggestQuery = useQuery({
+    queryKey: musicQueryKeys.search.suggest(debouncedKeyword),
+    queryFn: async () =>
+      getSuggestions((await searchSuggest(debouncedKeyword)).data?.data?.suggests),
+    enabled: debouncedKeyword.length > 0,
+    placeholderData: keepPreviousData,
+    staleTime: 60_000,
+  });
 
-  useEffect(() => {
-    const keyword = query.trim();
-    if (!keyword) {
-      setSuggestions([]);
-      setIsLoading(false);
-      return;
-    }
-
-    let isCurrentRequest = true;
-    setIsLoading(true);
-    const timeout = window.setTimeout(async () => {
-      try {
-        const response = await searchSuggest(keyword);
-        if (isCurrentRequest) setSuggestions(getSuggestions(response.data?.data?.suggests));
-      } catch {
-        if (isCurrentRequest) setSuggestions([]);
-      } finally {
-        if (isCurrentRequest) setIsLoading(false);
-      }
-    }, 200);
-
-    return () => {
-      isCurrentRequest = false;
-      window.clearTimeout(timeout);
-    };
-  }, [query]);
-
-  return { isLoading, suggestions };
+  if (!keyword) return { isLoading: false, suggestions: [] };
+  return {
+    // 还在防抖或正在请求当前词时都算加载中
+    isLoading: keyword !== debouncedKeyword || suggestQuery.isFetching,
+    suggestions: suggestQuery.data ?? [],
+  };
 }
 
 function getSuggestions(value: unknown): CommandWorkspaceSearchSuggestion[] {
