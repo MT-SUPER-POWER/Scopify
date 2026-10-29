@@ -25,14 +25,11 @@ import { useMediaQuery } from "@/hooks/ui/useMediaQuery";
 import { cn } from "@/lib/utils";
 import { usePlayerStore } from "@/store";
 import { useI18n } from "@/store/module/i18n";
-import type { RadioTracklistTableProps } from "@/types/radio/components";
-
-type RadioSortKey = "title" | "progress" | "updatedAt" | "playCount" | "duration";
-
-interface RadioSortState {
-  key: RadioSortKey | null;
-  order: "asc" | "desc" | null;
-}
+import type {
+  RadioSortKey,
+  RadioSortState,
+  RadioTracklistTableProps,
+} from "@/types/radio/components";
 
 export function RadioTracklistTable({
   programs,

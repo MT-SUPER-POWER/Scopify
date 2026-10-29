@@ -31,3 +31,10 @@ export interface RadioTracklistTableProps {
   searchQuery?: string;
   tracks: SongDetail[];
 }
+
+export type RadioSortKey = "title" | "progress" | "updatedAt" | "playCount" | "duration";
+
+export interface RadioSortState {
+  key: RadioSortKey | null;
+  order: "asc" | "desc" | null;
+}

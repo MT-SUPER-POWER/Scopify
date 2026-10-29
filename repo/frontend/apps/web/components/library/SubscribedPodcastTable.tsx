@@ -16,14 +16,11 @@ import { usePodcastPlay } from "@/hooks/library/usePodcastPlay";
 import { cn, formatDate, formatPlayCount } from "@/lib/utils";
 import { usePlayerStore } from "@/store";
 import { useI18n } from "@/store/module/i18n";
-import type { SubscribedPodcastTableProps } from "@/types/library/components";
-
-type PodcastSortKey = "title" | "playCount" | "voiceCount" | "updatedAt";
-
-interface PodcastSortState {
-  key: PodcastSortKey | null;
-  order: "asc" | "desc" | null;
-}
+import type {
+  PodcastSortKey,
+  PodcastSortState,
+  SubscribedPodcastTableProps,
+} from "@/types/library/components";
 
 export function SubscribedPodcastTable({ podcasts }: SubscribedPodcastTableProps) {
   const { t } = useI18n();

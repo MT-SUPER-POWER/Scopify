@@ -82,3 +82,10 @@ export interface CloudMatchDialogProps {
   /** 要匹配的云盘歌曲；为 null 时对话框关闭。 */
   song: SongDetail | null;
 }
+
+export type PodcastSortKey = "title" | "playCount" | "voiceCount" | "updatedAt";
+
+export interface PodcastSortState {
+  key: PodcastSortKey | null;
+  order: "asc" | "desc" | null;
+}
