@@ -4,6 +4,7 @@ import { useIsMutating, useMutation, useQueryClient } from "@tanstack/react-quer
 import { toast } from "sonner";
 import * as api from "@/lib/api/social";
 import { patchEvent, patchFollow, socialKey } from "@/lib/social/cache";
+import { getSocialPublishErrorMessage } from "@/lib/social/publishError";
 import { useSocialAccount } from "./useSocialQueries";
 import { useI18n } from "@/store/module/i18n";
 import { useUserStore } from "@/store/module/user";
@@ -76,7 +77,7 @@ export function useSocialPublish(forwarded?: SocialEvent) {
       void client.invalidateQueries({ queryKey: socialKey(account, "profile", uid) });
       toast.success(t(forwarded ? "social.forwarded" : "social.published"));
     },
-    onError: () => toast.error(t("social.actionFailed")),
+    onError: (error) => toast.error(getSocialPublishErrorMessage(error, t("social.actionFailed"))),
   });
 }
 export function useSocialEditProfile() {
