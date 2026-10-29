@@ -1,6 +1,7 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useCallback, useState } from "react";
 import { toast } from "sonner";
 
 import { getLyric } from "@/lib/api/music";
@@ -17,6 +18,7 @@ import {
 } from "@/lib/cache/playbackCache";
 import { adaptNeteaseLyric } from "@/lib/lyrics/neteaseLyricAdapter";
 import { buildLyricExport, downloadLyricExport } from "@/lib/lyrics/export";
+import { musicQueryKeys } from "@/lib/query/queryKeys";
 import { useI18n } from "@/store/module/i18n";
 import { usePlayerStore } from "@/store/module/player";
 import { useLyricStageStore } from "@/store/module/lyrics";
@@ -27,35 +29,48 @@ import type {
 } from "@/types/lyrics/model";
 import type { NeteaseLyric } from "@/types/song/api";
 
+/** 读本地保存的导入歌词与歌词来源；来源选了「导入」但文件已不在时按「在线」算。 */
+async function readLyricSource(songId: number) {
+  const [importedLyric, source] = await Promise.all([
+    getImportedLyricOverride(songId),
+    getLyricSourceSelection(songId),
+  ]);
+  return {
+    importedLyric,
+    source: (source === "imported" && importedLyric
+      ? "imported"
+      : "online") as LyricSourceSelection,
+  };
+}
+
+/**
+ * 歌词面板「来源」页：当前用在线歌词还是导入的文件、时间轴偏移、导入 / 导出 / 清除。
+ * 本地保存的来源由 Query 管理，和「匹配歌词」共用缓存：任一处改了歌词来源，另一处会跟着刷新。
+ * 切换、导入、清除是用户操作，反馈留在操作本身。
+ */
 export function useOnlineLyricsTab() {
   const { t } = useI18n();
+  const queryClient = useQueryClient();
   const song = usePlayerStore((state) => state.currentSongDetail);
   const lyric = usePlayerStore((state) => state.lyric);
   const lyricOffsetMs = useLyricStageStore((state) => state.lyricOffsetMs);
-  const [importedLyric, setImportedLyric] = useState<ImportedLyricOverride | null>(null);
   const [isUpdating, setIsUpdating] = useState(false);
-  const [source, setSource] = useState<LyricSourceSelection>("online");
+  const songId = song?.id ?? 0;
+  const sourceQuery = useQuery({
+    queryKey: musicQueryKeys.lyrics.source(songId),
+    queryFn: () => readLyricSource(songId),
+    enabled: song !== null,
+  });
+  const importedLyric = song ? (sourceQuery.data?.importedLyric ?? null) : null;
+  const source = song ? (sourceQuery.data?.source ?? "online") : "online";
 
-  useEffect(() => {
-    if (!song) {
-      setImportedLyric(null);
-      setSource("online");
-      return;
-    }
-
-    let cancelled = false;
-    void Promise.all([getImportedLyricOverride(song.id), getLyricSourceSelection(song.id)]).then(
-      ([nextImportedLyric, nextSource]) => {
-        if (cancelled) return;
-        setImportedLyric(nextImportedLyric);
-        setSource(nextSource === "imported" && nextImportedLyric ? "imported" : "online");
-      },
-    );
-
-    return () => {
-      cancelled = true;
-    };
-  }, [song]);
+  const setSourceState = useCallback(
+    (
+      id: number,
+      next: { importedLyric: ImportedLyricOverride | null; source: LyricSourceSelection },
+    ) => queryClient.setQueryData(musicQueryKeys.lyrics.source(id), next),
+    [queryClient],
+  );
 
   const setLyricOffsetMs = useCallback((offsetMs: number) => {
     useLyricStageStore.getState().patchSettings({ lyricOffsetMs: offsetMs });
@@ -75,7 +90,7 @@ export function useOnlineLyricsTab() {
 
         await setLyricSourceSelection(song.id, nextSource);
         usePlayerStore.getState().setLyric(nextLyric);
-        setSource(nextSource);
+        setSourceState(song.id, { importedLyric, source: nextSource });
       } catch (error) {
         console.error("Lyrics source selection failed", error);
         toast.error(t("lyrics.tab.sourceChangeFailed"));
@@ -83,7 +98,7 @@ export function useOnlineLyricsTab() {
         setIsUpdating(false);
       }
     },
-    [importedLyric, isUpdating, song, t],
+    [importedLyric, isUpdating, setSourceState, song, t],
   );
 
   const importLyricFile = useCallback(
@@ -111,8 +126,7 @@ export function useOnlineLyricsTab() {
           setLyricSourceSelection(song.id, "imported"),
         ]);
         usePlayerStore.getState().setLyric(lyric);
-        setImportedLyric(nextImportedLyric);
-        setSource("imported");
+        setSourceState(song.id, { importedLyric: nextImportedLyric, source: "imported" });
         toast.success(t("lyrics.tab.imported"));
       } catch (error) {
         console.error("Lyric import failed", error);
@@ -121,7 +135,7 @@ export function useOnlineLyricsTab() {
         setIsUpdating(false);
       }
     },
-    [isUpdating, song, t],
+    [isUpdating, setSourceState, song, t],
   );
 
   const clearLyricsState = useCallback(async () => {
@@ -137,8 +151,9 @@ export function useOnlineLyricsTab() {
       const response = await getLyric(song.id);
       await setCachedLyric(song.id, response.data);
       usePlayerStore.getState().setLyric(response.data);
-      setImportedLyric(null);
-      setSource("online");
+      setSourceState(song.id, { importedLyric: null, source: "online" });
+      // 匹配也一起清掉了，「匹配歌词」里显示的已保存匹配要跟着失效
+      queryClient.setQueryData(musicQueryKeys.lyrics.matchOverride(song.id), null);
       toast.success(t("lyrics.tab.cleared"));
     } catch (error) {
       console.error("Lyrics state reset failed", error);
@@ -146,7 +161,7 @@ export function useOnlineLyricsTab() {
     } finally {
       setIsUpdating(false);
     }
-  }, [isUpdating, song, t]);
+  }, [isUpdating, queryClient, setSourceState, song, t]);
 
   // Exports the raw branch now on stage, so the file re-imports through `importLyricFile` as-is.
   const exportableFormats: LyricExportFormat[] = [

@@ -96,6 +96,8 @@ export const musicQueryKeys = {
   lyrics: {
     matchOverride: (songId: number) => ["lyrics", "match-override", songId] as const,
     matchPreview: (songId: number) => ["lyrics", "match-preview", songId] as const,
+    /** 本地保存的导入歌词与当前歌词来源（在线 / 导入）。 */
+    source: (songId: number) => ["lyrics", "source", songId] as const,
   },
   song: {
     wiki: (songId: number, userId: number) => ["song", "wiki", songId, userId] as const,

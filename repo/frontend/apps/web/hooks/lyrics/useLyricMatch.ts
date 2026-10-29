@@ -118,6 +118,8 @@ export function useLyricMatch(isOpen: boolean) {
       ]);
       usePlayerStore.getState().setLyric(response.data);
       setOverride(song.id, nextOverride);
+      // 歌词面板的「来源」随之切回在线
+      void queryClient.invalidateQueries({ queryKey: musicQueryKeys.lyrics.source(song.id) });
       toast.success(t("lyrics.match.saved"));
       return true;
     } catch (error) {
@@ -127,7 +129,7 @@ export function useLyricMatch(isOpen: boolean) {
     } finally {
       setIsApplying(false);
     }
-  }, [selectedCandidate, setOverride, song, t]);
+  }, [queryClient, selectedCandidate, setOverride, song, t]);
 
   const restoreOriginalLyrics = useCallback(async () => {
     if (!song) return;
