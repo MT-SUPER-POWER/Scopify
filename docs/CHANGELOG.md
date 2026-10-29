@@ -2,6 +2,44 @@
 
 > 根据 commit 自动生成，请勿手动编辑；推送版本 tag 后由 CI 更新。v2.0.3 及更早版本见[历史更新记录](archive/CHANGELOG-legacy.md)。
 
+## v3.1.3 — 2026-10-29
+
+### 新增
+
+- 评论支持「N 条回复」展开，输入框加入表情 ([6232e326](https://github.com/MT-SUPER-POWER/Scopify/commit/6232e326e08daeac31eee690981a5ddcbe8a179d))
+- 评论页改用 MV 页的 YouTube 式评论布局 ([101709b0](https://github.com/MT-SUPER-POWER/Scopify/commit/101709b06ac97c5d795ccd9511b2d0bd9f91ac1f))
+- 动态标签改用瀑布流，发布框收成一行 ([563ffd5a](https://github.com/MT-SUPER-POWER/Scopify/commit/563ffd5a919d09bdf28236d31534d71ee5dbee33))
+- 头部资料改为一行小字，加载时不再带光 ([35a4eb2f](https://github.com/MT-SUPER-POWER/Scopify/commit/35a4eb2f84803e3635b83cf31cebb75a2c8fd332))
+- 重做分享音乐的选择弹窗 ([d4d0f0cb](https://github.com/MT-SUPER-POWER/Scopify/commit/d4d0f0cb6bf4d6451e97bd173f59894fcf28cf45))
+- 每日推荐支持自选音乐风格 ([680a608b](https://github.com/MT-SUPER-POWER/Scopify/commit/680a608b147113bade00ce88f689ec9ba1d2109d))
+- 重新设计个人主页，新增数据带与概览标签 ([db7052e6](https://github.com/MT-SUPER-POWER/Scopify/commit/db7052e6939fca9149a17e1f815c13b83b435261))
+- 个人主页新增听歌排行 ([8185ef38](https://github.com/MT-SUPER-POWER/Scopify/commit/8185ef38e3b36a819f6fdd240e1c68a18f1c4fd5))
+- 背景默认随时间切换 ([81b498fb](https://github.com/MT-SUPER-POWER/Scopify/commit/81b498fbf7f559e18b47411f09ab446679856ca7))
+- 桌面小歌词与桌面音乐合并为同一个浮层 ([cc4db3c7](https://github.com/MT-SUPER-POWER/Scopify/commit/cc4db3c7c9cce54439787854051d1f91a1a695ae))
+- 支持调试时刷新窗口 ([032ca48e](https://github.com/MT-SUPER-POWER/Scopify/commit/032ca48eecc296e0945f79c9c9c0a55b2107ad75))
+- 支持从命令面板退出应用 ([2d014692](https://github.com/MT-SUPER-POWER/Scopify/commit/2d0146924f2061746eaa6450817028de5dd22262))
+- 支持调整视频播放设置 ([bcb90b98](https://github.com/MT-SUPER-POWER/Scopify/commit/bcb90b98a40db995190d48de9cd1f103623c81a3))
+- 优化剧场模式观看体验 ([36a7b567](https://github.com/MT-SUPER-POWER/Scopify/commit/36a7b567ae1c17ef4f95eb428cc3dd7befed1ce2))
+
+### 修复
+
+- 修复骨架屏硬编码样式与评论回复状态的类型错误 ([d3af7995](https://github.com/MT-SUPER-POWER/Scopify/commit/d3af79952c24902570dca9044bcce34c9a55ff2b))
+- 别人没公开的听歌排行不再占位显示 ([1c27bed7](https://github.com/MT-SUPER-POWER/Scopify/commit/1c27bed7204798be9b4282b5f81c5b588788bd51))
+- 评论页加载时显示骨架屏 ([a849369b](https://github.com/MT-SUPER-POWER/Scopify/commit/a849369b25e72d0093e33d6ad230694f80594adb))
+- 动态评论加载时显示与评论行一致的骨架屏 ([e8cf89f6](https://github.com/MT-SUPER-POWER/Scopify/commit/e8cf89f62ec0325d9e339563c2e76d797493dbf9))
+- 分享音乐的搜索结果恢复封面 ([013f8936](https://github.com/MT-SUPER-POWER/Scopify/commit/013f893635009f577324521a8f669929d602571a))
+- 显示动态发布失败的具体原因 ([d1367fbd](https://github.com/MT-SUPER-POWER/Scopify/commit/d1367fbd96065eae76880f5800098b15e5017459))
+- 个人主页加载时显示与页面一致的骨架屏 ([e411e356](https://github.com/MT-SUPER-POWER/Scopify/commit/e411e356d1b85b50891b24da348418bedadea991))
+- 列表读完后不再显示“已经到底了” ([76bf50a9](https://github.com/MT-SUPER-POWER/Scopify/commit/76bf50a9613b1d961168990522420af2b36b8fc0))
+- 恢复正在播放的动画提示 ([43678abf](https://github.com/MT-SUPER-POWER/Scopify/commit/43678abf1218b8ea67bd300e2d44cd993d5894a1))
+- 改善右侧面板加载体验 ([780d2bb3](https://github.com/MT-SUPER-POWER/Scopify/commit/780d2bb375024fff954d2afaaf2719bea0dd0406))
+- 保留已加载的歌单内容 ([a7d35d17](https://github.com/MT-SUPER-POWER/Scopify/commit/a7d35d175a7a7a53cd507bc2f30cff43a23c38e8))
+- 避免取消请求时误报网络错误 ([88654d8e](https://github.com/MT-SUPER-POWER/Scopify/commit/88654d8e15acf0bd98b17f8d547c0b5a50f6c112))
+- 播放栏左右边距对称，中间控制区位置更舒适 ([3d16cc51](https://github.com/MT-SUPER-POWER/Scopify/commit/3d16cc515533b171b1636a9edf4b1eec27da5cec))
+- 桌面音乐控制器快捷键改为 Ctrl+Alt+W，不再与桌面小歌词冲突 ([22e50d72](https://github.com/MT-SUPER-POWER/Scopify/commit/22e50d721dfb5943e39e208dcae9f43a49fed6ff))
+- 修复首页加载占位布局 ([dbf1e7e8](https://github.com/MT-SUPER-POWER/Scopify/commit/dbf1e7e81ad85b12b0985fd4743e2b985d597a06))
+- 修复播放页布局和加载占位 ([d9afbd9c](https://github.com/MT-SUPER-POWER/Scopify/commit/d9afbd9c3777ac141e76edf0a45e5a952f30389d))
+
 ## v3.1.0 — 2026-10-28
 
 ### 新增
