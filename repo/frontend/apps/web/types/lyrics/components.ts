@@ -402,3 +402,12 @@ export interface FoliaRandomPoolPopoverProps {
   onOpenMore: () => void;
   pool: ReturnType<typeof import("@/hooks/lyrics/useFoliaRandomPool").useFoliaRandomPool>;
 }
+
+export interface FoliaGlobalLyricOffsetRulerProps {
+  accentColor: string;
+  ariaLabel: string;
+  limitMs: number;
+  onChange: (value: number) => void;
+  secondaryColor: string;
+  valueMs: number;
+}

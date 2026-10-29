@@ -3,15 +3,7 @@
 import { useEffect, useMemo, useRef } from "react";
 
 import { colorWithAlpha } from "@/components/lyrics/folia/src/components/visualizer/colorMix";
-
-interface FoliaGlobalLyricOffsetRulerProps {
-  accentColor: string;
-  ariaLabel: string;
-  limitMs: number;
-  onChange: (value: number) => void;
-  secondaryColor: string;
-  valueMs: number;
-}
+import type { FoliaGlobalLyricOffsetRulerProps } from "@/types/lyrics/components";
 
 const PX_PER_MS = 0.6;
 const clamp = (value: number, limit: number) =>
