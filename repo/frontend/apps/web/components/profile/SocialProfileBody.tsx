@@ -57,7 +57,7 @@ export function SocialProfileBody({ user, tab, isSelf }: SocialProfileBodyProps)
       ) : (
         <div className={s.profileFeedColumn}>
           {isSelf && <SocialComposer />}
-          <SocialFeed uid={user.id} />
+          <SocialFeed uid={user.id} grid />
         </div>
       )}
     </main>
