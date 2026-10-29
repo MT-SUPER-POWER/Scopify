@@ -1,9 +1,10 @@
 import {
   COMMENT_RESOURCE_TYPE,
   type CommentResourceKind,
+  type FloorCommentResponse,
   type NewCommentResponse,
 } from "@/types/comment/api";
-import type { SongComment } from "@/types/song/api";
+import type { NeteaseComment } from "@/types/song/api";
 
 export function getCommentHref(kind: CommentResourceKind, id: number | string) {
   if (kind === "song") return `/comment?songId=${id}`;
@@ -23,24 +24,26 @@ export function resolveCommentResource(
   return { id, kind: resource, type: COMMENT_RESOURCE_TYPE[resource] };
 }
 
-export function normalizeLegacyComments(data: SongComment | undefined) {
-  return {
-    comments: data?.comments ?? [],
-    cursor: undefined,
-    hasMore: data?.more ?? false,
-    hotComments: data?.hotComments ?? [],
-    total: data?.total ?? 0,
-  };
-}
-
 export function normalizeNewComments(data: NewCommentResponse | undefined) {
   return {
     comments: data?.data?.comments ?? [],
     cursor: data?.data?.cursor,
     hasMore: data?.data?.hasMore ?? false,
-    hotComments: [],
     total: data?.data?.totalCount ?? 0,
   };
+}
+
+export function normalizeFloorComments(data: FloorCommentResponse | undefined) {
+  return {
+    comments: data?.data?.comments ?? [],
+    hasMore: data?.data?.hasMore ?? false,
+    time: data?.data?.time,
+    total: data?.data?.totalCount ?? 0,
+  };
+}
+
+export function getReplyCount(comment: NeteaseComment) {
+  return comment.showFloorComment?.replyCount ?? 0;
 }
 
 function isCommentResourceKind(value: null | string): value is CommentResourceKind {

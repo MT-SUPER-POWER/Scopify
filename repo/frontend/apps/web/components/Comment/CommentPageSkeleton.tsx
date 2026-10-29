@@ -52,7 +52,7 @@ export function CommentCountSkeleton() {
   );
 }
 
-/** 评论列表首次加载骨架：每行沿用 MvCommentItem 的结构与字号，行高与真实评论一致。 */
+/** 评论列表首次加载骨架：每行沿用 CommentRow 的结构与字号，行高与真实评论一致。 */
 export function CommentListSkeleton() {
   return (
     <div aria-busy="true" className="mt-8 flex flex-col gap-6">

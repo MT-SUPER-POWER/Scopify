@@ -203,6 +203,8 @@ export interface CommentIpLocation {
 
 interface NeteaseReply {
   user: NeteaseUser;
+  /** 被回复的那条评论的 id，楼中楼里用来区分「回复楼主」和「回复某条回复」。 */
+  beRepliedCommentId?: number;
   content: string;
   ipLocation?: CommentIpLocation | string | null;
 }
@@ -216,6 +218,9 @@ export interface NeteaseComment {
   likedCount: number;
   liked: boolean;
   beReplied: NeteaseReply[];
+  parentCommentId?: number;
+  /** 仅 /comment/new 返回；replyCount 为这条评论下的回复数。 */
+  showFloorComment?: { replyCount?: number } | null;
   ipLocation?: CommentIpLocation | string | null;
   location?: string | null;
 }

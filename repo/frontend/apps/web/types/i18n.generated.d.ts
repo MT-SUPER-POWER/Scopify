@@ -7778,6 +7778,24 @@ export interface TranslateFn {
    */
   (key: "comments.input.publishPlaceholder", params?: TranslationParams): string;
   /**
+   * zh-CN: {{count}} 条回复
+   * zh-TW: {{count}} 則回覆
+   * en-US: {{count}} replies
+   */
+  (key: "comments.replies.count", params?: TranslationParams): string;
+  /**
+   * zh-CN: 显示更多回复
+   * zh-TW: 顯示更多回覆
+   * en-US: Show more replies
+   */
+  (key: "comments.replies.more", params?: TranslationParams): string;
+  /**
+   * zh-CN: 表情
+   * zh-TW: 表情
+   * en-US: Emoji
+   */
+  (key: "comments.input.emoji", params?: TranslationParams): string;
+  /**
    * zh-CN: 该评论已删除。
    * zh-TW: 該評論已刪除。
    * en-US: This comment has been deleted.

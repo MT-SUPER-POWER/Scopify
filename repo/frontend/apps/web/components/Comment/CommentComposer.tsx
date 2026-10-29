@@ -1,21 +1,24 @@
 "use client";
 
+import { Smile } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { getSizedImageUrl } from "@/lib/music/imageUrl";
 import { cn } from "@/lib/utils";
+import emojiData from "@/resources/emoji.json";
 import { useUserStore } from "@/store";
 import { useI18n } from "@/store/module/i18n";
-import type { MvCommentComposerProps } from "@/types/mv/components";
+import type { CommentComposerProps } from "@/types/comment/components";
 
 /** 网易云评论的字数上限。 */
 const MAX_LENGTH = 140;
 
 /**
- * YouTube 式评论输入：头像 + 下划线输入框，聚焦或有内容时展开「取消 / 评论」，
+ * YouTube 式评论输入：头像 + 下划线输入框，聚焦或有内容时展开「表情 / 取消 / 评论」，
  * 输入框随内容自动增高；Ctrl/⌘+Enter 发送。回复时以紧凑尺寸嵌在评论下方。
  */
-export function MvCommentComposer({
+export function CommentComposer({
   placeholder,
   submitLabel,
   compact = false,
@@ -23,7 +26,7 @@ export function MvCommentComposer({
   onFocus,
   onSubmit,
   onCancel,
-}: MvCommentComposerProps) {
+}: CommentComposerProps) {
   const { t } = useI18n();
   const avatarUrl = useUserStore((state) => state.user?.avatarUrl);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -57,8 +60,24 @@ export function MvCommentComposer({
     if (ok) reset();
   };
 
+  /** 在光标处插入 [表情名]，插入后光标落在它后面。 */
+  const insertEmoji = (name: string) => {
+    const textarea = textareaRef.current;
+    const start = textarea?.selectionStart ?? text.length;
+    const end = textarea?.selectionEnd ?? start;
+    const token = `[${name}]`;
+    setText(text.slice(0, start) + token + text.slice(end));
+    setIsActive(true);
+    requestAnimationFrame(() => {
+      if (!textareaRef.current) return;
+      textareaRef.current.focus();
+      textareaRef.current.setSelectionRange(start + token.length, start + token.length);
+      resize();
+    });
+  };
+
   return (
-    <div className="flex gap-4">
+    <div className={cn("flex", compact ? "gap-3" : "gap-4")}>
       <span
         className={cn(
           "relative shrink-0 overflow-hidden rounded-full bg-surface-elevated",
@@ -98,11 +117,50 @@ export function MvCommentComposer({
           className="block w-full resize-none overflow-hidden border-b border-content/20 bg-transparent pb-1 text-sm leading-5 text-content outline-none placeholder:text-content-muted focus:border-content"
         />
         {isActive && (
-          <div className="mt-2 flex items-center justify-end gap-2">
+          <div className="mt-2 flex items-center gap-2">
+            <Popover>
+              <PopoverTrigger asChild>
+                <button
+                  type="button"
+                  aria-label={t("comments.input.emoji")}
+                  className="flex size-9 items-center justify-center rounded-full text-content transition-colors hover:bg-content/10"
+                >
+                  <Smile className="size-5" />
+                </button>
+              </PopoverTrigger>
+              <PopoverContent
+                side="bottom"
+                align="start"
+                sideOffset={8}
+                className="emoji-popover z-100 w-80 border bg-popover p-3 text-popover-foreground shadow-floating"
+                onOpenAutoFocus={(event) => event.preventDefault()}
+                onCloseAutoFocus={(event) => event.preventDefault()}
+              >
+                <div className="scrollbar-hide grid max-h-55 grid-cols-8 gap-2 overflow-y-auto">
+                  {Object.entries(emojiData).map(([name, url]) => (
+                    <button
+                      key={name}
+                      type="button"
+                      title={name}
+                      onClick={() => insertEmoji(name)}
+                      className="flex items-center justify-center rounded p-1.5 transition-colors hover:scale-110 hover:bg-content/10 active:scale-95"
+                    >
+                      <Image
+                        src={url as string}
+                        alt={name}
+                        width={20}
+                        height={20}
+                        className="pointer-events-none size-5 object-contain select-none"
+                      />
+                    </button>
+                  ))}
+                </div>
+              </PopoverContent>
+            </Popover>
             {text.length > MAX_LENGTH * 0.8 && (
               <span
                 className={cn(
-                  "mr-auto text-xs tabular-nums",
+                  "text-xs tabular-nums",
                   text.length > MAX_LENGTH ? "text-destructive" : "text-content-muted",
                 )}
               >
@@ -115,7 +173,7 @@ export function MvCommentComposer({
                 reset();
                 onCancel?.();
               }}
-              className="h-9 rounded-full px-4 text-sm font-medium text-content transition-colors hover:bg-content/10"
+              className="ml-auto h-9 rounded-full px-4 text-sm font-medium text-content transition-colors hover:bg-content/10"
             >
               {t("comments.input.cancel")}
             </button>

@@ -2,27 +2,36 @@
 
 import Link from "next/link";
 import { Check, ListFilter, Loader2 } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, type ReactNode } from "react";
+import { CommentComposer } from "@/components/Comment/CommentComposer";
 import {
   CommentCountSkeleton,
   CommentListSkeleton,
 } from "@/components/Comment/CommentPageSkeleton";
-import { MvCommentComposer } from "@/components/mv/comments/MvCommentComposer";
-import { MvCommentItem } from "@/components/mv/comments/MvCommentItem";
+import { CommentReplies } from "@/components/Comment/CommentReplies";
+import { CommentRow } from "@/components/Comment/CommentRow";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { getReplyCount } from "@/lib/comment/commentResource";
 import { useLoginStatus } from "@/lib/hooks/useLoginStatus";
 import { useUserStore } from "@/store";
 import { useI18n } from "@/store/module/i18n";
-import type { CommentSectionProps, CommentSortType } from "@/types/comment/components";
+import type { CommentSectionProps } from "@/types/comment/components";
+import type { CommentSortType } from "@/types/comment/model";
+import type { NeteaseComment } from "@/types/song/api";
+
+const SORT_LABEL_KEY = {
+  hot: "comments.sort.default",
+  latest: "comments.sort.latest",
+} as const;
 
 /**
  * YouTube 式评论区（MV 页与评论页共用）：「N 条评论」与排序方式、常驻输入框、
- * 评论条目内联回复；最新评论滚动到底自动加载。
+ * 评论条目内联回复与「N 条回复」楼中楼；滚动到底自动加载下一页。
  */
 export function CommentSection({ data, openPageHref }: CommentSectionProps) {
   const { t } = useI18n();
@@ -35,22 +44,22 @@ export function CommentSection({ data, openPageHref }: CommentSectionProps) {
     handleReply,
     handleSubmitComment,
     hasMore,
-    hotComments,
     isFirstPageLoading,
     isLoading,
     loadMore,
+    loadReplies,
     replyTarget,
     setReplyTarget,
+    setSort,
+    sort,
+    threads,
     total,
   } = data;
-  const [sort, setSort] = useState<CommentSortType>("hot");
-  const activeSort: CommentSortType = hotComments.length > 0 ? sort : "latest";
-  const list = activeSort === "hot" ? hotComments : comments;
   const loadMoreRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const target = loadMoreRef.current;
-    if (!target || activeSort !== "latest") return;
+    if (!target) return;
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting && hasMore && !isLoading) void loadMore();
@@ -59,14 +68,30 @@ export function CommentSection({ data, openPageHref }: CommentSectionProps) {
     );
     observer.observe(target);
     return () => observer.disconnect();
-  }, [activeSort, hasMore, isLoading, loadMore]);
+  }, [hasMore, isLoading, loadMore, isFirstPageLoading]);
 
-  const sortOptions: { value: CommentSortType; label: string }[] = [
-    ...(hotComments.length > 0
-      ? [{ value: "hot" as const, label: t("comments.page.hotComments") }]
-      : []),
-    { value: "latest", label: t("comments.page.latestComments") },
-  ];
+  const renderRow = (
+    comment: NeteaseComment,
+    options: { rootId?: number; compact?: boolean; children?: ReactNode } = {},
+  ) => (
+    <CommentRow
+      key={comment.commentId}
+      comment={comment}
+      compact={options.compact}
+      rootId={options.rootId}
+      hasReplies={!options.compact && getReplyCount(comment) > 0}
+      isOwn={String(comment.user.userId) === String(currentUserId ?? "")}
+      isReplying={replyTarget?.commentId === comment.commentId}
+      canReply={isLogin}
+      onLike={() => void handleLike(comment.commentId)}
+      onDelete={() => void handleDelete(comment.commentId)}
+      onReplyOpen={() => handleReply(comment, options.rootId)}
+      onReplyCancel={() => setReplyTarget(null)}
+      onReplySubmit={handleSubmitComment}
+    >
+      {options.children}
+    </CommentRow>
+  );
 
   return (
     <section>
@@ -89,14 +114,14 @@ export function CommentSection({ data, openPageHref }: CommentSectionProps) {
             </button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="start" className="w-40">
-            {sortOptions.map((option) => (
+            {(Object.keys(SORT_LABEL_KEY) as CommentSortType[]).map((value) => (
               <DropdownMenuItem
-                key={option.value}
-                onClick={() => setSort(option.value)}
+                key={value}
+                onClick={() => setSort(value)}
                 className="flex cursor-pointer items-center justify-between"
               >
-                {option.label}
-                {activeSort === option.value && <Check className="size-4 text-brand" />}
+                {t(SORT_LABEL_KEY[value])}
+                {sort === value && <Check className="size-4 text-brand" />}
               </DropdownMenuItem>
             ))}
           </DropdownMenuContent>
@@ -114,7 +139,7 @@ export function CommentSection({ data, openPageHref }: CommentSectionProps) {
 
       <div className="mt-6">
         {isLogin ? (
-          <MvCommentComposer
+          <CommentComposer
             placeholder={t("mv.comments.addPlaceholder")}
             submitLabel={t("mv.comments.submit")}
             // 顶部输入与内联回复共用 replyTarget，聚焦顶部时先关掉正在进行的回复
@@ -137,32 +162,32 @@ export function CommentSection({ data, openPageHref }: CommentSectionProps) {
       ) : (
         <>
           <div className="mt-8 flex flex-col gap-6">
-            {list.map((comment) => (
-              <MvCommentItem
-                key={`${activeSort}-${comment.commentId}`}
-                comment={comment}
-                isOwn={String(comment.user.userId) === String(currentUserId ?? "")}
-                isReplying={replyTarget?.commentId === comment.commentId}
-                canReply={isLogin}
-                onLike={() => void handleLike(comment.commentId, activeSort === "hot")}
-                onDelete={() => void handleDelete(comment.commentId)}
-                onReplyOpen={() => handleReply(comment.commentId)}
-                onReplyCancel={() => setReplyTarget(null)}
-                onReplySubmit={handleSubmitComment}
-              />
-            ))}
-            {list.length === 0 && !isLoading && (
+            {comments.map((comment) =>
+              renderRow(comment, {
+                children:
+                  getReplyCount(comment) > 0 ? (
+                    <CommentReplies
+                      parentId={comment.commentId}
+                      replyCount={getReplyCount(comment)}
+                      thread={threads[comment.commentId]}
+                      onLoad={loadReplies}
+                      renderReply={(reply) =>
+                        renderRow(reply, { compact: true, rootId: comment.commentId })
+                      }
+                    />
+                  ) : undefined,
+              }),
+            )}
+            {comments.length === 0 && !isLoading && (
               <p className="py-10 text-center text-sm text-content-subtle">
                 {t("comments.page.noComments")}
               </p>
             )}
           </div>
 
-          {activeSort === "latest" && (
-            <div ref={loadMoreRef} className="flex h-16 items-center justify-center">
-              {isLoading && <Loader2 className="size-6 animate-spin text-brand" />}
-            </div>
-          )}
+          <div ref={loadMoreRef} className="flex h-16 items-center justify-center">
+            {isLoading && <Loader2 className="size-6 animate-spin text-brand" />}
+          </div>
         </>
       )}
     </section>

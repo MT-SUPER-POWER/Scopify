@@ -1,5 +1,7 @@
 import type {
   CommentResourceType,
+  FloorCommentParams,
+  FloorCommentResponse,
   MusicCommentParams,
   NewCommentParams,
   NewCommentResponse,
@@ -36,6 +38,11 @@ export function getMVComments(params: MusicCommentParams, signal?: AbortSignal) 
 
 export function getNewComments(params: NewCommentParams) {
   return request.get<NewCommentResponse>("/comment/new", { params });
+}
+
+/** 楼中楼：某条评论下的回复。 */
+export function getFloorComments(params: FloorCommentParams) {
+  return request.get<FloorCommentResponse>("/comment/floor", { params });
 }
 
 /**

@@ -34,6 +34,26 @@ export interface NewCommentParams {
   type: CommentResourceType;
 }
 
+export interface FloorCommentParams {
+  id: number | string;
+  limit?: number;
+  parentCommentId: number | string;
+  /** 上一页返回的 data.time，翻页用。 */
+  time?: number;
+  type: CommentResourceType;
+}
+
+export interface FloorCommentResponse {
+  code: number;
+  data?: {
+    comments?: NeteaseComment[];
+    hasMore?: boolean;
+    time?: number;
+    totalCount?: number;
+  };
+  message?: string;
+}
+
 export interface NewCommentResponse {
   code: number;
   data?: {
