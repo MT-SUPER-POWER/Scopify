@@ -16,17 +16,18 @@ import {
 } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import { useEffect, useState } from "react";
-import type React from "react";
 import { createPortal } from "react-dom";
 import { MCP_PLAYBACK_CAPABILITIES, type McpCapability } from "@scopify/desktop-contract";
 import { useI18n } from "@/store/module/i18n";
-import type { McpCapabilitiesModalProps } from "@/types/settings/components";
+import type {
+  CapabilityItemDef,
+  McpCapabilitiesModalProps,
+  McpGranularCapability,
+} from "@/types/settings/components";
 import { Toggle } from "./SettingsUI";
 
 // 完全对齐 Ctrl + / 快捷键帮助界面的沉浸式深色二级弹窗，Portal 挂载至 document.body
 // 统合音频操作 playback tools 下的所有状态读取与播放控制权限
-
-type McpGranularCapability = (typeof MCP_PLAYBACK_CAPABILITIES)[number];
 
 const ALL_GRANULAR_CAPABILITIES = MCP_PLAYBACK_CAPABILITIES;
 
@@ -54,32 +55,6 @@ export function resolveActiveGranularCapabilities(
     }
   }
   return active;
-}
-
-interface CapabilityItemDef {
-  capability: McpGranularCapability;
-  icon: React.ComponentType<{ className?: string }>;
-  labelKey:
-    | "settings.mcp.capability.readStatus.label"
-    | "settings.mcp.capability.readTrack.label"
-    | "settings.mcp.capability.controlPlay.label"
-    | "settings.mcp.capability.controlPause.label"
-    | "settings.mcp.capability.controlToggle.label"
-    | "settings.mcp.capability.controlNext.label"
-    | "settings.mcp.capability.controlPrevious.label"
-    | "settings.mcp.capability.controlSeek.label"
-    | "settings.mcp.capability.controlVolume.label";
-  sublabelKey:
-    | "settings.mcp.capability.readStatus.sublabel"
-    | "settings.mcp.capability.readTrack.sublabel"
-    | "settings.mcp.capability.controlPlay.sublabel"
-    | "settings.mcp.capability.controlPause.sublabel"
-    | "settings.mcp.capability.controlToggle.sublabel"
-    | "settings.mcp.capability.controlNext.sublabel"
-    | "settings.mcp.capability.controlPrevious.sublabel"
-    | "settings.mcp.capability.controlSeek.sublabel"
-    | "settings.mcp.capability.controlVolume.sublabel";
-  toolName: string;
 }
 
 const PLAYBACK_CAPABILITY_ITEMS: readonly CapabilityItemDef[] = [

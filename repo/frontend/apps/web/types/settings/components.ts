@@ -1,9 +1,10 @@
-import type { ReactNode } from "react";
+import type { ComponentType, ReactNode } from "react";
 import type { AppUpdateState } from "@/types/desktop/updater";
 import type {
   DesktopBackendStatus,
   DesktopHostConfig,
   DiscordPresenceStatus,
+  MCP_PLAYBACK_CAPABILITIES,
   McpCapability,
   McpClientConfiguration,
   McpConnectionTestResult,
@@ -141,4 +142,32 @@ export interface McpCapabilitiesModalProps {
   onCapabilitiesChange(capabilities: McpCapability[]): void;
   onClose(): void;
   open: boolean;
+}
+
+export type McpGranularCapability = (typeof MCP_PLAYBACK_CAPABILITIES)[number];
+
+export interface CapabilityItemDef {
+  capability: McpGranularCapability;
+  icon: ComponentType<{ className?: string }>;
+  labelKey:
+    | "settings.mcp.capability.readStatus.label"
+    | "settings.mcp.capability.readTrack.label"
+    | "settings.mcp.capability.controlPlay.label"
+    | "settings.mcp.capability.controlPause.label"
+    | "settings.mcp.capability.controlToggle.label"
+    | "settings.mcp.capability.controlNext.label"
+    | "settings.mcp.capability.controlPrevious.label"
+    | "settings.mcp.capability.controlSeek.label"
+    | "settings.mcp.capability.controlVolume.label";
+  sublabelKey:
+    | "settings.mcp.capability.readStatus.sublabel"
+    | "settings.mcp.capability.readTrack.sublabel"
+    | "settings.mcp.capability.controlPlay.sublabel"
+    | "settings.mcp.capability.controlPause.sublabel"
+    | "settings.mcp.capability.controlToggle.sublabel"
+    | "settings.mcp.capability.controlNext.sublabel"
+    | "settings.mcp.capability.controlPrevious.sublabel"
+    | "settings.mcp.capability.controlSeek.sublabel"
+    | "settings.mcp.capability.controlVolume.sublabel";
+  toolName: string;
 }
