@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import { useHomeUserProfileQuery } from "@/hooks/home/useHomeQueries";
-import { useLoginStatus } from "@/lib/hooks/useLoginStatus";
+import { useLoginStatus } from "@/hooks/auth/useLoginStatus";
 import { getHomeGreetingKey } from "@/lib/home/greeting";
 import { useUserStore } from "@/store";
 import { useI18n } from "@/store/module/i18n";

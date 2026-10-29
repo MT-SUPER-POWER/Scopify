@@ -17,7 +17,7 @@ import {
   normalizeNewComments,
   toggleCommentLiked,
 } from "@/lib/comment/commentResource";
-import { useLoginStatus } from "@/lib/hooks/useLoginStatus";
+import { useLoginStatus } from "@/hooks/auth/useLoginStatus";
 import { throwQueryErrorWithoutData } from "@/lib/query/errorPolicy";
 import { musicQueryKeys } from "@/lib/query/queryKeys";
 import { useI18n } from "@/store/module/i18n";

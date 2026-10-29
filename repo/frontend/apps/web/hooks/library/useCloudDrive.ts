@@ -10,7 +10,7 @@ import {
   matchCloudSong,
   uploadCloudSong,
 } from "@/lib/api/cloud";
-import { useLoginStatus } from "@/lib/hooks/useLoginStatus";
+import { useLoginStatus } from "@/hooks/auth/useLoginStatus";
 import { musicQueryKeys } from "@/lib/query/queryKeys";
 import { useUserStore } from "@/store";
 import { useI18n } from "@/store/module/i18n";

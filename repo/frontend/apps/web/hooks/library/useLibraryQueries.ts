@@ -13,7 +13,7 @@ import {
 } from "@/lib/api/voicelist";
 import { getUserLikeLists, getUserPlaylist } from "@/lib/api/playlist";
 import { getRecentSongs } from "@/lib/api/user";
-import { useLoginStatus } from "@/lib/hooks/useLoginStatus";
+import { useLoginStatus } from "@/hooks/auth/useLoginStatus";
 import { musicQueryKeys } from "@/lib/query/queryKeys";
 import { useUserStore } from "@/store";
 import { prunePlaylist, type NeteasePlaylist, type RawNeteasePlaylist } from "@/types/playlist/api";

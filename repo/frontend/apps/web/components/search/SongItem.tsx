@@ -26,7 +26,7 @@ import {
 import { LikeButton } from "@/components/ui/LikeButton";
 import { usePlaylistTrackMutation } from "@/hooks/playlist/usePlaylistTrackMutation";
 import { useSongLikeMutation } from "@/hooks/playlist/useSongLikeMutation";
-import { useLoginStatus } from "@/lib/hooks/useLoginStatus";
+import { useLoginStatus } from "@/hooks/auth/useLoginStatus";
 import { cn, formatDuration } from "@/lib/utils";
 import { usePlayerStore, useUserStore } from "@/store";
 import { useI18n } from "@/store/module/i18n";

@@ -18,7 +18,7 @@ import {
   useSocialEvent,
 } from "@/hooks/social/useSocialQueries";
 import { useSocialShare } from "@/hooks/social/useSocialShare";
-import { useRequireLoginAction } from "@/lib/hooks/useRequireLoginAction";
+import { useRequireLoginAction } from "@/hooks/auth/useRequireLoginAction";
 import { uniqueById } from "@/lib/social/normalize";
 import { formatSocialTime } from "@/lib/social/time";
 import { useI18n } from "@/store/module/i18n";

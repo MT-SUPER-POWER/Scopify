@@ -6,7 +6,7 @@ import { usePlaylistTrackMutation } from "@/hooks/playlist/usePlaylistTrackMutat
 import { useSongLikeMutation } from "@/hooks/playlist/useSongLikeMutation";
 import { useSongStatsEnrichment } from "@/hooks/player/useSongStatsEnrichment";
 import { useVoiceLike } from "@/hooks/voice/useVoiceLike";
-import { useLoginStatus } from "@/lib/hooks/useLoginStatus";
+import { useLoginStatus } from "@/hooks/auth/useLoginStatus";
 import { usePlayerStore, useUserStore } from "@/store";
 import { useI18n } from "@/store/module/i18n";
 import type { NeteasePlaylist } from "@/types/playlist/api";

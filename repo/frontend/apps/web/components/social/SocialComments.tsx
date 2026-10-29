@@ -10,7 +10,7 @@ import {
 } from "@scopify/ui/shadcn/components/dialog";
 import { useSocialAccount, useSocialComments } from "@/hooks/social/useSocialQueries";
 import { useSocialCommentActions, useSocialCommentWriter } from "@/hooks/social/useSocialComments";
-import { useRequireLoginAction } from "@/lib/hooks/useRequireLoginAction";
+import { useRequireLoginAction } from "@/hooks/auth/useRequireLoginAction";
 import { uniqueById } from "@/lib/social/normalize";
 import { useI18n } from "@/store/module/i18n";
 import type { SocialEventProps, SocialCommentRowProps } from "@/types/social/components";

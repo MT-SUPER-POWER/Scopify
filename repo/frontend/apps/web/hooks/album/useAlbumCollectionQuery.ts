@@ -3,7 +3,7 @@
 import { useQuery } from "@tanstack/react-query";
 
 import { getUserAlbumSublist } from "@/lib/api/album";
-import { useLoginStatus } from "@/lib/hooks/useLoginStatus";
+import { useLoginStatus } from "@/hooks/auth/useLoginStatus";
 import { musicQueryKeys } from "@/lib/query/queryKeys";
 import { useUserStore } from "@/store";
 import type { AlbumSublistResponse } from "@/types/album/api";

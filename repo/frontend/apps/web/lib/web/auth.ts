@@ -2,6 +2,18 @@ import request from "@/lib/web/request";
 import { clearMusicSessionCredential } from "@/lib/web/musicSessionCredential";
 import type { NeteaseUser } from "@/types/user/api";
 
+const PLACEHOLDER_NICKNAMES = new Set(["未知用户", "未知使用者", "Unknown User"]);
+
+export function isRealUser(
+  user: { userId?: number; nickname?: string } | null | undefined,
+): boolean {
+  if (!user || typeof user.userId !== "number" || user.userId <= 0) return false;
+  if (!user.nickname || typeof user.nickname !== "string") return false;
+  const trimmed = user.nickname.trim();
+  if (!trimmed || PLACEHOLDER_NICKNAMES.has(trimmed)) return false;
+  return true;
+}
+
 export interface LoginInfo {
   isLoggedIn: boolean;
   loginType: "token" | "cookie" | "qr" | "uid" | null;

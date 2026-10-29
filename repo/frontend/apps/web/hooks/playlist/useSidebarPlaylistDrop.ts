@@ -3,7 +3,7 @@
 import { useBatchSongLike } from "@/hooks/playlist/useBatchSongLike";
 import { usePlaylistTrackDrop } from "@/hooks/playlist/usePlaylistTrackDrop";
 import { useTrackDropTarget } from "@/hooks/playlist/useTrackDropTarget";
-import { isRealUser } from "@/lib/hooks/useLoginStatus";
+import { isRealUser } from "@/lib/web/auth";
 import { useUserStore } from "@/store";
 import { useAppDragStore } from "@/store/module/appDrag";
 import type { NeteasePlaylist } from "@/types/playlist/api";

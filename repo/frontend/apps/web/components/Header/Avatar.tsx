@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { User } from "lucide-react";
-import { useLoginStatus } from "@/lib/hooks/useLoginStatus";
+import { useLoginStatus } from "@/hooks/auth/useLoginStatus";
 import { useUserStore } from "@/store";
 
 /**

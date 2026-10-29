@@ -4,7 +4,7 @@ import { Globe2, Music2, X } from "lucide-react";
 import { useState } from "react";
 import { useSocialPublish } from "@/hooks/social/useSocialActions";
 import { useSocialAccount } from "@/hooks/social/useSocialQueries";
-import { useRequireLoginAction } from "@/lib/hooks/useRequireLoginAction";
+import { useRequireLoginAction } from "@/hooks/auth/useRequireLoginAction";
 import { usePlayerStore } from "@/store/module/player";
 import { useUserStore } from "@/store/module/user";
 import { useI18n } from "@/store/module/i18n";

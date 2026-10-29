@@ -4,7 +4,7 @@ import { useEffect, useRef, type MouseEvent } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { PERSONAL_FM_ROUTE, isPersonalFmRoute } from "@/constants/personalFm";
 import { ensurePersonalFmOnEntry } from "@/lib/personalFm/entry";
-import { useLoginStatus } from "@/lib/hooks/useLoginStatus";
+import { useLoginStatus } from "@/hooks/auth/useLoginStatus";
 
 export function usePersonalFmEntry() {
   const router = useRouter();

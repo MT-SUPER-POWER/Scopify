@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useMemo } from "react";
 import { toast } from "sonner";
 import { usePathname } from "next/navigation";
-import { useLoginStatus } from "@/lib/hooks/useLoginStatus";
+import { useLoginStatus } from "@/hooks/auth/useLoginStatus";
 
 import {
   PERSONAL_FM_PLAYBACK_SOURCE_ID,
@@ -11,7 +11,7 @@ import {
   isPersonalFmPlaybackSource,
   isPersonalFmRoute,
 } from "@/constants/personalFm";
-import { useRequireLoginAction } from "@/lib/hooks/useRequireLoginAction";
+import { useRequireLoginAction } from "@/hooks/auth/useRequireLoginAction";
 import { usePersonalFmDislike } from "@/hooks/personalFm/usePersonalFmDislike";
 import { useCoverThemeColor } from "@/hooks/playlist/useCoverThemeColor";
 import { useI18n } from "@/store/module/i18n";

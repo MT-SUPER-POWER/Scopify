@@ -2,7 +2,7 @@
 
 import { useEffect, useSyncExternalStore } from "react";
 import { useUserStore } from "@/store/module/user";
-import { isRealUser } from "@/lib/hooks/useLoginStatus";
+import { isRealUser } from "@/lib/web/auth";
 import {
   getMusicSessionCredential,
   MUSIC_SESSION_CHANGED_EVENT,

@@ -6,7 +6,7 @@ import { Bookmark, Share2, ThumbsUp } from "lucide-react";
 import { MvChannel } from "./MvChannel";
 import { useMVLikeMutation, useMVSubscriptionMutation } from "@/hooks/mv/useMVMutations";
 import { useMVDetailInfoQuery } from "@/hooks/mv/useMVQueries";
-import { useLoginStatus } from "@/lib/hooks/useLoginStatus";
+import { useLoginStatus } from "@/hooks/auth/useLoginStatus";
 import { cn, formatPlayCount } from "@/lib/utils";
 import { useI18n } from "@/store/module/i18n";
 import type { MvInfoProps } from "@/types/mv/components";

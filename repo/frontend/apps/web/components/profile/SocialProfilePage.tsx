@@ -5,7 +5,7 @@ import { useState, type CSSProperties } from "react";
 import { useCoverThemeColor } from "@/hooks/playlist/useCoverThemeColor";
 import { useSocialAccount, useSocialProfile } from "@/hooks/social/useSocialQueries";
 import { useSocialEditProfile } from "@/hooks/social/useSocialActions";
-import { useRequireLoginAction } from "@/lib/hooks/useRequireLoginAction";
+import { useRequireLoginAction } from "@/hooks/auth/useRequireLoginAction";
 import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
 import { getSizedImageUrl } from "@/lib/music/imageUrl";
 import { useI18n } from "@/store/module/i18n";

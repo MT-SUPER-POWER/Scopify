@@ -7,7 +7,7 @@ import { NetworkRetryState } from "@/components/shared/NetworkRetryState";
 import { QuietState } from "@/components/shared/QuietState";
 import { useLikedPlaylistQuery } from "@/hooks/library/useLibraryQueries";
 import { usePlaylist } from "@/hooks/playlist/usePlaylistData";
-import { useLoginStatus } from "@/lib/hooks/useLoginStatus";
+import { useLoginStatus } from "@/hooks/auth/useLoginStatus";
 import { useI18n } from "@/store/module/i18n";
 
 export default function LikedSongsPage() {

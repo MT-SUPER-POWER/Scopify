@@ -6,7 +6,7 @@ import { useState } from "react";
 import { useSocialEventActions } from "@/hooks/social/useSocialActions";
 import { useSocialPlayback } from "@/hooks/social/useSocialPlayback";
 import { useSocialPostModal } from "@/hooks/social/useSocialPostModal";
-import { useRequireLoginAction } from "@/lib/hooks/useRequireLoginAction";
+import { useRequireLoginAction } from "@/hooks/auth/useRequireLoginAction";
 import { getSizedImageUrl } from "@/lib/music/imageUrl";
 import { useI18n } from "@/store/module/i18n";
 import type { SocialNoteTileProps, SocialResourceProps } from "@/types/social/components";

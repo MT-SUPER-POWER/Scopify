@@ -7,7 +7,7 @@ import {
   createListeningScrobbleRequest,
   getTrackedListeningDelta,
 } from "@/lib/player/listeningScrobble";
-import { useLoginStatus } from "@/lib/hooks/useLoginStatus";
+import { useLoginStatus } from "@/hooks/auth/useLoginStatus";
 import type { UseListeningScrobbleOptions } from "@/types/listeningReport/scrobble";
 
 /** Uploads one meaningful listening session without counting manual seeks as listening time. */

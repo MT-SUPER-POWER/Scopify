@@ -18,7 +18,7 @@ import {
   useRecommendedPodcastsQuery,
   useSubscribedPodcastsQuery,
 } from "@/hooks/library/useLibraryQueries";
-import { useLoginStatus } from "@/lib/hooks/useLoginStatus";
+import { useLoginStatus } from "@/hooks/auth/useLoginStatus";
 import { useI18n } from "@/store/module/i18n";
 import type { PodcastLibraryTab, PodcastViewMode } from "@/types/library/model";
 

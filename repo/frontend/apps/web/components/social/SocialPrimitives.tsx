@@ -4,7 +4,7 @@ import { LoaderCircle, MessagesSquare, UserRound } from "lucide-react";
 import Link from "next/link";
 import { QuietState } from "@/components/shared/QuietState";
 import { useI18n } from "@/store/module/i18n";
-import { useRequireLoginAction } from "@/lib/hooks/useRequireLoginAction";
+import { useRequireLoginAction } from "@/hooks/auth/useRequireLoginAction";
 import { profileHref } from "@/lib/social/normalize";
 import { useSocialAccount } from "@/hooks/social/useSocialQueries";
 import { useSocialFollow } from "@/hooks/social/useSocialActions";

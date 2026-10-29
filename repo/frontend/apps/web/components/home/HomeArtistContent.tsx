@@ -4,7 +4,7 @@ import { ArtistTopSongsSection } from "@/components/home/ArtistTopSongsSection";
 import { SuggestedArtists } from "@/components/home/SuggestedArtists";
 import { HomeSectionPending } from "@/components/home/HomeSectionPending";
 import { useHotArtistsQuery, useFollowedArtistsQuery } from "@/hooks/home/useHomeQueries";
-import { useLoginStatus } from "@/lib/hooks/useLoginStatus";
+import { useLoginStatus } from "@/hooks/auth/useLoginStatus";
 import { selectFallbackSource, toFallbackSource } from "@/lib/query/fallbackSource";
 import type { ArtistTopListItem } from "@/types/home/model";
 import type { HomeQueryContentProps } from "@/types/home/components";

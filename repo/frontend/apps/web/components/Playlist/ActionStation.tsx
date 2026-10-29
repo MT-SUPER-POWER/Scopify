@@ -34,7 +34,7 @@ import { useCommentCountQuery } from "@/hooks/comment/useCommentCountQuery";
 import { useHistoricalDailyRecommendations } from "@/hooks/playlist/useHistoricalDailyRecommendations";
 import { usePlaylistSearchShortcut } from "@/hooks/playlist/usePlaylistSearchShortcut";
 import { subscribePlaylist } from "@/lib/api/playlist";
-import { useRequireLoginAction } from "@/lib/hooks/useRequireLoginAction";
+import { useRequireLoginAction } from "@/hooks/auth/useRequireLoginAction";
 import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
 import { getCommentHref } from "@/lib/comment/commentResource";
 import { cn, formatCompactCount } from "@/lib/utils";

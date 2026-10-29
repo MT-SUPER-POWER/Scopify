@@ -1,6 +1,6 @@
 import { toast } from "sonner";
 import { getPlaylistAllTracks, getUserLikeLists } from "@/lib/api/playlist";
-import { useRequireLoginAction } from "@/lib/hooks/useRequireLoginAction";
+import { useRequireLoginAction } from "@/hooks/auth/useRequireLoginAction";
 import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
 import { usePlayerStore, useUserStore } from "@/store";
 import { useI18n } from "@/store/module/i18n";

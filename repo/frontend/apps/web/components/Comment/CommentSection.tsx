@@ -17,7 +17,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useCommentThread } from "@/hooks/comment/useCommentThread";
 import { getReplyCount } from "@/lib/comment/commentResource";
-import { useLoginStatus } from "@/lib/hooks/useLoginStatus";
+import { useLoginStatus } from "@/hooks/auth/useLoginStatus";
 import { useUserStore } from "@/store";
 import { useI18n } from "@/store/module/i18n";
 import type { CommentSectionProps } from "@/types/comment/components";

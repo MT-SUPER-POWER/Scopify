@@ -7,7 +7,7 @@ import {
   usePersonalizedPlaylistsQuery,
   useRecommendedPlaylistsQuery,
 } from "@/hooks/home/useHomeQueries";
-import { useLoginStatus } from "@/lib/hooks/useLoginStatus";
+import { useLoginStatus } from "@/hooks/auth/useLoginStatus";
 import { selectFallbackSource, toFallbackSource } from "@/lib/query/fallbackSource";
 import { pruneRecommendPlaylist } from "@/types/playlist/api";
 import type { HomeGreetingContentProps, HomeQueryContentProps } from "@/types/home/components";

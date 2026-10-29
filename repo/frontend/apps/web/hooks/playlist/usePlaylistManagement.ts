@@ -8,7 +8,7 @@ import {
   updatePlaylistCover,
 } from "@/lib/api/playlist";
 import { clearPageCache } from "@/lib/cache/pageCache";
-import { isRealUser } from "@/lib/hooks/useLoginStatus";
+import { isRealUser } from "@/lib/web/auth";
 import { getPlaylistManagementPermissions } from "@/lib/playlist/playlistManagementPermissions";
 import { musicQueryKeys } from "@/lib/query/queryKeys";
 import { useUserStore } from "@/store";

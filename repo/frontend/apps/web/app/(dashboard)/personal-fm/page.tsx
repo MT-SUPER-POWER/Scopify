@@ -6,7 +6,7 @@ import { PersonalFmRefreshButton } from "@/components/player/PersonalFmRefreshBu
 import { PlaylistContent } from "@/components/Playlist/PlaylistContent";
 import { QuietState } from "@/components/shared/QuietState";
 import { usePersonalFmPlaylist } from "@/hooks/personalFm/usePersonalFmPlaylist";
-import { useLoginStatus } from "@/lib/hooks/useLoginStatus";
+import { useLoginStatus } from "@/hooks/auth/useLoginStatus";
 import { useI18n } from "@/store/module/i18n";
 
 export default function PersonalFmPage() {

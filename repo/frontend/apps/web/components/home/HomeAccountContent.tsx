@@ -7,7 +7,7 @@ import {
   useFollowedArtistsAlbumsQuery,
   useRecentPlaylistsQuery,
 } from "@/hooks/home/useHomeQueries";
-import { useLoginStatus } from "@/lib/hooks/useLoginStatus";
+import { useLoginStatus } from "@/hooks/auth/useLoginStatus";
 import { pruneRecommendPlaylist, type RawRecommendPlaylist } from "@/types/playlist/api";
 import type { HomeQueryContentProps } from "@/types/home/components";
 

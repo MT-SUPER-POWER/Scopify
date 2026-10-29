@@ -9,7 +9,7 @@ import {
 } from "@/lib/api/listeningReport";
 import { getListeningReportSummary } from "@/lib/listeningReport/reportSummary";
 import { musicQueryKeys } from "@/lib/query/queryKeys";
-import { useLoginStatus } from "@/lib/hooks/useLoginStatus";
+import { useLoginStatus } from "@/hooks/auth/useLoginStatus";
 import { useUserStore } from "@/store";
 import type {
   ListeningReportPeriod,

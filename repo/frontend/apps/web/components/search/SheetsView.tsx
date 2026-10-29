@@ -12,7 +12,7 @@ import { SongResourcesDialog } from "@/components/songResources/SongResourcesDia
 import { useInfiniteScrollTrigger } from "@/hooks/search/useInfiniteScrollTrigger";
 import { useInfiniteSongSearchQuery } from "@/hooks/search/useSearchQueries";
 import { useSongSheetsQueries } from "@/hooks/song/useSongResources";
-import { useRequireLoginAction } from "@/lib/hooks/useRequireLoginAction";
+import { useRequireLoginAction } from "@/hooks/auth/useRequireLoginAction";
 import { mapSheetSearchSong } from "@/lib/search/sheetSongAdapter";
 import { useI18n } from "@/store/module/i18n";
 import type { SongDetail } from "@/types/song/api";

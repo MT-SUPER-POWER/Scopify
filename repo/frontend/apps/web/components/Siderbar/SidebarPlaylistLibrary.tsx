@@ -3,8 +3,8 @@
 import { Plus } from "lucide-react";
 import { useState } from "react";
 import { CreatePlaylistFromTracksDialog } from "@/components/shared/CreatePlaylistFromTracksDialog";
-import { useLoginStatus } from "@/lib/hooks/useLoginStatus";
-import { useRequireLoginAction } from "@/lib/hooks/useRequireLoginAction";
+import { useLoginStatus } from "@/hooks/auth/useLoginStatus";
+import { useRequireLoginAction } from "@/hooks/auth/useRequireLoginAction";
 import { cn } from "@/lib/utils";
 import { useI18n } from "@/store/module/i18n";
 import type { SidebarPlaylistLibraryProps } from "@/types/sidebar/components";

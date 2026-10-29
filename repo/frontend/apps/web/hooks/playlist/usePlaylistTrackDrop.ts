@@ -5,7 +5,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { usePlaylistTrackMutation } from "@/hooks/playlist/usePlaylistTrackMutation";
 import { getPlaylsitDetail } from "@/lib/api/playlist";
 import { getPlaylistOrderIds } from "@/lib/playlist/playlistOrder";
-import { isRealUser } from "@/lib/hooks/useLoginStatus";
+import { isRealUser } from "@/lib/web/auth";
 import { isApiError } from "@/lib/web/apiError";
 import { clearPageCache } from "@/lib/cache/pageCache";
 import { useUserStore } from "@/store";

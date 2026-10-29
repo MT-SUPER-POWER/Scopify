@@ -12,7 +12,7 @@ import { ProfileMenuNavigation } from "@/components/Header/ProfileMenuNavigation
 import { VipSignMenuCard } from "@/components/VipSign/VipSignMenuCard";
 import { VipSignModal } from "@/components/VipSign/VipSignModal";
 import { useVipSign } from "@/hooks/vipSign/useVipSign";
-import { useLoginStatus } from "@/lib/hooks/useLoginStatus";
+import { useLoginStatus } from "@/hooks/auth/useLoginStatus";
 import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
 import { runtime } from "@/lib/runtime";
 import { useI18n } from "@/store/module/i18n";

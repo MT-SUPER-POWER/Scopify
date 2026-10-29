@@ -14,7 +14,7 @@ import { QueryPending } from "@/components/shared/QueryPending";
 import { QuietState } from "@/components/shared/QuietState";
 import { useAuth } from "@/hooks/auth/useAuth";
 import { useSheetPreviewQuery } from "@/hooks/song/useSongResources";
-import { useRequireLoginAction } from "@/lib/hooks/useRequireLoginAction";
+import { useRequireLoginAction } from "@/hooks/auth/useRequireLoginAction";
 import { useI18n } from "@/store/module/i18n";
 import type {
   SheetPreviewContentProps,

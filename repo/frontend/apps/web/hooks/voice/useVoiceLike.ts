@@ -6,7 +6,7 @@ import { toast } from "sonner";
 
 import { useLikedVoicesQuery } from "@/hooks/library/useLibraryQueries";
 import { toggleVoiceLike } from "@/lib/api/voicelist";
-import { useRequireLoginAction } from "@/lib/hooks/useRequireLoginAction";
+import { useRequireLoginAction } from "@/hooks/auth/useRequireLoginAction";
 import { musicQueryKeys } from "@/lib/query/queryKeys";
 import { useUserStore } from "@/store";
 import { useI18n } from "@/store/module/i18n";

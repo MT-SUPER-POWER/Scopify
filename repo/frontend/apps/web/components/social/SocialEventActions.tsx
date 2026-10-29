@@ -10,7 +10,7 @@ import {
   DialogTitle,
 } from "@scopify/ui/shadcn/components/dialog";
 import { useSocialShare } from "@/hooks/social/useSocialShare";
-import { useRequireLoginAction } from "@/lib/hooks/useRequireLoginAction";
+import { useRequireLoginAction } from "@/hooks/auth/useRequireLoginAction";
 import { eventHref } from "@/lib/social/normalize";
 import { useI18n } from "@/store/module/i18n";
 import type { SocialEventActionsProps } from "@/types/social/components";

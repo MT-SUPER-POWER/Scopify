@@ -9,7 +9,7 @@ import {
   DialogDescription,
   DialogTitle,
 } from "@scopify/ui/shadcn/components/dialog";
-import { useRequireLoginAction } from "@/lib/hooks/useRequireLoginAction";
+import { useRequireLoginAction } from "@/hooks/auth/useRequireLoginAction";
 import { useI18n } from "@/store/module/i18n";
 import { SocialComposer } from "./SocialComposer";
 import s from "./Social.module.css";

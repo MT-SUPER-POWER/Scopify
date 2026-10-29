@@ -8,7 +8,7 @@ import { toast } from "sonner";
 import type { AlbumInfo, AlbumSubscriptionMutation } from "@/types/album/model";
 
 import { subscribeAlbum } from "@/lib/api/album";
-import { useRequireLoginAction } from "@/lib/hooks/useRequireLoginAction";
+import { useRequireLoginAction } from "@/hooks/auth/useRequireLoginAction";
 import { musicQueryKeys } from "@/lib/query/queryKeys";
 import { usePlayerStore, useUserStore } from "@/store";
 import { useI18n } from "@/store/module/i18n";

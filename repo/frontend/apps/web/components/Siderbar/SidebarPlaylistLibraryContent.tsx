@@ -3,7 +3,7 @@
 import { ListMusic, RefreshCw } from "lucide-react";
 import type { ReactNode } from "react";
 import { useSidebarPlaylists } from "@/hooks/sidebar/useSidebarPlaylists";
-import { useLoginStatus } from "@/lib/hooks/useLoginStatus";
+import { useLoginStatus } from "@/hooks/auth/useLoginStatus";
 import { useI18n } from "@/store/module/i18n";
 import { QueryPending } from "@/components/shared/QueryPending";
 import type { SidebarPlaylistLibraryProps } from "@/types/sidebar/components";

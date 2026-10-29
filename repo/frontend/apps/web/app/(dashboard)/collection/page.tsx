@@ -7,7 +7,7 @@ import { LibraryPageHeader } from "@/components/library/LibraryPageHeader";
 import { AppBackground } from "@/components/shared/AppBackground";
 import { QuietState } from "@/components/shared/QuietState";
 import { useCollectionQuery } from "@/hooks/library/useLibraryQueries";
-import { useLoginStatus } from "@/lib/hooks/useLoginStatus";
+import { useLoginStatus } from "@/hooks/auth/useLoginStatus";
 import { useI18n } from "@/store/module/i18n";
 
 export default function CollectionPage() {

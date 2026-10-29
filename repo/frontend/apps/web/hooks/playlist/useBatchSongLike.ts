@@ -2,7 +2,7 @@
 
 import { toast } from "sonner";
 import { useSongLikeMutation } from "@/hooks/playlist/useSongLikeMutation";
-import { isRealUser } from "@/lib/hooks/useLoginStatus";
+import { isRealUser } from "@/lib/web/auth";
 import { useUserStore } from "@/store";
 import { useAppDragStore } from "@/store/module/appDrag";
 import { useI18n } from "@/store/module/i18n";

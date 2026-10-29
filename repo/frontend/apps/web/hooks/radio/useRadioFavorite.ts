@@ -4,7 +4,7 @@ import { useMutation, useQueryClient, type QueryClient } from "@tanstack/react-q
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 import { subscribeRadio } from "@/lib/api/radio";
-import { useRequireLoginAction } from "@/lib/hooks/useRequireLoginAction";
+import { useRequireLoginAction } from "@/hooks/auth/useRequireLoginAction";
 import { musicQueryKeys } from "@/lib/query/queryKeys";
 import { useUserStore } from "@/store";
 import { useI18n } from "@/store/module/i18n";
