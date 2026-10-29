@@ -1,21 +1,6 @@
 import Image from "next/image";
 import { cn } from "@/lib/utils";
-
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ TYPES ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-export interface HighLightSegment {
-  text: string;
-  highLighted: boolean;
-}
-
-export interface SuggestItem {
-  keyword: string;
-  highLightInfo: string;
-  iconUrl?: string;
-  tag: string | null;
-  tagUrl: string | null;
-  skinType: string | null;
-}
+import type { HighLightSegment, SuggestItem } from "@/types/search/components";
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ COMPONENTS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 

@@ -163,3 +163,17 @@ export interface SheetSongFailureCardProps {
   error: Error;
   onRetry: () => void;
 }
+
+export interface HighLightSegment {
+  text: string;
+  highLighted: boolean;
+}
+
+export interface SuggestItem {
+  keyword: string;
+  highLightInfo: string;
+  iconUrl?: string;
+  tag: string | null;
+  tagUrl: string | null;
+  skinType: string | null;
+}

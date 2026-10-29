@@ -11,7 +11,8 @@ import { cn } from "@/lib/utils";
 import { useI18n } from "@/store/module/i18n";
 import { useSearchStore } from "@/store/module/search";
 import type { SearchRecentEntry } from "@/types/search/model";
-import { HighlightText, type SuggestItem, SuggestTag } from "./SearchHelper";
+import type { SuggestItem } from "@/types/search/components";
+import { HighlightText, SuggestTag } from "./SearchHelper";
 
 const NAV_BTN = "bg-surface-sunken/80 hover:bg-surface-elevated";
 const GLASS = cn(
