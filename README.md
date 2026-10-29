@@ -28,7 +28,7 @@
 
 `包管理工具`: [![pnpm 12.x](https://img.shields.io/badge/pnpm-12.x-F69220?logo=pnpm&logoColor=white)](./package.json) 用于包管理（版本见 `packageManager`），[![Bun >= 1.3.11](https://img.shields.io/badge/Bun-%3E%3D%201.3.11-000000?logo=bun&logoColor=white)](https://bun.sh/)用于运行脚本与测试。
 
-支持网页端与客户端，由于设备有限，目前仅保证 Windows 系统的适配，App 开发中。
+支持网页端与客户端，由于设备有限，目前仅保证 `Windows` 和 `MacOS` 系统的适配，App 开发中。
 
 ## 技术栈总览
 
