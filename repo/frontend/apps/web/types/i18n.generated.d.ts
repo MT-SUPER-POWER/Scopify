@@ -7988,36 +7988,6 @@ export interface TranslateFn {
    */
   (key: "profile.page.publicPlaylists", params?: TranslationParams): string;
   /**
-   * zh-CN: 暂无公开歌单
-   * zh-TW: 暫無公開歌單
-   * en-US: No public playlists
-   */
-  (key: "profile.page.noPublicPlaylists", params?: TranslationParams): string;
-  /**
-   * zh-CN: {{count}} 首歌曲
-   * zh-TW: {{count}} 首歌曲
-   * en-US: {{count}} songs
-   */
-  (key: "profile.page.playlistSongCount", params?: TranslationParams): string;
-  /**
-   * zh-CN: by {{name}}
-   * zh-TW: by {{name}}
-   * en-US: by {{name}}
-   */
-  (key: "profile.page.byCreator", params?: TranslationParams): string;
-  /**
-   * zh-CN: 无法加载用户信息
-   * zh-TW: 無法載入使用者資訊
-   * en-US: Unable to load user information
-   */
-  (key: "profile.toast.loadUserFailed", params?: TranslationParams): string;
-  /**
-   * zh-CN: 无法加载用户歌单
-   * zh-TW: 無法載入使用者歌單
-   * en-US: Unable to load user playlists
-   */
-  (key: "profile.toast.loadUserPlaylistsFailed", params?: TranslationParams): string;
-  /**
    * zh-CN: 个人信息已更新
    * zh-TW: 個人資訊已更新
    * en-US: Profile updated
@@ -8077,42 +8047,6 @@ export interface TranslateFn {
    * en-US: Avatar
    */
   (key: "profile.avatarAlt", params?: TranslationParams): string;
-  /**
-   * zh-CN: 关注
-   * zh-TW: 關注
-   * en-US: Follows
-   */
-  (key: "profile.hero.follows", params?: TranslationParams): string;
-  /**
-   * zh-CN: 粉丝
-   * zh-TW: 粉絲
-   * en-US: Followers
-   */
-  (key: "profile.hero.followers", params?: TranslationParams): string;
-  /**
-   * zh-CN: 歌单
-   * zh-TW: 歌單
-   * en-US: Playlists
-   */
-  (key: "profile.hero.playlists", params?: TranslationParams): string;
-  /**
-   * zh-CN: 动态
-   * zh-TW: 動態
-   * en-US: Events
-   */
-  (key: "profile.hero.events", params?: TranslationParams): string;
-  /**
-   * zh-CN: {{count}} 首
-   * zh-TW: {{count}} 首
-   * en-US: {{count}} songs
-   */
-  (key: "profile.hero.listenSongs", params?: TranslationParams): string;
-  /**
-   * zh-CN: {{date}} 加入
-   * zh-TW: {{date}} 加入
-   * en-US: Joined {{date}}
-   */
-  (key: "profile.hero.joined", params?: TranslationParams): string;
   /**
    * zh-CN: 等级
    * zh-TW: 等級
@@ -22552,6 +22486,12 @@ export interface TranslateFn {
    * en-US: Toggle Developer Tools
    */
   (key: "shortcuts.command.toggleDeveloperTools", params?: TranslationParams): string;
+  /**
+   * zh-CN: 重新加载窗口
+   * zh-TW: 重新載入視窗
+   * en-US: Reload Window
+   */
+  (key: "shortcuts.command.reloadWindow", params?: TranslationParams): string;
   /**
    * zh-CN: 查看当前歌曲评论
    * zh-TW: 查看目前歌曲評論
