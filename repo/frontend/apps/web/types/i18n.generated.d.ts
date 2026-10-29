@@ -2369,6 +2369,12 @@ export interface TranslateFn {
    */
   (key: "social.recent", params?: TranslationParams): string;
   /**
+   * zh-CN: 概览
+   * zh-TW: 概覽
+   * en-US: Overview
+   */
+  (key: "social.overview", params?: TranslationParams): string;
+  /**
    * zh-CN: 听歌排行
    * zh-TW: 聽歌排行
    * en-US: Top tracks

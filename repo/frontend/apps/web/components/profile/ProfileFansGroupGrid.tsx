@@ -8,7 +8,7 @@ import { useUserFansGroupsQuery } from "@/hooks/fansGroup/useFansGroupQueries";
 import { useI18n } from "@/store/module/i18n";
 
 /**
- * 个人主页“关于”标签下的乐迷团网格组件
+ * 个人主页“概览”标签下的乐迷团网格组件
  * 复用网格卡片规范，展示当前登录用户加入的全部歌手乐迷团
  */
 
@@ -23,7 +23,9 @@ export function ProfileFansGroupGrid() {
   if (query.isLoading) {
     return (
       <div className="space-y-4">
-        <h2 className="text-base font-bold text-content">{t("social.myFansGroups")}</h2>
+        <h2 className="text-xl font-bold tracking-tight text-content">
+          {t("social.myFansGroups")}
+        </h2>
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
           {Array.from({ length: 5 }).map((_, index) => (
             <div
@@ -43,7 +45,9 @@ export function ProfileFansGroupGrid() {
   if (groups.length === 0) {
     return (
       <div className="space-y-2">
-        <h2 className="text-base font-bold text-content">{t("social.myFansGroups")}</h2>
+        <h2 className="text-xl font-bold tracking-tight text-content">
+          {t("social.myFansGroups")}
+        </h2>
         <p className="text-sm text-content-muted">{t("social.noFansGroups")}</p>
       </div>
     );
@@ -52,7 +56,9 @@ export function ProfileFansGroupGrid() {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h2 className="text-base font-bold text-content">{t("social.myFansGroups")}</h2>
+        <h2 className="text-xl font-bold tracking-tight text-content">
+          {t("social.myFansGroups")}
+        </h2>
         <span className="text-xs text-content-muted">
           {t("social.joinedFansGroupsCount", { count: groups.length })}
         </span>

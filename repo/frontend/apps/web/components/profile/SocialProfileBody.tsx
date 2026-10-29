@@ -7,16 +7,20 @@ import { SocialPeople } from "@/components/social/SocialPeople";
 import { profileHref } from "@/lib/social/normalize";
 import { useI18n } from "@/store/module/i18n";
 import type { SocialProfileBodyProps } from "@/types/social/components";
-import { SocialProfilePlaylists } from "./SocialProfilePlaylists";
 import { ProfileFansGroupGrid } from "./ProfileFansGroupGrid";
+import { ProfileListeningRank } from "./ProfileListeningRank";
+import { ProfilePlaylistShelves } from "./ProfilePlaylistShelves";
+import { SocialProfilePlaylists } from "./SocialProfilePlaylists";
 import s from "@/components/social/Social.module.css";
+
+const TABS = ["overview", "playlists", "activity"] as const;
 
 export function SocialProfileBody({ user, tab, isSelf }: SocialProfileBodyProps) {
   const { t } = useI18n();
   return (
     <main className={s.profileMain}>
       <nav className={s.tabs} aria-label={user.name}>
-        {(["activity", "playlists", "about"] as const).map((item) => (
+        {TABS.map((item) => (
           <Link
             key={item}
             href={profileHref(user.id) + "&tab=" + item}
@@ -26,45 +30,23 @@ export function SocialProfileBody({ user, tab, isSelf }: SocialProfileBodyProps)
             aria-current={tab === item ? "page" : undefined}
           >
             {t(
-              item === "activity"
-                ? "social.activity"
+              item === "overview"
+                ? "social.overview"
                 : item === "playlists"
                   ? "social.playlists"
-                  : "social.about",
-            )}
-            {item === "activity" && user.events > 0 && (
-              <span className="ml-2 text-xs text-content-muted">{user.events}</span>
+                  : "social.activity",
             )}
           </Link>
         ))}
       </nav>
-      {tab === "playlists" ? (
+      {tab === "overview" ? (
+        <div className={s.profileOverview}>
+          <ProfileListeningRank uid={user.id} />
+          <ProfilePlaylistShelves uid={user.id} />
+          {isSelf && <ProfileFansGroupGrid />}
+        </div>
+      ) : tab === "playlists" ? (
         <SocialProfilePlaylists uid={user.id} />
-      ) : tab === "about" ? (
-        <section className={s.about}>
-          <p className={s.bio}>{user.signature || t("social.noSignature")}</p>
-          <dl>
-            {user.level !== undefined && (
-              <>
-                <dt>{t("social.level")}</dt>
-                <dd>Lv. {user.level}</dd>
-              </>
-            )}
-            {user.listenSongs !== undefined && (
-              <>
-                <dt>{t("social.listened")}</dt>
-                <dd>{t("social.tracks", { count: user.listenSongs })}</dd>
-              </>
-            )}
-            <dt>{t("social.activity")}</dt>
-            <dd>{user.events}</dd>
-          </dl>
-          {isSelf && (
-            <div className="border-surface-border mt-8 border-t pt-6">
-              <ProfileFansGroupGrid />
-            </div>
-          )}
-        </section>
       ) : tab === "following" || tab === "followers" ? (
         <>
           <h2 className={s.sectionTitle + " mt-6"}>
@@ -73,10 +55,10 @@ export function SocialProfileBody({ user, tab, isSelf }: SocialProfileBodyProps)
           <SocialPeople uid={user.id} mode={tab} />
         </>
       ) : (
-        <>
+        <div className={s.profileFeedColumn}>
           {isSelf && <SocialComposer />}
           <SocialFeed uid={user.id} />
-        </>
+        </div>
       )}
     </main>
   );

@@ -1,12 +1,11 @@
 "use client";
 
-import { Disc3 } from "lucide-react";
-import Link from "next/link";
 import { useSocialPlaylists } from "@/hooks/social/useSocialQueries";
 import { uniqueById } from "@/lib/social/normalize";
 import { useI18n } from "@/store/module/i18n";
 import { SocialLoadMore, SocialState } from "@/components/social/SocialPrimitives";
 import type { SocialFeedProps } from "@/types/social/components";
+import { ProfilePlaylistTile } from "./ProfilePlaylistTile";
 import s from "@/components/social/Social.module.css";
 
 export function SocialProfilePlaylists({ uid = "" }: SocialFeedProps) {
@@ -22,21 +21,11 @@ export function SocialProfilePlaylists({ uid = "" }: SocialFeedProps) {
     >
       <div className={s.playlistGrid}>
         {items.map((item) => (
-          <Link
+          <ProfilePlaylistTile
             key={item.id}
-            href={"/playlist?id=" + item.id}
-            scroll={false}
-            className={s.playlistTile}
-          >
-            <span className={s.cover}>
-              {item.cover ? <img src={item.cover} alt="" loading="lazy" /> : <Disc3 />}
-            </span>
-            <strong>{item.name}</strong>
-            <p>
-              {t("social.tracks", { count: item.count })} ·{" "}
-              {t(item.creator === uid ? "social.created" : "social.saved")}
-            </p>
-          </Link>
+            item={item}
+            caption={t(item.creator === uid ? "social.created" : "social.saved")}
+          />
         ))}
       </div>
       <SocialLoadMore

@@ -11,6 +11,7 @@ import type {
   SocialEventTarget,
   SocialProfileTab,
   SocialProfile,
+  SocialPlaylist,
 } from "@/types/social/model";
 
 export interface SocialUserProps {
@@ -149,15 +150,22 @@ export interface SocialProfileHeroProps {
   onEdit: () => void;
   onMessage: () => void;
 }
+export type ProfileStatsBandProps = SocialProfileHeroProps;
 export interface ProfileListeningRankProps {
   uid: string;
+}
+export interface ProfilePlaylistShelvesProps {
+  uid: string;
+}
+export interface ProfilePlaylistTileProps {
+  item: SocialPlaylist;
+  caption: string;
 }
 export interface SocialProfileBodyProps {
   user: SocialProfile;
   tab: string;
   isSelf: boolean;
 }
-export type SocialProfileAsideProps = Pick<SocialProfileBodyProps, "user" | "isSelf">;
 export interface EditUserProfileDialogProps {
   open: boolean;
   user: NeteaseUser;

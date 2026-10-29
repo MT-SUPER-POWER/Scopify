@@ -122,7 +122,7 @@ export interface SocialCommentInput {
   operation: "add" | "reply" | "delete";
 }
 export type SocialPeopleMode = "following" | "followers" | "search";
-export type SocialProfileTab = "activity" | "playlists" | "about";
+export type SocialProfileTab = "overview" | "playlists" | "activity";
 export interface SocialEventPatch {
   id: string;
   patch?: Partial<Pick<SocialEvent, "liked" | "likes" | "comments" | "forwards" | "privacy">>;

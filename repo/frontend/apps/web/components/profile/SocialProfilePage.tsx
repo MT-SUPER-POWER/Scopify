@@ -1,18 +1,19 @@
 "use client";
 
 import { useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { useState, type CSSProperties } from "react";
+import { useCoverThemeColor } from "@/hooks/playlist/useCoverThemeColor";
 import { useSocialAccount, useSocialProfile } from "@/hooks/social/useSocialQueries";
 import { useSocialEditProfile } from "@/hooks/social/useSocialActions";
 import { useRequireLoginAction } from "@/lib/hooks/useRequireLoginAction";
 import { useSmartRouter } from "@/lib/hooks/useSmartRouter";
+import { getSizedImageUrl } from "@/lib/music/imageUrl";
 import { useI18n } from "@/store/module/i18n";
 import { SocialLogin, SocialState } from "@/components/social/SocialPrimitives";
 import { SocialMessageDialog } from "@/components/social/SocialMessageDialog";
 import { EditUserProfileDialog } from "./EditUserProfileDialog";
 import { SocialProfileHero } from "./SocialProfileHero";
 import { SocialProfileBody } from "./SocialProfileBody";
-import { SocialProfileAside } from "./SocialProfileAside";
 import type { SocialFeedProps } from "@/types/social/components";
 import s from "@/components/social/Social.module.css";
 
@@ -27,10 +28,10 @@ function SocialProfileContent({ uid = "" }: SocialFeedProps) {
   const { uid: self } = useSocialAccount();
   const params = useSearchParams(),
     router = useSmartRouter();
-  const requestedTab = params.get("tab") ?? "activity";
-  const tab = ["activity", "playlists", "about", "following", "followers"].includes(requestedTab)
+  const requestedTab = params.get("tab") ?? "overview";
+  const tab = ["overview", "playlists", "activity", "following", "followers"].includes(requestedTab)
     ? requestedTab
-    : "activity";
+    : "overview";
   const isSelf = self === uid;
   const query = useSocialProfile(uid);
   const edit = useSocialEditProfile(),
@@ -38,13 +39,13 @@ function SocialProfileContent({ uid = "" }: SocialFeedProps) {
   const [editing, setEditing] = useState(false);
   const messaging = !isSelf && !!self && params.get("action") === "message";
   const user = query.data;
+  const tint = useCoverThemeColor(user?.avatar ? getSizedImageUrl(user.avatar, 100) : null);
   return (
-    <div className={s.page + " " + s.profilePage}>
-      {user?.cover && (
-        <div className={s.profileBackdrop} aria-hidden="true">
-          <img src={user.cover} alt="" referrerPolicy="no-referrer" />
-        </div>
-      )}
+    <div
+      className={s.page + " " + s.profilePage}
+      style={tint ? ({ "--profile-tint": tint } as CSSProperties) : undefined}
+    >
+      <div className={s.profileGlow} aria-hidden="true" />
       <div className={s.profileShell}>
         {!uid ? (
           self ? (
@@ -82,10 +83,7 @@ function SocialProfileContent({ uid = "" }: SocialFeedProps) {
                     )
                   }
                 />
-                <div className={s.profileBodyLayout}>
-                  <SocialProfileBody user={user} isSelf={isSelf} tab={tab} />
-                  <SocialProfileAside user={user} isSelf={isSelf} />
-                </div>
+                <SocialProfileBody user={user} isSelf={isSelf} tab={tab} />
                 {isSelf && (
                   <EditUserProfileDialog
                     open={editing}
