@@ -87,7 +87,10 @@ export interface FoliaLyricMatchDialogProps {
 export interface FoliaLyricMatchResultsProps {
   candidates: LyricMatchCandidate[];
   isDaylight: boolean;
+  /** 首次搜索失败、手上还没有结果。 */
+  isError: boolean;
   isLoading: boolean;
+  onRetry: () => void;
   onSelect: (id: number) => void;
   selectedId: number | null;
   song: SongDetail | null;
@@ -97,8 +100,10 @@ export interface FoliaLyricMatchResultsProps {
 export interface FoliaLyricMatchSearchProps {
   candidates: LyricMatchCandidate[];
   isDaylight: boolean;
+  isError: boolean;
   isLoading: boolean;
-  onSearch: (query: string) => Promise<void>;
+  onRetry: () => void;
+  onSearch: (query: string) => void;
   onSelect: (id: number) => void;
   query: string;
   selectedId: number | null;
@@ -110,7 +115,10 @@ export interface FoliaLyricMatchSearchProps {
 export interface FoliaLyricMatchPreviewProps {
   candidate: LyricMatchCandidate | null;
   isDaylight: boolean;
+  /** 所选曲目的歌词预览没取到（不是没有歌词）。 */
+  isError: boolean;
   isLoading: boolean;
+  onRetry: () => void;
   isPureMusic: boolean;
   previewLines: LyricDisplayLine[];
   song: SongDetail | null;

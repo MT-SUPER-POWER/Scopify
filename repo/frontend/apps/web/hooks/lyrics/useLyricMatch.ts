@@ -1,137 +1,100 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useCallback, useMemo, useState } from "react";
 import { toast } from "sonner";
 
+import { getLyric } from "@/lib/api/music";
 import { searchSongs } from "@/lib/api/search";
 import {
   clearLyricMatchOverride,
   getLyricMatchOverride,
-  setLyricSourceSelection,
   setCachedLyric,
   setLyricMatchOverride,
+  setLyricSourceSelection,
 } from "@/lib/cache/playbackCache";
-import { getLyric } from "@/lib/api/music";
 import {
   buildLyricMatchQuery,
-  getLyricMatchScore,
   hasUsableNeteaseLyric,
-  mapSongSearchResourceToLyricMatchCandidate,
+  sortLyricMatchCandidates,
+  toLyricMatchCandidates,
 } from "@/lib/lyrics/match";
 import { adaptNeteaseLyric } from "@/lib/lyrics/neteaseLyricAdapter";
-import { usePlayerStore } from "@/store/module/player";
+import { musicQueryKeys } from "@/lib/query/queryKeys";
 import { useI18n } from "@/store/module/i18n";
-import type {
-  LyricDisplayLine,
-  LyricMatchCandidate,
-  LyricMatchOverride,
-} from "@/types/lyrics/model";
+import { usePlayerStore } from "@/store/module/player";
+import type { LyricMatchOverride } from "@/types/lyrics/model";
 
+const CANDIDATE_LIMIT = 15;
+
+/**
+ * 「匹配歌词」：为当前歌曲搜索候选曲目、预览所选曲目的歌词，并把它存为这首歌的歌词。
+ * 候选搜索、歌词预览与已保存的匹配都由 Query 管理；请求失败交给对话框原地显示并重试，
+ * 不再当作「未找到」或「没有歌词」。使用 / 还原是用户操作，反馈留在操作本身。
+ */
 export function useLyricMatch(isOpen: boolean) {
   const { t } = useI18n();
+  const queryClient = useQueryClient();
   const song = usePlayerStore((state) => state.currentSongDetail);
-  const [candidates, setCandidates] = useState<LyricMatchCandidate[]>([]);
-  const [isApplying, setIsApplying] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [isPreviewLoading, setIsPreviewLoading] = useState(false);
-  const [isPreviewPureMusic, setIsPreviewPureMusic] = useState(false);
-  const [override, setOverride] = useState<LyricMatchOverride | null>(null);
-  const [previewLines, setPreviewLines] = useState<LyricDisplayLine[]>([]);
+  const [openedFor, setOpenedFor] = useState<number | null>(null);
   const [query, setQuery] = useState("");
-  const [selectedId, setSelectedId] = useState<number | null>(null);
+  const [keyword, setKeyword] = useState("");
+  const [pickedId, setSelectedId] = useState<number | null>(null);
+  const [isApplying, setIsApplying] = useState(false);
 
-  const search = useCallback(
-    async (nextQuery: string) => {
-      if (!nextQuery.trim()) {
-        setCandidates([]);
-        setSelectedId(null);
-        return;
-      }
-
-      setIsLoading(true);
-      try {
-        const response = await searchSongs(nextQuery.trim(), 15);
-        const nextCandidates = (response.data?.data?.resources ?? [])
-          .map(mapSongSearchResourceToLyricMatchCandidate)
-          .filter((candidate): candidate is LyricMatchCandidate => Boolean(candidate?.name));
-        const sortedCandidates = song
-          ? nextCandidates.sort(
-              (left, right) => getLyricMatchScore(song, right) - getLyricMatchScore(song, left),
-            )
-          : nextCandidates;
-
-        setCandidates(sortedCandidates);
-        setSelectedId(sortedCandidates[0]?.id ?? null);
-      } catch (error) {
-        console.error("Lyric match search failed", error);
-        toast.error(t("lyrics.match.searchFailed"));
-      } finally {
-        setIsLoading(false);
-      }
-    },
-    [song, t],
-  );
-
-  useEffect(() => {
-    if (!song) {
-      setOverride(null);
-      return;
+  // 打开对话框（或打开期间切歌）时用当前歌名和歌手预填并直接搜索
+  const target = isOpen && song ? song.id : null;
+  if (target !== openedFor) {
+    setOpenedFor(target);
+    if (song && target !== null) {
+      const initialQuery = buildLyricMatchQuery(song);
+      setQuery(initialQuery);
+      setKeyword(initialQuery.trim());
+      setSelectedId(null);
     }
+  }
 
-    let cancelled = false;
-    void getLyricMatchOverride(song.id).then((nextOverride) => {
-      if (!cancelled) setOverride(nextOverride);
-    });
-    return () => {
-      cancelled = true;
-    };
-  }, [song]);
+  const songId = song?.id ?? 0;
+  const overrideQuery = useQuery({
+    queryKey: musicQueryKeys.lyrics.matchOverride(songId),
+    queryFn: () => getLyricMatchOverride(songId),
+    enabled: song !== null,
+  });
 
-  useEffect(() => {
-    if (!isOpen || !song) return;
-    const initialQuery = buildLyricMatchQuery(song);
-    setQuery(initialQuery);
-    void search(initialQuery);
-  }, [isOpen, search, song]);
+  const searchQuery = useQuery({
+    queryKey: musicQueryKeys.search.matchCandidates(keyword, CANDIDATE_LIMIT),
+    queryFn: async () =>
+      toLyricMatchCandidates(
+        (await searchSongs(keyword, CANDIDATE_LIMIT)).data?.data?.resources ?? [],
+      ),
+    enabled: isOpen && keyword.length > 0,
+  });
 
-  const selectedCandidate = useMemo(
-    () => candidates.find((candidate) => candidate.id === selectedId) ?? null,
-    [candidates, selectedId],
+  const candidates = useMemo(
+    () => sortLyricMatchCandidates(searchQuery.data ?? [], song),
+    [searchQuery.data, song],
   );
+  // 没手动选过，或选中的那首不在这次结果里时，默认选最匹配的第一首
+  const selectedCandidate =
+    candidates.find((candidate) => candidate.id === pickedId) ?? candidates[0] ?? null;
 
-  useEffect(() => {
-    if (!selectedCandidate) {
-      setPreviewLines([]);
-      setIsPreviewPureMusic(false);
-      setIsPreviewLoading(false);
-      return;
-    }
+  const previewId = selectedCandidate?.id ?? 0;
+  const previewQuery = useQuery({
+    queryKey: musicQueryKeys.lyrics.matchPreview(previewId),
+    queryFn: async () => adaptNeteaseLyric((await getLyric(previewId)).data),
+    enabled: isOpen && selectedCandidate !== null,
+  });
 
-    let cancelled = false;
-    setIsPreviewLoading(true);
-    setPreviewLines([]);
-    setIsPreviewPureMusic(false);
+  const search = (nextQuery: string) => {
+    setKeyword(nextQuery.trim());
+    setSelectedId(null);
+  };
 
-    void getLyric(selectedCandidate.id)
-      .then((response) => {
-        if (cancelled) return;
-        const preview = adaptNeteaseLyric(response.data);
-        setPreviewLines(preview.lines);
-        setIsPreviewPureMusic(preview.isPureMusic);
-      })
-      .catch((error) => {
-        console.error("Lyric match preview failed", error);
-        if (!cancelled) setPreviewLines([]);
-        if (!cancelled) setIsPreviewPureMusic(false);
-      })
-      .finally(() => {
-        if (!cancelled) setIsPreviewLoading(false);
-      });
-
-    return () => {
-      cancelled = true;
-    };
-  }, [selectedCandidate]);
+  const setOverride = useCallback(
+    (songId: number, override: LyricMatchOverride | null) =>
+      queryClient.setQueryData(musicQueryKeys.lyrics.matchOverride(songId), override),
+    [queryClient],
+  );
 
   const applyMatch = useCallback(async () => {
     if (!song || !selectedCandidate) return false;
@@ -154,7 +117,7 @@ export function useLyricMatch(isOpen: boolean) {
         setLyricSourceSelection(song.id, "online"),
       ]);
       usePlayerStore.getState().setLyric(response.data);
-      setOverride(nextOverride);
+      setOverride(song.id, nextOverride);
       toast.success(t("lyrics.match.saved"));
       return true;
     } catch (error) {
@@ -164,7 +127,7 @@ export function useLyricMatch(isOpen: boolean) {
     } finally {
       setIsApplying(false);
     }
-  }, [selectedCandidate, song, t]);
+  }, [selectedCandidate, setOverride, song, t]);
 
   const restoreOriginalLyrics = useCallback(async () => {
     if (!song) return;
@@ -175,7 +138,7 @@ export function useLyricMatch(isOpen: boolean) {
       const response = await getLyric(song.id);
       await setCachedLyric(song.id, response.data);
       usePlayerStore.getState().setLyric(response.data);
-      setOverride(null);
+      setOverride(song.id, null);
       toast.success(t("lyrics.match.restored"));
     } catch (error) {
       console.error("Original lyric restore failed", error);
@@ -183,19 +146,23 @@ export function useLyricMatch(isOpen: boolean) {
     } finally {
       setIsApplying(false);
     }
-  }, [song, t]);
+  }, [setOverride, song, t]);
 
   return {
     applyMatch,
     candidates,
     isApplying,
-    isLoading,
-    isPreviewLoading,
-    isPreviewPureMusic,
-    override,
-    previewLines,
+    isLoading: searchQuery.isFetching,
+    isSearchError: searchQuery.data === undefined && searchQuery.isError,
+    isPreviewError: previewQuery.data === undefined && previewQuery.isError,
+    isPreviewLoading: previewQuery.isFetching && previewQuery.data === undefined,
+    isPreviewPureMusic: previewQuery.data?.isPureMusic ?? false,
+    override: overrideQuery.data ?? null,
+    previewLines: previewQuery.data?.lines ?? [],
     query,
     restoreOriginalLyrics,
+    retryPreview: () => void previewQuery.refetch(),
+    retrySearch: () => void searchQuery.refetch(),
     search,
     selectedCandidate,
     setQuery,

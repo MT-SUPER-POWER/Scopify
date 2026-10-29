@@ -8,8 +8,10 @@ import type { FoliaLyricMatchPreviewProps } from "@/types/lyrics/components";
 export function FoliaLyricMatchPreview({
   candidate,
   isDaylight,
+  isError,
   isLoading,
   isPureMusic,
+  onRetry,
   previewLines,
   song,
   theme: _theme,
@@ -70,6 +72,17 @@ export function FoliaLyricMatchPreview({
           >
             <Music2 className="size-6" />
             <span>{t("lyrics.match.selectCandidate")}</span>
+          </div>
+        ) : isError ? (
+          <div className={`flex flex-col items-center gap-2 text-center text-xs ${textSecondary}`}>
+            <span>{t("lyrics.match.previewFailed")}</span>
+            <button
+              type="button"
+              onClick={onRetry}
+              className="rounded-full border border-current/20 px-3 py-1 text-xs font-medium transition-opacity hover:opacity-80"
+            >
+              {t("common.action.retry")}
+            </button>
           </div>
         ) : isPureMusic ? (
           <div className={`text-center text-sm ${textSecondary}`}>

@@ -80,8 +80,9 @@ export const musicQueryKeys = {
   search: {
     albums: (keyword: string, limit: number) => ["search", "albums", keyword, limit] as const,
     artists: (keyword: string, limit: number) => ["search", "artists", keyword, limit] as const,
-    cloudMatch: (keyword: string, limit: number) =>
-      ["search", "cloud-match", keyword, limit] as const,
+    /** 云盘匹配与歌词匹配共用：搜歌并转成匹配候选。 */
+    matchCandidates: (keyword: string, limit: number) =>
+      ["search", "match-candidates", keyword, limit] as const,
     complex: (keyword: string) => ["search", "complex", keyword] as const,
     lyrics: (keyword: string, limit: number) => ["search", "lyrics", keyword, limit] as const,
     mvs: (keyword: string, limit: number) => ["search", "mvs", keyword, limit] as const,
@@ -91,6 +92,10 @@ export const musicQueryKeys = {
     voices: (keyword: string, limit: number) => ["search", "voices", keyword, limit] as const,
     voiceLists: (keyword: string, limit: number) =>
       ["search", "voice-lists", keyword, limit] as const,
+  },
+  lyrics: {
+    matchOverride: (songId: number) => ["lyrics", "match-override", songId] as const,
+    matchPreview: (songId: number) => ["lyrics", "match-preview", songId] as const,
   },
   song: {
     wiki: (songId: number, userId: number) => ["song", "wiki", songId, userId] as const,

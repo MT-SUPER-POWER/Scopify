@@ -33,7 +33,9 @@ export function FoliaLyricMatchDialog({ isOpen, onClose, theme }: FoliaLyricMatc
         <FoliaLyricMatchSearch
           candidates={match.candidates}
           isDaylight={isDaylight}
+          isError={match.isSearchError}
           isLoading={match.isLoading}
+          onRetry={match.retrySearch}
           onSearch={match.search}
           onSelect={match.setSelectedId}
           query={match.query}
@@ -45,8 +47,10 @@ export function FoliaLyricMatchDialog({ isOpen, onClose, theme }: FoliaLyricMatc
         <FoliaLyricMatchPreview
           candidate={match.selectedCandidate}
           isDaylight={isDaylight}
+          isError={match.isPreviewError}
           isLoading={match.isPreviewLoading}
           isPureMusic={match.isPreviewPureMusic}
+          onRetry={match.retryPreview}
           previewLines={match.previewLines}
           song={match.song}
           theme={theme}

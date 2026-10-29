@@ -9254,6 +9254,12 @@ export interface TranslateFn {
    */
   (key: "lyrics.match.noPreview", params?: TranslationParams): string;
   /**
+   * zh-CN: 歌词预览加载失败
+   * zh-TW: 歌詞預覽載入失敗
+   * en-US: Couldn't load the lyric preview
+   */
+  (key: "lyrics.match.previewFailed", params?: TranslationParams): string;
+  /**
    * zh-CN: 使用所选歌词
    * zh-TW: 使用所選歌詞
    * en-US: Use Selected Lyrics

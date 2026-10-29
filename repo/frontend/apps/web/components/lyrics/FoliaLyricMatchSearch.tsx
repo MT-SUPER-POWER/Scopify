@@ -9,7 +9,9 @@ import type { FoliaLyricMatchSearchProps } from "@/types/lyrics/components";
 export function FoliaLyricMatchSearch({
   candidates,
   isDaylight,
+  isError,
   isLoading,
+  onRetry,
   onSearch,
   onSelect,
   query,
@@ -40,7 +42,7 @@ export function FoliaLyricMatchSearch({
           className="flex gap-3"
           onSubmit={(event) => {
             event.preventDefault();
-            void onSearch(query);
+            onSearch(query);
           }}
         >
           <div
@@ -74,7 +76,9 @@ export function FoliaLyricMatchSearch({
           <FoliaLyricMatchResults
             candidates={candidates}
             isDaylight={isDaylight}
+            isError={isError}
             isLoading={isLoading}
+            onRetry={onRetry}
             onSelect={onSelect}
             selectedId={selectedId}
             song={song}

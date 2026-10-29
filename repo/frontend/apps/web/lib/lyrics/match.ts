@@ -22,6 +22,24 @@ export function mapSongSearchResourceToLyricMatchCandidate(
   };
 }
 
+/** 搜索结果里能拿来匹配的曲目：没有 id 或歌名的丢掉。 */
+export function toLyricMatchCandidates(resources: SongSearchResource[]): LyricMatchCandidate[] {
+  return resources
+    .map(mapSongSearchResourceToLyricMatchCandidate)
+    .filter((candidate): candidate is LyricMatchCandidate => Boolean(candidate?.name));
+}
+
+/** 按与当前歌曲的相似度从高到低排，不改动原数组。 */
+export function sortLyricMatchCandidates(
+  candidates: LyricMatchCandidate[],
+  song: SongDetail | null,
+): LyricMatchCandidate[] {
+  if (!song) return candidates;
+  return [...candidates].sort(
+    (left, right) => getLyricMatchScore(song, right) - getLyricMatchScore(song, left),
+  );
+}
+
 export function getLyricMatchScore(song: SongDetail, candidate: LyricMatchCandidate): number {
   const normalize = (value: string) => value.toLocaleLowerCase().replace(/\s+/g, "").trim();
   const currentTitle = normalize(song.name);

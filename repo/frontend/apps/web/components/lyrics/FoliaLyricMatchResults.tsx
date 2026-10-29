@@ -9,7 +9,9 @@ import type { FoliaLyricMatchResultsProps } from "@/types/lyrics/components";
 export function FoliaLyricMatchResults({
   candidates,
   isDaylight,
+  isError,
   isLoading,
+  onRetry,
   onSelect,
   selectedId,
   song,
@@ -21,6 +23,21 @@ export function FoliaLyricMatchResults({
     return (
       <div className="flex h-40 items-center justify-center opacity-55">
         <LoaderCircle className="size-6 animate-spin" />
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="flex h-40 flex-col items-center justify-center gap-3 text-sm opacity-70">
+        <span>{t("lyrics.match.searchFailed")}</span>
+        <button
+          type="button"
+          onClick={onRetry}
+          className="rounded-full border border-current/20 px-3 py-1 text-xs font-medium transition-opacity hover:opacity-80"
+        >
+          {t("common.action.retry")}
+        </button>
       </div>
     );
   }
