@@ -9,9 +9,9 @@ Turbo 负责跨包编排；只有能完整恢复产物的任务才缓存。
 | Docs `build` | `.next/` 生产产物和 Fumadocs `.source/`，排除 `.next/cache/` 和 `.next/dev/` |
 | `lint`、`test` | 缓存成功结果和日志；源码或依赖变化后重新执行 |
 | `typecheck` | 缓存成功结果、日志和各工作区 `.cache/typecheck.tsbuildinfo` |
-| Desktop `build`、`build:host` | 不缓存：包含原生模块构建、资源复制和运行时检查，不能只恢复 JS 输出 |
+| Desktop 宿主、应用准备、运行时校验、native | 由 Desktop 局部任务图分别编排，暂不缓存；native 复用 Cargo 缓存 |
 | `sync:renderer` | 不缓存：每次同步 Renderer 并写入当前提交信息；上游 Web 构建可命中缓存 |
-| `dev`、`package:win`、`package:mac` | 不缓存 |
+| `dev`、平台 `package`（含 `:prebuilt`） | 不缓存 |
 
 ## 缓存键
 
@@ -57,3 +57,9 @@ Turbo 负责跨包编排；只有能完整恢复产物的任务才缓存。
 - Desktop 尚未接入 ESLint，保留虚拟 lint 节点，显式依赖 desktop-contract、notification-core 和根检查；不沿独立部署的后端依赖执行后端 lint。未来接入 Desktop ESLint 时沿用这个边界。
 - pre-commit 通过 `pnpm exec turbo run lint:staged` 运行根任务：先做轻量架构检查，再执行 lint-staged。暂存文件按工作区自身的 lint 声明识别，Web 主题检查也调用同一个 Turbo 任务。该路径不运行全仓 ESLint。
 - 不设置 pre-push 检查。类型检查保留增量和并行优化，供手动命令及 CI 使用。
+
+## Desktop 构建编排
+
+Desktop 的任务依赖集中在 `repo/frontend/apps/desktop/turbo.json`，根脚本只选择目标。宿主编译、应用目录准备、Renderer 同步、native 和打包均为独立任务；不再用 `&&` 串联。`build` 是依赖运行时校验的虚拟聚合任务。
+
+本地平台 `package` 自动补齐 Renderer 与宿主；CI 使用 `package:win:prebuilt` / `package:mac:prebuilt`，复用已下载并验证的唯一 Renderer，不重新运行 Web 构建或同步。开发任务也由 Turbo 依赖 Electron 安装和本机 wallpaper 构建，不再依靠 `predev`。完整目录、任务图与验证边界见 [构建产物架构](./architecture/build-artifacts.md)。

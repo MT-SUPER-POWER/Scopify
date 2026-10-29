@@ -8,6 +8,7 @@ The `build/desktop/app/renderer/` directory is a generated artifact slot. Deskto
 
 | 文件或目录 | 职责 |
 | --- | --- |
+| `turbo.json` | Desktop 开发、宿主、native、组装与平台打包的依赖图 |
 | `electron.vite.config.ts` | Main / Preload 的入口、别名与输出格式 |
 | `electron-builder.config.ts` | 安装包、平台资源与发布配置 |
 | `lib/runtimePaths.ts` | 构建产物目录的公共定义 |
@@ -21,7 +22,7 @@ The `build/desktop/app/renderer/` directory is a generated artifact slot. Deskto
 
 Next.js 在 Web 应用中构建页面，Electron Vite 构建桌面宿主。同步与准备脚本将两者放入 `build/desktop/app/`，Electron Builder 再从该目录生成安装包。打包应用内部的页面路径是 `renderer/`，它不是 Desktop 应用根目录下的源码目录。
 
-工作区入口继续由根 `package.json` 和 `turbo.json` 编排；打包和发布命令在 Desktop 内显式使用 `electron-builder.config.ts`。
+根 `package.json` 只选择目标，由 Desktop 的 `turbo.json` 编排叶子脚本。开发请使用根目录 `pnpm run dev:desktop` / `pnpm run dev`，由任务图准备 Electron 和本机 wallpaper；生产 `pnpm run build:desktop` 组装并校验 JS 应用，`pnpm run package:win` / `package:mac` 自动补齐 native 后生成安装包。CI 使用 `package:win:prebuilt` / `package:mac:prebuilt` 复用下载的 Renderer，不重新构建页面。打包命令显式使用 `electron-builder.config.ts`。完整任务图见 [构建产物架构](../../../../docs/architecture/build-artifacts.md)。
 
 Main-process architecture, lifecycle, and contribution rules are documented in [`electron/main/README.md`](./electron/main/README.md).
 

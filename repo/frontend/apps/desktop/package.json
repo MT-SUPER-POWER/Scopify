@@ -16,20 +16,25 @@
   "main": "out/main/main.js",
   "scripts": {
     "electron:ensure": "pnpm exec install-electron --no",
-    "predev": "pnpm run electron:ensure && pnpm run wallpaper:build",
     "dev": "electron-vite dev --ignoreConfigWarning",
     "wallpaper:build": "bun scripts/build-wallpaper-helper.ts",
+    "wallpaper:build:all": "bun scripts/build-wallpaper-helper.ts --all-arch",
     "wallpaper:verify": "bun scripts/verify-wallpaper-native.ts",
     "sync:renderer": "bun scripts/sync-renderer.ts",
     "audio:build": "bun scripts/build-audio-engine.ts",
+    "audio:build:all": "bun scripts/build-audio-engine.ts --all-arch",
     "taskbar:build": "bun scripts/build-taskbar-lyric.ts",
-    "build": "pnpm run build:host",
-    "build:host": "pnpm run wallpaper:build && electron-vite build --ignoreConfigWarning && bun scripts/prepare-packaged-app.ts && pnpm run check:runtime-bundle",
+    "taskbar:build:all": "bun scripts/build-taskbar-lyric.ts --all-arch",
+    "build:host": "electron-vite build --ignoreConfigWarning",
+    "prepare:app": "bun scripts/prepare-packaged-app.ts",
     "check:runtime-bundle": "bun scripts/check-runtime-bundle.ts",
+    "check:runtime-bundle:prebuilt": "bun scripts/check-runtime-bundle.ts",
     "typecheck": "tsc --noEmit --incremental --tsBuildInfoFile .cache/typecheck.tsbuildinfo",
     "test": "bun test",
-    "package:win": "pnpm run electron:ensure && pnpm run wallpaper:build --all-arch && pnpm run audio:build --all-arch && pnpm run taskbar:build --all-arch && electron-builder --config electron-builder.config.ts --win --publish never",
-    "package:mac": "pnpm run electron:ensure && pnpm run wallpaper:build --all-arch && electron-builder --config electron-builder.config.ts --mac --publish never"
+    "package:win": "electron-builder --config electron-builder.config.ts --win --publish never",
+    "package:win:prebuilt": "electron-builder --config electron-builder.config.ts --win --publish never",
+    "package:mac": "electron-builder --config electron-builder.config.ts --mac --publish never",
+    "package:mac:prebuilt": "electron-builder --config electron-builder.config.ts --mac --publish never"
   },
   "dependencies": {
     "@neteasecloudmusicapienhanced/api": "workspace:*"

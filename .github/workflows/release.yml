@@ -95,7 +95,7 @@ jobs:
         include:
           - platform: windows
             os: windows-latest
-            package-script: package:win
+            package-script: package:win:prebuilt
             artifact-path: |
               repo/frontend/apps/desktop/build/release/*.exe
               repo/frontend/apps/desktop/build/release/*.blockmap
@@ -107,7 +107,7 @@ jobs:
               repo/frontend/apps/desktop/build/release/latest.yml
           - platform: macos
             os: macos-latest
-            package-script: package:mac
+            package-script: package:mac:prebuilt
             artifact-path: |
               repo/frontend/apps/desktop/build/release/*.dmg
               repo/frontend/apps/desktop/build/release/*.zip
@@ -155,16 +155,6 @@ jobs:
       - name: Apply tag version
         run: bun .github/scripts/apply-release.ts ${{ github.ref_name }}
 
-      - name: Prepare Electron distribution
-        shell: bash
-        run: |
-          set -euo pipefail
-          electron_dir="repo/frontend/apps/desktop/node_modules/electron"
-          if [[ ! -f "${electron_dir}/dist/version" ]]; then
-            node "${electron_dir}/install.js"
-          fi
-          test -f "${electron_dir}/dist/version"
-
       - name: Download locked Renderer artifact
         uses: actions/download-artifact@v5
         with:
@@ -184,10 +174,7 @@ jobs:
       - name: Setup native build cache
         uses: ./.github/actions/setup-native-build
 
-      - name: Build Electron host
-        run: pnpm exec turbo run build:host --filter=@scopify/desktop
-
-      - name: Package Electron without publishing
+      - name: Build host and native modules, validate and package locked Renderer
         run: pnpm exec turbo run ${{ matrix.package-script }} --filter=@scopify/desktop
 
       - name: Verify platform release outputs

@@ -44,24 +44,6 @@
       ],
       "outputs": ["out/**", "!out/cache/**", "!out/dev/**"]
     },
-    "build:host": {
-      "dependsOn": ["^build"],
-      "cache": false
-    },
-    "sync:renderer": {
-      "dependsOn": ["@scopify/web#build:desktop"],
-      "cache": false
-    },
-    "@scopify/desktop#build": {
-      "dependsOn": ["sync:renderer", "^build"],
-      "cache": false
-    },
-    "package:win": {
-      "cache": false
-    },
-    "package:mac": {
-      "cache": false
-    },
     "dev": {
       "cache": false,
       "persistent": true

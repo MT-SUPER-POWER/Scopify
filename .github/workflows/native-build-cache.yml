@@ -9,6 +9,8 @@ on:
       - "repo/frontend/apps/desktop/scripts/build-*.ts"
       - "repo/frontend/apps/desktop/lib/napiBuild.ts"
       - "repo/frontend/apps/desktop/package.json"
+      - "repo/frontend/apps/desktop/turbo.json"
+      - "turbo.json"
       - "pnpm-lock.yaml"
       - ".github/actions/setup-native-build/**"
       - ".github/actions/setup-workspace/**"
@@ -28,7 +30,11 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [windows-latest, macos-latest]
+        include:
+          - os: windows-latest
+            native-tasks: wallpaper:build:all audio:build:all taskbar:build:all
+          - os: macos-latest
+            native-tasks: wallpaper:build:all
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -41,13 +47,5 @@ jobs:
       - name: Setup native build cache
         uses: ./.github/actions/setup-native-build
 
-      - name: Build wallpaper bridge for both architectures
-        run: pnpm --filter @scopify/desktop run wallpaper:build --all-arch
-
-      - name: Build Windows audio engine for both architectures
-        if: runner.os == 'Windows'
-        run: pnpm --filter @scopify/desktop run audio:build --all-arch
-
-      - name: Build Windows taskbar lyrics for both architectures
-        if: runner.os == 'Windows'
-        run: pnpm --filter @scopify/desktop run taskbar:build --all-arch
+      - name: Build native modules for both architectures
+        run: pnpm exec turbo run ${{ matrix.native-tasks }} --filter=@scopify/desktop

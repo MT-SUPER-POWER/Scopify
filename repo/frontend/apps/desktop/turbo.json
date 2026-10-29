@@ -1,0 +1,84 @@
+{
+  "$schema": "https://v2-11-10.turborepo.dev/schema.json",
+  "extends": ["//"],
+  "tasks": {
+    "dev": {
+      "dependsOn": ["electron:ensure", "wallpaper:build"],
+      "cache": false,
+      "persistent": true
+    },
+    "electron:ensure": {
+      "cache": false
+    },
+    "build:host": {
+      "dependsOn": ["^build", "electron:ensure"],
+      "cache": false
+    },
+    "prepare:app": {
+      "dependsOn": ["build:host"],
+      "cache": false
+    },
+    "sync:renderer": {
+      "dependsOn": ["@scopify/web#build:desktop"],
+      "cache": false
+    },
+    "wallpaper:build": {
+      "cache": false
+    },
+    "wallpaper:build:all": {
+      "cache": false
+    },
+    "audio:build": {
+      "cache": false
+    },
+    "audio:build:all": {
+      "cache": false
+    },
+    "taskbar:build": {
+      "cache": false
+    },
+    "taskbar:build:all": {
+      "cache": false
+    },
+    "check:runtime-bundle": {
+      "dependsOn": ["prepare:app", "sync:renderer"],
+      "cache": false
+    },
+    "check:runtime-bundle:prebuilt": {
+      "dependsOn": ["prepare:app"],
+      "cache": false
+    },
+    "build": {
+      "dependsOn": ["check:runtime-bundle"],
+      "cache": false
+    },
+    "package:win": {
+      "dependsOn": [
+        "check:runtime-bundle",
+        "electron:ensure",
+        "wallpaper:build:all",
+        "audio:build:all",
+        "taskbar:build:all"
+      ],
+      "cache": false
+    },
+    "package:mac": {
+      "dependsOn": ["check:runtime-bundle", "electron:ensure", "wallpaper:build:all"],
+      "cache": false
+    },
+    "package:win:prebuilt": {
+      "dependsOn": [
+        "check:runtime-bundle:prebuilt",
+        "electron:ensure",
+        "wallpaper:build:all",
+        "audio:build:all",
+        "taskbar:build:all"
+      ],
+      "cache": false
+    },
+    "package:mac:prebuilt": {
+      "dependsOn": ["check:runtime-bundle:prebuilt", "electron:ensure", "wallpaper:build:all"],
+      "cache": false
+    }
+  }
+}
