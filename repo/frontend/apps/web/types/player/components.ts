@@ -1,4 +1,4 @@
-import type { CSSProperties, MouseEventHandler, ReactNode } from "react";
+import type { MouseEventHandler, ReactNode } from "react";
 import type { SongDetail } from "@/types/song/api";
 import type { ProgressRangeMarker } from "@/types/shared/sliderComponents";
 import type { SongStatsEnrichmentStatus } from "@/types/song/stats";
@@ -44,14 +44,6 @@ export interface PlayerQueueItemCoverProps {
   isActive: boolean;
   isPlaying: boolean;
   song: SongDetail;
-}
-
-export interface LyricQueueRowProps {
-  song: SongDetail;
-  index: number;
-  isCurrent: boolean;
-  onPlay: (index: number) => void;
-  style?: CSSProperties;
 }
 
 export interface PlayerBarStatActionProps {

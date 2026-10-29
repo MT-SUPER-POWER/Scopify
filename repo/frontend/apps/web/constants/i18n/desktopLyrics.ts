@@ -9,7 +9,6 @@ export const desktopLyricsMessages = defineMessages(
     "desktopLyrics.previous": "上一首",
     "desktopLyrics.playPause": "播放或暂停",
     "desktopLyrics.next": "下一首",
-    "desktopLyrics.like": "喜欢",
     "dynamicIsland.title": "灵动岛",
     "dynamicIsland.enabled.label": "开启灵动岛",
     "dynamicIsland.enabled.sublabel":
@@ -62,7 +61,6 @@ export const desktopLyricsMessages = defineMessages(
     "desktopLyrics.previous": "上一首",
     "desktopLyrics.playPause": "播放或暫停",
     "desktopLyrics.next": "下一首",
-    "desktopLyrics.like": "喜歡",
     "dynamicIsland.title": "靈動島",
     "dynamicIsland.enabled.label": "開啟靈動島",
     "dynamicIsland.enabled.sublabel":
@@ -115,7 +113,6 @@ export const desktopLyricsMessages = defineMessages(
     "desktopLyrics.previous": "Previous",
     "desktopLyrics.playPause": "Play or pause",
     "desktopLyrics.next": "Next",
-    "desktopLyrics.like": "Like",
     "dynamicIsland.title": "Dynamic Island",
     "dynamicIsland.enabled.label": "Show Dynamic Island",
     "dynamicIsland.enabled.sublabel":

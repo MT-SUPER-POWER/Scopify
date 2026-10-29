@@ -341,12 +341,6 @@ export interface TranslateFn {
    */
   (key: "nowPlaying.featuredArtist", params?: TranslationParams): string;
   /**
-   * zh-CN: 发行时间
-   * zh-TW: 發行時間
-   * en-US: Released
-   */
-  (key: "nowPlaying.releaseDate", params?: TranslationParams): string;
-  /**
    * zh-CN: 无效的 MV
    * zh-TW: 無效的 MV
    * en-US: Invalid music video
@@ -5468,54 +5462,6 @@ export interface TranslateFn {
    */
   (key: "subtitleSystem.pause", params?: TranslationParams): string;
   /**
-   * zh-CN: 播放进度
-   * zh-TW: 播放進度
-   * en-US: Playback progress
-   */
-  (key: "subtitleSystem.progress", params?: TranslationParams): string;
-  /**
-   * zh-CN: 我的歌词方案
-   * zh-TW: 我的歌詞方案
-   * en-US: My lyric themes
-   */
-  (key: "subtitleSystem.library", params?: TranslationParams): string;
-  /**
-   * zh-CN: 保存当前方案
-   * zh-TW: 儲存目前方案
-   * en-US: Save current theme
-   */
-  (key: "subtitleSystem.saveTheme", params?: TranslationParams): string;
-  /**
-   * zh-CN: 保存字体、配色、胶囊与动画参数，可随时快捷应用。
-   * zh-TW: 儲存字體、配色、膠囊與動畫參數，可隨時快速套用。
-   * en-US: Save typography, colors, capsule and animation settings for quick reuse.
-   */
-  (key: "subtitleSystem.saveHint", params?: TranslationParams): string;
-  /**
-   * zh-CN: 方案名称
-   * zh-TW: 方案名稱
-   * en-US: Theme name
-   */
-  (key: "subtitleSystem.name", params?: TranslationParams): string;
-  /**
-   * zh-CN: 保存
-   * zh-TW: 儲存
-   * en-US: Save
-   */
-  (key: "subtitleSystem.save", params?: TranslationParams): string;
-  /**
-   * zh-CN: 批量管理
-   * zh-TW: 批次管理
-   * en-US: Manage
-   */
-  (key: "subtitleSystem.manage", params?: TranslationParams): string;
-  /**
-   * zh-CN: 完成
-   * zh-TW: 完成
-   * en-US: Done
-   */
-  (key: "subtitleSystem.done", params?: TranslationParams): string;
-  /**
    * zh-CN: 全选 / 取消全选
    * zh-TW: 全選 / 取消全選
    * en-US: Select / deselect all
@@ -5528,35 +5474,11 @@ export interface TranslateFn {
    */
   (key: "subtitleSystem.delete", params?: TranslationParams): string;
   /**
-   * zh-CN: 重命名
-   * zh-TW: 重新命名
-   * en-US: Rename
-   */
-  (key: "subtitleSystem.rename", params?: TranslationParams): string;
-  /**
-   * zh-CN: 更新为当前样式
-   * zh-TW: 更新為目前樣式
-   * en-US: Update from current style
-   */
-  (key: "subtitleSystem.update", params?: TranslationParams): string;
-  /**
    * zh-CN: 删除已保存的方案，当前预览样式保持不变。
    * zh-TW: 刪除已儲存的方案，目前預覽樣式保持不變。
    * en-US: Delete saved themes. The current preview style stays unchanged.
    */
   (key: "subtitleSystem.deleteHint", params?: TranslationParams): string;
-  /**
-   * zh-CN: 调好喜欢的效果后，保存为自己的方案。
-   * zh-TW: 調好喜歡的效果後，儲存為自己的方案。
-   * en-US: Save your preferred style as a reusable theme.
-   */
-  (key: "subtitleSystem.emptyLibrary", params?: TranslationParams): string;
-  /**
-   * zh-CN: 已唱文字颜色
-   * zh-TW: 已唱文字顏色
-   * en-US: Sung text color
-   */
-  (key: "subtitleSystem.sung", params?: TranslationParams): string;
   /**
    * zh-CN: 已唱色按整句进度从左向右覆盖未唱色；逐字吐字与播放填色分别使用。
    * zh-TW: 已唱色按整句進度從左向右覆蓋未唱色；逐字顯示與播放填色分別使用。
@@ -5594,12 +5516,6 @@ export interface TranslateFn {
    */
   (key: "subtitleControl.style", params?: TranslationParams): string;
   /**
-   * zh-CN: 快捷键
-   * zh-TW: 快捷鍵
-   * en-US: Shortcuts
-   */
-  (key: "subtitleControl.shortcuts", params?: TranslationParams): string;
-  /**
    * zh-CN: 桌面歌词操作失败，请重试。
    * zh-TW: 桌面歌詞操作失敗，請重試。
    * en-US: Desktop subtitle operation failed. Please retry.
@@ -5636,12 +5552,6 @@ export interface TranslateFn {
    */
   (key: "subtitlePalette.saveAs", params?: TranslationParams): string;
   /**
-   * zh-CN: 当前配色
-   * zh-TW: 目前配色
-   * en-US: Current palette
-   */
-  (key: "subtitlePalette.current", params?: TranslationParams): string;
-  /**
    * zh-CN: 暂无自定义配色
    * zh-TW: 尚無自訂配色
    * en-US: No custom palettes yet.
@@ -5677,18 +5587,6 @@ export interface TranslateFn {
    * en-US: My palettes
    */
   (key: "subtitlePalette.library", params?: TranslationParams): string;
-  /**
-   * zh-CN: 保存 / 编辑配色
-   * zh-TW: 儲存 / 編輯配色
-   * en-US: Save / edit palette
-   */
-  (key: "subtitlePalette.save", params?: TranslationParams): string;
-  /**
-   * zh-CN: 仅保存颜色、渐变与底色透明度；应用时保留字体、尺寸和动画。
-   * zh-TW: 僅儲存顏色、漸層與底色透明度；套用時保留字體、尺寸和動畫。
-   * en-US: Save colors, gradient and background opacity. Applying preserves typography, size and animation.
-   */
-  (key: "subtitlePalette.hint", params?: TranslationParams): string;
   /**
    * zh-CN: 等待播放音乐
    * zh-TW: 等待播放音樂
@@ -7244,23 +7142,11 @@ export interface TranslateFn {
    */
   (key: "queue.locateCurrent", params?: TranslationParams): string;
   /**
-   * zh-CN: 队列为空
-   * zh-TW: 佇列為空
-   * en-US: Queue is empty
-   */
-  (key: "queue.empty", params?: TranslationParams): string;
-  /**
    * zh-CN: 按空格拾起歌曲，使用上下方向键移动，再按空格放下，Esc 取消。
    * zh-TW: 按空格拾起歌曲，使用上下方向鍵移動，再按空格放下，Esc 取消。
    * en-US: Press Space to pick up a song, arrow keys to move, Space to drop, or Escape to cancel.
    */
   (key: "queue.keyboardHint", params?: TranslationParams): string;
-  /**
-   * zh-CN: 拖动调整播放队列顺序，不影响歌单
-   * zh-TW: 拖動調整播放佇列順序，不影響歌單
-   * en-US: Drag to reorder the play queue without changing the playlist
-   */
-  (key: "queue.dragToReorder", params?: TranslationParams): string;
   /**
    * zh-CN: 通知
    * zh-TW: 通知
@@ -8030,30 +7916,6 @@ export interface TranslateFn {
    */
   (key: "tray.exit", params?: TranslationParams): string;
   /**
-   * zh-CN: 音质选择
-   * zh-TW: 音質選擇
-   * en-US: Audio Quality
-   */
-  (key: "playbar.quality", params?: TranslationParams): string;
-  /**
-   * zh-CN: 当前歌曲音质
-   * zh-TW: 目前歌曲音質
-   * en-US: Current Track Audio Quality
-   */
-  (key: "playbar.qualityTitle", params?: TranslationParams): string;
-  /**
-   * zh-CN: 当前歌曲音质
-   * zh-TW: 目前歌曲音質
-   * en-US: Current Track Audio Quality
-   */
-  (key: "playbar.quality.headerTitle", params?: TranslationParams): string;
-  /**
-   * zh-CN: 了解音质
-   * zh-TW: 了解音質
-   * en-US: Learn More
-   */
-  (key: "playbar.quality.learnMore", params?: TranslationParams): string;
-  /**
    * zh-CN: 沉浸环绕声
    * zh-TW: 沉浸環繞聲
    * en-US: Surround Audio
@@ -8096,12 +7958,6 @@ export interface TranslateFn {
    */
   (key: "playbar.quality.dolby.label", params?: TranslationParams): string;
   /**
-   * zh-CN: Dolby Atmos
-   * zh-TW: Dolby Atmos
-   * en-US: Dolby Atmos
-   */
-  (key: "playbar.quality.dolby.sublabel", params?: TranslationParams): string;
-  /**
    * zh-CN: 沉浸三维空间音频，最高7.1声道
    * zh-TW: 沉浸三維空間音訊，最高7.1聲道
    * en-US: Immersive 3D spatial audio, up to 7.1ch
@@ -8113,12 +7969,6 @@ export interface TranslateFn {
    * en-US: Spatial Audio
    */
   (key: "playbar.quality.spatial.label", params?: TranslationParams): string;
-  /**
-   * zh-CN: Spatial Audio
-   * zh-TW: Spatial Audio
-   * en-US: Spatial Audio
-   */
-  (key: "playbar.quality.spatial.sublabel", params?: TranslationParams): string;
   /**
    * zh-CN: 高频细节还原与清晰沉浸感，96kHz/24bit
    * zh-TW: 高頻細節還原與清晰沉浸感，96kHz/24bit
@@ -8132,12 +7982,6 @@ export interface TranslateFn {
    */
   (key: "playbar.quality.hires.label", params?: TranslationParams): string;
   /**
-   * zh-CN: Hi-Res
-   * zh-TW: Hi-Res
-   * en-US: Hi-Res
-   */
-  (key: "playbar.quality.hires.sublabel", params?: TranslationParams): string;
-  /**
    * zh-CN: 更饱满清晰的高解析度音质，最高192kHz/24bit
    * zh-TW: 更飽滿清晰的高解析度音質，最高192kHz/24bit
    * en-US: Fuller & clearer Hi-Res, up to 192kHz/24bit
@@ -8149,12 +7993,6 @@ export interface TranslateFn {
    * en-US: Lossless (SQ)
    */
   (key: "playbar.quality.lossless.label", params?: TranslationParams): string;
-  /**
-   * zh-CN: SQ
-   * zh-TW: SQ
-   * en-US: SQ
-   */
-  (key: "playbar.quality.lossless.sublabel", params?: TranslationParams): string;
   /**
    * zh-CN: 高保真无损音质，最高48kHz/16bit
    * zh-TW: 高保真無損音質，最高48kHz/16bit
@@ -8168,12 +8006,6 @@ export interface TranslateFn {
    */
   (key: "playbar.quality.high.label", params?: TranslationParams): string;
   /**
-   * zh-CN: HQ
-   * zh-TW: HQ
-   * en-US: HQ
-   */
-  (key: "playbar.quality.high.sublabel", params?: TranslationParams): string;
-  /**
    * zh-CN: 近 CD 音质的细节体验，最高320kbps
    * zh-TW: 近 CD 音質的細節體驗，最高320kbps
    * en-US: Near CD quality detail, up to 320kbps
@@ -8185,12 +8017,6 @@ export interface TranslateFn {
    * en-US: Standard
    */
   (key: "playbar.quality.standard.label", params?: TranslationParams): string;
-  /**
-   * zh-CN: Standard
-   * zh-TW: Standard
-   * en-US: Standard
-   */
-  (key: "playbar.quality.standard.sublabel", params?: TranslationParams): string;
   /**
    * zh-CN: 128kbps · 标准音质
    * zh-TW: 128kbps · 標準音質
@@ -8768,23 +8594,11 @@ export interface TranslateFn {
    */
   (key: "ui.currentTheme", params?: TranslationParams): string;
   /**
-   * zh-CN: 歌词
-   * zh-TW: 歌詞
-   * en-US: Lyrics
-   */
-  (key: "playerBar.lyrics", params?: TranslationParams): string;
-  /**
    * zh-CN: 显示播放条
    * zh-TW: 顯示播放列
    * en-US: Show player bar
    */
   (key: "playerBar.show", params?: TranslationParams): string;
-  /**
-   * zh-CN: 隐藏播放条
-   * zh-TW: 隱藏播放列
-   * en-US: Hide player bar
-   */
-  (key: "playerBar.hide", params?: TranslationParams): string;
   /**
    * zh-CN: 置顶显示
    * zh-TW: 置頂顯示
@@ -8827,12 +8641,6 @@ export interface TranslateFn {
    * en-US: Next
    */
   (key: "desktopLyrics.next", params?: TranslationParams): string;
-  /**
-   * zh-CN: 喜欢
-   * zh-TW: 喜歡
-   * en-US: Like
-   */
-  (key: "desktopLyrics.like", params?: TranslationParams): string;
   /**
    * zh-CN: 灵动岛
    * zh-TW: 靈動島
@@ -9080,12 +8888,6 @@ export interface TranslateFn {
    */
   (key: "desktopPlaybackController.wallpaper", params?: TranslationParams): string;
   /**
-   * zh-CN: Folia 桌面外观
-   * zh-TW: Folia 桌面外觀
-   * en-US: Folia desktop appearance
-   */
-  (key: "desktopPlaybackController.appearance", params?: TranslationParams): string;
-  /**
    * zh-CN: Folia 外观
    * zh-TW: Folia 外觀
    * en-US: Folia appearance
@@ -9116,12 +8918,6 @@ export interface TranslateFn {
    */
   (key: "desktopPlaybackController.openMainSettings", params?: TranslationParams): string;
   /**
-   * zh-CN: 这里仅用于快速切换，主题编辑请在主窗口完成。
-   * zh-TW: 這裡僅用於快速切換，主題編輯請在主視窗完成。
-   * en-US: Use this window for quick switching. Edit themes in the main window.
-   */
-  (key: "desktopPlaybackController.settingsInMainHint", params?: TranslationParams): string;
-  /**
    * zh-CN: 主题切换
    * zh-TW: 主題切換
    * en-US: Theme switching
@@ -9133,12 +8929,6 @@ export interface TranslateFn {
    * en-US: Desktop display
    */
   (key: "desktopPlaybackController.desktopDisplay", params?: TranslationParams): string;
-  /**
-   * zh-CN: 效果、背景与主题切换会实时同步到桌面。
-   * zh-TW: 效果、背景與主題切換會即時同步到桌面。
-   * en-US: Effects, backgrounds, and theme switches sync to the desktop in real time.
-   */
-  (key: "desktopPlaybackController.liveSyncHint", params?: TranslationParams): string;
   /**
    * zh-CN: 显示内容
    * zh-TW: 顯示內容
@@ -9188,12 +8978,6 @@ export interface TranslateFn {
    */
   (key: "desktopPlaybackController.systemFallback", params?: TranslationParams): string;
   /**
-   * zh-CN: 播放控制
-   * zh-TW: 播放控制
-   * en-US: Playback
-   */
-  (key: "desktopPlaybackController.playback", params?: TranslationParams): string;
-  /**
    * zh-CN: 播放进度
    * zh-TW: 播放進度
    * en-US: Playback progress
@@ -9205,12 +8989,6 @@ export interface TranslateFn {
    * en-US: Nothing playing
    */
   (key: "desktopPlaybackController.noTrack", params?: TranslationParams): string;
-  /**
-   * zh-CN: 运行状态
-   * zh-TW: 執行狀態
-   * en-US: Status
-   */
-  (key: "desktopPlaybackController.status", params?: TranslationParams): string;
   /**
    * zh-CN: 未运行
    * zh-TW: 未執行
@@ -9284,23 +9062,11 @@ export interface TranslateFn {
    */
   (key: "desktopPlaybackController.settingsOpenFailed", params?: TranslationParams): string;
   /**
-   * zh-CN: 打开 10 段音频均衡器
-   * zh-TW: 開啟 10 段音訊等化器
-   * en-US: Open 10-band equalizer
-   */
-  (key: "audioEqualizer.open", params?: TranslationParams): string;
-  /**
    * zh-CN: 10 段音频均衡器
    * zh-TW: 10 段音訊等化器
    * en-US: 10-band equalizer
    */
   (key: "audioEqualizer.title", params?: TranslationParams): string;
-  /**
-   * zh-CN: 从低频到高频塑造播放声音，所有修改都会自动保存。
-   * zh-TW: 從低頻到高頻塑造播放聲音，所有修改都會自動儲存。
-   * en-US: Shape playback from deep bass to high treble. Changes save automatically.
-   */
-  (key: "audioEqualizer.description", params?: TranslationParams): string;
   /**
    * zh-CN: 均衡器已开启
    * zh-TW: 等化器已開啟
@@ -9379,12 +9145,6 @@ export interface TranslateFn {
    * en-US: Sound effects
    */
   (key: "audioEqualizer.effects", params?: TranslationParams): string;
-  /**
-   * zh-CN: 从音色到空间感，拖动立即生效
-   * zh-TW: 從音色到空間感，拖動立即生效
-   * en-US: Tone, texture, width, and space
-   */
-  (key: "audioEqualizer.effectsHint", params?: TranslationParams): string;
   /**
    * zh-CN: 低切
    * zh-TW: 低切
@@ -9500,12 +9260,6 @@ export interface TranslateFn {
    */
   (key: "audioEqualizer.preset.custom-3", params?: TranslationParams): string;
   /**
-   * zh-CN: 重置当前自定义槽位
-   * zh-TW: 重設當前自訂槽位
-   * en-US: Reset current custom slot
-   */
-  (key: "audioEqualizer.reset", params?: TranslationParams): string;
-  /**
    * zh-CN: 频段归零
    * zh-TW: 頻段歸零
    * en-US: Flatten bands
@@ -9560,12 +9314,6 @@ export interface TranslateFn {
    */
   (key: "audioSettings.title", params?: TranslationParams): string;
   /**
-   * zh-CN: 统一管理播放音质和 10 段均衡器。
-   * zh-TW: 統一管理播放音質和 10 段等化器。
-   * en-US: Manage playback quality and the 10-band equalizer in one place.
-   */
-  (key: "audioSettings.description", params?: TranslationParams): string;
-  /**
    * zh-CN: 播放音质
    * zh-TW: 播放音質
    * en-US: Playback quality
@@ -9577,12 +9325,6 @@ export interface TranslateFn {
    * en-US: Equalizer
    */
   (key: "audioSettings.equalizerTab", params?: TranslationParams): string;
-  /**
-   * zh-CN: 输出设备
-   * zh-TW: 輸出裝置
-   * en-US: Output
-   */
-  (key: "audioSettings.outputTab", params?: TranslationParams): string;
   /**
    * zh-CN: 音频输出设备
    * zh-TW: 音訊輸出裝置
@@ -22553,12 +22295,6 @@ export interface TranslateFn {
    */
   (key: "personalFm.settings.modeLabel", params?: TranslationParams): string;
   /**
-   * zh-CN: 场景
-   * zh-TW: 場景
-   * en-US: Scene
-   */
-  (key: "personalFm.settings.sceneLabel", params?: TranslationParams): string;
-  /**
    * zh-CN: 正在生成私人 FM…
    * zh-TW: 正在生成私人 FM…
    * en-US: Generating Personal FM…
@@ -22594,12 +22330,6 @@ export interface TranslateFn {
    * en-US: Could not reduce recommendations for this song
    */
   (key: "personalFm.action.dislikeFailed", params?: TranslationParams): string;
-  /**
-   * zh-CN: 换一批
-   * zh-TW: 換一批
-   * en-US: New recommendations
-   */
-  (key: "personalFm.action.refresh", params?: TranslationParams): string;
   /**
    * zh-CN: 重新推荐并替换全部电台歌曲
    * zh-TW: 重新推薦並替換全部電台歌曲

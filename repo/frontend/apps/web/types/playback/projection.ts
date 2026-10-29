@@ -1,7 +1,6 @@
 import type {
   PlaybackCommand,
   PlaybackCommandReceipt,
-  PlaybackMessage,
   PlaybackProjection,
   PlaybackTrack,
 } from "@scopify/desktop-contract";
@@ -47,20 +46,4 @@ export interface PlaybackReplicaOptions {
   clock: PlaybackClock;
   disconnectAfterMs?: number;
   dispatchCommand?: PlaybackCommandDispatcher;
-}
-
-export interface InMemoryPlaybackTransportOptions {
-  clock: AdjustablePlaybackClock;
-  disconnectAfterMs?: number;
-  handleCommand?: PlaybackCommandDispatcher;
-}
-
-export interface InMemoryPlaybackDeliveryOptions {
-  delayMs?: number;
-}
-
-export interface PendingPlaybackDelivery<TLyrics = unknown> {
-  deliverAtMs: number;
-  message: PlaybackMessage<TLyrics>;
-  order: number;
 }

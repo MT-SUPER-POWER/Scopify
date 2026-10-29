@@ -2,9 +2,7 @@ import { defineMessages } from "./define";
 
 export const audioEqualizerMessages = defineMessages(
   {
-    "audioEqualizer.open": "打开 10 段音频均衡器",
     "audioEqualizer.title": "10 段音频均衡器",
-    "audioEqualizer.description": "从低频到高频塑造播放声音，所有修改都会自动保存。",
     "audioEqualizer.enabled": "均衡器已开启",
     "audioEqualizer.disabled": "均衡器已关闭",
     "audioEqualizer.bandGain": "频段增益",
@@ -18,7 +16,6 @@ export const audioEqualizerMessages = defineMessages(
     "audioEqualizer.duplicatePreset": "复制预设",
     "audioEqualizer.deletePreset": "删除预设",
     "audioEqualizer.effects": "音色效果",
-    "audioEqualizer.effectsHint": "从音色到空间感，拖动立即生效",
     "audioEqualizer.effect.highpass": "低切",
     "audioEqualizer.effect.lowpass": "高切",
     "audioEqualizer.effect.drive": "驱动",
@@ -38,7 +35,6 @@ export const audioEqualizerMessages = defineMessages(
     "audioEqualizer.preset.custom-1": "自定义 1",
     "audioEqualizer.preset.custom-2": "自定义 2",
     "audioEqualizer.preset.custom-3": "自定义 3",
-    "audioEqualizer.reset": "重置当前自定义槽位",
     "audioEqualizer.resetBands": "频段归零",
     "audioEqualizer.resetEffects": "效果复位",
     "audioEqualizer.resetEffect": "点击恢复默认值",
@@ -48,9 +44,7 @@ export const audioEqualizerMessages = defineMessages(
     "audioEqualizer.group.space": "空间",
   },
   {
-    "audioEqualizer.open": "開啟 10 段音訊等化器",
     "audioEqualizer.title": "10 段音訊等化器",
-    "audioEqualizer.description": "從低頻到高頻塑造播放聲音，所有修改都會自動儲存。",
     "audioEqualizer.enabled": "等化器已開啟",
     "audioEqualizer.disabled": "等化器已關閉",
     "audioEqualizer.bandGain": "頻段增益",
@@ -64,7 +58,6 @@ export const audioEqualizerMessages = defineMessages(
     "audioEqualizer.duplicatePreset": "複製預設",
     "audioEqualizer.deletePreset": "刪除預設",
     "audioEqualizer.effects": "音色效果",
-    "audioEqualizer.effectsHint": "從音色到空間感，拖動立即生效",
     "audioEqualizer.effect.highpass": "低切",
     "audioEqualizer.effect.lowpass": "高切",
     "audioEqualizer.effect.drive": "驅動",
@@ -84,7 +77,6 @@ export const audioEqualizerMessages = defineMessages(
     "audioEqualizer.preset.custom-1": "自訂 1",
     "audioEqualizer.preset.custom-2": "自訂 2",
     "audioEqualizer.preset.custom-3": "自訂 3",
-    "audioEqualizer.reset": "重設當前自訂槽位",
     "audioEqualizer.resetBands": "頻段歸零",
     "audioEqualizer.resetEffects": "效果復位",
     "audioEqualizer.resetEffect": "點擊恢復預設值",
@@ -94,10 +86,7 @@ export const audioEqualizerMessages = defineMessages(
     "audioEqualizer.group.space": "空間",
   },
   {
-    "audioEqualizer.open": "Open 10-band equalizer",
     "audioEqualizer.title": "10-band equalizer",
-    "audioEqualizer.description":
-      "Shape playback from deep bass to high treble. Changes save automatically.",
     "audioEqualizer.enabled": "Equalizer on",
     "audioEqualizer.disabled": "Equalizer off",
     "audioEqualizer.bandGain": "Band gain",
@@ -111,7 +100,6 @@ export const audioEqualizerMessages = defineMessages(
     "audioEqualizer.duplicatePreset": "Duplicate preset",
     "audioEqualizer.deletePreset": "Delete preset",
     "audioEqualizer.effects": "Sound effects",
-    "audioEqualizer.effectsHint": "Tone, texture, width, and space",
     "audioEqualizer.effect.highpass": "High-pass",
     "audioEqualizer.effect.lowpass": "Low-pass",
     "audioEqualizer.effect.drive": "Drive",
@@ -131,7 +119,6 @@ export const audioEqualizerMessages = defineMessages(
     "audioEqualizer.preset.custom-1": "Custom 1",
     "audioEqualizer.preset.custom-2": "Custom 2",
     "audioEqualizer.preset.custom-3": "Custom 3",
-    "audioEqualizer.reset": "Reset current custom slot",
     "audioEqualizer.resetBands": "Flatten bands",
     "audioEqualizer.resetEffects": "Reset effects",
     "audioEqualizer.resetEffect": "Click to restore default",

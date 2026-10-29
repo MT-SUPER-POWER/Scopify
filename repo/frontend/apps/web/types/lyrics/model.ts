@@ -104,23 +104,6 @@ export interface LyricMetadata {
   title?: string;
 }
 
-export interface LyricStageLyricsProps {
-  activeLineIndex: number;
-  currentTimeMs: number;
-  fontScale: number;
-  lines: LyricDisplayLine[];
-  showRomanization: boolean;
-  showTranslation: boolean;
-}
-
-/** Persisted preferences for the full-screen Lyric Stage. */
-export interface LyricStageSettings {
-  fontScale: number;
-  mode: LyricVisualizerMode;
-  showRomanization: boolean;
-  showTranslation: boolean;
-}
-
 /** A timed credit embedded as JSON at the beginning of some NetEase YRC files. */
 export interface LyricTimedCredit {
   entries: LyricCreditEntry[];
@@ -130,25 +113,11 @@ export interface LyricTimedCredit {
 /** The timing format selected as the primary display source. */
 export type LyricTimingSource = "awlrc" | "lrc" | "none" | "yrc";
 
-/** A Stage frame that can be rendered by any registered visualizer. */
-export interface LyricVisualizerFrame {
-  activeLineIndex: number;
-  audioBands: LyricAudioBands;
-  currentTimeMs: number;
-  isPlaying: boolean;
-  lyrics: LyricData | null;
-}
-
 /** The Folia visualizer mode persisted by the lyric stage. */
 export type LyricVisualizerMode = VisualizerMode;
 
 /** Raw NetEase lyric branches the stage can save back to a file. */
 export type LyricExportFormat = "lrc" | "yrc";
-
-export interface LyricVisualizerRendererProps {
-  frame: LyricVisualizerFrame;
-  mode: LyricVisualizerMode;
-}
 
 /** One timed word or syllable in a display line, measured in milliseconds. */
 export interface LyricWord {

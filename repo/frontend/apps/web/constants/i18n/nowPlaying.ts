@@ -26,7 +26,6 @@ export const nowPlayingMessages = defineMessages(
     "nowPlaying.credits": "演职人员",
     "nowPlaying.mainArtist": "主要艺人",
     "nowPlaying.featuredArtist": "合作艺人",
-    "nowPlaying.releaseDate": "发行时间",
   },
   {
     "nowPlaying.title": "正在播放",
@@ -53,7 +52,6 @@ export const nowPlayingMessages = defineMessages(
     "nowPlaying.credits": "演職人員",
     "nowPlaying.mainArtist": "主要藝人",
     "nowPlaying.featuredArtist": "合作藝人",
-    "nowPlaying.releaseDate": "發行時間",
   },
   {
     "nowPlaying.title": "Now Playing",
@@ -80,6 +78,5 @@ export const nowPlayingMessages = defineMessages(
     "nowPlaying.credits": "Credits",
     "nowPlaying.mainArtist": "Main artist",
     "nowPlaying.featuredArtist": "Featured artist",
-    "nowPlaying.releaseDate": "Released",
   },
 );
