@@ -221,8 +221,9 @@ export async function searchResources(
   kind: "song" | "playlist",
   signal?: AbortSignal,
 ): Promise<SocialResource[]> {
+  // 旧的 /search 返回的歌曲专辑只有 picId、没有 picUrl，会让选择结果丢掉封面；cloudsearch 带 al.picUrl。
   const response = await read(
-    "/search",
+    "/cloudsearch",
     { keywords: query, type: kind === "song" ? 1 : 1000, limit: 20 },
     signal,
   );
