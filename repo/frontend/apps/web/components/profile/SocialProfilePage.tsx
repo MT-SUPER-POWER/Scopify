@@ -13,6 +13,7 @@ import { SocialLogin, SocialState } from "@/components/social/SocialPrimitives";
 import { SocialMessageDialog } from "@/components/social/SocialMessageDialog";
 import { EditUserProfileDialog } from "./EditUserProfileDialog";
 import { SocialProfileHero } from "./SocialProfileHero";
+import { ProfileSkeletonContent } from "./ProfilePageSkeleton";
 import { SocialProfileBody } from "./SocialProfileBody";
 import type { SocialFeedProps } from "@/types/social/components";
 import s from "@/components/social/Social.module.css";
@@ -54,11 +55,8 @@ function SocialProfileContent({ uid = "" }: SocialFeedProps) {
             <SocialLogin />
           )
         ) : (
-          <SocialState
-            loading={query.isPending}
-            error={query.isError && !user}
-            onRetry={() => void query.refetch()}
-          >
+          <SocialState error={query.isError && !user} onRetry={() => void query.refetch()}>
+            {query.isPending && <ProfileSkeletonContent />}
             {user && (
               <>
                 {query.isError && (
