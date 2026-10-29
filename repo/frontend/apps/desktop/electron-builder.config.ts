@@ -14,7 +14,7 @@ const config = {
     app: PACKAGED_APP_DIRECTORY,
     output: RELEASE_DIRECTORY,
   },
-  compression: "maximum",
+  compression: "normal",
   electronLanguages: ["zh-CN", "en-US"],
   extraResources: [
     {

@@ -1,0 +1,26 @@
+name: Setup native build
+description: Install native targets and share Cargo dependency caches with default-branch warmups
+
+runs:
+  using: composite
+  steps:
+    - name: Install macOS Rust targets
+      if: runner.os == 'macOS'
+      shell: bash
+      run: rustup target add aarch64-apple-darwin x86_64-apple-darwin
+
+    - name: Install Windows Rust targets
+      if: runner.os == 'Windows'
+      shell: bash
+      run: rustup target add x86_64-pc-windows-msvc aarch64-pc-windows-msvc
+
+    - name: Cache native Cargo dependencies
+      uses: Swatinem/rust-cache@v2
+      with:
+        shared-key: desktop-native-${{ runner.os }}-${{ runner.arch }}
+        workspaces: |
+          repo/frontend/apps/desktop/native/wallpaper-helper
+          repo/frontend/apps/desktop/native/audio-engine
+          repo/frontend/apps/desktop/native/taskbar-lyric
+        # Tags can read default-branch caches, but cannot share caches with other tags.
+        save-if: ${{ github.ref == format('refs/heads/{0}', github.event.repository.default_branch) }}
