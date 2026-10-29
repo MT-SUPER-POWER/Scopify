@@ -1,1 +1,1 @@
-pnpm run lint:architecture && pnpm exec lint-staged
+pnpm exec turbo run lint:staged

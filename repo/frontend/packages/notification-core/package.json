@@ -8,7 +8,7 @@
   },
   "scripts": {
     "lint": "eslint . --max-warnings 0 --no-warn-ignored",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit --incremental --tsBuildInfoFile .cache/typecheck.tsbuildinfo"
   },
   "dependencies": {
     "@scopify/desktop-contract": "workspace:*"

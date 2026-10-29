@@ -33,7 +33,7 @@
   "scripts": {
     "lint": "eslint . --max-warnings 0 --no-warn-ignored",
     "test": "bun test tests",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit --incremental --tsBuildInfoFile .cache/typecheck.tsbuildinfo"
   },
   "dependencies": {
     "@base-ui/react": "^1.7.0",

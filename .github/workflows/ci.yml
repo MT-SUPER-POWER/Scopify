@@ -52,6 +52,17 @@ jobs:
       - name: Setup workspace
         uses: ./.github/actions/setup-workspace
 
+      # Restore the previous compilation graph even when changed source misses Turbo cache.
+      - name: Cache TypeScript incremental state
+        uses: actions/cache@v4
+        with:
+          path: |
+            repo/frontend/apps/*/.cache/typecheck.tsbuildinfo
+            repo/frontend/packages/*/.cache/typecheck.tsbuildinfo
+          key: ${{ runner.os }}-typecheck-incremental-v1-${{ hashFiles('pnpm-lock.yaml', 'repo/frontend/apps/*/tsconfig*.json', 'repo/frontend/packages/*/tsconfig*.json') }}-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-typecheck-incremental-v1-${{ hashFiles('pnpm-lock.yaml', 'repo/frontend/apps/*/tsconfig*.json', 'repo/frontend/packages/*/tsconfig*.json') }}-
+
       - name: Run Typecheck
         run: pnpm run typecheck
 
@@ -86,7 +97,7 @@ jobs:
       - name: Setup workspace
         uses: ./.github/actions/setup-workspace
 
-      # `pnpm run lint` 已包含架构检查与共享包质量覆盖检查。
+      # `pnpm run lint` 由 Turbo 统一编排 ESLint、架构、主题和共享包覆盖检查。
       - name: Run Lint
         run: pnpm run lint
 

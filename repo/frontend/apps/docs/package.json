@@ -14,7 +14,7 @@
     "sync:shadcn-reference": "bun scripts/sync-shadcn-reference-data.mjs",
     "start": "next start --port 9191",
     "test": "bun test ./tests",
-    "typecheck": "next typegen && tsc --noEmit",
+    "typecheck": "next typegen && tsc --noEmit --incremental --tsBuildInfoFile .cache/typecheck.tsbuildinfo",
     "lint": "eslint . --max-warnings 0 --no-warn-ignored"
   },
   "dependencies": {

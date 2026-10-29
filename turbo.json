@@ -66,14 +66,47 @@
       "cache": false,
       "persistent": true
     },
+    "//#lint:staged": {
+      "dependsOn": ["//#lint:architecture"],
+      "passThroughEnv": ["GIT_*"],
+      "cache": false
+    },
+    "//#lint:architecture": {
+      "cache": false
+    },
+    "//#lint:packages": {
+      "cache": false
+    },
     "lint": {
+      "dependsOn": ["^lint", "//#lint:architecture", "//#lint:packages"],
       "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/repo/frontend/packages/eslint.config.mjs"]
+    },
+    "lint:theme": {},
+    "@scopify/web#lint": {
+      "dependsOn": ["^lint", "//#lint:architecture", "//#lint:packages", "lint:theme"],
+      "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/repo/frontend/packages/eslint.config.mjs"]
+    },
+    "@scopify/desktop#lint": {
+      "dependsOn": [
+        "//#lint:architecture",
+        "//#lint:packages",
+        "@scopify/desktop-contract#lint",
+        "@scopify/notification-core#lint"
+      ]
     },
     "test": {
       "dependsOn": ["^build"]
     },
+    "typecheck:transit": {
+      "dependsOn": ["^typecheck:transit"]
+    },
     "typecheck": {
-      "dependsOn": ["^typecheck"]
+      "dependsOn": ["typecheck:transit"],
+      "outputs": [".cache/typecheck.tsbuildinfo"]
+    },
+    "@scopify/docs#typecheck": {
+      "dependsOn": ["typecheck:transit", "@scopify/web#typecheck:transit"],
+      "outputs": [".cache/typecheck.tsbuildinfo"]
     }
   }
 }

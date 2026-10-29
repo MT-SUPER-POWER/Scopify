@@ -1,17 +1,8 @@
+import { existsSync, readFileSync } from "node:fs";
 import path from "node:path";
 
-/**
- * 有 `lint` 脚本、会在 CI 的 `turbo run lint` 里检查的工作区。
- * 暂存文件落在哪个工作区，就在那个目录下用它自己的 ESLint 配置检查。
- */
-const ESLINT_WORKSPACES = [
-  "repo/frontend/apps/web",
-  "repo/frontend/apps/docs",
-  "repo/frontend/packages/desktop-contract",
-  "repo/frontend/packages/notification-core",
-  "repo/frontend/packages/playback-core",
-  "repo/frontend/packages/ui",
-];
+// 与 Turbo 使用同一份工作区脚本声明，不再维护第二份 ESLint 工作区名单。
+const lintWorkspaces = new Map();
 const WEB_WORKSPACE = "repo/frontend/apps/web";
 const LINTABLE = /\.(js|jsx|ts|tsx|mjs)$/;
 
@@ -20,7 +11,16 @@ const quote = (files) => files.map((file) => `"${toPosix(file)}"`).join(" ");
 const relativeToRoot = (file) => toPosix(path.relative(process.cwd(), file));
 const workspaceOf = (file) => {
   const relative = relativeToRoot(file);
-  return ESLINT_WORKSPACES.find((workspace) => relative.startsWith(`${workspace}/`));
+  const workspace = relative.match(/^(repo\/frontend\/(?:apps|packages)\/[^/]+)\//)?.[1];
+  if (!workspace) return undefined;
+  if (!lintWorkspaces.has(workspace)) {
+    const manifestPath = path.resolve(process.cwd(), workspace, "package.json");
+    const manifest = existsSync(manifestPath)
+      ? JSON.parse(readFileSync(manifestPath, "utf8"))
+      : undefined;
+    lintWorkspaces.set(workspace, Boolean(manifest?.scripts?.lint));
+  }
+  return lintWorkspaces.get(workspace) ? workspace : undefined;
 };
 
 export default {
@@ -46,7 +46,7 @@ export default {
 
     // 3. Web 的主题硬编码检查（CI 的 lint 也会跑）：扫整个 Web 源码，只需一两秒
     if (filenames.some((file) => workspaceOf(file) === WEB_WORKSPACE)) {
-      commands.push(`pnpm --dir ${WEB_WORKSPACE} run lint:theme`);
+      commands.push("pnpm exec turbo run lint:theme --filter=@scopify/web");
     }
 
     return commands;
