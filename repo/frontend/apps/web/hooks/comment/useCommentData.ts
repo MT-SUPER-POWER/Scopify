@@ -215,6 +215,9 @@ export function useCommentData(resourceRef?: CommentResourceRef) {
   const [cursor, setCursor] = useState<number | string | undefined>();
   const [hasMore, setHasMore] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
+  // 头部资源信息和第一页评论各自的首次加载状态，用来显示骨架而不是占位文字
+  const [isHeaderLoading, setIsHeaderLoading] = useState(true);
+  const [isFirstPageLoading, setIsFirstPageLoading] = useState(true);
   const [isInputOpen, setIsInputOpen] = useState(false);
 
   const fetchComments = useCallback(
@@ -268,6 +271,7 @@ export function useCommentData(resourceRef?: CommentResourceRef) {
         toast.error(t("common.message.requestFailed", { message: "" }));
       } finally {
         setIsLoading(false);
+        if (currentOffset === 0) setIsFirstPageLoading(false);
       }
     },
     [resource, t],
@@ -278,6 +282,8 @@ export function useCommentData(resourceRef?: CommentResourceRef) {
     let ignore = false;
 
     setHeaderData({ artists: [], coverUrl: FALLBACK_COVER, title: "" });
+    setIsHeaderLoading(true);
+    setIsFirstPageLoading(true);
     setOffset(0);
     setCursor(undefined);
     setHasMore(true);
@@ -288,7 +294,10 @@ export function useCommentData(resourceRef?: CommentResourceRef) {
       .then((nextHeader) => {
         if (!ignore) setHeaderData(nextHeader);
       })
-      .catch((error) => console.error("Failed to load comment resource header:", error));
+      .catch((error) => console.error("Failed to load comment resource header:", error))
+      .finally(() => {
+        if (!ignore) setIsHeaderLoading(false);
+      });
 
     return () => {
       ignore = true;
@@ -413,6 +422,8 @@ export function useCommentData(resourceRef?: CommentResourceRef) {
     handleSubmitComment,
     hasMore,
     hotComments,
+    isFirstPageLoading,
+    isHeaderLoading,
     isInputOpen,
     isLoading,
     loadMore,

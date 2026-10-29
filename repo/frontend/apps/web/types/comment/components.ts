@@ -16,6 +16,10 @@ export interface CommentHeaderProps {
   tagLabel?: string;
 }
 
+export interface CommentHeaderSkeletonProps {
+  tagLabel: string;
+}
+
 export interface CommentItemProps {
   comment: NeteaseComment;
   isHot?: boolean;
