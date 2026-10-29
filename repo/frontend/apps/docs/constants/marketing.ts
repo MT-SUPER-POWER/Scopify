@@ -254,10 +254,10 @@ export const LANDING_MAIN_SCREENSHOT: LandingScreenshot = {
   src: mainScreenshot,
 };
 
-/** `main.png`「为你推荐」一行里的六张真实专辑封面。 */
+/** `main.png`（1600×900）「为你推荐」一行里的六张真实专辑封面。 */
 export const LANDING_COVER_CROPS: readonly LandingCoverCrop[] = [
-  311, 504, 697, 889, 1082, 1275,
-].map((x) => ({ x, y: 358, size: 169 }));
+  330, 532, 733, 935, 1137, 1338,
+].map((x) => ({ x, y: 358, size: 178 }));
 
 /** 底片墙与首屏海报墙共用的真实界面截图。 */
 export const LANDING_FILM_SCREENSHOTS: readonly LandingScreenshot[] = [
