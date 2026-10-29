@@ -1,4 +1,5 @@
 import type { CommentResourceKind } from "@/types/comment/api";
+import type { CommentSortType } from "@/types/comment/model";
 import { mvQueryKeys } from "@/lib/query/mvQueryKeys";
 
 export const musicQueryKeys = {
@@ -67,6 +68,19 @@ export const musicQueryKeys = {
       ["comment", "count", kind, resourceId] as const,
     hotPreview: (songId: number, limit: number, accountId: string) =>
       ["comment", "hot-preview", songId, limit, accountId] as const,
+    header: (kind: CommentResourceKind, resourceId: string) =>
+      ["comment", "header", kind, resourceId] as const,
+    /** 一个资源下的全部评论数据（列表与各层楼的回复）共用的前缀；点赞、删除、发表据此批量更新。 */
+    thread: (accountId: string, kind: CommentResourceKind, resourceId: string) =>
+      ["comment", "thread", accountId, kind, resourceId] as const,
+    list: (
+      accountId: string,
+      kind: CommentResourceKind,
+      resourceId: string,
+      sort: CommentSortType,
+    ) => [...musicQueryKeys.comment.thread(accountId, kind, resourceId), "list", sort] as const,
+    replies: (accountId: string, kind: CommentResourceKind, resourceId: string, rootId: number) =>
+      [...musicQueryKeys.comment.thread(accountId, kind, resourceId), "replies", rootId] as const,
   },
   playlist: {
     content: (playlistId: string, isRecommend: boolean) =>

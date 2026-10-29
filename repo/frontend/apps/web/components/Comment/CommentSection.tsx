@@ -15,6 +15,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useCommentThread } from "@/hooks/comment/useCommentThread";
 import { getReplyCount } from "@/lib/comment/commentResource";
 import { useLoginStatus } from "@/lib/hooks/useLoginStatus";
 import { useUserStore } from "@/store";
@@ -31,29 +32,29 @@ const SORT_LABEL_KEY = {
 /**
  * YouTube 式评论区（MV 页与评论页共用）：「N 条评论」与排序方式、常驻输入框、
  * 评论条目内联回复与「N 条回复」楼中楼；滚动到底自动加载下一页。
+ * 自己请求评论数据，调用方需要在外面套一层 QueryBoundary：首页评论取不到时只有这一块失败。
  */
-export function CommentSection({ data }: CommentSectionProps) {
+export function CommentSection({ resource }: CommentSectionProps) {
   const { t } = useI18n();
   const isLogin = useLoginStatus();
   const currentUserId = useUserStore((state) => state.user?.userId);
   const {
+    closeReply,
     comments,
-    handleDelete,
-    handleLike,
-    handleReply,
-    handleSubmitComment,
     hasMore,
-    isFirstPageLoading,
-    isLoading,
+    isLoadMoreError,
+    isLoadingMore,
+    isPending,
+    like,
     loadMore,
-    loadReplies,
+    openReply,
+    remove,
     replyTarget,
-    setReplyTarget,
     setSort,
     sort,
-    threads,
+    submit,
     total,
-  } = data;
+  } = useCommentThread(resource);
   const loadMoreRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -61,13 +62,14 @@ export function CommentSection({ data }: CommentSectionProps) {
     if (!target) return;
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting && hasMore && !isLoading) void loadMore();
+        // 翻页失败后不自动重试，等用户点尾部的「重试」
+        if (entry.isIntersecting && hasMore && !isLoadingMore && !isLoadMoreError) loadMore();
       },
       { rootMargin: "300px" },
     );
     observer.observe(target);
     return () => observer.disconnect();
-  }, [hasMore, isLoading, loadMore, isFirstPageLoading]);
+  }, [hasMore, isLoadMoreError, isLoadingMore, loadMore, isPending]);
 
   const renderRow = (
     comment: NeteaseComment,
@@ -82,11 +84,11 @@ export function CommentSection({ data }: CommentSectionProps) {
       isOwn={String(comment.user.userId) === String(currentUserId ?? "")}
       isReplying={replyTarget?.commentId === comment.commentId}
       canReply={isLogin}
-      onLike={() => void handleLike(comment.commentId)}
-      onDelete={() => void handleDelete(comment.commentId)}
-      onReplyOpen={() => handleReply(comment, options.rootId)}
-      onReplyCancel={() => setReplyTarget(null)}
-      onReplySubmit={handleSubmitComment}
+      onLike={() => void like(comment)}
+      onDelete={() => void remove(comment, options.rootId)}
+      onReplyOpen={() => openReply(comment)}
+      onReplyCancel={closeReply}
+      onReplySubmit={submit}
     >
       {options.children}
     </CommentRow>
@@ -95,7 +97,7 @@ export function CommentSection({ data }: CommentSectionProps) {
   return (
     <section>
       <div className="flex items-center gap-8">
-        {isFirstPageLoading ? (
+        {isPending ? (
           <CommentCountSkeleton />
         ) : (
           <h2 className="text-xl font-bold text-content">
@@ -133,12 +135,8 @@ export function CommentSection({ data }: CommentSectionProps) {
             placeholder={t("mv.comments.addPlaceholder")}
             submitLabel={t("mv.comments.submit")}
             // 顶部输入与内联回复共用 replyTarget，聚焦顶部时先关掉正在进行的回复
-            onFocus={() => setReplyTarget(null)}
-            onSubmit={async (text) => {
-              const ok = await handleSubmitComment(text);
-              if (ok) setSort("latest");
-              return ok;
-            }}
+            onFocus={closeReply}
+            onSubmit={submit}
           />
         ) : (
           <p className="border-b border-content/20 pb-1 text-sm text-content-muted">
@@ -147,7 +145,7 @@ export function CommentSection({ data }: CommentSectionProps) {
         )}
       </div>
 
-      {isFirstPageLoading ? (
+      {isPending ? (
         <CommentListSkeleton />
       ) : (
         <>
@@ -157,10 +155,9 @@ export function CommentSection({ data }: CommentSectionProps) {
                 children:
                   getReplyCount(comment) > 0 ? (
                     <CommentReplies
+                      resource={resource}
                       parentId={comment.commentId}
                       replyCount={getReplyCount(comment)}
-                      thread={threads[comment.commentId]}
-                      onLoad={loadReplies}
                       renderReply={(reply) =>
                         renderRow(reply, { compact: true, rootId: comment.commentId })
                       }
@@ -168,7 +165,7 @@ export function CommentSection({ data }: CommentSectionProps) {
                   ) : undefined,
               }),
             )}
-            {comments.length === 0 && !isLoading && (
+            {comments.length === 0 && (
               <p className="py-10 text-center text-sm text-content-subtle">
                 {t("comments.page.noComments")}
               </p>
@@ -176,7 +173,16 @@ export function CommentSection({ data }: CommentSectionProps) {
           </div>
 
           <div ref={loadMoreRef} className="flex h-16 items-center justify-center">
-            {isLoading && <Loader2 className="size-6 animate-spin text-brand" />}
+            {isLoadingMore && <Loader2 className="size-6 animate-spin text-brand" />}
+            {isLoadMoreError && !isLoadingMore && (
+              <button
+                type="button"
+                onClick={loadMore}
+                className="h-9 rounded-full px-4 text-sm font-medium text-content transition-colors hover:bg-content/10"
+              >
+                {t("common.action.retry")}
+              </button>
+            )}
           </div>
         </>
       )}

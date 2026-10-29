@@ -31,7 +31,6 @@ export function CommentHeader({
   title,
   albumName,
   artists,
-  total: _total,
   onArtistClick,
   tagLabel,
 }: CommentHeaderProps) {

@@ -1,3 +1,4 @@
+import type { InfiniteData } from "@tanstack/react-query";
 import {
   COMMENT_RESOURCE_TYPE,
   type CommentResourceKind,
@@ -74,4 +75,31 @@ export function resolveCommentIpLocation(
     .replace(/^IP属地[：:]\s*/i, "")
     .replace(/^IP[：:]\s*/i, "");
   return cleaned.length > 0 ? cleaned : undefined;
+}
+
+/** 按评论 id 去重，保留先出现的那条：翻页时两页可能有重叠。 */
+export function dedupeComments(comments: NeteaseComment[]) {
+  const seen = new Set<number>();
+  return comments.filter((comment) => {
+    if (seen.has(comment.commentId)) return false;
+    seen.add(comment.commentId);
+    return true;
+  });
+}
+
+export function toggleCommentLiked(comment: NeteaseComment): NeteaseComment {
+  const liked = !comment.liked;
+  return { ...comment, liked, likedCount: Math.max(0, comment.likedCount + (liked ? 1 : -1)) };
+}
+
+/** 改写评论列表或楼中楼缓存（InfiniteData，每页带 comments）里的每一页。 */
+export function mapCommentPages<TPage extends { comments: NeteaseComment[] }>(
+  data: InfiniteData<TPage> | undefined,
+  update: (comments: NeteaseComment[]) => NeteaseComment[],
+): InfiniteData<TPage> | undefined {
+  if (!data) return data;
+  return {
+    ...data,
+    pages: data.pages.map((page) => ({ ...page, comments: update(page.comments) })),
+  };
 }

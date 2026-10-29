@@ -7688,12 +7688,6 @@ export interface TranslateFn {
    */
   (key: "comments.page.voice-listTag", params?: TranslationParams): string;
   /**
-   * zh-CN: 加载中...
-   * zh-TW: 載入中...
-   * en-US: Loading...
-   */
-  (key: "comments.page.loadingResource", params?: TranslationParams): string;
-  /**
    * zh-CN: 全部评论
    * zh-TW: 全部評論
    * en-US: All Comments
@@ -7783,6 +7777,12 @@ export interface TranslateFn {
    * en-US: Show more replies
    */
   (key: "comments.replies.more", params?: TranslationParams): string;
+  /**
+   * zh-CN: 回复加载失败
+   * zh-TW: 回覆載入失敗
+   * en-US: Couldn't load replies
+   */
+  (key: "comments.replies.loadFailed", params?: TranslationParams): string;
   /**
    * zh-CN: 表情
    * zh-TW: 表情

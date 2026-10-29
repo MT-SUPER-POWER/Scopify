@@ -1,12 +1,13 @@
 import type { ReactNode } from "react";
-import type { useCommentData } from "@/hooks/comment/useCommentData";
-import type { CommentThread } from "@/types/comment/model";
+import type { CommentResource } from "@/types/comment/api";
 import type { NeteaseComment } from "@/types/song/api";
 
-export type CommentThreadData = ReturnType<typeof useCommentData>;
-
 export interface CommentSectionProps {
-  data: CommentThreadData;
+  resource: CommentResource;
+}
+
+export interface CommentPageHeaderProps {
+  resource: CommentResource;
 }
 
 export interface CommentComposerProps {
@@ -42,10 +43,9 @@ export interface CommentRowProps {
 }
 
 export interface CommentRepliesProps {
+  resource: CommentResource;
   parentId: number;
   replyCount: number;
-  thread: CommentThread | undefined;
-  onLoad: (parentId: number, more?: boolean) => void;
   renderReply: (reply: NeteaseComment) => ReactNode;
 }
 
@@ -60,7 +60,6 @@ export interface CommentHeaderProps {
   title: string;
   albumName?: string;
   artists: CommentHeaderArtist[];
-  total: number;
   onArtistClick: (artistId: number | string) => void;
   tagLabel?: string;
 }

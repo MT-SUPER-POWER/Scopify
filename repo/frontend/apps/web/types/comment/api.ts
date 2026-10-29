@@ -18,6 +18,11 @@ export interface CommentResourceRef {
   id: string;
 }
 
+/** 解析好的评论资源：在 CommentResourceRef 之上带上接口用的数字类型。 */
+export interface CommentResource extends CommentResourceRef {
+  type: CommentResourceType;
+}
+
 export interface MusicCommentParams {
   id: number | string;
   limit?: number;
