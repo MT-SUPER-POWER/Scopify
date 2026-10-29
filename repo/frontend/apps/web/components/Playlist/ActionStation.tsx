@@ -357,9 +357,9 @@ export default function PlaylistActions(props: PlaylistActionsProps) {
                       <button
                         type="button"
                         aria-label={t("playlist.actions.historyDate")}
-                        className="inline-flex size-8 items-center justify-center rounded-full text-content-muted transition-colors hover:bg-content/10 hover:text-content"
+                        className="inline-flex size-9 items-center justify-center rounded-full text-content-muted transition-colors hover:bg-content/10 hover:text-content focus-visible:outline-2 focus-visible:outline-brand"
                       >
-                        <CalendarDays className="size-4" />
+                        <CalendarDays className="size-5" />
                       </button>
                     </TooltipTrigger>
                   </PopoverTrigger>

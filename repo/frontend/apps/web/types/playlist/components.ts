@@ -4,6 +4,22 @@ import type { SongDetail } from "@/types/song/api";
 import type { CommentResourceKind } from "@/types/comment/api";
 import type { PlaylistInfo } from "@/types/playlist/model";
 import type { CloudTrackActions } from "@/types/library/components";
+import type { DailyCategory } from "@/types/playlist/api";
+
+export interface DailyCategorySelectorProps {
+  accountId: number | string;
+  selected: DailyCategory;
+}
+export interface DailyRecommendationSwitchProps {
+  label: string;
+  onClick: () => void;
+}
+export interface DailyCategorySelectorBodyProps extends DailyCategorySelectorProps {
+  onClose: () => void;
+}
+export interface DailyCategoryPageBodyProps {
+  accountId: number | string;
+}
 
 export interface PlaylistTagSelectorProps {
   maxSelected: number;
