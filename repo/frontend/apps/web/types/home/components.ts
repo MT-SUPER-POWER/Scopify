@@ -146,3 +146,12 @@ export interface CollapsibleSectionProps {
 }
 
 export type HomeDailyRecommendationProps = Pick<HomeGreetingSectionProps, "dateInfo">;
+
+export interface ToplistCarouselItem {
+  artist: string;
+  coverUrl: string;
+  id: number;
+  name: string;
+  rank: number;
+  song?: SongDetail;
+}

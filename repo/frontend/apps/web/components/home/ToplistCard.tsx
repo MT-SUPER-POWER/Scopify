@@ -7,22 +7,13 @@ import { memo, useCallback, useEffect, useMemo, useState } from "react";
 import { useToplistTracksQuery } from "@/hooks/home/useHomeQueries";
 import { useSmartRouter } from "@/hooks/core/useSmartRouter";
 import { cn } from "@/lib/utils";
-import type { SongDetail } from "@/types/song/api";
 import type { ToplistDetailItem } from "@/types/home/toplistApi";
+import type { ToplistCarouselItem } from "@/types/home/components";
 
 interface ToplistCardProps {
   isLoading?: boolean;
   onPlay: (id: number | string, event: React.MouseEvent) => void;
   toplist: ToplistDetailItem;
-}
-
-interface CarouselItem {
-  artist: string;
-  coverUrl: string;
-  id: number;
-  name: string;
-  rank: number;
-  song?: SongDetail;
 }
 
 export const ToplistCard = memo(function ToplistCard({
@@ -41,7 +32,7 @@ export const ToplistCard = memo(function ToplistCard({
   const chartBadgeCover = toplist.coverImgUrl ? `${toplist.coverImgUrl}?param=120y120` : "";
 
   // Prepare carousel slides (fallback to toplist.tracks while loading)
-  const carouselItems = useMemo<CarouselItem[]>(() => {
+  const carouselItems = useMemo<ToplistCarouselItem[]>(() => {
     if (topTracks && topTracks.length > 0) {
       return topTracks.slice(0, 3).map((song, idx) => ({
         artist: song.ar.map((a) => a.name).join(" / "),
