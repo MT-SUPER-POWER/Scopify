@@ -274,13 +274,14 @@ function readOrdinaryWindowBounds(window: BrowserWindow): Rectangle {
 }
 
 function captureMainWindowState(window: BrowserWindow): MainWindowState {
+  const minimumSize = window.getMinimumSize();
   return {
     alwaysOnTop: window.isAlwaysOnTop(),
     bounds: window.isMaximized() ? window.getNormalBounds() : { ...window.getBounds() },
     fullScreen: window.isFullScreen(),
     maximized: window.isMaximized(),
     minimized: window.isMinimized(),
-    minimumSize: window.getMinimumSize(),
+    minimumSize: [minimumSize[0] ?? 0, minimumSize[1] ?? 0],
     movable: window.isMovable(),
     resizable: window.isResizable(),
     visible: window.isVisible(),
