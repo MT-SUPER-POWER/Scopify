@@ -11,8 +11,8 @@ export function CommandWorkspaceFilterPicker({
   selectedIndex,
 }: CommandWorkspaceFilterPickerProps) {
   return (
-    <div className="absolute inset-x-5 top-full z-10 overflow-hidden rounded-xl border border-white/12 bg-zinc-950/95 py-1 shadow-2xl backdrop-blur-xl">
-      <div className="flex items-center gap-2 px-3 py-2 text-xs text-zinc-400">
+    <div className="absolute inset-x-5 top-full z-10 overflow-hidden rounded-xl border border-border bg-surface-overlay/95 py-1 shadow-2xl backdrop-blur-xl">
+      <div className="flex items-center gap-2 px-3 py-2 text-xs text-content-muted">
         <AtSign className="size-3.5" />
         选择搜索分类
       </div>
@@ -25,11 +25,13 @@ export function CommandWorkspaceFilterPicker({
             onClick={() => onChoose(candidate)}
             className={cn(
               "flex w-full items-center justify-between px-3 py-2 text-left text-sm transition-colors",
-              selectedIndex === index ? "bg-white/12 text-white" : "text-zinc-300 hover:bg-white/8",
+              selectedIndex === index
+                ? "bg-content/12 text-content"
+                : "text-content-muted hover:bg-content/8",
             )}
           >
             <span>{candidate.label}</span>
-            <kbd className="text-xs text-zinc-500">{candidate.token}</kbd>
+            <kbd className="text-xs text-content-muted">{candidate.token}</kbd>
           </button>
         ))}
       </ScrollArea>

@@ -24,7 +24,7 @@ export function CommandWorkspaceFmMatrix({
           aria-label={group.label}
           className="grid grid-cols-[2.5rem_minmax(0,1fr)] items-start gap-2 sm:grid-cols-[3rem_minmax(0,1fr)] sm:gap-3"
         >
-          <h3 className="pt-1.5 text-[11px] text-zinc-500">{group.label}</h3>
+          <h3 className="pt-1.5 text-[11px] text-content-muted">{group.label}</h3>
           <div className="grid grid-cols-3 gap-1 min-[440px]:grid-cols-5 sm:grid-cols-7">
             {group.entries.map((entry) => {
               const active = isPersonalFmCommandSelected(entry.action, selection);
@@ -40,7 +40,7 @@ export function CommandWorkspaceFmMatrix({
                     "min-w-0 rounded-full p-1 text-xs transition-colors outline-none focus-visible:ring-2 focus-visible:ring-brand disabled:cursor-wait disabled:opacity-45",
                     active
                       ? "bg-brand font-medium text-brand-foreground"
-                      : "text-zinc-300 hover:bg-white/8 hover:text-white",
+                      : "text-content-muted hover:bg-content/8 hover:text-content",
                     entry.id === highlightedId && "ring-1 ring-brand/70",
                   )}
                 >
@@ -52,7 +52,7 @@ export function CommandWorkspaceFmMatrix({
         </section>
       ))}
       {!groups.length ? (
-        <p className="py-12 text-center text-sm text-zinc-500">没有匹配的模式或场景。</p>
+        <p className="py-12 text-center text-sm text-content-muted">没有匹配的模式或场景。</p>
       ) : null}
     </div>
   );

@@ -43,39 +43,39 @@ export function FoliaCommandList({
             onClick={() => onSelect(entry)}
             className={cn(
               "flex w-full items-center gap-3 rounded-xl px-3.5 py-3 text-left transition-colors",
-              selectedIndex === index ? "bg-white/10" : "hover:bg-white/6",
+              selectedIndex === index ? "bg-content/10" : "hover:bg-content/6",
             )}
           >
-            <Icon className="size-4 shrink-0 text-white" />
+            <Icon className="size-4 shrink-0 text-content" />
             <span className="min-w-0 flex-1">
-              <span className="block truncate text-sm font-medium text-white">{entry.label}</span>
-              <span className="block truncate text-xs text-zinc-400">
+              <span className="block truncate text-sm font-medium text-content">{entry.label}</span>
+              <span className="block truncate text-xs text-content-muted">
                 {showPath && entry.path ? `${entry.path} · ` : ""}
                 {entry.summary}
               </span>
             </span>
             {isToggle ? (
-              <span className="flex shrink-0 items-center gap-2 text-xs text-zinc-400">
+              <span className="flex shrink-0 items-center gap-2 text-xs text-content-muted">
                 {active ? "已开启" : "已关闭"}
                 <span
                   aria-hidden
                   className={cn(
                     "flex h-5 w-9 items-center rounded-full p-0.5 transition-colors",
-                    active ? "bg-white/80" : "bg-white/15",
+                    active ? "bg-content/80" : "bg-content/15",
                   )}
                 >
                   <span
                     className={cn(
                       "size-4 rounded-full transition-transform",
-                      active ? "translate-x-4 bg-zinc-950" : "bg-white/60",
+                      active ? "translate-x-4 bg-surface-overlay" : "bg-content/60",
                     )}
                   />
                 </span>
               </span>
             ) : active ? (
-              <Check aria-label="当前选择" className="size-4 text-white" />
+              <Check aria-label="当前选择" className="size-4 text-content" />
             ) : isGroup ? (
-              <ChevronRight aria-hidden className="size-4 text-zinc-500" />
+              <ChevronRight aria-hidden className="size-4 text-content-muted" />
             ) : null}
           </button>
         );

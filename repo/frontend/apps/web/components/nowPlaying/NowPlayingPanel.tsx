@@ -30,7 +30,7 @@ export function NowPlayingPanel() {
   return (
     <aside
       aria-label={t("nowPlaying.title")}
-      className="relative flex size-full min-h-0 min-w-70 flex-col overflow-hidden rounded-lg bg-surface-sunken"
+      className="relative flex size-full min-h-0 min-w-70 flex-col overflow-hidden rounded-lg bg-surface-raised dark:bg-surface-sunken"
     >
       <header
         className={cn(
@@ -39,7 +39,7 @@ export function NowPlayingPanel() {
           isFloating &&
             (isOverCover
               ? "bg-linear-to-b from-black/50 to-transparent"
-              : "bg-surface-sunken/95 shadow-sm backdrop-blur-md"),
+              : "bg-surface-raised/95 shadow-sm backdrop-blur-md dark:bg-surface-sunken/95"),
         )}
       >
         <NowPlayingPanelTabs view={view} overlay={isOverlay} />

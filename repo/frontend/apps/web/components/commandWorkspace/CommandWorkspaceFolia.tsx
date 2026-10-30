@@ -33,20 +33,20 @@ export function CommandWorkspaceFolia({
         }
       }}
     >
-      <div className="flex items-center gap-2 border-b border-white/8 p-4">
+      <div className="flex items-center gap-2 border-b border-border p-4">
         <button
           type="button"
           onClick={back}
           aria-label="返回上一级"
-          className="rounded p-1 text-zinc-400 hover:bg-white/10"
+          className="rounded p-1 text-content-muted hover:bg-content/10"
         >
           <ChevronLeft className="size-4" />
         </button>
-        <Search className="size-4 shrink-0 text-zinc-400" />
+        <Search className="size-4 shrink-0 text-content-muted" />
         <button
           type="button"
           onClick={back}
-          className="flex shrink-0 items-center gap-1 rounded-md bg-white/10 px-2 py-1 text-xs text-white"
+          className="flex shrink-0 items-center gap-1 rounded-md bg-content/10 px-2 py-1 text-xs text-content"
           aria-label={`返回上一级：${current?.label}`}
         >
           {current?.label}
@@ -82,20 +82,20 @@ export function CommandWorkspaceFolia({
               if (entry) execute(entry, onNavigate, onClose);
             }
           }}
-          className="min-w-0 flex-1 bg-transparent text-sm text-white outline-none placeholder:text-zinc-500"
+          className="min-w-0 flex-1 bg-transparent text-sm text-content outline-none placeholder:text-content-muted"
         />
         <button
           type="button"
           onClick={onClose}
           aria-label="关闭搜索"
-          className="rounded p-1 text-zinc-400 hover:bg-white/10"
+          className="rounded p-1 text-content-muted hover:bg-content/10"
         >
           <X className="size-4" />
         </button>
       </div>
       <ScrollArea className="h-[min(52vh,32rem)]">
         <div className="px-2.5 py-2">
-          <div className="flex justify-between gap-3 px-3.5 py-2 text-xs text-zinc-400">
+          <div className="flex justify-between gap-3 px-3.5 py-2 text-xs text-content-muted">
             <span>
               {current?.path ? `${current.path} › ` : ""}
               {current?.label}
@@ -110,13 +110,13 @@ export function CommandWorkspaceFolia({
             showPath={Boolean(query.trim())}
           />
           {!entries.length ? (
-            <p className="py-10 text-center text-sm text-zinc-500">
+            <p className="py-10 text-center text-sm text-content-muted">
               没有匹配的设置、歌词选项或可视化。
             </p>
           ) : null}
         </div>
       </ScrollArea>
-      <footer className="border-t border-white/8 px-5 py-3 text-xs text-zinc-400">
+      <footer className="border-t border-border px-5 py-3 text-xs text-content-muted">
         ↑↓ 选择 · Enter 执行 · Esc 返回上一级
       </footer>
     </div>

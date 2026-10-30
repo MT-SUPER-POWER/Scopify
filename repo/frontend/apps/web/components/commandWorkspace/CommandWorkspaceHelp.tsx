@@ -14,8 +14,8 @@ export function CommandWorkspaceHelp({ page }: CommandWorkspaceHelpProps) {
           : "Esc 返回，Ctrl+Home 回到命令根目录。";
 
   return (
-    <div className="flex items-start gap-2 border-t border-white/10 bg-white/5 px-5 py-3 text-xs text-zinc-400">
-      <CircleHelp className="mt-0.5 size-3.5 shrink-0 text-zinc-300" />
+    <div className="flex items-start gap-2 border-t border-border bg-content/5 px-5 py-3 text-xs text-content-muted">
+      <CircleHelp className="mt-0.5 size-3.5 shrink-0 text-content-muted" />
       {details}
     </div>
   );

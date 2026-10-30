@@ -16,7 +16,7 @@ import {
 } from "@scopify/ui/shadcn/components/tooltip";
 
 const ACTION_BTN =
-  "flex size-11 items-center justify-center rounded-full text-white/85 transition-all hover:scale-110 hover:bg-white/10 hover:text-white";
+  "flex size-11 items-center justify-center rounded-full text-content/85 transition-all hover:scale-110 hover:bg-content/10 hover:text-content";
 
 /** 预览弹窗右侧的竖排操作：播放这首、加入队列、喜欢、复制链接、打开 MV 页。 */
 export function TrackPreviewActions({

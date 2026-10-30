@@ -64,17 +64,17 @@ export function CommandWorkspaceSearch(props: CommandWorkspaceSearchProps) {
         placeholder={`搜索${COMMAND_WORKSPACE_SEARCH_CATEGORY_HINT}`}
         query={query}
       />
-      <div className="mx-5 h-px bg-white/8" />
+      <div className="mx-5 h-px bg-content/8" />
       <ScrollArea className="h-[min(52vh,32rem)]">
         {!query.trim() ? (
-          <p className="px-5 py-10 text-center text-sm text-zinc-500">
+          <p className="px-5 py-10 text-center text-sm text-content-muted">
             输入关键词，或用 @ 筛选{COMMAND_WORKSPACE_SEARCH_CATEGORY_HINT}。
           </p>
         ) : opensSearchPage ? (
           <button
             type="button"
             onClick={openSearchPage}
-            className="flex w-full items-center justify-between gap-3 px-5 py-6 text-left text-sm text-zinc-200 hover:bg-white/5 focus-visible:outline-2 focus-visible:outline-ring"
+            className="flex w-full items-center justify-between gap-3 px-5 py-6 text-left text-sm text-content hover:bg-content/5 focus-visible:outline-2 focus-visible:outline-ring"
           >
             <span>
               搜索{filter?.label}：{query.trim()}
@@ -82,7 +82,7 @@ export function CommandWorkspaceSearch(props: CommandWorkspaceSearchProps) {
             <ArrowUpRight className="size-4 shrink-0" />
           </button>
         ) : search.loading ? (
-          <div className="flex items-center justify-center gap-2 py-10 text-sm text-zinc-400">
+          <div className="flex items-center justify-center gap-2 py-10 text-sm text-content-muted">
             <LoaderCircle className="size-4 animate-spin" />
             正在搜索
           </div>
@@ -96,8 +96,8 @@ export function CommandWorkspaceSearch(props: CommandWorkspaceSearchProps) {
           />
         )}
       </ScrollArea>
-      <footer className="flex items-center gap-2 border-t border-white/10 bg-black/20 px-5 py-3 text-xs text-zinc-400">
-        <CornerDownLeft className="size-3.5 text-zinc-300" />
+      <footer className="flex items-center gap-2 border-t border-border bg-content/3 px-5 py-3 text-xs text-content-muted">
+        <CornerDownLeft className="size-3.5 text-content-muted" />
         {opensSearchPage ? "Enter 查看搜索结果" : "Enter 播放歌曲 / 查看详情"}
         {!opensSearchPage ? <span className="ml-auto">+ 加入队列</span> : null}
       </footer>

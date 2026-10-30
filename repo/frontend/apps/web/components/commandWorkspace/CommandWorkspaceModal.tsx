@@ -49,7 +49,7 @@ export function CommandWorkspaceModal({ isOpen, onClose }: CommandWorkspaceModal
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.18 }}
-            className="fixed inset-0 z-240 bg-black/60 backdrop-blur-md"
+            className="fixed inset-0 z-240 bg-overlay backdrop-blur-md"
             onMouseDown={dismiss}
           />
           <motion.section
@@ -63,7 +63,7 @@ export function CommandWorkspaceModal({ isOpen, onClose }: CommandWorkspaceModal
             role="dialog"
             aria-modal="true"
           >
-            <div className="overflow-hidden rounded-2xl border border-white/12 bg-zinc-950/70 shadow-[0_32px_64px_rgba(0,0,0,0.6),inset_0_1px_0_rgba(255,255,255,0.1)] backdrop-blur-2xl">
+            <div className="overflow-hidden rounded-2xl border border-border bg-surface-overlay/95 shadow-floating backdrop-blur-2xl">
               {mode === "direct" ? (
                 <CommandWorkspaceDirectSearch
                   initialQuery={persistedQuery}

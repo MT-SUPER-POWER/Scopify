@@ -1,9 +1,5 @@
 import { getShortcutBindingParts } from "@/lib/shortcuts/bindings";
-import type { ShortcutBinding } from "@/types/shortcuts/model";
-
-interface ShortcutKeycapsProps {
-  binding: ShortcutBinding;
-}
+import type { ShortcutKeycapsProps } from "@/types/shortcuts/components";
 
 export function ShortcutKeycaps({ binding }: ShortcutKeycapsProps) {
   return (
@@ -14,7 +10,7 @@ export function ShortcutKeycaps({ binding }: ShortcutKeycapsProps) {
       {getShortcutBindingParts(binding).map((part) => (
         <kbd
           key={part}
-          className="min-w-6 rounded-md border border-[#3d3d3d] bg-[#292929] px-2 py-0.5 text-center font-mono text-[12px] leading-4 font-medium text-[#bcbcbc] shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]"
+          className="min-w-6 rounded-md border border-border bg-surface-elevated px-2 py-0.5 text-center font-mono text-[12px] leading-4 font-medium text-content-muted shadow-xs"
         >
           {part}
         </kbd>

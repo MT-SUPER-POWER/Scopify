@@ -23,7 +23,7 @@ export function CommandWorkspaceQueue({ onClose }: CommandWorkspaceQueueProps) {
   const [dropTarget, setDropTarget] = useState<CommandWorkspaceQueueDropTarget | null>(null);
 
   if (queue.length === 0) {
-    return <p className="px-5 py-12 text-center text-sm text-zinc-500">播放队列为空。</p>;
+    return <p className="px-5 py-12 text-center text-sm text-content-muted">播放队列为空。</p>;
   }
 
   const clearDragState = () => {

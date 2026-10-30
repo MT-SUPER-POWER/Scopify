@@ -17,17 +17,17 @@ export function CommandWorkspaceDynamicIsland() {
     "alwaysOnTop",
   ] as const;
   const selectClassName =
-    "rounded-md border border-white/15 bg-zinc-900 px-3 py-2 text-sm text-zinc-100 outline-none [color-scheme:dark] focus-visible:ring-2 focus-visible:ring-white/60 disabled:opacity-50";
+    "rounded-md border border-border bg-surface-raised px-3 py-2 text-sm text-content outline-none [color-scheme:dark] focus-visible:ring-2 focus-visible:ring-ring/60 disabled:opacity-50";
 
   return (
     <>
       <ScrollArea className="h-[min(52vh,32rem)]">
         <div className="space-y-1 px-5 py-4">
-          <p className="mb-4 text-xs leading-5 text-zinc-400">
+          <p className="mb-4 text-xs leading-5 text-content-muted">
             调整后立即保存；关闭灵动岛时也可预先配置。
           </p>
           {!preferences ? (
-            <p role="status" className="py-6 text-sm text-zinc-400">
+            <p role="status" className="py-6 text-sm text-content-muted">
               正在读取设置…
             </p>
           ) : (
@@ -36,16 +36,16 @@ export function CommandWorkspaceDynamicIsland() {
               {toggles.map((key) => (
                 <div
                   key={key}
-                  className="flex items-center justify-between gap-6 border-b border-white/6 py-3"
+                  className="flex items-center justify-between gap-6 border-b border-border py-3"
                 >
                   <div className="min-w-0">
-                    <span id={`island-${key}`} className="block text-sm font-medium text-zinc-100">
+                    <span id={`island-${key}`} className="block text-sm font-medium text-content">
                       {t(`dynamicIsland.${key}.label`)}
                     </span>
                     {key === "enabled" || key === "snapCentered" || key === "nonOcclusive" ? (
                       <p
                         id={`island-${key}-description`}
-                        className="mt-1 text-xs leading-5 text-zinc-400"
+                        className="mt-1 text-xs leading-5 text-content-muted"
                       >
                         {t(`dynamicIsland.${key}.sublabel`)}
                       </p>
@@ -62,16 +62,16 @@ export function CommandWorkspaceDynamicIsland() {
                         : undefined
                     }
                     onClick={() => void update({ [key]: !preferences[key] })}
-                    className={`inline-flex h-6 w-11 shrink-0 items-center rounded-full p-0.5 transition-colors focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white disabled:opacity-50 ${preferences[key] ? "bg-brand" : "bg-white/20"}`}
+                    className={`inline-flex h-6 w-11 shrink-0 items-center rounded-full p-0.5 transition-colors focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring disabled:opacity-50 ${preferences[key] ? "bg-brand" : "bg-content/20"}`}
                   >
                     <span
-                      className={`size-5 rounded-full bg-white shadow transition-transform ${preferences[key] ? "translate-x-5" : "translate-x-0"}`}
+                      className={`size-5 rounded-full bg-brand-foreground shadow transition-transform ${preferences[key] ? "translate-x-5" : "translate-x-0"}`}
                     />
                   </button>
                 </div>
               ))}
-              <label className="flex items-center justify-between gap-6 border-b border-white/6 py-3">
-                <span className="text-sm font-medium text-zinc-100">
+              <label className="flex items-center justify-between gap-6 border-b border-border py-3">
+                <span className="text-sm font-medium text-content">
                   {t("dynamicIsland.transition.label")}
                 </span>
                 <select
@@ -86,7 +86,7 @@ export function CommandWorkspaceDynamicIsland() {
                 </select>
               </label>
               <label className="flex items-center justify-between gap-6 py-3">
-                <span className="text-sm font-medium text-zinc-100">
+                <span className="text-sm font-medium text-content">
                   {t("dynamicIsland.scale.label")}
                 </span>
                 <select
@@ -110,7 +110,7 @@ export function CommandWorkspaceDynamicIsland() {
           ) : null}
         </div>
       </ScrollArea>
-      <footer className="border-t border-white/8 px-5 py-3 text-xs text-zinc-400">
+      <footer className="border-t border-border px-5 py-3 text-xs text-content-muted">
         Tab 切换选项 · 空格切换开关 · Esc 返回
       </footer>
     </>

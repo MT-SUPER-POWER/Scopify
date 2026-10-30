@@ -1,19 +1,14 @@
 import { ShortcutCommandIcon } from "@/components/shortcuts/ShortcutCommandIcon";
 import { ShortcutKeycaps } from "@/components/shortcuts/ShortcutKeycaps";
 import { useI18n } from "@/store/module/i18n";
-import type { ShortcutHelpCommand } from "@/types/shortcuts/components";
-
-interface ShortcutHelpSectionProps {
-  commands: ShortcutHelpCommand[];
-  title: string;
-}
+import type { ShortcutHelpSectionProps } from "@/types/shortcuts/components";
 
 export function ShortcutHelpSection({ commands, title }: ShortcutHelpSectionProps) {
   const { t } = useI18n();
 
   return (
     <section>
-      <h3 className="mb-2 text-[13px] font-semibold tracking-normal text-[#7d7d7d] uppercase">
+      <h3 className="mb-2 text-[13px] font-semibold tracking-normal text-content-muted uppercase">
         {title}
       </h3>
       <div>
@@ -25,9 +20,9 @@ export function ShortcutHelpSection({ commands, title }: ShortcutHelpSectionProp
             <span className="flex min-w-0 items-center gap-2.5">
               <ShortcutCommandIcon
                 commandId={command.id}
-                className="size-3.5 shrink-0 text-[#8b8b8b]"
+                className="size-3.5 shrink-0 text-content-muted"
               />
-              <span className="truncate text-[15px] leading-5 text-[#d2d2d2]">
+              <span className="truncate text-[15px] leading-5 text-content">
                 {t(command.labelKey)}
               </span>
             </span>

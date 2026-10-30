@@ -36,7 +36,7 @@ export function CommandWorkspaceQueueItem({
       onDrop={(event) => onDrop(event, index)}
       className={cn(
         "group relative flex items-center gap-3 rounded-lg px-3 py-2 transition-all select-none",
-        isCurrent ? "bg-white/10" : "hover:bg-white/6",
+        isCurrent ? "bg-content/10" : "hover:bg-content/6",
         isDragging && "scale-0.98 opacity-30",
         isTargetBefore &&
           "before:absolute before:inset-x-2 before:-top-0.5 before:z-10 before:h-0.5 before:rounded-full before:bg-brand",
@@ -45,7 +45,7 @@ export function CommandWorkspaceQueueItem({
       )}
     >
       <div className="flex w-5 shrink-0 items-center justify-center">
-        <span className="cursor-grab text-zinc-500 opacity-0 transition-opacity group-hover:opacity-100 hover:text-zinc-300 active:cursor-grabbing">
+        <span className="cursor-grab text-content-muted opacity-0 transition-opacity group-hover:opacity-100 hover:text-content-muted active:cursor-grabbing">
           <GripVertical className="size-3.5" />
         </span>
         {isCurrentPlaying ? (
@@ -54,7 +54,7 @@ export function CommandWorkspaceQueueItem({
           <span
             className={cn(
               "text-xs tabular-nums transition-opacity group-hover:hidden",
-              isCurrent ? "font-semibold text-brand" : "text-zinc-500",
+              isCurrent ? "font-semibold text-brand" : "text-content-muted",
             )}
           >
             {index + 1}
@@ -65,13 +65,13 @@ export function CommandWorkspaceQueueItem({
       <button
         type="button"
         onClick={() => onPlay(index)}
-        className="relative size-10 shrink-0 overflow-hidden rounded-md bg-white/8 focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-brand"
+        className="relative size-10 shrink-0 overflow-hidden rounded-md bg-content/8 focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-brand"
         title={isCurrent ? (isCurrentPlaying ? "暂停" : "继续播放") : `播放 ${track.name}`}
       >
         {coverUrl ? (
           <img src={coverUrl} alt={track.name} loading="lazy" className="size-full object-cover" />
         ) : (
-          <div className="flex size-full items-center justify-center bg-white/5 text-zinc-500">
+          <div className="flex size-full items-center justify-center bg-content/5 text-content-muted">
             <Music className="size-4" />
           </div>
         )}
@@ -94,7 +94,7 @@ export function CommandWorkspaceQueueItem({
       />
 
       <div className="flex shrink-0 items-center gap-1.5">
-        <span className="text-xs text-zinc-500 tabular-nums">{formatDuration(track.dt)}</span>
+        <span className="text-xs text-content-muted tabular-nums">{formatDuration(track.dt)}</span>
         <CommandWorkspaceQueueItemMenu
           index={index}
           onNavigateAlbum={onNavigateAlbum}

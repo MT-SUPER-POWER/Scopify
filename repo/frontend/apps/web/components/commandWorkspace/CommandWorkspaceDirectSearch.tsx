@@ -27,7 +27,7 @@ export function CommandWorkspaceDirectSearch(props: CommandWorkspaceDirectSearch
         placeholder={model.placeholder}
         query={model.query}
       />
-      <div className="mx-5 h-px bg-white/8" />
+      <div className="mx-5 h-px bg-content/8" />
       <CommandWorkspaceDirectSearchResults
         isLoading={model.isLoading}
         onClearRecent={model.clearRecent}
@@ -38,8 +38,8 @@ export function CommandWorkspaceDirectSearch(props: CommandWorkspaceDirectSearch
         selectedIndex={model.selectedIndex}
         suggestions={model.suggestions}
       />
-      <footer className="flex items-center gap-2 border-t border-white/10 bg-black/20 px-5 py-3 text-xs text-zinc-400">
-        <kbd className="rounded border border-white/15 bg-white/8 px-1.5 py-0.5 text-zinc-200">
+      <footer className="flex items-center gap-2 border-t border-border bg-content/3 px-5 py-3 text-xs text-content-muted">
+        <kbd className="rounded border border-border bg-content/8 px-1.5 py-0.5 text-content">
           @
         </kbd>
         选择分类

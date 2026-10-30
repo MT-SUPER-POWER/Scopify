@@ -42,12 +42,12 @@ export function CommandWorkspaceQueryInput({
         if (!event.currentTarget.contains(event.relatedTarget)) closePicker();
       }}
     >
-      <Search className="size-5 shrink-0 text-zinc-400" />
+      <Search className="size-5 shrink-0 text-content-muted" />
       {filter ? (
         <button
           type="button"
           onClick={() => onFilterChange(null)}
-          className="flex shrink-0 items-center gap-1 rounded-md border border-white/20 bg-white/10 px-2 py-1 text-xs font-semibold text-white"
+          className="flex shrink-0 items-center gap-1 rounded-md border border-border bg-content/10 px-2 py-1 text-xs font-semibold text-content"
         >
           {filter.token}
           <X className="size-3" />
@@ -60,13 +60,13 @@ export function CommandWorkspaceQueryInput({
         onChange={(event) => onQueryChange(event.target.value)}
         onKeyDown={handleKeyDown}
         placeholder={isPickerOpen ? "选择搜索分类" : placeholder}
-        className="min-w-0 flex-1 border-none bg-transparent text-base font-medium text-white outline-none placeholder:text-white/40"
+        className="min-w-0 flex-1 border-none bg-transparent text-base font-medium text-content outline-none placeholder:text-content/40"
       />
       {query ? (
         <button
           type="button"
           onClick={() => onQueryChange("")}
-          className="shrink-0 rounded-full p-1.5 text-zinc-400 transition-colors hover:bg-white/10 hover:text-white"
+          className="shrink-0 rounded-full p-1.5 text-content-muted transition-colors hover:bg-content/10 hover:text-content"
           aria-label="清空搜索"
         >
           <X className="size-3.5" />

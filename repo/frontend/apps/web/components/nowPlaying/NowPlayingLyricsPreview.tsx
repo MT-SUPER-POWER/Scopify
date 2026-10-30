@@ -23,7 +23,7 @@ export function NowPlayingLyricsPreview({ song }: NowPlayingSectionProps) {
 
   return (
     <section
-      className="relative overflow-hidden rounded-lg bg-surface-raised text-white transition-colors duration-500"
+      className="relative overflow-hidden rounded-lg bg-surface-raised text-content transition-colors duration-500"
       style={tint ? { backgroundColor: tint } : undefined}
     >
       <header className="flex items-center justify-between gap-2 px-4 pt-4">
@@ -33,7 +33,7 @@ export function NowPlayingLyricsPreview({ song }: NowPlayingSectionProps) {
           onClick={() => useUiStore.getState().setIsLyricsOpen(true)}
           aria-label={t("nowPlaying.lyricsFullscreen")}
           title={t("nowPlaying.lyricsFullscreen")}
-          className="flex size-7 items-center justify-center rounded-full text-white/70 transition-colors hover:bg-white/10 hover:text-white"
+          className="flex size-7 items-center justify-center rounded-full text-content/70 transition-colors hover:bg-content/10 hover:text-content"
         >
           <Maximize2 className="size-3.5" />
         </button>
@@ -48,7 +48,7 @@ export function NowPlayingLyricsPreview({ song }: NowPlayingSectionProps) {
             key={start + offset}
             className={cn(
               "truncate text-xl leading-9 font-bold transition-colors duration-300",
-              start + offset === lastStartedIndex ? "text-white" : "text-white/45",
+              start + offset === lastStartedIndex ? "text-content" : "text-content/65",
             )}
           >
             {getLyricDisplayText(line)}

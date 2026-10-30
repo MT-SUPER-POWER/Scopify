@@ -2,12 +2,14 @@
 
 import { ListPlus, Pause, Play, Plus } from "lucide-react";
 import { PlayingAnimation } from "@/components/shared/PlayingAnimation";
+import {
+  getCommandSearchKindLabel,
+  getCommandSearchTitle,
+  getCommandSearchSubtitle,
+} from "@/lib/commandWorkspace/searchItemLabels";
 import { cn } from "@/lib/utils";
 import { usePlayerStore } from "@/store";
-import type {
-  CommandWorkspaceSearchItem,
-  CommandWorkspaceSearchResultListProps,
-} from "@/types/commandWorkspace/model";
+import type { CommandWorkspaceSearchResultListProps } from "@/types/commandWorkspace/model";
 
 export function CommandWorkspaceSearchResultList({
   items,
@@ -21,7 +23,7 @@ export function CommandWorkspaceSearchResultList({
   const setIsPlaying = usePlayerStore((state) => state.setIsPlaying);
 
   if (items.length === 0) {
-    return <p className="px-5 py-10 text-center text-sm text-zinc-500">没有找到匹配内容。</p>;
+    return <p className="px-5 py-10 text-center text-sm text-content-muted">没有找到匹配内容。</p>;
   }
 
   return (
@@ -50,10 +52,10 @@ export function CommandWorkspaceSearchResultList({
             className={cn(
               "group flex items-center gap-3 rounded-lg px-3.5 py-2 transition-colors",
               isCurrent
-                ? "bg-white/10"
+                ? "bg-content/10"
                 : selectedIndex === index
-                  ? "bg-white/10"
-                  : "hover:bg-white/6",
+                  ? "bg-content/10"
+                  : "hover:bg-content/6",
             )}
           >
             <button
@@ -64,21 +66,27 @@ export function CommandWorkspaceSearchResultList({
               <span
                 className={cn(
                   "flex size-8 shrink-0 items-center justify-center rounded-full text-xs font-semibold",
-                  isCurrent ? "bg-brand/20 text-brand" : "bg-white/8 text-zinc-300",
+                  isCurrent ? "bg-brand/20 text-brand" : "bg-content/8 text-content-muted",
                 )}
               >
-                {isCurrentPlaying ? <PlayingAnimation size={14} /> : getKindLabel(item)}
+                {isCurrentPlaying ? (
+                  <PlayingAnimation size={14} />
+                ) : (
+                  getCommandSearchKindLabel(item)
+                )}
               </span>
               <span className="min-w-0">
                 <span
                   className={cn(
                     "block truncate text-sm font-medium transition-colors hover:underline",
-                    isCurrent ? "font-semibold text-brand" : "text-white",
+                    isCurrent ? "font-semibold text-brand" : "text-content",
                   )}
                 >
-                  {getTitle(item)}
+                  {getCommandSearchTitle(item)}
                 </span>
-                <span className="block truncate text-xs text-zinc-400">{getSubtitle(item)}</span>
+                <span className="block truncate text-xs text-content-muted">
+                  {getCommandSearchSubtitle(item)}
+                </span>
               </span>
             </button>
             {isPlayable ? (
@@ -86,7 +94,7 @@ export function CommandWorkspaceSearchResultList({
                 <button
                   type="button"
                   onClick={() => onAppend(item)}
-                  className="rounded p-1.5 text-zinc-400 hover:bg-white/10 hover:text-white"
+                  className="rounded p-1.5 text-content-muted hover:bg-content/10 hover:text-content"
                   title="加入队列"
                 >
                   <Plus className="size-3.5" />
@@ -94,7 +102,7 @@ export function CommandWorkspaceSearchResultList({
                 <button
                   type="button"
                   onClick={() => onInsertNext(item)}
-                  className="rounded p-1.5 text-zinc-400 hover:bg-white/10 hover:text-white"
+                  className="rounded p-1.5 text-content-muted hover:bg-content/10 hover:text-content"
                   title="下一首播放"
                 >
                   <ListPlus className="size-3.5" />
@@ -105,8 +113,8 @@ export function CommandWorkspaceSearchResultList({
               type="button"
               onClick={handleToggleOrSelect}
               className={cn(
-                "shrink-0 rounded p-1.5 transition-colors hover:bg-white/10",
-                isCurrent ? "text-brand hover:text-brand" : "text-zinc-400 hover:text-white",
+                "shrink-0 rounded p-1.5 transition-colors hover:bg-content/10",
+                isCurrent ? "text-brand hover:text-brand" : "text-content-muted hover:text-content",
               )}
               title={
                 isCurrent ? (isPlaying ? "暂停" : "继续播放") : isPlayable ? "播放" : "查看曲目"
@@ -123,37 +131,4 @@ export function CommandWorkspaceSearchResultList({
       })}
     </div>
   );
-}
-
-function getKindLabel(item: CommandWorkspaceSearchItem) {
-  const labels = {
-    album: "辑",
-    artist: "人",
-    playlist: "单",
-    podcast: "播",
-    song: "歌",
-    voice: "节",
-  };
-  return labels[item.kind];
-}
-
-function getTitle(item: CommandWorkspaceSearchItem) {
-  return item.entity.name;
-}
-
-function getSubtitle(item: CommandWorkspaceSearchItem) {
-  switch (item.kind) {
-    case "song":
-      return `${item.entity.artists.map((artist) => artist.name).join(" / ")} · ${item.entity.album.name}`;
-    case "artist":
-      return "歌手热门歌曲";
-    case "album":
-      return item.entity.artist.name;
-    case "playlist":
-      return item.entity.creator?.nickname ?? "歌单";
-    case "podcast":
-      return item.entity.hostName ?? "播客";
-    case "voice":
-      return item.entity.podcastName;
-  }
 }

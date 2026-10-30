@@ -15,6 +15,15 @@ export type ShortcutHelpCommand = RegisteredShortcutCommand & {
   binding: ShortcutBinding;
 };
 
+export interface ShortcutKeycapsProps {
+  binding: ShortcutBinding;
+}
+
+export interface ShortcutHelpSectionProps {
+  commands: ShortcutHelpCommand[];
+  title: string;
+}
+
 export interface ShortcutBindingRowProps {
   command: ShortcutCommandDefinition;
   binding: ShortcutBinding | null;

@@ -116,11 +116,11 @@ export function LoadingNowPlayingSkeleton() {
   return (
     <>
       <div
-        className="hidden w-9 shrink-0 rounded-lg bg-surface-sunken [html[data-boot-now-playing=rail]_&]:block"
+        className="hidden w-9 shrink-0 rounded-lg bg-surface-raised dark:bg-surface-sunken [html[data-boot-now-playing=rail]_&]:block"
         aria-hidden
       />
       <div
-        className="hidden w-[var(--boot-now-playing-width,22%)] max-w-120 min-w-70 shrink-0 flex-col gap-4 overflow-hidden rounded-lg bg-surface-sunken px-4 [html[data-boot-now-playing=panel]_&]:flex"
+        className="hidden w-[var(--boot-now-playing-width,22%)] max-w-120 min-w-70 shrink-0 flex-col gap-4 overflow-hidden rounded-lg bg-surface-raised px-4 dark:bg-surface-sunken [html[data-boot-now-playing=panel]_&]:flex"
         aria-hidden
       >
         <div className="flex h-14 shrink-0 items-center justify-between">

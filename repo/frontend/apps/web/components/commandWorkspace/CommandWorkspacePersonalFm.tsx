@@ -24,13 +24,13 @@ export function CommandWorkspacePersonalFm({ onBack, onClose }: CommandWorkspace
     >
       {model.showQueue ? (
         <>
-          <header className="flex items-center gap-3 border-b border-white/8 p-4 text-sm text-zinc-200">
+          <header className="flex items-center gap-3 border-b border-border p-4 text-sm text-content">
             <button
               autoFocus
               type="button"
               onClick={model.back}
               aria-label="返回私人 FM"
-              className="rounded p-1 hover:bg-white/10"
+              className="rounded p-1 hover:bg-content/10"
             >
               <ChevronLeft className="size-4" />
             </button>
@@ -56,25 +56,25 @@ export function CommandWorkspacePersonalFm({ onBack, onClose }: CommandWorkspace
             <div className="space-y-6 px-5 py-7 sm:px-12 sm:py-9">
               <header className="flex items-center gap-3">
                 <PiBroadcast
-                  className={`size-5 shrink-0 text-white ${model.isLoading ? "animate-pulse" : ""}`}
+                  className={`size-5 shrink-0 text-content ${model.isLoading ? "animate-pulse" : ""}`}
                 />
                 <div className="min-w-0 flex-1">
-                  <h2 className="text-sm font-semibold text-zinc-200">
+                  <h2 className="text-sm font-semibold text-content">
                     {model.t("personalFm.settings.title")}
                   </h2>
-                  <p className="mt-1 text-xs text-zinc-500">
+                  <p className="mt-1 text-xs text-content-muted">
                     {model.t("personalFm.settings.description")}
                   </p>
                 </div>
                 <span
                   role="status"
-                  className="max-w-36 text-right text-sm font-semibold text-zinc-200"
+                  className="max-w-36 text-right text-sm font-semibold text-content"
                 >
                   {model.isLoading ? model.t("personalFm.status.loading") : model.selectionLabel}
                 </span>
               </header>
               {model.showHelp ? (
-                <p className="rounded-lg bg-white/5 p-3 text-xs leading-6 text-zinc-400">
+                <p className="rounded-lg bg-content/5 p-3 text-xs leading-6 text-content-muted">
                   可搜索模式、场景、曲风和语种；↑↓ 选择，Enter 应用，Esc 返回。正在播放私人 FM
                   时，切换会重新生成歌曲；其他播放来源下仅保存偏好，点击「开始私人 FM」后播放。
                 </p>

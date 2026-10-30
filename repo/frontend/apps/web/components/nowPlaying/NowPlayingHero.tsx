@@ -61,7 +61,7 @@ export function NowPlayingHero({ song }: NowPlayingSectionProps) {
             <NowPlayingDynamicCover key={song.id} songId={song.id} isPlaying={playback.isPlaying} />
             <div
               aria-hidden
-              className="absolute inset-x-0 bottom-0 h-1/2 bg-linear-to-b from-transparent to-surface-sunken"
+              className="absolute inset-x-0 bottom-0 h-1/2 bg-linear-to-b from-transparent to-surface-raised dark:to-surface-sunken"
             />
           </>
         )}

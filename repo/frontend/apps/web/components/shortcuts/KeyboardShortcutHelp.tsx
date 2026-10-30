@@ -49,7 +49,7 @@ export function KeyboardShortcutHelp() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 z-120 flex items-center justify-center bg-black/75 p-4 backdrop-blur-sm"
+          className="fixed inset-0 z-120 flex items-center justify-center bg-overlay p-4 backdrop-blur-sm"
           onMouseDown={() => setIsOpen(false)}
         >
           <motion.div
@@ -57,15 +57,15 @@ export function KeyboardShortcutHelp() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 8 }}
             transition={{ duration: 0.16, ease: [0.16, 1, 0.3, 1] }}
-            className="relative h-[min(78dvh,720px)] max-h-[calc(100dvh-2rem)] w-full max-w-[806px] [scrollbar-color:#4a4a4a_transparent] [scrollbar-gutter:stable] overflow-y-auto rounded-2xl border border-white/8 bg-[#111] px-5 pt-[18px] pb-10 text-[#d2d2d2] shadow-[0_28px_80px_rgba(0,0,0,0.52)] sm:px-18 [&::-webkit-scrollbar]:w-4 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:border-[5px] [&::-webkit-scrollbar-thumb]:border-[#111] [&::-webkit-scrollbar-thumb]:bg-[#4a4a4a]"
+            className="relative h-[min(78dvh,720px)] max-h-[calc(100dvh-2rem)] w-full max-w-[806px] [scrollbar-color:var(--scopify-scrollbar-thumb)_transparent] [scrollbar-gutter:stable] overflow-y-auto rounded-2xl border border-border bg-surface-overlay px-5 pt-[18px] pb-10 text-content shadow-floating sm:px-18 [&::-webkit-scrollbar]:w-4 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:border-[5px] [&::-webkit-scrollbar-thumb]:border-surface-overlay [&::-webkit-scrollbar-thumb]:bg-scrollbar-thumb"
             onMouseDown={(event) => event.stopPropagation()}
           >
             <header>
               <div>
-                <h2 className="text-[22px] leading-7 font-semibold tracking-[-0.02em] text-[#d2d2d2]">
+                <h2 className="text-[22px] leading-7 font-semibold tracking-[-0.02em] text-content">
                   {t("shortcuts.help.panelTitle")}
                 </h2>
-                <p className="mt-1 text-[15px] leading-5 text-[#7f7f7f]">
+                <p className="mt-1 text-[15px] leading-5 text-content-muted">
                   {t("shortcuts.help.subtitle")}
                 </p>
               </div>
@@ -74,7 +74,7 @@ export function KeyboardShortcutHelp() {
                 title={t("common.action.close")}
                 aria-label={t("common.action.close")}
                 onClick={() => setIsOpen(false)}
-                className="absolute top-4 right-6 flex size-8 items-center justify-center rounded text-[#bababa] transition-colors hover:bg-white/8 hover:text-white"
+                className="absolute top-4 right-6 flex size-8 items-center justify-center rounded text-content-muted transition-colors hover:bg-content/8 hover:text-content"
               >
                 <X className="stroke-1.5 size-[18px]" />
               </button>

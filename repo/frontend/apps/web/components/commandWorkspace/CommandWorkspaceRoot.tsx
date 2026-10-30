@@ -16,7 +16,7 @@ export function CommandWorkspaceRoot(props: CommandWorkspaceRootProps) {
         onKeyDown={model.handleKeyDown}
         query={model.query}
       />
-      <div className="mx-5 h-px bg-white/8" />
+      <div className="mx-5 h-px bg-content/8" />
       <CommandWorkspaceRootList
         items={model.items}
         selectedIndex={model.selectedIndex}

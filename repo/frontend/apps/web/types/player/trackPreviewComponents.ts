@@ -35,3 +35,21 @@ export interface TrackPreviewActionsProps {
   playlistId: number | string | null;
   onClose: () => void;
 }
+
+export interface TrackPreviewDetailsProps {
+  song: SongDetail;
+  title: string;
+  tags: string[];
+  direction: 1 | -1;
+  progress: number;
+  onClose: () => void;
+}
+
+export interface TrackPreviewControlsProps extends TrackPreviewActionsProps {
+  muted: boolean;
+  onToggleMute: () => void;
+  onPrevious: () => void;
+  onNext: () => void;
+  hasPrevious: boolean;
+  hasNext: boolean;
+}

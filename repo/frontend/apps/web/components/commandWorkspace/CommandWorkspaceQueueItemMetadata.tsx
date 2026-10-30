@@ -18,12 +18,12 @@ export function CommandWorkspaceQueueItemMetadata({
         onClick={() => onPlay(index)}
         className={cn(
           "block w-full truncate text-left text-sm font-medium transition-colors hover:underline",
-          isCurrent ? "font-semibold text-brand" : "text-white hover:text-brand",
+          isCurrent ? "font-semibold text-brand" : "text-content hover:text-brand",
         )}
       >
         {track.name}
       </button>
-      <div className="flex items-center truncate text-xs text-zinc-400">
+      <div className="flex items-center truncate text-xs text-content-muted">
         <span className="truncate">
           {track.ar?.map((artist, artistIndex) => (
             <span key={`${artist.id || artist.name}-${artistIndex}`}>
@@ -34,7 +34,7 @@ export function CommandWorkspaceQueueItemMetadata({
                     event.stopPropagation();
                     onNavigateArtist(artist.id);
                   }}
-                  className="hover:text-white hover:underline focus-visible:text-white"
+                  className="hover:text-content hover:underline focus-visible:text-content"
                 >
                   {artist.name}
                 </button>
@@ -47,7 +47,7 @@ export function CommandWorkspaceQueueItemMetadata({
         </span>
         {track.al?.name ? (
           <>
-            <span className="mx-1 text-zinc-600">·</span>
+            <span className="mx-1 text-content-subtle">·</span>
             {track.al.id ? (
               <button
                 type="button"
@@ -56,12 +56,12 @@ export function CommandWorkspaceQueueItemMetadata({
                   onNavigateAlbum(track.al.id);
                 }}
                 title={track.al.name}
-                className="max-w-35 truncate text-zinc-400 hover:text-white hover:underline focus-visible:text-white"
+                className="max-w-35 truncate text-content-muted hover:text-content hover:underline focus-visible:text-content"
               >
                 {track.al.name}
               </button>
             ) : (
-              <span className="max-w-35 truncate text-zinc-400">{track.al.name}</span>
+              <span className="max-w-35 truncate text-content-muted">{track.al.name}</span>
             )}
           </>
         ) : null}

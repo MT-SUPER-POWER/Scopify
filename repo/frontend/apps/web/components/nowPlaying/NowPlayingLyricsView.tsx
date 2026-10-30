@@ -41,7 +41,7 @@ export function NowPlayingLyricsView({ song }: NowPlayingSectionProps) {
 
   return (
     <div
-      className="relative mx-2 mb-2 flex min-h-0 flex-1 flex-col overflow-hidden rounded-lg bg-surface-raised text-white transition-colors duration-500"
+      className="relative mx-2 mb-2 flex min-h-0 flex-1 flex-col overflow-hidden rounded-lg bg-surface-raised text-content transition-colors duration-500"
       style={tint ? { backgroundColor: tint } : undefined}
     >
       <button
@@ -49,13 +49,13 @@ export function NowPlayingLyricsView({ song }: NowPlayingSectionProps) {
         onClick={() => useUiStore.getState().setIsLyricsOpen(true)}
         aria-label={t("nowPlaying.lyricsFullscreen")}
         title={t("nowPlaying.lyricsFullscreen")}
-        className="absolute top-2 right-2 z-10 flex size-8 items-center justify-center rounded-full bg-black/20 text-white/80 transition-colors hover:bg-black/40 hover:text-white"
+        className="absolute top-2 right-2 z-10 flex size-8 items-center justify-center rounded-full bg-content/5 text-content/80 transition-colors hover:bg-content/10 hover:text-content"
       >
         <Maximize2 className="size-4" />
       </button>
 
       {lines.length === 0 ? (
-        <p className="m-auto px-6 text-center text-lg font-bold text-white/70">
+        <p className="m-auto px-6 text-center text-lg font-bold text-content/70">
           {t("nowPlaying.lyricsEmpty")}
         </p>
       ) : (
@@ -75,12 +75,12 @@ export function NowPlayingLyricsView({ song }: NowPlayingSectionProps) {
                   type="button"
                   onClick={() => void commands.seek(Math.round(line.startTime * 1_000))}
                   className={cn(
-                    "text-left text-xl leading-snug font-bold transition-colors duration-300 hover:text-white",
+                    "text-left text-xl leading-snug font-bold transition-colors duration-300 hover:text-content",
                     index === lastStartedIndex
-                      ? "text-white"
+                      ? "text-content"
                       : index < lastStartedIndex
-                        ? "text-white/40"
-                        : "text-black/55",
+                        ? "text-content/55"
+                        : "text-content/60",
                   )}
                 >
                   {getLyricDisplayText(line)}

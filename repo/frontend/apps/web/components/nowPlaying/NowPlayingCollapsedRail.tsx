@@ -31,7 +31,7 @@ export function NowPlayingCollapsedRail() {
             type="button"
             onClick={() => setIsOpen(true)}
             aria-label={label}
-            className="group flex size-full items-center justify-center rounded-lg bg-surface-sunken text-content-muted transition-colors hover:bg-surface-elevated hover:text-content"
+            className="group flex size-full items-center justify-center rounded-lg bg-surface-raised text-content-muted transition-colors hover:bg-surface-elevated hover:text-content dark:bg-surface-sunken"
           >
             <ChevronLeft className="size-5 transition-transform group-hover:-translate-x-0.5" />
           </button>

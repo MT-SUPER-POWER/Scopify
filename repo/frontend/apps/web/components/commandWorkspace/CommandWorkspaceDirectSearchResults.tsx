@@ -21,12 +21,12 @@ export function CommandWorkspaceDirectSearchResults({
       <div className="space-y-2 px-2.5 py-2">
         {!query && recent.length > 0 ? (
           <section className="space-y-0.5">
-            <div className="flex items-center justify-between px-3.5 py-1.5 text-xs font-semibold tracking-wider text-zinc-400 uppercase">
+            <div className="flex items-center justify-between px-3.5 py-1.5 text-xs font-semibold tracking-wider text-content-muted uppercase">
               最近搜索
               <button
                 type="button"
                 onClick={onClearRecent}
-                className="text-xs font-medium tracking-normal text-zinc-500 hover:text-white"
+                className="text-xs font-medium tracking-normal text-content-muted hover:text-content"
               >
                 清空
               </button>
@@ -43,11 +43,11 @@ export function CommandWorkspaceDirectSearchResults({
           </section>
         ) : null}
         {query && isLoading ? (
-          <p className="px-5 py-6 text-center text-sm text-zinc-400">正在查找建议…</p>
+          <p className="px-5 py-6 text-center text-sm text-content-muted">正在查找建议…</p>
         ) : null}
         {query && !isLoading && suggestions.length > 0 ? (
           <section className="space-y-0.5">
-            <p className="px-3.5 py-1.5 text-xs font-semibold tracking-wider text-zinc-400 uppercase">
+            <p className="px-3.5 py-1.5 text-xs font-semibold tracking-wider text-content-muted uppercase">
               搜索建议
             </p>
             {suggestions.map((item, index) => (
@@ -56,11 +56,11 @@ export function CommandWorkspaceDirectSearchResults({
                 type="button"
                 onClick={() => onSubmit(item.keyword)}
                 className={cn(
-                  "flex w-full items-center gap-3 rounded-lg px-3.5 py-2 text-left text-sm text-zinc-200 transition-colors",
-                  selectedIndex === index ? "bg-white/10" : "hover:bg-white/6",
+                  "flex w-full items-center gap-3 rounded-lg px-3.5 py-2 text-left text-sm text-content transition-colors",
+                  selectedIndex === index ? "bg-content/10" : "hover:bg-content/6",
                 )}
               >
-                <Search className="size-4 shrink-0 text-zinc-500" />
+                <Search className="size-4 shrink-0 text-content-muted" />
                 <span className="truncate">{item.keyword}</span>
               </button>
             ))}
@@ -70,9 +70,9 @@ export function CommandWorkspaceDirectSearchResults({
           <button
             type="button"
             onClick={() => onSubmit(query)}
-            className="flex w-full items-center gap-3 rounded-lg px-3.5 py-2.5 text-left text-sm text-zinc-300 transition-colors hover:bg-white/6"
+            className="flex w-full items-center gap-3 rounded-lg px-3.5 py-2.5 text-left text-sm text-content-muted transition-colors hover:bg-content/6"
           >
-            <CornerDownLeft className="size-4 text-zinc-300" />
+            <CornerDownLeft className="size-4 text-content-muted" />
             搜索“{query}”
           </button>
         ) : null}

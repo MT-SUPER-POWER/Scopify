@@ -1,12 +1,21 @@
 import { getFoliaCommandIcon } from "@/constants/foliaCommandIcons";
-import { ListMusic, PlayCircle, Power, RectangleEllipsis, Search, Settings2 } from "lucide-react";
+import {
+  ListMusic,
+  PlayCircle,
+  Power,
+  RectangleEllipsis,
+  Search,
+  Settings2,
+  SunMoon,
+} from "lucide-react";
 import { ShortcutCommandIcon } from "@/components/shortcuts/ShortcutCommandIcon";
 import type { CommandWorkspaceIconProps } from "@/types/commandWorkspace/model";
 
 export function CommandWorkspaceIcon({ id }: CommandWorkspaceIconProps) {
+  if (id === "toggle-app-theme") return <SunMoon className="size-4" aria-hidden />;
   if (id.startsWith("personal-fm") || id.startsWith("folia-")) {
     const Icon = getFoliaCommandIcon(id);
-    return <Icon className="size-4 text-white" aria-hidden />;
+    return <Icon className="size-4 text-content" aria-hidden />;
   }
   if (id === "search") return <Search className="size-4" />;
   if (id === "now-playing") return <PlayCircle className="size-4" />;

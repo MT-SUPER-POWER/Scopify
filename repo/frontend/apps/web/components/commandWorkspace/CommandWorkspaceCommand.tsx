@@ -80,21 +80,21 @@ export function CommandWorkspaceCommand({ onClose, onLeaveCommand }: CommandWork
   return (
     <>
       {page !== "root" ? (
-        <header className="flex items-center gap-3 border-b border-white/8 px-5 py-3">
+        <header className="flex items-center gap-3 border-b border-border px-5 py-3">
           <button
             type="button"
             autoFocus={page === "dynamic-island"}
             onClick={goBack}
-            className="rounded p-1 text-zinc-400 hover:bg-white/10 hover:text-white"
+            className="rounded p-1 text-content-muted hover:bg-content/10 hover:text-content"
             aria-label="返回"
           >
             <ChevronLeft className="size-4" />
           </button>
-          <span className="text-sm font-semibold text-white">
+          <span className="text-sm font-semibold text-content">
             {getPageLabel(page, trackList?.title)}
           </span>
           {isLoadingTrackList ? (
-            <span className="ml-auto text-xs text-zinc-500">正在加载曲目…</span>
+            <span className="ml-auto text-xs text-content-muted">正在加载曲目…</span>
           ) : null}
         </header>
       ) : null}

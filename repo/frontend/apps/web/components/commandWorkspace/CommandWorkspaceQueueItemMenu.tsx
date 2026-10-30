@@ -23,7 +23,7 @@ export function CommandWorkspaceQueueItemMenu({
         <button
           type="button"
           onClick={(event) => event.stopPropagation()}
-          className="flex size-7 items-center justify-center rounded-md text-zinc-400 opacity-0 transition-all group-focus-within:opacity-100 group-hover:opacity-100 hover:bg-white/10 hover:text-white data-[state=open]:bg-white/10 data-[state=open]:text-white data-[state=open]:opacity-100"
+          className="flex size-7 items-center justify-center rounded-md text-content-muted opacity-0 transition-all group-focus-within:opacity-100 group-hover:opacity-100 hover:bg-content/10 hover:text-content data-[state=open]:bg-content/10 data-[state=open]:text-content data-[state=open]:opacity-100"
           title="更多选项"
           aria-label={`更多选项: ${track.name}`}
         >
@@ -32,7 +32,7 @@ export function CommandWorkspaceQueueItemMenu({
       </DropdownMenuTrigger>
       <DropdownMenuContent
         align="end"
-        className="w-36 border-zinc-800 bg-zinc-900/95 text-zinc-200 backdrop-blur-xl"
+        className="w-36 border-border bg-surface-raised/95 text-content backdrop-blur-xl"
       >
         <DropdownMenuItem onClick={() => onRemove(index)} variant="destructive">
           <Trash2 className="size-4" />
