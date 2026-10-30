@@ -169,6 +169,7 @@ export function FoliaPresentationSurface({
           visualizerTunings={settings.tunings}
           onCladdaghTuningChange={(patch) => settings.patchTuning("claddagh", patch)}
           onMonetTuningChange={(patch) => settings.patchTuning("monet", patch)}
+          onMachiTuningChange={(patch) => settings.patchTuning("machi", patch)}
         />
       ) : (
         <VisualizerShell

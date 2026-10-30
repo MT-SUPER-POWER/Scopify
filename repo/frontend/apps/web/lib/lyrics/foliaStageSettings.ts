@@ -7,8 +7,10 @@ import {
   DEFAULT_FUME_TUNING,
   DEFAULT_HANABI_TUNING,
   DEFAULT_LATENT_BACKGROUND_TUNING,
+  DEFAULT_MACHI_TUNING,
   DEFAULT_MONET_BACKGROUND_TUNING,
   DEFAULT_MONET_TUNING,
+  DEFAULT_NEBBIA_TUNING,
   DEFAULT_NOMAND_BACKGROUND_TUNING,
   DEFAULT_SORA_BACKGROUND_TUNING,
   DEFAULT_PENDOLO_TUNING,
@@ -19,6 +21,8 @@ import {
   TEMPERA_MAX_LAYER_IMAGES,
   type TemperaLayerImage,
 } from "@/components/lyrics/folia/src/types";
+import { normalizeMachiTuning } from "@/components/lyrics/folia/src/components/visualizer/machi/machiTuning";
+import { normalizeNebbiaTuning } from "@/components/lyrics/folia/src/components/visualizer/nebbia/nebbiaTuning";
 import {
   createBuiltinFoliaStageThemes,
   createFoliaStageTheme,
@@ -155,7 +159,9 @@ const STRING_ENUMS = {
     "diorama",
     "fume",
     "hanabi",
+    "machi",
     "monet",
+    "nebbia",
     "partita",
     "pendolo",
     "sonnet",
@@ -232,7 +238,9 @@ export function createDefaultFoliaStageSettings(): FoliaStageSettings {
       diorama: structuredClone(DEFAULT_DIORAMA_TUNING),
       fume: structuredClone(DEFAULT_FUME_TUNING),
       hanabi: structuredClone(DEFAULT_HANABI_TUNING),
+      machi: structuredClone(DEFAULT_MACHI_TUNING),
       monet: structuredClone(DEFAULT_MONET_TUNING),
+      nebbia: structuredClone(DEFAULT_NEBBIA_TUNING),
       partita: structuredClone(DEFAULT_PARTITA_TUNING),
       pendolo: structuredClone(DEFAULT_PENDOLO_TUNING),
       sonnet: structuredClone(DEFAULT_SONNET_TUNING),
@@ -323,6 +331,16 @@ function normalizeAgainstSchema<T>(candidate: unknown, schema: T, path: string):
 
   if (path === "background.url.items") {
     return (Array.isArray(candidate) ? candidate.flatMap(normalizeUrlBackgroundItem) : schema) as T;
+  }
+
+  // 町景 / 雾笺 carry nested objects and lists; their own normalizers (also used upstream for stored,
+  // imported and synced values) clamp every field.
+  if (path === "tunings.machi") {
+    return (candidate === undefined ? schema : normalizeMachiTuning(candidate)) as T;
+  }
+
+  if (path === "tunings.nebbia") {
+    return (candidate === undefined ? schema : normalizeNebbiaTuning(candidate)) as T;
   }
 
   if (path === "tunings.tempera.layerImages") {

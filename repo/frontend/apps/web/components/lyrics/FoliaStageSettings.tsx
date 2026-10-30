@@ -183,6 +183,7 @@ export function FoliaStageSettings({
         {activeTab === "controls" ? (
           <FoliaPanelControls
             assets={assets}
+            onClosePanel={() => onOpenChange(false)}
             onOpenEqualizer={() => setIsEqualizerOpen(true)}
             onOpenSettings={openSettings}
             onOpenThemeLibrary={() => {

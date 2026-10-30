@@ -7,7 +7,9 @@ import classicEntry from "./classic/entry";
 import dioramaEntry from "./diorama/entry";
 import fumeEntry from "./fume/entry";
 import hanabiEntry from "./hanabi/entry";
+import machiEntry from "./machi/entry";
 import monetEntry from "./monet/entry";
+import nebbiaEntry from "./nebbia/entry";
 import partitaEntry from "./partita/entry";
 import pendoloEntry from "./pendolo/entry";
 import sonnetEntry from "./sonnet/entry";
@@ -34,7 +36,9 @@ const visualizerEntryModules: Record<string, VisualizerEntryModule> = {
   "./diorama/entry.tsx": { default: dioramaEntry },
   "./fume/entry.tsx": { default: fumeEntry },
   "./hanabi/entry.tsx": { default: hanabiEntry },
+  "./machi/entry.tsx": { default: machiEntry },
   "./monet/entry.tsx": { default: monetEntry },
+  "./nebbia/entry.tsx": { default: nebbiaEntry },
   "./partita/entry.tsx": { default: partitaEntry },
   "./pendolo/entry.tsx": { default: pendoloEntry },
   "./sonnet/entry.tsx": { default: sonnetEntry },

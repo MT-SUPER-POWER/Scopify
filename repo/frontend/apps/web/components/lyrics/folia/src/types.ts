@@ -1318,3 +1318,8 @@ export interface AudioBands {
   treble: MotionValue<number>; // 3500Hz+ (Crosses)
   spectrum?: MotionValue<Uint8Array<ArrayBuffer>>; // Raw analyser FFT magnitude bins for full-spectrum visualizers
 }
+
+// 町景 / 雾笺 keep their tuning types and defaults next to the renderer, in files that import no
+// renderer code (types only), so the settings store can still read them from here.
+export * from "./components/visualizer/machi/types";
+export * from "./components/visualizer/nebbia/types";

@@ -6,7 +6,11 @@ import { getVisualizerRegistryEntry } from "@/components/lyrics/folia/src/compon
 import type { VisualizerSettingsPanelProps } from "@/components/lyrics/folia/src/components/visualizer/definition";
 import type { FoliaVisualizerQuickControlProps } from "@/types/lyrics/components";
 
-export function FoliaVisualizerQuickControl({ assets, theme }: FoliaVisualizerQuickControlProps) {
+export function FoliaVisualizerQuickControl({
+  assets,
+  onClosePanel,
+  theme,
+}: FoliaVisualizerQuickControlProps) {
   const { t } = useI18n();
   const settings = useLyricStageStore();
   const props: VisualizerSettingsPanelProps = {
@@ -40,6 +44,11 @@ export function FoliaVisualizerQuickControl({ assets, theme }: FoliaVisualizerQu
     onTemperaTuningChange: (patch) => settings.patchTuning("tempera", patch),
     hanabiTuning: settings.tunings.hanabi,
     onHanabiTuningChange: (patch) => settings.patchTuning("hanabi", patch),
+    machiTuning: settings.tunings.machi,
+    onMachiTuningChange: (patch) => settings.patchTuning("machi", patch),
+    nebbiaTuning: settings.tunings.nebbia,
+    onNebbiaTuningChange: (patch) => settings.patchTuning("nebbia", patch),
+    onClosePanel,
   };
   return getVisualizerRegistryEntry(settings.mode).renderQuickControls?.(props);
 }

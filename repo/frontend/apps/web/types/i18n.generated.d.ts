@@ -10232,6 +10232,18 @@ export interface TranslateFn {
    */
   (key: "folia.ui.visualizerHanabi", params?: TranslationParams): string;
   /**
+   * zh-CN: 雾笺
+   * zh-TW: 霧箋
+   * en-US: Nebbia
+   */
+  (key: "folia.ui.visualizerNebbia", params?: TranslationParams): string;
+  /**
+   * zh-CN: 町景
+   * zh-TW: 町景
+   * en-US: Machi
+   */
+  (key: "folia.ui.visualizerMachi", params?: TranslationParams): string;
+  /**
    * zh-CN: 心象参数
    * zh-TW: 心象參數
    * en-US: Mindscape Tuning
@@ -13909,6 +13921,768 @@ export interface TranslateFn {
    * en-US: Hanabi sizes lyrics from the viewport and each shot's text region; the font size setting only affects the subtitles in this mode.
    */
   (key: "folia.options.hanabiFontSizeAutoNotice", params?: TranslationParams): string;
+  /**
+   * zh-CN: 雾上写字
+   * zh-TW: 霧上寫字
+   * en-US: Writing on the fog
+   */
+  (key: "folia.options.nebbiaWriting", params?: TranslationParams): string;
+  /**
+   * zh-CN: 车窗与街景
+   * zh-TW: 車窗與街景
+   * en-US: Window and street
+   */
+  (key: "folia.options.nebbiaWindow", params?: TranslationParams): string;
+  /**
+   * zh-CN: 出现
+   * zh-TW: 出現
+   * en-US: Appear
+   */
+  (key: "folia.options.nebbiaAppear", params?: TranslationParams): string;
+  /**
+   * zh-CN: 自动
+   * zh-TW: 自動
+   * en-US: Auto
+   */
+  (key: "folia.options.nebbiaAppearAuto", params?: TranslationParams): string;
+  /**
+   * zh-CN: 手指书写
+   * zh-TW: 手指書寫
+   * en-US: Write
+   */
+  (key: "folia.options.nebbiaAppearWrite", params?: TranslationParams): string;
+  /**
+   * zh-CN: 慢慢显现
+   * zh-TW: 慢慢顯現
+   * en-US: Fade in
+   */
+  (key: "folia.options.nebbiaAppearFade", params?: TranslationParams): string;
+  /**
+   * zh-CN: 消失
+   * zh-TW: 消失
+   * en-US: Disappear
+   */
+  (key: "folia.options.nebbiaFade", params?: TranslationParams): string;
+  /**
+   * zh-CN: 慢慢起雾
+   * zh-TW: 慢慢起霧
+   * en-US: Fog over
+   */
+  (key: "folia.options.nebbiaFadeFog", params?: TranslationParams): string;
+  /**
+   * zh-CN: 手指抹掉
+   * zh-TW: 手指抹掉
+   * en-US: Wipe away
+   */
+  (key: "folia.options.nebbiaFadeFingers", params?: TranslationParams): string;
+  /**
+   * zh-CN: 随机
+   * zh-TW: 隨機
+   * en-US: Mixed
+   */
+  (key: "folia.options.nebbiaFadeMix", params?: TranslationParams): string;
+  /**
+   * zh-CN: 哈气后书写
+   * zh-TW: 哈氣後書寫
+   * en-US: Breathe, then write
+   */
+  (key: "folia.options.nebbiaAppearBreath", params?: TranslationParams): string;
+  /**
+   * zh-CN: 自定义
+   * zh-TW: 自定義
+   * en-US: Custom
+   */
+  (key: "folia.options.nebbiaCustom", params?: TranslationParams): string;
+  /**
+   * zh-CN: 书写的两种开着几种就每句随机挑一种；慢慢显现和书写一起开时，只用在来不及写完的句子上。屏上写满时的哈气不受这里影响。
+   * zh-TW: 書寫的兩種開著幾種就每句隨機挑一種；慢慢顯現和書寫一起開時，只用在來不及寫完的句子上。屏上寫滿時的哈氣不受這裡影響。
+   * en-US: Each line picks one of the writing styles that are on. With Fade in also on, it is used only for lines too quick to write out. The breath that clears a full screen is not affected.
+   */
+  (key: "folia.options.nebbiaAppearHint", params?: TranslationParams): string;
+  /**
+   * zh-CN: 两种都开就每句随机。
+   * zh-TW: 兩種都開就每句隨機。
+   * en-US: With both on, each line picks one at random.
+   */
+  (key: "folia.options.nebbiaFadeHint", params?: TranslationParams): string;
+  /**
+   * zh-CN: 构图
+   * zh-TW: 構圖
+   * en-US: Composition
+   */
+  (key: "folia.options.nebbiaLayouts", params?: TranslationParams): string;
+  /**
+   * zh-CN: 每句在打开的构图里挑最合适的一种；实在放不下的长句仍按三行摆。
+   * zh-TW: 每句在打開的構圖裡挑最合適的一種；實在放不下的長句仍按三行擺。
+   * en-US: Each line takes the best fit among the compositions that are on; a line too long for any still goes in three rows.
+   */
+  (key: "folia.options.nebbiaLayoutsHint", params?: TranslationParams): string;
+  /**
+   * zh-CN: 手写歪斜
+   * zh-TW: 手寫歪斜
+   * en-US: Handwriting tilt
+   */
+  (key: "folia.options.nebbiaJitter", params?: TranslationParams): string;
+  /**
+   * zh-CN: 手写变形
+   * zh-TW: 手寫變形
+   * en-US: Handwriting warp
+   */
+  (key: "folia.options.nebbiaWarp", params?: TranslationParams): string;
+  /**
+   * zh-CN: 片尾写曲名和歌手
+   * zh-TW: 片尾寫曲名和歌手
+   * en-US: Write the title at the end
+   */
+  (key: "folia.options.nebbiaCredits", params?: TranslationParams): string;
+  /**
+   * zh-CN: 最后一句唱完后，在玻璃正中手写出曲名，下面写歌手，一直留到歌曲结束。
+   * zh-TW: 最後一句唱完後，在玻璃正中手寫出曲名，下面寫歌手，一直留到歌曲結束。
+   * en-US: After the last line, the song title is written in the middle of the glass with the artist below, and stays until the song ends.
+   */
+  (key: "folia.options.nebbiaCreditsHint", params?: TranslationParams): string;
+  /**
+   * zh-CN: 横条
+   * zh-TW: 橫條
+   * en-US: Ribbon
+   */
+  (key: "folia.options.nebbiaLayout_ribbon", params?: TranslationParams): string;
+  /**
+   * zh-CN: 两行错落
+   * zh-TW: 兩行錯落
+   * en-US: Two staggered rows
+   */
+  (key: "folia.options.nebbiaLayout_lines2", params?: TranslationParams): string;
+  /**
+   * zh-CN: 三行错落
+   * zh-TW: 三行錯落
+   * en-US: Three staggered rows
+   */
+  (key: "folia.options.nebbiaLayout_lines3", params?: TranslationParams): string;
+  /**
+   * zh-CN: 十字
+   * zh-TW: 十字
+   * en-US: Cross
+   */
+  (key: "folia.options.nebbiaLayout_cross", params?: TranslationParams): string;
+  /**
+   * zh-CN: 竖柱
+   * zh-TW: 豎柱
+   * en-US: Pillar
+   */
+  (key: "folia.options.nebbiaLayout_pillar", params?: TranslationParams): string;
+  /**
+   * zh-CN: 刊头
+   * zh-TW: 刊頭
+   * en-US: Masthead
+   */
+  (key: "folia.options.nebbiaLayout_header", params?: TranslationParams): string;
+  /**
+   * zh-CN: 徽章
+   * zh-TW: 徽章
+   * en-US: Badge
+   */
+  (key: "folia.options.nebbiaLayout_badge", params?: TranslationParams): string;
+  /**
+   * zh-CN: 竖排几列
+   * zh-TW: 豎排幾列
+   * en-US: Vertical columns
+   */
+  (key: "folia.options.nebbiaLayout_columns", params?: TranslationParams): string;
+  /**
+   * zh-CN: 环绕
+   * zh-TW: 環繞
+   * en-US: Orbit
+   */
+  (key: "folia.options.nebbiaLayout_orbit", params?: TranslationParams): string;
+  /**
+   * zh-CN: 笔画粗细
+   * zh-TW: 筆畫粗細
+   * en-US: Stroke width
+   */
+  (key: "folia.options.nebbiaStrokeWidth", params?: TranslationParams): string;
+  /**
+   * zh-CN: 书写速度
+   * zh-TW: 書寫速度
+   * en-US: Writing speed
+   */
+  (key: "folia.options.nebbiaWriteSpeed", params?: TranslationParams): string;
+  /**
+   * zh-CN: 句尾画图标
+   * zh-TW: 句尾畫圖標
+   * en-US: Doodle after a line
+   */
+  (key: "folia.options.nebbiaDoodle", params?: TranslationParams): string;
+  /**
+   * zh-CN: 雾气浓度
+   * zh-TW: 霧氣濃度
+   * en-US: Fog density
+   */
+  (key: "folia.options.nebbiaMist", params?: TranslationParams): string;
+  /**
+   * zh-CN: 下一句开始后保持
+   * zh-TW: 下一句開始後保持
+   * en-US: Hold after the next line
+   */
+  (key: "folia.options.nebbiaHold", params?: TranslationParams): string;
+  /**
+   * zh-CN: 重新起雾用时
+   * zh-TW: 重新起霧用時
+   * en-US: Time to fog over
+   */
+  (key: "folia.options.nebbiaRefog", params?: TranslationParams): string;
+  /**
+   * zh-CN: 车速
+   * zh-TW: 車速
+   * en-US: Bus speed
+   */
+  (key: "folia.options.nebbiaBusSpeed", params?: TranslationParams): string;
+  /**
+   * zh-CN: 霓虹
+   * zh-TW: 霓虹
+   * en-US: Neon
+   */
+  (key: "folia.options.nebbiaNeon", params?: TranslationParams): string;
+  /**
+   * zh-CN: 颠簸
+   * zh-TW: 顛簸
+   * en-US: Bumps
+   */
+  (key: "folia.options.nebbiaBump", params?: TranslationParams): string;
+  /**
+   * zh-CN: 聚光灯
+   * zh-TW: 聚光燈
+   * en-US: Spotlights
+   */
+  (key: "folia.options.nebbiaSpot", params?: TranslationParams): string;
+  /**
+   * zh-CN: 聚光灯位置
+   * zh-TW: 聚光燈位置
+   * en-US: Spotlight position
+   */
+  (key: "folia.options.nebbiaSpotX", params?: TranslationParams): string;
+  /**
+   * zh-CN: 雨点打在玻璃上
+   * zh-TW: 雨點打在玻璃上
+   * en-US: Raindrops on the glass
+   */
+  (key: "folia.options.nebbiaRainHit", params?: TranslationParams): string;
+  /**
+   * zh-CN: 吐字时的大雨点
+   * zh-TW: 吐字時的大雨點
+   * en-US: Drops on each word
+   */
+  (key: "folia.options.nebbiaRainBig", params?: TranslationParams): string;
+  /**
+   * zh-CN: 渲染分辨率
+   * zh-TW: 渲染解析度
+   * en-US: Render resolution
+   */
+  (key: "folia.options.nebbiaResolution", params?: TranslationParams): string;
+  /**
+   * zh-CN: 町景会按场景里屏幕和招牌的大小自动排歌词字号；通用字体尺寸设置在此模式下只影响底部字幕。
+   * zh-TW: 町景會按場景裡屏幕和招牌的大小自動排歌詞字號；通用字體尺寸設定在此模式下只影響底部字幕。
+   * en-US: Machi fits the lyrics to the screens and signs in the scene; the generic font size setting only affects the subtitles in this mode.
+   */
+  (key: "folia.options.machiFontSizeAutoNotice", params?: TranslationParams): string;
+  /**
+   * zh-CN: 场景
+   * zh-TW: 場景
+   * en-US: Scene
+   */
+  (key: "folia.options.machiSceneSection", params?: TranslationParams): string;
+  /**
+   * zh-CN: 场景
+   * zh-TW: 場景
+   * en-US: Scene
+   */
+  (key: "folia.options.machiScene", params?: TranslationParams): string;
+  /**
+   * zh-CN: 自动：每首歌选一个场景，同一首歌总是同一个。
+   * zh-TW: 自動：每首歌選一個場景，同一首歌總是同一個。
+   * en-US: Auto picks a scene for each song; the same song always gets the same one.
+   */
+  (key: "folia.options.machiSceneHint", params?: TranslationParams): string;
+  /**
+   * zh-CN: 自动
+   * zh-TW: 自動
+   * en-US: Auto
+   */
+  (key: "folia.options.machiSceneAuto", params?: TranslationParams): string;
+  /**
+   * zh-CN: 便利店
+   * zh-TW: 便利店
+   * en-US: Konbini
+   */
+  (key: "folia.options.machiSceneKonbini", params?: TranslationParams): string;
+  /**
+   * zh-CN: 加油站
+   * zh-TW: 加油站
+   * en-US: Gas station
+   */
+  (key: "folia.options.machiSceneStation", params?: TranslationParams): string;
+  /**
+   * zh-CN: 城寨酒吧
+   * zh-TW: 城寨酒吧
+   * en-US: Walled City bar
+   */
+  (key: "folia.options.machiSceneKowloon", params?: TranslationParams): string;
+  /**
+   * zh-CN: 时间与天气
+   * zh-TW: 時間與天氣
+   * en-US: Time and weather
+   */
+  (key: "folia.options.machiSkySection", params?: TranslationParams): string;
+  /**
+   * zh-CN: 时间
+   * zh-TW: 時間
+   * en-US: Time of day
+   */
+  (key: "folia.options.machiTimeOfDay", params?: TranslationParams): string;
+  /**
+   * zh-CN: 自动：跟本地时间走，白天、黄昏或夜里。
+   * zh-TW: 自動：跟本地時間走，白天、黃昏或夜裡。
+   * en-US: Auto follows your local clock: day, dusk or night.
+   */
+  (key: "folia.options.machiTimeOfDayHint", params?: TranslationParams): string;
+  /**
+   * zh-CN: 自动
+   * zh-TW: 自動
+   * en-US: Auto
+   */
+  (key: "folia.options.machiTimeAuto", params?: TranslationParams): string;
+  /**
+   * zh-CN: 白天
+   * zh-TW: 白天
+   * en-US: Day
+   */
+  (key: "folia.options.machiTimeDay", params?: TranslationParams): string;
+  /**
+   * zh-CN: 黄昏
+   * zh-TW: 黃昏
+   * en-US: Dusk
+   */
+  (key: "folia.options.machiTimeDusk", params?: TranslationParams): string;
+  /**
+   * zh-CN: 夜间
+   * zh-TW: 夜間
+   * en-US: Night
+   */
+  (key: "folia.options.machiTimeNight", params?: TranslationParams): string;
+  /**
+   * zh-CN: 天气
+   * zh-TW: 天氣
+   * en-US: Weather
+   */
+  (key: "folia.options.machiWeather", params?: TranslationParams): string;
+  /**
+   * zh-CN: 自动：按歌决定天气。下雨时每段副歌开头会打雷。
+   * zh-TW: 自動：按歌決定天氣。下雨時每段副歌開頭會打雷。
+   * en-US: Auto picks the weather for each song. When it rains, lightning strikes at the start of each chorus.
+   */
+  (key: "folia.options.machiWeatherHint", params?: TranslationParams): string;
+  /**
+   * zh-CN: 自动
+   * zh-TW: 自動
+   * en-US: Auto
+   */
+  (key: "folia.options.machiWeatherAuto", params?: TranslationParams): string;
+  /**
+   * zh-CN: 晴
+   * zh-TW: 晴
+   * en-US: Clear
+   */
+  (key: "folia.options.machiWeatherClear", params?: TranslationParams): string;
+  /**
+   * zh-CN: 雨
+   * zh-TW: 雨
+   * en-US: Rain
+   */
+  (key: "folia.options.machiWeatherRain", params?: TranslationParams): string;
+  /**
+   * zh-CN: 雪
+   * zh-TW: 雪
+   * en-US: Snow
+   */
+  (key: "folia.options.machiWeatherSnow", params?: TranslationParams): string;
+  /**
+   * zh-CN: 雾
+   * zh-TW: 霧
+   * en-US: Fog
+   */
+  (key: "folia.options.machiWeatherFog", params?: TranslationParams): string;
+  /**
+   * zh-CN: 镜头
+   * zh-TW: 鏡頭
+   * en-US: Camera
+   */
+  (key: "folia.options.machiCameraSection", params?: TranslationParams): string;
+  /**
+   * zh-CN: 视角
+   * zh-TW: 視角
+   * en-US: View
+   */
+  (key: "folia.options.machiCameraMode", params?: TranslationParams): string;
+  /**
+   * zh-CN: 在画面上拖动转视角、滚轮缩放、右键（或双指）拖动平移。默认视角：松手约 8 秒后回到默认构图。自定义视角：松手就停在那里并记住，也可以用下面的滑块调；每个场景各记一份。
+   * zh-TW: 在畫面上拖動轉視角、滾輪縮放、右鍵（或雙指）拖動平移。預設視角：松手約 8 秒後回到預設構圖。自定義視角：松手就停在那裡並記住，也可以用下面的滑塊調；每個場景各記一份。
+   * en-US: Drag the picture to turn, scroll to zoom, right-drag (or use two fingers) to pan. Default view: about 8 seconds after you let go it returns to the default framing. Custom view: it stays where you leave it and is remembered, one for each scene; the sliders below adjust it too.
+   */
+  (key: "folia.options.machiCameraModeHint", params?: TranslationParams): string;
+  /**
+   * zh-CN: 默认视角
+   * zh-TW: 預設視角
+   * en-US: Default view
+   */
+  (key: "folia.options.machiCameraDefault", params?: TranslationParams): string;
+  /**
+   * zh-CN: 自定义视角
+   * zh-TW: 自定義視角
+   * en-US: Custom view
+   */
+  (key: "folia.options.machiCameraCustom", params?: TranslationParams): string;
+  /**
+   * zh-CN: 水平转角
+   * zh-TW: 水平轉角
+   * en-US: Turn
+   */
+  (key: "folia.options.machiViewAzimuth", params?: TranslationParams): string;
+  /**
+   * zh-CN: 俯仰
+   * zh-TW: 俯仰
+   * en-US: Tilt
+   */
+  (key: "folia.options.machiViewElevation", params?: TranslationParams): string;
+  /**
+   * zh-CN: 远近
+   * zh-TW: 遠近
+   * en-US: Zoom
+   */
+  (key: "folia.options.machiViewZoom", params?: TranslationParams): string;
+  /**
+   * zh-CN: 左右平移
+   * zh-TW: 左右平移
+   * en-US: Pan sideways
+   */
+  (key: "folia.options.machiViewPanX", params?: TranslationParams): string;
+  /**
+   * zh-CN: 前后平移
+   * zh-TW: 前後平移
+   * en-US: Pan forward / back
+   */
+  (key: "folia.options.machiViewPanZ", params?: TranslationParams): string;
+  /**
+   * zh-CN: 回到默认构图
+   * zh-TW: 回到預設構圖
+   * en-US: Back to default framing
+   */
+  (key: "folia.options.machiViewReset", params?: TranslationParams): string;
+  /**
+   * zh-CN: 调哪个场景
+   * zh-TW: 調哪個場景
+   * en-US: Scene to adjust
+   */
+  (key: "folia.options.machiViewScene", params?: TranslationParams): string;
+  /**
+   * zh-CN: 场景是“自动”时，下面的滑块调哪个场景的视角；默认是正在画的那个。
+   * zh-TW: 場景是“自動”時，下面的滑塊調哪個場景的視角；預設是正在畫的那個。
+   * en-US: With the scene on Auto, whose view the sliders below adjust; by default the scene being shown.
+   */
+  (key: "folia.options.machiViewSceneHint", params?: TranslationParams): string;
+  /**
+   * zh-CN: 运镜
+   * zh-TW: 運鏡
+   * en-US: Camera drift
+   */
+  (key: "folia.options.machiCameraMotion", params?: TranslationParams): string;
+  /**
+   * zh-CN: 镜头在视角附近缓慢地转动、推近拉远、平移，跟着歌曲暂停。拖动时停下，回到视角后再接着走。
+   * zh-TW: 鏡頭在視角附近緩慢地轉動、推近拉遠、平移，跟著歌曲暫停。拖動時停下，回到視角後再接著走。
+   * en-US: The camera slowly turns, pushes in and pulls back, and pans around the view, pausing with the song. Dragging stops it; it picks up again once the camera is back at the view.
+   */
+  (key: "folia.options.machiCameraMotionHint", params?: TranslationParams): string;
+  /**
+   * zh-CN: 运镜速度
+   * zh-TW: 運鏡速度
+   * en-US: Drift speed
+   */
+  (key: "folia.options.machiCameraMotionSpeed", params?: TranslationParams): string;
+  /**
+   * zh-CN: 取景
+   * zh-TW: 取景
+   * en-US: Viewfinder
+   */
+  (key: "folia.options.machiCameraBar", params?: TranslationParams): string;
+  /**
+   * zh-CN: 视角
+   * zh-TW: 視角
+   * en-US: View
+   */
+  (key: "folia.options.machiCameraBarView", params?: TranslationParams): string;
+  /**
+   * zh-CN: 对焦与光圈
+   * zh-TW: 對焦與光圈
+   * en-US: Focus & aperture
+   */
+  (key: "folia.options.machiCameraBarLens", params?: TranslationParams): string;
+  /**
+   * zh-CN: 运镜
+   * zh-TW: 運鏡
+   * en-US: Drift
+   */
+  (key: "folia.options.machiCameraBarMotion", params?: TranslationParams): string;
+  /**
+   * zh-CN: 复位
+   * zh-TW: 復位
+   * en-US: Reset
+   */
+  (key: "folia.options.machiCameraBarReset", params?: TranslationParams): string;
+  /**
+   * zh-CN: 收起
+   * zh-TW: 收起
+   * en-US: Close
+   */
+  (key: "folia.options.machiCameraBarClose", params?: TranslationParams): string;
+  /**
+   * zh-CN: 景深
+   * zh-TW: 景深
+   * en-US: Depth of field
+   */
+  (key: "folia.options.machiDofSection", params?: TranslationParams): string;
+  /**
+   * zh-CN: 光圈
+   * zh-TW: 光圈
+   * en-US: Aperture
+   */
+  (key: "folia.options.machiAperture", params?: TranslationParams): string;
+  /**
+   * zh-CN: 往右光圈越大：清晰的那一层越薄，焦外越虚，灯光和霓虹虚成圆形的光斑。f/8 是原来的微缩感。
+   * zh-TW: 往右光圈越大：清晰的那一層越薄，焦外越虛，燈光和霓虹虛成圓形的光斑。f/8 是原來的微縮感。
+   * en-US: Further right opens the aperture: a thinner slice in focus, everything else softer, and the lights and neon blur into round discs. f/8 is the original miniature look.
+   */
+  (key: "folia.options.machiApertureHint", params?: TranslationParams): string;
+  /**
+   * zh-CN: 景深强度
+   * zh-TW: 景深強度
+   * en-US: Strength
+   */
+  (key: "folia.options.machiDof", params?: TranslationParams): string;
+  /**
+   * zh-CN: 离对焦处越远越虚；0 是关掉。
+   * zh-TW: 離對焦處越遠越虛；0 是關掉。
+   * en-US: The further from the focus, the softer; 0 turns it off.
+   */
+  (key: "folia.options.machiDofHint", params?: TranslationParams): string;
+  /**
+   * zh-CN: 清晰范围
+   * zh-TW: 清晰範圍
+   * en-US: Sharp range
+   */
+  (key: "folia.options.machiDofRange", params?: TranslationParams): string;
+  /**
+   * zh-CN: 移轴
+   * zh-TW: 移軸
+   * en-US: Tilt-shift
+   */
+  (key: "folia.options.machiTiltShift", params?: TranslationParams): string;
+  /**
+   * zh-CN: 画面上下两头虚掉，像微缩模型的照片。
+   * zh-TW: 畫面上下兩頭虛掉，像微縮模型的照片。
+   * en-US: Softens the top and bottom of the picture, like a photo of a miniature.
+   */
+  (key: "folia.options.machiTiltShiftHint", params?: TranslationParams): string;
+  /**
+   * zh-CN: 对焦
+   * zh-TW: 對焦
+   * en-US: Focus
+   */
+  (key: "folia.options.machiFocus", params?: TranslationParams): string;
+  /**
+   * zh-CN: 画面中心：镜头绕着转的那一点。歌词屏：对在场景里的歌词屏上。手动：从画面中心往前或往后挪。
+   * zh-TW: 畫面中心：鏡頭繞著轉的那一點。歌詞屏：對在場景裡的歌詞屏上。手動：從畫面中心往前或往後挪。
+   * en-US: Centre: the point the camera turns around. Lyric screen: the scene's lyric screen. Manual: moved nearer or further from the centre.
+   */
+  (key: "folia.options.machiFocusHint", params?: TranslationParams): string;
+  /**
+   * zh-CN: 画面中心
+   * zh-TW: 畫面中心
+   * en-US: Centre
+   */
+  (key: "folia.options.machiFocusCenter", params?: TranslationParams): string;
+  /**
+   * zh-CN: 歌词屏
+   * zh-TW: 歌詞屏
+   * en-US: Lyric screen
+   */
+  (key: "folia.options.machiFocusLyrics", params?: TranslationParams): string;
+  /**
+   * zh-CN: 手动
+   * zh-TW: 手動
+   * en-US: Manual
+   */
+  (key: "folia.options.machiFocusManual", params?: TranslationParams): string;
+  /**
+   * zh-CN: 对焦前后
+   * zh-TW: 對焦前後
+   * en-US: Focus distance
+   */
+  (key: "folia.options.machiFocusOffset", params?: TranslationParams): string;
+  /**
+   * zh-CN: 画质
+   * zh-TW: 畫質
+   * en-US: Quality
+   */
+  (key: "folia.options.machiQualitySection", params?: TranslationParams): string;
+  /**
+   * zh-CN: 预设
+   * zh-TW: 預設
+   * en-US: Preset
+   */
+  (key: "folia.options.machiQuality", params?: TranslationParams): string;
+  /**
+   * zh-CN: 高、平衡、低是几套现成的组合；改了下面任何一项就成了自定义。帧率上限在设置的「性能与动效」里，对所有样式生效。
+   * zh-TW: 高、平衡、低是幾套現成的組合；改了下面任何一項就成了自定義。幀率上限在設定的「性能與動效」裡，對所有樣式生效。
+   * en-US: High, Balanced and Low are ready-made combinations; changing any option below makes it Custom. The frame-rate limit lives in Settings › Performance & motion and applies to every style.
+   */
+  (key: "folia.options.machiQualityHint", params?: TranslationParams): string;
+  /**
+   * zh-CN: 自定义
+   * zh-TW: 自定義
+   * en-US: Custom
+   */
+  (key: "folia.options.machiQualityCustom", params?: TranslationParams): string;
+  /**
+   * zh-CN: 高
+   * zh-TW: 高
+   * en-US: High
+   */
+  (key: "folia.options.machiQualityHigh", params?: TranslationParams): string;
+  /**
+   * zh-CN: 平衡
+   * zh-TW: 平衡
+   * en-US: Balanced
+   */
+  (key: "folia.options.machiQualityBalanced", params?: TranslationParams): string;
+  /**
+   * zh-CN: 低
+   * zh-TW: 低
+   * en-US: Low
+   */
+  (key: "folia.options.machiQualityLow", params?: TranslationParams): string;
+  /**
+   * zh-CN: 分辨率
+   * zh-TW: 解析度
+   * en-US: Resolution
+   */
+  (key: "folia.options.machiRenderScale", params?: TranslationParams): string;
+  /**
+   * zh-CN: 按屏幕像素的几成来画：低一些会糊一点，但快很多。高 DPI 屏上最多按 2 倍算。
+   * zh-TW: 按屏幕像素的幾成來畫：低一些會糊一點，但快很多。高 DPI 屏上最多按 2 倍算。
+   * en-US: Draws at a share of the screen's pixels: lower is a little softer but much faster. On high-DPI screens it counts at most 2× the layout size.
+   */
+  (key: "folia.options.machiRenderScaleHint", params?: TranslationParams): string;
+  /**
+   * zh-CN: 抗锯齿
+   * zh-TW: 抗鋸齒
+   * en-US: Anti-aliasing
+   */
+  (key: "folia.options.machiAntialias", params?: TranslationParams): string;
+  /**
+   * zh-CN: FXAA 最省，字会略软；SMAA 边缘干净，墨线和雨丝也平滑，代价稍高；超采样按 2 倍分辨率画再缩回来，最细也最贵。
+   * zh-TW: FXAA 最省，字會略軟；SMAA 邊緣乾淨，墨線和雨絲也平滑，代價稍高；超採樣按 2 倍解析度畫再縮回來，最細也最貴。
+   * en-US: FXAA is the cheapest but softens text slightly; SMAA gives clean edges and also smooths the ink lines and rain, at a little more cost; Supersampling draws at twice the resolution and scales down, the finest and the most expensive.
+   */
+  (key: "folia.options.machiAntialiasHint", params?: TranslationParams): string;
+  /**
+   * zh-CN: 关
+   * zh-TW: 關
+   * en-US: Off
+   */
+  (key: "folia.options.machiAntialiasOff", params?: TranslationParams): string;
+  /**
+   * zh-CN: FXAA
+   * zh-TW: FXAA
+   * en-US: FXAA
+   */
+  (key: "folia.options.machiAntialiasFxaa", params?: TranslationParams): string;
+  /**
+   * zh-CN: SMAA
+   * zh-TW: SMAA
+   * en-US: SMAA
+   */
+  (key: "folia.options.machiAntialiasSmaa", params?: TranslationParams): string;
+  /**
+   * zh-CN: 超采样
+   * zh-TW: 超採樣
+   * en-US: Supersampling
+   */
+  (key: "folia.options.machiAntialiasSsaa", params?: TranslationParams): string;
+  /**
+   * zh-CN: 阴影
+   * zh-TW: 陰影
+   * en-US: Shadows
+   */
+  (key: "folia.options.machiShadows", params?: TranslationParams): string;
+  /**
+   * zh-CN: 月光和太阳的投影。
+   * zh-TW: 月光和太陽的投影。
+   * en-US: Shadows cast by the moon and the sun.
+   */
+  (key: "folia.options.machiShadowsHint", params?: TranslationParams): string;
+  /**
+   * zh-CN: 倒影
+   * zh-TW: 倒影
+   * en-US: Reflections
+   */
+  (key: "folia.options.machiReflections", params?: TranslationParams): string;
+  /**
+   * zh-CN: 湿路面上灯和招牌的倒影；只在路面湿的时候才画。
+   * zh-TW: 濕路面上燈和招牌的倒影；只在路面濕的時候才畫。
+   * en-US: Lights and signs reflected in the wet road; only drawn while the road is wet.
+   */
+  (key: "folia.options.machiReflectionsHint", params?: TranslationParams): string;
+  /**
+   * zh-CN: 关
+   * zh-TW: 關
+   * en-US: Off
+   */
+  (key: "folia.options.machiLevelOff", params?: TranslationParams): string;
+  /**
+   * zh-CN: 低
+   * zh-TW: 低
+   * en-US: Low
+   */
+  (key: "folia.options.machiLevelLow", params?: TranslationParams): string;
+  /**
+   * zh-CN: 高
+   * zh-TW: 高
+   * en-US: High
+   */
+  (key: "folia.options.machiLevelHigh", params?: TranslationParams): string;
+  /**
+   * zh-CN: 辉光与光条
+   * zh-TW: 輝光與光條
+   * en-US: Glow and streaks
+   */
+  (key: "folia.options.machiGlow", params?: TranslationParams): string;
+  /**
+   * zh-CN: 夜里灯和招牌晕开的光，以及横向的镜头光条。
+   * zh-TW: 夜裡燈和招牌暈開的光，以及橫向的鏡頭光條。
+   * en-US: The halo around lights and signs at night, and the horizontal lens streaks.
+   */
+  (key: "folia.options.machiGlowHint", params?: TranslationParams): string;
+  /**
+   * zh-CN: 自动降级
+   * zh-TW: 自動降級
+   * en-US: Auto-degrade
+   */
+  (key: "folia.options.machiAdaptive", params?: TranslationParams): string;
+  /**
+   * zh-CN: 帧率长期偏低时，在这套设置之下逐步降低（先关景深的虚化，再降倒影、阴影、辉光，最后才动抗锯齿和分辨率），不会高过你选的。改了设置会从新的这套重新开始。
+   * zh-TW: 幀率長期偏低時，在這套設定之下逐步降低（先關景深的虛化，再降倒影、陰影、輝光，最後才動抗鋸齒和解析度），不會高過你選的。改了設定會從新的這套重新開始。
+   * en-US: When the frame rate stays low, steps down below these settings (depth-of-field blur first, then reflections, shadows and glow, and only then anti-aliasing and resolution), never above what you chose. Changing a setting starts over from the new one.
+   */
+  (key: "folia.options.machiAdaptiveHint", params?: TranslationParams): string;
   /**
    * zh-CN: 商籁性能警告
    * zh-TW: 商籟效能警告

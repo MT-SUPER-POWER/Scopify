@@ -46,7 +46,12 @@ import { FoliaVisualizerQuickControl } from "@/components/lyrics/FoliaVisualizer
 
 const RANDOM_CHOICE = "__random__";
 
-export function FoliaPanelAppearance({ assets, onOpenSettings, theme }: FoliaPanelAppearanceProps) {
+export function FoliaPanelAppearance({
+  assets,
+  onClosePanel,
+  onOpenSettings,
+  theme,
+}: FoliaPanelAppearanceProps) {
   const { t } = useI18n();
   const model = useFoliaPanelControls();
   const randomEnabled = useLyricStageStore((state) => state.randomVisualizerMode);
@@ -130,7 +135,11 @@ export function FoliaPanelAppearance({ assets, onOpenSettings, theme }: FoliaPan
               />
             </>
           ) : getVisualizerRegistryEntry(model.visualizerMode).renderQuickControls ? (
-            <FoliaVisualizerQuickControl assets={assets} theme={theme} />
+            <FoliaVisualizerQuickControl
+              assets={assets}
+              onClosePanel={onClosePanel}
+              theme={theme}
+            />
           ) : null
         }
       />

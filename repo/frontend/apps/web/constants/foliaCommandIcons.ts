@@ -22,6 +22,8 @@ import {
   PiEye,
   PiTextAa,
   PiShootingStar,
+  PiStorefront,
+  PiCloudRain,
 } from "react-icons/pi";
 import type { IconType } from "react-icons";
 import type { LyricVisualizerMode } from "@/types/lyrics/model";
@@ -42,6 +44,8 @@ export const FOLIA_VISUALIZER_ICONS: Record<LyricVisualizerMode, IconType> = {
   still: PiTextT,
   tempera: PiSquaresFour,
   hanabi: PiShootingStar,
+  machi: PiStorefront,
+  nebbia: PiCloudRain,
 };
 
 const visualizerIconsByCommand = new Map(

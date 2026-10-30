@@ -32,6 +32,7 @@ import type { FoliaPanelControlsProps } from "@/types/lyrics/components";
 
 export function FoliaPanelControls({
   assets,
+  onClosePanel,
   onOpenEqualizer,
   onOpenSettings,
   onOpenThemeLibrary,
@@ -121,7 +122,12 @@ export function FoliaPanelControls({
       <FoliaGroupLine />
       <FoliaPanelTheme onOpenThemeLibrary={onOpenThemeLibrary} />
       <FoliaGroupLine />
-      <FoliaPanelAppearance assets={assets} onOpenSettings={onOpenSettings} theme={theme} />
+      <FoliaPanelAppearance
+        assets={assets}
+        onClosePanel={onClosePanel}
+        onOpenSettings={onOpenSettings}
+        theme={theme}
+      />
     </div>
   );
 }

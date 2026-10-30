@@ -78,11 +78,28 @@ const VISUALIZER_GLYPHS: Record<string, ReactNode> = {
       <path d="M12 9V4M12 9l3.5-3.5M12 9l-3.5-3.5M12 9h5M12 9H7M12 9l3.5 3.5M12 9l-3.5 3.5" />
     </>
   ),
+  // 町景：一间小店，屋顶一块牌子，斜斜的雨（Folia machi/entry.tsx 的 glyph）
+  machi: (
+    <>
+      <path d="M4 20V11h11v9" />
+      <path d="M6.5 11V8.5h6V11" opacity="0.6" />
+      <path d="M9 20v-4.5h3V20" opacity="0.6" />
+      <path d="M18 4l-1.2 3M21 6l-1.2 3M18.5 11l-1.2 3" opacity="0.5" />
+    </>
+  ),
   monet: (
     <>
       <path d="M3 9.5h7" />
       <path d="M3 13.5h5" opacity="0.55" />
       <rect x="14" y="5" width="7" height="14" rx="1.5" opacity="0.55" />
+    </>
+  ),
+  // 雾笺：一扇窗，雾上手指写的一笔，几颗水珠（Folia nebbia/entry.tsx 的 glyph）
+  nebbia: (
+    <>
+      <rect x="3.5" y="4.5" width="17" height="15" rx="1.5" />
+      <path d="M7 14c2-3.5 4-3.5 5 0s3 3 5-1" opacity="0.6" />
+      <path d="M8 8v1.5M15.5 7.5v2" opacity="0.5" />
     </>
   ),
   partita: (

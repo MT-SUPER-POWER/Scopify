@@ -36,6 +36,7 @@ export interface FoliaLyricsControlsProps {
 
 export interface FoliaPanelControlsProps {
   assets: FoliaStageAssets;
+  onClosePanel: () => void;
   onOpenEqualizer: () => void;
   onOpenSettings: (section: FoliaStageEditSection) => void;
   onOpenThemeLibrary: () => void;
@@ -380,6 +381,7 @@ export interface FoliaPanelThemeProps {
 
 export interface FoliaPanelAppearanceProps {
   assets: FoliaStageAssets;
+  onClosePanel: () => void;
   onOpenSettings: (section: FoliaStageEditSection) => void;
   theme: Theme;
 }
@@ -392,6 +394,8 @@ export interface FoliaBackgroundQuickControlProps {
 
 export interface FoliaVisualizerQuickControlProps {
   assets: FoliaStageAssets;
+  /** Closes the player panel the controls sit in (Machi's viewfinder bar takes the picture's room). */
+  onClosePanel?: () => void;
   theme: Theme;
 }
 

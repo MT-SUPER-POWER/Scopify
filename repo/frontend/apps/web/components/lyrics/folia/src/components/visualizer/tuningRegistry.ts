@@ -6,6 +6,8 @@ import type {
   DioramaTuning,
   FumeTuning,
   HanabiTuning,
+  MachiTuning,
+  NebbiaTuning,
   MonetTuning,
   PartitaTuning,
   PendoloTuning,
@@ -22,7 +24,9 @@ import classicTuning from "./classic/tuning";
 import dioramaTuning from "./diorama/tuning";
 import fumeTuning from "./fume/tuning";
 import hanabiTuning from "./hanabi/tuning";
+import machiTuning from "./machi/tuning";
 import monetTuning from "./monet/tuning";
+import nebbiaTuning from "./nebbia/tuning";
 import partitaTuning from "./partita/tuning";
 import pendoloTuning from "./pendolo/tuning";
 import sonnetTuning from "./sonnet/tuning";
@@ -45,6 +49,8 @@ export interface VisualizerTuningMap {
   sonnet: SonnetTuning;
   tempera: TemperaTuning;
   hanabi: HanabiTuning;
+  machi: MachiTuning;
+  nebbia: NebbiaTuning;
 }
 
 export type VisualizerTuningMode = keyof VisualizerTuningMap;
@@ -82,7 +88,9 @@ const tuningModules: Record<string, VisualizerTuningModule> = {
   "./diorama/tuning.ts": { default: dioramaTuning as VisualizerTuningAdapter },
   "./fume/tuning.ts": { default: fumeTuning as VisualizerTuningAdapter },
   "./hanabi/tuning.ts": { default: hanabiTuning as VisualizerTuningAdapter },
+  "./machi/tuning.ts": { default: machiTuning as VisualizerTuningAdapter },
   "./monet/tuning.ts": { default: monetTuning as VisualizerTuningAdapter },
+  "./nebbia/tuning.ts": { default: nebbiaTuning as VisualizerTuningAdapter },
   "./partita/tuning.ts": { default: partitaTuning as VisualizerTuningAdapter },
   "./pendolo/tuning.ts": { default: pendoloTuning as VisualizerTuningAdapter },
   "./sonnet/tuning.ts": { default: sonnetTuning as VisualizerTuningAdapter },

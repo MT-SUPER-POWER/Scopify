@@ -13,6 +13,8 @@ import {
   type DioramaTuning,
   type FumeTuning,
   type HanabiTuning,
+  type MachiTuning,
+  type NebbiaTuning,
   type Line,
   type MonetPortraitImage,
   type MonetTuning,
@@ -44,7 +46,9 @@ export type VisualizerTuningKind =
   | "pendolo"
   | "sonnet"
   | "tempera"
-  | "hanabi";
+  | "hanabi"
+  | "machi"
+  | "nebbia";
 
 export interface VisualizerSharedProps {
   currentTime: MotionValue<number>;
@@ -104,6 +108,10 @@ export interface VisualizerSharedProps {
   onTemperaTuningChange?: (patch: Partial<TemperaTuning>) => void;
   hanabiTuning?: HanabiTuning;
   onHanabiTuningChange?: (patch: Partial<HanabiTuning>) => void;
+  machiTuning?: MachiTuning;
+  onMachiTuningChange?: (patch: Partial<MachiTuning>) => void;
+  nebbiaTuning?: NebbiaTuning;
+  onNebbiaTuningChange?: (patch: Partial<NebbiaTuning>) => void;
 }
 
 export interface VisualizerSettingsPanelProps {
@@ -153,6 +161,12 @@ export interface VisualizerSettingsPanelProps {
   onTemperaTuningChange?: (patch: Partial<TemperaTuning>) => void;
   hanabiTuning?: HanabiTuning;
   onHanabiTuningChange?: (patch: Partial<HanabiTuning>) => void;
+  machiTuning?: MachiTuning;
+  onMachiTuningChange?: (patch: Partial<MachiTuning>) => void;
+  nebbiaTuning?: NebbiaTuning;
+  onNebbiaTuningChange?: (patch: Partial<NebbiaTuning>) => void;
+  /** Closes the player panel the controls sit in: for a control that opens something on the player page itself (Machi's viewfinder bar). */
+  onClosePanel?: () => void;
   /** Mark slider drag start so onChange only updates draft. */
   onSliderPointerDown?: () => void;
   /** Commit draft values to persistent store on slider release. */
@@ -173,6 +187,8 @@ export interface VisualizerSettingsResetProps {
   resetSonnetTuning?: () => void;
   resetTemperaTuning?: () => void;
   resetHanabiTuning?: () => void;
+  resetMachiTuning?: () => void;
+  resetNebbiaTuning?: () => void;
   setDraftCadenzaTuning?: (tuning: CadenzaTuning) => void;
   setDraftFumeTuning?: (tuning: FumeTuning) => void;
   setDraftCladdaghTuning?: (tuning: CladdaghTuning) => void;
@@ -180,6 +196,8 @@ export interface VisualizerSettingsResetProps {
   setDraftSonnetTuning?: (tuning: SonnetTuning) => void;
   setDraftTemperaTuning?: (tuning: TemperaTuning) => void;
   setDraftHanabiTuning?: (tuning: HanabiTuning) => void;
+  setDraftMachiTuning?: (tuning: MachiTuning) => void;
+  setDraftNebbiaTuning?: (tuning: NebbiaTuning) => void;
 }
 
 export interface VisualizerRegistryEntry {
