@@ -2,6 +2,26 @@
 
 > 根据 commit 自动生成，请勿手动编辑；推送版本 tag 后由 CI 更新。v2.0.3 及更早版本见[历史更新记录](archive/CHANGELOG-legacy.md)。
 
+## v3.1.4 — 2026-10-30
+
+### 新增
+
+- 空背景新增暗角，范围可在 Folia 设置中调节 ([11cbb167](https://github.com/MT-SUPER-POWER/Scopify/commit/11cbb1675ea2ffb86c8fb187f657f6c5be1337c1))
+- 支持背景陈列架切换与补齐心象参数面板 ([1b082536](https://github.com/MT-SUPER-POWER/Scopify/commit/1b082536ab75a442bac776f434089d05668a2b8d))
+- 命令工作区支持二级界面切换外观与主题配色 ([495c34ee](https://github.com/MT-SUPER-POWER/Scopify/commit/495c34eed578f24db321962fe8c27a1b546c951e))
+- 支持主题亮暗双配色并修复桌面音乐留边 ([f98d2c0e](https://github.com/MT-SUPER-POWER/Scopify/commit/f98d2c0ea33b36f00b8eda6fa28fb2fcddff0482))
+- 支持从命令面板重新加载窗口 ([5fecc203](https://github.com/MT-SUPER-POWER/Scopify/commit/5fecc20329476e60f0672d8cc8223286db92ba38))
+
+### 修复
+
+- 修复壁纸驱动中窗口最小尺寸元组类型报错 ([8a91976d](https://github.com/MT-SUPER-POWER/Scopify/commit/8a91976d2fee28113db832831790c80a20294c0e))
+- 补齐原生构建与产物同步脚本 ([1b88ba6a](https://github.com/MT-SUPER-POWER/Scopify/commit/1b88ba6a39aaa1142da64136d0232f90fa9500ad))
+- 修复 win 端无法进入桌面歌词的问题 ([4f6070b6](https://github.com/MT-SUPER-POWER/Scopify/commit/4f6070b65b8ac7dc135ed523c53a36fd875b054f))
+- 补齐亮色界面适配并柔化整体底色 ([fbe885a9](https://github.com/MT-SUPER-POWER/Scopify/commit/fbe885a9c03d5727bc663bf4e20030220e833d8a))
+- 歌词面板与「匹配歌词」的歌词来源保持同步 ([d7c72d6c](https://github.com/MT-SUPER-POWER/Scopify/commit/d7c72d6cc9b5940c827559d6cabc94d50c3d0977))
+- 匹配歌词搜索或预览失败时显示重试，不再显示「未找到」 ([f517dff4](https://github.com/MT-SUPER-POWER/Scopify/commit/f517dff480100e3a21c7b7e440d1075b8a50551e))
+- 云盘匹配搜索失败时显示重试，不再显示「没有找到」 ([2b7cad60](https://github.com/MT-SUPER-POWER/Scopify/commit/2b7cad60abe82ed5ec1d94bd0806a3f1b15e30e5))
+
 ## v3.1.3 — 2026-10-29
 
 ### 新增
