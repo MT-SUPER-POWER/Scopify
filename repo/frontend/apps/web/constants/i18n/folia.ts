@@ -545,6 +545,7 @@ export const foliaMessages = defineMessages(
     "folia.options.soraBlank": "完全空白",
     "folia.options.soraBlankDesc":
       "不再渲染 WebGL 星空，只显示静态纯色画面：夜间纯黑，日间纯白。适合搭配视频层使用。",
+    "folia.options.soraVignetteSpread": "暗角范围",
     "folia.options.videoLayerSettings": "视频层",
     "folia.options.videoLayerEnabled": "在歌词后方显示视频",
     "folia.options.videoLayerDesc": "在背景和歌词之间铺一层静音视频，跟随音乐播放、暂停和跳转。",
@@ -2554,6 +2555,7 @@ export const foliaMessages = defineMessages(
     "folia.options.soraBlank": "完全空白",
     "folia.options.soraBlankDesc":
       "不再渲染 WebGL 星空，只顯示靜態純色畫面：夜間純黑，日間純白。適合搭配影片層使用。",
+    "folia.options.soraVignetteSpread": "暗角範圍",
     "folia.options.videoLayerSettings": "影片層",
     "folia.options.videoLayerEnabled": "在歌詞後方顯示影片",
     "folia.options.videoLayerDesc": "在背景和歌詞之間鋪一層靜音影片，跟隨音樂播放、暫停和跳轉。",
@@ -4603,6 +4605,7 @@ export const foliaMessages = defineMessages(
     "folia.options.soraBlank": "Fully blank",
     "folia.options.soraBlankDesc":
       "Skip the WebGL starfield and show a static solid frame: black at night, white in daylight. Pairs well with the video layer.",
+    "folia.options.soraVignetteSpread": "Vignette spread",
     "folia.options.videoLayerSettings": "Video layer",
     "folia.options.videoLayerEnabled": "Show video behind lyrics",
     "folia.options.videoLayerDesc":

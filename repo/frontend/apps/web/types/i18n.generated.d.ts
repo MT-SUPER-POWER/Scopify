@@ -12023,6 +12023,12 @@ export interface TranslateFn {
    */
   (key: "folia.options.soraBlankDesc", params?: TranslationParams): string;
   /**
+   * zh-CN: 暗角范围
+   * zh-TW: 暗角範圍
+   * en-US: Vignette spread
+   */
+  (key: "folia.options.soraVignetteSpread", params?: TranslationParams): string;
+  /**
    * zh-CN: 视频层
    * zh-TW: 影片層
    * en-US: Video layer

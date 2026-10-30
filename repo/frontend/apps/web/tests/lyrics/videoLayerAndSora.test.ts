@@ -141,7 +141,36 @@ describe("Sora blank background", () => {
       throw new Error("Expected daylightResult to be a valid element");
     }
     expect(daylightResult.props.style?.backgroundColor).toBe("#ffffff");
-    expect(daylightResult.props.children).toBe(false);
+    const daylightChildren = React.Children.toArray(daylightResult.props.children);
+    expect(daylightChildren).toHaveLength(1);
+    const daylightVignette = daylightChildren[0];
+    if (!React.isValidElement<{ disabled?: boolean; clearStop?: number }>(daylightVignette)) {
+      throw new Error("Expected the vignette overlay to be a valid element");
+    }
+    expect(daylightVignette.props.disabled).toBe(false);
+    expect(daylightVignette.props.clearStop).toBe(
+      100 - (DEFAULT_SORA_BACKGROUND_TUNING.vignetteSpread ?? 0),
+    );
+
+    const noShadowResult = soraEntry.render({
+      ...daylightProps,
+      config: {
+        ...daylightProps.config,
+        common: { disableVignette: true },
+      },
+    });
+    if (
+      !React.isValidElement<{ style?: React.CSSProperties; children?: React.ReactNode }>(
+        noShadowResult,
+      )
+    ) {
+      throw new Error("Expected noShadowResult to be a valid element");
+    }
+    const hiddenVignette = React.Children.toArray(noShadowResult.props.children)[0];
+    if (!React.isValidElement<{ disabled?: boolean }>(hiddenVignette)) {
+      throw new Error("Expected the vignette overlay to be a valid element");
+    }
+    expect(hiddenVignette.props.disabled).toBe(true);
 
     const nightProps: VisualizerBackgroundRenderProps = {
       ...daylightProps,
@@ -167,7 +196,6 @@ describe("Sora blank background", () => {
       throw new Error("Expected nightResult to be a valid element");
     }
     expect(nightResult.props.style?.backgroundColor).toBe("#000000");
-    expect(nightResult.props.children).toBe(false);
   });
 
   it("handles broken or permission-rejected video handles gracefully", async () => {

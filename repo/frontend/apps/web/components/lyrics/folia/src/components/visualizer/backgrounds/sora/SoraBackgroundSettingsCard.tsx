@@ -1,5 +1,9 @@
 import type { TranslateFn } from "@/types/i18n.generated";
-import { type SoraBackgroundTuning, type Theme } from "../../../../types";
+import {
+  DEFAULT_SORA_BACKGROUND_TUNING,
+  type SoraBackgroundTuning,
+  type Theme,
+} from "../../../../types";
 import { colorWithAlpha } from "../../colorMix";
 import BackgroundToggleRow from "../BackgroundToggleRow";
 
@@ -14,6 +18,8 @@ interface SoraBackgroundSettingsCardProps {
   rangeInputClass: string;
   tuning: SoraBackgroundTuning;
   onTuningChange?: (patch: Partial<SoraBackgroundTuning>) => void;
+  vignetteDisabled?: boolean;
+  onVignetteDisabledChange?: (disabled: boolean) => void;
   onSliderPointerDown?: () => void;
   onSliderCommit?: () => void;
 }
@@ -72,6 +78,8 @@ export default function SoraBackgroundSettingsCard({
   rangeInputClass,
   tuning,
   onTuningChange,
+  vignetteDisabled = false,
+  onVignetteDisabledChange,
   onSliderPointerDown,
   onSliderCommit,
 }: SoraBackgroundSettingsCardProps) {
@@ -102,6 +110,30 @@ export default function SoraBackgroundSettingsCard({
         onChange={(blank) => onTuningChange?.({ blank })}
         theme={theme}
       />
+
+      <BackgroundToggleRow
+        label={t ? t("folia.options.disableVisualizerVignette") : "禁用暗角"}
+        description={t ? t("folia.options.disableVisualizerVignetteDesc") : undefined}
+        checked={vignetteDisabled}
+        onChange={onVignetteDisabledChange}
+        theme={theme}
+      />
+
+      {!vignetteDisabled && (
+        <SliderRow
+          label={t ? t("folia.options.soraVignetteSpread") : "暗角范围"}
+          value={tuning.vignetteSpread ?? DEFAULT_SORA_BACKGROUND_TUNING.vignetteSpread!}
+          min={10}
+          max={60}
+          step={1}
+          format={(value) => `${value}%`}
+          theme={theme}
+          rangeInputClass={rangeInputClass}
+          onChange={(vignetteSpread) => onTuningChange?.({ vignetteSpread })}
+          onPointerDown={onSliderPointerDown}
+          onPointerUp={onSliderCommit}
+        />
+      )}
 
       {!tuning.blank && (
         <div className="space-y-3 rounded-2xl border p-3" style={{ borderColor }}>

@@ -2,6 +2,7 @@ import React, { useMemo } from "react";
 import { AnimatePresence, motion, MotionValue, useSpring, useTransform } from "framer-motion";
 import * as LucideIcons from "lucide-react";
 import { AudioBands, Theme } from "../../../../types";
+import VignetteOverlay from "../VignetteOverlay";
 
 // src/components/visualizer/backgrounds/common/GeometricBackground.tsx
 
@@ -88,14 +89,6 @@ const getShapeBaseStyle = (shape: BackgroundShape, theme: Theme) => {
     clipPath: getShapeClipPath(shape.type),
   };
 };
-
-const VignetteOverlay: React.FC<{ disabled?: boolean }> = ({ disabled = false }) =>
-  disabled ? null : (
-    <div
-      className="pointer-events-none absolute inset-0"
-      style={{ background: "radial-gradient(circle, transparent 40%, rgba(0,0,0,0.6) 100%)" }}
-    />
-  );
 
 const StaticGeometricScene: React.FC<{
   theme: Theme;

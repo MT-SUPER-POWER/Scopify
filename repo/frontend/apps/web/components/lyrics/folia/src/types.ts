@@ -875,6 +875,8 @@ export interface NomandBackgroundTuning {
 export interface SoraBackgroundTuning {
   /** Skips the WebGL starfield and shows a static solid black (night) / white (daylight) frame. */
   blank?: boolean;
+  /** How far the vignette reaches in from the edges, as a percentage of the frame radius. */
+  vignetteSpread?: number;
   starDensity: number;
   starSize: number;
   starSpeed: number;
@@ -957,6 +959,7 @@ export const DEFAULT_NOMAND_BACKGROUND_TUNING: NomandBackgroundTuning = {
 
 export const DEFAULT_SORA_BACKGROUND_TUNING: SoraBackgroundTuning = {
   blank: false,
+  vignetteSpread: 35,
   starDensity: 1,
   starSize: 1,
   starSpeed: 1,

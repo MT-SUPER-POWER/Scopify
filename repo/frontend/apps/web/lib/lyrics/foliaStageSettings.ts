@@ -57,6 +57,7 @@ const NUMERIC_RANGES = {
   "background.sora.tuning.starSize": [0.2, 2.5],
   "background.sora.tuning.starSpeed": [0.2, 3],
   "background.sora.tuning.twinkleIntensity": [0, 1],
+  "background.sora.tuning.vignetteSpread": [10, 60],
   fontScale: [0.85, 1.4],
   lyricOffsetMs: [-30_000, 30_000],
   subtitleFontScale: [0.85, 1.4],
