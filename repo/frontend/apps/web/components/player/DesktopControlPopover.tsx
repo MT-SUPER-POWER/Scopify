@@ -139,14 +139,18 @@ export function DesktopControlPopover() {
 
         <section className="space-y-4 border-t border-border pt-4">
           <h3 className="text-base font-semibold">{t("desktopPlaybackController.title")}</h3>
-          <label className="flex items-center justify-between gap-3 text-sm">
-            <span>{t("desktopPlaybackController.wallpaper")}</span>
+          <div className="flex items-center justify-between gap-3">
+            <ShortcutHint
+              commandId="toggle-desktop-music-mode"
+              label={t("desktopPlaybackController.wallpaper")}
+            />
             <Switch
+              aria-label={t("desktopPlaybackController.wallpaper")}
               checked={Boolean(wallpaperModel?.preferences.enabled)}
               disabled={!wallpaperModel || wallpaper.isPending}
               onCheckedChange={() => void toggleWallpaper()}
             />
-          </label>
+          </div>
           {wallpaperFaulted && (
             <div role="alert" className="space-y-2 text-sm text-danger">
               <p>{t("desktopPlaybackController.statusFaulted")}</p>
