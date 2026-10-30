@@ -65,7 +65,7 @@ jobs:
         run: pnpm run sync:renderer
 
       - name: Verify Renderer manifest and content
-        run: bun repo/frontend/apps/desktop/scripts/verify-renderer.ts --source-revision=${{ github.sha }}
+        run: bun repo/frontend/apps/desktop/scripts/build/verify-renderer.ts --source-revision=${{ github.sha }}
 
       - name: Pack Renderer and write checksum
         shell: bash
@@ -169,7 +169,7 @@ jobs:
           repo/frontend/apps/desktop/build/desktop/app/renderer
 
       - name: Verify Renderer manifest and content again
-        run: bun repo/frontend/apps/desktop/scripts/verify-renderer.ts --source-revision=${{ github.sha }}
+        run: bun repo/frontend/apps/desktop/scripts/build/verify-renderer.ts --source-revision=${{ github.sha }}
 
       - name: Setup native build cache
         uses: ./.github/actions/setup-native-build

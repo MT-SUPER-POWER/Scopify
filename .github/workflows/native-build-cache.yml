@@ -6,7 +6,7 @@ on:
     branches: [master]
     paths:
       - "repo/frontend/apps/desktop/native/**"
-      - "repo/frontend/apps/desktop/scripts/build-*.ts"
+      - "repo/frontend/apps/desktop/scripts/native/**"
       - "repo/frontend/apps/desktop/lib/napiBuild.ts"
       - "repo/frontend/apps/desktop/package.json"
       - "repo/frontend/apps/desktop/turbo.json"
