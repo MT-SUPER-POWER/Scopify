@@ -23,6 +23,9 @@ async function run() {
     height: 600,
     minWidth: 640,
     minHeight: 480,
+    // Reproduce the real main window's creation-time thick frame. A borderless test window
+    // would conceal the 7px content inset regression after native WorkerW parenting.
+    ...(process.platform === "win32" ? { titleBarStyle: "hidden" as const, thickFrame: true } : {}),
     webPreferences: {
       contextIsolation: true,
       nodeIntegration: false,
@@ -31,6 +34,7 @@ async function run() {
   });
   const original = window.getBounds();
   const minimumSize = window.getMinimumSize();
+  const originalContent = window.getContentBounds();
   const hostLosses: string[] = [];
   const driver = createElectronDesktopPlaybackWallpaperDriver({
     mainWindow: window,
@@ -54,6 +58,9 @@ async function run() {
     await window.loadURL(
       'data:text/html,<html><body style="margin:0;background:%232b2824"><div data-desktop-playback-wallpaper-content-ready="true">Scopify native wallpaper verification</div></body></html>',
     );
+    const originalViewport = await window.webContents.executeJavaScript(
+      "({width:innerWidth,height:innerHeight})",
+    );
     if (process.platform !== "win32") {
       assert.equal((await native.getDesktopIconVisibility()).supported, false);
       assert.equal((await native.setDesktopIconVisibility(false)).supported, false);
@@ -76,6 +83,15 @@ async function run() {
         true,
         "Window must remain at the native desktop layer after showInactive",
       );
+      if (process.platform === "win32") {
+        const target = screen.getDisplayMatching(window.getBounds()).bounds;
+        assert.deepEqual(window.getContentBounds(), target);
+        assert.deepEqual(
+          await window.webContents.executeJavaScript("({width:innerWidth,height:innerHeight})"),
+          { width: target.width, height: target.height },
+          "The Renderer must fill the desktop, not just report a matching outer HWND",
+        );
+      }
       if (process.platform === "darwin") {
         const display = screen.getDisplayMatching(window.getBounds());
         const before = window.getContentBounds();
@@ -131,6 +147,14 @@ async function run() {
       assert.equal(native.isAttached(), false);
       assert.deepEqual(window.getBounds(), original);
       assert.deepEqual(window.getMinimumSize(), minimumSize);
+      if (process.platform === "win32") {
+        assert.deepEqual(window.getContentBounds(), originalContent);
+        assert.deepEqual(
+          await window.webContents.executeJavaScript("({width:innerWidth,height:innerHeight})"),
+          originalViewport,
+        );
+        assert.equal(window.isResizable(), true);
+      }
       console.log(
         `[wallpaper-smoke] cycle ${cycle}: IPC attach, native desktop layer, detach and window restoration passed`,
       );

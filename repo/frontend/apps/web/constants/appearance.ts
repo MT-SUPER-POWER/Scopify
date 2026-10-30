@@ -4,19 +4,47 @@ import type {
   ThemeTimeSlot,
 } from "@/types/appearance/model";
 
-export const DEFAULT_THEME_SCHEDULE: ThemeTimeSlot[] = [
+export const PREVIOUS_DEFAULT_THEME_SCHEDULE: ThemeTimeSlot[] = [
   { start: 0, themeId: "lavender" },
   { start: 420, themeId: "mist" },
   { start: 720, themeId: "silver" },
   { start: 1080, themeId: "sand" },
 ];
 
+export const DEFAULT_THEME_SCHEDULE: ThemeTimeSlot[] = [
+  { start: 0, themeId: "lavender" },
+  { start: 420, themeId: "mist" },
+  { start: 720, themeId: "silver" },
+  { start: 840, themeId: "sage" },
+  { start: 1080, themeId: "sand" },
+];
+
 export const BACKGROUND_PRESETS = [
-  { id: "silver", top: "#92999D", bottom: "#454B50" },
-  { id: "mist", top: "#A3C9E6", bottom: "#485D70" },
-  { id: "sage", top: "#BCCCB0", bottom: "#526A59" },
-  { id: "sand", top: "#E0CCAC", bottom: "#78685C" },
-  { id: "lavender", top: "#CDB8E4", bottom: "#625976" },
+  {
+    id: "silver",
+    light: { top: "#E7E5E2", bottom: "#F6F3EF" },
+    dark: { top: "#92999D", bottom: "#454B50" },
+  },
+  {
+    id: "mist",
+    light: { top: "#DFEAF0", bottom: "#F0F3F3" },
+    dark: { top: "#A3C9E6", bottom: "#485D70" },
+  },
+  {
+    id: "sage",
+    light: { top: "#E4EADB", bottom: "#F1F3EA" },
+    dark: { top: "#BCCCB0", bottom: "#526A59" },
+  },
+  {
+    id: "sand",
+    light: { top: "#EDE2D4", bottom: "#F6F0E8" },
+    dark: { top: "#E0CCAC", bottom: "#78685C" },
+  },
+  {
+    id: "lavender",
+    light: { top: "#EAE2F0", bottom: "#F4EFF6" },
+    dark: { top: "#CDB8E4", bottom: "#625976" },
+  },
 ] as const;
 
 export const DEFAULT_BACKGROUND: BackgroundSettings = {

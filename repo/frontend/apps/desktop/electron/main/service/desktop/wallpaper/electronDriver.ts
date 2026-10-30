@@ -86,6 +86,9 @@ function createWindowsDriver(
       window.setAlwaysOnTop(state.alwaysOnTop);
       window.setMovable(state.movable);
       window.setResizable(state.resizable);
+      // Changing resizability refreshes Chromium's native size constraints on Windows.
+      // Restore the configured minimum afterwards so detach does not leave it at 0×0.
+      window.setMinimumSize(state.minimumSize[0], state.minimumSize[1]);
       window.setBounds(state.bounds);
       if (state.fullScreen) window.setFullScreen(true);
       else if (state.maximized) window.maximize();
@@ -202,11 +205,13 @@ function createWindowsDriver(
 
       normalWindowState = captureMainWindowState(window);
       window.hide();
-      // The helper fills the monitor the window sits on when it is re-parented. The window is
-      // normally already there; it only moves when the session's display differs from it.
-      if (screen.getDisplayMatching(readOrdinaryWindowBounds(window)).id !== display.id) {
-        window.setBounds(display.workArea);
-      }
+      if (window.isMinimized()) window.restore();
+      if (window.isFullScreen()) window.setFullScreen(false);
+      if (window.isMaximized()) window.unmaximize();
+      window.setMinimumSize(0, 0);
+      window.setMovable(false);
+      window.setResizable(false);
+      window.setBounds(nextProfile.bounds);
 
       try {
         await waitForWallpaperPresentation(window, signal);
@@ -249,6 +254,7 @@ function createWindowsDriver(
         });
         return { displayId: nextProfile.displayId, state: "running" };
       } catch (error) {
+        wallpaperLog.error("[desktop-playback-wallpaper] reconcile failed", error);
         systemWallpaperFallback?.restoreSync("start-failure");
         await restoreMainWindow({ focus: !signal.aborted });
         if (signal.aborted || revision !== operationRevision) throw error;
@@ -270,10 +276,11 @@ function readOrdinaryWindowBounds(window: BrowserWindow): Rectangle {
 function captureMainWindowState(window: BrowserWindow): MainWindowState {
   return {
     alwaysOnTop: window.isAlwaysOnTop(),
-    bounds: { ...window.getBounds() },
+    bounds: window.isMaximized() ? window.getNormalBounds() : { ...window.getBounds() },
     fullScreen: window.isFullScreen(),
     maximized: window.isMaximized(),
     minimized: window.isMinimized(),
+    minimumSize: window.getMinimumSize(),
     movable: window.isMovable(),
     resizable: window.isResizable(),
     visible: window.isVisible(),

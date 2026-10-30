@@ -64,14 +64,23 @@ export function createDesktopPlaybackWallpaperService({
         return cloneDesktopPlaybackWallpaperModel(model);
 
       if (!getInactiveDesktopPlaybackWallpaperStatus(model.preferences)) {
+        const settledStatus =
+          status ??
+          ({
+            diagnostic: "The desktop playback wallpaper driver returned no active status.",
+            retryable: true,
+            state: "faulted",
+          } satisfies DesktopPlaybackWallpaperSettledStatus);
+
+        if (settledStatus.state === "faulted") {
+          onError(
+            `Desktop playback wallpaper driver reported fault: ${settledStatus.diagnostic ?? "unknown"}`,
+            new Error(settledStatus.diagnostic ?? "Wallpaper driver reported fault"),
+          );
+        }
+
         model = transitionDesktopPlaybackWallpaper(model, {
-          status:
-            status ??
-            ({
-              diagnostic: "The desktop playback wallpaper driver returned no active status.",
-              retryable: true,
-              state: "faulted",
-            } satisfies DesktopPlaybackWallpaperSettledStatus),
+          status: settledStatus,
           type: "runtime-settled",
         });
         notify();

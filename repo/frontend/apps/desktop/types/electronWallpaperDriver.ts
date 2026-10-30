@@ -13,6 +13,7 @@ export interface MainWindowState {
   fullScreen: boolean;
   maximized: boolean;
   minimized: boolean;
+  minimumSize: [number, number];
   movable: boolean;
   resizable: boolean;
   visible: boolean;

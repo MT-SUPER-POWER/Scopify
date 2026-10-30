@@ -87,11 +87,13 @@ function BackgroundThemeEditor(props: BackgroundThemeEditorProps) {
               draft={editor.draft}
               onChange={editor.setDraft}
               readOnly={editor.readOnly}
+              variant={editor.variant}
+              onVariantChange={editor.setVariant}
             />
           </SettingSection>
           <div className="min-w-0 lg:sticky lg:top-8">
             <SettingSection title={t("appearance.preview")}>
-              <AppearancePreview background={editor.draft}>
+              <AppearancePreview background={editor.preview} variant={editor.variant}>
                 <HomeContent />
               </AppearancePreview>
             </SettingSection>

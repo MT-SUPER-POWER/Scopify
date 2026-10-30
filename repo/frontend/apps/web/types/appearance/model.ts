@@ -3,11 +3,22 @@ import type { ReactNode } from "react";
 export type BuiltinThemeId = "silver" | "mist" | "sage" | "sand" | "lavender";
 export type BackgroundPresetId = BuiltinThemeId | "custom" | `user:${string}`;
 export type BackgroundRotation = "fixed" | "daily" | "schedule";
+export type BackgroundThemeVariant = "light" | "dark";
+export interface BackgroundPalette {
+  top: string;
+  bottom: string;
+}
 export interface BackgroundTheme {
   id: BackgroundPresetId;
   name: string;
-  top: string;
-  bottom: string;
+  light: BackgroundPalette;
+  dark: BackgroundPalette;
+  intensity: number;
+  height: number;
+}
+export interface LegacyBackgroundTheme
+  extends Omit<BackgroundTheme, "light" | "dark">, BackgroundPalette {}
+export interface BackgroundThemePreview extends BackgroundPalette {
   intensity: number;
   height: number;
 }
@@ -28,6 +39,8 @@ export interface ThemeEditorFieldsProps {
   readOnly?: boolean;
   draft: BackgroundTheme;
   onChange: (draft: BackgroundTheme) => void;
+  variant: BackgroundThemeVariant;
+  onVariantChange: (variant: BackgroundThemeVariant) => void;
 }
 export interface ThemeRotationDialogProps {
   mode: "daily" | "schedule";
@@ -120,7 +133,8 @@ export interface AppearanceStore {
 }
 
 export interface AppearancePreviewProps {
-  background?: BackgroundTheme;
+  background?: BackgroundThemePreview;
+  variant?: BackgroundThemeVariant;
   children: ReactNode;
 }
 

@@ -24,7 +24,9 @@ export function ThemeScheduleEditor({ slots, options, onChange }: ThemeScheduleE
     const next = [...slots];
     next.splice(largest.index + 1, 0, {
       start: slots[largest.index].start + Math.floor(largest.length / 2),
-      themeId: slots[largest.index].themeId,
+      themeId:
+        options.find((option) => !slots.some((slot) => slot.themeId === option.id))?.id ??
+        slots[largest.index].themeId,
     });
     onChange(next);
   };
@@ -40,30 +42,53 @@ export function ThemeScheduleEditor({ slots, options, onChange }: ThemeScheduleE
             <span aria-hidden className="w-5 text-xs text-content-subtle tabular-nums">
               {(index + 1).toString().padStart(2, "0")}
             </span>
-            <div>
-              <input
-                type="time"
-                step={60}
-                required
-                disabled={index === 0}
-                aria-label={t("appearance.rotation.start")}
-                value={formatThemeTime(slot.start)}
-                onChange={(event) => {
-                  if (!event.target.value) return;
-                  const [hour, minute] = event.target.value.split(":").map(Number);
-                  onChange(
-                    slots.map((item, position) =>
-                      position === index ? { ...item, start: hour * 60 + minute } : item,
-                    ),
-                  );
-                }}
-                className="rounded border border-input bg-transparent px-2 py-1 text-sm text-foreground disabled:opacity-60"
-              />
-              <div className="mt-1 text-[10px] text-muted-foreground">
-                {t("appearance.rotation.end", {
-                  time: formatThemeTime(slots[index + 1]?.start ?? 1440),
-                })}
-              </div>
+            <div className="flex flex-col gap-1">
+              <label className="flex items-center gap-2">
+                <span className="text-xs text-muted-foreground">
+                  {t("appearance.rotation.start")}
+                </span>
+                <input
+                  type="time"
+                  step={60}
+                  required
+                  disabled={index === 0}
+                  aria-label={t("appearance.rotation.start")}
+                  value={formatThemeTime(slot.start)}
+                  onChange={(event) => {
+                    if (!event.target.value) return;
+                    const [hour, minute] = event.target.value.split(":").map(Number);
+                    onChange(
+                      slots.map((item, position) =>
+                        position === index ? { ...item, start: hour * 60 + minute } : item,
+                      ),
+                    );
+                  }}
+                  className="w-24 rounded border border-input bg-transparent px-2 py-1 text-sm text-foreground disabled:opacity-60"
+                />
+              </label>
+              <label className="flex items-center gap-2">
+                <span className="text-xs text-muted-foreground">
+                  {t("appearance.rotation.end")}
+                </span>
+                <input
+                  type={index === slots.length - 1 ? "text" : "time"}
+                  step={60}
+                  required
+                  disabled={index === slots.length - 1}
+                  aria-label={t("appearance.rotation.end")}
+                  value={formatThemeTime(slots[index + 1]?.start ?? 1440)}
+                  onChange={(event) => {
+                    if (!event.target.value) return;
+                    const [hour, minute] = event.target.value.split(":").map(Number);
+                    onChange(
+                      slots.map((item, position) =>
+                        position === index + 1 ? { ...item, start: hour * 60 + minute } : item,
+                      ),
+                    );
+                  }}
+                  className="w-24 rounded border border-input bg-transparent px-2 py-1 text-sm text-foreground disabled:opacity-60"
+                />
+              </label>
             </div>
             <Select
               value={slot.themeId}

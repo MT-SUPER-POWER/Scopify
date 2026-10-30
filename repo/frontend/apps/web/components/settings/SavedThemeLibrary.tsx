@@ -2,6 +2,7 @@
 
 import { SETTINGS_ACTION_BUTTON_CLASS_NAME } from "@/constants/settings";
 import { useState } from "react";
+import { useTheme } from "next-themes";
 import { Plus, Trash2 } from "lucide-react";
 import { Button } from "@scopify/ui/shadcn/components/button";
 import { useAppearanceStore } from "@/store/module/appearance";
@@ -11,6 +12,8 @@ import { ThemeCard } from "./ThemeCard";
 import { ThemeBulkDeleteDialog } from "./ThemeBulkDeleteDialog";
 
 export function SavedThemeLibrary({ activeId, onCreate, onEdit }: SavedThemeLibraryProps) {
+  const { resolvedTheme } = useTheme();
+  const variant = resolvedTheme === "light" ? "light" : "dark";
   const { t } = useI18n();
   const themes = useAppearanceStore((state) => state.themes);
   const apply = useAppearanceStore((state) => state.applyTheme);
@@ -88,7 +91,7 @@ export function SavedThemeLibrary({ activeId, onCreate, onEdit }: SavedThemeLibr
           {themes.map((theme) => (
             <ThemeCard
               key={theme.id}
-              theme={theme}
+              theme={{ ...theme, ...theme[variant] }}
               selected={managing ? selectedIds.includes(theme.id) : activeId === theme.id}
               selectionMode={managing}
               onSelect={() => (managing ? toggle(theme.id) : apply(theme.id))}

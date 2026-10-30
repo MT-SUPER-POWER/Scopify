@@ -9,7 +9,7 @@ const PREVIEW_WIDTH = 1100;
 const PREVIEW_HEIGHT = 800;
 
 /** The caller supplies the same content component used by the actual route. */
-export function AppearancePreview({ children, background }: AppearancePreviewProps) {
+export function AppearancePreview({ children, background, variant }: AppearancePreviewProps) {
   const { t } = useI18n();
   const { containerRef, scale } = usePreviewScale(PREVIEW_WIDTH);
   return (
@@ -17,7 +17,8 @@ export function AppearancePreview({ children, background }: AppearancePreviewPro
       ref={containerRef}
       role="img"
       aria-label={t("appearance.preview.label")}
-      className="relative w-full overflow-hidden rounded-lg border border-border bg-surface-raised"
+      data-theme={variant ? "scopify-default" : undefined}
+      className={`relative w-full overflow-hidden rounded-lg border border-border bg-surface-raised text-content ${variant ?? ""}`}
       style={{ aspectRatio: `${PREVIEW_WIDTH} / ${PREVIEW_HEIGHT}` }}
     >
       <div

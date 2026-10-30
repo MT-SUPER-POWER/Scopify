@@ -4550,9 +4550,9 @@ export interface TranslateFn {
    */
   (key: "appearance.rotation.dailyTitle", params?: TranslationParams): string;
   /**
-   * zh-CN: 按本地时间切换，直到下一个时段开始。
-   * zh-TW: 依本地時間切換，直到下一個時段開始。
-   * en-US: Each theme stays active until the next period, in local time.
+   * zh-CN: 按本地时间切换，全天覆盖 00:00–24:00。修改结束时间会同步下一段的开始时间。
+   * zh-TW: 依本地時間切換，全天涵蓋 00:00–24:00。修改結束時間會同步下一段的開始時間。
+   * en-US: Covers 00:00–24:00 in local time. Changing an end time also updates the next period’s start.
    */
   (key: "appearance.rotation.hint", params?: TranslationParams): string;
   /**
@@ -4586,9 +4586,9 @@ export interface TranslateFn {
    */
   (key: "appearance.rotation.theme", params?: TranslationParams): string;
   /**
-   * zh-CN: 至 {{time}}
-   * zh-TW: 至 {{time}}
-   * en-US: Until {{time}}
+   * zh-CN: 结束时间
+   * zh-TW: 結束時間
+   * en-US: End time
    */
   (key: "appearance.rotation.end", params?: TranslationParams): string;
   /**

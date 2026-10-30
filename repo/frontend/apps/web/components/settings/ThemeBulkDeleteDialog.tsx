@@ -12,10 +12,13 @@ import {
 import { useAppearanceBackground } from "@/hooks/settings/useAppearanceBackground";
 import { useAppearanceStore } from "@/store/module/appearance";
 import { useI18n } from "@/store/module/i18n";
+import { useTheme } from "next-themes";
 import type { ThemeBulkDeleteDialogProps } from "@/types/appearance/model";
 
 export function ThemeBulkDeleteDialog({ themes, onClose, onConfirm }: ThemeBulkDeleteDialogProps) {
   const { t } = useI18n();
+  const { resolvedTheme } = useTheme();
+  const variant = resolvedTheme === "light" ? "light" : "dark";
   const { palette, settings } = useAppearanceBackground();
   const daily = useAppearanceStore((state) => state.dailyThemeIds);
   const slots = useAppearanceStore((state) => state.schedule);
@@ -40,7 +43,9 @@ export function ThemeBulkDeleteDialog({ themes, onClose, onConfirm }: ThemeBulkD
               <span
                 aria-hidden
                 className="size-6 shrink-0 rounded"
-                style={{ background: `linear-gradient(125deg, ${theme.top}, ${theme.bottom})` }}
+                style={{
+                  background: `linear-gradient(125deg, ${theme[variant].top}, ${theme[variant].bottom})`,
+                }}
               />
               <span className="break-all">{theme.name}</span>
             </li>

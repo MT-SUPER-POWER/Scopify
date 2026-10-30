@@ -11,16 +11,28 @@ export async function waitForWallpaperPresentation(window: BrowserWindow, signal
   const ready = await window.webContents.executeJavaScript(`
     new Promise((resolve) => {
       const deadline = performance.now() + 5000;
+      let settled = false;
+      let timer = null;
+      const done = (value) => {
+        if (settled) return;
+        settled = true;
+        if (timer) clearTimeout(timer);
+        resolve(value);
+      };
       const check = () => {
+        if (settled) return;
         if (document.querySelector(${JSON.stringify(WALLPAPER_PRESENTATION_READY_SELECTOR)})) {
-          resolve(true);
+          done(true);
           return;
         }
         if (performance.now() >= deadline) {
-          resolve(false);
+          done(false);
           return;
         }
-        requestAnimationFrame(check);
+        if (typeof requestAnimationFrame === "function") {
+          requestAnimationFrame(check);
+        }
+        timer = setTimeout(check, 50);
       };
       check();
     })

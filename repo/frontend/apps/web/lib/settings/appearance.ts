@@ -1,7 +1,13 @@
-import { BACKGROUND_PRESETS, DEFAULT_BACKGROUND } from "@/constants/appearance";
+import {
+  BACKGROUND_PRESETS,
+  DEFAULT_BACKGROUND,
+  DEFAULT_THEME_SCHEDULE,
+  PREVIOUS_DEFAULT_THEME_SCHEDULE,
+} from "@/constants/appearance";
 import type {
   BackgroundPresetId,
   BackgroundSettings,
+  BackgroundThemeVariant,
   SavedBackgroundTheme,
   ThemeTimeSlot,
 } from "@/types/appearance/model";
@@ -9,17 +15,18 @@ import type {
 export function resolveBackgroundPalette(
   settings: BackgroundSettings,
   themes: SavedBackgroundTheme[] = [],
+  variant: BackgroundThemeVariant = "dark",
 ) {
   const saved = themes.find(({ id }) => id === settings.preset);
-  if (saved) return saved;
+  if (saved) return { id: saved.id, ...saved[variant] };
   if (settings.preset === "custom") {
     return { id: "custom" as const, top: settings.customTop, bottom: settings.customBottom };
   }
-  return (
+  const builtin =
     BACKGROUND_PRESETS.find(({ id }) => id === settings.preset) ??
     BACKGROUND_PRESETS.find(({ id }) => id === DEFAULT_BACKGROUND.preset) ??
-    BACKGROUND_PRESETS[0]
-  );
+    BACKGROUND_PRESETS[0];
+  return { id: builtin.id, ...builtin[variant] };
 }
 
 export function applyBackgroundTheme(
@@ -80,4 +87,15 @@ export function isValidThemeSchedule(slots: ThemeTimeSlot[]) {
         (index === 0 || slot.start > slots[index - 1].start),
     )
   );
+}
+
+export function upgradeDefaultThemeSchedule(slots: ThemeTimeSlot[] | undefined) {
+  const usesPreviousDefault =
+    slots?.length === PREVIOUS_DEFAULT_THEME_SCHEDULE.length &&
+    slots.every(
+      (slot, index) =>
+        slot.start === PREVIOUS_DEFAULT_THEME_SCHEDULE[index].start &&
+        slot.themeId === PREVIOUS_DEFAULT_THEME_SCHEDULE[index].themeId,
+    );
+  return !slots || usesPreviousDefault ? DEFAULT_THEME_SCHEDULE : slots;
 }

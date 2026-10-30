@@ -1,6 +1,7 @@
 "use client";
 
 import { useContext, useEffect, useState } from "react";
+import { useTheme } from "next-themes";
 import { BackgroundPreviewContext } from "@/lib/settings/backgroundPreviewContext";
 import { DEFAULT_BACKGROUND } from "@/constants/appearance";
 import {
@@ -11,6 +12,7 @@ import {
 import { useAppearanceStore } from "@/store/module/appearance";
 
 export function useAppearanceBackground() {
+  const { resolvedTheme } = useTheme();
   const preview = useContext(BackgroundPreviewContext);
   const saved = useAppearanceStore((state) => state.background);
   const themes = useAppearanceStore((state) => state.themes);
@@ -48,5 +50,12 @@ export function useAppearanceBackground() {
       settings: { ...settings, intensity: preview.intensity, height: preview.height },
       palette: preview,
     };
-  return { settings, palette: resolveBackgroundPalette(settings, themes) };
+  return {
+    settings,
+    palette: resolveBackgroundPalette(
+      settings,
+      themes,
+      resolvedTheme === "light" ? "light" : "dark",
+    ),
+  };
 }

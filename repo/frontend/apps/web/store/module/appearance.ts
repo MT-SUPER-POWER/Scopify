@@ -8,8 +8,13 @@ import {
   DEFAULT_LYRICS_PREVIEW,
   DEFAULT_THEME_SCHEDULE,
 } from "@/constants/appearance";
-import { applyBackgroundTheme, isValidThemeSchedule } from "@/lib/settings/appearance";
+import {
+  applyBackgroundTheme,
+  isValidThemeSchedule,
+  upgradeDefaultThemeSchedule,
+} from "@/lib/settings/appearance";
 import { isThemeNameValid } from "@/lib/settings/themeNames";
+import { normalizeBackgroundTheme } from "@/lib/settings/backgroundThemeVariants";
 import { updateSubtitleSettings } from "@/lib/settings/updateSubtitleSettings";
 import type { AppearanceStore } from "@/types/appearance/model";
 
@@ -72,7 +77,7 @@ export const useAppearanceStore = create<AppearanceStore>()(
     }),
     {
       name: "scopify-appearance",
-      version: 5,
+      version: 7,
       storage: createJSONStorage(() => localStorage),
       partialize: ({ background, lyricsPreview, themes, dailyThemeIds, schedule }) => ({
         background,
@@ -108,9 +113,11 @@ export const useAppearanceStore = create<AppearanceStore>()(
                 ? { ...DEFAULT_BACKGROUND }
                 : background,
           lyricsPreview: { ...DEFAULT_LYRICS_PREVIEW, ...previous.lyricsPreview },
-          themes: version < 2 ? [theme] : (previous.themes ?? []),
+          themes: (version < 2 ? [theme] : (previous.themes ?? [])).map((item) =>
+            normalizeBackgroundTheme(item),
+          ),
           dailyThemeIds: previous.dailyThemeIds ?? BACKGROUND_PRESETS.map(({ id }) => id),
-          schedule: previous.schedule ?? DEFAULT_THEME_SCHEDULE,
+          schedule: upgradeDefaultThemeSchedule(previous.schedule),
         };
       },
     },

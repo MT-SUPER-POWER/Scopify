@@ -3,6 +3,8 @@
 
 #[cfg(windows)]
 mod attach;
+#[cfg(windows)]
+mod client_area;
 mod desktop_services;
 mod events;
 #[cfg(target_os = "macos")]
@@ -66,7 +68,9 @@ pub fn attach_wallpaper(
     #[cfg(target_os = "macos")]
     let result = macos::attach(handle, x, y, width, height, primary_height);
     #[cfg(windows)]
-    let result = windows_session::start(address as isize);
+    let result = client_area::install(address as isize)
+        .map_err(Error::from_reason)
+        .and_then(|_| windows_session::start(address as isize));
     #[cfg(not(any(windows, target_os = "macos")))]
     let result = Err(Error::from_reason(
         "Desktop wallpaper requires Windows or macOS",
@@ -74,6 +78,8 @@ pub fn attach_wallpaper(
     let _ = address;
     if result.is_err() {
         SESSION_BUSY.store(false, Ordering::SeqCst);
+        #[cfg(windows)]
+        let _ = client_area::remove();
     }
     result
 }
@@ -90,6 +96,12 @@ pub fn detach_wallpaper() -> Result<()> {
 
 #[napi]
 pub fn poll_events() -> Vec<String> {
+    // The worker restores native styles first. Remove the subclass back on the UI thread;
+    // normal windows already delegate NCCALCSIZE as soon as WS_CHILDWINDOW is cleared.
+    #[cfg(windows)]
+    if !SESSION_BUSY.load(Ordering::SeqCst) {
+        let _ = client_area::remove();
+    }
     events::drain()
 }
 

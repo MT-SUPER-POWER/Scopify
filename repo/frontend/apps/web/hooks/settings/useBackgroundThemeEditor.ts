@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTheme } from "next-themes";
 import { BACKGROUND_PRESETS, DEFAULT_BACKGROUND } from "@/constants/appearance";
 import {
   applyBackgroundTheme,
@@ -10,11 +11,19 @@ import {
 import { isThemeNameValid, uniqueThemeName } from "@/lib/settings/themeNames";
 import { useAppearanceStore } from "@/store/module/appearance";
 import { useI18n } from "@/store/module/i18n";
-import type { BackgroundTheme, SavedBackgroundTheme } from "@/types/appearance/model";
+import type {
+  BackgroundTheme,
+  BackgroundThemeVariant,
+  SavedBackgroundTheme,
+} from "@/types/appearance/model";
 import type { BackgroundThemeEditorProps } from "@/types/appearance/themeEditor";
 
 export function useBackgroundThemeEditor({ themeId, copyFrom }: BackgroundThemeEditorProps) {
   const { t } = useI18n();
+  const { resolvedTheme } = useTheme();
+  const [variant, setVariant] = useState<BackgroundThemeVariant>(
+    resolvedTheme === "light" ? "light" : "dark",
+  );
   const themes = useAppearanceStore((state) => state.themes);
   const save = useAppearanceStore((state) => state.saveTheme);
   const sourceId = copyFrom ?? themeId;
@@ -27,7 +36,8 @@ export function useBackgroundThemeEditor({ themeId, copyFrom }: BackgroundThemeE
     const id = resolveScheduledTheme(background, dailyThemeIds, schedule, new Date());
     const settings =
       background.rotation === "fixed" ? background : applyBackgroundTheme(background, id, themes);
-    const palette = resolveBackgroundPalette(settings, themes);
+    const dark = resolveBackgroundPalette(settings, themes, "dark");
+    const light = resolveBackgroundPalette(settings, themes, "light");
     const source = builtin
       ? {
           ...builtin,
@@ -39,8 +49,8 @@ export function useBackgroundThemeEditor({ themeId, copyFrom }: BackgroundThemeE
     const fallback = {
       id: `user:${crypto.randomUUID()}` as const,
       name: uniqueThemeName(t("appearance.theme.untitled", { number: themes.length + 1 }), themes),
-      top: palette.top,
-      bottom: palette.bottom,
+      light: { top: light.top, bottom: light.bottom },
+      dark: { top: dark.top, bottom: dark.bottom },
       intensity: settings.intensity,
       height: settings.height,
     };
@@ -68,6 +78,9 @@ export function useBackgroundThemeEditor({ themeId, copyFrom }: BackgroundThemeE
     return saved.id;
   };
   return {
+    variant,
+    setVariant,
+    preview: { ...draft[variant], intensity: draft.intensity, height: draft.height },
     draft,
     readOnly,
     missing,
