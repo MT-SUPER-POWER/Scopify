@@ -114,6 +114,8 @@ export interface VisualizerSettingsPanelProps {
   rangeInputClass: string;
   classicTuning?: ClassicTuning;
   onClassicTuningChange?: (patch: Partial<ClassicTuning>) => void;
+  cadenzaTuning?: CadenzaTuning;
+  onCadenzaTuningChange?: (patch: Partial<CadenzaTuning>) => void;
   partitaTuning?: PartitaTuning;
   onPartitaTuningChange?: (patch: Partial<PartitaTuning>) => void;
   fumeTuning?: FumeTuning;
@@ -159,6 +161,7 @@ export interface VisualizerSettingsPanelProps {
 
 export interface VisualizerSettingsResetProps {
   resetClassicTuning?: () => void;
+  resetCadenzaTuning?: () => void;
   resetPartitaTuning?: () => void;
   resetFumeTuning?: () => void;
   resetCladdaghTuning?: () => void;
@@ -170,6 +173,7 @@ export interface VisualizerSettingsResetProps {
   resetSonnetTuning?: () => void;
   resetTemperaTuning?: () => void;
   resetHanabiTuning?: () => void;
+  setDraftCadenzaTuning?: (tuning: CadenzaTuning) => void;
   setDraftFumeTuning?: (tuning: FumeTuning) => void;
   setDraftCladdaghTuning?: (tuning: CladdaghTuning) => void;
   setDraftPendoloTuning?: (tuning: PendoloTuning) => void;

@@ -24,6 +24,11 @@ export interface FoliaStyleShelfProps {
   onSectionChange: (section: FoliaStageEditSection) => void;
 }
 
+export interface FoliaBackgroundShelfProps {
+  theme: Theme;
+  onSectionChange: (section: FoliaStageEditSection) => void;
+}
+
 export type FoliaPreviewHotspotSection = Exclude<FoliaStageEditSection, "common" | "global">;
 
 export interface FoliaPreviewHotspot {

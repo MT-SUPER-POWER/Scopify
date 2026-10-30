@@ -10370,6 +10370,18 @@ export interface TranslateFn {
    */
   (key: "folia.ui.cadenze.glowIntensity", params?: TranslationParams): string;
   /**
+   * zh-CN: 光束
+   * zh-TW: 光束
+   * en-US: Beam
+   */
+  (key: "folia.ui.cadenze.beamIntensity", params?: TranslationParams): string;
+  /**
+   * zh-CN: 调整心象模式的排版字号、行宽压缩、动画动势与发光效果。
+   * zh-TW: 調整心象模式的排版字號、行寬壓縮、動畫動勢與發光效果。
+   * en-US: Adjust typography scale, line width, motion dynamics, and glow effects for Mindscape.
+   */
+  (key: "folia.ui.cadenzeDesc", params?: TranslationParams): string;
+  /**
    * zh-CN: 返回主页
    * zh-TW: 返回主頁
    * en-US: Back to Home

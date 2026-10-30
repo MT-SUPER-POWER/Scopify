@@ -1,5 +1,6 @@
 import React, { useMemo, useRef, useState } from "react";
 import {
+  DEFAULT_CADENZA_TUNING,
   DEFAULT_CAPPELLA_TUNING,
   DEFAULT_CLASSIC_TUNING,
   DEFAULT_CLADDAGH_TUNING,
@@ -13,6 +14,7 @@ import {
   DIORAMA_PARTICLE_GLOW_INTENSITY_MIN,
   DIORAMA_PARTICLE_SIZE_MAX,
   DIORAMA_PARTICLE_SIZE_MIN,
+  type CadenzaTuning,
   type CappellaTuning,
   type ClassicTuning,
   type CladdaghTuning,
@@ -55,6 +57,11 @@ const clampClassicWordSpacing = (value: number) => Math.min(2, Math.max(0, value
 const clampCladdaghFocusScaleRatio = (val: number) => Math.min(1.5, Math.max(0.0, val));
 const clampCladdaghRadiusScale = (val: number) => Math.min(1.5, Math.max(0.5, val));
 const clampCladdaghEllipseTiltDeg = (val: number) => Math.min(60, Math.max(0, val));
+const clampCadenzaFontScale = (val: number) => Math.min(1.8, Math.max(0.6, val));
+const clampCadenzaWidthRatio = (val: number) => Math.min(1.0, Math.max(0.4, val));
+const clampCadenzaMotionAmount = (val: number) => Math.min(2.0, Math.max(0.0, val));
+const clampCadenzaGlowIntensity = (val: number) => Math.min(2.5, Math.max(0.0, val));
+const clampCadenzaBeamIntensity = (val: number) => Math.min(2.0, Math.max(0.0, val));
 
 const PresetGroup = <T,>({
   label,
@@ -224,6 +231,177 @@ export const ClassicSettingsPanel: React.FC<VisualizerSettingsPanelProps> = ({
           />
         </div>
       )}
+    </div>
+  );
+};
+
+export const CadenzaSettingsPanel: React.FC<VisualizerSettingsPanelProps> = ({
+  t,
+  theme,
+  controlCardBg,
+  rangeInputClass,
+  onSliderPointerDown,
+  onSliderCommit,
+  cadenzaTuning = DEFAULT_CADENZA_TUNING,
+  onCadenzaTuningChange,
+}) => {
+  const resolvedTuning: Required<CadenzaTuning> = {
+    fontScale: clampCadenzaFontScale(cadenzaTuning.fontScale ?? DEFAULT_CADENZA_TUNING.fontScale),
+    widthRatio: clampCadenzaWidthRatio(
+      cadenzaTuning.widthRatio ?? DEFAULT_CADENZA_TUNING.widthRatio,
+    ),
+    motionAmount: clampCadenzaMotionAmount(
+      cadenzaTuning.motionAmount ?? DEFAULT_CADENZA_TUNING.motionAmount,
+    ),
+    glowIntensity: clampCadenzaGlowIntensity(
+      cadenzaTuning.glowIntensity ?? DEFAULT_CADENZA_TUNING.glowIntensity,
+    ),
+    beamIntensity: clampCadenzaBeamIntensity(
+      cadenzaTuning.beamIntensity ?? DEFAULT_CADENZA_TUNING.beamIntensity,
+    ),
+  };
+
+  return (
+    <div
+      className="space-y-4 rounded-[24px] border p-4"
+      style={{
+        backgroundColor: controlCardBg,
+        borderColor: colorWithAlpha(theme.secondaryColor, 0.16),
+      }}
+    >
+      <div className="space-y-1">
+        <div className="text-sm font-medium" style={{ color: "var(--text-primary)" }}>
+          {t("folia.ui.cadenzeTuning")}
+        </div>
+        <div className="text-xs opacity-50" style={{ color: "var(--text-secondary)" }}>
+          {t("folia.ui.cadenzeDesc")}
+        </div>
+      </div>
+
+      <div className="space-y-2">
+        <div
+          className="flex items-center justify-between text-sm"
+          style={{ color: "var(--text-primary)" }}
+        >
+          <span>{t("folia.ui.cadenze.fontScale")}</span>
+          <span className="font-mono opacity-70" style={{ color: "var(--text-secondary)" }}>
+            {Math.round(resolvedTuning.fontScale * 100)}%
+          </span>
+        </div>
+        <input
+          type="range"
+          min="0.6"
+          max="1.8"
+          step="0.02"
+          value={resolvedTuning.fontScale}
+          onChange={(event) =>
+            onCadenzaTuningChange?.({ fontScale: parseFloat(event.target.value) })
+          }
+          onPointerDown={onSliderPointerDown}
+          onPointerUp={onSliderCommit}
+          className={rangeInputClass}
+        />
+      </div>
+
+      <div className="space-y-2">
+        <div
+          className="flex items-center justify-between text-sm"
+          style={{ color: "var(--text-primary)" }}
+        >
+          <span>{t("folia.ui.cadenze.widthRatio")}</span>
+          <span className="font-mono opacity-70" style={{ color: "var(--text-secondary)" }}>
+            {Math.round(resolvedTuning.widthRatio * 100)}%
+          </span>
+        </div>
+        <input
+          type="range"
+          min="0.4"
+          max="1"
+          step="0.02"
+          value={resolvedTuning.widthRatio}
+          onChange={(event) =>
+            onCadenzaTuningChange?.({ widthRatio: parseFloat(event.target.value) })
+          }
+          onPointerDown={onSliderPointerDown}
+          onPointerUp={onSliderCommit}
+          className={rangeInputClass}
+        />
+      </div>
+
+      <div className="space-y-2">
+        <div
+          className="flex items-center justify-between text-sm"
+          style={{ color: "var(--text-primary)" }}
+        >
+          <span>{t("folia.ui.cadenze.motionAmount")}</span>
+          <span className="font-mono opacity-70" style={{ color: "var(--text-secondary)" }}>
+            {resolvedTuning.motionAmount.toFixed(2)}x
+          </span>
+        </div>
+        <input
+          type="range"
+          min="0"
+          max="2"
+          step="0.05"
+          value={resolvedTuning.motionAmount}
+          onChange={(event) =>
+            onCadenzaTuningChange?.({ motionAmount: parseFloat(event.target.value) })
+          }
+          onPointerDown={onSliderPointerDown}
+          onPointerUp={onSliderCommit}
+          className={rangeInputClass}
+        />
+      </div>
+
+      <div className="space-y-2">
+        <div
+          className="flex items-center justify-between text-sm"
+          style={{ color: "var(--text-primary)" }}
+        >
+          <span>{t("folia.ui.cadenze.glowIntensity")}</span>
+          <span className="font-mono opacity-70" style={{ color: "var(--text-secondary)" }}>
+            {resolvedTuning.glowIntensity.toFixed(2)}x
+          </span>
+        </div>
+        <input
+          type="range"
+          min="0"
+          max="2.5"
+          step="0.05"
+          value={resolvedTuning.glowIntensity}
+          onChange={(event) =>
+            onCadenzaTuningChange?.({ glowIntensity: parseFloat(event.target.value) })
+          }
+          onPointerDown={onSliderPointerDown}
+          onPointerUp={onSliderCommit}
+          className={rangeInputClass}
+        />
+      </div>
+
+      <div className="space-y-2">
+        <div
+          className="flex items-center justify-between text-sm"
+          style={{ color: "var(--text-primary)" }}
+        >
+          <span>{t("folia.ui.cadenze.beamIntensity")}</span>
+          <span className="font-mono opacity-70" style={{ color: "var(--text-secondary)" }}>
+            {resolvedTuning.beamIntensity.toFixed(2)}x
+          </span>
+        </div>
+        <input
+          type="range"
+          min="0"
+          max="2"
+          step="0.05"
+          value={resolvedTuning.beamIntensity}
+          onChange={(event) =>
+            onCadenzaTuningChange?.({ beamIntensity: parseFloat(event.target.value) })
+          }
+          onPointerDown={onSliderPointerDown}
+          onPointerUp={onSliderCommit}
+          className={rangeInputClass}
+        />
+      </div>
     </div>
   );
 };

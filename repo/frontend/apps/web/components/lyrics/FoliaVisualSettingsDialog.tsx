@@ -11,6 +11,7 @@ import { useLyricStageStore } from "@/store/module/lyrics";
 import { useI18n } from "@/store/module/i18n";
 import { FoliaSettingsPreview } from "@/components/lyrics/FoliaSettingsPreview";
 import { FoliaStyleShelf } from "@/components/lyrics/FoliaStyleShelf";
+import { FoliaBackgroundShelf } from "@/components/lyrics/FoliaBackgroundShelf";
 import { FoliaVisualSettingsPanel } from "@/components/lyrics/FoliaVisualSettingsPanel";
 import { useFoliaStageSettingsPanel } from "@/hooks/player/useFoliaStageSettingsPanel";
 import type { FoliaVisualSettingsDialogProps } from "@/types/lyrics/components";
@@ -67,7 +68,15 @@ export function FoliaVisualSettingsDialog({
                     theme={theme}
                   />
                 </div>
-                <FoliaStyleShelf assets={assets} theme={theme} onSectionChange={onSectionChange} />
+                {section === "background" ? (
+                  <FoliaBackgroundShelf theme={theme} onSectionChange={onSectionChange} />
+                ) : (
+                  <FoliaStyleShelf
+                    assets={assets}
+                    theme={theme}
+                    onSectionChange={onSectionChange}
+                  />
+                )}
               </>
             }
           >

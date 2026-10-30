@@ -3,6 +3,7 @@
 import { useMemo } from "react";
 
 import {
+  DEFAULT_CADENZA_TUNING,
   DEFAULT_CAPPELLA_TUNING,
   DEFAULT_CLASSIC_TUNING,
   DEFAULT_CLADDAGH_TUNING,
@@ -154,6 +155,7 @@ export function useFoliaStageSettingsPanel(
     backgroundActions,
     backgroundConfig: { ...settings.background, customImage: assets.monetBackgroundImage },
     builtinFontOptions,
+    cadenzaTuning: settings.tunings.cadenza ?? DEFAULT_CADENZA_TUNING,
     cappellaCustomAvatarImages: assets.cappellaCustomAvatarImages,
     cappellaCustomEmojiImages: assets.cappellaCustomEmojiImages,
     cappellaTuning: settings.tunings.cappella ?? DEFAULT_CAPPELLA_TUNING,
@@ -177,6 +179,8 @@ export function useFoliaStageSettingsPanel(
     pendoloTuning: settings.tunings.pendolo ?? DEFAULT_PENDOLO_TUNING,
     sonnetTuning: settings.tunings.sonnet ?? DEFAULT_SONNET_TUNING,
     temperaTuning: settings.tunings.tempera ?? DEFAULT_TEMPERA_TUNING,
+    onCadenzaTuningChange: (patch: Partial<typeof DEFAULT_CADENZA_TUNING>) =>
+      settings.patchTuning("cadenza", patch),
     onCappellaTuningChange: (patch: Partial<typeof DEFAULT_CAPPELLA_TUNING>) =>
       settings.patchTuning("cappella", patch),
     onClearCappellaCustomAvatar: assets.clearCappellaCustomAvatar,

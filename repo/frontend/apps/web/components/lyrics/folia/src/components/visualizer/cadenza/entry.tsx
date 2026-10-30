@@ -1,6 +1,7 @@
 import React, { lazy } from "react";
 import { DEFAULT_CADENZA_TUNING } from "../../../types";
 import { defineVisualizer, type VisualizerSharedProps } from "../definition";
+import { CadenzaSettingsPanel } from "../settingsPanels";
 
 const VisualizerCadenza = lazy(() => import("./VisualizerCadenza"));
 
@@ -30,4 +31,8 @@ export default defineVisualizer({
   previewStartOffset: 0,
   tuningKind: "cadenza",
   render: renderCadenza,
+  renderSettingsPanel: (props) => <CadenzaSettingsPanel {...props} />,
+  resetSettings: ({ resetCadenzaTuning }) => {
+    resetCadenzaTuning?.();
+  },
 });
