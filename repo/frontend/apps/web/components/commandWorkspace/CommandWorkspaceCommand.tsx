@@ -11,6 +11,7 @@ import { CommandWorkspaceQueue } from "@/components/commandWorkspace/CommandWork
 import { CommandWorkspaceRoot } from "@/components/commandWorkspace/CommandWorkspaceRoot";
 import { CommandWorkspaceSearch } from "@/components/commandWorkspace/CommandWorkspaceSearch";
 import { CommandWorkspaceSettings } from "@/components/commandWorkspace/CommandWorkspaceSettings";
+import { CommandWorkspaceTheme } from "@/components/commandWorkspace/CommandWorkspaceTheme";
 import { CommandWorkspaceTrackList } from "@/components/commandWorkspace/CommandWorkspaceTrackList";
 import { useCommandWorkspacePlayback } from "@/hooks/commandWorkspace/useCommandWorkspacePlayback";
 import { useCommandWorkspaceNavigation } from "@/hooks/commandWorkspace/useCommandWorkspaceNavigation";
@@ -118,6 +119,7 @@ export function CommandWorkspaceCommand({ onClose, onLeaveCommand }: CommandWork
           onOpenDynamicIsland={() => setPage("dynamic-island")}
         />
       ) : null}
+      {page === "theme" ? <CommandWorkspaceTheme onBack={returnToRoot} onClose={onClose} /> : null}
       {page === "track-list" && trackList ? (
         <CommandWorkspaceTrackList
           trackList={trackList}
@@ -136,6 +138,7 @@ function getPageLabel(page: CommandWorkspacePage, trackListTitle?: string) {
   if (page === "queue") return "播放队列";
   if (page === "now-playing") return "正在播放";
   if (page === "settings") return "设置";
+  if (page === "theme") return "外观与主题";
   if (page === "dynamic-island") return "灵动岛设置";
   if (page === "track-list") return trackListTitle ?? "曲目";
   return "命令";

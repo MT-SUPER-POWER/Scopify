@@ -2,7 +2,6 @@
 
 import { type KeyboardEvent, useMemo, useRef, useState } from "react";
 import { useFoliaCommands } from "@/hooks/commandWorkspace/useFoliaCommands";
-import { useTheme } from "next-themes";
 import { COMMAND_WORKSPACE_ROOT_PAGES } from "@/constants/commandWorkspaceRoot";
 import { rankCommandWorkspaceEntries } from "@/lib/commandWorkspace/shortcutRanking";
 import { isShortcutCommandAvailable } from "@/lib/shortcuts/availability";
@@ -29,7 +28,6 @@ export function useCommandWorkspaceRoot({
   const [query, setQuery] = useState("");
   const [selectedIndex, setSelectedIndex] = useState(0);
   const folia = useFoliaCommands(null, query);
-  const { resolvedTheme, setTheme } = useTheme();
   const commands = useShortcutRegistry().commands;
   const executeShortcut = useShortcutCommands();
   const commandWorkspaceUsageCounts = useShortcutStore(
@@ -52,19 +50,13 @@ export function useCommandWorkspaceRoot({
             ...command,
             type: "workspace" as const,
             keywords:
-              command.page === "dynamic-island"
-                ? "灵动岛 靈動島 dynamic island 开关 动画 回弹 平滑 大小 缩放 翻译 吸附 居中 非遮挡 穿透 置顶"
-                : "",
+              command.page === "theme"
+                ? "外观 主题 主题色 配色 暗色 深色 亮色 浅色 跟随系统 模式 theme dark light system color appearance"
+                : command.page === "dynamic-island"
+                  ? "灵动岛 靈動島 dynamic island 开关 动画 回弹 平滑 大小 缩放 翻译 吸附 居中 非遮挡 穿透 置顶"
+                  : "",
             usageCount: commandWorkspaceUsageCounts[command.page] ?? 0,
           })),
-          {
-            id: "toggle-app-theme",
-            label: "切换暗色／亮色主题",
-            summary: resolvedTheme === "dark" ? "切换为亮色界面" : "切换为暗色界面",
-            keywords: "外观 主题 主题色 暗色 深色 亮色 浅色 theme dark light appearance",
-            type: "action" as const,
-            usageCount: 0,
-          },
           ...(runtime.isDesktop
             ? [
                 {
@@ -101,16 +93,7 @@ export function useCommandWorkspaceRoot({
           ? search.split(/\s+/).every((term) => text.includes(term))
           : text.includes(search);
       }),
-    [
-      commandWorkspaceUsageCounts,
-      commands,
-      latticeActive,
-      latticeAvailable,
-      query,
-      t,
-      resolvedTheme,
-      usageCounts,
-    ],
+    [commandWorkspaceUsageCounts, commands, latticeActive, latticeAvailable, query, t, usageCounts],
   );
 
   const items: CommandWorkspaceRootItem[] = [
@@ -137,11 +120,6 @@ export function useCommandWorkspaceRoot({
   };
 
   const runItem = (selected: CommandWorkspaceRootItem) => {
-    if (selected.type === "action" && selected.id === "toggle-app-theme") {
-      setTheme(resolvedTheme === "dark" ? "light" : "dark");
-      onClose();
-      return;
-    }
     if (selected.type === "action" && selected.id === "exit-app") {
       onClose();
       runtime.app.exit();

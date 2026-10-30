@@ -14,6 +14,12 @@ export const COMMAND_WORKSPACE_ROOT_PAGES = [
     summary: "控制当前曲目、进度和音量",
   },
   { id: "queue", label: "播放队列", page: "queue", summary: "播放、调整与移除队列曲目" },
+  {
+    id: "theme",
+    label: "外观与主题",
+    page: "theme",
+    summary: "切换浅色、深色、跟随系统与主题配色",
+  },
   { id: "settings", label: "设置", page: "settings", summary: "应用、Folia 与桌面播放设置" },
   {
     id: "dynamic-island",

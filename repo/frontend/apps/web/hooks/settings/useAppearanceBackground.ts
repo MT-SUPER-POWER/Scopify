@@ -10,6 +10,7 @@ import {
   resolveScheduledTheme,
 } from "@/lib/settings/appearance";
 import { useAppearanceStore } from "@/store/module/appearance";
+import type { BackgroundPresetId } from "@/types/appearance/model";
 
 export function useAppearanceBackground() {
   const { resolvedTheme } = useTheme();
@@ -48,7 +49,7 @@ export function useAppearanceBackground() {
   if (preview)
     return {
       settings: { ...settings, intensity: preview.intensity, height: preview.height },
-      palette: preview,
+      palette: { ...preview, id: (preview.id ?? id) as BackgroundPresetId },
     };
   return {
     settings,

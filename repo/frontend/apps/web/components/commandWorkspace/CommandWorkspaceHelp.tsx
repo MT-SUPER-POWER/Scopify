@@ -11,7 +11,9 @@ export function CommandWorkspaceHelp({ page }: CommandWorkspaceHelpProps) {
         ? "Enter 播放歌曲；选择集合可进入曲目列表，使用 + 加入队列。"
         : page === "track-list"
           ? "播放全部，或将单曲加入队列、插到下一首。"
-          : "Esc 返回，Ctrl+Home 回到命令根目录。";
+          : page === "theme"
+            ? "选择外观模式或主题配色，Enter 或点击应用。"
+            : "Esc 返回，Ctrl+Home 回到命令根目录。";
 
   return (
     <div className="flex items-start gap-2 border-t border-border bg-content/5 px-5 py-3 text-xs text-content-muted">

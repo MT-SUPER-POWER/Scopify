@@ -13,6 +13,7 @@ export type CommandWorkspacePage =
   | "now-playing"
   | "settings"
   | "dynamic-island"
+  | "theme"
   | "track-list"
   | FoliaCommandGroup;
 export type CommandWorkspaceRootPage = Exclude<CommandWorkspacePage, "root" | "track-list">;
@@ -22,6 +23,11 @@ export interface CommandWorkspaceSettingsProps {
   onClose(): void;
   onOpenFolia(group: FoliaCommandGroup): void;
   onOpenDynamicIsland(): void;
+}
+
+export interface CommandWorkspaceThemeProps {
+  onBack(): void;
+  onClose(): void;
 }
 
 export interface CommandWorkspaceSettingsItem {

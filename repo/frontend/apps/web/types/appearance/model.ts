@@ -19,6 +19,7 @@ export interface BackgroundTheme {
 export interface LegacyBackgroundTheme
   extends Omit<BackgroundTheme, "light" | "dark">, BackgroundPalette {}
 export interface BackgroundThemePreview extends BackgroundPalette {
+  id?: BackgroundPresetId;
   intensity: number;
   height: number;
 }
