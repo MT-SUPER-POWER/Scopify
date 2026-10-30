@@ -2,6 +2,17 @@
 
 > 根据 commit 自动生成，请勿手动编辑；推送版本 tag 后由 CI 更新。v2.0.3 及更早版本见[历史更新记录](archive/CHANGELOG-legacy.md)。
 
+## v3.2.0 — 2026-10-30
+
+### 新增
+
+- 新增「町景」「雾笺」两个歌词样式 ([259736b1](https://github.com/MT-SUPER-POWER/Scopify/commit/259736b1091bc7404b78b17219c8553b252cf98e))
+- 桌面音乐壁纸开关旁显示快捷键 ([d00e0f7c](https://github.com/MT-SUPER-POWER/Scopify/commit/d00e0f7cfb38b85ff9d21b50a51724655eabccd4))
+
+### 修复
+
+- 首次打开或更新后桌面音乐壁纸不再因加载慢而启动失败 ([4833a12b](https://github.com/MT-SUPER-POWER/Scopify/commit/4833a12b194b63de56631648f22b6e7a348cef3a))
+
 ## v3.1.4 — 2026-10-30
 
 ### 新增
