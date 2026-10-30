@@ -150,6 +150,11 @@ export function DesktopControlPopover() {
           {wallpaperFaulted && (
             <div role="alert" className="space-y-2 text-sm text-danger">
               <p>{t("desktopPlaybackController.statusFaulted")}</p>
+              {wallpaperModel?.status.state === "faulted" && wallpaperModel.status.diagnostic && (
+                <p className="max-w-70 text-xs break-words text-muted-foreground">
+                  {wallpaperModel.status.diagnostic}
+                </p>
+              )}
               <Button
                 size="sm"
                 variant="outline"

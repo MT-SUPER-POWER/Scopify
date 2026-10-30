@@ -4,7 +4,7 @@
 
 ## 产物目录与所有权
 
-`repo/frontend/apps/desktop/lib/runtimePaths.ts` 定义生产应用目录与发行目录，Electron Vite、同步脚本和 Electron Builder 使用同一套路径。
+`repo/frontend/apps/desktop/lib/runtimePaths.ts` 定义生产应用目录与发行目录，Electron Vite、同步脚本和 Electron Builder 使用同一套路径。构建辅助脚本统一收拢在 `scripts/native/`（原生构建与单体验证）和 `scripts/build/`（渲染层同步与组装校验）中。
 
 ```text
 repo/frontend/apps/desktop/
@@ -14,15 +14,16 @@ repo/frontend/apps/desktop/
 │   ├── audio-engine/            # Windows 原生音频产物
 │   └── taskbar-lyric/           # Windows 任务栏歌词产物
 └── build/
-    ├── desktop/app/             # electron-builder 的 app 输入，不直接分发
+    ├── desktop/app/             # electron-builder 的 app 输入，也是完整的可运行应用目录
     │   ├── out/main/            # 生产 main.js 与 preload.js
     │   ├── renderer/            # 静态 Next 页面与 renderer.manifest.json
     │   ├── public/              # 从 Desktop public/ 复制的静态资源
+    │   ├── native/              # 当前构建已就绪的原生模块 .node 产物与类型定义
     │   └── package.json         # 剔除开发脚本和 workspace 依赖的运行时清单
     └── release/                # 安装包、更新元数据及 unpacked 验证目录
 ```
 
-最终安装包位于 `build/release/`；原生编译中间文件和 NAPI 产物仍由各自的 `native/` 模块维护。Electron Builder 按目标架构将原生模块复制到应用资源目录，不能仅凭 `build/desktop/app/` 存在就认为原生资源已准备好。
+最终安装包位于 `build/release/`；原生编译中间文件和 NAPI 产物仍由各自的 `native/` 模块维护，由 `prepare:app` 同步至 `build/desktop/app/native/` 形成完整应用目录。Electron Builder 按目标架构将原生模块复制到应用资源目录。
 
 ## 本地构建任务图
 
@@ -40,10 +41,10 @@ flowchart LR
 ```
 
 - `build:host` 仅调用 Electron Vite，编译 Main / Preload；先准备 Electron 并保留对上游 `^build` 的依赖，不再自行编译 native、复制资源或运行校验。
-- `prepare:app` 等待宿主编译完成，生成运行时 package.json 并复制 public。它只更新自己拥有的目录，不清空 Renderer 或宿主输出。
+- `prepare:app` 等待宿主编译完成，生成运行时 package.json，复制 public 资源并同步已构建的原生 native 模块。它只更新自己拥有的目录，不清空 Renderer 或宿主输出。
 - `sync:renderer` 等待 Web 桌面静态导出，将 `apps/web/out/` 同步到应用的 renderer 目录，写入 manifest 后删除 Web 的临时导出目录。同步不缓存，因此每次可使用当前的提交信息；Web 导出仍可从 Turbo 缓存恢复。
 - `check:runtime-bundle` 等待宿主目录准备与 Renderer 同步，验证 Main / Preload、沙箱 preload 及 Renderer 内容。这是 JS 应用组装的检查，不代替各 native 脚本的产物和 ABI 校验。
-- `build` 是 Desktop 的虚拟聚合任务，只依赖 `check:runtime-bundle`，无空操作脚本；它生成并验证 JS 应用，不构建安装包所需的全架构 native。
+- `build` 是 Desktop 的虚拟聚合任务，依赖 `build:native`、`build:host` 与 `prepare:app`，生成完整的桌面 JS 运行时和原生模块。
 - `package:win` 等待运行时校验、Electron 安装、三个 native 全架构任务；`package:mac` 只等待对应校验、Electron 和 wallpaper 全架构任务。平台打包脚本本身只调用 Electron Builder。
 
 Renderer、宿主与不同 native 模块可以在依赖允许时并行。每个 native 模块内部的 x64 / arm64 构建仍由已有 TS 脚本顺序处理，避免同一模块的 `index.d.ts` 和 NAPI 事务目录并发覆盖。
@@ -56,7 +57,7 @@ Renderer、宿主与不同 native 模块可以在依赖允许时并行。每个 
 | --- | --- |
 | `pnpm run dev:desktop` | 先准备 Electron 和本机 wallpaper，再启动 Electron Vite；`pnpm run dev` 同时启动 Web |
 | `pnpm run sync:renderer` | 静态导出 Web 桌面页面并同步 Renderer |
-| `pnpm run build:desktop` | 编译宿主、准备应用目录、同步并校验 Renderer，不生成安装包 |
+| `pnpm run build:desktop` | 编译宿主、准备应用目录（含 native）、同步并校验 Renderer，不生成安装包 |
 | `pnpm run package:win` / `pnpm run build:win` | 同一条完整 Windows 安装包任务图，包含 x64 / arm64 native |
 | `pnpm run package:mac` / `pnpm run build:mac` | 同一条完整 macOS 任务图，包含两个架构的 wallpaper |
 

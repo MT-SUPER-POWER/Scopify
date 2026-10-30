@@ -1,6 +1,7 @@
 node_modules/
-build/
+/build
 out/
 dist/
 logs/
 *.tsbuildinfo
+/.cache/

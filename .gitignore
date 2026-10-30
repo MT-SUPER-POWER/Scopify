@@ -28,7 +28,6 @@
 /renderer-e2e/
 
 # production
-build/
 /logs/
 /log/*.log
 /renderer

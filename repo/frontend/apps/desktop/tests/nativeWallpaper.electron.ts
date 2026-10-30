@@ -12,7 +12,7 @@ import { createDesktopPlaybackWallpaperPreferencesRepository } from "../electron
 // An isolated real Electron window exercises Renderer IPC -> service -> Rust -> AppKit/WorkerW.
 async function run() {
   const outputRoot = process.env.SCOPIFY_WALLPAPER_SMOKE_ROOT;
-  if (!outputRoot) throw new Error("Run this test through scripts/verify-wallpaper-native.ts");
+  if (!outputRoot) throw new Error("Run this test through scripts/native/verify-wallpaper.ts");
   app.setPath("userData", join(outputRoot, "profile"));
   console.log("[wallpaper-smoke] waiting for Electron readiness");
   await app.whenReady();

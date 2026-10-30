@@ -10,6 +10,12 @@
     "electron:ensure": {
       "cache": false
     },
+    "build:native": {
+      "cache": false
+    },
+    "build:native:all": {
+      "cache": false
+    },
     "build:host": {
       "dependsOn": ["^build", "electron:ensure"],
       "cache": false
@@ -56,14 +62,14 @@
       "dependsOn": [
         "check:runtime-bundle",
         "electron:ensure",
-        "wallpaper:build:all",
-        "audio:build:all",
-        "taskbar:build:all"
+        "wallpaper:build",
+        "audio:build",
+        "taskbar:build"
       ],
       "cache": false
     },
     "package:mac": {
-      "dependsOn": ["check:runtime-bundle", "electron:ensure", "wallpaper:build:all"],
+      "dependsOn": ["check:runtime-bundle", "electron:ensure", "wallpaper:build"],
       "cache": false
     },
     "package:win:prebuilt": {
