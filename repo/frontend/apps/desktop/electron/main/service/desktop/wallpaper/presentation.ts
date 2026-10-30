@@ -2,6 +2,11 @@ import type { BrowserWindow, Rectangle } from "electron";
 
 const WALLPAPER_PRESENTATION_READY_SELECTOR =
   '[data-desktop-playback-wallpaper-content-ready="true"]';
+const WALLPAPER_PRESENTATION_LOADING_SELECTOR = '[data-desktop-playback-wallpaper-loading="true"]';
+// A Renderer that has not started loading the wallpaper surface is given a short budget; once it
+// reports loading, a first run (fresh install or update, nothing cached) may need much longer.
+const WALLPAPER_PRESENTATION_IDLE_TIMEOUT_MS = 5_000;
+const WALLPAPER_PRESENTATION_LOADING_TIMEOUT_MS = 30_000;
 
 export async function waitForWallpaperPresentation(window: BrowserWindow, signal: AbortSignal) {
   throwIfAborted(signal);
@@ -10,7 +15,9 @@ export async function waitForWallpaperPresentation(window: BrowserWindow, signal
   }
   const ready = await window.webContents.executeJavaScript(`
     new Promise((resolve) => {
-      const deadline = performance.now() + 5000;
+      const startedAt = performance.now();
+      const idleDeadline = startedAt + ${WALLPAPER_PRESENTATION_IDLE_TIMEOUT_MS};
+      const loadingDeadline = startedAt + ${WALLPAPER_PRESENTATION_LOADING_TIMEOUT_MS};
       let settled = false;
       let timer = null;
       const done = (value) => {
@@ -25,12 +32,10 @@ export async function waitForWallpaperPresentation(window: BrowserWindow, signal
           done(true);
           return;
         }
-        if (performance.now() >= deadline) {
+        const loading = document.querySelector(${JSON.stringify(WALLPAPER_PRESENTATION_LOADING_SELECTOR)});
+        if (performance.now() >= (loading ? loadingDeadline : idleDeadline)) {
           done(false);
           return;
-        }
-        if (typeof requestAnimationFrame === "function") {
-          requestAnimationFrame(check);
         }
         timer = setTimeout(check, 50);
       };

@@ -52,13 +52,19 @@ import { NowPlayingPanel } from "@/components/nowPlaying/NowPlayingPanel";
 // The wallpaper renderer brings the entire Folia visualizer graph into the
 // bundle. It is only used by the dedicated desktop-wallpaper window, so keep
 // it out of every dashboard route until that window actually activates it.
-const DesktopPlaybackWallpaperRenderer = dynamic(
-  () =>
-    import("@/components/desktopWallpaper/DesktopPlaybackWallpaperRenderer").then((module) => ({
-      default: module.DesktopPlaybackWallpaperRenderer,
-    })),
-  { ssr: false },
-);
+const loadDesktopPlaybackWallpaperRenderer = () =>
+  import("@/components/desktopWallpaper/DesktopPlaybackWallpaperRenderer").then((module) => ({
+    default: module.DesktopPlaybackWallpaperRenderer,
+  }));
+
+// The desktop host waits for the ready marker; this tells it the surface is still loading (a first
+// run or an update has none of these chunks yet) so it keeps waiting instead of giving up.
+const DesktopPlaybackWallpaperRenderer = dynamic(loadDesktopPlaybackWallpaperRenderer, {
+  loading: () => (
+    <div data-desktop-playback-wallpaper-loading="true" className="absolute inset-0" />
+  ),
+  ssr: false,
+});
 
 const RESIZE_HANDLE_CLASS = cn(
   "relative flex w-2 items-center justify-center bg-transparent transition-colors",
@@ -140,6 +146,13 @@ function MainLayoutInner({ children }: { children?: ReactNode }) {
   const isSearchOpen = useUiStore((s) => s.isSearchOpen);
   const setIsSearchOpen = useUiStore((s) => s.setIsSearchOpen);
   const wallpaperPresentation = useDesktopPlaybackWallpaperPresentation();
+  const wallpaperEnabled = wallpaperPresentation.model?.preferences.enabled ?? false;
+
+  // Start fetching the wallpaper surface as soon as the preference says it will be needed, ahead of
+  // the host flipping this window into its Stage-only shape.
+  useEffect(() => {
+    if (wallpaperEnabled) void loadDesktopPlaybackWallpaperRenderer();
+  }, [wallpaperEnabled]);
 
   useEffect(() => {
     return runtime.window.onFullscreenChanged(setIsFullscreen);
