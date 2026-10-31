@@ -3,7 +3,8 @@
 import { Tooltip, TooltipContent, TooltipTrigger } from "@scopify/ui/shadcn/components/tooltip";
 import { formatCacheSize } from "@/lib/cache/presentation";
 import { cn } from "@/lib/utils";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { CloudStorageRingProps } from "@/types/library/components";
 
 // 与右侧 PanelsTopLeft（size-5、描边约 1.7px）保持同等视觉重量。
@@ -13,7 +14,7 @@ const RING_RADIUS = (RING_SIZE - RING_STROKE) / 2;
 const RING_CIRCUMFERENCE = 2 * Math.PI * RING_RADIUS;
 
 export function CloudStorageRing({ maxSize, songCount, usedSize }: CloudStorageRingProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   if (maxSize <= 0) return null;
 
   const ratio = Math.min(usedSize / maxSize, 1);

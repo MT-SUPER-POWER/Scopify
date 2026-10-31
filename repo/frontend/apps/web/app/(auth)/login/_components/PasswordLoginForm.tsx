@@ -6,7 +6,7 @@ import { useState } from "react";
 import { Button } from "@scopify/ui/shadcn/components/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
 
 interface PasswordLoginFormProps {
   isLoading: boolean;
@@ -17,7 +17,7 @@ export function PasswordLoginForm({ isLoading, onSubmit }: PasswordLoginFormProp
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const { t } = useI18n();
+  const { t } = useTranslation();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();

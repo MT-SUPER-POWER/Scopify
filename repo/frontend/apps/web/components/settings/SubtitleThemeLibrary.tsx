@@ -7,14 +7,15 @@ import { useRouter } from "next/navigation";
 import { Button } from "@scopify/ui/shadcn/components/button";
 import { useSubtitlePalette } from "@/hooks/settings/useSubtitlePalette";
 import { useSubtitleThemeStore } from "@/store/module/subtitleThemes";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import { subtitleThemeEditorHref } from "@/lib/settings/subtitleTheme";
 import { SettingSection } from "./SettingsUI";
 import { SubtitleThemeDeleteDialog } from "./SubtitleThemeDeleteDialog";
 import { SubtitleThemeCard } from "./SubtitleThemeCard";
 
 export function SubtitleThemeLibrary() {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const { themes, builtins, active, apply } = useSubtitlePalette();
   const remove = useSubtitleThemeStore((state) => state.remove);
   const router = useRouter();

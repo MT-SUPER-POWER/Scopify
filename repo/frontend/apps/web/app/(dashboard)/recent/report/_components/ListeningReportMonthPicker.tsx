@@ -6,14 +6,15 @@ import { useMemo } from "react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { getAvailableMonths } from "@/lib/listeningReport/dateHelpers";
 import { cn } from "@/lib/utils";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { ListeningReportMonthPickerProps } from "@/types/listeningReport/components";
 
 export function ListeningReportMonthPicker({
   onSelectMonth,
   selectedMonthKey,
 }: ListeningReportMonthPickerProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const months = useMemo(() => getAvailableMonths(12), []);
   const currentIndex = months.findIndex((month) => month.key === selectedMonthKey);
   const safeIndex = currentIndex >= 0 ? currentIndex : 0;

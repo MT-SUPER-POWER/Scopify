@@ -5,7 +5,8 @@ import { MvListItem } from "@/components/mv/MvListItem";
 import { useArtistMVsQuery, useMVDetailQuery } from "@/hooks/mv/useMVQueries";
 import { useSongMvId } from "@/hooks/song/useSongMvId";
 import { useNowPlayingMv } from "@/hooks/ui/useNowPlayingMv";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { MvSummary } from "@/types/mv/api";
 import type { NowPlayingSectionProps } from "@/types/player/nowPlayingComponents";
 
@@ -14,7 +15,7 @@ const ARTIST_MV_PARAMS = { limit: MV_LIMIT + 1 };
 
 /** 「MV」：本曲 MV 置顶，其后是主艺人的其他 MV；点击后在面板顶部的封面位播放。 */
 export function NowPlayingMvs({ song }: NowPlayingSectionProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const songMvId = useSongMvId(song);
   const artistId = song.ar?.[0]?.id;
   const artistMvs = useArtistMVsQuery(artistId || null, ARTIST_MV_PARAMS).data?.mvs ?? [];

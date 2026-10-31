@@ -7,7 +7,8 @@ import { usePlayActions } from "@/hooks/search/usePlayActions";
 import { useSearchData } from "@/hooks/search/useSearchData";
 import { useSmartRouter } from "@/hooks/core/useSmartRouter";
 import { buildSearchCategoryUrl, getSearchCategory } from "@/lib/search/searchCategory";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { Category } from "@/types/search/model";
 import { AllView } from "./_components/AllView";
 import { GridCategoryView } from "./_components/GridCategoryView";
@@ -20,7 +21,7 @@ import { SongsView } from "./_components/SongsView";
 import { VoicesView } from "./_components/VoicesView";
 
 export default function SearchPage() {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const searchParams = useSearchParams();
   const keywords = searchParams.get("keywords") || "";
   const router = useSmartRouter();

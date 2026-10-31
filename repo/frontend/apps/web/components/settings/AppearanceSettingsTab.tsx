@@ -2,7 +2,8 @@
 
 import { useAppearanceStore } from "@/store/module/appearance";
 import { LyricsStyleSettingsSection } from "./LyricsStyleSettingsSection";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import { AppearancePreview } from "./AppearancePreview";
 import { AppearancePreviewStatus } from "./AppearancePreviewStatus";
 import { BackgroundSettingsSection } from "./BackgroundSettingsSection";
@@ -11,7 +12,7 @@ import { SubtitlePreviewWorkspace } from "./SubtitlePreviewWorkspace";
 import { SettingSection } from "./SettingsUI";
 
 export function AppearanceSettingsTab() {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const subtitleSettings = useAppearanceStore((state) => state.lyricsPreview);
   return (
     <div className="grid grid-cols-1 items-start gap-x-16 gap-y-10 lg:grid-cols-2">

@@ -16,12 +16,13 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useSocialAccount } from "@/hooks/social/useSocialQueries";
 import { useSocialShare } from "@/hooks/social/useSocialShare";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { SocialEventMenuProps } from "@/types/social/components";
 import s from "./Social.module.css";
 
 export function SocialEventMenu({ event, pending, onDelete }: SocialEventMenuProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const { uid } = useSocialAccount();
   const copyLink = useSocialShare(event);
   const [deleting, setDeleting] = useState(false);

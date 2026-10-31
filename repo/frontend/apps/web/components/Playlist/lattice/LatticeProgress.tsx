@@ -4,7 +4,8 @@ import { useEffect, useRef, useState } from "react";
 import type { CSSProperties } from "react";
 import { usePlaybackCommands } from "@/hooks/player/usePlaybackCommands";
 import { usePlaybackPosition, usePlaybackProjection } from "@/hooks/player/usePlaybackProjection";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { LatticeProgressProps } from "@/types/playlist/latticeComponents";
 import styles from "./LatticeControls.module.css";
 
@@ -14,7 +15,7 @@ const time = (milliseconds: number) => {
 };
 
 export function LatticeProgress({ current, durationMs, trackId }: LatticeProgressProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const playback = usePlaybackProjection();
   const positionMs = usePlaybackPosition();
   const commands = usePlaybackCommands();

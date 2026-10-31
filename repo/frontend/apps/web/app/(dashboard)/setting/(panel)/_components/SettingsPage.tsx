@@ -8,7 +8,8 @@ import { useSettingsState } from "@/hooks/settings/useSettingsState";
 import { useSettingsSectionNavigation } from "@/hooks/settings/useSettingsSectionNavigation";
 import { runtime } from "@/lib/runtime";
 import { parseSettingsTab } from "@/lib/settings/tabs";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { SettingsTabId } from "@/types/settings/model";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { DesktopSettingsTab } from "@/components/settings/DesktopSettingsTab";
@@ -24,7 +25,7 @@ import { AppearanceSettingsTab } from "@/components/settings/AppearanceSettingsT
 import { NotificationSettingsTab } from "@/components/settings/NotificationSettingsTab";
 
 const SettingsPage = () => {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();

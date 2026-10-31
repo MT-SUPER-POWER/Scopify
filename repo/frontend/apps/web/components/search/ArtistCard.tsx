@@ -1,12 +1,13 @@
 "use client";
 
 import { User } from "lucide-react";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { Artist } from "@/types/search/model";
 import { getSizedImageUrl } from "@/lib/music/imageUrl";
 
 export function ArtistCard({ artist, onClick }: { artist: Artist; onClick?: () => void }) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
 
   return (
     <div

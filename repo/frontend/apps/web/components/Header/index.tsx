@@ -7,7 +7,8 @@ import { HeaderHomeButton } from "./HeaderHomeButton";
 import HeaderSearch from "@/components/search/HeaderSearch";
 import { ScopifyBrand } from "@/components/shared/ScopifyBrand";
 import { cn } from "@/lib/utils";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import { useLatticeView } from "@/store/module/lattice";
 import { headerStyles } from "@/styles";
 
@@ -18,7 +19,7 @@ const NAV_BTN = cn(
 
 /** 横跨整个窗口的顶栏：左侧品牌与历史导航（仅桌面端），中间首页与搜索，右侧通知/私信/头像。 */
 export function Header() {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const latticeActive = useLatticeView((state) => state.active);
   const latticeController = useLatticeView((state) => state.controller);
 

@@ -15,11 +15,12 @@ import { QueryFailure } from "@/components/shared/QueryFailure";
 import { CLOUD_SONG_FALLBACK_COVER } from "@/constants/cloud";
 import { useCloudMatchSearch } from "@/hooks/library/useCloudMatchSearch";
 import { cn, formatDuration } from "@/lib/utils";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { CloudMatchDialogProps } from "@/types/library/components";
 
 export function CloudMatchDialog({ busy, onClose, onConfirm, song }: CloudMatchDialogProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const {
     candidates,
     error,

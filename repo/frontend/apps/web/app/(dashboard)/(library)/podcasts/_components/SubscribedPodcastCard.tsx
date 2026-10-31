@@ -6,7 +6,8 @@ import { PlayingAnimation } from "@/components/shared/PlayingAnimation";
 import { PodcastContextMenu } from "@/components/shared/PodcastContextMenu";
 import { useSmartRouter } from "@/hooks/core/useSmartRouter";
 import { cn, formatDate, formatNumber } from "@/lib/utils";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { SubscribedPodcastCardProps } from "@/types/library/components";
 
 export function SubscribedPodcastCard({
@@ -17,7 +18,7 @@ export function SubscribedPodcastCard({
   onPlay,
   podcast,
 }: SubscribedPodcastCardProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const router = useSmartRouter();
   const categoryLabel = [podcast.category, podcast.secondCategory].filter(Boolean).join(" · ");
   const lastUpdatedAt = podcast.lastProgramCreateTime ?? podcast.createTime;

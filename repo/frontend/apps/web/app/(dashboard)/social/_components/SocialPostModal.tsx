@@ -21,7 +21,8 @@ import { useSocialShare } from "@/hooks/social/useSocialShare";
 import { useRequireLoginAction } from "@/hooks/auth/useRequireLoginAction";
 import { uniqueById } from "@/lib/social/normalize";
 import { formatSocialTime } from "@/lib/social/time";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+import { useI18nStore } from "@/store/module/i18n";
 import type {
   SocialCommentRowProps,
   SocialEventProps,
@@ -49,7 +50,7 @@ import s from "@/components/social/Social.module.css";
  * 打开状态写在 URL 上，由 useSocialPostModal 管理。
  */
 export function SocialPostModal() {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const { target, close } = useSocialPostModal();
   const query = useSocialEvent(target ?? { id: "", uid: "" });
   const event = target ? query.data : undefined;
@@ -101,7 +102,8 @@ function hasMedia(event: SocialEventProps["event"]) {
 }
 
 function SocialPostView({ event, onDeleted }: SocialPostViewProps) {
-  const { t, locale } = useI18n();
+  const { t } = useTranslation(),
+    locale = useI18nStore((state) => state.locale);
   const { uid } = useSocialAccount();
   const requireLogin = useRequireLoginAction();
   const actions = useSocialEventActions(event);
@@ -308,7 +310,7 @@ function SocialPostView({ event, onDeleted }: SocialPostViewProps) {
 
 /** 左侧媒体区：多图可左右切换；只有歌曲时以封面加模糊底展示 */
 function SocialPostMedia({ event }: SocialEventProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const [index, setIndex] = useState(0);
   const count = event.pictures.length;
   if (!count && event.resource?.cover) {
@@ -373,7 +375,8 @@ function SocialPostMedia({ event }: SocialEventProps) {
 
 /** 小红书式评论行：名字在上、正文在下，底部是时间与赞 / 回复 */
 function SocialPostComment({ event, comment, onReply }: SocialCommentRowProps) {
-  const { t, locale } = useI18n();
+  const { t } = useTranslation(),
+    locale = useI18nStore((state) => state.locale);
   const { uid } = useSocialAccount();
   const requireLogin = useRequireLoginAction();
   const actions = useSocialCommentActions(event, comment);

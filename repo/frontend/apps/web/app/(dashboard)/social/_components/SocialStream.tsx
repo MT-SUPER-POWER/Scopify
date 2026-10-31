@@ -7,7 +7,8 @@ import { useSocialAccount } from "@/hooks/social/useSocialQueries";
 import { useSocialViewport } from "@/hooks/social/useSocialViewport";
 import { useUserFansGroupsQuery } from "@/hooks/fansGroup/useFansGroupQueries";
 import { SOCIAL_DISCOVERY_GROUP } from "@/constants/social";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import { SocialFeed } from "@/components/social/SocialFeed";
 import { SocialPeople } from "@/components/social/SocialPeople";
 import { SocialSearchForm } from "./SocialSearchForm";
@@ -19,7 +20,7 @@ import { SocialPostModal } from "./SocialPostModal";
 import s from "@/components/social/Social.module.css";
 
 export function SocialStream() {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const { uid } = useSocialAccount();
   const router = useRouter();
   const params = useSearchParams();

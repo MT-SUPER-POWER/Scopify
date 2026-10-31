@@ -4,10 +4,10 @@ import { IMMERSE_TYPES } from "@/constants/musicQuality";
 import { QUALITY_OPTIONS } from "@/constants/playerBar";
 import { useMusicQuality } from "@/hooks/player/useMusicQuality";
 import { cn } from "@/lib/utils";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
 
 export function AudioQualityDialog() {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const { changeMusicQuality, changeImmerseType, immerseType, musicQuality, isChanging } =
     useMusicQuality();
   return (

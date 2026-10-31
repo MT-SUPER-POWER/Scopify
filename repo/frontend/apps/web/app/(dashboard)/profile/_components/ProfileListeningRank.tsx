@@ -4,7 +4,8 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { useUserListeningRank } from "@/hooks/profile/useUserListeningRank";
 import { getSizedImageUrl } from "@/lib/music/imageUrl";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import { usePlayerStore } from "@/store/module/player";
 import { SocialState } from "@/components/social/SocialPrimitives";
 import type { ProfileListeningRankProps } from "@/types/social/components";
@@ -14,7 +15,7 @@ import s from "@/components/social/Social.module.css";
 const PERIODS: ListeningRankPeriod[] = ["week", "all"];
 
 export function ProfileListeningRank({ uid, isSelf }: ProfileListeningRankProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const [period, setPeriod] = useState<ListeningRankPeriod>("week");
   const query = useUserListeningRank(uid, period);
   const songs = query.data?.songs ?? [];

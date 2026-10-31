@@ -29,7 +29,8 @@ import { useSongLikeMutation } from "@/hooks/playlist/useSongLikeMutation";
 import { useLoginStatus } from "@/hooks/auth/useLoginStatus";
 import { cn, formatDuration } from "@/lib/utils";
 import { usePlayerStore, useUserStore } from "@/store";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { SongDetail } from "@/types/song/api";
 import type { Song } from "@/types/search/model";
 import { getSizedImageUrl } from "@/lib/music/imageUrl";
@@ -119,7 +120,7 @@ interface SongItemProps {
 
 export const SongItem = memo(
   function SongItem({ song, index, songs }: SongItemProps) {
-    const { t } = useI18n();
+    const { t } = useTranslation();
     const songLikeMutation = useSongLikeMutation();
     const { mutateAsync: updatePlaylistTrack } = usePlaylistTrackMutation();
     // ── store ──

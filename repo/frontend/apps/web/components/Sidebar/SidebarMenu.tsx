@@ -24,7 +24,8 @@ import { useLoginStatus } from "@/hooks/auth/useLoginStatus";
 import { translate } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 import { useUiStore, useUserStore } from "@/store";
-import { useI18n, useI18nStore } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+import { useI18nStore } from "@/store/module/i18n";
 import type {
   SidebarConfirmDialogProps,
   SidebarPendingPlaylist,
@@ -150,7 +151,7 @@ function ConfirmDialogShandCN({
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ UI ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 function SidebarMenu({ isCollapsed = false }: SidebarMenuProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const queryClient = useQueryClient();
   const isLoggedIn = useLoginStatus();
   const userPlaylists = useUserStore((s) => s.playlist);

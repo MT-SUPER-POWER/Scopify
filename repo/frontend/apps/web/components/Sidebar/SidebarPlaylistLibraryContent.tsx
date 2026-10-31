@@ -4,7 +4,8 @@ import { ListMusic, RefreshCw } from "lucide-react";
 import type { ReactNode } from "react";
 import { useSidebarPlaylists } from "@/hooks/sidebar/useSidebarPlaylists";
 import { useLoginStatus } from "@/hooks/auth/useLoginStatus";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import { QueryPending } from "@/components/shared/QueryPending";
 import type { SidebarPlaylistLibraryProps } from "@/types/sidebar/components";
 import { SidebarPlaylistSkeleton } from "./SidebarPlaylistSkeleton";
@@ -12,7 +13,7 @@ import { SidebarSortablePlaylists } from "./SidebarSortablePlaylists";
 import { SidebarLibraryStateCard } from "./SidebarLibraryStateCard";
 
 export function SidebarPlaylistLibraryContent({ isCollapsed }: SidebarPlaylistLibraryProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const isLoggedIn = useLoginStatus();
   const { error, isLoading, isPaused, playlists, reload } = useSidebarPlaylists();
   const collapsedAction = (label: string, onClick: () => void, icon: ReactNode) => (

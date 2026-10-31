@@ -4,7 +4,8 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { BACKGROUND_THEME_EDITOR_PATH } from "@/constants/appearanceRoutes";
 import { SETTINGS_ACTION_BUTTON_CLASS_NAME } from "@/constants/settings";
 import { useBackgroundThemeEditor } from "@/hooks/settings/useBackgroundThemeEditor";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { BackgroundThemeEditorProps } from "@/types/appearance/themeEditor";
 import { AppearancePreview } from "@/components/settings/AppearancePreview";
 import { HomeStylePreview } from "@/components/settings/HomeStylePreview";
@@ -26,7 +27,7 @@ export function BackgroundThemeEditorPage() {
 }
 
 function BackgroundThemeEditor(props: BackgroundThemeEditorProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const router = useRouter();
   const params = useSearchParams();
   const editor = useBackgroundThemeEditor(props);

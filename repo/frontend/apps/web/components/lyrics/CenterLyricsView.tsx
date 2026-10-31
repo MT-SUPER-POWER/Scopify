@@ -11,7 +11,8 @@ import { getSizedImageUrl } from "@/lib/music/imageUrl";
 import { resolveCoverUrl } from "@/lib/music/resolveCoverUrl";
 import { cn } from "@/lib/utils";
 import { usePlayerStore } from "@/store";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import { useUiStore } from "@/store/module/ui";
 
 const MANUAL_SCROLL_HOLD_MS = 3_000;
@@ -25,7 +26,7 @@ interface CenterLyricsViewProps {
  * 提取歌曲封面主色作为背景，大字号居中滚动歌词，轻量且沉浸。
  */
 export function CenterLyricsView({ onClose }: CenterLyricsViewProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const song = usePlayerStore((s) => s.currentSongDetail);
   const commands = usePlaybackCommands();
   const { lines, lastStartedIndex } = useCompanionLyricLine();

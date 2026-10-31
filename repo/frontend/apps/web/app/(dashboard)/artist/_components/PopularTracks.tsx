@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { SongDetail } from "@/types/song/api";
 import type { ArtistInfo } from "@/types/artist/model";
 import { PopularTrackItem } from "./PopularTrackItem";
@@ -11,7 +12,7 @@ interface Props {
 }
 
 export function PopularTracks({ tracks, queue, artist }: Props) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const visibleTracks = tracks.slice(0, 10);
   // DEBUG: 歌手热门歌曲队列
   // console.log("Popular Track:", tracks);

@@ -2,12 +2,13 @@
 
 import { UPDATE_COMMIT_URL } from "@/constants/updates";
 import { UPDATE_GROUPS } from "@/constants/updateCategories";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { UpdateReleaseContentProps } from "@/types/updates/model";
 import styles from "./WhatsNewModal.module.css";
 
 export function UpdateReleaseContent({ release }: UpdateReleaseContentProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   return (
     <article className={styles.content}>
       {UPDATE_GROUPS.map((group) => {

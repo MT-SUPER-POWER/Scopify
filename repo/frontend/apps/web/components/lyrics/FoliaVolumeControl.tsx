@@ -1,7 +1,7 @@
 "use client";
 
 import { Volume1, Volume2, VolumeX } from "lucide-react";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
 
 import type { Theme } from "@/components/lyrics/folia/src/types";
 
@@ -19,7 +19,7 @@ export function FoliaVolumeControl({
   theme,
   volume,
 }: FoliaVolumeControlProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const isDaylight = theme.name === "snow";
   const VolumeIcon = volume === 0 ? VolumeX : volume < 50 ? Volume1 : Volume2;
 

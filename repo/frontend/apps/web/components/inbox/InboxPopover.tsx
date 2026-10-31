@@ -12,7 +12,8 @@ import {
   SheetTrigger,
 } from "@scopify/ui/shadcn/components/sheet";
 import { useIsMobile } from "@scopify/ui/shadcn/hooks/use-mobile";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { InboxPopoverProps } from "@/types/messages/inboxComponents";
 
 export function InboxPopover({
@@ -25,7 +26,7 @@ export function InboxPopover({
   alignOffset = -80,
 }: InboxPopoverProps) {
   const mobile = useIsMobile();
-  const { t } = useI18n();
+  const { t } = useTranslation();
   if (mobile)
     return (
       <Sheet open={open} onOpenChange={onOpenChange}>

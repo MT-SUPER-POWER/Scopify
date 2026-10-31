@@ -8,14 +8,15 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
 import { useAudioEqualizerStore } from "@/store/module/audioEqualizer";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type {
   AudioSettingsDialogProps,
   AudioSettingsTabButtonProps,
 } from "@/types/audio/settingsDialogComponents";
 
 export function AudioSettingsDialog({ children }: AudioSettingsDialogProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const isOpen = useAudioEqualizerStore((state) => state.isDialogOpen);
   const activeTab = useAudioEqualizerStore((state) => state.dialogTab);
   const closeDialog = useAudioEqualizerStore((state) => state.closeDialog);

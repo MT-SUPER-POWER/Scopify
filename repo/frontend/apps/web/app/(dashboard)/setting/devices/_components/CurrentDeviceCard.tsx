@@ -2,13 +2,14 @@
 
 import { Pencil } from "lucide-react";
 import { Button } from "@scopify/ui/shadcn/components/button";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { LoginDeviceCardProps } from "@/types/devices/components";
 import { DeviceIllustration } from "./DeviceIllustration";
 import styles from "./LoginDevices.module.css";
 
 export function CurrentDeviceCard({ device, onSelect, onRename }: LoginDeviceCardProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   return (
     <section className={styles.currentCard} aria-label={device.name} aria-live="polite">
       <div className={styles.currentThumbnail}>

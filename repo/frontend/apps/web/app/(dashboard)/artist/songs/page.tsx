@@ -6,14 +6,15 @@ import { PlaylistContent } from "@/components/Playlist/PlaylistContent";
 import { NetworkRetryState } from "@/components/shared/NetworkRetryState";
 import { useArtistData } from "@/hooks/artist/useArtistData";
 import { useArtistPopularSongsTheme } from "@/hooks/artist/useArtistPopularSongsTheme";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { PlaylistInfo } from "@/types/playlist/model";
 import { ArtistInvalidId } from "../_components/ArtistInvalidId";
 import { ArtistLoading } from "../_components/ArtistLoading";
 import { ArtistRefetchError } from "../_components/ArtistRefetchError";
 
 export default function ArtistPopularSongsPage() {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const artistId = useSearchParams().get("id");
   const {
     artist,

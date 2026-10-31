@@ -1,6 +1,7 @@
 "use client";
 
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { SearchCategoryHeaderProps } from "@/types/search/components";
 
 const categoryTitleKeys = {
@@ -16,7 +17,7 @@ const categoryTitleKeys = {
 } as const;
 
 export function SearchCategoryHeader({ actions, category }: SearchCategoryHeaderProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
 
   return (
     <>

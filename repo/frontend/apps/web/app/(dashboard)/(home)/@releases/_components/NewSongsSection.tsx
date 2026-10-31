@@ -9,13 +9,14 @@ import { useHome } from "../../_components/HomeProvider";
 import { CollapsibleSection } from "../../_components/CollapsibleSection";
 import { SectionPagination } from "../../_components/SectionPagination";
 import { useNewSongsQuery } from "@/hooks/home/useHomeQueries";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import { pruneSongDetail } from "@/types/song/api";
 
 const PAGE_SIZE = 6;
 
 export function NewSongsSection() {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const { actions } = useHome();
   const query = useNewSongsQuery();
   const songs = (query.data.result ?? [])

@@ -5,7 +5,8 @@ import { toast } from "sonner";
 import { changeComment, likeComment } from "@/lib/api/social";
 import { patchEvent, socialKey } from "@/lib/social/cache";
 import { useSocialAccount } from "./useSocialQueries";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { SocialComment, SocialEvent, SocialCommentDraft } from "@/types/social/model";
 import type { InfiniteData } from "@tanstack/react-query";
 import type { SocialCommentPage } from "@/types/social/model";
@@ -13,7 +14,7 @@ import type { SocialCommentPage } from "@/types/social/model";
 export function useSocialCommentWriter(event: SocialEvent) {
   const { account } = useSocialAccount(),
     client = useQueryClient(),
-    { t } = useI18n();
+    { t } = useTranslation();
   return useMutation({
     mutationFn: (input: SocialCommentDraft) =>
       changeComment({
@@ -33,7 +34,7 @@ export function useSocialCommentWriter(event: SocialEvent) {
 export function useSocialCommentActions(event: SocialEvent, comment: SocialComment) {
   const { account } = useSocialAccount(),
     client = useQueryClient(),
-    { t } = useI18n();
+    { t } = useTranslation();
   const key = socialKey(account, "comment-like", comment.id);
   const liking = useIsMutating({ mutationKey: key }) > 0;
   const like = useMutation({

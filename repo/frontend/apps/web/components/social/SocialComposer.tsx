@@ -7,7 +7,8 @@ import { useSocialAccount } from "@/hooks/social/useSocialQueries";
 import { useRequireLoginAction } from "@/hooks/auth/useRequireLoginAction";
 import { usePlayerStore } from "@/store/module/player";
 import { useUserStore } from "@/store/module/user";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { SocialComposerProps } from "@/types/social/components";
 import type { SocialResource } from "@/types/social/model";
 import { SocialAvatar } from "./SocialPrimitives";
@@ -16,7 +17,7 @@ import { SocialResourcePicker } from "./SocialResourcePicker";
 import s from "./Social.module.css";
 
 export function SocialComposer({ forwarded, onDone }: SocialComposerProps) {
-  const { t } = useI18n(),
+  const { t } = useTranslation(),
     { uid } = useSocialAccount();
   const user = useUserStore((state) => state.user),
     song = usePlayerStore((state) => state.currentSongDetail);

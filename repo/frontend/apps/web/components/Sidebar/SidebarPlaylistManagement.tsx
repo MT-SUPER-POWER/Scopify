@@ -9,7 +9,8 @@ import {
   ContextMenuSeparator,
 } from "@/components/ui/context-menu";
 import { usePlaylistManagement } from "@/hooks/playlist/usePlaylistManagement";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { SidebarPlaylistManagementProps } from "@/types/sidebar/components";
 import { SidebarPlaylistConfirmDialog } from "./SidebarPlaylistConfirmDialog";
 
@@ -17,7 +18,7 @@ export function SidebarPlaylistManagement({
   children,
   playlistId,
 }: SidebarPlaylistManagementProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const management = usePlaylistManagement(playlistId);
   const [editing, setEditing] = useState(false);
   const [confirming, setConfirming] = useState<"delete" | "unsubscribe" | null>(null);

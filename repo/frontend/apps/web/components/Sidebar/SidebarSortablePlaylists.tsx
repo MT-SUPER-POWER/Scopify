@@ -5,7 +5,8 @@ import { SortableList } from "@/components/shared/SortableList";
 import { DragThumbnail } from "@/components/shared/DragThumbnail";
 import { useInlinePlaylistOrder } from "@/hooks/playlist/useInlinePlaylistOrder";
 import { useUserStore } from "@/store";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { SidebarSortablePlaylistsProps } from "@/types/sidebar/components";
 import type { NeteasePlaylist } from "@/types/playlist/api";
 import { CollapsibleLibraryGroup } from "./CollapsibleLibraryGroup";
@@ -15,7 +16,7 @@ export function SidebarSortablePlaylists({
   playlists,
   isCollapsed,
 }: SidebarSortablePlaylistsProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const userId = useUserStore((state) => state.user?.userId);
   const grouped = useMemo(
     () =>

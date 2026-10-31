@@ -4,7 +4,8 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { SETTINGS_ACTION_BUTTON_CLASS_NAME } from "@/constants/settings";
 import { subtitleThemeEditorHref } from "@/lib/settings/subtitleTheme";
 import { useSubtitleThemeEditor } from "@/hooks/settings/useSubtitleThemeEditor";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { SubtitleThemeEditorProps } from "@/types/lyrics/subtitlePreview";
 import { ThemeEditorBoundary } from "@/components/settings/ThemeEditorBoundary";
 import { ThemeEditorFrame } from "@/components/settings/ThemeEditorFrame";
@@ -31,7 +32,7 @@ export function SubtitleThemeEditorPage() {
 }
 
 function SubtitleThemeEditor(props: SubtitleThemeEditorProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const router = useRouter();
   const params = useSearchParams();
   const editor = useSubtitleThemeEditor(props);

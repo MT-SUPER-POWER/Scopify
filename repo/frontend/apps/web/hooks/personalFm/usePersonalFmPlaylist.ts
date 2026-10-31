@@ -14,7 +14,8 @@ import {
 import { useRequireLoginAction } from "@/hooks/auth/useRequireLoginAction";
 import { usePersonalFmDislike } from "@/hooks/personalFm/usePersonalFmDislike";
 import { useCoverThemeColor } from "@/hooks/playlist/useCoverThemeColor";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import { ensurePersonalFmOnEntry } from "@/lib/personalFm/entry";
 import { usePersonalFmStore } from "@/store/module/personalFm";
 import { usePlayerStore } from "@/store/module/player";
@@ -22,7 +23,7 @@ import type { SongDetail } from "@/types/song/api";
 import type { PlaylistInfo } from "@/types/playlist/model";
 
 export function usePersonalFmPlaylist() {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const requireLogin = useRequireLoginAction();
   const isLoggedIn = useLoginStatus();
   const pathname = usePathname();

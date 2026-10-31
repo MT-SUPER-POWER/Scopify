@@ -1,7 +1,8 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Canvas } from "@react-three/fiber";
 import { AnimatePresence, motion } from "framer-motion";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import { DEFAULT_DIORAMA_TUNING, type Line } from "../../../types";
 import { useVisualizerRuntime } from "../runtime";
 import { type VisualizerSharedProps } from "../definition";
@@ -117,7 +118,7 @@ const VisualizerDiorama: React.FC<VisualizerDioramaProps> = (props) => {
     seed,
     dioramaTuning,
   } = props;
-  const { t } = useI18n();
+  const { t } = useTranslation();
 
   useEffect(() => () => clearDioramaStructuredSurfaceCache(), []);
 

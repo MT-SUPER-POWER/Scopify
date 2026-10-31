@@ -1,6 +1,7 @@
 "use client";
 import { useLoginDevices } from "@/hooks/devices/useLoginDevices";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import { Button } from "@scopify/ui/shadcn/components/button";
 import { openLoginWindowOrFallback } from "@/lib/runtime/login";
 import { runtime } from "@/lib/runtime";
@@ -10,7 +11,7 @@ import { LoginDevicesContent } from "./LoginDevicesContent";
 import styles from "./LoginDevices.module.css";
 export function LoginDevices() {
   const query = useLoginDevices();
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const router = useSmartRouter();
   const login = () =>
     openLoginWindowOrFallback(runtime.auth, () => router.push("/login?redirect=/setting/devices"));

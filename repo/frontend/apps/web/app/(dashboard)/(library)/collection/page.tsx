@@ -6,11 +6,12 @@ import { LibraryMediaGrid } from "@/components/library/LibraryMediaGrid";
 import { QuietState } from "@/components/shared/QuietState";
 import { useCollectionQuery } from "@/hooks/library/useLibraryQueries";
 import { useLoginStatus } from "@/hooks/auth/useLoginStatus";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import { LibraryPageHeader } from "./_components/LibraryPageHeader";
 
 export default function CollectionPage() {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const isLoggedIn = useLoginStatus();
   const collectionQuery = useCollectionQuery();
   const albums = collectionQuery.data?.albums ?? [];

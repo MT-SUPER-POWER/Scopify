@@ -16,13 +16,14 @@ import { useLoginStatus } from "@/hooks/auth/useLoginStatus";
 import { useSmartRouter } from "@/hooks/core/useSmartRouter";
 import { selectFallbackSource, toFallbackSource } from "@/lib/query/fallbackSource";
 import { formatPlayCount } from "@/lib/utils";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import { pruneRecommendPlaylist } from "@/types/playlist/api";
 
 const PAGE_SIZE = 10;
 
 export function PersonalizedPlaylists() {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const { actions } = useHome();
   const smartRouter = useSmartRouter();
   const isLogin = useLoginStatus();

@@ -6,11 +6,12 @@ import { useState } from "react";
 import { AlbumDescriptionDialog } from "./AlbumDescriptionDialog";
 import { ResponsiveHeaderTitle } from "@/components/shared/ResponsiveHeaderTitle";
 
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { AlbumHeaderProps } from "@/types/album/components";
 
 export function AlbumHeader({ info, onArtistClick }: AlbumHeaderProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const [isDescriptionOpen, setIsDescriptionOpen] = useState(false);
 
   return (

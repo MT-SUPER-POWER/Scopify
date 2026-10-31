@@ -5,7 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { formatNumber } from "@/lib/utils";
 import { useUserFansGroupsQuery } from "@/hooks/fansGroup/useFansGroupQueries";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
 
 /**
  * 个人主页“概览”标签下的乐迷团网格组件
@@ -16,7 +16,7 @@ import { useI18n } from "@/store/module/i18n";
  * 渲染用户已加入的乐迷团网格列表
  */
 export function ProfileFansGroupGrid() {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const query = useUserFansGroupsQuery();
   const groups = query.data ?? [];
 
@@ -106,7 +106,10 @@ export function ProfileFansGroupGrid() {
               </h3>
               {group.totalMembersCount ? (
                 <p className="w-full truncate text-xs text-content-muted">
-                  {t("social.fansGroupMembers", { count: formatNumber(group.totalMembersCount) })}
+                  {t("social.fansGroupMembers", {
+                    count: group.totalMembersCount,
+                    replace: { count: formatNumber(group.totalMembersCount) },
+                  })}
                 </p>
               ) : group.fansGroupName ? (
                 <p className="w-full truncate text-xs text-content-muted">{group.fansGroupName}</p>

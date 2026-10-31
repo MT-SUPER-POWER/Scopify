@@ -3,7 +3,8 @@ import { AlbumCard } from "@/components/search/AlbumCard";
 import { ArtistCard } from "@/components/search/ArtistCard";
 import { PlaylistCard } from "@/components/search/PlaylistCard";
 import { useInfiniteScrollTrigger } from "@/hooks/search/useInfiniteScrollTrigger";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { GridCategoryViewProps } from "@/types/search/components";
 import { SearchCategoryHeader } from "./SearchCategoryHeader";
 
@@ -20,7 +21,7 @@ export function GridCategoryView({
   isFetchingNextPage,
   onLoadMore,
 }: GridCategoryViewProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const isEmpty =
     (activeCategory === "Albums" && albums.length === 0) ||
     (activeCategory === "Playlists" && playlists.length === 0) ||

@@ -12,7 +12,8 @@ import {
 import { DesktopPlaybackFoliaModeControls } from "@/components/desktopWallpaper/DesktopPlaybackFoliaModeControls";
 import { DesktopPlaybackThemeControls } from "@/components/desktopWallpaper/DesktopPlaybackThemeControls";
 import { FoliaSonnetPerformanceWarningDialog } from "@/components/lyrics/FoliaSonnetPerformanceWarningDialog";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import { useLyricStageStore } from "@/store/module/lyrics";
 
 interface DesktopPlaybackAppearanceControlsProps {
@@ -22,7 +23,7 @@ interface DesktopPlaybackAppearanceControlsProps {
 export function DesktopPlaybackAppearanceControls({
   onOpenMainSettings,
 }: DesktopPlaybackAppearanceControlsProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const cancelSonnetPerformanceWarning = useLyricStageStore(
     (state) => state.cancelSonnetPerformanceWarning,
   );

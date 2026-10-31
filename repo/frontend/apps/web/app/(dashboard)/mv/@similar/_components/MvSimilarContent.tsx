@@ -9,11 +9,12 @@ import { QueryPending } from "@/components/shared/QueryPending";
 import { useInfiniteMvSearchQuery } from "@/hooks/search/useSearchQueries";
 import { useInfiniteScrollTrigger } from "@/hooks/search/useInfiniteScrollTrigger";
 import { getRelatedMvKeyword, getRelatedMvs } from "@/lib/music/relatedMvs";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { MvSimilarContentProps } from "@/types/mv/components";
 
 export function MvSimilarContent({ mvid, detail, isTheater, onNextChange }: MvSimilarContentProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const keyword = getRelatedMvKeyword(detail);
   const query = useInfiniteMvSearchQuery(keyword, 20, true, true);
   const mvs = useMemo(

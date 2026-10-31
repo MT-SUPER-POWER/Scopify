@@ -16,7 +16,8 @@ import { useSmartRouter } from "@/hooks/core/useSmartRouter";
 import { resolveCoverUrl } from "@/lib/music/resolveCoverUrl";
 import { cn } from "@/lib/utils";
 import { usePlayerStore } from "@/store";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import { useUiStore } from "@/store/module/ui";
 import { Skeleton } from "@scopify/ui/shadcn/components/skeleton";
 import {
@@ -37,7 +38,7 @@ export function PlayerBarLeftControls({
   onCloseLyricStage,
   isLyricStageBar = false,
 }: PlayerBarLeftControlsProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const isLyricsOpen = useUiStore((s) => s.isLyricsOpen);
   const isCollapsed = useUiStore((s) => s.isCollapsed);
   const alignToCollapsedSidebar = !isLyricStageBar && isCollapsed;

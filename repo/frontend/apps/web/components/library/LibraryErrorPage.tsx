@@ -1,7 +1,8 @@
 "use client";
 
 import { NetworkRetryState } from "@/components/shared/NetworkRetryState";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import { LibraryStatePage } from "./LibraryStatePage";
 
 export function LibraryErrorPage({
@@ -11,7 +12,7 @@ export function LibraryErrorPage({
   isRetrying: boolean;
   onRetry: () => void;
 }) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
 
   return (
     <LibraryStatePage>

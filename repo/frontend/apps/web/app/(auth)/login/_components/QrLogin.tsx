@@ -3,10 +3,11 @@ import { RefreshCw } from "lucide-react";
 import Image from "next/image";
 import { Button } from "@scopify/ui/shadcn/components/button";
 import { useQrLogin } from "@/hooks/auth/useQrLogin";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { QrLoginProps } from "@/types/auth/login";
 export function QrLogin(props: QrLoginProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const { qrImg, qrStatus, qrStatusText, refresh } = useQrLogin(props);
   return (
     <div className="flex flex-col items-center justify-center space-y-4 pt-2">

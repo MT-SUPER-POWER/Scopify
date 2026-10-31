@@ -14,12 +14,13 @@ import {
 } from "@/components/lyrics/folia/src/components/visualizer/backgrounds/registry";
 import type { VisualizerBackgroundMode } from "@/components/lyrics/folia/src/types";
 import { useLyricStageStore } from "@/store/module/lyrics";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import { useMediaQuery } from "@/hooks/ui/useMediaQuery";
 import type { FoliaBackgroundShelfProps } from "@/types/lyrics/folia/visualSettings";
 
 export function FoliaBackgroundShelf({ theme, onSectionChange }: FoliaBackgroundShelfProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const compact = useMediaQuery("(max-width: 639px)");
   const currentMode = useLyricStageStore(
     (state) => state.background.mode ?? DEFAULT_VISUALIZER_BACKGROUND_MODE,

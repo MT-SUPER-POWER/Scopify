@@ -3,7 +3,8 @@
 import { lazy, memo, Suspense, useEffect, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { useLatticeExpansionSettled } from "@/hooks/playlist/useLatticeExpansionSettled";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { LatticePosterProps } from "@/types/playlist/latticeComponents";
 import { LatticePosterArtwork } from "./LatticePosterArtwork";
 import { LatticePlaybackControls } from "./LatticePlaybackControls";
@@ -23,7 +24,7 @@ export const LatticePoster = memo(
     onSelect,
     onPlay,
   }: LatticePosterProps) {
-    const { t } = useI18n();
+    const { t } = useTranslation();
     const reducedMotion = useReducedMotion();
     const [settled, onExpansionComplete] = useLatticeExpansionSettled(expanded, reducedMotion);
     const [revealed, setRevealed] = useState(false);

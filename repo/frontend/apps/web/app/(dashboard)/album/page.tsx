@@ -6,12 +6,13 @@ import TracklistTable from "@/components/Playlist/TrackTable";
 import { NetworkRetryState } from "@/components/shared/NetworkRetryState";
 import { useAlbumData } from "@/hooks/album/useAlbumData";
 import { useSmartRouter } from "@/hooks/core/useSmartRouter";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import { AlbumActions } from "./_components/AlbumActions";
 import { AlbumHeader } from "./_components/AlbumHeader";
 
 export default function AlbumPage() {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const smartRouter = useSmartRouter();
   const {
     ALBUM_INFO,

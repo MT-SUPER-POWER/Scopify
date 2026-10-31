@@ -19,7 +19,8 @@ import { useCommentThread } from "@/hooks/comment/useCommentThread";
 import { getReplyCount } from "@/lib/comment/commentResource";
 import { useLoginStatus } from "@/hooks/auth/useLoginStatus";
 import { useUserStore } from "@/store";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { CommentSectionProps } from "@/types/comment/components";
 import type { CommentSortType } from "@/types/comment/model";
 import type { NeteaseComment } from "@/types/song/api";
@@ -35,7 +36,7 @@ const SORT_LABEL_KEY = {
  * 自己请求评论数据，调用方需要在外面套一层 QueryBoundary：首页评论取不到时只有这一块失败。
  */
 export function CommentSection({ resource }: CommentSectionProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const isLogin = useLoginStatus();
   const currentUserId = useUserStore((state) => state.user?.userId);
   const {
@@ -101,7 +102,7 @@ export function CommentSection({ resource }: CommentSectionProps) {
           <CommentCountSkeleton />
         ) : (
           <h2 className="text-xl font-bold text-content">
-            {t("mv.comments.count", { count: total.toLocaleString() })}
+            {t("mv.comments.count", { count: total, replace: { count: total.toLocaleString() } })}
           </h2>
         )}
         <DropdownMenu>

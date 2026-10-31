@@ -3,7 +3,8 @@
 import { ChevronRight, FileMusic } from "lucide-react";
 import { Card, CardContent } from "@scopify/ui/shadcn/components/card";
 import { getSizedImageUrl } from "@/lib/music/imageUrl";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { MusicSheet } from "@/types/songResources/api";
 import type { SheetSongResultCardProps } from "@/types/search/components";
 
@@ -19,7 +20,7 @@ export function SheetSongResultCard({
   onSelectSong,
   onSelectSheet,
 }: SheetSongResultCardProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const hiddenCount = sheets.length - VISIBLE_SHEETS;
   return (
     <Card className="gap-0 py-0 shadow-none">

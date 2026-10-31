@@ -1,7 +1,8 @@
 "use client";
 
 import { Volume1, Volume2, VolumeX } from "lucide-react";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { MvVolumeControlProps } from "@/types/mv/components";
 
 const CONTROL_BTN =
@@ -14,7 +15,7 @@ export function MvVolumeControl({
   onVolumeChange,
   onToggleMute,
 }: MvVolumeControlProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const level = isMuted ? 0 : volume;
   const Icon = level === 0 ? VolumeX : level < 0.5 ? Volume1 : Volume2;
 

@@ -5,7 +5,8 @@ import { useState } from "react";
 import { PodcastViewToggle } from "@/components/library/PodcastViewToggle";
 import { Table, TableBody, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useInfiniteScrollTrigger } from "@/hooks/search/useInfiniteScrollTrigger";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { PodcastsViewProps } from "@/types/search/components";
 import type { PodcastViewMode } from "@/types/library/model";
 import { PodcastCard } from "./PodcastCard";
@@ -18,7 +19,7 @@ export function PodcastsView({
   onLoadMore,
   podcasts,
 }: PodcastsViewProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const [view, setView] = useState<PodcastViewMode>("cards");
   const loadMoreRef = useInfiniteScrollTrigger({
     enabled: hasNextPage && !isFetchingNextPage,

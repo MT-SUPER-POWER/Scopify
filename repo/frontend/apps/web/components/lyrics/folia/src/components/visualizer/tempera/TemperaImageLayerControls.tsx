@@ -1,5 +1,6 @@
 import React from "react";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import { ImagePlus, Settings2 } from "lucide-react";
 import { useTemperaImagePool } from "@/hooks/lyrics/useTemperaImagePool";
 import type { TemperaImageLayerCommit } from "@/types/lyrics/folia/temperaImagePool";
@@ -36,7 +37,7 @@ const TemperaImageLayerControls: React.FC<TemperaImageLayerControlsProps> = ({
   isDaylight,
   onCommit,
 }) => {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const pool = useTemperaImagePool({ images, depth, frequency, onCommit });
   const previewImages = pool.isOpen ? pool.draft.layerImages : images;
   const thumbnails = useTemperaLayerImageThumbnails(previewImages);

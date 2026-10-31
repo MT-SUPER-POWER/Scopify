@@ -11,13 +11,14 @@ import { VoiceTranscriptDialog } from "@/components/voice/VoiceTranscriptDialog"
 import { useRecommendedVoiceListsQuery } from "@/hooks/home/useHomeQueries";
 import { toRecommendedVoice } from "@/lib/home/voiceAdapter";
 import { cn } from "@/lib/utils";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { Voice } from "@/types/search/model";
 
 const PAGE_SIZE = 6;
 
 export function RecommendedVoiceLists() {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const query = useRecommendedVoiceListsQuery();
   const voices = (query.data.data?.recommendVoiceVOS ?? [])
     .map((voice) =>

@@ -10,10 +10,11 @@ import { useSmartRouter } from "@/hooks/core/useSmartRouter";
 import { getPodcastDestination } from "@/lib/search/podcastDestination";
 import { cn, formatPlayCount } from "@/lib/utils";
 import { usePlayerStore } from "@/store";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { PodcastRowProps } from "@/types/search/components";
 export function PodcastRow({ index, podcast }: PodcastRowProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const router = useSmartRouter();
   const { handlePlayPodcast, loadingPodcastId } = usePodcastPlay();
   const currentSongDetail = usePlayerStore((state) => state.currentSongDetail);

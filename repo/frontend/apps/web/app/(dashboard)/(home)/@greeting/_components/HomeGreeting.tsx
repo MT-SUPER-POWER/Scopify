@@ -11,13 +11,14 @@ import { CollapsibleSection } from "../../_components/CollapsibleSection";
 import { SectionPagination } from "../../_components/SectionPagination";
 import { useSuspensePersonalizedPlaylistsQuery } from "@/hooks/home/useHomeQueries";
 import { useSmartRouter } from "@/hooks/core/useSmartRouter";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import { pruneRecommendPlaylist } from "@/types/playlist/api";
 
 const PAGE_SIZE = 9;
 
 export function HomeGreeting() {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const { actions, dateInfo, greeting } = useHome();
   const smartRouter = useSmartRouter();
   const query = useSuspensePersonalizedPlaylistsQuery();

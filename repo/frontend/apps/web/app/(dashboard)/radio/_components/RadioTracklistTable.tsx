@@ -24,7 +24,8 @@ import { useRadioTracklistStickyHeader } from "@/hooks/radio/useRadioTracklistSt
 import { useMediaQuery } from "@/hooks/ui/useMediaQuery";
 import { cn } from "@/lib/utils";
 import { usePlayerStore } from "@/store";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type {
   RadioSortKey,
   RadioSortState,
@@ -37,7 +38,7 @@ export function RadioTracklistTable({
   searchQuery,
   tracks,
 }: RadioTracklistTableProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const [sortState, setSortState] = useState<RadioSortState>({ key: null, order: null });
   const playback = usePlaybackProjection();
   const currentTime = usePlaybackPositionMs();

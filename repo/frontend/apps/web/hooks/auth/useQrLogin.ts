@@ -6,12 +6,13 @@ import { useSmartRouter } from "@/hooks/core/useSmartRouter";
 import { runtime } from "@/lib/runtime";
 import { createFreshLoginDevice } from "@/lib/devices/clientIdentity";
 import { completeFreshLogin } from "@/lib/devices/completeLogin";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { QrLoginProps, QrStatus } from "@/types/auth/login";
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 export function useQrLogin({ onSuccess, deviceName }: QrLoginProps) {
   const smartRouter = useSmartRouter();
-  const { t } = useI18n();
+  const { t } = useTranslation();
 
   // ref 避免 smartRouter 每次渲染新引用导致 useEffect 反复执行
   const routerRef = useRef(smartRouter);

@@ -4,7 +4,8 @@ import { SlidersHorizontal } from "lucide-react";
 import { useState } from "react";
 import { useMcpSettings } from "@/hooks/settings/useMcpSettings";
 import { runtime } from "@/lib/runtime";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { McpSettingsSectionProps } from "@/types/settings/components";
 import { McpCapabilitiesModal } from "./McpCapabilitiesModal";
 import { McpCredentialControls } from "./McpCredentialControls";
@@ -21,7 +22,7 @@ export function McpSettingsSection({
   onChange,
   statusRefreshKey,
 }: McpSettingsSectionProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const [isCapabilitiesModalOpen, setIsCapabilitiesModalOpen] = useState(false);
   const {
     clientConfiguration,

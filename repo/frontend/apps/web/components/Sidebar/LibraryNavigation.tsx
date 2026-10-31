@@ -4,7 +4,8 @@ import { Bookmark, Cloud, History, Home, Podcast, Users } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { LibraryNavigationProps } from "@/types/sidebar/components";
 
 const sections = [
@@ -28,7 +29,7 @@ const sections = [
 
 export function LibraryNavigation({ isCollapsed, headerAction }: LibraryNavigationProps) {
   const pathname = usePathname();
-  const { t } = useI18n();
+  const { t } = useTranslation();
   return (
     <nav
       className={cn(

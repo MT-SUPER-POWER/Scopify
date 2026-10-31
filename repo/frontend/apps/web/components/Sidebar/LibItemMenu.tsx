@@ -16,13 +16,14 @@ import { useSidebarPlaylistPlayback } from "@/hooks/sidebar/useSidebarPlaylistPl
 import { getCommentHref } from "@/lib/comment/commentResource";
 import { useSmartRouter } from "@/hooks/core/useSmartRouter";
 import { formatCompactCount } from "@/lib/utils";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { LibItemMenuProps } from "@/types/sidebar/containerComponents";
 import { SidebarPlaylistManagement } from "./SidebarPlaylistManagement";
 
 function LibItemContextMenu({ children, playlistID }: LibItemMenuProps) {
   const smartRouter = useSmartRouter();
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const [contextMenuOpen, setContextMenuOpen] = React.useState(false);
   const play = useSidebarPlaylistPlayback(playlistID);
   const { data: commentCount } = useCommentCountQuery(
@@ -66,7 +67,8 @@ function LibItemContextMenu({ children, playlistID }: LibItemMenuProps) {
                 {commentCount === undefined
                   ? t("contextMenu.viewComments")
                   : t("contextMenu.viewCommentsWithCount", {
-                      count: formatCompactCount(commentCount),
+                      count: commentCount,
+                      replace: { count: formatCompactCount(commentCount) },
                     })}
               </ContextMenuItem>
               <ContextMenuItem

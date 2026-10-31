@@ -10,7 +10,8 @@ import { useCommentCountQuery } from "@/hooks/comment/useCommentCountQuery";
 import { getCommentHref } from "@/lib/comment/commentResource";
 import { useSmartRouter } from "@/hooks/core/useSmartRouter";
 import { formatCompactCount } from "@/lib/utils";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { AlbumActionsProps } from "@/types/album/model";
 import {
   Tooltip,
@@ -30,14 +31,17 @@ export function AlbumActions({
   onOpenLattice,
   onToggleSubscribe,
 }: AlbumActionsProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const smartRouter = useSmartRouter();
   const { data: commentCount } = useCommentCountQuery("album", albumId);
   const playLabel = t(isPlaying ? "ui.pause" : "ui.play");
   const commentLabel =
     commentCount === undefined
       ? t("album.action.comments")
-      : t("album.action.commentsWithCount", { count: formatCompactCount(commentCount) });
+      : t("album.action.commentsWithCount", {
+          count: commentCount,
+          replace: { count: formatCompactCount(commentCount) },
+        });
 
   return (
     <TooltipProvider>

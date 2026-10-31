@@ -6,7 +6,8 @@ import { useCallback } from "react";
 import { ArtistInlineLinks } from "@/components/shared/ArtistInlineLinks";
 import { SongVipBadge } from "@/components/shared/SongVipBadge";
 import { usePlayerStore } from "@/store";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { SongDetail } from "@/types/song/api";
 import type { SearchBestMatch, Song } from "@/types/search/model";
 
@@ -33,7 +34,7 @@ function toDetail(song: Song): SongDetail {
 }
 
 export function BestMatchCard({ bestMatch, onNavigate, songs }: Props) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const currentSongDetail = usePlayerStore((s) => s.currentSongDetail);
   const isPlaying = usePlayerStore((s) => s.isPlaying);
   const setIsPlaying = usePlayerStore((s) => s.setIsPlaying);

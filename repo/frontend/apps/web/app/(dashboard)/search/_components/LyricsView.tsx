@@ -5,7 +5,8 @@ import { useCallback, useMemo } from "react";
 import { useInfiniteScrollTrigger } from "@/hooks/search/useInfiniteScrollTrigger";
 import { songToSongDetail } from "@/lib/search/lyricSearch";
 import { usePlayerStore } from "@/store";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { SongDetail } from "@/types/song/api";
 import type { LyricsViewProps } from "@/types/search/components";
 import { LyricCard } from "./LyricCard";
@@ -18,7 +19,7 @@ export function LyricsView({
   keyword,
   onLoadMore,
 }: LyricsViewProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const currentSongId = usePlayerStore((s) => s.currentSongDetail?.id);
   const isPlaying = usePlayerStore((s) => s.isPlaying);
 

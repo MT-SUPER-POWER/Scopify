@@ -4,10 +4,10 @@ import { MessageCircle } from "lucide-react";
 import { CommentSection } from "@/components/Comment/CommentSection";
 import { QueryBoundary } from "@/components/shared/QueryBoundary";
 import { useCommentResource } from "@/hooks/comment/useCommentResource";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
 
 export default function CommentPage() {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const resource = useCommentResource();
   if (!resource)
     return (

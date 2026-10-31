@@ -44,7 +44,8 @@ import { clearPageCache } from "@/lib/cache/pageCache";
 import { cn } from "@/lib/utils";
 import { reportActionFailure } from "@/lib/web/errorTracking";
 import { usePlayerStore, useUserStore } from "@/store";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import { pruneSongDetail, type SongDetail } from "@/types/song/api";
 import type { NavigationScrollRestorationAdapter } from "@/types/core/navigationScroll";
 
@@ -97,7 +98,7 @@ export default function TracklistTable({
     showLikeColumn,
   });
 
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const { mutateAsync: dislikeDailyRecommend } = useDailyRecommendationMutation();
   const { mutateAsync: updatePlaylistTrack } = usePlaylistTrackMutation();
   const searchParams = useSearchParams();

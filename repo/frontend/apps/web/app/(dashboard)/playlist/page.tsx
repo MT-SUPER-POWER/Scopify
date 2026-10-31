@@ -6,11 +6,13 @@ import { DailyRecommendationSwitch } from "@/components/Playlist/DailyRecommenda
 import { PlaylistContent } from "@/components/Playlist/PlaylistContent";
 import { useSmartRouter } from "@/hooks/core/useSmartRouter";
 import { usePlaylist } from "@/hooks/playlist/usePlaylistData";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+import { useI18nStore } from "@/store/module/i18n";
 
 // 独立组件：usePlaylist 不能放在 dailyCategory 提前返回之后
 function PlaylistDetail() {
-  const { locale, t } = useI18n();
+  const { t } = useTranslation(),
+    locale = useI18nStore((state) => state.locale);
   const playlist = usePlaylist();
   const router = useSmartRouter();
   const categoryLabel =

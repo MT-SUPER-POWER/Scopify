@@ -11,14 +11,16 @@ import {
 import { useSocialAccount, useSocialMessages } from "@/hooks/social/useSocialQueries";
 import { useSocialSendMessage } from "@/hooks/social/useSocialConversation";
 import { uniqueById } from "@/lib/social/normalize";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+import { useI18nStore } from "@/store/module/i18n";
 import type { SocialMessageDialogProps } from "@/types/social/components";
 import { SocialAvatar, SocialLoadMore, SocialState } from "@/components/social/SocialPrimitives";
 import { SocialResourceCard } from "@/components/social/SocialResourceCard";
 import s from "@/components/social/Social.module.css";
 
 export function SocialMessageDialog({ user, open, onClose }: SocialMessageDialogProps) {
-  const { t, locale } = useI18n(),
+  const { t } = useTranslation(),
+    locale = useI18nStore((state) => state.locale),
     { uid } = useSocialAccount();
   const query = useSocialMessages(user.id, open),
     send = useSocialSendMessage(user.id);

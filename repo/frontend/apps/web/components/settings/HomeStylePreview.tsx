@@ -1,7 +1,7 @@
 "use client";
 
 import { AppBackground } from "@/components/shared/AppBackground";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
 
 const CARD_COUNT = 6;
 
@@ -10,7 +10,7 @@ const CARD_COUNT = 6;
  * 但内容是静态示意，不请求数据，改主题时预览立即可见，离线也不会失败。
  */
 export function HomeStylePreview() {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const sections = [
     t("home.madeFor", { name: t("home.you") }),
     t("home.recentlyPlayedPlaylists"),

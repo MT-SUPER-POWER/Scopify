@@ -6,7 +6,8 @@ import { ShortcutCommandIcon } from "@/components/shortcuts/ShortcutCommandIcon"
 import { ShortcutKeycaps } from "@/components/shortcuts/ShortcutKeycaps";
 import { SHORTCUT_COMMANDS } from "@/constants/shortcuts";
 import { getShortcutBindingFromEvent } from "@/lib/shortcuts/bindings";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { ShortcutBindingRowProps } from "@/types/shortcuts/components";
 
 export function ShortcutBindingRow({
@@ -17,7 +18,7 @@ export function ShortcutBindingRow({
   onDisable,
   onReset,
 }: ShortcutBindingRowProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const [isRecording, setIsRecording] = useState(false);
   const [error, setError] = useState<string | null>(null);
 

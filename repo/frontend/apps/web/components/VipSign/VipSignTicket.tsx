@@ -5,7 +5,8 @@ import { MoveVertical } from "lucide-react";
 import { useRef } from "react";
 import { useTicketInteraction } from "@/hooks/vipSign/useTicketInteraction";
 import { useTicketPlayback } from "@/hooks/vipSign/useTicketPlayback";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { VipSignTicketProps } from "@/types/vipSign/components";
 import { TicketPaper } from "./TicketPaper";
 import { TicketCurl } from "./TicketCurl";
@@ -14,7 +15,7 @@ import { VipSignTicketStub } from "./VipSignTicketStub";
 import styles from "./VipSignTicket.module.css";
 
 export function VipSignTicket({ todayRecord, onClose }: VipSignTicketProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const interaction = useTicketInteraction(onClose);
   const { play, isPlaying } = useTicketPlayback(todayRecord?.songInfo?.songId, onClose);
   const { reducedMotion, isTorn } = interaction;

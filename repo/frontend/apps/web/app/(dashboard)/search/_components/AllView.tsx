@@ -4,7 +4,8 @@ import { MvCard } from "@/components/mv/MvCard";
 import { PlaylistCard } from "@/components/search/PlaylistCard";
 import { SectionHeader } from "@/components/search/SectionHeader";
 import { VoiceList } from "@/components/search/VoiceList";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { AllViewProps } from "@/types/search/components";
 import { BestMatchCard } from "./BestMatchCard";
 import { PodcastCard } from "./PodcastCard";
@@ -25,7 +26,7 @@ export function AllView({
   podcasts,
   voices,
 }: AllViewProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
 
   return (
     <>

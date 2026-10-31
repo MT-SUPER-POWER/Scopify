@@ -14,7 +14,8 @@ import { SongContextMenu } from "@/components/shared/SongContextMenu";
 import { getSizedImageUrl } from "@/lib/music/imageUrl";
 import { songToSongDetail } from "@/lib/search/lyricSearch";
 import { cn, formatDuration } from "@/lib/utils";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { LyricCardProps } from "@/types/search/components";
 import { SearchLyricDialog } from "./SearchLyricDialog";
 import { SearchLyricSnippet } from "./SearchLyricSnippet";
@@ -26,7 +27,7 @@ export const LyricCard = memo(function LyricCard({
   item,
   onPlay,
 }: LyricCardProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const song = useMemo(() => songToSongDetail(item.song), [item.song]);
   const isCurrent = currentSongId === song.id;
   const activeIsPlaying = isCurrent && isPlaying;

@@ -1,7 +1,8 @@
 "use client";
 import { RefreshCw } from "lucide-react";
 import { Button } from "@scopify/ui/shadcn/components/button";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { LoginDevicesHeaderProps } from "@/types/devices/components";
 import styles from "./LoginDevices.module.css";
 export function LoginDevicesHeader({
@@ -10,7 +11,7 @@ export function LoginDevicesHeader({
   onRefresh,
   authenticated,
 }: LoginDevicesHeaderProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   return (
     <header className={styles.header}>
       <div className={styles.titleRow}>

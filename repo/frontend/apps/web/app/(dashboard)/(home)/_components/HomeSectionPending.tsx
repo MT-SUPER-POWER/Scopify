@@ -9,11 +9,12 @@ import {
 } from "@/components/home/HomePageSkeleton";
 import { QueryPending } from "@/components/shared/QueryPending";
 import { useIsOnline } from "@/hooks/core/useIsOnline";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { HomeSectionPendingProps } from "@/types/home/components";
 
 export function HomeSectionPending({ isPaused, kind, title, titleKey }: HomeSectionPendingProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const isOnline = useIsOnline();
   if (isPaused ?? !isOnline) return <QueryPending isPaused />;
 

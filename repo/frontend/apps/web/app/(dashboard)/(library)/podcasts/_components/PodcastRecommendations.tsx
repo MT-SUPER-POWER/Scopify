@@ -6,7 +6,8 @@ import { GridCard } from "@/components/home/GridCard";
 import { NetworkRetryState } from "@/components/shared/NetworkRetryState";
 import { useSmartRouter } from "@/hooks/core/useSmartRouter";
 import { cn } from "@/lib/utils";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import { usePodcastPlay } from "@/hooks/library/usePodcastPlay";
 import type { PodcastRecommendationsProps } from "@/types/library/components";
 
@@ -37,7 +38,7 @@ export function PodcastRecommendations({
   onRefresh,
   podcasts,
 }: PodcastRecommendationsProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const router = useSmartRouter();
   const { handlePlayPodcast, loadingPodcastId } = usePodcastPlay();
   const [page, setPage] = useState(0);

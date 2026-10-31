@@ -1,7 +1,8 @@
 import React, { useMemo, useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence, MotionValue, useMotionValueEvent } from "framer-motion";
 import { X } from "lucide-react";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import { LyricData, Theme } from "../../types";
 
 interface LyricsTimelineModalProps {
@@ -33,7 +34,7 @@ const LyricsTimelineModal: React.FC<LyricsTimelineModalProps> = ({
   theme,
   isDaylight,
 }) => {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   // const isDaylight = theme?.name === 'Daylight Default'; // Deprecated, passed as prop
   const glassBg = isDaylight ? "bg-white/70" : "bg-black/40";
   const borderColor = isDaylight ? "border-black/5" : "border-white/10";

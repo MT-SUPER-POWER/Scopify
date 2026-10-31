@@ -13,7 +13,8 @@ import {
   PLAYBACK_PROGRESS_REFRESH_RATES,
 } from "@/constants/performance";
 import { languageLabelKeys } from "@/lib/i18n";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import { usePerformanceStore } from "@/store/module/performance";
 import { APP_LOCALES, type AppLocale } from "@/types/settings/config";
 import type { GeneralSettingsTabProps } from "@/types/settings/components";
@@ -26,7 +27,7 @@ export function GeneralSettingsTab({
   onDesktopChange,
   onWebChange,
 }: GeneralSettingsTabProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const progressRefreshRate = usePerformanceStore((state) => state.progressRefreshRate);
   const setProgressRefreshRate = usePerformanceStore((state) => state.setProgressRefreshRate);
 

@@ -11,13 +11,14 @@ import { createFreshLoginDevice, resolveLocalDeviceName } from "@/lib/devices/cl
 import { completeFreshLogin } from "@/lib/devices/completeLogin";
 import { runtime } from "@/lib/runtime";
 import { sendCaptcha } from "@/lib/web/auth";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { LoginMode } from "@/types/auth/login";
 
 export function useLoginFlow() {
   const smartRouter = useSmartRouter();
   const searchParams = useSearchParams();
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const [mode, setMode] = useState<LoginMode>("qr");
   const [isLoading, setIsLoading] = useState(false);
   const [deviceName, setDeviceName] = useState("");

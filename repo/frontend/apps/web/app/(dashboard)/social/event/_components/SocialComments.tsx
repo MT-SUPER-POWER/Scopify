@@ -12,7 +12,8 @@ import { useSocialAccount, useSocialComments } from "@/hooks/social/useSocialQue
 import { useSocialCommentActions, useSocialCommentWriter } from "@/hooks/social/useSocialComments";
 import { useRequireLoginAction } from "@/hooks/auth/useRequireLoginAction";
 import { uniqueById } from "@/lib/social/normalize";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+import { useI18nStore } from "@/store/module/i18n";
 import type { SocialEventProps, SocialCommentRowProps } from "@/types/social/components";
 import type { SocialComment } from "@/types/social/model";
 import {
@@ -27,7 +28,8 @@ import s from "@/components/social/Social.module.css";
 
 function CommentRow({ event, comment, onReply }: SocialCommentRowProps) {
   const { uid } = useSocialAccount(),
-    { t, locale } = useI18n(),
+    { t } = useTranslation(),
+    locale = useI18nStore((state) => state.locale),
     requireLogin = useRequireLoginAction();
   const actions = useSocialCommentActions(event, comment),
     [deleting, setDeleting] = useState(false);
@@ -121,7 +123,7 @@ function CommentRow({ event, comment, onReply }: SocialCommentRowProps) {
   );
 }
 export function SocialComments({ event }: SocialEventProps) {
-  const { t } = useI18n(),
+  const { t } = useTranslation(),
     { uid } = useSocialAccount();
   const query = useSocialComments(event.threadId),
     write = useSocialCommentWriter(event);

@@ -8,7 +8,8 @@ import { useSmartRouter } from "@/hooks/core/useSmartRouter";
 import { getPodcastDestination } from "@/lib/search/podcastDestination";
 import { cn } from "@/lib/utils";
 import { usePlayerStore } from "@/store";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { PodcastCardProps } from "@/types/search/components";
 import { PodcastContextMenu } from "@/components/shared/PodcastContextMenu";
 
@@ -16,7 +17,7 @@ const FALLBACK_COVER =
   "https://images.unsplash.com/photo-1590602847861-f357a9332bbc?q=80&w=400&auto=format&fit=crop";
 
 export function PodcastCard({ podcast }: PodcastCardProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const router = useSmartRouter();
   const { handlePlayPodcast, loadingPodcastId } = usePodcastPlay();
   const currentSongDetail = usePlayerStore((state) => state.currentSongDetail);

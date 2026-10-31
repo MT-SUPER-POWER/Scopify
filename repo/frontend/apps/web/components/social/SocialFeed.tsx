@@ -4,7 +4,8 @@ import { useCallback } from "react";
 import { useInfiniteScrollTrigger } from "@/hooks/search/useInfiniteScrollTrigger";
 import { useSocialAccount, useSocialFeed } from "@/hooks/social/useSocialQueries";
 import { uniqueById } from "@/lib/social/normalize";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { SocialFeedProps } from "@/types/social/components";
 import { SocialEventCard } from "./SocialEventCard";
 import { SocialNoteGrid } from "./SocialNoteGrid";
@@ -13,7 +14,7 @@ import s from "./Social.module.css";
 
 export function SocialFeed({ uid, enabled = true, grid = false }: SocialFeedProps) {
   const { uid: self } = useSocialAccount(),
-    { t } = useI18n();
+    { t } = useTranslation();
   const query = useSocialFeed(uid, enabled);
   const { fetchNextPage } = query;
   const items = uniqueById(query.data?.pages.flatMap((page) => page.items) ?? []);

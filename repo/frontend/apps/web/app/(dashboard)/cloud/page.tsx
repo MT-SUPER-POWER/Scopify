@@ -9,7 +9,8 @@ import { QuietState } from "@/components/shared/QuietState";
 import { SidebarPlaylistConfirmDialog } from "@/components/Sidebar/SidebarPlaylistConfirmDialog";
 import { CLOUD_SONG_FALLBACK_COVER } from "@/constants/cloud";
 import { useCloudDrive } from "@/hooks/library/useCloudDrive";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { SongDetail } from "@/types/song/api";
 import type { CloudTrackActions } from "@/types/library/components";
 import type { PlaylistInfo } from "@/types/playlist/model";
@@ -20,7 +21,7 @@ import { CloudStorageRing } from "./_components/CloudStorageRing";
 const EMPTY_TRACKS: SongDetail[] = [];
 
 export default function CloudDrivePage() {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const { downloadTrack, isLoggedIn, matchTrack, query, removeTrack, uploadFiles, uploadProgress } =
     useCloudDrive();
   const [pendingRemoval, setPendingRemoval] = useState<SongDetail | null>(null);

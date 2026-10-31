@@ -10,13 +10,15 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@scopify/ui/shadcn/components/sheet";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+import { useI18nStore } from "@/store/module/i18n";
 import type { LoginDeviceDetailsProps } from "@/types/devices/components";
 import { DeviceIllustration } from "./DeviceIllustration";
 import styles from "./LoginDevices.module.css";
 
 export function LoginDeviceDetails({ device, onClose, onAction }: LoginDeviceDetailsProps) {
-  const { t, locale } = useI18n();
+  const { t } = useTranslation(),
+    locale = useI18nStore((state) => state.locale);
   return (
     <Sheet
       open={device !== null}

@@ -1,5 +1,6 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { SubtitleSettingsEditorProps } from "@/types/lyrics/subtitlePreview";
 import { SubtitleLayoutSettings } from "./SubtitleLayoutSettings";
 import { SubtitleEffectsSettings } from "./SubtitleEffectsSettings";
@@ -7,7 +8,7 @@ import { SubtitleFillSettings } from "./SubtitleFillSettings";
 import { SubtitleMotionSettings } from "./SubtitleMotionSettings";
 
 export function SubtitleStyleEditor(props: SubtitleSettingsEditorProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   return (
     <Tabs defaultValue="layout">
       <TabsList className="mb-6 h-auto w-fit max-w-full flex-wrap justify-start">

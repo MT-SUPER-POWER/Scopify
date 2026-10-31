@@ -2,7 +2,8 @@
 import { ChevronDown } from "lucide-react";
 import { Button } from "@scopify/ui/shadcn/components/button";
 import { useDevicePresentation } from "@/hooks/devices/useDevicePresentation";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { LoginDeviceContentProps } from "@/types/devices/components";
 import { CurrentDeviceCard } from "./CurrentDeviceCard";
 import { LoginDeviceStage } from "./LoginDeviceStage";
@@ -11,7 +12,7 @@ import { LoginDeviceDetails } from "./LoginDeviceDetails";
 import { DeviceActionDialog } from "./DeviceActionDialog";
 import styles from "./LoginDevices.module.css";
 export function LoginDevicesContent({ snapshot, scope }: LoginDeviceContentProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const state = useDevicePresentation(snapshot.devices);
   return (
     <>

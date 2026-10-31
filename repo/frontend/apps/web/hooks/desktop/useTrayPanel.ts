@@ -8,12 +8,13 @@ import { useDesktopPlaybackWallpaperController } from "@/hooks/desktopWallpaper/
 import { usePlaybackCommands } from "@/hooks/player/usePlaybackCommands";
 import { usePlaybackProjection } from "@/hooks/player/usePlaybackProjection";
 import { runtime } from "@/lib/runtime";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { LyricData } from "@/types/lyrics/model";
 
 export function useTrayPanel() {
   const smartRouter = useSmartRouter();
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const [mounted, setMounted] = useState(false);
   const isDesktop = runtime.isDesktop;
   const wallpaper = useDesktopPlaybackWallpaperController();

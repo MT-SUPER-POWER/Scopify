@@ -29,7 +29,8 @@ import { useLoginStatus } from "@/hooks/auth/useLoginStatus";
 import { cn, formatDuration } from "@/lib/utils";
 import SPOTIFYANIME from "@/resources/eq-playing.svg";
 import { usePlayerStore, useUserStore } from "@/store";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import { pruneSongDetail, type SongDetail } from "@/types/song/api";
 import { getSizedImageUrl } from "@/lib/music/imageUrl";
 
@@ -57,7 +58,7 @@ function TrackIndexCell({
   onPause: () => void;
   onPlay: () => void;
 }) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
 
   return (
     <div className="relative flex w-6 items-center justify-center text-right text-sm text-content-muted tabular-nums">
@@ -98,7 +99,7 @@ function TrackIndexCell({
 
 export const PopularTrackItem = memo(
   function PopularTrackItem({ index, queue, track }: Props) {
-    const { t } = useI18n();
+    const { t } = useTranslation();
     // ── store ──
     const currentSongDetail = usePlayerStore((s) => s.currentSongDetail);
     const isPlaying = usePlayerStore((s) => s.isPlaying);

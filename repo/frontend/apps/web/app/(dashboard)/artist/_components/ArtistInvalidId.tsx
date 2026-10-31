@@ -1,9 +1,9 @@
 "use client";
 
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
 
 export function ArtistInvalidId() {
-  const { t } = useI18n();
+  const { t } = useTranslation();
 
   return <div className="p-8">{t("artist.page.invalidId")}</div>;
 }

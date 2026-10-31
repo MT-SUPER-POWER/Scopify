@@ -1,7 +1,8 @@
 "use client";
 
 import { useSocialAccount, useSocialEvent } from "@/hooks/social/useSocialQueries";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { SocialEventDetailProps } from "@/types/social/components";
 import { SocialEventCard } from "@/components/social/SocialEventCard";
 import { SocialLogin, SocialState } from "@/components/social/SocialPrimitives";
@@ -9,7 +10,7 @@ import s from "@/components/social/Social.module.css";
 import { SocialComments } from "./SocialComments";
 
 export function SocialEventDetail({ target }: SocialEventDetailProps) {
-  const { t } = useI18n(),
+  const { t } = useTranslation(),
     { uid } = useSocialAccount();
   const valid = /^\d+$/.test(target.id) && /^\d+$/.test(target.uid);
   const query = useSocialEvent(valid ? target : { id: "", uid: "" });

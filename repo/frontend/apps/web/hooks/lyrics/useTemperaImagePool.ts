@@ -22,7 +22,8 @@ import {
 } from "@/components/lyrics/folia/src/types";
 import { isTemperaPoolWriteLocked } from "@/lib/lyrics/folia/temperaImagePool";
 import { downloadBlob, formatLocalDateStamp, sanitizeDownloadFileName } from "@/lib/web/download";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type {
   TemperaImageLayerCommit,
   TemperaPoolBusyAction,
@@ -53,7 +54,7 @@ export function useTemperaImagePool({
   frequency,
   onCommit,
 }: UseTemperaImagePoolOptions) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
   const [draft, setDraft] = useState<TemperaImageLayerCommit>({
     layerImages: images,

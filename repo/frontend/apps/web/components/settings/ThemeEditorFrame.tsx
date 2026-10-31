@@ -3,7 +3,8 @@
 import { RotateCcw } from "lucide-react";
 import { Badge } from "@scopify/ui/shadcn/components/badge";
 import { Button } from "@scopify/ui/shadcn/components/button";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { ThemeEditorFrameProps } from "@/types/appearance/themeEditor";
 
 export function ThemeEditorFrame({
@@ -18,7 +19,7 @@ export function ThemeEditorFrame({
   actions,
   children,
 }: ThemeEditorFrameProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   return (
     <div className="w-full pb-6 text-foreground md:pb-10">
       <header className="mb-8">

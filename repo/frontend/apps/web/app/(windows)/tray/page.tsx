@@ -8,7 +8,8 @@ import { Separator } from "@/components/ui/separator";
 import { VolumeControl } from "@/components/PlayBar/VolumeControl";
 import { useTrayPanel } from "@/hooks/desktop/useTrayPanel";
 import { runtime } from "@/lib/runtime";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { TrayMenuButtonProps } from "@/types/desktop/trayComponents";
 import { TrayLyricSurfaces } from "./_components/TrayLyricSurfaces";
 import { TrayPlaybackControls } from "./_components/TrayPlaybackControls";
@@ -29,7 +30,7 @@ function TrayMenuButton({ icon: Icon, label, onClick }: TrayMenuButtonProps) {
 }
 
 export default function TrayPage() {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const {
     mounted,
     isDesktop,

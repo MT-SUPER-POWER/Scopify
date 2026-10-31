@@ -3,7 +3,8 @@
 import { Captions, Lock, PanelTop, PanelBottom } from "lucide-react";
 import { useCompanionPreferences } from "@/hooks/desktopCompanion/useCompanionPreferences";
 import { runtime } from "@/lib/runtime";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import { TraySwitchRow } from "./TraySwitchRow";
 
 /**
@@ -11,7 +12,7 @@ import { TraySwitchRow } from "./TraySwitchRow";
  * 桌面歌词锁定后若找不到解锁按钮，可以在这里直接解锁。
  */
 export function TrayLyricSurfaces() {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const [lyric, setLyric] = useCompanionPreferences(
     runtime.desktopLyrics.getPreferences,
     runtime.desktopLyrics.onPreferencesChanged,

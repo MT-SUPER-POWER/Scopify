@@ -6,10 +6,10 @@ import { AppCloseActions } from "./_components/AppCloseActions";
 import { AppCloseHeader } from "./_components/AppCloseHeader";
 import { AppCloseRememberChoice } from "./_components/AppCloseRememberChoice";
 import { useAppCloseState } from "@/hooks/appClose/useAppCloseState";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
 
 export default function AppClosePage() {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const { isSubmitting, remember, setRemember, submitAction } = useAppCloseState();
 
   return (

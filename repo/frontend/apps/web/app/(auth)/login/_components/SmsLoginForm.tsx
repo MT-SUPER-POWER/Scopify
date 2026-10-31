@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { Button } from "@scopify/ui/shadcn/components/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
 
 interface SmsLoginFormProps {
   isLoading: boolean;
@@ -17,7 +17,7 @@ export function SmsLoginForm({ isLoading, onSendCaptcha, onSubmit }: SmsLoginFor
   const [phone, setPhone] = useState("");
   const [captcha, setCaptcha] = useState("");
   const [countdown, setCountdown] = useState(0);
-  const { t } = useI18n();
+  const { t } = useTranslation();
 
   const handleSendCaptcha = async () => {
     if (!phone || countdown > 0) return;

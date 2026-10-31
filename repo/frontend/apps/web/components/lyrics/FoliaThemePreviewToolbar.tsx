@@ -2,7 +2,8 @@
 
 import { Check, Pause, Play, RotateCcw } from "lucide-react";
 
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { FoliaThemePreviewToolbarProps } from "@/types/lyrics/components";
 
 export function FoliaThemePreviewToolbar({
@@ -13,7 +14,7 @@ export function FoliaThemePreviewToolbar({
   onRestart,
   theme,
 }: FoliaThemePreviewToolbarProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const colors = [
     [t("folia.options.aiThemeQuickEditBackground"), theme.backgroundColor],
     [t("folia.options.aiThemeQuickEditPrimary"), theme.primaryColor],

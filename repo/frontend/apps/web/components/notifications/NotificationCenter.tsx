@@ -4,7 +4,8 @@ import { Bell } from "lucide-react";
 import { InboxPopover } from "@/components/inbox/InboxPopover";
 import { useNotificationCenter } from "@/hooks/notifications/useNotificationCenter";
 import { useSmartRouter } from "@/hooks/core/useSmartRouter";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import { NotificationPanel } from "./NotificationPanel";
 import { UpdateProgressRing } from "./UpdateProgressRing";
 import { reportNotificationHref } from "@/lib/notifications/reportTarget";
@@ -12,7 +13,7 @@ import { socialNotificationHref } from "@/lib/social/notificationTarget";
 
 export function NotificationCenter() {
   const center = useNotificationCenter();
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const router = useSmartRouter();
   const updateState = center.update.updater.state;
   const updateHint =

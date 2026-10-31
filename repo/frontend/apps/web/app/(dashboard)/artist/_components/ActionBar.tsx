@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useArtistFollow } from "@/hooks/artist/useArtistFollow";
 import { useArtistFansGroupStatus } from "@/hooks/fansGroup/useFansGroupQueries";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
 
 interface Props {
   artistId: number | string;
@@ -21,7 +21,7 @@ interface Props {
 }
 
 export function ActionBar({ artistId, isPlayingArtist, disabled, onPlayArtist }: Props) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const { isFollowStatusLoading, isFollowing, toggleFollow } = useArtistFollow(artistId);
   const fansGroupStatus = useArtistFansGroupStatus(artistId);
 

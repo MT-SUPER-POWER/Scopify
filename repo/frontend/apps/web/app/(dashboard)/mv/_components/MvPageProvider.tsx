@@ -12,7 +12,8 @@ import {
 import { QueryBoundary } from "@/components/shared/QueryBoundary";
 import { useMVDetailQuery } from "@/hooks/mv/useMVQueries";
 import { useMvId } from "@/hooks/mv/useMvId";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import { useUiStore } from "@/store/module/ui";
 import type { MvPageContextValue } from "@/types/mv/pageContext";
 
@@ -26,7 +27,7 @@ export function useMvPage() {
 
 /** MV 主详情边界：id 无效显示空状态，详情首次取不到时整页进入错误态。 */
 export function MvPageProvider({ children }: { children: ReactNode }) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const mvid = useMvId();
   if (!mvid)
     return (

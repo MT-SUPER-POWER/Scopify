@@ -4,7 +4,8 @@ import { IconRefresh } from "@tabler/icons-react";
 
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { ListeningReportPeriod } from "@/types/listeningReport/api";
 import type { ListeningReportHeaderProps } from "@/types/listeningReport/model";
 
@@ -23,7 +24,7 @@ export function ListeningReportHeader({
   selectedMonthKey,
   selectedWeekKey,
 }: ListeningReportHeaderProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
 
   return (
     <div className="flex flex-wrap items-center gap-2">

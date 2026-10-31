@@ -3,7 +3,8 @@
 import { Play, Radio } from "lucide-react";
 
 import { useReportSongPlayback } from "@/hooks/listeningReport/useReportSongPlayback";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { ListeningReportTodayFeedProps } from "@/types/listeningReport/components";
 
 function formatPlayTime(timestamp: number): string {
@@ -15,7 +16,7 @@ function formatPlayTime(timestamp: number): string {
 }
 
 export function ListeningReportTodayFeed({ songs }: ListeningReportTodayFeedProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const { playSong, playingSongId } = useReportSongPlayback();
 
   if (!songs || songs.length === 0) return null;

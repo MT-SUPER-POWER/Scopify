@@ -23,7 +23,8 @@ import { FoliaPanelAppearance } from "@/components/lyrics/FoliaPanelAppearance";
 import { FoliaPanelTheme } from "@/components/lyrics/FoliaPanelTheme";
 import { useFoliaPanelControls } from "@/hooks/player/useFoliaPanelControls";
 import { useAudioEqualizerStore } from "@/store/module/audioEqualizer";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { FoliaPanelControlsProps } from "@/types/lyrics/components";
 
 // The controls tab (Folia panelTab/ControlsTab.tsx): three groups — sound (volume and three
@@ -38,7 +39,7 @@ export function FoliaPanelControls({
   onOpenThemeLibrary,
   theme,
 }: FoliaPanelControlsProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const model = useFoliaPanelControls();
   const isEqualizerOn = useAudioEqualizerStore((state) => state.settings.enabled);
   const volume = model.volume / 100;

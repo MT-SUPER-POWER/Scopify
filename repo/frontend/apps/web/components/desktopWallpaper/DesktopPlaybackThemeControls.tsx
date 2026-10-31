@@ -4,11 +4,12 @@ import { Moon, Sun } from "lucide-react";
 
 import { FoliaThemeRecord } from "@/components/lyrics/FoliaThemeRecord";
 import { getFoliaStageTheme } from "@scopify/ui/folia";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import { useLyricStageStore } from "@/store/module/lyrics";
 
 export function DesktopPlaybackThemeControls() {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const settings = useLyricStageStore();
   const activeTheme = getFoliaStageTheme(settings.themes, settings.themeId);
 

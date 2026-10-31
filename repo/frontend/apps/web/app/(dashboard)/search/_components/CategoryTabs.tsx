@@ -4,11 +4,12 @@ import { useSearchParams } from "next/navigation";
 import { useSmartRouter } from "@/hooks/core/useSmartRouter";
 import { buildSearchCategoryUrl, getSearchCategory } from "@/lib/search/searchCategory";
 import { cn } from "@/lib/utils";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import { CATEGORIES, type Category } from "@/types/search/model";
 
 export function CategoryTabs() {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const router = useSmartRouter();
   const searchParams = useSearchParams();
   const active = getSearchCategory(searchParams.get("tab"));

@@ -11,12 +11,13 @@ import {
   DialogFooter,
 } from "@scopify/ui/shadcn/components/dialog";
 import { useDeviceActionForm } from "@/hooks/devices/useDeviceActionForm";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { DeviceActionDialogProps } from "@/types/devices/components";
 export function DeviceActionDialog(props: DeviceActionDialogProps) {
   const { action, onClose } = props;
   const form = useDeviceActionForm(props);
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const rename = action?.type === "rename";
   return (
     <Dialog

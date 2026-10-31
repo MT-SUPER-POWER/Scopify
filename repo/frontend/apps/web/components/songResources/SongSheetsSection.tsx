@@ -7,7 +7,8 @@ import { QueryPending } from "@/components/shared/QueryPending";
 import { QuietState } from "@/components/shared/QuietState";
 import { useSongSheetsQuery } from "@/hooks/song/useSongResources";
 import { useRequireLoginAction } from "@/hooks/auth/useRequireLoginAction";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { MusicSheet } from "@/types/songResources/api";
 import type { SongResourceSectionProps } from "@/types/songResources/components";
 import { MusicSheetRow } from "./MusicSheetRow";
@@ -21,7 +22,7 @@ export function SongSheetsSection(props: SongResourceSectionProps) {
   );
 }
 function SongSheetsContent({ songId, compact }: SongResourceSectionProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const query = useSongSheetsQuery(songId);
   const requireLogin = useRequireLoginAction();
   const [selected, setSelected] = useState<MusicSheet | null>(null);

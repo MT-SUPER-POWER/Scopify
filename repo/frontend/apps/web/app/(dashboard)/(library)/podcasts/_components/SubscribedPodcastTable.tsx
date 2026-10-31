@@ -15,7 +15,8 @@ import { useSmartRouter } from "@/hooks/core/useSmartRouter";
 import { usePodcastPlay } from "@/hooks/library/usePodcastPlay";
 import { cn, formatDate, formatPlayCount } from "@/lib/utils";
 import { usePlayerStore } from "@/store";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type {
   PodcastSortKey,
   PodcastSortState,
@@ -23,7 +24,7 @@ import type {
 } from "@/types/library/components";
 
 export function SubscribedPodcastTable({ podcasts }: SubscribedPodcastTableProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const router = useSmartRouter();
   const { handlePlayPodcast, loadingPodcastId } = usePodcastPlay();
   const [sortState, setSortState] = useState<PodcastSortState>({ key: null, order: null });

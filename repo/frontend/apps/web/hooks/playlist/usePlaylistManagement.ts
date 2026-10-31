@@ -12,12 +12,13 @@ import { isRealUser } from "@/lib/web/auth";
 import { getPlaylistManagementPermissions } from "@/lib/playlist/playlistManagementPermissions";
 import { musicQueryKeys } from "@/lib/query/queryKeys";
 import { useUserStore } from "@/store";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { PlaylistUpdateInput } from "@/types/playlist/model";
 import type { RawNeteasePlaylist } from "@/types/playlist/api";
 
 export function usePlaylistManagement(playlistId: number | string, detail?: RawNeteasePlaylist) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const queryClient = useQueryClient();
   const user = useUserStore((state) => state.user);
   const playlists = useUserStore((state) => state.playlist);

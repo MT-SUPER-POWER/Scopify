@@ -6,7 +6,7 @@ import { useState } from "react";
 
 import { MediaDescriptionDialog } from "@/components/shared/MediaDescriptionDialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
 
 interface RadioProgramDescriptionProps {
   cover?: string;
@@ -19,7 +19,7 @@ export function RadioProgramDescription({
   description,
   title,
 }: RadioProgramDescriptionProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const content = description?.trim();
 

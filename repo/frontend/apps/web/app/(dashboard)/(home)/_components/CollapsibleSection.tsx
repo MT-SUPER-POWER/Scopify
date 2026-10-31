@@ -5,7 +5,7 @@ import { ChevronRight } from "lucide-react";
 import { useState } from "react";
 import { Collapsible, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { cn } from "@/lib/utils";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
 
 import { useSectionCollapse } from "@/hooks/home/useSectionCollapse";
 import type { CollapsibleSectionProps } from "@/types/home/components";
@@ -37,7 +37,7 @@ export function CollapsibleSection({
     isOpen,
     disableHeightCollapse,
   );
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const isTriggerVisible = showTrigger ?? (isOpen || hasCollapsedOverflow);
 
   return (

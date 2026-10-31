@@ -2,14 +2,15 @@
 
 import { useSocialPlaylists } from "@/hooks/social/useSocialQueries";
 import { uniqueById } from "@/lib/social/normalize";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import { SocialLoadMore, SocialState } from "@/components/social/SocialPrimitives";
 import type { SocialFeedProps } from "@/types/social/components";
 import { ProfilePlaylistTile } from "./ProfilePlaylistTile";
 import s from "@/components/social/Social.module.css";
 
 export function SocialProfilePlaylists({ uid = "" }: SocialFeedProps) {
-  const { t } = useI18n(),
+  const { t } = useTranslation(),
     query = useSocialPlaylists(uid);
   const items = uniqueById(query.data?.pages.flatMap((page) => page.items) ?? []);
   return (

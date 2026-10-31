@@ -1,12 +1,13 @@
 "use client";
 
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { LoginDeviceStageProps } from "@/types/devices/components";
 import { DeviceIllustration } from "./DeviceIllustration";
 import styles from "./LoginDevices.module.css";
 
 export function LoginDeviceStage({ devices, selectedDevice, onSelect }: LoginDeviceStageProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   return (
     <div className={styles.stageScroller}>
       <div

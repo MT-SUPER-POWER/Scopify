@@ -1,4 +1,5 @@
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { VoiceListProps } from "@/types/search/components";
 import { VoiceItem } from "./VoiceItem";
 
@@ -12,7 +13,7 @@ export function VoiceList({
   variant = "default",
   voices,
 }: VoiceListProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const displayedVoices = limit ? voices.slice(0, limit) : voices;
 
   return (

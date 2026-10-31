@@ -3,13 +3,14 @@
 import { useState } from "react";
 import { useNotificationPreferences } from "@/hooks/notifications/useNotificationPreferences";
 import { runtime } from "@/lib/runtime";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import { NotificationSubscriptions } from "./NotificationSubscriptions";
 import { NotificationDeliverySettings } from "./NotificationDeliverySettings";
 import { SaveChangesButton, SaveConfirmModal } from "./SettingsUI";
 
 export function NotificationSettingsTab() {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const settings = useNotificationPreferences();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { snapshot, preferences, pending, localError, hasChanges, saving, testing } = settings;

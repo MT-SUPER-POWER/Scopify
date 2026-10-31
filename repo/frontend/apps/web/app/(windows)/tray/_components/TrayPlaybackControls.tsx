@@ -1,7 +1,8 @@
 "use client";
 
 import { Heart, Pause, Play, SkipBack, SkipForward } from "lucide-react";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { TrayPlaybackControlsProps } from "@/types/desktop/trayComponents";
 
 export function TrayPlaybackControls({
@@ -12,7 +13,7 @@ export function TrayPlaybackControls({
   onNext,
   onToggleLike,
 }: TrayPlaybackControlsProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
 
   return (
     <div className="flex shrink-0 items-center justify-between px-4 py-1">

@@ -3,13 +3,14 @@
 import { LoaderCircle, Upload } from "lucide-react";
 import { useRef } from "react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@scopify/ui/shadcn/components/tooltip";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { CloudDriveActionsProps } from "@/types/library/components";
 
 const CLOUD_UPLOAD_ACCEPT = "audio/*,.mp3,.flac,.m4a,.ogg,.wav,.ape,.wma,.aac";
 
 export function CloudDriveActions({ onUpload, uploadProgress }: CloudDriveActionsProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const inputRef = useRef<HTMLInputElement>(null);
   const label = uploadProgress
     ? t("library.cloud.uploading", {

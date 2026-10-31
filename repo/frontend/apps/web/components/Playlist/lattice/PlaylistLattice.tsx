@@ -6,7 +6,8 @@ import { usePlaybackCommands } from "@/hooks/player/usePlaybackCommands";
 import { usePlaybackProjection } from "@/hooks/player/usePlaybackProjection";
 import { useLatticePreferences } from "@/store/module/lattice";
 import { usePlayerStore } from "@/store";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { SongDetail } from "@/types/song/api";
 import type { PlaylistLatticeProps } from "@/types/playlist/latticeComponents";
 import { LatticeToolbar } from "./LatticeToolbar";
@@ -20,7 +21,7 @@ export default function PlaylistLattice({
   onTrackPlay,
   onClose,
 }: PlaylistLatticeProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const rootRef = useRef<HTMLElement>(null);
   const hintId = useId();
   const wall = useLatticeWall(tracks.length);

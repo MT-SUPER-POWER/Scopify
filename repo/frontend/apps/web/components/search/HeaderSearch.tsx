@@ -8,7 +8,8 @@ import { getCommandWorkspaceSearchFilterForCategory } from "@/lib/commandWorkspa
 import { useSmartRouter } from "@/hooks/core/useSmartRouter";
 import { buildSearchUrl } from "@/lib/search/searchCategory";
 import { cn } from "@/lib/utils";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import { useSearchStore } from "@/store/module/search";
 import type { SearchRecentEntry } from "@/types/search/model";
 import type { SuggestItem } from "@/types/search/components";
@@ -24,7 +25,7 @@ const GLASS = cn(
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ SEARCH COMPONENT ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 export default function HeaderSearch() {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const smartRouter = useSmartRouter();
   const intervalRef = useRef<number | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);

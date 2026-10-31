@@ -10,13 +10,14 @@ import {
   DialogTitle,
 } from "@scopify/ui/shadcn/components/dialog";
 import { useRequireLoginAction } from "@/hooks/auth/useRequireLoginAction";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import { SocialComposer } from "@/components/social/SocialComposer";
 import s from "@/components/social/Social.module.css";
 
 export function SocialPublishButton() {
   const [open, setOpen] = useState(false);
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const requireLogin = useRequireLoginAction();
   const router = useRouter();
   const params = useSearchParams();

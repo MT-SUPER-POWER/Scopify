@@ -4,7 +4,8 @@ import { useState } from "react";
 import { createPortal } from "react-dom";
 import { BadgeCheck, X } from "lucide-react";
 import { formatNumber } from "@/lib/utils";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { ArtistInfo } from "@/types/artist/model";
 import { getSizedImageUrl } from "@/lib/music/imageUrl";
 
@@ -13,7 +14,7 @@ interface Props {
 }
 
 export function AboutSection({ artist }: Props) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
 
   const modal = isOpen ? (
@@ -63,7 +64,10 @@ export function AboutSection({ artist }: Props) {
                 {artist.name}
               </h3>
               <p className="text-xs font-medium text-overlay-foreground/80 sm:text-sm">
-                {t("artist.about.monthlyListeners", { count: formatNumber(artist.listeners) })}
+                {t("artist.about.monthlyListeners", {
+                  count: artist.listeners,
+                  replace: { count: formatNumber(artist.listeners) },
+                })}
               </p>
             </div>
           </div>
@@ -94,7 +98,10 @@ export function AboutSection({ artist }: Props) {
           />
           <div className="absolute inset-0 flex flex-col justify-end bg-linear-to-t from-overlay via-overlay/50 to-transparent p-5">
             <p className="mb-2 font-bold text-overlay-foreground">
-              {t("artist.about.monthlyListeners", { count: formatNumber(artist.listeners) })}
+              {t("artist.about.monthlyListeners", {
+                count: artist.listeners,
+                replace: { count: formatNumber(artist.listeners) },
+              })}
             </p>
             <p className="line-clamp-3 text-sm leading-relaxed text-overlay-foreground/80">
               {artist.bio}

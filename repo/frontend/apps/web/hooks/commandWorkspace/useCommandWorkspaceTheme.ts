@@ -6,7 +6,8 @@ import { Laptop, Moon, Sun, type LucideIcon } from "lucide-react";
 import { useAppearanceStore } from "@/store/module/appearance";
 import { useAppearanceBackground } from "@/hooks/settings/useAppearanceBackground";
 import { useThemeOptions } from "@/hooks/settings/useThemeOptions";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { BackgroundPresetId } from "@/types/appearance/model";
 import type { CommandWorkspaceThemeProps } from "@/types/commandWorkspace/model";
 
@@ -23,7 +24,7 @@ export interface CommandWorkspaceThemeItem {
 }
 
 export function useCommandWorkspaceTheme({ onBack, onClose }: CommandWorkspaceThemeProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const { setTheme, theme, resolvedTheme } = useTheme();
   const applyTheme = useAppearanceStore((state) => state.applyTheme);
   const { palette } = useAppearanceBackground();

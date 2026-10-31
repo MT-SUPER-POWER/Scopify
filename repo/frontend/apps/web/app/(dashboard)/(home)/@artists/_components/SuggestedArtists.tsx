@@ -8,12 +8,12 @@ import { SectionPagination } from "../../_components/SectionPagination";
 import { GridCard } from "@/components/home/GridCard";
 import { useSuspenseHotArtistsQuery } from "@/hooks/home/useHomeQueries";
 import { useSmartRouter } from "@/hooks/core/useSmartRouter";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
 
 const PAGE_SIZE = 10;
 
 export function SuggestedArtists() {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const smartRouter = useSmartRouter();
   const query = useSuspenseHotArtistsQuery();
   const artists = query.data.artists ?? [];

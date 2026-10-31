@@ -3,12 +3,13 @@
 import { Disc3, ListPlus, LoaderCircle, Play } from "lucide-react";
 import Link from "next/link";
 import { useSocialPlayback } from "@/hooks/social/useSocialPlayback";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { SocialResourceProps } from "@/types/social/components";
 import s from "./Social.module.css";
 
 export function SocialResourceCard({ resource, compact }: SocialResourceProps) {
-  const { t } = useI18n(),
+  const { t } = useTranslation(),
     { play, pending, playable } = useSocialPlayback(resource);
   const href =
     resource.kind === "playlist"

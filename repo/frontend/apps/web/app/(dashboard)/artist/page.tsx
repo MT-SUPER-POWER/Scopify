@@ -5,7 +5,8 @@ import { NetworkRetryState } from "@/components/shared/NetworkRetryState";
 import { useArtistData } from "@/hooks/artist/useArtistData";
 import { useArtistPlay } from "@/hooks/artist/useArtistPlay";
 import { useSmartRouter } from "@/hooks/core/useSmartRouter";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import { AboutSection } from "./_components/AboutSection";
 import { ActionBar } from "./_components/ActionBar";
 import { ArtistHero } from "./_components/ArtistHero";
@@ -16,7 +17,7 @@ import { DiscographyGrid } from "./_components/DiscographyGrid";
 import { PopularTracks } from "./_components/PopularTracks";
 
 export default function ArtistPage() {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const artistId = useSearchParams().get("id");
   const router = useSmartRouter();
 

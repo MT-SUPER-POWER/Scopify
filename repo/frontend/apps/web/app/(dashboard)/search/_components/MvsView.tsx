@@ -3,13 +3,14 @@
 import { LoaderCircle } from "lucide-react";
 import { MvCard } from "@/components/mv/MvCard";
 import { useInfiniteScrollTrigger } from "@/hooks/search/useInfiniteScrollTrigger";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { MvsViewProps } from "@/types/search/components";
 import { SearchCategoryHeader } from "./SearchCategoryHeader";
 
 /** 搜索结果的 MV 分类：16:9 卡片网格，滚动到底自动加载下一页。 */
 export function MvsView({ hasNextPage, isFetchingNextPage, onLoadMore, mvs }: MvsViewProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const loadMoreRef = useInfiniteScrollTrigger({
     enabled: hasNextPage && !isFetchingNextPage,
     onIntersect: onLoadMore,

@@ -6,7 +6,8 @@ import { Dialog, DialogOverlay, DialogPortal } from "@scopify/ui/shadcn/componen
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { UPDATES, UPDATES_UNRELEASED_KEY } from "@/constants/updates";
 import { useUpdates } from "@/hooks/updates/useUpdates";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import { UpdateReleaseContent } from "./UpdateReleaseContent";
 import { UpdatesHeader } from "./UpdatesHeader";
 import { UpdatesFooter } from "./UpdatesFooter";
@@ -25,7 +26,7 @@ const DEFAULT_RELEASE = defaultRelease
 export function WhatsNewModal() {
   const dialogRef = useRef<HTMLDivElement>(null);
   const { isOpen, close } = useUpdates();
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const [selected, setSelected] = useState(DEFAULT_RELEASE);
   const release = UPDATES.releases.find((item) => releaseKey(item.version) === selected);
   const dismiss = () => {

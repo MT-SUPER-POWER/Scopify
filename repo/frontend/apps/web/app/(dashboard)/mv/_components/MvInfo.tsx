@@ -8,7 +8,8 @@ import { useMVLikeMutation, useMVSubscriptionMutation } from "@/hooks/mv/useMVMu
 import { useMVDetailInfoQuery } from "@/hooks/mv/useMVQueries";
 import { useLoginStatus } from "@/hooks/auth/useLoginStatus";
 import { cn, formatPlayCount } from "@/lib/utils";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+import { useI18nStore } from "@/store/module/i18n";
 import type { MvInfoProps } from "@/types/mv/components";
 
 const ACTION_BTN =
@@ -20,7 +21,8 @@ const IDLE_BTN = "bg-content/10 text-content hover:bg-content/20";
  * 播放量、发布时间与简介合在一个可展开的卡片里。
  */
 export function MvInfo({ detail, isSubscribed }: MvInfoProps) {
-  const { t, locale } = useI18n();
+  const { t } = useTranslation(),
+    locale = useI18nStore((state) => state.locale);
   const isLoggedIn = useLoginStatus();
   const info = useMVDetailInfoQuery(detail.id).data;
   const likeMutation = useMVLikeMutation();
@@ -106,7 +108,10 @@ export function MvInfo({ detail, isSubscribed }: MvInfoProps) {
         <p className="font-semibold text-content">
           {[
             detail.playCount
-              ? t("mv.meta.views", { count: formatPlayCount(detail.playCount) })
+              ? t("mv.meta.views", {
+                  count: detail.playCount,
+                  replace: { count: formatPlayCount(detail.playCount) },
+                })
               : "",
             publishedLabel,
           ]

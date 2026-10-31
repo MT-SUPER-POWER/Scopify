@@ -6,10 +6,10 @@ import { useMvPage } from "../_components/MvPageProvider";
 import { QueryBoundary } from "@/components/shared/QueryBoundary";
 import { useMVDetailQuery } from "@/hooks/mv/useMVQueries";
 import { useMvId } from "@/hooks/mv/useMvId";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
 
 export default function MvSimilarSlot() {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const mvid = useMvId();
   const { isTheater, onNextChange } = useMvPage();
   const detailQuery = useMVDetailQuery(mvid, { boundary: true });

@@ -2,7 +2,8 @@
 
 import { MediaInfoBadge } from "@/components/shared/MediaInfoBadge";
 import { cn } from "@/lib/utils";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { RadioProgramPlaybackProgress } from "@/types/radio/model";
 
 interface RadioProgramPlaybackBadgeProps {
@@ -10,7 +11,7 @@ interface RadioProgramPlaybackBadgeProps {
 }
 
 export function RadioProgramPlaybackBadge({ progress }: RadioProgramPlaybackBadgeProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const label =
     progress.kind === "complete"
       ? t("library.podcasts.progress.complete")

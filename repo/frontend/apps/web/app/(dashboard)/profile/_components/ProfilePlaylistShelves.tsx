@@ -3,7 +3,8 @@
 import Link from "next/link";
 import { useSocialPlaylists } from "@/hooks/social/useSocialQueries";
 import { profileHref, uniqueById } from "@/lib/social/normalize";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import { SocialState } from "@/components/social/SocialPrimitives";
 import type { ProfilePlaylistShelvesProps } from "@/types/social/components";
 import { ProfilePlaylistTile } from "./ProfilePlaylistTile";
@@ -12,7 +13,7 @@ import s from "@/components/social/Social.module.css";
 const SHELF_SIZE = 6;
 
 export function ProfilePlaylistShelves({ uid }: ProfilePlaylistShelvesProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const query = useSocialPlaylists(uid);
   const items = uniqueById(query.data?.pages.flatMap((page) => page.items) ?? []);
   const shelves = [

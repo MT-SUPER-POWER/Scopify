@@ -3,7 +3,8 @@
 import { Loader2, Pause, Play } from "lucide-react";
 import type React from "react";
 import { cn } from "@/lib/utils";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { Playlist } from "@/types/search/model";
 import { getSizedImageUrl } from "@/lib/music/imageUrl";
 
@@ -29,7 +30,7 @@ export function PlaylistCard({
   onTogglePlay: (e: React.MouseEvent) => void;
   onClick?: () => void;
 }) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
 
   return (
     <div

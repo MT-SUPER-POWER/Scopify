@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { motion, AnimatePresence, MotionValue } from "framer-motion";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import {
   layoutWithLines,
   prepareWithSegments,
@@ -1396,7 +1397,7 @@ const VisualizerCadenza: React.FC<VisualizerProps> = (props) => {
     showSubtitleTranslation = true,
     subtitleContentMode,
   } = props;
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const [viewport, setViewport] = useState({ width: 0, height: 0 });
   const containerRef = useRef<HTMLDivElement>(null);
   const lineLayerRef = useRef<HTMLDivElement>(null);

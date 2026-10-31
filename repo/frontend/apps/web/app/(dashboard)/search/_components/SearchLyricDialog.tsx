@@ -13,7 +13,8 @@ import { ArtistInlineLinks } from "@/components/shared/ArtistInlineLinks";
 import { SongVipBadge } from "@/components/shared/SongVipBadge";
 import { getSizedImageUrl } from "@/lib/music/imageUrl";
 import { formatDuration } from "@/lib/utils";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { SearchLyricDialogProps } from "@/types/search/components";
 import { SearchLyricActions } from "./SearchLyricActions";
 import { SearchLyricSnippet } from "./SearchLyricSnippet";
@@ -25,7 +26,7 @@ export function SearchLyricDialog({
   isPlaying,
   onPlay,
 }: SearchLyricDialogProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   return (
     <DialogContent className="border-surface-border flex h-[min(42rem,85dvh)] max-h-[85dvh] flex-col gap-0 overflow-hidden rounded-2xl bg-surface p-0 text-content sm:max-w-4xl md:flex-row">
       <aside className="border-surface-border flex shrink-0 flex-col gap-5 border-b bg-surface-elevated/40 p-6 md:w-72 md:border-r md:border-b-0 md:p-8">

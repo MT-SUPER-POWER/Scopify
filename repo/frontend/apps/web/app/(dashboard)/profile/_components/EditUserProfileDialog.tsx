@@ -11,7 +11,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { EditUserProfileDialogProps } from "@/types/social/components";
 import {
   Dialog,
@@ -27,7 +28,7 @@ export function EditUserProfileDialog({
   onCancel,
   onConfirm,
 }: EditUserProfileDialogProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const [nickname, setNickname] = useState(user.nickname);
   const [signature, setSignature] = useState(user.signature ?? "");
   const [gender, setGender] = useState<0 | 1 | 2>((user.gender as 0 | 1 | 2 | undefined) ?? 0);

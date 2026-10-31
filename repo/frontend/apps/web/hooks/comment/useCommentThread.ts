@@ -20,7 +20,8 @@ import {
 import { useLoginStatus } from "@/hooks/auth/useLoginStatus";
 import { throwQueryErrorWithoutData } from "@/lib/query/errorPolicy";
 import { musicQueryKeys } from "@/lib/query/queryKeys";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import { useUserStore } from "@/store/module/user";
 import type { CommentResource } from "@/types/comment/api";
 import type { CommentListPage, CommentListPageParam, CommentSortType } from "@/types/comment/model";
@@ -41,7 +42,7 @@ type CommentPages = InfiniteData<{ comments: NeteaseComment[] }>;
  * 反馈留在操作本身，成功后直接改写这个资源下的所有评论缓存（列表与各层楼）。
  */
 export function useCommentThread(resource: CommentResource) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const isLogin = useLoginStatus();
   const queryClient = useQueryClient();
   const accountId = String(useUserStore((state) => state.user?.userId ?? ""));

@@ -7,7 +7,8 @@ import type { DesktopPlaybackWallpaperStatus } from "@scopify/desktop-contract";
 
 import { Switch } from "@/components/ui/switch";
 import { cn } from "@/lib/utils";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { DesktopPlaybackWallpaperControlsProps } from "@/types/desktop/playbackWallpaperComponents";
 import type { TranslateFn } from "@/types/i18n/model";
 
@@ -61,7 +62,7 @@ export function DesktopPlaybackWallpaperControls({
   onDesktopIconVisibilityChange,
   onRetry,
 }: DesktopPlaybackWallpaperControlsProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const preferences = model?.preferences;
   const status = model?.status ?? ({ reason: "disabled", state: "inactive" } as const);
   const statusPresentation = getStatusPresentation(status, t);

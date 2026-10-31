@@ -1,9 +1,9 @@
 "use client";
 
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
 
 export function SectionHeader({ title, onSeeAll }: { title: string; onSeeAll: () => void }) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
 
   return (
     <div className="mb-4 flex items-end justify-between">

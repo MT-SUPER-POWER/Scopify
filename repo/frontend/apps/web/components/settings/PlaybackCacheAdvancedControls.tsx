@@ -1,6 +1,7 @@
 "use client";
 
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { PlaybackCachePreferences } from "@/types/cache/model";
 import type { CacheAdvancedScopeControlsProps } from "@/types/settings/components";
 import { SettingInput, SettingRow, Toggle } from "./SettingsUI";
@@ -9,7 +10,7 @@ export function PlaybackCacheAdvancedControls({
   preferences,
   onChange,
 }: CacheAdvancedScopeControlsProps<PlaybackCachePreferences>) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
 
   return (
     <>

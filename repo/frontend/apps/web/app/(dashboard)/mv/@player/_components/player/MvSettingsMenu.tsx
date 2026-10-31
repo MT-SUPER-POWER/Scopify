@@ -12,7 +12,8 @@ import {
 import { Popover as PopoverPrimitive } from "radix-ui";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { MvSettingsMenuProps } from "@/types/mv/components";
 
 const ROW =
@@ -31,7 +32,7 @@ export function MvSettingsMenu({
   open,
   onOpenChange,
 }: MvSettingsMenuProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const [page, setPage] = useState<"main" | "quality" | "speed">("main");
   const changeOpen = (next: boolean) => {
     onOpenChange(next);

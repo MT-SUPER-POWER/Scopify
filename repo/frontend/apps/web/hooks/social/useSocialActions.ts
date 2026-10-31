@@ -6,7 +6,8 @@ import * as api from "@/lib/api/social";
 import { patchEvent, patchFollow, socialKey } from "@/lib/social/cache";
 import { getSocialPublishErrorMessage } from "@/lib/social/publishError";
 import { useSocialAccount } from "./useSocialQueries";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import { useUserStore } from "@/store/module/user";
 import type { SocialEvent, SocialPublishInput, SocialUser } from "@/types/social/model";
 import type { UpdateUserProfilePayload } from "@/types/user/profileUpdateApi";
@@ -14,7 +15,7 @@ import type { UpdateUserProfilePayload } from "@/types/user/profileUpdateApi";
 export function useSocialFollow(user: SocialUser) {
   const client = useQueryClient(),
     { account, uid } = useSocialAccount(),
-    { t } = useI18n();
+    { t } = useTranslation();
   const key = socialKey(account, "follow", user.id);
   const busy = useIsMutating({ mutationKey: key }) > 0;
   const mutation = useMutation({
@@ -33,7 +34,7 @@ export function useSocialFollow(user: SocialUser) {
 export function useSocialEventActions(event: SocialEvent) {
   const client = useQueryClient(),
     { account } = useSocialAccount(),
-    { t } = useI18n();
+    { t } = useTranslation();
   const key = socialKey(account, "like", event.id);
   const liking = useIsMutating({ mutationKey: key }) > 0;
   const like = useMutation({
@@ -61,7 +62,7 @@ export function useSocialEventActions(event: SocialEvent) {
 export function useSocialPublish(forwarded?: SocialEvent) {
   const client = useQueryClient(),
     { account, uid } = useSocialAccount(),
-    { t } = useI18n();
+    { t } = useTranslation();
   return useMutation({
     mutationFn: (input: SocialPublishInput) =>
       forwarded
@@ -83,7 +84,7 @@ export function useSocialPublish(forwarded?: SocialEvent) {
 export function useSocialEditProfile() {
   const { account, uid } = useSocialAccount(),
     client = useQueryClient(),
-    { t } = useI18n();
+    { t } = useTranslation();
   return useMutation({
     mutationFn: (input: UpdateUserProfilePayload) => api.updateProfile(input),
     onSuccess: (_, input) => {

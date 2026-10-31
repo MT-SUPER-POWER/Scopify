@@ -3,13 +3,14 @@
 import { useEffect, useState } from "react";
 import { useAppUpdater } from "@/hooks/settings/useAppUpdater";
 import { UPDATE_SEEN_VERSION_KEY } from "@/constants/updater";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { NotificationListItem } from "@/types/notifications/model";
 
 export function useUpdateNotification() {
   const updater = useAppUpdater();
   const { state } = updater;
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const [seenVersion, setSeenVersion] = useState<string | null>(null);
   const [createdAt, setCreatedAt] = useState(0);
   useEffect(() => {

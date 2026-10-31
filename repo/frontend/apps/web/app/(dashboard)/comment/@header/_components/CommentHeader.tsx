@@ -1,7 +1,8 @@
 "use client";
 
 import Image from "next/image";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { CommentHeaderArtist, CommentHeaderProps } from "@/types/comment/components";
 
 function ArtistAvatar({ artist }: { artist: CommentHeaderArtist }) {
@@ -34,7 +35,7 @@ export function CommentHeader({
   onArtistClick,
   tagLabel,
 }: CommentHeaderProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const visibleArtists = artists.slice(0, 4);
   const remainingArtistCount = Math.max(0, artists.length - visibleArtists.length);
 

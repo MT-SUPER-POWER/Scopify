@@ -9,7 +9,8 @@ import type { ReactNode } from "react";
 import { useSocialAccount } from "@/hooks/social/useSocialQueries";
 import { useSocialGroup } from "@/hooks/social/useSocialNotes";
 import { socialKey } from "@/lib/social/cache";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { SocialHeaderProps } from "@/types/social/components";
 import { SocialPublishButton } from "./SocialPublishButton";
 import s from "@/components/social/Social.module.css";
@@ -19,7 +20,7 @@ import s from "@/components/social/Social.module.css";
  * 只有返回链接或选中乐迷团这类需要说明的场景，才在下方显示随内容滚走的上下文行。
  */
 export function SocialHeader({ view, groupId, groups }: SocialHeaderProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const isAtTop = useIsScrollAtTop();
   const { uid, account } = useSocialAccount();
   const client = useQueryClient();

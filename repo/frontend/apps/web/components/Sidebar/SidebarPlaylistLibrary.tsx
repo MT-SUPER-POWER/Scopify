@@ -6,13 +6,14 @@ import { CreatePlaylistFromTracksDialog } from "@/components/shared/CreatePlayli
 import { useLoginStatus } from "@/hooks/auth/useLoginStatus";
 import { useRequireLoginAction } from "@/hooks/auth/useRequireLoginAction";
 import { cn } from "@/lib/utils";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { SidebarPlaylistLibraryProps } from "@/types/sidebar/components";
 import { SidebarSpecialPlaylists } from "./SidebarSpecialPlaylists";
 import { SidebarPlaylistLibraryContent } from "./SidebarPlaylistLibraryContent";
 
 export function SidebarPlaylistLibrary({ isCollapsed }: SidebarPlaylistLibraryProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const isLoggedIn = useLoginStatus();
   const requireLoginAction = useRequireLoginAction();
   const [isCreateOpen, setIsCreateOpen] = useState(false);

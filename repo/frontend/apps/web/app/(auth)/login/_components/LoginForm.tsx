@@ -6,7 +6,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useLoginFlow } from "@/hooks/auth/useLoginFlow";
 import { runtime } from "@/lib/runtime";
 import { cn } from "@/lib/utils";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { LoginMode } from "@/types/auth/login";
 import { LoginBrand } from "./LoginBrand";
 import LoginSkeletonLoading from "./LoginSkeletonLoading";
@@ -15,7 +16,7 @@ import { QrLogin } from "./QrLogin";
 import { SmsLoginForm } from "./SmsLoginForm";
 
 export function LoginForm() {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const {
     mode,
     setMode,

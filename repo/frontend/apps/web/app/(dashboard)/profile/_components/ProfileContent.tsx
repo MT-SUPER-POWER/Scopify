@@ -8,7 +8,8 @@ import { useRequireLoginAction } from "@/hooks/auth/useRequireLoginAction";
 import { useSmartRouter } from "@/hooks/core/useSmartRouter";
 import { useCoverThemeColor } from "@/hooks/playlist/useCoverThemeColor";
 import { getSizedImageUrl } from "@/lib/music/imageUrl";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import { SocialLogin, SocialState } from "@/components/social/SocialPrimitives";
 import { ProfileSkeletonContent } from "@/components/profile/ProfilePageSkeleton";
 import type { SocialFeedProps } from "@/types/social/components";
@@ -19,7 +20,7 @@ import { SocialProfileBody } from "./SocialProfileBody";
 import { SocialProfileHero } from "./SocialProfileHero";
 
 export function ProfileContent({ uid = "" }: SocialFeedProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const { uid: self } = useSocialAccount();
   const params = useSearchParams(),
     router = useSmartRouter();

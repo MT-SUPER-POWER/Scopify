@@ -1,6 +1,7 @@
 import { BadgeCheck } from "lucide-react";
 import { formatNumber } from "@/lib/utils";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { ArtistInfo } from "@/types/artist/model";
 import { getSizedImageUrl } from "@/lib/music/imageUrl";
 
@@ -9,7 +10,7 @@ interface Props {
 }
 
 export function ArtistHero({ artist }: Props) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
 
   return (
     <div className="relative flex h-[40vh] min-h-85 w-full items-end md:h-[50vh]">
@@ -29,7 +30,10 @@ export function ArtistHero({ artist }: Props) {
           {artist.name}
         </h1>
         <p className="text-sm font-medium text-content-muted md:text-base">
-          {t("artist.hero.listeners", { count: formatNumber(artist.listeners) })}
+          {t("artist.hero.listeners", {
+            count: artist.listeners,
+            replace: { count: formatNumber(artist.listeners) },
+          })}
         </p>
       </div>
     </div>

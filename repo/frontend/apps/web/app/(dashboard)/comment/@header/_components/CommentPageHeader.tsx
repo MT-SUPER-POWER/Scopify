@@ -3,7 +3,8 @@
 import { CommentHeader } from "./CommentHeader";
 import { useCommentHeader } from "@/hooks/comment/useCommentHeader";
 import { useSmartRouter } from "@/hooks/core/useSmartRouter";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { CommentPageHeaderProps } from "@/types/comment/components";
 
 /**
@@ -12,7 +13,7 @@ import type { CommentPageHeaderProps } from "@/types/comment/components";
  * QueryBoundary：取不到时只有头部失败，评论照常显示。
  */
 export function CommentPageHeader({ resource }: CommentPageHeaderProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const smartRouter = useSmartRouter();
   const header = useCommentHeader(resource);
   const tagLabel = t(`comments.page.${resource.kind}Tag`);

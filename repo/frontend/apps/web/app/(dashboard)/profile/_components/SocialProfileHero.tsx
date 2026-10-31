@@ -4,12 +4,13 @@ import { MessagesSquare } from "lucide-react";
 import Link from "next/link";
 import { FollowButton, SocialAvatar } from "@/components/social/SocialPrimitives";
 import { profileHref } from "@/lib/social/normalize";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { SocialProfileHeroProps } from "@/types/social/components";
 import s from "@/components/social/Social.module.css";
 
 export function SocialProfileHero({ user, isSelf, onEdit, onMessage }: SocialProfileHeroProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const base = profileHref(user.id);
   return (
     <section className={s.profileHero}>
@@ -38,7 +39,12 @@ export function SocialProfileHero({ user, isSelf, onEdit, onMessage }: SocialPro
           <div className={s.profileFacts}>
             {user.level !== undefined && <span>Lv.{user.level}</span>}
             {user.listenSongs !== undefined && (
-              <span>{t("social.listenedCount", { count: user.listenSongs.toLocaleString() })}</span>
+              <span>
+                {t("social.listenedCount", {
+                  count: user.listenSongs,
+                  replace: { count: user.listenSongs.toLocaleString() },
+                })}
+              </span>
             )}
             <span>
               <Link href={base + "&tab=following"} scroll={false}>

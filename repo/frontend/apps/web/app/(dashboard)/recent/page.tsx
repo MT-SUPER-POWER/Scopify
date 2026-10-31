@@ -10,11 +10,12 @@ import { QuietState } from "@/components/shared/QuietState";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@scopify/ui/shadcn/components/tooltip";
 import { useRecentSongsQuery } from "@/hooks/library/useLibraryQueries";
 import { useLoginStatus } from "@/hooks/auth/useLoginStatus";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { PlaylistInfo } from "@/types/playlist/model";
 
 export default function RecentSongsPage() {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const isLoggedIn = useLoginStatus();
   const recentSongsQuery = useRecentSongsQuery();
   const tracks = useMemo(() => recentSongsQuery.data ?? [], [recentSongsQuery.data]);

@@ -5,7 +5,8 @@ import { SocialComposer } from "@/components/social/SocialComposer";
 import { SocialFeed } from "@/components/social/SocialFeed";
 import { SocialPeople } from "@/components/social/SocialPeople";
 import { profileHref } from "@/lib/social/normalize";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { SocialProfileBodyProps } from "@/types/social/components";
 import { ProfileFansGroupGrid } from "./ProfileFansGroupGrid";
 import { ProfileListeningRank } from "./ProfileListeningRank";
@@ -16,7 +17,7 @@ import s from "@/components/social/Social.module.css";
 const TABS = ["overview", "playlists", "activity"] as const;
 
 export function SocialProfileBody({ user, tab, isSelf }: SocialProfileBodyProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   return (
     <main className={s.profileMain}>
       <nav className={s.tabs} aria-label={user.name}>

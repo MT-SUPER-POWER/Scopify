@@ -3,12 +3,14 @@
 import { X } from "lucide-react";
 import { DialogDescription, DialogTitle } from "@scopify/ui/shadcn/components/dialog";
 import { UPDATES, UPDATES_CHANGELOG_URL } from "@/constants/updates";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+import { useI18nStore } from "@/store/module/i18n";
 import type { UpdatesHeaderProps } from "@/types/updates/model";
 import styles from "./WhatsNewModal.module.css";
 
 export function UpdatesHeader({ release, onClose }: UpdatesHeaderProps) {
-  const { locale, t } = useI18n();
+  const { t } = useTranslation(),
+    locale = useI18nStore((state) => state.locale);
   const version = release ? release.version : UPDATES.currentVersion;
   return (
     <header className={styles.header}>

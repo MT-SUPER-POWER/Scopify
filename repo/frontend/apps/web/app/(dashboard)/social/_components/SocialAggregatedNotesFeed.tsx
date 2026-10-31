@@ -5,7 +5,8 @@ import { useInfiniteScrollTrigger } from "@/hooks/search/useInfiniteScrollTrigge
 import { useSocialAggregatedNotes } from "@/hooks/social/useSocialNotes";
 import type { UserFansGroupItem } from "@/types/fansGroup/api";
 import { uniqueById } from "@/lib/social/normalize";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import { SocialNoteGrid } from "@/components/social/SocialNoteGrid";
 import { SocialLoadMore, SocialState } from "@/components/social/SocialPrimitives";
 
@@ -23,7 +24,7 @@ export interface SocialAggregatedNotesFeedProps {
  * @param props - 已加入的乐迷团列表
  */
 export function SocialAggregatedNotesFeed({ groups }: SocialAggregatedNotesFeedProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const query = useSocialAggregatedNotes(groups.map((group) => group.fansGroupId));
   const groupById = new Map(groups.map((group) => [group.fansGroupId, group]));
   const { fetchNextPage } = query;

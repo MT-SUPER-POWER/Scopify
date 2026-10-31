@@ -4,7 +4,8 @@ import { LoaderCircle, Send, Smile } from "lucide-react";
 import { Button } from "@scopify/ui/shadcn/components/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@scopify/ui/shadcn/components/popover";
 import { MESSAGE_EMOJI } from "@/constants/inbox";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { PrivateMessageComposerProps } from "@/types/messages/components";
 
 export function PrivateMessageComposer({
@@ -15,7 +16,7 @@ export function PrivateMessageComposer({
   onChange,
   onSend,
 }: PrivateMessageComposerProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   return (
     <form
       className="shrink-0 p-4 pt-2"

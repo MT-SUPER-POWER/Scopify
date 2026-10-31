@@ -4,11 +4,12 @@ import { useEffect } from "react";
 
 import { AppStatusPage } from "@/components/shared/AppStatusPage";
 import { reportFailure } from "@/lib/web/errorTracking";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { ErrorFallbackProps } from "@/types/shared/errorComponents";
 
 export function ErrorFallback({ error, reset }: ErrorFallbackProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
 
   useEffect(() => {
     reportFailure({
