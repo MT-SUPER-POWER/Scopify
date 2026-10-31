@@ -62,8 +62,7 @@ repo/
 ```text
 comment/
 ├── layout.tsx            外壳与摆放：{header} 在上，{children} 在评论栏里
-├── page.tsx              评论区：QueryBoundary + CommentSection
-├── _components/          页面专属：CommentEmpty（没有资源时的空状态）
+├── page.tsx              评论区：QueryBoundary + CommentSection，没有资源时的空状态直接写在这里
 └── @header/              头部区域
     ├── page.tsx          从 URL 读资源 → QueryBoundary → 头部
     ├── default.tsx       return null
