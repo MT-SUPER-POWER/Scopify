@@ -100,15 +100,17 @@ export function useCommentHeader(resource: CommentResource) {
 
 slot 区域优先用 Suspense：单一请求、无条件的读取用 `useSuspenseQuery`，骨架屏写在该 slot 的 `loading.tsx`，失败仍进 `QueryBoundary`。
 
-以下情况保留 `useQuery`，在区域内按「首次无数据且请求中」渲染骨架屏，不写 `loading.tsx`：
+以下情况保留 `useQuery`，在区域内按「首次无数据且请求中」渲染骨架屏，不写 `loading.tsx`（首页的「为你推荐」「艺人热门歌曲」属于有备用数据源，「最近播放」「关注专辑」依赖登录）：
 
 | 情况 | 原因 | 做法 |
 | --- | --- | --- |
 | 条件请求（依赖登录等 `enabled`） | `useSuspenseQuery` 不支持 `enabled` | 登录判断放在 Suspense 之外的门控组件，未登录返回 `null`；门控内再用 Suspense Query |
 | 有备用数据源（`selectFallbackSource`） | Suspense Query 出错就抛，无法表达「一个失败用另一个」 | 保留 `useQuery` |
-| 需要展示「离线等待」 | Suspense 会一直停在骨架屏 | 保留 `useQuery` |
 
-- 桌面构建（静态导出）的预渲染阶段不得触发真实请求。评论页头部已验证：页面用 `useSearchParams`，预渲染时整个区域退到客户端渲染，输出的是 `loading.tsx` 的骨架屏，没有请求也没有报错。迁移其他 slot 后，用 `pnpm --filter @scopify/web run build:desktop` 确认构建通过再提交。
+- **离线等待**：Suspense 的骨架屏里用 `useIsOnline()` 判断，离线显示「等待网络」提示，在线才显示骨架（见首页的 `HomeSectionPending`）。这与 `fetchStatus` 为 paused 的判断一致，所以不必为了离线提示保留 `useQuery`。
+- **一个 slot 里有多个栏目**：每个栏目在自己的 `QueryBoundary` 里再包一层 `<Suspense fallback={骨架}>`，各自显示骨架；只有单栏目的 slot 才用 `loading.tsx`。
+- **同一个 Query 既要 Suspense 又要 `useQuery`**：用 `queryOptions` 抽出共用配置，两种 hook 共用同一个 query key，缓存不分叉（见 `useHomeQueries` 的 `hotArtistsOptions`）。
+- 桌面构建（静态导出）的预渲染阶段不得触发真实请求。已验证：评论页头部和首页的 Suspense 栏目，构建输出的都是骨架屏，没有请求也没有报错（页面在 store 水合前只渲染骨架，栏目不会在服务端渲染）。迁移其他栏目后，用 `pnpm --filter @scopify/web run build:desktop` 确认构建通过再提交。
 - 同一边界里有多个 Suspense 查询时，注意请求瀑布和并行策略。
 - 非 slot 区域不强制迁移 Suspense，普通 `useQuery` 加 `throwOnError` 已能接入。
 
