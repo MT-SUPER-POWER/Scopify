@@ -4,6 +4,7 @@ import { ChevronDown, ChevronUp } from "lucide-react";
 import Image from "next/image";
 import { PiChatCircleDotsBold, PiHeartBold, PiHeartFill } from "react-icons/pi";
 import { PlayerBarStatAction } from "@/components/PlayBar/PlayerBarStatAction";
+import { SongMvBadge } from "@/components/shared/SongMvBadge";
 import { SongQualityBadge } from "@/components/shared/SongQualityBadge";
 import { SongVipBadge } from "@/components/shared/SongVipBadge";
 import { ShortcutHint } from "@/components/shortcuts/ShortcutHint";
@@ -155,6 +156,10 @@ export function PlayerBarLeftControls({
             </span>
             <div className="mt-0.5 flex min-w-0 items-center gap-1">
               <SongQualityBadge qualityLevel={currentSong?.privilege?.maxBrLevel} />
+              <SongMvBadge
+                mvId={currentSong.mv}
+                onNavigate={isLyricStageBar ? onCloseLyricStage : undefined}
+              />
               <span className="min-w-0 cursor-pointer truncate text-[11px] font-normal text-content-muted">
                 {currentSong?.ar?.slice(0, 2).map((a, idx, arr) => (
                   <span
