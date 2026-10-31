@@ -67,5 +67,7 @@ export const getVisualizerBackgroundModeLabel = (
 ) => {
   const entry = getVisualizerBackgroundRegistryEntry(mode);
   const translated = t(entry.labelKey);
-  return !translated || translated === entry.labelKey ? entry.labelFallback : translated;
+  return !translated || (translated as string) === entry.labelKey
+    ? entry.labelFallback
+    : translated;
 };

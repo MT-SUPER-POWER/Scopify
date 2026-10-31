@@ -33,7 +33,7 @@ export function LikedVoiceMetadata({ voice }: LikedVoiceMetadataProps) {
           replace: { count: formatPlayCount(voice.playCount) },
         })
       : null,
-  ].filter((item): item is string => Boolean(item));
+  ].filter((item): item is NonNullable<typeof item> => Boolean(item));
 
   return (
     <>

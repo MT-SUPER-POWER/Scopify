@@ -5,7 +5,7 @@ declare module "i18next" {
   interface CustomTypeOptions {
     defaultNS: readonly (keyof Resources)[];
     resources: Resources;
-    keySeparator: ".";
+    keySeparator: false;
     nsSeparator: ".";
   }
 }

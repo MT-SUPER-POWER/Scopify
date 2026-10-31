@@ -1,7 +1,8 @@
 import { afterEach, expect, test } from "bun:test";
 import { renderToStaticMarkup } from "react-dom/server";
 import { useTranslation } from "react-i18next";
-import { i18n, translate, type TranslationKey } from "@/lib/i18n";
+import type { TOptions } from "i18next";
+import { i18n, translate } from "@/lib/i18n";
 import { resources } from "@/locales/resources";
 import { useI18nStore } from "@/store/module/i18n";
 
@@ -28,7 +29,7 @@ test("non-React translations preserve flat keys and explicit locale", () => {
   expect(translate("en-US", "ui.next")).toBe("Next");
   expect(translate("zh-CN", "folia.ui.nextMode")).toBe("下一个");
   expect(i18n.language).toBe("zh-CN");
-  expect(
+  expect<string>(
     i18n.t("nowPlaying.fans", {
       lng: "en-US",
       count: 12345,
@@ -38,11 +39,12 @@ test("non-React translations preserve flat keys and explicit locale", () => {
 });
 
 test("every literal resource key resolves through the official namespace syntax", () => {
+  const t = i18n.t as unknown as (key: string, options?: TOptions) => string;
   for (const [locale, namespaces] of Object.entries(resources)) {
     for (const [namespace, messages] of Object.entries(namespaces)) {
       for (const [key, value] of Object.entries(messages)) {
         expect(
-          i18n.t(`${namespace}.${key}` as TranslationKey, {
+          t(`${namespace}.${key}`, {
             lng: locale,
             skipInterpolation: true,
           }),

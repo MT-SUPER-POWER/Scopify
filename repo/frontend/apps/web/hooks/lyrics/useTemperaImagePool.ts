@@ -239,7 +239,7 @@ export function useTemperaImagePool({
       downloadBlob(archive.blob, `${baseName}-${formatLocalDateStamp()}.zip`);
       // A picture whose file has gone missing is left out of the zip; say so now rather than
       // letting the user discover it on a restore.
-      const notes = [t("folia.options.temperaPoolExported", { count: archive.exported })];
+      const notes: string[] = [t("folia.options.temperaPoolExported", { count: archive.exported })];
       if (archive.skipped > 0) {
         notes.push(t("folia.options.temperaPoolExportSkipped", { count: archive.skipped }));
       }

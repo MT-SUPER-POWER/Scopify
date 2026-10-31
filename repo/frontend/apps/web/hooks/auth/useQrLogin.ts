@@ -25,7 +25,7 @@ export function useQrLogin({ onSuccess, deviceName }: QrLoginProps) {
 
   const [qrImg, setQrImg] = useState("");
   const [qrStatus, setQrStatus] = useState<QrStatus>("loading");
-  const [qrStatusText, setQrStatusText] = useState(t("login.qr.loading"));
+  const [qrStatusText, setQrStatusText] = useState<string>(t("login.qr.loading"));
 
   // 强制刷新触发器，用于用户手动点击刷新
   const [refreshKey, setRefreshKey] = useState(0);
