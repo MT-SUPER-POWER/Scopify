@@ -6,29 +6,15 @@ import {
   LoadingNowPlayingSkeleton,
   LoadingPlayerBarSkeleton,
   LoadingSidebarSkeleton,
-} from "@/components/MainLayout/LoadingChrome";
+} from "./LoadingChrome";
 import { Skeleton } from "@scopify/ui/shadcn/components/skeleton";
 import { cn } from "@/lib/utils";
 
-interface MainLayoutSkeletonProps {
-  title?: string;
-  description?: string;
-  actionLabel?: string;
-  onAction?: () => void;
-  content?: ReactNode;
-}
-
 /**
- * Loading shell for the desktop layout.
- * When `title` is omitted, renders as a silent skeleton (no overlay text).
+ * Silent loading shell shown while stores hydrate from localStorage, so the first paint never flashes
+ * a logged-out UI. `content` is the current route's own placeholder, when it has one.
  */
-export default function MainLayoutSkeleton({
-  title,
-  description,
-  actionLabel,
-  onAction,
-  content,
-}: MainLayoutSkeletonProps) {
+export function DashboardSkeleton({ content }: { content?: ReactNode }) {
   return (
     <div
       className={cn(
@@ -69,25 +55,6 @@ export default function MainLayoutSkeleton({
         <LoadingNowPlayingSkeleton />
       </div>
       <LoadingPlayerBarSkeleton />
-      {title ? (
-        <div className="pointer-events-none absolute inset-0 flex items-center justify-center px-6">
-          <div className="pointer-events-auto w-full max-w-md rounded-2xl border border-border bg-surface-overlay p-6 text-center shadow-floating backdrop-blur-xl">
-            <div className="text-lg font-semibold text-foreground">{title}</div>
-            {description ? (
-              <p className="mt-2 text-sm leading-6 text-muted-foreground">{description}</p>
-            ) : null}
-            {actionLabel && onAction ? (
-              <button
-                type="button"
-                onClick={onAction}
-                className="mt-5 rounded-full bg-primary px-5 py-2 text-sm font-semibold text-primary-foreground transition hover:bg-brand-hover"
-              >
-                {actionLabel}
-              </button>
-            ) : null}
-          </div>
-        </div>
-      ) : null}
     </div>
   );
 }
