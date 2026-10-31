@@ -55,7 +55,8 @@ Turbo 负责跨包编排；只有能完整恢复产物的任务才缓存。
 - 工作区 lint 依赖 `^lint`，并依赖根任务 `//#lint:architecture` 与 `//#lint:packages`。这两个轻量扫描不缓存，每次按当前仓库结构检查，避免新增文件或包被历史结果掩盖。
 - Desktop 尚未接入 ESLint，保留虚拟 lint 节点，显式依赖 desktop-contract、notification-core 和根检查；不沿独立部署的后端依赖执行后端 lint。未来接入 Desktop ESLint 时沿用这个边界。
 - pre-commit 通过 `pnpm exec turbo run lint:staged` 运行根任务：先做轻量架构检查，再执行 lint-staged。暂存文件按工作区自身的 lint 声明识别。该路径不运行全仓 ESLint。
-- 不设置 pre-push 检查。类型检查保留增量和并行优化，供手动命令及 CI 使用。
+- pre-push 运行 `scripts/pre-push-typecheck.ts`：按推送范围（新分支取与 origin 默认分支的 merge-base）收集改动文件，对含 TS/JSON 改动的工作区运行 `turbo run typecheck --filter=...<pkg>`，即该工作区及所有依赖它的工作区；根 `tsconfig.json`、`package.json` 或锁文件变化时检查全部。沿用增量 tsbuildinfo 与 Turbo 缓存。提交时不做类型检查。
+- 全仓类型检查保留增量和并行优化，供手动命令及 CI 使用。
 
 ## Desktop 构建编排
 

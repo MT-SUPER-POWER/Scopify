@@ -1,0 +1,1 @@
+bun scripts/pre-push-typecheck.ts
