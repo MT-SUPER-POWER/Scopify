@@ -119,7 +119,7 @@ comment/
 
 | 目录 | 放什么 | 要点 |
 | --- | --- | --- |
-| `types/<领域>/` | 所有 `interface` / `type` | 先按业务领域建目录（尽量与 `components/` 同名），再分层：`model.ts`（业务实体）、`api.ts`（请求/响应）、`components.ts`（复用的 Props）；更多主题用 `<主题>.ts`、`<主题>Api.ts`。不建 `index.ts` 聚合出口，直接从具体文件导入。根目录只保留 `i18n.generated.d.ts` 与 `electron.d.ts`。新增类型先查 [types/README.md](../../../repo/frontend/apps/web/types/README.md) |
+| `types/<领域>/` | 所有 `interface` / `type` | 先按业务领域建目录（尽量与 `components/` 同名），再分层：`model.ts`（业务实体）、`api.ts`（请求/响应）、`components.ts`（复用的 Props）；更多主题用 `<主题>.ts`、`<主题>Api.ts`。不建 `index.ts` 聚合出口，直接从具体文件导入。根目录只保留 `electron.d.ts`。新增类型先查 [types/README.md](../../../repo/frontend/apps/web/types/README.md) |
 | `hooks/<领域>/` | 所有 custom hook | 一个 hook 一个文件，文件名与 hook 同名。逻辑自成一件事、与渲染无关，或被多处复用时提取 |
 | `lib/` | 工具函数、API 封装、第三方封装 | `lib/api/` 只发请求；`lib/web/` 是 request、环境与错误基础设施 |
 | `constants/` | 静态配置与枚举 | 静态数组超过 10 条放这里 |

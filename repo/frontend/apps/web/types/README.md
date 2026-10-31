@@ -15,7 +15,7 @@ Web 与 Desktop Renderer 共用的 TypeScript 类型。**先按业务领域找�
 
 没有 `index.ts` 聚合出口，直接导入具体文件：`import type { NeteasePlaylist } from "@/types/playlist/api"`。
 
-根目录只有两个文件：`i18n.generated.d.ts`（脚本生成，路径被生成脚本和 docs 别名引用）和 `electron.d.ts`（`window.electronAPI` 全局声明，路径被架构检查引用）。
+根目录只保留 `electron.d.ts`（`window.electronAPI` 全局声明，路径被架构检查引用）。翻译函数类型位于 `i18n/model.ts`，i18next 扩展声明位于 `i18n/i18next.d.ts`，`i18n/resources.generated.d.ts` 由官方 CLI 根据简体中文资源自动生成；翻译键从注册资源推导。
 
 ## 领域索引
 
