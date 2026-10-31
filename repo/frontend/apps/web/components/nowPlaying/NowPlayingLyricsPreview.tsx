@@ -1,6 +1,6 @@
 "use client";
 
-import { Maximize2 } from "lucide-react";
+import { Expand } from "lucide-react";
 import { getLyricDisplayText, useCompanionLyricLine } from "@/hooks/lyrics/useCompanionLyricLine";
 import { useNowPlayingTint } from "@/hooks/ui/useNowPlayingTint";
 import { cn } from "@/lib/utils";
@@ -10,7 +10,7 @@ import type { NowPlayingSectionProps } from "@/types/player/nowPlayingComponents
 
 const PREVIEW_LINE_COUNT = 3;
 
-/** 「歌词预览」：以封面主色为底，滚动展示当前句及其后两句，点击切到面板的歌词视图。 */
+/** 「歌词预览」：以封面主色为底，滚动展示当前句及其后两句，点击切到面板的歌词视图（Tab 2）。 */
 export function NowPlayingLyricsPreview({ song }: NowPlayingSectionProps) {
   const { t } = useI18n();
   const tint = useNowPlayingTint(song);
@@ -21,6 +21,10 @@ export function NowPlayingLyricsPreview({ song }: NowPlayingSectionProps) {
   const start = Math.max(0, lastStartedIndex);
   const visible = lines.slice(start, start + PREVIEW_LINE_COUNT);
 
+  const openLyricsTab = () => {
+    useUiStore.getState().setNowPlayingPanelTab("lyrics");
+  };
+
   return (
     <section
       className="relative overflow-hidden rounded-lg bg-surface-raised text-content transition-colors duration-500"
@@ -30,17 +34,17 @@ export function NowPlayingLyricsPreview({ song }: NowPlayingSectionProps) {
         <h3 className="truncate text-sm font-bold">{t("nowPlaying.lyricsPreview")}</h3>
         <button
           type="button"
-          onClick={() => useUiStore.getState().setIsLyricsOpen(true)}
-          aria-label={t("nowPlaying.lyricsFullscreen")}
-          title={t("nowPlaying.lyricsFullscreen")}
+          onClick={openLyricsTab}
+          aria-label={t("nowPlaying.tab.lyrics")}
+          title={t("nowPlaying.tab.lyrics")}
           className="flex size-7 items-center justify-center rounded-full text-content/70 transition-colors hover:bg-content/10 hover:text-content"
         >
-          <Maximize2 className="size-3.5" />
+          <Expand className="size-3.5" />
         </button>
       </header>
       <button
         type="button"
-        onClick={() => useUiStore.getState().setNowPlayingPanelTab("lyrics")}
+        onClick={openLyricsTab}
         className="relative block w-full px-4 pt-2 pb-5 text-left"
       >
         {visible.map((line, offset) => (

@@ -39,6 +39,7 @@ import { useUiStore } from "@/store/module/ui";
 import Header from "@/components/Header";
 import { FoliaSettingsMount } from "@/components/lyrics/FoliaSettingsMount";
 import { LyricStageMount } from "@/components/lyrics/LyricStageMount";
+import { CenterLyricsView } from "@/components/lyrics/CenterLyricsView";
 import { PlayerBar } from "@/components/PlayBar";
 import { CommandWorkspaceModal } from "@/components/commandWorkspace/CommandWorkspaceModal";
 import { WhatsNewModal } from "@/components/updates/WhatsNewModal";
@@ -98,22 +99,25 @@ function MainLayoutInner({ children }: { children?: ReactNode }) {
   const isCollapsed = useUiStore((s) => s.isCollapsed);
   const isPlayerBarHidden = useUiStore((s) => s.isPlayerBarHidden);
   const setIsCollapsed = useUiStore((s) => s.setIsCollapsed);
+  const isCenterLyricsOpen = useUiStore((s) => s.isCenterLyricsOpen);
+  const setIsCenterLyricsOpen = useUiStore((s) => s.setIsCenterLyricsOpen);
   const setIsNowPlayingPanelOpen = useUiStore((s) => s.setIsNowPlayingPanelOpen);
   const setIsFullscreen = useUiStore((s) => s.setIsFullscreen);
 
-  // 监听路由变化，如果回到首页则清空搜索词
+  // 监听路由变化，如果回到首页则清空搜索词；路由切换时关闭中心歌词视图
   useEffect(() => {
     if (pathname === "/") {
       clearSearchQuery();
     }
-  }, [pathname, clearSearchQuery]);
+    setIsCenterLyricsOpen(false);
+  }, [pathname, clearSearchQuery, setIsCenterLyricsOpen]);
 
   // 监听来自 Electron 主进程的导航请求
   useEffect(() => {
     return runtime.navigation.onNavigate((path) => {
       if (
-        path === DESKTOP_PLAYBACK_CONTROLLER_THEME_EDITOR_PATH ||
-        path === DESKTOP_PLAYBACK_CONTROLLER_FOLIA_VISUAL_SETTINGS_PATH
+        path === DESKTOP_PLAYBACK_CONTROLLER_FOLIA_VISUAL_SETTINGS_PATH ||
+        path === DESKTOP_PLAYBACK_CONTROLLER_THEME_EDITOR_PATH
       )
         return;
       router.push(path, { scroll: false });
@@ -240,7 +244,17 @@ function MainLayoutInner({ children }: { children?: ReactNode }) {
                 data-dashboard-main
                 className="group/main relative size-full overflow-hidden rounded-lg bg-surface-raised"
               >
-                <div className="size-full overflow-hidden">{children}</div>
+                <div className={cn("size-full overflow-hidden", isCenterLyricsOpen && "hidden")}>
+                  {children}
+                </div>
+                {isCenterLyricsOpen && (
+                  <CenterLyricsView
+                    onClose={() => {
+                      setIsCenterLyricsOpen(false);
+                      setIsNowPlayingPanelOpen(true);
+                    }}
+                  />
+                )}
               </div>
             </ResizablePanel>
 
@@ -280,7 +294,17 @@ function MainLayoutInner({ children }: { children?: ReactNode }) {
               data-dashboard-main
               className="group/main relative flex-1 overflow-hidden rounded-lg bg-surface-raised"
             >
-              <div className="size-full overflow-hidden">{children}</div>
+              <div className={cn("size-full overflow-hidden", isCenterLyricsOpen && "hidden")}>
+                {children}
+              </div>
+              {isCenterLyricsOpen && (
+                <CenterLyricsView
+                  onClose={() => {
+                    setIsCenterLyricsOpen(false);
+                    setIsNowPlayingPanelOpen(true);
+                  }}
+                />
+              )}
             </div>
             <LoadingNowPlayingSkeleton />
           </div>

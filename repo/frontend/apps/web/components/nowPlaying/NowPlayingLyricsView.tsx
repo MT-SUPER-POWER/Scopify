@@ -1,5 +1,6 @@
 "use client";
 
+import { IconLetterF } from "@tabler/icons-react";
 import { Maximize2 } from "lucide-react";
 import { useEffect, useRef } from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -14,7 +15,7 @@ import type { NowPlayingSectionProps } from "@/types/player/nowPlayingComponents
 /** 用户手动滚动后，暂停自动跟随的时长。 */
 const MANUAL_SCROLL_HOLD_MS = 3_000;
 
-/** 面板的歌词视图：封面主色铺底的滚动歌词，当前句自动居上，点击任意一句跳转。 */
+/** 面板的歌词视图：封面主色铺底的滚动歌词，当前句自动居上，点击任意一句跳转；右上角提供 Folia 舞台与全局轻量歌词双入口。 */
 export function NowPlayingLyricsView({ song }: NowPlayingSectionProps) {
   const { t } = useI18n();
   const tint = useNowPlayingTint(song);
@@ -39,20 +40,41 @@ export function NowPlayingLyricsView({ song }: NowPlayingSectionProps) {
     manualScrollAtRef.current = performance.now();
   };
 
+  const openCenterLyrics = () => {
+    const ui = useUiStore.getState();
+    ui.setIsCenterLyricsOpen(true);
+    ui.setIsNowPlayingPanelOpen(false);
+  };
+
+  const openFoliaStage = () => {
+    useUiStore.getState().setIsLyricsOpen(true);
+  };
+
   return (
     <div
       className="relative mx-2 mb-2 flex min-h-0 flex-1 flex-col overflow-hidden rounded-lg bg-surface-raised text-content transition-colors duration-500"
       style={tint ? { backgroundColor: tint } : undefined}
     >
-      <button
-        type="button"
-        onClick={() => useUiStore.getState().setIsLyricsOpen(true)}
-        aria-label={t("nowPlaying.lyricsFullscreen")}
-        title={t("nowPlaying.lyricsFullscreen")}
-        className="absolute top-2 right-2 z-10 flex size-8 items-center justify-center rounded-full bg-content/5 text-content/80 transition-colors hover:bg-content/10 hover:text-content"
-      >
-        <Maximize2 className="size-4" />
-      </button>
+      <div className="absolute top-2 right-2 z-10 flex items-center gap-1.5">
+        <button
+          type="button"
+          onClick={openFoliaStage}
+          aria-label={t("nowPlaying.openFoliaStage")}
+          title={t("nowPlaying.openFoliaStage")}
+          className="flex size-8 items-center justify-center rounded-full bg-content/5 text-content/80 transition-colors hover:bg-content/10 hover:text-content"
+        >
+          <IconLetterF size={16} stroke={2.2} />
+        </button>
+        <button
+          type="button"
+          onClick={openCenterLyrics}
+          aria-label={t("nowPlaying.lyricsCenterView")}
+          title={t("nowPlaying.lyricsCenterView")}
+          className="flex size-8 items-center justify-center rounded-full bg-content/5 text-content/80 transition-colors hover:bg-content/10 hover:text-content"
+        >
+          <Maximize2 className="size-4" />
+        </button>
+      </div>
 
       {lines.length === 0 ? (
         <p className="m-auto px-6 text-center text-lg font-bold text-content/70">
@@ -67,7 +89,7 @@ export function NowPlayingLyricsView({ song }: NowPlayingSectionProps) {
           <ol
             onWheel={markManualScroll}
             onTouchMove={markManualScroll}
-            className="relative flex flex-col gap-4 px-5 pt-6 pb-[40%]"
+            className="relative flex flex-col gap-4 px-5 pt-8 pb-[40%]"
           >
             {lines.map((line, index) => (
               <li key={index} data-lyric-index={index}>

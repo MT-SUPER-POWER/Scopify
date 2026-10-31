@@ -28,6 +28,18 @@ export function useInWindowShortcuts({
       const ui = useUiStore.getState();
       if (
         event.code === "Escape" &&
+        ui.isCenterLyricsOpen &&
+        !ui.isSearchOpen &&
+        !ui.isShortcutHelpOpen
+      ) {
+        event.preventDefault();
+        ui.setIsCenterLyricsOpen(false);
+        ui.setIsNowPlayingPanelOpen(true);
+        return;
+      }
+
+      if (
+        event.code === "Escape" &&
         ui.isLyricsOpen &&
         !ui.isSearchOpen &&
         !ui.isShortcutHelpOpen &&
