@@ -2,7 +2,7 @@
 
 import { MvSimilarContent } from "./_components/MvSimilarContent";
 import { MvSimilarSkeleton } from "./_components/MvSimilarSkeleton";
-import { useMvPage } from "../_components/MvPageContext";
+import { useMvPage } from "../_components/MvPageProvider";
 import { QueryBoundary } from "@/components/shared/QueryBoundary";
 import { useMVDetailQuery } from "@/hooks/mv/useMVQueries";
 import { useMvId } from "@/hooks/mv/useMvId";

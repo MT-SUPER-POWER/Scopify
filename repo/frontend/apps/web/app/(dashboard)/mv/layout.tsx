@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
-import { MvDetailBoundary } from "./_components/MvDetailBoundary";
+import { MvPageProvider } from "./_components/MvPageProvider";
 import { cn } from "@/lib/utils";
 
 export const metadata: Metadata = {
@@ -23,7 +23,7 @@ export default function MvLayout({
 }) {
   return (
     <Suspense>
-      <MvDetailBoundary>
+      <MvPageProvider>
         <div
           className={cn(
             "mx-auto grid w-full gap-x-6 pb-10 text-content xl:grid-rows-[min-content_1fr]",
@@ -47,7 +47,7 @@ export default function MvLayout({
             {similar}
           </aside>
         </div>
-      </MvDetailBoundary>
+      </MvPageProvider>
     </Suspense>
   );
 }
