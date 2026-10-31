@@ -1,0 +1,7 @@
+{
+  "triggerTitle": "播放佇列",
+  "title": "目前佇列",
+  "totalSongs": "共 {{count}} 首",
+  "locateCurrent": "定位到目前播放",
+  "keyboardHint": "按空格拾起歌曲，使用上下方向鍵移動，再按空格放下，Esc 取消。"
+}

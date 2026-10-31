@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useShallow } from "zustand/react/shallow";
 import { FolderOpen, KeyRound, X } from "lucide-react";
 import type { TranslationKey } from "@/lib/i18n";
-import type { TranslateFn } from "@/types/i18n.generated";
+import type { TranslateFn } from "@/types/i18n/model";
 import type { Theme } from "../../../types";
 import { colorWithAlpha } from "../../visualizer/colorMix";
 import {

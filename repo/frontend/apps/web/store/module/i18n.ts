@@ -5,7 +5,6 @@ import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 import { type TranslationKey, type TranslationParams, translate } from "@/lib/i18n";
 import { type AppLocale, DEFAULT_WEB_CONFIG } from "@/types/settings/config";
-import type { TranslateFn } from "@/types/i18n.generated";
 
 interface I18nStore {
   locale: AppLocale;
@@ -36,8 +35,7 @@ export function useI18n() {
   const locale = useI18nStore((state) => state.locale);
   const setLocale = useI18nStore((state) => state.setLocale);
   const t = useCallback(
-    ((key: TranslationKey, params?: TranslationParams) =>
-      translate(locale, key, params)) as TranslateFn,
+    (key: TranslationKey, params?: TranslationParams) => translate(locale, key, params),
     [locale],
   );
 

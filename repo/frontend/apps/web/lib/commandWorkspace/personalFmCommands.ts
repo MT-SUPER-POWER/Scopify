@@ -9,7 +9,7 @@ import type {
   PersonalFmCommandEntry,
 } from "@/types/commandWorkspace/personalFm";
 import type { PersonalFmSelection } from "@/types/personalFm/model";
-import type { TranslateFn } from "@/types/i18n.generated";
+import type { TranslateFn } from "@/types/i18n/model";
 
 export function buildPersonalFmCommands(t: TranslateFn): Omit<FoliaCommandEntry, "path">[] {
   return [

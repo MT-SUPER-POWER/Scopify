@@ -1,0 +1,13 @@
+{
+  "sourceLocale": "zh-CN",
+  "locales": ["zh-CN", "zh-TW", "en-US"],
+  "presets": [],
+  "keyStyle": "flat",
+  "namespace": { "separator": "." },
+  "resources": [{ "pattern": "repo/frontend/apps/web/locales/{locale}/{namespace}.json" }],
+  "usage": {
+    "include": ["repo/frontend/apps/web/**/*.{ts,tsx}"],
+    "exclude": ["repo/frontend/apps/web/tests/**"],
+    "calls": [{ "callee": "t" }, { "callee": "translate", "key": 1 }]
+  }
+}

@@ -3,7 +3,7 @@ import { buildPersonalFmCommands } from "@/lib/commandWorkspace/personalFmComman
 import { DESKTOP_FOLIA_VISUALIZER_OPTIONS } from "@/constants/desktopPlaybackController";
 import { FOLIA_VISUALIZER_DESCRIPTIONS } from "@/constants/foliaCommandDescriptions";
 import type { FoliaCommandEntry, FoliaCommandGroup } from "@/types/lyrics/folia/commands";
-import type { TranslateFn } from "@/types/i18n.generated";
+import type { TranslateFn } from "@/types/i18n/model";
 
 export function buildFoliaCommands(t: TranslateFn): FoliaCommandEntry[] {
   const entries: Omit<FoliaCommandEntry, "path">[] = [

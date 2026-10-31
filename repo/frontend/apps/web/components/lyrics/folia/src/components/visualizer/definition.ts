@@ -1,7 +1,7 @@
 import React from "react";
 import { type MotionValue } from "framer-motion";
 import type { TranslationKey } from "@/lib/i18n";
-import type { TranslateFn } from "@/types/i18n.generated";
+import type { TranslateFn } from "@/types/i18n/model";
 import {
   type AudioBands,
   type CappellaAvatarImage,

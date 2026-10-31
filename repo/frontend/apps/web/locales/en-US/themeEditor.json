@@ -1,0 +1,14 @@
+{
+  "view": "View",
+  "copy": "Create copy",
+  "copyName": "{{name}} copy",
+  "builtinHint": "Built-in · Read only",
+  "saved": "Saved and applied",
+  "missing": "This theme may have been deleted. Use the header navigation to return to settings.",
+  "edit": "Edit",
+  "styleLabel": "Subtitle style",
+  "paletteLabel": "Subtitle palette",
+  "unsaved": "Unsaved changes will be lost when you leave this page.",
+  "draftHint": "Changes stay in this preview until you save.",
+  "reset": "Revert changes"
+}

@@ -1,0 +1,6 @@
+{
+  "notFound.description": "你访问的页面不存在、已被移动，或链接已经失效。",
+  "notFound.title": "这里没有你要找的内容",
+  "unexpected.description": "页面暂时无法继续显示。你可以重试，或返回主页继续使用 Scopify。",
+  "unexpected.title": "页面出现了一点问题"
+}

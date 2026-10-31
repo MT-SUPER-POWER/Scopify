@@ -1,0 +1,5 @@
+{
+  "backendUnavailableTitle": "Local Backend Unavailable",
+  "backendUnavailableDescription": "Music services are temporarily unavailable. You can still open settings to adjust or restart the local backend.",
+  "openBackendSettings": "Open Backend Settings"
+}

@@ -1,5 +1,5 @@
 import React from "react";
-import type { TranslateFn } from "@/types/i18n.generated";
+import type { TranslateFn } from "@/types/i18n/model";
 import type { NomandBackgroundTuning, Theme } from "../../../../types";
 import { colorWithAlpha } from "../../colorMix";
 

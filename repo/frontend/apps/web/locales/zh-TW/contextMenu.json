@@ -1,0 +1,21 @@
+{
+  "play": "播放",
+  "pause": "暫停",
+  "addToQueue": "加入播放佇列",
+  "addToLiked": "加入喜歡",
+  "removeFromLiked": "從喜歡中移除",
+  "addToPlaylist": "加入歌單",
+  "comments": "評論",
+  "commentsWithCount": "評論（{{count}}）",
+  "viewComments": "查看評論",
+  "viewCommentsWithCount": "查看評論（{{count}}）",
+  "copyLink": "複製連結",
+  "removeFromPlaylist": "從目前歌單中移除",
+  "removeFromQueue": "從播放佇列中移除",
+  "recommendLess": "減少推薦",
+  "goToArtist": "查看歌手",
+  "view": "查看",
+  "updatePlaylist": "更新歌單",
+  "deletePlaylist": "刪除歌單",
+  "copyPlaylistLink": "複製歌單連結"
+}

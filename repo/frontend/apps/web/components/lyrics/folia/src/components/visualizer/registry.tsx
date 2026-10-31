@@ -86,7 +86,7 @@ export const getVisualizerRegistryEntry = (mode: VisualizerMode) =>
 
 export const getVisualizerModeLabel = (
   mode: VisualizerMode,
-  t: import("@/types/i18n.generated").TranslateFn,
+  t: import("@/types/i18n/model").TranslateFn,
 ) => {
   const entry = getVisualizerRegistryEntry(mode);
   const translated = t(entry.labelKey);

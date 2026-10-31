@@ -2,7 +2,7 @@ import React, { useCallback, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { Download, ImagePlus, Loader2, Trash2 } from "lucide-react";
 import { isTemperaPoolWriteLocked } from "@/lib/lyrics/folia/temperaImagePool";
-import type { TranslateFn } from "@/types/i18n.generated";
+import type { TranslateFn } from "@/types/i18n/model";
 import type {
   TemperaPoolBusyAction,
   TemperaPoolImportMode,

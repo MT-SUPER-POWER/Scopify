@@ -1,10 +1,14 @@
-import { messages } from "@/constants/i18n";
+import { createInstance, type TOptions } from "i18next";
+import { resources } from "@/locales/resources";
 import type { AppLocale } from "@/types/settings/config";
 
-export { messages };
-
+type SourceResources = (typeof resources)["zh-CN"];
 export type TranslationParams = Record<string, string | number>;
-export type TranslationKey = keyof (typeof messages)["zh-CN"];
+export type TranslationKey = {
+  [
+    Namespace in keyof SourceResources
+  ]: `${Namespace & string}.${keyof SourceResources[Namespace] & string}`;
+}[keyof SourceResources];
 
 export const languageLabelKeys: Record<AppLocale, TranslationKey> = {
   "zh-CN": "common.language.simplifiedChinese",
@@ -12,16 +16,35 @@ export const languageLabelKeys: Record<AppLocale, TranslationKey> = {
   "en-US": "common.language.english",
 };
 
-function interpolate(template: string, params?: TranslationParams) {
-  if (!params) return template;
+const i18n = createInstance();
+void i18n.init({
+  resources,
+  lng: "zh-CN",
+  fallbackLng: "zh-CN",
+  defaultNS: "common",
+  load: "currentOnly",
+  keySeparator: false,
+  nsSeparator: false,
+  initAsync: false,
+  interpolation: { escapeValue: false },
+  missingInterpolationHandler: () => "",
+});
 
-  return template.replace(/\{\{(\w+)\}\}/g, (_match, name: string) => {
-    const value = params[name];
-    return value === undefined ? "" : String(value);
-  });
-}
+// Existing application keys include the namespace before the first dot.
+const translateResource = i18n.t.bind(i18n) as unknown as (
+  key: string,
+  options: TOptions,
+) => string;
 
 export function translate(locale: AppLocale, key: TranslationKey, params?: TranslationParams) {
-  const template = messages[locale][key] ?? messages["zh-CN"][key] ?? key;
-  return interpolate(template, params);
+  const separator = key.indexOf(".");
+  const namespace = key.slice(0, separator) as keyof SourceResources;
+  const resourceKey = key.slice(separator + 1);
+  return translateResource(resourceKey, {
+    ns: namespace,
+    lng: locale,
+    replace: params,
+    skipInterpolation: !params,
+    defaultValue: key,
+  });
 }

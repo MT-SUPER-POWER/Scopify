@@ -1,0 +1,7 @@
+{
+  "triggerTitle": "Play Queue",
+  "title": "Current Queue",
+  "totalSongs": "Total Songs: {{count}}",
+  "locateCurrent": "Locate Current Track",
+  "keyboardHint": "Press Space to pick up a song, arrow keys to move, Space to drop, or Escape to cancel."
+}

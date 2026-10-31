@@ -7,6 +7,8 @@
     "prepare": "husky",
     "bump": "bun scripts/bump-version.ts",
     "changelog:preview": "git-cliff --unreleased --strip all",
+    "i18n:x18n": "bun x @x18n/cli@0.1.3",
+    "i18n:x18n:ui": "bun x @x18n/cli@0.1.3 ui",
     "dev": "turbo run dev --filter=@scopify/web --filter=@scopify/desktop",
     "dev:web": "turbo run dev --filter=@scopify/web",
     "dev:docs": "turbo run dev --filter=@scopify/docs",
