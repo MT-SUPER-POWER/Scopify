@@ -2,7 +2,8 @@
 
 import { LoaderCircle, Music2 } from "lucide-react";
 
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { FoliaLyricMatchPreviewProps } from "@/types/lyrics/components";
 
 export function FoliaLyricMatchPreview({
@@ -16,7 +17,7 @@ export function FoliaLyricMatchPreview({
   song,
   theme: _theme,
 }: FoliaLyricMatchPreviewProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const title = candidate?.name ?? song?.name ?? t("lyrics.match.noSong");
   const artist =
     candidate?.artistNames.join(", ") ?? song?.ar.map((item) => item.name).join(", ") ?? "";

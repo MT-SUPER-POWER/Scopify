@@ -11,7 +11,8 @@ import {
 } from "@/components/ui/alert-dialog";
 import { VoiceTranscriptPanel } from "@/components/voice/VoiceTranscriptPanel";
 import { useVoiceTranscriptQuery } from "@/hooks/voice/useVoiceTranscriptQuery";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { Voice } from "@/types/search/model";
 
 interface VoiceTranscriptDialogProps {
@@ -21,7 +22,7 @@ interface VoiceTranscriptDialogProps {
 }
 
 export function VoiceTranscriptDialog({ onOpenChange, open, voice }: VoiceTranscriptDialogProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const transcriptQuery = useVoiceTranscriptQuery(voice?.id ?? null, open);
   const sentences = transcriptQuery.data?.sents ?? [];
 

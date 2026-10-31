@@ -9,12 +9,13 @@ import {
 } from "@scopify/ui/scopify/components/folia-studio/settings";
 import { FoliaGlobalLyricOffsetDialog } from "@/components/lyrics/FoliaGlobalLyricOffsetDialog";
 import { FoliaVideoExportDialog } from "@/components/lyrics/FoliaVideoExportDialog";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import { useLyricStageStore } from "@/store/module/lyrics";
 import type { FoliaGlobalSettingsCardProps } from "@/types/lyrics/components";
 
 export function FoliaGlobalSettingsCard({ theme }: FoliaGlobalSettingsCardProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const [isVideoExportOpen, setIsVideoExportOpen] = useState(false);
   const [isOffsetDialogOpen, setIsOffsetDialogOpen] = useState(false);
   const autoHideCursorWithChrome = useLyricStageStore((state) => state.autoHideCursorWithChrome);

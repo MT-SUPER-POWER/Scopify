@@ -1,17 +1,18 @@
 "use client";
 
 import { Heart } from "lucide-react";
+import { LibraryErrorPage } from "@/components/library/LibraryErrorPage";
+import { LibraryStatePage } from "@/components/library/LibraryStatePage";
 import { PlaylistContent } from "@/components/Playlist/PlaylistContent";
 import { PlaylistPageSkeleton } from "@/components/Playlist/PlaylistPageSkeleton";
-import { NetworkRetryState } from "@/components/shared/NetworkRetryState";
 import { QuietState } from "@/components/shared/QuietState";
 import { useLikedPlaylistQuery } from "@/hooks/library/useLibraryQueries";
 import { usePlaylist } from "@/hooks/playlist/usePlaylistData";
 import { useLoginStatus } from "@/hooks/auth/useLoginStatus";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
 
 export default function LikedSongsPage() {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const isLoggedIn = useLoginStatus();
   const likedPlaylistQuery = useLikedPlaylistQuery();
   const likedPlaylistId = likedPlaylistQuery.data?.id;
@@ -19,9 +20,9 @@ export default function LikedSongsPage() {
 
   if (!isLoggedIn) {
     return (
-      <main className="min-h-screen bg-surface-raised px-6 pt-8 pb-28 md:px-10">
+      <LibraryStatePage>
         <QuietState icon={Heart} title={t("library.loggedOut.liked")} />
-      </main>
+      </LibraryStatePage>
     );
   }
 
@@ -29,27 +30,22 @@ export default function LikedSongsPage() {
 
   if (likedPlaylistQuery.isError) {
     return (
-      <main className="min-h-screen bg-surface-raised px-6 pt-8 pb-28 md:px-10">
-        <NetworkRetryState
-          title={t("network.offline.title")}
-          subtitle={t("network.offline.subtitle")}
-          actionLabel={t("network.action.refresh")}
-          isRetrying={likedPlaylistQuery.isRefetching}
-          onRetry={() => void likedPlaylistQuery.refetch()}
-        />
-      </main>
+      <LibraryErrorPage
+        isRetrying={likedPlaylistQuery.isRefetching}
+        onRetry={() => void likedPlaylistQuery.refetch()}
+      />
     );
   }
 
   if (!likedPlaylistId) {
     return (
-      <main className="min-h-screen bg-surface-raised px-6 pt-8 pb-28 md:px-10">
+      <LibraryStatePage>
         <QuietState
           icon={Heart}
           title={t("library.empty.liked.title")}
           description={t("library.empty.liked.description")}
         />
-      </main>
+      </LibraryStatePage>
     );
   }
 

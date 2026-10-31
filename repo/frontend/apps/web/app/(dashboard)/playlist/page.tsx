@@ -1,21 +1,18 @@
 "use client";
 
-import { PlaylistContent } from "@/components/Playlist/PlaylistContent";
-import { usePlaylist } from "@/hooks/playlist/usePlaylistData";
-import { useI18n } from "@/store/module/i18n";
 import { useSearchParams } from "next/navigation";
 import { DailyCategoryPage } from "@/components/Playlist/DailyCategoryPage";
-import { useSmartRouter } from "@/hooks/core/useSmartRouter";
 import { DailyRecommendationSwitch } from "@/components/Playlist/DailyRecommendationSwitch";
+import { PlaylistContent } from "@/components/Playlist/PlaylistContent";
+import { useSmartRouter } from "@/hooks/core/useSmartRouter";
+import { usePlaylist } from "@/hooks/playlist/usePlaylistData";
+import { useTranslation } from "react-i18next";
+import { useI18nStore } from "@/store/module/i18n";
 
-export default function PlaylistPage() {
-  const params = useSearchParams();
-  if (params.get("dailyCategory") === "true") return <DailyCategoryPage />;
-  return <RegularPlaylistPage />;
-}
-
-function RegularPlaylistPage() {
-  const { locale, t } = useI18n();
+// 独立组件：usePlaylist 不能放在 dailyCategory 提前返回之后
+function PlaylistDetail() {
+  const { t } = useTranslation(),
+    locale = useI18nStore((state) => state.locale);
   const playlist = usePlaylist();
   const router = useSmartRouter();
   const categoryLabel =
@@ -42,4 +39,10 @@ function RegularPlaylistPage() {
       commentResourceKind="playlist"
     />
   );
+}
+
+export default function PlaylistPage() {
+  const params = useSearchParams();
+  if (params.get("dailyCategory") === "true") return <DailyCategoryPage />;
+  return <PlaylistDetail />;
 }

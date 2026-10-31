@@ -8,7 +8,8 @@ import { getSizedImageUrl } from "@/lib/music/imageUrl";
 import { cn } from "@/lib/utils";
 import emojiData from "@/resources/emoji.json";
 import { useUserStore } from "@/store";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { CommentComposerProps } from "@/types/comment/components";
 
 /** 网易云评论的字数上限。 */
@@ -27,7 +28,7 @@ export function CommentComposer({
   onSubmit,
   onCancel,
 }: CommentComposerProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const avatarUrl = useUserStore((state) => state.user?.avatarUrl);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const [text, setText] = useState("");

@@ -6,7 +6,8 @@ import { useSongLikeMutation } from "@/hooks/playlist/useSongLikeMutation";
 import { useSmartRouter } from "@/hooks/core/useSmartRouter";
 import { cn } from "@/lib/utils";
 import { usePlayerStore, useUserStore } from "@/store";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { TrackPreviewActionsProps } from "@/types/player/trackPreviewComponents";
 import {
   Tooltip,
@@ -25,7 +26,7 @@ export function TrackPreviewActions({
   playlistId,
   onClose,
 }: TrackPreviewActionsProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const smartRouter = useSmartRouter();
   const likeMutation = useSongLikeMutation();
   const isLiked = useUserStore((state) => state.likeListIDs.includes(song.id));

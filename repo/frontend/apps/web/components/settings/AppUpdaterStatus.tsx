@@ -2,14 +2,16 @@
 
 import { UPDATE_STATUS_LABEL_KEYS } from "@/constants/updater";
 import { cn } from "@/lib/utils";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+import { useI18nStore } from "@/store/module/i18n";
 import type { AppUpdaterStatusProps } from "@/types/settings/components";
 import { AppUpdaterActions } from "./AppUpdaterActions";
 import { SettingRow } from "./SettingsUI";
 
 /** 更新状态沿用设置页的行式布局：左侧状态与版本信息，右侧操作或下载进度。 */
 export function AppUpdaterStatus({ state, onCheck, onDownload, onInstall }: AppUpdaterStatusProps) {
-  const { locale, t } = useI18n();
+  const { t } = useTranslation(),
+    locale = useI18nStore((state) => state.locale);
   const hasTargetVersion = Boolean(
     state.version &&
     (state.status === "available" ||

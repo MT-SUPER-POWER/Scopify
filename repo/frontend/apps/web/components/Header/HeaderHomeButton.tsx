@@ -4,11 +4,11 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { PiHouseBold, PiHouseFill } from "react-icons/pi";
 import { cn } from "@/lib/utils";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
 
 /** 搜索框左侧的圆形首页入口，位于首页时显示实心图标。 */
 export function HeaderHomeButton() {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const pathname = usePathname();
   const isHome = pathname === "/";
   const label = t("social.home");

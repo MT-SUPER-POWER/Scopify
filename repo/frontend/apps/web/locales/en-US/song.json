@@ -1,0 +1,11 @@
+{
+  "similar.action": "Explore similar songs",
+  "similar.description": "Songs similar to “{{name}}”. Right-click to add to a playlist or queue.",
+  "similar.loading": "Finding similar songs…",
+  "similar.empty": "No similar songs available yet",
+  "similar.error": "Could not load recommendations. Please try again.",
+  "similar.retry": "Retry",
+  "similar.count": "{{count}} recommendations",
+  "similar.noPlaylists": "No editable playlists",
+  "similar.close": "Close"
+}

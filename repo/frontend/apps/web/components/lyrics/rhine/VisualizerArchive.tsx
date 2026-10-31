@@ -14,13 +14,14 @@ import {
 } from "@/components/lyrics/folia/src/utils/lyrics/alternateText";
 import { useArchiveLyricMotion } from "@/hooks/lyrics/useArchiveLyricMotion";
 import { formatArchiveTime } from "@/lib/lyrics/rhine/archiveLyrics";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { ArchiveVisualizerStyle } from "@/types/lyrics/archive";
 import { ArchiveLyricLine } from "./ArchiveLyricLine";
 import styles from "./VisualizerArchive.module.css";
 
 export default function VisualizerArchive(props: VisualizerSharedProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const {
     lines,
     currentLineIndex,

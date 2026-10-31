@@ -9,7 +9,8 @@ import { VoiceTranscriptPopover } from "@/components/voice/VoiceTranscriptPopove
 import { toVoiceSongDetail } from "@/lib/search/voiceSong";
 import { cn, formatDuration } from "@/lib/utils";
 import { usePlayerStore } from "@/store";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { VoiceItemProps } from "@/types/search/components";
 
 const FALLBACK_COVER =
@@ -24,7 +25,7 @@ export function VoiceItem({
   voice,
   voices,
 }: VoiceItemProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const currentSongDetail = usePlayerStore((state) => state.currentSongDetail);
   const isPlaying = usePlayerStore((state) => state.isPlaying);
   const playTrack = usePlayerStore((state) => state.playTrack);

@@ -2,12 +2,12 @@
 import { useQuery } from "@tanstack/react-query";
 import { getLoginDevices } from "@/lib/api/devices";
 import { normalizeLoginDevices } from "@/lib/devices/normalize";
-import { useI18n } from "@/store/module/i18n";
+import { useI18nStore } from "@/store/module/i18n";
 import { useDeviceSession } from "./useDeviceSession";
 
 export function useLoginDevices() {
   const session = useDeviceSession();
-  const { locale } = useI18n();
+  const locale = useI18nStore((state) => state.locale);
   const query = useQuery({
     queryKey: ["loginDevices", session.scope, locale],
     enabled: session.authenticated,

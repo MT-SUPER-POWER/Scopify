@@ -43,6 +43,7 @@
 9. Framer-Motion: 动画框架
 10. TanStack-Virtual: 虚拟列表
 11. WebGL: 歌词舞台可视化
+12. i18next + x18n: 多语言运行时与翻译管理（[国际化文档](./docs/i18n.md)）
 
 ### 代码结构
 
@@ -63,8 +64,9 @@ repo/
 
 新建或修改代码前，请先阅读：
 
-- **[AGENTS.md](./AGENTS.md)** — 项目结构规范
-- **[docs/structure.md](./docs/structure.md)** — 面向贡献者的结构说明与迁移进度
+- **[CONTRIBUTE.md](./CONTRIBUTE.md)** — 贡献指南与文档索引
+- **[项目结构与拆分原理](./skills/nextjs-project-structure/rules/architecture.md)**、**[组件规则](./skills/nextjs-project-structure/rules/components.md)**、**[数据请求与边界](./skills/nextjs-project-structure/rules/data-and-boundaries.md)** — 前端代码结构规范
+- **[AGENTS.md](./AGENTS.md)** — AI Agent 的工作约定
 
 ### 重要的三方库
 
@@ -81,6 +83,7 @@ repo/
 2. [Electron Doc](https://www.electronjs.org/zh/docs/latest/api/app)
 3. [Netease Cloud Music API Doc](https://docs-neteasecloudmusicapi.focalors.ltd/#/)
 4. [Electron Builder Help Doc - Not Official](https://github.com/QDMarkMan/CodeBlog/blob/master/Electron/electron-builder%E6%89%93%E5%8C%85%E8%AF%A6%E8%A7%A3.md)
+5. [国际化开发](./docs/i18n.md)
 
 ## 部署方法
 

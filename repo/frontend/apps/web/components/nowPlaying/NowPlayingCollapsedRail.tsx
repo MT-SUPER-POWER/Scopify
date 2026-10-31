@@ -3,7 +3,8 @@
 import { ChevronLeft } from "lucide-react";
 import { useEffect } from "react";
 import { ShortcutHint } from "@/components/shortcuts/ShortcutHint";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import { useUiStore } from "@/store/module/ui";
 import {
   Tooltip,
@@ -14,7 +15,7 @@ import {
 
 /** 正在播放面板折叠后的窄条内容，整条可点击展开；打开队列时也会自动展开以停靠队列。 */
 export function NowPlayingCollapsedRail() {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const setIsOpen = useUiStore((s) => s.setIsNowPlayingPanelOpen);
   const isQueueOpen = useUiStore((s) => s.isQueueOpen);
   const label = t("nowPlaying.show");

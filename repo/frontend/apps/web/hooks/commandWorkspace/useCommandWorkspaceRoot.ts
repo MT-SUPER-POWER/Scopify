@@ -8,7 +8,8 @@ import { isShortcutCommandAvailable } from "@/lib/shortcuts/availability";
 import { useShortcutCommands } from "@/hooks/shortcuts/useShortcutCommands";
 import { useShortcutRegistry } from "@/hooks/shortcuts/useShortcutRegistry";
 import { useShortcutStore } from "@/store/module/shortcuts";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import { useLatticeView } from "@/store/module/lattice";
 import { runtime } from "@/lib/runtime";
 import type {
@@ -23,7 +24,7 @@ export function useCommandWorkspaceRoot({
   onLeaveCommand,
   onOpenPage,
 }: CommandWorkspaceRootProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const inputRef = useRef<HTMLInputElement>(null);
   const [query, setQuery] = useState("");
   const [selectedIndex, setSelectedIndex] = useState(0);

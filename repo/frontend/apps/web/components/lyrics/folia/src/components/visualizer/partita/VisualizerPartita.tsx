@@ -1,6 +1,7 @@
 import React, { useMemo, useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence, MotionValue, Variants, useMotionValueEvent } from "framer-motion";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import {
   DEFAULT_PARTITA_TUNING,
   Line,
@@ -795,7 +796,7 @@ const VisualizerPartita: React.FC<VisualizerPartitaProps> = (props) => {
     paused = false,
     staticMode = false,
   } = props;
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const [windowHeight, setWindowHeight] = useState(800);
   const resolvedPartitaTuning = useMemo(() => resolvePartitaTuning(partitaTuning), [partitaTuning]);
   const layoutCacheRef = useRef<Map<string, PartitaSequentialLayout>>(new Map());

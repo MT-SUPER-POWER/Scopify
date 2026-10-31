@@ -3,7 +3,8 @@
 import { useId } from "react";
 import { Check, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+import { useI18nStore } from "@/store/module/i18n";
 import type { NotificationRowProps } from "@/types/notifications/components";
 import { NotificationAvatar } from "./NotificationAvatar";
 import { NotificationSummary } from "./NotificationSummary";
@@ -16,7 +17,8 @@ export function NotificationRow({
   onRead,
   onAction,
 }: NotificationRowProps) {
-  const { t, locale } = useI18n();
+  const { t } = useTranslation(),
+    locale = useI18nStore((state) => state.locale);
   const detailId = useId();
   const unread = item.readAt === null;
   const report = item.category === "reports";

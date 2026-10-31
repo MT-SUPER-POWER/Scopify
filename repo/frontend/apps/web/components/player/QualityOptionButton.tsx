@@ -3,7 +3,8 @@
 import { Check } from "lucide-react";
 import { MediaInfoBadge } from "@/components/shared/MediaInfoBadge";
 import { cn } from "@/lib/utils";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { QualityOptionButtonProps } from "@/types/player/bar";
 
 export function QualityOptionButton({
@@ -12,7 +13,7 @@ export function QualityOptionButton({
   disabled,
   onSelect,
 }: QualityOptionButtonProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const Icon = option.icon;
   return (
     <button

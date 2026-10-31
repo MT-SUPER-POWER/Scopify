@@ -3,11 +3,13 @@
 import { ChevronRight, UserRound } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@scopify/ui/shadcn/components/avatar";
 import { cn } from "@/lib/utils";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+import { useI18nStore } from "@/store/module/i18n";
 import type { ConversationRowProps } from "@/types/messages/components";
 
 export function ConversationRow({ conversation, unread, onOpen }: ConversationRowProps) {
-  const { t, locale } = useI18n();
+  const { t } = useTranslation(),
+    locale = useI18nStore((state) => state.locale);
   const date = new Date(conversation.time);
   const today = date.toDateString() === new Date().toDateString();
   return (

@@ -1,0 +1,22 @@
+{
+  "menu.notifications": "通知",
+  "menu.friends": "好友",
+  "menu.profile": "个人主页",
+  "menu.vipSign": "网易云签到",
+  "menu.signToday": "今日",
+  "menu.signIn": "签到",
+  "menu.viewMonthlySign": "查看月签",
+  "menu.listeningReport": "音乐足迹",
+  "menu.settings": "设置",
+  "menu.download": "下载桌面端",
+  "menu.aboutMe": "关于我",
+  "toast.updateSuccess": "个人信息已更新",
+  "toast.updateFailed": "更新个人信息失败",
+  "edit.title": "编辑个人信息",
+  "edit.nickname": "昵称",
+  "edit.signature": "签名",
+  "edit.gender": "性别",
+  "edit.genderPrivate": "保密",
+  "edit.genderMale": "男",
+  "edit.genderFemale": "女"
+}

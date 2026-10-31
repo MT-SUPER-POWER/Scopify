@@ -7,7 +7,8 @@ import { MvCardPreview } from "@/components/mv/MvCardPreview";
 import { getSizedImageUrl } from "@/lib/music/imageUrl";
 import { resolveCoverUrl } from "@/lib/music/resolveCoverUrl";
 import { cn } from "@/lib/utils";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { TrackPreviewButtonProps } from "@/types/player/trackPreviewComponents";
 import {
   Tooltip,
@@ -27,7 +28,7 @@ export function TrackPreviewButton({
   playlistId = null,
   className,
 }: TrackPreviewButtonProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
   const [isHovering, setIsHovering] = useState(false);
   const videoTracks = useMemo(() => tracks.filter((track) => (track.mv ?? 0) > 0), [tracks]);

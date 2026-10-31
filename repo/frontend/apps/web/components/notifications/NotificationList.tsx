@@ -1,7 +1,8 @@
 "use client";
 
 import { BellRing } from "lucide-react";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+import { useI18nStore } from "@/store/module/i18n";
 import type { NotificationPanelProps } from "@/types/notifications/components";
 import { NotificationRow } from "./NotificationRow";
 import { socialNotificationHref } from "@/lib/social/notificationTarget";
@@ -26,7 +27,8 @@ export function NotificationList({
   | "onSocialAction"
   | "onReportOpen"
 >) {
-  const { t, locale } = useI18n();
+  const { t } = useTranslation(),
+    locale = useI18nStore((state) => state.locale);
   const today = new Date();
   today.setHours(0, 0, 0, 0);
   const yesterday = new Date(today);

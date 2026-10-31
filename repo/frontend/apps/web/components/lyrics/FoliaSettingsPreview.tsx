@@ -2,7 +2,8 @@
 
 import { Pause, Play } from "lucide-react";
 import { useState } from "react";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import { FoliaThemePreviewToolbar } from "@/components/lyrics/FoliaThemePreviewToolbar";
 
 import VisPlaygroundPreviewHotspots from "@/components/lyrics/folia/src/components/visualizer/VisPlaygroundPreviewHotspots";
@@ -21,7 +22,7 @@ export function FoliaSettingsPreview({
   theme,
   themeEditorContext,
 }: FoliaSettingsPreviewProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const [isPreviewPaused, setIsPreviewPaused] = useState(false);
   const [previewRestartToken, setPreviewRestartToken] = useState(0);
   const preview = useFoliaSettingsPreview(isPreviewPaused, previewRestartToken);

@@ -1,7 +1,7 @@
 "use client";
 
 import { getCommandDefinition } from "@/constants/shortcuts";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
 
 import { getEffectiveShortcutBinding, getShortcutBindingLabel } from "@/lib/shortcuts/bindings";
 import { useShortcutStore } from "@/store/module/shortcuts";
@@ -9,7 +9,7 @@ import type { ShortcutHintProps } from "@/types/shortcuts/components";
 
 /** Renders an action label with its effective, user-customized shortcut. */
 export function ShortcutHint({ commandId, label }: ShortcutHintProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const command = commandId ? getCommandDefinition(commandId) : undefined;
   const overrides = useShortcutStore((state) => state.overrides);
   const binding = commandId ? getEffectiveShortcutBinding(commandId, overrides) : null;

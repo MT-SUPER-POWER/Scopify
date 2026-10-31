@@ -5,12 +5,13 @@ import { useSongLikeMutation } from "@/hooks/playlist/useSongLikeMutation";
 import { isRealUser } from "@/lib/web/auth";
 import { useUserStore } from "@/store";
 import { useAppDragStore } from "@/store/module/appDrag";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { SongDetail } from "@/types/song/api";
 
 export function useBatchSongLike() {
   const songLikeMutation = useSongLikeMutation();
-  const { t } = useI18n();
+  const { t } = useTranslation();
 
   const batchLike = async (songs: Pick<SongDetail, "id">[], targetLike = true) => {
     const drag = useAppDragStore.getState();

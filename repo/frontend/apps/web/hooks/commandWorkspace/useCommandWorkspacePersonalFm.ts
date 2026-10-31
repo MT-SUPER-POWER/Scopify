@@ -13,14 +13,15 @@ import {
 } from "@/lib/commandWorkspace/personalFmCommands";
 import { usePersonalFmStore } from "@/store/module/personalFm";
 import { usePlayerStore } from "@/store/module/player";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type {
   PersonalFmCommandEntry,
   PersonalFmCommandGroup,
 } from "@/types/commandWorkspace/personalFm";
 
 export function useCommandWorkspacePersonalFm(onBack: () => void) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const [query, setQuery] = useState("");
   const [selectedIndex, setSelectedIndex] = useState(-1);
   const [showHelp, setShowHelp] = useState(false);

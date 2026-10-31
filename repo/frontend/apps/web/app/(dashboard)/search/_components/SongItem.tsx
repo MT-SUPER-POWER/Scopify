@@ -1,0 +1,406 @@
+"use client";
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ PACKAGE ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+import { Disc3, Heart, Link2, ListPlus, Pause, Play, PlusCircle, User } from "lucide-react";
+import { motion } from "motion/react";
+import Image from "next/image";
+import Link from "next/link";
+import { memo, useCallback, useMemo } from "react";
+import { FaRegCommentDots } from "react-icons/fa6";
+import { toast } from "sonner";
+import { ArtistInlineLinks } from "@/components/shared/ArtistInlineLinks";
+import { SongMvBadge } from "@/components/shared/SongMvBadge";
+import { SongVipBadge } from "@/components/shared/SongVipBadge";
+import {
+  ContextMenu,
+  ContextMenuContent,
+  ContextMenuGroup,
+  ContextMenuItem,
+  ContextMenuSeparator,
+  ContextMenuSub,
+  ContextMenuSubContent,
+  ContextMenuSubTrigger,
+  ContextMenuTrigger,
+} from "@/components/ui/context-menu";
+import { LikeButton } from "@/components/ui/LikeButton";
+import { usePlaylistTrackMutation } from "@/hooks/playlist/usePlaylistTrackMutation";
+import { useSongLikeMutation } from "@/hooks/playlist/useSongLikeMutation";
+import { useLoginStatus } from "@/hooks/auth/useLoginStatus";
+import { cn, formatDuration } from "@/lib/utils";
+import { usePlayerStore, useUserStore } from "@/store";
+import { useTranslation } from "react-i18next";
+
+import type { SongDetail } from "@/types/song/api";
+import type { Song } from "@/types/search/model";
+import { getSizedImageUrl } from "@/lib/music/imageUrl";
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ UTILS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+function songToSongDetail(song: Song): SongDetail {
+  const picUrl = song.album.picUrl || song.artists[0]?.picUrl || "";
+  return {
+    id: song.id,
+    name: song.name,
+    dt: song.duration,
+    fee: song.fee ?? 0,
+    ar: song.artists.map((a) => ({ id: a.id, name: a.name })),
+    al: { id: song.album.id, name: song.album.name, picUrl },
+    publishTime: song.album.publishTime || 0,
+  };
+}
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ TRACK INDEX CELL ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+function SongIndexCell({
+  index,
+  isActive,
+  isPlaying,
+  onPlay,
+  onPause,
+}: {
+  index: number;
+  isActive: boolean;
+  isPlaying: boolean;
+  onPlay: () => void;
+  onPause: () => void;
+}) {
+  return (
+    <div className="relative flex size-4 items-center justify-center">
+      {/* 默认：序号 */}
+      <span
+        className={cn(
+          "text-sm font-normal text-content-muted group-hover:hidden",
+          isActive && "hidden",
+        )}
+      >
+        {index + 1}
+      </span>
+
+      {/* 播放中：频谱动画 */}
+      {isActive && isPlaying && (
+        <div className="flex h-3 shrink-0 items-end gap-0.5 group-hover:hidden">
+          {[0, 0.2, 0.4].map((delay) => (
+            <motion.div
+              key={delay}
+              className="w-0.5 rounded-full bg-brand"
+              animate={{ scaleY: [0.4, 1, 0.4] }}
+              transition={{ duration: 0.8, repeat: Infinity, delay, ease: "easeInOut" }}
+              style={{ height: "100%", originY: 1 }}
+            />
+          ))}
+        </div>
+      )}
+
+      {/* 暂停中：静态绿色播放图标 */}
+      {isActive && !isPlaying && (
+        <Play className="size-4 fill-current text-brand group-hover:hidden" />
+      )}
+
+      {/* Hover 覆盖：播放 / 暂停按钮 */}
+      <div className="hidden items-center justify-center group-hover:flex">
+        {isActive && isPlaying ? (
+          <Pause className="size-4 cursor-pointer fill-current text-brand" onClick={onPause} />
+        ) : (
+          <Play className="size-4 cursor-pointer fill-current text-content" onClick={onPlay} />
+        )}
+      </div>
+    </div>
+  );
+}
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ SONG ITEM ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+interface SongItemProps {
+  song: Song;
+  index: number;
+  /** 完整列表，用于构建播放队列 */
+  songs: Song[];
+}
+
+export const SongItem = memo(
+  function SongItem({ song, index, songs }: SongItemProps) {
+    const { t } = useTranslation();
+    const songLikeMutation = useSongLikeMutation();
+    const { mutateAsync: updatePlaylistTrack } = usePlaylistTrackMutation();
+    // ── store ──
+    const currentSongDetail = usePlayerStore((s) => s.currentSongDetail);
+    const isPlaying = usePlayerStore((s) => s.isPlaying);
+    const setIsPlaying = usePlayerStore((s) => s.setIsPlaying);
+    const setQueue = usePlayerStore((s) => s.setQueue);
+    const playTrack = usePlayerStore((s) => s.playTrack);
+    const likeListIDs = useUserStore((s) => s.likeListIDs);
+    const playlists = useUserStore((s) => s.playlist);
+
+    // ── derived ──
+    const isActive = currentSongDetail?.id === song.id;
+    const isLogin = useLoginStatus();
+    const isLiked = useMemo(
+      () => Array.isArray(likeListIDs) && likeListIDs.includes(song.id),
+      [likeListIDs, song.id],
+    );
+
+    // ── handlers ──
+    const handlePlay = useCallback(() => {
+      if (isActive) {
+        setIsPlaying(true);
+        return;
+      }
+      const queue = songs.map(songToSongDetail);
+      setQueue(queue, index);
+      playTrack(songToSongDetail(song));
+    }, [isActive, songs, index, song, setIsPlaying, setQueue, playTrack]);
+
+    const handlePause = useCallback(() => setIsPlaying(false), [setIsPlaying]);
+
+    const handleRowDoubleClick = useCallback(() => {
+      if (isActive) {
+        setIsPlaying(!isPlaying);
+      } else {
+        handlePlay();
+      }
+    }, [isActive, isPlaying, handlePlay, setIsPlaying]);
+
+    const handleLike = useCallback(
+      (nextLiked: boolean) => {
+        songLikeMutation.mutate({ like: nextLiked, songId: song.id });
+      },
+      [songLikeMutation, song.id],
+    );
+
+    const handleAddToQueue = useCallback(() => {
+      const state = usePlayerStore.getState();
+      if (state.queue.some((t) => t.id === song.id)) {
+        toast.info(t("playlist.table.queueExists"));
+        return;
+      }
+      state.setQueue([...state.queue, songToSongDetail(song)], state.queueIndex);
+      toast.success(t("playlist.table.queueAdded"));
+    }, [song, t]);
+
+    const coverSrc = song.album.picUrl || song.artists[0]?.picUrl || "";
+
+    return (
+      <ContextMenu>
+        <ContextMenuTrigger asChild>
+          <div
+            className={cn(
+              "group flex items-center gap-3 rounded-md px-3 py-2",
+              "cursor-default transition-colors select-none hover:bg-content/10",
+              isActive && "text-brand",
+            )}
+            onDoubleClick={handleRowDoubleClick}
+          >
+            {/* 序号 / 播放控件 */}
+            <div className="flex w-6 shrink-0 justify-center">
+              <SongIndexCell
+                index={index}
+                isActive={isActive}
+                isPlaying={isPlaying}
+                onPlay={handlePlay}
+                onPause={handlePause}
+              />
+            </div>
+
+            {/* 封面 */}
+            <div className="size-10 shrink-0 overflow-hidden rounded bg-surface-elevated">
+              <Image
+                width={40}
+                height={40}
+                src={coverSrc}
+                alt={song.album.name}
+                loading="lazy"
+                className="size-full object-cover"
+                onError={(e) => {
+                  (e.currentTarget as HTMLImageElement).src = "";
+                }}
+              />
+            </div>
+
+            {/* 歌名 + 歌手 */}
+            <div className="flex min-w-0 flex-1 flex-col">
+              <div className="flex min-w-0 items-center gap-1.5">
+                <span
+                  title={song.name}
+                  className={cn(
+                    "truncate text-sm font-normal",
+                    isActive ? "text-brand" : "text-content",
+                  )}
+                >
+                  {song.name}
+                </span>
+                {song.alias?.length ? (
+                  <span className="truncate text-xs text-content-subtle">
+                    ({song.alias.join(" / ")})
+                  </span>
+                ) : null}
+                <SongVipBadge fee={song.fee} />
+                <SongMvBadge mvId={song.mvid} />
+              </div>
+              <ArtistInlineLinks
+                artists={song.artists.map((a) => ({ id: a.id, name: a.name }))}
+                className="cursor-pointer truncate text-xs text-content-muted"
+              />
+            </div>
+
+            <div className="hidden min-w-0 flex-[0.55] items-center gap-2 lg:flex">
+              <Disc3 className="size-3.5 shrink-0 text-content-subtle" aria-hidden="true" />
+              <Link
+                href={`/album?id=${song.album.id}`}
+                title={song.album.name}
+                onClick={(event) => event.stopPropagation()}
+                className="truncate text-xs text-content-muted transition-colors hover:text-content hover:underline"
+              >
+                {song.album.name}
+              </Link>
+            </div>
+
+            {/* Like 按钮 */}
+            <div className="hidden shrink-0 items-center sm:flex">
+              <LikeButton
+                liked={isLiked}
+                onLike={() => handleLike(!isLiked)}
+                iconClassName="w-4 h-4"
+              />
+            </div>
+
+            {/* 时长 */}
+            <div className="w-12 shrink-0 text-right text-sm text-content-muted">
+              {formatDuration(song.duration)}
+            </div>
+          </div>
+        </ContextMenuTrigger>
+
+        {/* ── Context Menu ── */}
+        <ContextMenuContent className="w-52">
+          <ContextMenuGroup>
+            <ContextMenuItem onClick={handleRowDoubleClick}>
+              {isActive && isPlaying ? (
+                <>
+                  <Pause className="mr-2 size-4" />
+                  {t("contextMenu.pause")}
+                </>
+              ) : (
+                <>
+                  <Play className="mr-2 size-4" />
+                  {t("contextMenu.play")}
+                </>
+              )}
+            </ContextMenuItem>
+
+            {/* 添加到播放队列中 */}
+            {isLogin && (
+              <ContextMenuItem onClick={handleAddToQueue}>
+                <ListPlus className="mr-2 size-4" />
+                {t("contextMenu.addToQueue")}
+              </ContextMenuItem>
+            )}
+
+            {/* 取消喜欢或者喜欢 */}
+            {isLogin && (
+              <ContextMenuItem onClick={() => handleLike(!isLiked)}>
+                <Heart className="mr-2 size-4" />
+                {isLiked ? t("contextMenu.removeFromLiked") : t("contextMenu.addToLiked")}
+              </ContextMenuItem>
+            )}
+          </ContextMenuGroup>
+
+          <ContextMenuSeparator />
+
+          <ContextMenuGroup>
+            {/* 添加到播放列表 */}
+            {isLogin && (
+              <ContextMenuSub>
+                <ContextMenuSubTrigger>
+                  <PlusCircle className="mr-4 size-4" />
+                  {t("contextMenu.addToPlaylist")}
+                </ContextMenuSubTrigger>
+                <ContextMenuSubContent className="scrollbar-custom max-h-72 max-w-80 overflow-y-auto">
+                  {playlists.map((playlist) => (
+                    <ContextMenuItem
+                      key={playlist.id}
+                      onClick={async () => {
+                        try {
+                          await updatePlaylistTrack({
+                            operation: "add",
+                            playlistId: playlist.id,
+                            trackId: song.id,
+                          });
+                          toast.success(t("playlist.table.addToPlaylistSuccess"));
+                        } catch {
+                          toast.error(t("playlist.table.addToPlaylistFailed"));
+                        }
+                      }}
+                    >
+                      <Image
+                        width={28}
+                        height={28}
+                        src={getSizedImageUrl(playlist.coverImgUrl, 80)}
+                        alt={t("playlist.form.coverAlt")}
+                        className="mr-2 size-7 rounded-sm"
+                      />
+                      {playlist.name}
+                    </ContextMenuItem>
+                  ))}
+                </ContextMenuSubContent>
+              </ContextMenuSub>
+            )}
+
+            <ContextMenuItem asChild>
+              <Link href={`/comment/?songId=${song.id}`} className="block size-full">
+                <FaRegCommentDots className="mr-2 size-4" />
+                {t("contextMenu.comments")}
+              </Link>
+            </ContextMenuItem>
+
+            <ContextMenuItem asChild>
+              <button
+                type="button"
+                onClick={() => {
+                  navigator.clipboard
+                    .writeText(`https://music.163.com/#/song?id=${song.id}`)
+                    .then(() => toast.success(t("common.message.linkCopied")))
+                    .catch(() => toast.error(t("common.message.copyFailed")));
+                }}
+                className="block size-full"
+              >
+                <Link2 className="mr-2 size-4" />
+                {t("contextMenu.copyLink")}
+              </button>
+            </ContextMenuItem>
+
+            {/* View Artist */}
+            {song.artists.length > 0 &&
+              (song.artists.length === 1 ? (
+                <ContextMenuItem asChild>
+                  <Link href={`/artist?id=${song.artists[0].id}`} className="block size-full">
+                    <User className="mr-2 size-4" />
+                    {t("contextMenu.goToArtist")}
+                  </Link>
+                </ContextMenuItem>
+              ) : (
+                <ContextMenuSub>
+                  <ContextMenuSubTrigger>
+                    <User className="mr-4 size-4" />
+                    {t("contextMenu.goToArtist")}
+                  </ContextMenuSubTrigger>
+                  <ContextMenuSubContent className="scrollbar-custom max-h-72 max-w-80 overflow-y-auto">
+                    {song.artists.map((artist) => (
+                      <ContextMenuItem key={artist.id} asChild>
+                        <Link href={`/artist?id=${artist.id}`} className="block size-full">
+                          {artist.name}
+                        </Link>
+                      </ContextMenuItem>
+                    ))}
+                  </ContextMenuSubContent>
+                </ContextMenuSub>
+              ))}
+          </ContextMenuGroup>
+        </ContextMenuContent>
+      </ContextMenu>
+    );
+  },
+  // 只有这几个维度变化才重渲染
+  (prev, next) =>
+    prev.song.id === next.song.id && prev.index === next.index && prev.songs === next.songs,
+);

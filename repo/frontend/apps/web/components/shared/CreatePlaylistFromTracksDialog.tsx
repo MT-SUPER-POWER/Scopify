@@ -16,7 +16,8 @@ import { createPlaylist } from "@/lib/api/playlist";
 import { updatePlaylistTrack } from "@/lib/api/track";
 import { clearPageCache } from "@/lib/cache/pageCache";
 import { useUserStore } from "@/store";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { CreatePlaylistFromTracksDialogProps } from "@/types/song/contextMenuComponents";
 
 export function CreatePlaylistFromTracksDialog({
@@ -24,7 +25,7 @@ export function CreatePlaylistFromTracksDialog({
   onOpenChange,
   tracks,
 }: CreatePlaylistFromTracksDialogProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const queryClient = useQueryClient();
   const [playlistName, setPlaylistName] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);

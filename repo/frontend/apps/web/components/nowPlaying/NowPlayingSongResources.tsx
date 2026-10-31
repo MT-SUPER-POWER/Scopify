@@ -5,12 +5,13 @@ import { NowPlayingCard } from "./NowPlayingCard";
 import { SongResourcesDialog } from "@/components/songResources/SongResourcesDialog";
 import { SongWikiSection } from "@/components/songResources/SongWikiSection";
 import { SongSheetsSection } from "@/components/songResources/SongSheetsSection";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { NowPlayingSectionProps } from "@/types/player/nowPlayingComponents";
 import type { SongResourceTab } from "@/types/songResources/components";
 
 export function NowPlayingSongResources({ song }: NowPlayingSectionProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const [tab, setTab] = useState<SongResourceTab>("sheets");
   const [open, setOpen] = useState(false);
   if (song.id <= 0) return null;

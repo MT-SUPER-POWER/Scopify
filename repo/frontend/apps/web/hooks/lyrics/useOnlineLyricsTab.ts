@@ -19,7 +19,8 @@ import {
 import { adaptNeteaseLyric } from "@/lib/lyrics/neteaseLyricAdapter";
 import { buildLyricExport, downloadLyricExport } from "@/lib/lyrics/export";
 import { musicQueryKeys } from "@/lib/query/queryKeys";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import { usePlayerStore } from "@/store/module/player";
 import { useLyricStageStore } from "@/store/module/lyrics";
 import type {
@@ -49,7 +50,7 @@ async function readLyricSource(songId: number) {
  * 切换、导入、清除是用户操作，反馈留在操作本身。
  */
 export function useOnlineLyricsTab() {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const queryClient = useQueryClient();
   const song = usePlayerStore((state) => state.currentSongDetail);
   const lyric = usePlayerStore((state) => state.lyric);

@@ -2,7 +2,8 @@
 
 import { useSubtitlePreview } from "@/hooks/settings/useSubtitlePreview";
 import type { SubtitlePreviewWorkspaceProps } from "@/types/lyrics/subtitlePreview";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import { LyricsStylePreview } from "./LyricsStylePreview";
 import { SettingSection } from "./SettingsUI";
 import { SubtitlePreviewControls } from "./SubtitlePreviewControls";
@@ -14,7 +15,7 @@ export function SubtitlePreviewWorkspace({
   note,
   palettePreview = false,
 }: SubtitlePreviewWorkspaceProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const preview = useSubtitlePreview(settings, palettePreview);
   return (
     <div

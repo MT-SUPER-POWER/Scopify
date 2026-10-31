@@ -3,7 +3,8 @@
 import { LoaderCircle, MessagesSquare, UserRound } from "lucide-react";
 import Link from "next/link";
 import { QuietState } from "@/components/shared/QuietState";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import { useRequireLoginAction } from "@/hooks/auth/useRequireLoginAction";
 import { profileHref } from "@/lib/social/normalize";
 import { useSocialAccount } from "@/hooks/social/useSocialQueries";
@@ -17,7 +18,7 @@ import type {
 import s from "./Social.module.css";
 
 export function SocialAvatar({ user, size, linked = true, className = "" }: SocialAvatarProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const content = user.avatar ? (
     <img src={user.avatar} alt="" loading="lazy" referrerPolicy="no-referrer" />
   ) : (
@@ -42,7 +43,7 @@ export function SocialAvatar({ user, size, linked = true, className = "" }: Soci
   );
 }
 export function SocialAuthor({ user, className = "" }: SocialUserProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   return user.id ? (
     <Link scroll={false} className={s.author + " " + className} href={profileHref(user.id)}>
       {user.name || t("social.unknownUser")}
@@ -52,7 +53,7 @@ export function SocialAuthor({ user, className = "" }: SocialUserProps) {
   );
 }
 export function FollowButton({ user, className = "" }: SocialUserProps) {
-  const { t } = useI18n(),
+  const { t } = useTranslation(),
     { uid } = useSocialAccount();
   const mutation = useSocialFollow(user),
     requireLogin = useRequireLoginAction();
@@ -82,7 +83,7 @@ export function SocialState({
   skeleton,
   children,
 }: SocialStateProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   if (loading && skeleton) return skeleton;
   if (!loading && !error && !empty) return children;
   return (
@@ -98,7 +99,7 @@ export function SocialState({
   );
 }
 export function SocialLoadMore({ more, pending, error, onLoad }: SocialLoadMoreProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   if (!more && !error) return null;
   return (
     <div className={s.loadMore}>
@@ -109,6 +110,6 @@ export function SocialLoadMore({ more, pending, error, onLoad }: SocialLoadMoreP
   );
 }
 export function SocialLogin() {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   return <QuietState compact icon={MessagesSquare} title={t("social.login")} />;
 }

@@ -5,12 +5,13 @@ import { BACKGROUND_THEME_EDITOR_PATH } from "@/constants/appearanceRoutes";
 import { useAppearanceBackground } from "@/hooks/settings/useAppearanceBackground";
 import { useThemeOptions } from "@/hooks/settings/useThemeOptions";
 import { useAppearanceStore } from "@/store/module/appearance";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import { SavedThemeLibrary } from "./SavedThemeLibrary";
 import { ThemeCard } from "./ThemeCard";
 
 export function BackgroundThemePicker() {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const { palette } = useAppearanceBackground();
   const options = useThemeOptions();
   const apply = useAppearanceStore((state) => state.applyTheme);

@@ -2,7 +2,8 @@
 
 import { Copy, KeyRound, LoaderCircle } from "lucide-react";
 
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { McpClientConfigurationPreviewProps } from "@/types/settings/components";
 
 /** Small syntax-rendered JSON preview for the current valid MCP credential. */
@@ -12,7 +13,7 @@ export function McpClientConfigurationPreview({
   onCopy,
   onRotate,
 }: McpClientConfigurationPreviewProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
 
   // 兼顾标准 mcpServers.scopify 结构与旧版扁平结构（如 Electron Main 进程尚未重启时），防止 undefined 崩溃
   const legacyConfig = configuration as unknown as {

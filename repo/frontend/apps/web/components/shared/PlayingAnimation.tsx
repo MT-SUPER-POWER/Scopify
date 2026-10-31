@@ -1,6 +1,7 @@
 import React from "react";
 import { cn } from "@/lib/utils";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { PlayingAnimationProps } from "@/types/shared/playingAnimation";
 import styles from "./PlayingAnimation.module.css";
 
@@ -8,7 +9,7 @@ export const PlayingAnimation = React.memo(function PlayingAnimation({
   className,
   size = 14,
 }: PlayingAnimationProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
 
   return (
     <div className={cn("flex shrink-0 items-end gap-0.5", className)}>

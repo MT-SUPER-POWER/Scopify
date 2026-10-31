@@ -8,12 +8,13 @@ import {
   SelectValue,
 } from "@scopify/ui/shadcn/components/select";
 import { formatThemeTime } from "@/lib/settings/appearance";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { ThemeScheduleEditorProps } from "@/types/appearance/model";
 import { ThemeTimeline } from "./ThemeTimeline";
 
 export function ThemeScheduleEditor({ slots, options, onChange }: ThemeScheduleEditorProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const add = () => {
     const gaps = slots.map((slot, index) => ({
       index,

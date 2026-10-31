@@ -10,7 +10,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuLabel,
 } from "@scopify/ui/shadcn/components/dropdown-menu";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import { useUiStore } from "@/store/module/ui";
 import { useLatticePreferences } from "@/store/module/lattice";
 import type { LatticeToolbarProps } from "@/types/playlist/latticeComponents";
@@ -23,7 +24,7 @@ export function LatticeToolbar({
   onLocate,
   onClose,
 }: LatticeToolbarProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const preferences = useLatticePreferences();
   return (
     <header className={styles.toolbar}>

@@ -15,7 +15,8 @@ import { usePlaybackCommands } from "@/hooks/player/usePlaybackCommands";
 import { usePlaybackProjection } from "@/hooks/player/usePlaybackProjection";
 import { usePlayerStore } from "@/store/module/player";
 import { useUiStore } from "@/store/module/ui";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import { isPersonalFmPlaybackSource } from "@/constants/personalFm";
 import type { LatticePlaybackControlsProps } from "@/types/playlist/latticeComponents";
 import { LatticeProgress } from "./LatticeProgress";
@@ -27,7 +28,7 @@ export function LatticePlaybackControls({
   revealed,
   onPlay,
 }: LatticePlaybackControlsProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const playback = usePlaybackProjection();
   const commands = usePlaybackCommands();
   const repeatMode = usePlayerStore((state) => state.repeatMode);

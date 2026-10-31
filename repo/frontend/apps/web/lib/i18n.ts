@@ -1,10 +1,15 @@
-import { messages } from "@/constants/i18n";
+import { createInstance, type TOptions } from "i18next";
+import { initReactI18next } from "react-i18next";
+import { resources } from "@/locales/resources";
 import type { AppLocale } from "@/types/settings/config";
 
-export { messages };
-
+type SourceResources = (typeof resources)["zh-CN"];
 export type TranslationParams = Record<string, string | number>;
-export type TranslationKey = keyof (typeof messages)["zh-CN"];
+export type TranslationKey = {
+  [
+    Namespace in keyof SourceResources
+  ]: `${Namespace & string}.${keyof SourceResources[Namespace] & string}`;
+}[keyof SourceResources];
 
 export const languageLabelKeys: Record<AppLocale, TranslationKey> = {
   "zh-CN": "common.language.simplifiedChinese",
@@ -12,16 +17,32 @@ export const languageLabelKeys: Record<AppLocale, TranslationKey> = {
   "en-US": "common.language.english",
 };
 
-function interpolate(template: string, params?: TranslationParams) {
-  if (!params) return template;
+export const i18n = createInstance();
+const namespaces = Object.keys(resources["zh-CN"]) as (keyof SourceResources)[];
+void i18n.use(initReactI18next).init({
+  resources,
+  lng: "zh-CN",
+  fallbackLng: "zh-CN",
+  ns: namespaces,
+  defaultNS: ["common", ...namespaces.filter((namespace) => namespace !== "common")],
+  load: "currentOnly",
+  keySeparator: ".",
+  nsSeparator: ".",
+  initAsync: false,
+  interpolation: { escapeValue: false },
+  missingInterpolationHandler: () => "",
+});
 
-  return template.replace(/\{\{(\w+)\}\}/g, (_match, name: string) => {
-    const value = params[name];
-    return value === undefined ? "" : String(value);
-  });
-}
+const translateResource = i18n.t.bind(i18n) as unknown as (
+  key: string,
+  options: TOptions,
+) => string;
 
 export function translate(locale: AppLocale, key: TranslationKey, params?: TranslationParams) {
-  const template = messages[locale][key] ?? messages["zh-CN"][key] ?? key;
-  return interpolate(template, params);
+  return translateResource(key, {
+    lng: locale,
+    replace: params,
+    skipInterpolation: !params,
+    defaultValue: key,
+  });
 }

@@ -7,7 +7,8 @@ import { FoliaThemeColorEditor } from "@/components/lyrics/FoliaThemeColorEditor
 import { FoliaThemeIdentityControls } from "@/components/lyrics/FoliaThemeIdentityControls";
 import { FoliaThemeJsonTransfer } from "@/components/lyrics/FoliaThemeJsonTransfer";
 import { useLyricStageStore } from "@/store/module/lyrics";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { FoliaThemeEditorPanelProps, FoliaThemeEditorTab } from "@/types/lyrics/components";
 
 export function FoliaThemeEditorPanel({
@@ -16,7 +17,7 @@ export function FoliaThemeEditorPanel({
   onDraftChange,
   onSelectTheme,
 }: FoliaThemeEditorPanelProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const themeVariant = useLyricStageStore((state) => state.themeVariant);
   const [editorTab, setEditorTab] = useState<FoliaThemeEditorTab>("edit");
   const tabs = [

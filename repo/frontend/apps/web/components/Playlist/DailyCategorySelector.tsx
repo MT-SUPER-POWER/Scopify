@@ -11,7 +11,8 @@ import {
   useUpdateDailyCategoryConfig,
 } from "@/hooks/playlist/useDailyCategoryRecommendations";
 import { useDailyCategorySelection } from "@/hooks/playlist/useDailyCategorySelection";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+import { useI18nStore } from "@/store/module/i18n";
 import type {
   DailyCategorySelectorBodyProps,
   DailyCategorySelectorProps,
@@ -19,7 +20,7 @@ import type {
 
 export function DailyCategorySelector(props: DailyCategorySelectorProps) {
   const [open, setOpen] = useState(false);
-  const { locale } = useI18n();
+  const locale = useI18nStore((state) => state.locale);
   const label = locale === "en-US" ? "Choose styles" : locale === "zh-TW" ? "選擇風格" : "选择风格";
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -56,7 +57,8 @@ function DailyCategorySelectorBody({
   selected,
   onClose,
 }: DailyCategorySelectorBodyProps) {
-  const { locale, t } = useI18n();
+  const { t } = useTranslation(),
+    locale = useI18nStore((state) => state.locale);
   const { data: categories } = useDailyCategoryConfigs(accountId);
   const mutation = useUpdateDailyCategoryConfig(accountId);
   const { draft, beginSelection, toggleTag } = useDailyCategorySelection();

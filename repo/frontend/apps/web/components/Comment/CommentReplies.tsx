@@ -7,7 +7,8 @@ import { Skeleton } from "@scopify/ui/shadcn/components/skeleton";
 import { useCommentReplies } from "@/hooks/comment/useCommentReplies";
 import { getSizedImageUrl } from "@/lib/music/imageUrl";
 import { cn } from "@/lib/utils";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { CommentRepliesProps } from "@/types/comment/components";
 
 /**
@@ -22,7 +23,7 @@ export function CommentReplies({
   replyCount,
   renderReply,
 }: CommentRepliesProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const [expanded, setExpanded] = useState(false);
   const [isNear, setIsNear] = useState(false);
   const toggleRef = useRef<HTMLButtonElement>(null);
@@ -65,7 +66,12 @@ export function CommentReplies({
             />
           )}
         </span>
-        <span>{t("comments.replies.count", { count: replyCount.toLocaleString() })}</span>
+        <span>
+          {t("comments.replies.count", {
+            count: replyCount,
+            replace: { count: replyCount.toLocaleString() },
+          })}
+        </span>
         <ChevronDown className={cn("size-4 transition-transform", expanded && "rotate-180")} />
       </button>
 

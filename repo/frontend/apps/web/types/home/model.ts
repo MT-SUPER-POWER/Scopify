@@ -17,6 +17,13 @@ export interface HomePlaybackActions {
   playSongs: (songs: SongDetail[], index: number) => Promise<void>;
 }
 
+export interface HomeContextValue {
+  accountId: string;
+  actions: HomePlaybackActions;
+  dateInfo: { dateNum: number; dayOfWeek: string };
+  greeting: string;
+}
+
 export interface ArtistTopListItem {
   id: number;
   name: string;

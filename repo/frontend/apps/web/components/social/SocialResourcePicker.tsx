@@ -12,7 +12,8 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { useSocialResourceSearch } from "@/hooks/social/useSocialQueries";
 import { useSocialPickerPlaylists } from "@/hooks/social/useSocialPickerPlaylists";
 import { getSizedImageUrl } from "@/lib/music/imageUrl";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { SocialResourcePickerProps } from "@/types/social/components";
 import { SocialState } from "./SocialPrimitives";
 import s from "./Social.module.css";
@@ -20,7 +21,7 @@ import s from "./Social.module.css";
 const KINDS = ["song", "playlist"] as const;
 
 export function SocialResourcePicker({ open, onClose, onSelect }: SocialResourcePickerProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const [input, setInput] = useState(""),
     [query, setQuery] = useState(""),
     [kind, setKind] = useState<(typeof KINDS)[number]>("song");

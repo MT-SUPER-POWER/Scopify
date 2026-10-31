@@ -1,10 +1,11 @@
 import { useId } from "react";
 import { Input } from "@scopify/ui/shadcn/components/input";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { ThemeNameFieldProps } from "@/types/appearance/themeEditor";
 
 export function ThemeNameField({ value, valid, onChange, label }: ThemeNameFieldProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const id = useId();
   return (
     <div className="mb-6 space-y-3">

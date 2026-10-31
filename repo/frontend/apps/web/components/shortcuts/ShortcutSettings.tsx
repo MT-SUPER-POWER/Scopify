@@ -5,7 +5,8 @@ import { useMemo, useState } from "react";
 import { SHORTCUT_GROUP_LABEL_KEYS, SHORTCUT_GROUPS } from "@/constants/shortcuts";
 import { Input } from "@/components/ui/input";
 import { useShortcutRegistry } from "@/hooks/shortcuts/useShortcutRegistry";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import { SettingSection } from "@/components/settings/SettingsUI";
 import { ShortcutBindingRow } from "./ShortcutBindingRow";
 import {
@@ -21,7 +22,7 @@ import {
 } from "@/components/ui/alert-dialog";
 
 export function ShortcutSettings() {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const [query, setQuery] = useState("");
   const { commands, assignShortcut, disableShortcut, resetShortcut, resetAllShortcuts } =
     useShortcutRegistry();

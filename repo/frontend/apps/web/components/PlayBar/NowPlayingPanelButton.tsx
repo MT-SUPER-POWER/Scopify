@@ -4,7 +4,8 @@ import { PanelRight } from "lucide-react";
 import { ShortcutHint } from "@/components/shortcuts/ShortcutHint";
 import { useNowPlayingPanelVisibility } from "@/hooks/ui/useNowPlayingPanelVisibility";
 import { cn } from "@/lib/utils";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import { useUiStore } from "@/store/module/ui";
 import {
   Tooltip,
@@ -15,7 +16,7 @@ import {
 
 /** 播放栏右侧的正在播放面板开关；窗口过窄放不下面板时隐藏。 */
 export function NowPlayingPanelButton() {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const toggle = useUiStore((s) => s.toggleNowPlayingPanel);
   const { canShow, isOpen } = useNowPlayingPanelVisibility();
   const label = t(isOpen ? "nowPlaying.hide" : "nowPlaying.show");

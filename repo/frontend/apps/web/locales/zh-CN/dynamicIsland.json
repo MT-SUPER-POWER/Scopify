@@ -1,0 +1,15 @@
+{
+  "title": "灵动岛",
+  "enabled.label": "开启灵动岛",
+  "enabled.sublabel": "在屏幕顶部显示带封面的歌词胶囊，可随意拖动，靠近顶边松手会自动吸附。",
+  "transition.label": "换行动画",
+  "transition.bounce": "回弹",
+  "transition.smooth": "平滑",
+  "scale.label": "大小",
+  "showTranslation.label": "显示翻译",
+  "snapCentered.label": "吸附时居中",
+  "snapCentered.sublabel": "关闭后吸附到顶边时保留拖动到的水平位置。",
+  "nonOcclusive.label": "非遮挡模式",
+  "nonOcclusive.sublabel": "鼠标点击直接穿透灵动岛，悬停时自动淡出；此模式下无法拖动。",
+  "alwaysOnTop.label": "保持置顶"
+}

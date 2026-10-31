@@ -13,10 +13,10 @@ import {
 import { useAudioDevices } from "@/hooks/player/useAudioDevices";
 import { getPlaybackAudioElement, setAudioElementOutputDevice } from "@/lib/player/audioOutput";
 import { useAudioOutputStore } from "@/store/module/audioOutput";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
 
 export function AudioOutputDevicePanel() {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const selectedDeviceId = useAudioOutputStore((state) => state.selectedDeviceId);
   const setSelectedDeviceId = useAudioOutputStore((state) => state.setSelectedDeviceId);
   const { ensureLoaded, errorKey, isLoading, isSupported, outputDevices, refresh, setErrorKey } =

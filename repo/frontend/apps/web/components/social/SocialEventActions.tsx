@@ -12,13 +12,15 @@ import {
 import { useSocialShare } from "@/hooks/social/useSocialShare";
 import { useRequireLoginAction } from "@/hooks/auth/useRequireLoginAction";
 import { eventHref } from "@/lib/social/normalize";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+import { useI18nStore } from "@/store/module/i18n";
 import type { SocialEventActionsProps } from "@/types/social/components";
 import { SocialComposer } from "./SocialComposer";
 import s from "./Social.module.css";
 
 export function SocialEventActions({ event, detail, liking, onLike }: SocialEventActionsProps) {
-  const { t, locale } = useI18n();
+  const { t } = useTranslation(),
+    locale = useI18nStore((state) => state.locale);
   const requireLogin = useRequireLoginAction();
   const copyLink = useSocialShare(event);
   const [forward, setForward] = useState(false);

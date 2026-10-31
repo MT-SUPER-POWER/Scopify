@@ -10,13 +10,14 @@ import {
 
 import { useEffect, useState } from "react";
 import { useTheme } from "next-themes";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import { SettingRow } from "./SettingsUI";
 
 const appearanceModes = ["light", "dark", "system"] as const;
 
 export function AppearanceModeControl() {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const { setTheme, theme } = useTheme();
   const [isMounted, setIsMounted] = useState(false);
 

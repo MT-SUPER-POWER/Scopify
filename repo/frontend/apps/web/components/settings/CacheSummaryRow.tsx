@@ -4,7 +4,8 @@ import { ChevronRight } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@scopify/ui/shadcn/components/button";
 import { formatCacheSize } from "@/lib/cache/presentation";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import { SettingRow } from "./SettingsUI";
 
 export function CacheSummaryRow({
@@ -16,7 +17,7 @@ export function CacheSummaryRow({
   maxSizeMB: number;
   sizeBytes: number | undefined;
 }) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
 
   return (
     <SettingRow

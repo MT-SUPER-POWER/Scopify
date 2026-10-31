@@ -5,7 +5,8 @@ import { useState } from "react";
 import { toast } from "sonner";
 
 import { Popover, PopoverAnchor, PopoverContent } from "@/components/ui/popover";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { McpCredentialControlsProps } from "@/types/settings/components";
 import { McpClientConfigurationPreview } from "./McpClientConfigurationPreview";
 import { SettingRow } from "./SettingsUI";
@@ -24,7 +25,7 @@ export function McpCredentialControls({
   onRevealCredential,
   onRotateCredential,
 }: McpCredentialControlsProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
 
   /** 打开或关闭配置预览；未获取配置时先读取当前有效凭据 */

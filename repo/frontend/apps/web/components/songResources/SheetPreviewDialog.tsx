@@ -15,7 +15,8 @@ import { QuietState } from "@/components/shared/QuietState";
 import { useAuth } from "@/hooks/auth/useAuth";
 import { useSheetPreviewQuery } from "@/hooks/song/useSongResources";
 import { useRequireLoginAction } from "@/hooks/auth/useRequireLoginAction";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type {
   SheetPreviewContentProps,
   SheetPreviewDialogProps,
@@ -23,7 +24,7 @@ import type {
 import { SheetPageImage } from "./SheetPageImage";
 
 export function SheetPreviewDialog({ sheet, onClose }: SheetPreviewDialogProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const { userId, isAuthenticated } = useAuth();
   return (
     <Dialog
@@ -62,7 +63,7 @@ export function SheetPreviewDialog({ sheet, onClose }: SheetPreviewDialogProps) 
   );
 }
 function SheetPreviewContent({ sheet }: SheetPreviewContentProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const { isAuthenticated } = useAuth();
   const requireLogin = useRequireLoginAction();
   const query = useSheetPreviewQuery(sheet.id);

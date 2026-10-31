@@ -3,6 +3,7 @@ import {
   FoliaQuickToggle,
 } from "@scopify/ui/scopify/components/folia-panel/controls";
 import type { MonetBackgroundSource, MonetBackgroundTuning } from "../../../../types";
+import type { TranslationKey } from "@/lib/i18n";
 import React, { lazy } from "react";
 import { Columns3, Wind } from "lucide-react";
 import { DEFAULT_MONET_BACKGROUND_TUNING } from "../../../../types";
@@ -14,9 +15,9 @@ const MonetBackgroundLayer = lazy(() => import("./MonetBackgroundLayer"));
 // src/components/visualizer/backgrounds/monet/entry.tsx
 // Registers the Monet image-treatment shell background.
 
-const SOURCE_LABEL_KEYS: Record<MonetBackgroundSource, string> = {
-  "cover-derived": "options.monetBackgroundSourceCover",
-  "uploaded-global": "options.monetBackgroundSourceUploaded",
+const SOURCE_LABEL_KEYS: Record<MonetBackgroundSource, TranslationKey> = {
+  "cover-derived": "folia.options.monetBackgroundSourceCover",
+  "uploaded-global": "folia.options.monetBackgroundSourceUploaded",
 };
 
 export default defineVisualizerBackground({
@@ -66,7 +67,7 @@ export default defineVisualizerBackground({
     const tuning = config?.monet?.tuning ?? DEFAULT_MONET_BACKGROUND_TUNING;
     const isFullOverlay = tuning.backgroundLayout === "full-overlay";
     const layoutLabel = t(
-      isFullOverlay ? "options.monetLayoutFullOverlay" : "options.monetLayoutHalfPane",
+      isFullOverlay ? "folia.options.monetLayoutFullOverlay" : "folia.options.monetLayoutHalfPane",
     );
     const change = (patch: Partial<MonetBackgroundTuning>) =>
       actions?.monet?.onTuningChange?.(patch);
@@ -79,7 +80,7 @@ export default defineVisualizerBackground({
       <>
         <FoliaQuickChip
           label={layoutLabel}
-          title={`${t("options.monetBackgroundLayout")}: ${layoutLabel}`}
+          title={`${t("folia.options.monetBackgroundLayout")}: ${layoutLabel}`}
           onClick={() =>
             change({
               backgroundLayout: isFullOverlay ? "half-pane-gradient" : "full-overlay",
@@ -88,7 +89,7 @@ export default defineVisualizerBackground({
         />
         <FoliaQuickChip
           label={sourceLabel}
-          title={`${t("options.monetBackgroundSource")}: ${sourceLabel}`}
+          title={`${t("folia.options.monetBackgroundSource")}: ${sourceLabel}`}
           disabled={!hasImage && source === "cover-derived"}
           onClick={() =>
             change({
@@ -99,14 +100,14 @@ export default defineVisualizerBackground({
         />
         <FoliaQuickToggle
           active={tuning.backgroundStreaksEnabled}
-          label={t("options.monetBackgroundStreaksEnabled")}
+          label={t("folia.options.monetBackgroundStreaksEnabled")}
           onToggle={() => change({ backgroundStreaksEnabled: !tuning.backgroundStreaksEnabled })}
         >
           <Columns3 size={14} />
         </FoliaQuickToggle>
         <FoliaQuickToggle
           active={tuning.backgroundDriftEnabled}
-          label={t("options.monetBackgroundDriftEnabled")}
+          label={t("folia.options.monetBackgroundDriftEnabled")}
           onToggle={() => change({ backgroundDriftEnabled: !tuning.backgroundDriftEnabled })}
         >
           <Wind size={14} />

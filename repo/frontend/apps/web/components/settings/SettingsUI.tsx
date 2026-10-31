@@ -12,7 +12,8 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Skeleton } from "@scopify/ui/shadcn/components/skeleton";
 import { cn } from "@/lib/utils";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type {
   SaveConfirmModalProps,
   SettingButtonProps,
@@ -101,7 +102,7 @@ export function SettingRow({
   badge?: React.ReactNode;
   className?: string;
 }) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
 
   return (
     <div
@@ -178,7 +179,7 @@ export function SettingButton({
 
 export function SettingsLoadingState() {
   return (
-    <div className="relative flex min-h-[80vh] w-full animate-in flex-col px-6 pt-8 pb-10 text-muted-foreground duration-500 fade-in md:px-10 md:pb-12">
+    <div className="relative flex min-h-[80vh] w-full animate-in flex-col pb-10 duration-500 fade-in md:pb-12">
       {/* 标题骨架 */}
       <div className="mb-8 flex items-center justify-between">
         <Skeleton className="h-10 w-32 bg-skeleton" />
@@ -264,7 +265,7 @@ export function SettingsLoadingState() {
 }
 
 export function SaveChangesButton({ visible, onClick }: { visible: boolean; onClick: () => void }) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
 
   return (
     <div
@@ -292,7 +293,7 @@ export function SaveConfirmModal({
   requiresRestart = false,
   isWeb = false,
 }: SaveConfirmModalProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
 
   const subtitle = isWeb
     ? t("settings.confirm.subtitle.web")

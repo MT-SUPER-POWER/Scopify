@@ -8,7 +8,8 @@ import { NowPlayingPanelTabs } from "./NowPlayingPanelTabs";
 import { NowPlayingQueueView } from "./NowPlayingQueueView";
 import { cn } from "@/lib/utils";
 import { usePlayerStore } from "@/store";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import { useUiStore } from "@/store/module/ui";
 import type { NowPlayingPanelView } from "@/types/player/nowPlayingComponents";
 
@@ -17,7 +18,7 @@ import type { NowPlayingPanelView } from "@/types/player/nowPlayingComponents";
  * 正在播放视图下顶栏浮在封面上（与 Spotify 一致，不再单独占一条），滚过封面后变为实色。
  */
 export function NowPlayingPanel() {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const song = usePlayerStore((s) => s.currentSongDetail);
   const isQueueOpen = useUiStore((s) => s.isQueueOpen);
   const tab = useUiStore((s) => s.nowPlayingPanelTab);

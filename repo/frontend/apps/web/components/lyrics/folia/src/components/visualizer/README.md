@@ -660,7 +660,7 @@ resetSettings: (props) => {
 
 #### 文案文件
 
-所有 Folia 文案使用项目的 `useI18n`，键必须以 `folia.` 开头，并同步写入 `constants/i18n/folia.ts` 的 `zh-CN`、`zh-TW` 和 `en-US` 三套平铺字典。包括模式名、设置项、tooltip、按钮、空态和 toast。`labelFallback` 只能作为 registry 兜底，不能替代正式字典项。
+所有 Folia 文案使用项目的 `useI18n`，键必须以 `folia.` 开头，并同步写入 `locales/zh-CN/folia.json`、`locales/zh-TW/folia.json` 和 `locales/en-US/folia.json` 三套平铺字典。包括模式名、设置项、tooltip、按钮、空态和 toast。`labelFallback` 只能作为 registry 兜底，不能替代正式字典项。
 
 常见文案包括：
 

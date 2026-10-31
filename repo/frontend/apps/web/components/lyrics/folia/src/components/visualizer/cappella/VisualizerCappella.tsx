@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion, useMotionValueEvent, type MotionValue } from "framer-motion";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import { layoutWithLines, prepareWithSegments, type PrepareOptions } from "@chenglou/pretext";
 import {
   DEFAULT_CAPPELLA_TUNING,
@@ -1286,7 +1287,7 @@ const CappellaMessageRow = React.forwardRef<HTMLDivElement, CappellaMessageRowPr
     },
     ref,
   ) => {
-    const { t } = useI18n();
+    const { t } = useTranslation();
     const isRight = message.side === "right";
     const timedData: CappellaTimedMessage | null = isTimedMessage(message) ? message : null;
     const timedState = timedData
@@ -1679,7 +1680,7 @@ const VisualizerCappella: React.FC<VisualizerCappellaProps> = (props) => {
     cappellaCustomAvatarImages = [],
     isPreviewMode = false,
   } = props;
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const [viewportSize, setViewportSize] = useState(() =>
     typeof window === "undefined"
       ? { width: 1280, height: 900 }

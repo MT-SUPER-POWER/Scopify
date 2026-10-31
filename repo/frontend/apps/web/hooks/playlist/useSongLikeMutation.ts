@@ -2,7 +2,7 @@
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createSongLikeMutationOptions } from "@/lib/playlist/songLikeMutation";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
 
 /**
  * 歌曲喜欢/取消喜欢 Mutation Hook。
@@ -10,7 +10,7 @@ import { useI18n } from "@/store/module/i18n";
  */
 export function useSongLikeMutation() {
   const queryClient = useQueryClient();
-  const { t } = useI18n();
+  const { t } = useTranslation();
 
   return useMutation(
     createSongLikeMutationOptions(queryClient, {

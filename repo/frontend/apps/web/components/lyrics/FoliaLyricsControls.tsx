@@ -13,7 +13,8 @@ import {
 import { FoliaPopover } from "@scopify/ui/scopify/components/folia-panel/popover";
 
 import { useOnlineLyricsTab } from "@/hooks/lyrics/useOnlineLyricsTab";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import { usePlayerStore } from "@/store/module/player";
 import type { FoliaLyricsControlsProps } from "@/types/lyrics/components";
 import type { ReplayGainMode } from "@/types/player/model";
@@ -29,7 +30,7 @@ const MENU_ROW_CLASS =
 const formatGain = (gain: number) => `${gain > 0 ? "+" : ""}${gain.toFixed(1)} dB`;
 
 export function FoliaLyricsControls({ onOpenLyricMatch }: FoliaLyricsControlsProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const model = useOnlineLyricsTab();
   const inputRef = useRef<HTMLInputElement>(null);
   const fileButtonRef = useRef<HTMLButtonElement>(null);

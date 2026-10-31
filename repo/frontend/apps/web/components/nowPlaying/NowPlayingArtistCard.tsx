@@ -6,13 +6,14 @@ import { NowPlayingFollowButton } from "./NowPlayingFollowButton";
 import { useArtistFollow } from "@/hooks/artist/useArtistFollow";
 import { useArtistDetailQuery } from "@/hooks/artist/useArtistQueries";
 import { getSizedImageUrl } from "@/lib/music/imageUrl";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { NowPlayingSectionProps } from "@/types/player/nowPlayingComponents";
 import { Skeleton } from "@scopify/ui/shadcn/components/skeleton";
 
 /** 「关于艺人」：以主艺人大图开头、标题叠在图上，下方是粉丝数、关注按钮与简介摘要。 */
 export function NowPlayingArtistCard({ song }: NowPlayingSectionProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const artistId = song.ar?.[0]?.id;
   const detailQuery = useArtistDetailQuery(artistId ? String(artistId) : null);
   const follow = useArtistFollow(artistId ?? "");
@@ -62,7 +63,10 @@ export function NowPlayingArtistCard({ song }: NowPlayingSectionProps) {
           </Link>
           {follow.fansCount !== undefined && (
             <p className="mt-0.5 text-sm text-content-muted">
-              {t("nowPlaying.fans", { count: follow.fansCount.toLocaleString() })}
+              {t("nowPlaying.fans", {
+                count: follow.fansCount,
+                replace: { count: follow.fansCount.toLocaleString() },
+              })}
             </p>
           )}
         </div>

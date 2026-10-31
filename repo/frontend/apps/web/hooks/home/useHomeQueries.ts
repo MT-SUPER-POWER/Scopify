@@ -1,6 +1,6 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
+import { queryOptions, useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import { throwQueryErrorWithoutData } from "@/lib/query/errorPolicy";
 
 import { getArtistAlbums, getFollowedArtists, getHotArtists } from "@/lib/api/artist";
@@ -19,13 +19,23 @@ import { useUserStore } from "@/store";
 import type { NeteaseAlbum } from "@/types/album/api";
 import { prunePlaylistTracks } from "@/types/playlist/api";
 
-export function usePersonalizedPlaylistsQuery(limit = 100, boundary = true) {
-  return useQuery({
-    throwOnError: boundary ? throwQueryErrorWithoutData : false,
+const personalizedPlaylistsOptions = (limit: number) =>
+  queryOptions({
     meta: { persist: true, scope: "public" },
     queryFn: async () => (await getPersonalizePlaylists(limit)).data,
     queryKey: musicQueryKeys.home.personalizedPlaylists(limit),
   });
+
+export function usePersonalizedPlaylistsQuery(limit = 100, boundary = true) {
+  return useQuery({
+    ...personalizedPlaylistsOptions(limit),
+    throwOnError: boundary ? throwQueryErrorWithoutData : false,
+  });
+}
+
+/** 首次加载时挂起，由所在 slot 的 loading.tsx 显示骨架；失败进最近的边界。 */
+export function useSuspensePersonalizedPlaylistsQuery(limit = 100) {
+  return useSuspenseQuery(personalizedPlaylistsOptions(limit));
 }
 
 export function useRecommendedPlaylistsQuery(enabled: boolean, boundary = true) {
@@ -41,21 +51,30 @@ export function useRecommendedPlaylistsQuery(enabled: boolean, boundary = true) 
 }
 
 export function useRecommendedVoiceListsQuery(limit = 24) {
-  return useQuery({
-    throwOnError: throwQueryErrorWithoutData,
+  return useSuspenseQuery({
     meta: { persist: true, scope: "public" },
     queryFn: async () => (await getRecommendedVoiceLists(limit)).data,
     queryKey: musicQueryKeys.home.recommendedVoiceLists(limit),
   });
 }
 
-export function useHotArtistsQuery(limit = 50, boundary = true) {
-  return useQuery({
-    throwOnError: boundary ? throwQueryErrorWithoutData : false,
+const hotArtistsOptions = (limit: number) =>
+  queryOptions({
     meta: { persist: true, scope: "public" },
     queryFn: async () => (await getHotArtists(limit)).data,
     queryKey: musicQueryKeys.home.hotArtists(limit),
   });
+
+export function useHotArtistsQuery(limit = 50, boundary = true) {
+  return useQuery({
+    ...hotArtistsOptions(limit),
+    throwOnError: boundary ? throwQueryErrorWithoutData : false,
+  });
+}
+
+/** 首次加载时挂起，由所在位置的 Suspense 显示骨架；失败进最近的边界。 */
+export function useSuspenseHotArtistsQuery(limit = 50) {
+  return useSuspenseQuery(hotArtistsOptions(limit));
 }
 
 export function useHomeUserProfileQuery(userId: null | string) {
@@ -71,8 +90,7 @@ export function useHomeUserProfileQuery(userId: null | string) {
 }
 
 export function useNewSongsQuery(limit = 12) {
-  return useQuery({
-    throwOnError: throwQueryErrorWithoutData,
+  return useSuspenseQuery({
     meta: { persist: true, scope: "public" },
     queryFn: async () => (await getPersonalizedNewSongs(limit)).data,
     queryKey: musicQueryKeys.home.newSongs(limit),
@@ -80,8 +98,7 @@ export function useNewSongsQuery(limit = 12) {
 }
 
 export function useToplistDetailQuery() {
-  return useQuery({
-    throwOnError: throwQueryErrorWithoutData,
+  return useSuspenseQuery({
     meta: { persist: true, scope: "public" },
     queryFn: async () => (await getToplistDetail()).data,
     queryKey: musicQueryKeys.home.toplists(),
@@ -89,8 +106,7 @@ export function useToplistDetailQuery() {
 }
 
 export function useNewAlbumsQuery() {
-  return useQuery({
-    throwOnError: throwQueryErrorWithoutData,
+  return useSuspenseQuery({
     meta: { persist: true, scope: "public" },
     queryFn: async () => (await getNewestAlbums()).data,
     queryKey: musicQueryKeys.home.newAlbums(),

@@ -67,14 +67,14 @@ export default defineVisualizerBackground({
       <>
         <FoliaQuickToggle
           active={useCoverColorBg}
-          label={t(useCoverColorBg ? "theme.addCoverColor" : "theme.useDefaultColor")}
+          label={t(useCoverColorBg ? "folia.theme.addCoverColor" : "folia.theme.useDefaultColor")}
           onToggle={() => actions?.common?.onCoverColorChange?.(!useCoverColorBg)}
         >
           <Cone size={14} />
         </FoliaQuickToggle>
         <FoliaQuickToggle
           active={vignette}
-          label={t("options.sonnetPostProcessVignette")}
+          label={t("folia.options.sonnetPostProcessVignette")}
           onToggle={() => actions?.common?.onDisableVignetteChange?.(vignette)}
         >
           <Aperture size={14} />

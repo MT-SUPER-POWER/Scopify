@@ -5,12 +5,13 @@ import { SongQualityBadge } from "@/components/shared/SongQualityBadge";
 import { SongVipBadge } from "@/components/shared/SongVipBadge";
 import { useSimilarSongPlayback } from "@/hooks/song/useSimilarSongPlayback";
 import { cn } from "@/lib/utils";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { SimilarSongRowProps } from "@/types/song/similarComponents";
 import { getSizedImageUrl } from "@/lib/music/imageUrl";
 
 export function SimilarSongRow({ song, songs }: SimilarSongRowProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const { isActive, isPlaying, play } = useSimilarSongPlayback(song, songs);
   const duration = Math.floor(song.dt / 1000);
   return (
