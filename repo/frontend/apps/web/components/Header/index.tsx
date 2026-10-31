@@ -4,7 +4,7 @@ import { List } from "lucide-react";
 import RightActions from "./RightActions";
 import { HeaderHistoryNav } from "./HeaderHistoryNav";
 import { HeaderHomeButton } from "./HeaderHomeButton";
-import HeaderSearch from "@/components/SearchContents/HeaderSearch";
+import HeaderSearch from "@/components/search/HeaderSearch";
 import { ScopifyBrand } from "@/components/shared/ScopifyBrand";
 import { cn } from "@/lib/utils";
 import { useI18n } from "@/store/module/i18n";

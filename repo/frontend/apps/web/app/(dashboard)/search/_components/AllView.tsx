@@ -1,8 +1,8 @@
-import { AlbumCard } from "@/components/SearchContents/AlbumCard";
-import { ArtistCard } from "@/components/SearchContents/ArtistCard";
+import { AlbumCard } from "@/components/search/AlbumCard";
+import { ArtistCard } from "@/components/search/ArtistCard";
 import { MvCard } from "@/components/mv/MvCard";
-import { PlaylistCard } from "@/components/SearchContents/PlaylistCard";
-import { SectionHeader } from "@/components/SearchContents/SectionHeader";
+import { PlaylistCard } from "@/components/search/PlaylistCard";
+import { SectionHeader } from "@/components/search/SectionHeader";
 import { VoiceList } from "@/components/search/VoiceList";
 import { useI18n } from "@/store/module/i18n";
 import type { AllViewProps } from "@/types/search/components";

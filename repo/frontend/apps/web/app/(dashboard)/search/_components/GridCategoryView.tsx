@@ -1,7 +1,7 @@
 import { LoaderCircle } from "lucide-react";
-import { AlbumCard } from "@/components/SearchContents/AlbumCard";
-import { ArtistCard } from "@/components/SearchContents/ArtistCard";
-import { PlaylistCard } from "@/components/SearchContents/PlaylistCard";
+import { AlbumCard } from "@/components/search/AlbumCard";
+import { ArtistCard } from "@/components/search/ArtistCard";
+import { PlaylistCard } from "@/components/search/PlaylistCard";
 import { useInfiniteScrollTrigger } from "@/hooks/search/useInfiniteScrollTrigger";
 import { useI18n } from "@/store/module/i18n";
 import type { GridCategoryViewProps } from "@/types/search/components";
