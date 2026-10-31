@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { useState } from "react";
 
-import { AlbumDescriptionDialog } from "@/components/album/AlbumDescriptionDialog";
+import { AlbumDescriptionDialog } from "./AlbumDescriptionDialog";
 import { ResponsiveHeaderTitle } from "@/components/shared/ResponsiveHeaderTitle";
 
 import { useI18n } from "@/store/module/i18n";

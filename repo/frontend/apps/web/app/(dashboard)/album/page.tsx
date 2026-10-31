@@ -1,14 +1,16 @@
 "use client";
 
 import { PlaylistLatticeView } from "@/components/Playlist/lattice/PlaylistLatticeView";
-import { AlbumActions } from "@/components/album/AlbumActions";
-import { AlbumHeader } from "@/components/album/AlbumHeader";
 import PlaylistLoading from "@/components/Playlist/PlaylistLoading";
 import TracklistTable from "@/components/Playlist/TrackTable";
 import { NetworkRetryState } from "@/components/shared/NetworkRetryState";
 import { useAlbumData } from "@/hooks/album/useAlbumData";
 import { useSmartRouter } from "@/hooks/core/useSmartRouter";
 import { useI18n } from "@/store/module/i18n";
+import { AlbumActions } from "./_components/AlbumActions";
+import { AlbumHeader } from "./_components/AlbumHeader";
+import { AlbumInvalidId } from "./_components/AlbumInvalidId";
+import { AlbumUnavailable } from "./_components/AlbumUnavailable";
 
 export default function AlbumPage() {
   const { t } = useI18n();
@@ -30,38 +32,24 @@ export default function AlbumPage() {
     tracks,
   } = useAlbumData();
 
-  if (!albumId)
-    return (
-      <div className="flex min-h-screen w-full items-center justify-center bg-surface-raised text-content-muted">
-        <span className="text-lg font-medium">{t("album.empty.invalidId")}</span>
-      </div>
-    );
+  if (!albumId) return <AlbumInvalidId />;
 
   if (isLoading && !ALBUM_INFO)
     return (
-      <div className="min-h-screen w-full bg-surface-raised pt-8 pb-24">
+      <div className="pt-8 pb-24">
         <PlaylistLoading />
       </div>
     );
 
   if ((isError && !ALBUM_INFO) || (!isLoading && !ALBUM_INFO))
-    return (
-      <div className="min-h-screen w-full bg-surface-raised pt-8 pb-24">
-        <NetworkRetryState
-          title={t("network.offline.title")}
-          subtitle={t("album.empty.unavailable")}
-          actionLabel={t("network.action.refresh")}
-          onRetry={() => void handleRefresh()}
-        />
-      </div>
-    );
+    return <AlbumUnavailable onRetry={() => void handleRefresh()} />;
 
   if (!ALBUM_INFO) return null;
 
   return (
     <PlaylistLatticeView key={albumId} sourceId={albumId} tracks={tracks} title={ALBUM_INFO.title}>
       {(openLattice) => (
-        <div className="relative flex min-h-screen w-full flex-col bg-surface-raised font-sans">
+        <div className="flex min-h-screen w-full flex-col">
           <div
             className="pointer-events-none absolute inset-x-0 top-0 z-0 h-100 opacity-60 transition-colors duration-700 md:h-125"
             style={{ background: `linear-gradient(to bottom, ${themeColor} 0%, transparent 100%)` }}
