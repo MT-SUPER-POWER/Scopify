@@ -9,8 +9,6 @@ import { useSmartRouter } from "@/hooks/core/useSmartRouter";
 import { useI18n } from "@/store/module/i18n";
 import { AlbumActions } from "./_components/AlbumActions";
 import { AlbumHeader } from "./_components/AlbumHeader";
-import { AlbumInvalidId } from "./_components/AlbumInvalidId";
-import { AlbumUnavailable } from "./_components/AlbumUnavailable";
 
 export default function AlbumPage() {
   const { t } = useI18n();
@@ -32,7 +30,12 @@ export default function AlbumPage() {
     tracks,
   } = useAlbumData();
 
-  if (!albumId) return <AlbumInvalidId />;
+  if (!albumId)
+    return (
+      <div className="flex min-h-screen w-full items-center justify-center text-content-muted">
+        <span className="text-lg font-medium">{t("album.empty.invalidId")}</span>
+      </div>
+    );
 
   if (isLoading && !ALBUM_INFO)
     return (
@@ -42,7 +45,16 @@ export default function AlbumPage() {
     );
 
   if ((isError && !ALBUM_INFO) || (!isLoading && !ALBUM_INFO))
-    return <AlbumUnavailable onRetry={() => void handleRefresh()} />;
+    return (
+      <div className="pt-8 pb-24">
+        <NetworkRetryState
+          title={t("network.offline.title")}
+          subtitle={t("album.empty.unavailable")}
+          actionLabel={t("network.action.refresh")}
+          onRetry={() => void handleRefresh()}
+        />
+      </div>
+    );
 
   if (!ALBUM_INFO) return null;
 
