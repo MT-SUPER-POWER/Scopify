@@ -314,7 +314,7 @@ export const SongItem = memo(
                   <PlusCircle className="mr-4 size-4" />
                   {t("contextMenu.addToPlaylist")}
                 </ContextMenuSubTrigger>
-                <ContextMenuSubContent>
+                <ContextMenuSubContent className="scrollbar-custom max-h-72 max-w-80 overflow-y-auto">
                   {playlists.map((playlist) => (
                     <ContextMenuItem
                       key={playlist.id}
@@ -383,7 +383,7 @@ export const SongItem = memo(
                     <User className="mr-4 size-4" />
                     {t("contextMenu.goToArtist")}
                   </ContextMenuSubTrigger>
-                  <ContextMenuSubContent>
+                  <ContextMenuSubContent className="scrollbar-custom max-h-72 max-w-80 overflow-y-auto">
                     {song.artists.map((artist) => (
                       <ContextMenuItem key={artist.id} asChild>
                         <Link href={`/artist?id=${artist.id}`} className="block size-full">

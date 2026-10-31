@@ -256,7 +256,7 @@ export const PopularTrackItem = memo(
                 <PlusCircle className="mr-4 size-4" />
                 {t("contextMenu.addToPlaylist")}
               </ContextMenuSubTrigger>
-              <ContextMenuSubContent>
+              <ContextMenuSubContent className="scrollbar-custom max-h-72 max-w-80 overflow-y-auto">
                 {isLoggedIn &&
                   playlists.map((p) => (
                     <ContextMenuItem
@@ -328,7 +328,7 @@ export const PopularTrackItem = memo(
                     <User className="mr-4 size-4" />
                     {t("contextMenu.goToArtist")}
                   </ContextMenuSubTrigger>
-                  <ContextMenuSubContent>
+                  <ContextMenuSubContent className="scrollbar-custom max-h-72 max-w-80 overflow-y-auto">
                     {track.ar.map((artist) => (
                       <ContextMenuItem key={artist.id} asChild>
                         <Link href={`/artist?id=${artist.id}`} className="block size-full">
