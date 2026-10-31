@@ -12,7 +12,7 @@ Scopify 是 Next.js App Router 加 Electron 的网易云音乐客户端。根目
 | [组件规则](./skills/nextjs-project-structure/rules/components.md) | 组件放 `@scopify/ui`、`components/` 还是 `_components/`；什么时候升级 | 新写或搬动组件时 |
 | [数据请求与边界](./skills/nextjs-project-structure/rules/data-and-boundaries.md) | 请求怎么封装；加载与失败怎么控制影响范围；Suspense 与 slot 怎么配合 | 新增数据请求、骨架屏、错误处理时 |
 
-三篇规则都很短，规则本身不复杂：**layout 决定放在哪，slot 决定放什么，page 只是随 URL 切换的那一块；组件按使用范围分三层；Query 管请求状态，React 边界管失败范围。**
+三篇规则都很短，规则本身不复杂：**layout 决定放在哪，slot 决定放什么，page 只是随 URL 切换的那一块；组件分三层（最小可复用 Base、基于 Base 改造的多路由业务组件、页面特有的非复用组件）；Query 管请求状态，React 边界管失败范围；内容膨胀且集中表达独立功能时才拆分。**
 
 ## 开发环境
 

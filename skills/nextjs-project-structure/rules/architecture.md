@@ -77,7 +77,7 @@ comment/
 3. **共用外壳提到共同的 layout。** 一组兄弟路由有相同外壳或导航时，放进它们共同的 layout 或路由组，不在每个 page 里各写一遍。
 4. **layout 拿不到 `searchParams`。** 依赖 `?id=` 的区域放在 page 或 slot；layout 只放与资源无关的排版。确需在 layout 读取时用客户端 `useSearchParams`，并放进 `Suspense`。
 5. **page / layout 里不定义 `type` / `interface`、不写 API 封装与 hook。** 这些分别放 `types/`、`lib/`、`hooks/`。
-6. 单文件超过 **150 行** 再评估：是否有块可提取到 `_components/`、`hooks/`，或是否该拆成 slot。不为拆而拆，简单页面留在 page 里完全合理。
+6. **内容膨胀且集中表达独立功能时才拆分。** 当页面/组件内容变多、且其中某一块是集中表达一个完整功能/独立职责时，再提成组件、hook 或 slot（标准见 [组件规则](./components.md) 的「拆分的标准」）。拆分是为了功能表达清晰集中，不为拆而拆，简单页面留在 page 里完全合理。
 
 ## 并行路由（`@slot`）规则
 
@@ -120,7 +120,7 @@ comment/
 | 目录 | 放什么 | 要点 |
 | --- | --- | --- |
 | `types/<领域>/` | 所有 `interface` / `type` | 先按业务领域建目录（尽量与 `components/` 同名），再分层：`model.ts`（业务实体）、`api.ts`（请求/响应）、`components.ts`（复用的 Props）；更多主题用 `<主题>.ts`、`<主题>Api.ts`。不建 `index.ts` 聚合出口，直接从具体文件导入。根目录只保留 `i18n.generated.d.ts` 与 `electron.d.ts`。新增类型先查 [types/README.md](../../../repo/frontend/apps/web/types/README.md) |
-| `hooks/<领域>/` | 所有 custom hook | 一个 hook 一个文件，文件名与 hook 同名。逻辑超过 15 行、被多处复用、含 `useEffect` 加状态管理时提取 |
+| `hooks/<领域>/` | 所有 custom hook | 一个 hook 一个文件，文件名与 hook 同名。逻辑自成一件事、与渲染无关，或被多处复用时提取 |
 | `lib/` | 工具函数、API 封装、第三方封装 | `lib/api/` 只发请求；`lib/web/` 是 request、环境与错误基础设施 |
 | `constants/` | 静态配置与枚举 | 静态数组超过 10 条放这里 |
 | `store/module/` | Zustand 全局状态 | 高频本地状态（播放、音量）用 Zustand，不要用 Query |

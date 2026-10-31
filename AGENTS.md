@@ -125,7 +125,7 @@ Scopify/
 | [组件规则](skills/nextjs-project-structure/rules/components.md) | `@scopify/ui`、`components/`、`_components/` 三层归属与升级规则 |
 | [数据请求与边界](skills/nextjs-project-structure/rules/data-and-boundaries.md) | 请求三层封装、Query 边界、状态协议、slot 与 Suspense |
 
-核心原则：**layout 决定放在哪，slot 决定放什么，page 只是随 URL 切换的那一块**；组件分三层：纯展示的特色组件进 `@scopify/ui`，带业务耦合且多路由共用的进 `components/<领域>/`，页面专属的放路由 `_components/`，不允许被其他路由导入。
+核心原则：**layout 决定放在哪，slot 决定放什么，page 只是随 URL 切换的那一块**；组件分三层：可抽象为最小复用案例的原子 Base 进 `@scopify/ui`（类似 shadcn 可拆解层次的跨路由基础）；Base 满足不了要求时、基于 Base 改造且多路由复用的业务组件进 `components/<领域>/`；页面特有、基于 Base 改造且不多路复用的小组件放路由专属 `_components/`（禁止跨路由导入）；拆分是因内容多且某一块集中表达一个独立功能，一切为了功能聚焦与清晰表达，不为拆而拆。
 
 规则文件放在 `skills/nextjs-project-structure/rules/`，是唯一来源；`docs/rules/` 只是给人浏览的索引。
 
