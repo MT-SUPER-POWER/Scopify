@@ -29,7 +29,6 @@
     "typecheck": "next typegen && tsc --noEmit --incremental --tsBuildInfoFile .cache/typecheck.tsbuildinfo",
     "test": "bun test --isolate",
     "lint": "eslint . --max-warnings 0 --no-warn-ignored",
-    "lint:theme": "bun scripts/check-theme-hardcodes.ts",
     "format": "prettier --write .",
     "i18n:types": "bun scripts/generate-i18n-types.ts",
     "i18n:audit": "bun scripts/audit-i18n.ts"

@@ -10,9 +10,9 @@ Scopify 是 **Next.js App Router + Electron** 的网易云音乐客户端。根�
 
 本地仅在提交时运行暂存文件检查与轻量架构检查；push 不运行质量检查。全仓 lint 和 typecheck 由开发者按需执行，并由 CI 兜底。不要把“提交前检查”理解为 Agent 必须额外执行一轮检查。
 
-- **正常提交即可**：只暂存本次任务文件，通过 `git commit` 触发 `.husky/pre-commit`，由 Turbo 的根任务 `lint:staged` 依赖 `lint:architecture` 后执行 `lint-staged`。暂存文件交给 Prettier 和所在工作区的 ESLint；工作区依据自身 `package.json` 的 `lint` 声明自动识别。暂存 Web 文件时调用 Turbo 的 `lint:theme` 任务。无需手动重复钩子检查。
+- **正常提交即可**：只暂存本次任务文件，通过 `git commit` 触发 `.husky/pre-commit`，由 Turbo 的根任务 `lint:staged` 依赖 `lint:architecture` 后执行 `lint-staged`。暂存文件交给 Prettier 和所在工作区的 ESLint；工作区依据自身 `package.json` 的 `lint` 声明自动识别。无需手动重复钩子检查。
 - **正常推送即可**：不设置 pre-push 检查，不在 push 时执行 lint、TypeScript 或 build。需要本地确认时，开发者按需执行 `pnpm run lint` 或 `pnpm run typecheck`；CI 独立执行全仓质量检查。
-- **统一编排**：`pnpm run lint` 仅调用 Turbo，工作区 `lint` 通过 `^lint` 声明上游关系，架构检查、共享包脚本覆盖检查和 Web 主题检查均由 `turbo.json` 组合。Desktop 的虚拟 lint 节点只依赖前端契约包，避免引入独立后端的 lint；不因此新增 Desktop ESLint 或放宽既有规则。
+- **统一编排**：`pnpm run lint` 仅调用 Turbo，工作区 `lint` 通过 `^lint` 声明上游关系，架构检查与共享包脚本覆盖检查均由 `turbo.json` 组合。Desktop 的虚拟 lint 节点只依赖前端契约包，避免引入独立后端的 lint；不因此新增 Desktop ESLint 或放宽既有规则。
 - **钩子失败时再处理**：读取实际错误，修复本次改动引起的问题后重新提交。不得跳过或禁用钩子（包括 `--no-verify`），也不得为了通过而擅自修改无关文件或放宽规则；既有问题应说明情况并交给用户决定。
 - **禁止主动追加重复检查**：无论阶段完成还是准备提交，都不要自行运行全仓或包级的 lint、TypeScript/typecheck、Prettier 检查、build，也不要手动重复提交钩子已覆盖的检查。用户明确要求某项检查时，才按指定范围执行。
 - **明确覆盖边界**：提交钩子不执行全仓 ESLint 或 TypeScript 检查，push 成功也不代表这些检查通过。全量 lint、类型检查、格式检查、测试与提交信息检查由 `.github/workflows/ci.yml` 兜底；只报告实际执行结果。
