@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
+import { motion, useInView, useReducedMotion, useScroll, useTransform } from "framer-motion";
 import Image from "next/image";
 import { useRef } from "react";
 
@@ -16,6 +16,7 @@ const FILM_ROWS = Array.from({ length: ROW_COUNT }, (_, row) =>
 export function LandingFilmWall() {
   const sectionRef = useRef<HTMLElement>(null);
   const prefersReducedMotion = useReducedMotion() ?? false;
+  const isNear = useInView(sectionRef, { once: true, margin: "100% 0px" });
   const { scrollYProgress } = useScroll({ target: sectionRef, offset: ["start end", "end start"] });
   const forward = useTransform(scrollYProgress, [0, 1], ["0%", "-30%"]);
   const backward = useTransform(scrollYProgress, [0, 1], ["-30%", "0%"]);
@@ -54,15 +55,21 @@ export function LandingFilmWall() {
               {row.map((screenshot) => (
                 <div
                   key={screenshot.alt}
-                  className="group relative aspect-16/10 w-[clamp(15rem,27vw,27rem)] shrink-0 overflow-hidden rounded-xl border border-white/10 bg-white/4"
+                  className="group relative aspect-16/10 w-[clamp(15rem,27vw,27rem)] shrink-0 overflow-hidden rounded-xl border border-white/10 bg-[#0b0d14]"
                 >
-                  <Image
-                    src={screenshot.src}
-                    alt={screenshot.alt}
-                    fill
-                    sizes="27vw"
-                    className={`${screenshot.fit === "contain" ? "object-contain" : "object-cover object-top-left"} transition-transform duration-700 group-hover:scale-105`}
-                  />
+                  {/* 底片墙整体斜着、还在横移，浏览器的懒加载判断不准，会留下一格格空框；
+                      离这一章还有一屏时就全部开始加载，加载完之前先垫一层模糊预览。 */}
+                  {isNear ? (
+                    <Image
+                      src={screenshot.src}
+                      alt={screenshot.alt}
+                      fill
+                      loading="eager"
+                      placeholder="blur"
+                      sizes="(min-width: 1000px) 27vw, 15rem"
+                      className={`${screenshot.fit === "contain" ? "object-contain" : "object-cover object-top-left"} transition-transform duration-700 group-hover:scale-105`}
+                    />
+                  ) : null}
                 </div>
               ))}
             </motion.div>

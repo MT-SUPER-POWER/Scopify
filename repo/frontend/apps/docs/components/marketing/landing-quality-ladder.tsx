@@ -34,7 +34,7 @@ export function LandingQualityLadder({ fill }: LandingQualityLadderProps) {
           return (
             <li
               key={tier.label}
-              className="landing-pin:py-1.5 relative flex items-baseline gap-4 border-b border-white/6 py-2.5 first:border-b-0"
+              className="landing-pin:py-1.5 relative flex items-baseline gap-4 border-b border-white/6 py-2.5 first:border-b-0 max-lg:py-1.5"
             >
               {isMaster ? (
                 // 爬到顶时，「超清母带」这一行亮起一道金色的底光。
@@ -64,7 +64,7 @@ export function LandingQualityLadder({ fill }: LandingQualityLadderProps) {
               <span
                 className={`landing-display flex-1 transition-all duration-500 ${
                   isActive
-                    ? `text-2xl font-semibold ${isMaster ? "text-[#f1d896]" : "text-white"}`
+                    ? `text-xl font-semibold sm:text-2xl ${isMaster ? "text-[#f1d896]" : "text-white"}`
                     : `text-base ${isLit ? "text-white/65" : "text-white/25"}`
                 }`}
               >

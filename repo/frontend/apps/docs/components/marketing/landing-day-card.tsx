@@ -73,7 +73,7 @@ export function LandingDayCard({ center, index, layout, moment, showImage }: Lan
           {String(index + 1).padStart(2, "0")}
         </span>
         <div className="min-w-0">
-          <h3 className="landing-display flex items-center gap-3 text-2xl font-semibold text-white sm:text-3xl">
+          <h3 className="landing-display flex flex-wrap items-center gap-x-3 gap-y-1.5 text-2xl font-semibold text-white sm:text-3xl">
             {moment.scene}
             <span className="inline-flex items-center gap-1.5 rounded-full border border-white/15 px-2.5 py-0.5 font-sans text-xs font-medium text-white/70">
               <span className="size-1.5 rounded-full bg-[#f0b878]" />

@@ -21,7 +21,8 @@ import { SOUND_STAGE_SECTION_VH, useLandingSoundStage } from "@/hooks/use-landin
 export function LandingSound() {
   const sectionRef = useRef<HTMLElement>(null);
   const ladderRef = useRef<HTMLDivElement>(null);
-  const stage = useLandingSoundStage(sectionRef, ladderRef);
+  const ladderTrackRef = useRef<HTMLDivElement>(null);
+  const stage = useLandingSoundStage(sectionRef, ladderRef, ladderTrackRef);
 
   return (
     <section
@@ -42,22 +43,26 @@ export function LandingSound() {
             filter: stage.contentFilter,
           }}
         >
-          <div>
-            <LandingReveal>
-              <h2
-                id="landing-sound-title"
-                className="landing-display text-[clamp(2.2rem,4.4vw,3.8rem)] leading-[1.08] font-semibold tracking-[-0.04em] text-white"
-              >
-                {LANDING_QUALITY_TIERS.length} 档音质，
-                <br />
-                <span className="text-white/45">{LANDING_EQ_BANDS.length} 段均衡。</span>
-              </h2>
-              <p className="mt-4 max-w-md text-sm leading-7 text-white/55 sm:text-base">
-                从标准一路到超清母带；再交给均衡器，和一点点黑胶噪声。
-              </p>
-            </LandingReveal>
-            <div ref={ladderRef} className="landing-pin:mt-8 mt-14">
-              <LandingQualityLadder fill={stage.fill} />
+          {/* 单栏时把标题与阶梯钉在屏幕上，滚动只用来爬音质，爬到顶再放行给均衡器；
+              钉住的高度扣掉顶栏和迷你播放器，阶梯不会被播放器压住。 */}
+          <div ref={ladderTrackRef} className="max-lg:h-[220svh]">
+            <div className="max-lg:sticky max-lg:top-16 max-lg:flex max-lg:h-[calc(100svh-9.5rem)] max-lg:flex-col max-lg:justify-center">
+              <LandingReveal>
+                <h2
+                  id="landing-sound-title"
+                  className="landing-display text-[clamp(2.2rem,4.4vw,3.8rem)] leading-[1.08] font-semibold tracking-[-0.04em] text-white"
+                >
+                  {LANDING_QUALITY_TIERS.length} 档音质，
+                  <br />
+                  <span className="text-white/45">{LANDING_EQ_BANDS.length} 段均衡。</span>
+                </h2>
+                <p className="mt-4 max-w-md text-sm leading-7 text-white/55 sm:text-base">
+                  从标准一路到超清母带；再交给均衡器，和一点点黑胶噪声。
+                </p>
+              </LandingReveal>
+              <div ref={ladderRef} className="landing-pin:mt-8 mt-14 max-lg:mt-6">
+                <LandingQualityLadder fill={stage.fill} />
+              </div>
             </div>
           </div>
 
