@@ -8,12 +8,14 @@ import {
   ToplistCardSkeleton,
 } from "@/components/home/HomePageSkeleton";
 import { QueryPending } from "@/components/shared/QueryPending";
+import { useIsOnline } from "@/hooks/core/useIsOnline";
 import { useI18n } from "@/store/module/i18n";
 import type { HomeSectionPendingProps } from "@/types/home/components";
 
 export function HomeSectionPending({ isPaused, kind, title, titleKey }: HomeSectionPendingProps) {
   const { t } = useI18n();
-  if (isPaused) return <QueryPending isPaused />;
+  const isOnline = useIsOnline();
+  if (isPaused ?? !isOnline) return <QueryPending isPaused />;
 
   return (
     <section aria-busy="true" className="space-y-4">

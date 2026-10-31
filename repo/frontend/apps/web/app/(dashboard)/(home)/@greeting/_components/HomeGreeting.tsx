@@ -8,9 +8,8 @@ import { useEffect, useState } from "react";
 import { HomeDailyRecommendation } from "./HomeDailyRecommendation";
 import { useHome } from "../../_components/HomeProvider";
 import { CollapsibleSection } from "../../_components/CollapsibleSection";
-import { HomeSectionPending } from "../../_components/HomeSectionPending";
 import { SectionPagination } from "../../_components/SectionPagination";
-import { usePersonalizedPlaylistsQuery } from "@/hooks/home/useHomeQueries";
+import { useSuspensePersonalizedPlaylistsQuery } from "@/hooks/home/useHomeQueries";
 import { useSmartRouter } from "@/hooks/core/useSmartRouter";
 import { useI18n } from "@/store/module/i18n";
 import { pruneRecommendPlaylist } from "@/types/playlist/api";
@@ -21,8 +20,8 @@ export function HomeGreeting() {
   const { t } = useI18n();
   const { actions, dateInfo, greeting } = useHome();
   const smartRouter = useSmartRouter();
-  const query = usePersonalizedPlaylistsQuery();
-  const playlists = query.data?.result?.map(pruneRecommendPlaylist) ?? [];
+  const query = useSuspensePersonalizedPlaylistsQuery();
+  const playlists = query.data.result?.map(pruneRecommendPlaylist) ?? [];
   const [isOpen, setIsOpen] = useState(false);
   const [page, setPage] = useState(0);
   const [direction, setDirection] = useState<1 | -1>(1);
@@ -36,15 +35,6 @@ export function HomeGreeting() {
   useEffect(() => {
     setPage((currentPage) => Math.min(currentPage, pageCount - 1));
   }, [pageCount]);
-
-  if (query.isPending)
-    return (
-      <HomeSectionPending
-        isPaused={query.fetchStatus === "paused"}
-        kind="greeting"
-        title={greeting}
-      />
-    );
 
   const handleSelectPage = (targetPage: number) => {
     if (targetPage === page) return;

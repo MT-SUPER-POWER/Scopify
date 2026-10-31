@@ -5,7 +5,8 @@ import type { CarouselDirection, HomeContextValue } from "@/types/home/model";
 import type { TranslationKey } from "@/lib/i18n";
 
 export interface HomeSectionPendingProps {
-  isPaused: boolean;
+  /** 用 useQuery 的栏目传 fetchStatus 判断的结果；Suspense 的骨架屏不传，按在线状态判断。 */
+  isPaused?: boolean;
   kind: "greeting" | "grid" | "artist" | "songs" | "voices" | "toplists";
   title?: string;
   titleKey?: TranslationKey;

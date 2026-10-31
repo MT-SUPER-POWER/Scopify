@@ -4,10 +4,9 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useState } from "react";
 
 import { CollapsibleSection } from "../../_components/CollapsibleSection";
-import { HomeSectionPending } from "../../_components/HomeSectionPending";
 import { SectionPagination } from "../../_components/SectionPagination";
 import { GridCard } from "@/components/home/GridCard";
-import { useHotArtistsQuery } from "@/hooks/home/useHomeQueries";
+import { useSuspenseHotArtistsQuery } from "@/hooks/home/useHomeQueries";
 import { useSmartRouter } from "@/hooks/core/useSmartRouter";
 import { useI18n } from "@/store/module/i18n";
 
@@ -16,8 +15,8 @@ const PAGE_SIZE = 10;
 export function SuggestedArtists() {
   const { t } = useI18n();
   const smartRouter = useSmartRouter();
-  const query = useHotArtistsQuery();
-  const artists = query.data?.artists ?? [];
+  const query = useSuspenseHotArtistsQuery();
+  const artists = query.data.artists ?? [];
   const [isOpen, setIsOpen] = useState(false);
   const [page, setPage] = useState(0);
   const [direction, setDirection] = useState<1 | -1>(1);
@@ -28,14 +27,6 @@ export function SuggestedArtists() {
     setPage((currentPage) => Math.min(currentPage, pageCount - 1));
   }, [pageCount]);
 
-  if (query.isPending)
-    return (
-      <HomeSectionPending
-        isPaused={query.fetchStatus === "paused"}
-        kind="artist"
-        titleKey="home.suggestedArtists"
-      />
-    );
   if (artists.length === 0) return null;
 
   const handleSelectPage = (targetPage: number) => {

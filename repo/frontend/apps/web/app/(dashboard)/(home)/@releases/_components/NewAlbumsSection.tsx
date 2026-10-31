@@ -5,7 +5,6 @@ import { useEffect, useState } from "react";
 
 import { useHome } from "../../_components/HomeProvider";
 import { CollapsibleSection } from "../../_components/CollapsibleSection";
-import { HomeSectionPending } from "../../_components/HomeSectionPending";
 import { SectionPagination } from "../../_components/SectionPagination";
 import { GridCard } from "@/components/home/GridCard";
 import { useNewAlbumsQuery } from "@/hooks/home/useHomeQueries";
@@ -19,7 +18,7 @@ export function NewAlbumsSection() {
   const { actions } = useHome();
   const smartRouter = useSmartRouter();
   const query = useNewAlbumsQuery();
-  const albums = (query.data?.albums ?? []).filter((album) => Boolean(album?.id && album.name));
+  const albums = (query.data.albums ?? []).filter((album) => Boolean(album?.id && album.name));
   const [isOpen, setIsOpen] = useState(false);
   const [page, setPage] = useState(0);
   const [direction, setDirection] = useState<1 | -1>(1);
@@ -30,14 +29,6 @@ export function NewAlbumsSection() {
     setPage((currentPage) => Math.min(currentPage, pageCount - 1));
   }, [pageCount]);
 
-  if (query.isPending)
-    return (
-      <HomeSectionPending
-        isPaused={query.fetchStatus === "paused"}
-        kind="grid"
-        titleKey="home.newAlbums"
-      />
-    );
   if (albums.length === 0) return null;
 
   const handleSelectPage = (targetPage: number) => {

@@ -7,7 +7,6 @@ import { useEffect, useState } from "react";
 import { NewSongItem } from "./NewSongItem";
 import { useHome } from "../../_components/HomeProvider";
 import { CollapsibleSection } from "../../_components/CollapsibleSection";
-import { HomeSectionPending } from "../../_components/HomeSectionPending";
 import { SectionPagination } from "../../_components/SectionPagination";
 import { useNewSongsQuery } from "@/hooks/home/useHomeQueries";
 import { useI18n } from "@/store/module/i18n";
@@ -19,7 +18,7 @@ export function NewSongsSection() {
   const { t } = useI18n();
   const { actions } = useHome();
   const query = useNewSongsQuery();
-  const songs = (query.data?.result ?? [])
+  const songs = (query.data.result ?? [])
     .map((item) => pruneSongDetail(item.song))
     .filter((song) => Boolean(song?.id));
   const [isOpen, setIsOpen] = useState(false);
@@ -32,14 +31,6 @@ export function NewSongsSection() {
     setPage((currentPage) => Math.min(currentPage, pageCount - 1));
   }, [pageCount]);
 
-  if (query.isPending)
-    return (
-      <HomeSectionPending
-        isPaused={query.fetchStatus === "paused"}
-        kind="songs"
-        titleKey="home.newSongs"
-      />
-    );
   if (songs.length === 0) return null;
 
   const handleSelectPage = (targetPage: number) => {

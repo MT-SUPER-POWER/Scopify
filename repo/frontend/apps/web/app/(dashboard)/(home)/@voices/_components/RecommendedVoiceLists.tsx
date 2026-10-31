@@ -5,7 +5,6 @@ import { RefreshCw } from "lucide-react";
 import { useEffect, useState } from "react";
 
 import { CollapsibleSection } from "../../_components/CollapsibleSection";
-import { HomeSectionPending } from "../../_components/HomeSectionPending";
 import { SectionPagination } from "../../_components/SectionPagination";
 import { VoiceList } from "@/components/search/VoiceList";
 import { VoiceTranscriptDialog } from "@/components/voice/VoiceTranscriptDialog";
@@ -20,7 +19,7 @@ const PAGE_SIZE = 6;
 export function RecommendedVoiceLists() {
   const { t } = useI18n();
   const query = useRecommendedVoiceListsQuery();
-  const voices = (query.data?.data?.recommendVoiceVOS ?? [])
+  const voices = (query.data.data?.recommendVoiceVOS ?? [])
     .map((voice) =>
       toRecommendedVoice(
         voice,
@@ -41,14 +40,6 @@ export function RecommendedVoiceLists() {
     setPage((currentPage) => Math.min(currentPage, pageCount - 1));
   }, [pageCount]);
 
-  if (query.isPending)
-    return (
-      <HomeSectionPending
-        isPaused={query.fetchStatus === "paused"}
-        kind="voices"
-        titleKey="home.recommendedVoiceLists"
-      />
-    );
   if (voices.length === 0) return null;
 
   const handleSelectPage = (targetPage: number) => {
