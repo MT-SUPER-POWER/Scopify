@@ -108,7 +108,7 @@ slot 区域优先用 Suspense：单一请求、无条件的读取用 `useSuspens
 | 有备用数据源（`selectFallbackSource`） | Suspense Query 出错就抛，无法表达「一个失败用另一个」 | 保留 `useQuery` |
 | 需要展示「离线等待」 | Suspense 会一直停在骨架屏 | 保留 `useQuery` |
 
-- 桌面构建（静态导出）的预渲染阶段不得触发真实请求。首个迁移到 Suspense Query 的 slot 先验证桌面构建结果，再推广。
+- 桌面构建（静态导出）的预渲染阶段不得触发真实请求。评论页头部已验证：页面用 `useSearchParams`，预渲染时整个区域退到客户端渲染，输出的是 `loading.tsx` 的骨架屏，没有请求也没有报错。迁移其他 slot 后，用 `pnpm --filter @scopify/web run build:desktop` 确认构建通过再提交。
 - 同一边界里有多个 Suspense 查询时，注意请求瀑布和并行策略。
 - 非 slot 区域不强制迁移 Suspense，普通 `useQuery` 加 `throwOnError` 已能接入。
 
