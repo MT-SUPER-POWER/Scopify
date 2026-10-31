@@ -8,7 +8,7 @@ import { LoadingNowPlayingSkeleton, SIDEBAR_BOOT_WIDTH } from "./_components/Loa
 import { WallpaperSurface, useWallpaperPreload } from "./_components/WallpaperSurface";
 import Header from "@/components/Header";
 import { PlayerBar } from "@/components/PlayBar";
-import { Sidebar } from "@/components/Siderbar";
+import { Sidebar } from "@/components/Sidebar";
 import { CommandWorkspaceModal } from "@/components/commandWorkspace/CommandWorkspaceModal";
 import { CenterLyricsView } from "@/components/lyrics/CenterLyricsView";
 import { FoliaSettingsMount } from "@/components/lyrics/FoliaSettingsMount";

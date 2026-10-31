@@ -1,7 +1,7 @@
 "use client";
 
 import { Skeleton } from "@scopify/ui/shadcn/components/skeleton";
-import { SidebarPlaylistSkeleton } from "@/components/Siderbar/SidebarPlaylistSkeleton";
+import { SidebarPlaylistSkeleton } from "@/components/Sidebar/SidebarPlaylistSkeleton";
 import { ScopifyBrand } from "@/components/shared/ScopifyBrand";
 import { cn } from "@/lib/utils";
 import { headerStyles } from "@/styles";
@@ -43,7 +43,7 @@ const NAV_SECTIONS = [
 ];
 
 /**
- * Mirrors components/Siderbar: same width source, nav rows (menu beside the first heading) and playlist rows.
+ * Mirrors components/Sidebar: same width source, nav rows (menu beside the first heading) and playlist rows.
  * `@max-[91px]/sidebar` matches useSidebarNarrow (<= 90px) on the same container.
  * Width and session come from the boot script (lib/layout/layoutBootScript.ts) so the very first
  * paint already matches the saved layout, including a collapsed icon-only sidebar.

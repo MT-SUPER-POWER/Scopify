@@ -1,6 +1,6 @@
 "use client";
 
-import { LibraryItem } from "@/components/Siderbar/LibraryItem";
+import { LibraryItem } from "@/components/Sidebar/LibraryItem";
 import { useSortableListItem } from "@/hooks/playlist/useSortableListItem";
 import { useSidebarPlaylistDrop } from "@/hooks/playlist/useSidebarPlaylistDrop";
 import type { SortableLibraryItemProps } from "@/types/sidebar/components";

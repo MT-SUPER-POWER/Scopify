@@ -28,7 +28,7 @@ import { useI18n, useI18nStore } from "@/store/module/i18n";
 import type {
   SidebarConfirmDialogProps,
   SidebarPendingPlaylist,
-  SiderBarMenuProps,
+  SidebarMenuProps,
 } from "@/types/sidebar/components";
 import { useQueryClient, type QueryClient } from "@tanstack/react-query";
 import {
@@ -149,7 +149,7 @@ function ConfirmDialogShandCN({
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ UI ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-function SiderBarMenu({ isCollapsed = false }: SiderBarMenuProps) {
+function SidebarMenu({ isCollapsed = false }: SidebarMenuProps) {
   const { t } = useI18n();
   const queryClient = useQueryClient();
   const isLoggedIn = useLoginStatus();
@@ -268,4 +268,4 @@ function SiderBarMenu({ isCollapsed = false }: SiderBarMenuProps) {
   );
 }
 
-export const SiderBarMenuMemo = React.memo(SiderBarMenu);
+export const SidebarMenuMemo = React.memo(SidebarMenu);

@@ -6,7 +6,7 @@ import { LibraryErrorPage } from "@/components/library/LibraryErrorPage";
 import { LibraryStatePage } from "@/components/library/LibraryStatePage";
 import { PlaylistContent } from "@/components/Playlist/PlaylistContent";
 import { QuietState } from "@/components/shared/QuietState";
-import { SidebarPlaylistConfirmDialog } from "@/components/Siderbar/SidebarPlaylistConfirmDialog";
+import { SidebarPlaylistConfirmDialog } from "@/components/Sidebar/SidebarPlaylistConfirmDialog";
 import { CLOUD_SONG_FALLBACK_COVER } from "@/constants/cloud";
 import { useCloudDrive } from "@/hooks/library/useCloudDrive";
 import { useI18n } from "@/store/module/i18n";

@@ -4,7 +4,7 @@ import React from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useSidebarNarrow } from "@/hooks/sidebar/useSidebarNarrow";
 import { LibraryNavigation } from "./LibraryNavigation";
-import { SiderBarMenuMemo } from "./SiderbarMenu";
+import { SidebarMenuMemo } from "./SidebarMenu";
 import { SidebarPlaylistLibrary } from "./SidebarPlaylistLibrary";
 
 function SidebarImpl() {
@@ -23,13 +23,13 @@ function SidebarImpl() {
         >
           <LibraryNavigation
             isCollapsed={isCollapsed}
-            headerAction={!isCollapsed && <SiderBarMenuMemo />}
+            headerAction={!isCollapsed && <SidebarMenuMemo />}
           />
           <SidebarPlaylistLibrary isCollapsed={isCollapsed} />
         </ScrollArea>
         {isCollapsed && (
           <footer className="flex h-14 shrink-0 items-center justify-center border-t border-content/5 px-2">
-            <SiderBarMenuMemo isCollapsed />
+            <SidebarMenuMemo isCollapsed />
           </footer>
         )}
       </div>
