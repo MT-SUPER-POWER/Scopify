@@ -1,8 +1,8 @@
 import { LoaderCircle } from "lucide-react";
+import { VoiceList } from "@/components/search/VoiceList";
 import { useInfiniteScrollTrigger } from "@/hooks/search/useInfiniteScrollTrigger";
 import type { VoicesViewProps } from "@/types/search/components";
 import { SearchCategoryHeader } from "./SearchCategoryHeader";
-import { VoiceList } from "./VoiceList";
 
 export function VoicesView({
   hasNextPage,

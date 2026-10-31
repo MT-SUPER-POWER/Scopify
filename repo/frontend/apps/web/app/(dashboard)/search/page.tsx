@@ -2,26 +2,23 @@
 
 import { useSearchParams } from "next/navigation";
 import { useCallback } from "react";
-import { AllView } from "@/components/search/AllView";
-import { CategoryTabs } from "@/components/search/CategoryTabs";
-import { GridCategoryView } from "@/components/search/GridCategoryView";
-import { LyricsView } from "@/components/search/LyricsView";
-import { MvsView } from "@/components/search/MvsView";
-import { CategorySkeleton } from "@/components/search/LoadingSkeleton";
-import { NetworkRetryState } from "@/components/shared/NetworkRetryState";
-import { PodcastsView } from "@/components/search/PodcastsView";
-import { SheetsView } from "@/components/search/SheetsView";
-import { SongsView } from "@/components/search/SongsView";
-import { VoicesView } from "@/components/search/VoicesView";
 import { usePlayActions } from "@/hooks/search/usePlayActions";
 import { useSearchData } from "@/hooks/search/useSearchData";
 import { useSmartRouter } from "@/hooks/core/useSmartRouter";
 import { buildSearchCategoryUrl, getSearchCategory } from "@/lib/search/searchCategory";
-import { useI18n } from "@/store/module/i18n";
 import type { Category } from "@/types/search/model";
+import { AllView } from "./_components/AllView";
+import { GridCategoryView } from "./_components/GridCategoryView";
+import { CategorySkeleton } from "./_components/LoadingSkeleton";
+import { LyricsView } from "./_components/LyricsView";
+import { MvsView } from "./_components/MvsView";
+import { PodcastsView } from "./_components/PodcastsView";
+import { SearchOfflineState } from "./_components/SearchOfflineState";
+import { SheetsView } from "./_components/SheetsView";
+import { SongsView } from "./_components/SongsView";
+import { VoicesView } from "./_components/VoicesView";
 
 export default function SearchPage() {
-  const { t } = useI18n();
   const searchParams = useSearchParams();
   const keywords = searchParams.get("keywords") || "";
   const router = useSmartRouter();
@@ -32,163 +29,112 @@ export default function SearchPage() {
     },
     [router, searchParams],
   );
-  const {
-    albums,
-    artists,
-    bestMatch,
-    fetchNextAlbumPage,
-    fetchNextArtistPage,
-    fetchNextLyricPage,
-    fetchNextMvPage,
-    fetchNextPlaylistPage,
-    fetchNextPodcastPage,
-    fetchNextSongPage,
-    fetchNextVoicePage,
-    hasNextAlbumPage,
-    hasNextArtistPage,
-    hasNextLyricPage,
-    hasNextMvPage,
-    hasNextPlaylistPage,
-    hasNextPodcastPage,
-    hasNextSongPage,
-    hasNextVoicePage,
-    hasError,
-    loading,
-    lyrics,
-    mvs,
-    isFetchingNextAlbumPage,
-    isFetchingNextArtistPage,
-    isFetchingNextLyricPage,
-    isFetchingNextMvPage,
-    isFetchingNextPlaylistPage,
-    isFetchingNextPodcastPage,
-    isFetchingNextSongPage,
-    isFetchingNextVoicePage,
-    playlists,
-    podcasts,
-    refetch,
-    songs,
-    voices,
-  } = useSearchData(keywords, activeCategory);
+  const search = useSearchData(keywords, activeCategory);
   const { loadingPlayId, handlePlayPlaylist, handlePlayAlbum } = usePlayActions();
 
-  const isGridCategory = (["Albums", "Playlists", "Artists"] as Category[]).includes(
-    activeCategory,
-  );
-  const hasNextGridPage =
-    activeCategory === "Albums"
-      ? hasNextAlbumPage
-      : activeCategory === "Playlists"
-        ? hasNextPlaylistPage
-        : hasNextArtistPage;
-  const isFetchingNextGridPage =
-    activeCategory === "Albums"
-      ? isFetchingNextAlbumPage
-      : activeCategory === "Playlists"
-        ? isFetchingNextPlaylistPage
-        : isFetchingNextArtistPage;
-  const loadNextGridPage = () => {
-    if (activeCategory === "Albums") {
-      void fetchNextAlbumPage();
-      return;
-    }
-    if (activeCategory === "Playlists") {
-      void fetchNextPlaylistPage();
-      return;
-    }
-    if (activeCategory === "Artists") void fetchNextArtistPage();
-  };
+  const gridPagination = {
+    Albums: {
+      hasNextPage: search.hasNextAlbumPage,
+      isFetchingNextPage: search.isFetchingNextAlbumPage,
+      fetchNextPage: search.fetchNextAlbumPage,
+    },
+    Playlists: {
+      hasNextPage: search.hasNextPlaylistPage,
+      isFetchingNextPage: search.isFetchingNextPlaylistPage,
+      fetchNextPage: search.fetchNextPlaylistPage,
+    },
+    Artists: {
+      hasNextPage: search.hasNextArtistPage,
+      isFetchingNextPage: search.isFetchingNextArtistPage,
+      fetchNextPage: search.fetchNextArtistPage,
+    },
+  } as const;
+  const gridCategory =
+    activeCategory === "Albums" || activeCategory === "Playlists" || activeCategory === "Artists"
+      ? activeCategory
+      : null;
+  const grid = gridCategory ? gridPagination[gridCategory] : null;
 
   return (
-    <div className="mx-auto min-h-full w-full max-w-400 p-6 pt-6 text-content">
-      <CategoryTabs active={activeCategory} onChange={handleCategoryChange} />
-      {hasError && (
-        <div className="mb-6">
-          <NetworkRetryState
-            compact
-            title={t("network.offline.title")}
-            subtitle={t("network.offline.subtitle")}
-            actionLabel={t("network.action.refresh")}
-            isRetrying={loading}
-            onRetry={() => void refetch()}
-          />
-        </div>
+    <>
+      {search.hasError && (
+        <SearchOfflineState isRetrying={search.loading} onRetry={() => void search.refetch()} />
       )}
-      {loading && <CategorySkeleton category={activeCategory} />}
-      {!loading && activeCategory === "All" && (
+      {search.loading && <CategorySkeleton category={activeCategory} />}
+      {!search.loading && activeCategory === "All" && (
         <AllView
-          songs={songs}
-          albums={albums}
-          playlists={playlists}
-          artists={artists}
-          bestMatch={bestMatch}
-          podcasts={podcasts}
+          songs={search.songs}
+          albums={search.albums}
+          playlists={search.playlists}
+          artists={search.artists}
+          bestMatch={search.bestMatch}
+          podcasts={search.podcasts}
           loadingPlayId={loadingPlayId}
-          mvs={mvs}
+          mvs={search.mvs}
           onPlayAlbum={handlePlayAlbum}
           onPlayPlaylist={handlePlayPlaylist}
           onSeeAll={handleCategoryChange}
           onNavigate={router.push}
-          voices={voices}
+          voices={search.voices}
         />
       )}
       {activeCategory === "Sheets" && <SheetsView keyword={keywords} />}
-      {!loading && activeCategory === "Songs" && (
+      {!search.loading && activeCategory === "Songs" && (
         <SongsView
-          songs={songs}
-          hasNextPage={hasNextSongPage}
-          isFetchingNextPage={isFetchingNextSongPage}
-          onLoadMore={() => void fetchNextSongPage()}
+          songs={search.songs}
+          hasNextPage={search.hasNextSongPage}
+          isFetchingNextPage={search.isFetchingNextSongPage}
+          onLoadMore={() => void search.fetchNextSongPage()}
         />
       )}
-      {!loading && activeCategory === "Lyrics" && (
+      {!search.loading && activeCategory === "Lyrics" && (
         <LyricsView
-          items={lyrics}
+          items={search.lyrics}
           keyword={keywords}
-          hasNextPage={hasNextLyricPage}
-          isFetchingNextPage={isFetchingNextLyricPage}
-          onLoadMore={() => void fetchNextLyricPage()}
+          hasNextPage={search.hasNextLyricPage}
+          isFetchingNextPage={search.isFetchingNextLyricPage}
+          onLoadMore={() => void search.fetchNextLyricPage()}
         />
       )}
-      {!loading && activeCategory === "MVs" && (
+      {!search.loading && activeCategory === "MVs" && (
         <MvsView
-          mvs={mvs}
-          hasNextPage={hasNextMvPage}
-          isFetchingNextPage={isFetchingNextMvPage}
-          onLoadMore={() => void fetchNextMvPage()}
+          mvs={search.mvs}
+          hasNextPage={search.hasNextMvPage}
+          isFetchingNextPage={search.isFetchingNextMvPage}
+          onLoadMore={() => void search.fetchNextMvPage()}
         />
       )}
-      {!loading && activeCategory === "Podcasts" && (
+      {!search.loading && activeCategory === "Podcasts" && (
         <PodcastsView
-          podcasts={podcasts}
-          hasNextPage={hasNextPodcastPage}
-          isFetchingNextPage={isFetchingNextPodcastPage}
-          onLoadMore={() => void fetchNextPodcastPage()}
+          podcasts={search.podcasts}
+          hasNextPage={search.hasNextPodcastPage}
+          isFetchingNextPage={search.isFetchingNextPodcastPage}
+          onLoadMore={() => void search.fetchNextPodcastPage()}
         />
       )}
-      {!loading && activeCategory === "Voices" && (
+      {!search.loading && activeCategory === "Voices" && (
         <VoicesView
-          voices={voices}
-          hasNextPage={hasNextVoicePage}
-          isFetchingNextPage={isFetchingNextVoicePage}
-          onLoadMore={() => void fetchNextVoicePage()}
+          voices={search.voices}
+          hasNextPage={search.hasNextVoicePage}
+          isFetchingNextPage={search.isFetchingNextVoicePage}
+          onLoadMore={() => void search.fetchNextVoicePage()}
         />
       )}
-      {!loading && isGridCategory && (
+      {!search.loading && gridCategory && grid && (
         <GridCategoryView
-          activeCategory={activeCategory as "Albums" | "Playlists" | "Artists"}
-          albums={albums}
-          playlists={playlists}
-          artists={artists}
+          activeCategory={gridCategory}
+          albums={search.albums}
+          playlists={search.playlists}
+          artists={search.artists}
           loadingPlayId={loadingPlayId}
           onPlayAlbum={handlePlayAlbum}
           onPlayPlaylist={handlePlayPlaylist}
           onNavigate={router.push}
-          hasNextPage={hasNextGridPage}
-          isFetchingNextPage={isFetchingNextGridPage}
-          onLoadMore={loadNextGridPage}
+          hasNextPage={grid.hasNextPage}
+          isFetchingNextPage={grid.isFetchingNextPage}
+          onLoadMore={() => void grid.fetchNextPage()}
         />
       )}
-    </div>
+    </>
   );
 }
