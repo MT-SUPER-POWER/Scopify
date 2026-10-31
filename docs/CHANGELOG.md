@@ -2,6 +2,17 @@
 
 > 根据 commit 自动生成，请勿手动编辑；推送版本 tag 后由 CI 更新。v2.0.3 及更早版本见[历史更新记录](archive/CHANGELOG-legacy.md)。
 
+## v3.3.0 — 2026-10-31
+
+### 新增
+
+- 从播放栏直接观看当前歌曲的 MV ([0773a28a](https://github.com/MT-SUPER-POWER/Scopify/commit/0773a28ae096fd7c202c21af6599babd6161ce6f))
+- 支持轻量中心歌词并优化歌词层级跳转 ([b9b55ebb](https://github.com/MT-SUPER-POWER/Scopify/commit/b9b55ebbdd2ba60f661c869b6966c8f9afb20d59))
+
+### 修复
+
+- 修复右键与下拉二级菜单显示系统原生滚动条 ([c270a6b8](https://github.com/MT-SUPER-POWER/Scopify/commit/c270a6b8dfff41e9b4bf28b2b5260bae2465acea))
+
 ## v3.2.0 — 2026-10-30
 
 ### 新增
