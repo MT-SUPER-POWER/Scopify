@@ -2,6 +2,25 @@
 
 > 根据 commit 自动生成，请勿手动编辑；推送版本 tag 后由 CI 更新。v2.0.3 及更早版本见[历史更新记录](archive/CHANGELOG-legacy.md)。
 
+## v3.3.1 — 2026-10-31
+
+### 新增
+
+- 网络或服务断开时自动重连并统一提示 ([7c52266d](https://github.com/MT-SUPER-POWER/Scopify/commit/7c52266d1626db36e1f40af1bf0c0cb984cd1a0a))
+- 完善歌单区域的登录与加载状态 ([d95aa17d](https://github.com/MT-SUPER-POWER/Scopify/commit/d95aa17d1d91e3a15dc58332091f1018045e03d6))
+- 支持搜索并直接修改常用设置 ([13ed0971](https://github.com/MT-SUPER-POWER/Scopify/commit/13ed0971e2f528be3e6beb7d84ee27023a73f7f4))
+
+### 修复
+
+- 确保退出应用时结束后台进程 ([f7b25320](https://github.com/MT-SUPER-POWER/Scopify/commit/f7b253207960d6c9de6cc7d1500354d375a373ba))
+- 区分桌面本地后端与网页远端配置 ([497d12e6](https://github.com/MT-SUPER-POWER/Scopify/commit/497d12e60c23d2b2547901a9a36aecae12b2cd8f))
+- 无歌曲时保留正在播放面板并显示空状态 ([1ae04624](https://github.com/MT-SUPER-POWER/Scopify/commit/1ae0462428544a532c2b4642a69a33aa3f43e5cc))
+- 修复浅色主题退出弹窗的深色外框 ([ae81d40d](https://github.com/MT-SUPER-POWER/Scopify/commit/ae81d40d84f61b0d9a60c275a7cee3e2a0ba8003))
+
+### 优化
+
+- 命令面板支持拼音、容错搜索与常用排序 ([481fcdde](https://github.com/MT-SUPER-POWER/Scopify/commit/481fcddefbf19a89c95f720a8284fdf188cb1a8d))
+
 ## v3.3.0 — 2026-10-31
 
 ### 新增
