@@ -58,16 +58,14 @@ Scopify Web is a Next.js application that provides a modern music listening expe
 - `test` - Run Web unit tests
 - `lint` - Run ESLint
 - `format` - Format code with Prettier
-- `i18n:types` - Regenerate typed translation helpers
-- `i18n:audit` - Find likely untranslated UI text
+- `i18n:audit` - List hard-coded text candidates with x18n
 
 ### Internationalization
 
-Translation resources, runtime helpers, generated types, and i18n tooling belong to this Web workspace. Run these commands from `repo/frontend/apps/web/`:
+Translation resources, runtime helpers, and i18n tooling belong to this Web workspace. Run these commands from `repo/frontend/apps/web/`:
 
 ```bash
-pnpm run i18n:types # Regenerate types/i18n.generated.d.ts from the translation resources
-pnpm run i18n:audit # Find likely untranslated text in app/ and components/
+pnpm run i18n:audit # List hard-coded text candidates with x18n
 ```
 
 ## Project Structure
