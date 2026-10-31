@@ -1,0 +1,20 @@
+{
+  "wiki": "Music encyclopedia",
+  "sheets": "Sheet music",
+  "emptyWiki": "No encyclopedia information yet",
+  "emptySheets": "No sheet music for this song yet",
+  "preview": "Sheet preview",
+  "previewEmpty": "No preview pages available; access may be restricted",
+  "loginRequired": "Sign in to view sheet music",
+  "login": "Sign in",
+  "pages": "{{count}} pages",
+  "page": "Page {{page}}",
+  "imageError": "Could not load this page",
+  "keepSearching": "Keep searching for sheets",
+  "sheetCount": "{{count}} sheets",
+  "moreSheets": "{{count}} more sheets, view all",
+  "more": "View all",
+  "searchHint": "Find sheet music by song. Only songs with available sheets are shown.",
+  "openSheets": "View sheet music",
+  "noSongs": "No matching songs"
+}

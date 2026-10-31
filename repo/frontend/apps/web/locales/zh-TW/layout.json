@@ -1,0 +1,5 @@
+{
+  "backendUnavailableTitle": "本機後端暫時無法使用",
+  "backendUnavailableDescription": "音樂服務暫時無法使用，你仍可進入設定調整或重新啟動本機後端。",
+  "openBackendSettings": "開啟後端設定"
+}

@@ -1,0 +1,5 @@
+{
+  "offline.title": "Couldn't load",
+  "offline.subtitle": "The network or service is unavailable right now",
+  "action.refresh": "Retry"
+}

@@ -1,6 +1,6 @@
 import React, { useRef, useState } from "react";
 import { Trash2, Upload } from "lucide-react";
-import type { TranslateFn } from "@/types/i18n.generated";
+import type { TranslateFn } from "@/types/i18n/model";
 import {
   DEFAULT_NOMAND_BACKGROUND_TUNING,
   type MonetBackgroundImage,

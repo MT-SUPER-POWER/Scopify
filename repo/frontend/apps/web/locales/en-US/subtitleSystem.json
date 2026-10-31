@@ -1,0 +1,12 @@
+{
+  "fill": "Playback fill",
+  "unsung": "Unsung text color",
+  "fillDuration": "Line duration",
+  "softness": "Fill edge softness",
+  "play": "Play preview",
+  "pause": "Pause preview",
+  "selectAll": "Select / deselect all",
+  "delete": "Delete",
+  "deleteHint": "Delete saved themes. The current preview style stays unchanged.",
+  "fillHint": "Sung color fills from left to right over the unsung text. Typewriter and playback fill are separate modes."
+}

@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { ChevronDown, Plus, Replace, Upload } from "lucide-react";
-import type { TranslateFn } from "@/types/i18n.generated";
+import type { TranslateFn } from "@/types/i18n/model";
 import type { TemperaPoolImportMode } from "@/types/lyrics/folia/temperaImagePool";
 
 // src/components/visualizer/tempera/TemperaImageImportMenu.tsx (Folia acf7ffc9)

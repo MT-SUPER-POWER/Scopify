@@ -1,5 +1,5 @@
 import React from "react";
-import type { TranslateFn } from "@/types/i18n.generated";
+import type { TranslateFn } from "@/types/i18n/model";
 import {
   DIORAMA_PARTICLE_DENSITY_MAX,
   DIORAMA_PARTICLE_DENSITY_MIN,

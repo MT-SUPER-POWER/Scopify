@@ -1,6 +1,6 @@
 import React, { useId, useState } from "react";
 import { ChevronDown } from "lucide-react";
-import type { TranslateFn } from "@/types/i18n.generated";
+import type { TranslateFn } from "@/types/i18n/model";
 import {
   DIORAMA_MOTE_CIRCUMFERENCE_MAX,
   DIORAMA_MOTE_CIRCUMFERENCE_MIN,

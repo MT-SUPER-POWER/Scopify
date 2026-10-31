@@ -1,0 +1,5 @@
+{
+  "backendUnavailableTitle": "本地后端暂不可用",
+  "backendUnavailableDescription": "音乐服务暂时不可用，你仍可进入设置调整或重新启动本地后端。",
+  "openBackendSettings": "打开后端设置"
+}
