@@ -1,5 +1,7 @@
 {
   "title": "正在播放",
+  "empty.title": "还没有播放音乐",
+  "empty.description": "播放一首喜欢的歌曲，封面、歌词和歌曲信息会显示在这里。",
   "tab.overview": "正在播放",
   "tab.queue": "队列",
   "tab.lyrics": "歌词",

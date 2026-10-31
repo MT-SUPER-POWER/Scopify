@@ -1,6 +1,6 @@
 "use client";
 
-import { PanelRightClose } from "lucide-react";
+import { Music2, PanelRightClose } from "lucide-react";
 import { useState } from "react";
 import { NowPlayingLyricsView } from "./NowPlayingLyricsView";
 import { NowPlayingOverview } from "./NowPlayingOverview";
@@ -62,13 +62,22 @@ export function NowPlayingPanel() {
 
       {view === "queue" ? (
         <NowPlayingQueueView />
-      ) : (
-        song &&
-        (view === "lyrics" ? (
+      ) : song ? (
+        view === "lyrics" ? (
           <NowPlayingLyricsView song={song} />
         ) : (
           <NowPlayingOverview song={song} onCoverVisibleChange={setIsOverCover} />
-        ))
+        )
+      ) : (
+        <div className="flex min-h-0 flex-1 flex-col items-center justify-center gap-3 px-6 py-8 text-center">
+          <span className="mb-2 flex size-16 items-center justify-center rounded-2xl bg-content/5 text-content-muted">
+            <Music2 aria-hidden className="size-8" />
+          </span>
+          <h3 className="text-base font-semibold text-content">{t("nowPlaying.empty.title")}</h3>
+          <p className="max-w-64 text-sm leading-relaxed text-content-muted">
+            {t("nowPlaying.empty.description")}
+          </p>
+        </div>
       )}
     </aside>
   );

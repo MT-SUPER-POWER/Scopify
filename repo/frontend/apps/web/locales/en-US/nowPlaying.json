@@ -1,5 +1,7 @@
 {
   "title": "Now Playing",
+  "empty.title": "No music playing yet",
+  "empty.description": "Play a song you love to see its artwork, lyrics, and details here.",
   "tab.overview": "Now Playing",
   "tab.queue": "Queue",
   "tab.lyrics": "Lyrics",

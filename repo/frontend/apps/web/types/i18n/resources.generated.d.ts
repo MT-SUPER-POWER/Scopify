@@ -1546,6 +1546,8 @@ export default interface Resources {
     closeLyrics: "关闭歌词";
     closeMv: "返回封面";
     credits: "演职人员";
+    "empty.description": "播放一首喜欢的歌曲，封面、歌词和歌曲信息会显示在这里。";
+    "empty.title": "还没有播放音乐";
     fans: "{{count}} 位粉丝";
     featuredArtist: "合作艺人";
     hide: "隐藏正在播放面板";

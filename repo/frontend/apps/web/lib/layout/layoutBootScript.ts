@@ -4,7 +4,6 @@ import {
   NOW_PLAYING_PANEL_MEDIA_QUERY,
   SIDEBAR_COLLAPSED_WIDTH,
 } from "@/constants/layout";
-import { PLAYER_PERSISTENCE_STORAGE_KEY } from "@/constants/playbackPersistence";
 import { DESKTOP_RUNTIME_PROBE_EXPRESSION } from "@/lib/runtime";
 import { MUSIC_SESSION_STORAGE_KEY } from "@/lib/web/musicSessionCredential";
 
@@ -26,7 +25,6 @@ export function createLayoutBootScript() {
     ids: DASHBOARD_PANEL_IDS,
     layoutPrefix: `react-resizable-panels:${DASHBOARD_LAYOUT_GROUP_ID}`,
     media: NOW_PLAYING_PANEL_MEDIA_QUERY,
-    playerKey: PLAYER_PERSISTENCE_STORAGE_KEY,
     sessionKey: MUSIC_SESSION_STORAGE_KEY,
     uiKey: UI_STORAGE_KEY,
   });
@@ -34,8 +32,8 @@ export function createLayoutBootScript() {
   return `(function(c){try{
 var d=document.documentElement,s=window.localStorage;
 function read(k){try{return JSON.parse(s.getItem(k)||"null")}catch(e){return null}}
-var ui=(read(c.uiKey)||{}).state||{},player=(read(c.playerKey)||{}).state||{};
-var np=window.matchMedia(c.media).matches&&player.currentSongDetail?(ui.isNowPlayingPanelOpen===false?"rail":"panel"):"none";
+var ui=(read(c.uiKey)||{}).state||{};
+var np=window.matchMedia(c.media).matches?(ui.isNowPlayingPanelOpen===false?"rail":"panel"):"none";
 var ids=[c.ids.sidebar,c.ids.main];if(np!=="none")ids.push(c.ids.nowPlaying);
 var layout=read([c.layoutPrefix].concat(ids).join(":"))||{};
 var sidebar=ui.isCollapsed?c.collapsedWidth+"px":layout[c.ids.sidebar]>0?layout[c.ids.sidebar]+"%":"";
