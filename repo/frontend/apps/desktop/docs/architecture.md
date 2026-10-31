@@ -430,7 +430,8 @@ stateDiagram-v2
     }
 
     BeforeQuitReceived --> SafeToExit : 全部异步资源释放完成 (Promise.allSettled)
-    SafeToExit --> [*] : 调用最终底层 app.quit()
+    SafeToExit --> [*] : 调用 app.exit(0)，不再重新协商窗口关闭
+    BeforeQuitReceived --> [*] : 清理超过 5 秒，记录诊断并调用 app.exit(0)
 ```
 
 ### 6.2 内存防劣化治理机制 (`processMemory.ts`)
