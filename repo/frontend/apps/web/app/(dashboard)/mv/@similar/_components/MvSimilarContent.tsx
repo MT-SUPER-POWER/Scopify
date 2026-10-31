@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useMemo } from "react";
 import { LoaderCircle } from "lucide-react";
 import { MvListItem } from "@/components/mv/MvListItem";
-import { MvSimilarSkeleton } from "@/components/mv/MvSkeletons";
+import { MvSimilarSkeleton } from "./MvSimilarSkeleton";
 import { QueryFailure } from "@/components/shared/QueryFailure";
 import { QueryPending } from "@/components/shared/QueryPending";
 import { useInfiniteMvSearchQuery } from "@/hooks/search/useSearchQueries";

@@ -17,11 +17,8 @@ export interface MvCardProps {
   mv: MvSummary;
 }
 
-export interface MvPageContentProps {
+export interface MvSimilarContentProps {
   mvid: number;
-}
-
-export interface MvSimilarContentProps extends MvPageContentProps {
   detail: MvDetail;
   isTheater: boolean;
   onNextChange: (id: number | null) => void;

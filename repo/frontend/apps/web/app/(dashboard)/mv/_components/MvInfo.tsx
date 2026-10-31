@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { toast } from "sonner";
 import { Bookmark, Share2, ThumbsUp } from "lucide-react";
-import { MvChannel } from "./MvChannel";
+import { MvChannel } from "@/components/mv/MvChannel";
 import { useMVLikeMutation, useMVSubscriptionMutation } from "@/hooks/mv/useMVMutations";
 import { useMVDetailInfoQuery } from "@/hooks/mv/useMVQueries";
 import { useLoginStatus } from "@/hooks/auth/useLoginStatus";
