@@ -100,7 +100,7 @@
   "gpu.label": "Hardware Acceleration",
   "gpu.sublabel": "Turn this off if the app is slow or the GPU is unstable.",
   "devTools.label": "Developer Tools",
-  "devTools.sublabel": "Allow Electron Developer Tools and refresh the window with Ctrl+R (⌘R on macOS).",
+  "devTools.sublabel": "When enabled, open Developer Tools with Ctrl+Shift+I (⌘⇧I on macOS) and refresh the window with Ctrl+R (⌘R on macOS).",
   "windowClose.label": "Window Close Action",
   "windowClose.sublabel": "Choose the action when clicking the window close button.",
   "windowClose.minimize": "Minimize to Tray",

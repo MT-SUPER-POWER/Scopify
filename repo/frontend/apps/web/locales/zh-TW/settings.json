@@ -100,7 +100,7 @@
   "gpu.label": "硬體加速",
   "gpu.sublabel": "當應用卡頓或 GPU 相容性較差時，可以關閉。",
   "devTools.label": "開發者工具",
-  "devTools.sublabel": "允許開啟 Electron 開發者工具，並使用 Ctrl+R（macOS 為 ⌘R）重新整理視窗。",
+  "devTools.sublabel": "啟用後，可用 Ctrl+Shift+I（macOS 為 ⌘⇧I）開啟開發者工具，Ctrl+R（macOS 為 ⌘R）重新整理視窗。",
   "windowClose.label": "關閉視窗行為",
   "windowClose.sublabel": "設定點擊應用程式視窗關閉按鈕時的響應動作。",
   "windowClose.minimize": "最小化到系統匣",

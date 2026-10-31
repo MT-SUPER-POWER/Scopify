@@ -100,7 +100,7 @@
   "gpu.label": "硬件加速",
   "gpu.sublabel": "当应用卡顿或 GPU 兼容性较差时，可以关闭。",
   "devTools.label": "开发者工具",
-  "devTools.sublabel": "允许打开 Electron 开发者工具，并使用 Ctrl+R（macOS 为 ⌘R）刷新窗口。",
+  "devTools.sublabel": "开启后，可用 Ctrl+Shift+I（macOS 为 ⌘⇧I）打开开发者工具，Ctrl+R（macOS 为 ⌘R）刷新窗口。",
   "windowClose.label": "关闭窗口行为",
   "windowClose.sublabel": "设置点击应用窗口关闭按钮时的响应动作。",
   "windowClose.minimize": "最小化到托盘",

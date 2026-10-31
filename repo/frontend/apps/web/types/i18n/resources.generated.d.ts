@@ -1960,7 +1960,7 @@ export default interface Resources {
     "desktopLyrics.showSecondaryLyric.label": "副歌词是否打开";
     "desktopLyrics.showSecondaryLyric.sublabel": "在主歌词下方同步显示翻译或注音歌词。";
     "devTools.label": "开发者工具";
-    "devTools.sublabel": "允许打开 Electron 开发者工具，并使用 Ctrl+R（macOS 为 ⌘R）刷新窗口。";
+    "devTools.sublabel": "开启后，可用 Ctrl+Shift+I（macOS 为 ⌘⇧I）打开开发者工具，Ctrl+R（macOS 为 ⌘R）刷新窗口。";
     "discord.applicationId.label": "Discord Application ID";
     "discord.applicationId.placeholder": "例如 123456789012345678";
     "discord.applicationId.sublabel": "在 Discord Developer Portal 创建 Scopify 应用后填入其 Application ID；不会上传该值。";
