@@ -101,9 +101,11 @@ const nextConfig: NextConfig = {
   env: {
     NEXT_PUBLIC_UPDATES: JSON.stringify(releaseNotes),
     APP_CFG_APP_LOCALE: process.env.APP_CFG_APP_LOCALE || DEFAULT_WEB_CONFIG.app.locale,
-    APP_CFG_BACKEND_HOST: backendHost,
-    APP_CFG_BACKEND_PORT: String(backendPort),
-    APP_CFG_BACKEND_PROTOCOL: backendProtocol,
+    APP_CFG_BACKEND_HOST: isDesktopBuild ? DEFAULT_WEB_CONFIG.backend.host : backendHost,
+    APP_CFG_BACKEND_PORT: String(isDesktopBuild ? DEFAULT_WEB_CONFIG.backend.port : backendPort),
+    APP_CFG_BACKEND_PROTOCOL: isDesktopBuild
+      ? DEFAULT_WEB_CONFIG.backend.protocol
+      : backendProtocol,
     APP_CFG_FRONTEND_DEV_PORT: String(frontendDevPort),
     APP_CFG_NET_TIMEOUT:
       process.env.APP_CFG_NET_TIMEOUT || String(DEFAULT_WEB_CONFIG.network.timeout),

@@ -52,6 +52,7 @@ const INITIAL_BACKEND_CONFIG = loadInitialBackendConfig();
 let baseURL = buildBackendBaseUrl(INITIAL_BACKEND_CONFIG);
 let runtimeNetworkConfig: WebConfig["network"] = { ...webConfig.network };
 let runtimeBackendConfig: WebConfig["backend"] = { ...INITIAL_BACKEND_CONFIG };
+let desktopBackendOrigin: string | null = null;
 
 export function getBackendBaseUrl() {
   if (runtime.isDesktop && baseURL) {
@@ -64,7 +65,9 @@ function applyRuntimeConfig(config: Pick<WebConfig, "backend" | "network">) {
   runtimeNetworkConfig = { ...config.network };
   const resolved = normalizeBackendConfig(config.backend);
   runtimeBackendConfig = resolved.ok ? resolved.backend : { ...config.backend };
-  baseURL = resolved.ok ? resolved.url : buildBackendBaseUrl(runtimeBackendConfig);
+  baseURL =
+    desktopBackendOrigin ??
+    (resolved.ok ? resolved.url : buildBackendBaseUrl(runtimeBackendConfig));
   request.defaults.baseURL = baseURL;
 }
 
@@ -145,13 +148,20 @@ if (typeof window !== "undefined") {
   if (runtime.isDesktop) {
     void Promise.resolve(runtime.backend.getStatus()).then((status) => {
       if (status?.origin && status.state === "running") {
+        desktopBackendOrigin = status.origin;
         baseURL = status.origin;
         request.defaults.baseURL = baseURL;
       }
     });
 
     runtime.backend.onStatusChanged((status) => {
+      if (status?.state === "disabled") {
+        desktopBackendOrigin = null;
+        baseURL = buildBackendBaseUrl(runtimeBackendConfig);
+        request.defaults.baseURL = baseURL;
+      }
       if (status?.origin && status.state === "running") {
+        desktopBackendOrigin = status.origin;
         baseURL = status.origin;
         request.defaults.baseURL = baseURL;
       }
