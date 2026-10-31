@@ -5,12 +5,12 @@ import { RefreshCw, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@scopify/ui/shadcn/components/button";
 import { CACHE_SCOPE_CATEGORIES, getCacheSelectionKey } from "@/constants/cache";
+import { useCacheManagement } from "@/hooks/cache/useCacheManagement";
 import { formatCacheSize } from "@/lib/cache/presentation";
 import { getCacheScopeSelectionState } from "@/lib/cache/cacheSelection";
 import { cn } from "@/lib/utils";
 import { useI18n } from "@/store/module/i18n";
 import type { CacheCategory } from "@/types/cache/model";
-import type { CacheCleanupPageProps } from "@/types/cache/components";
 import { CacheCheckbox } from "./CacheCheckbox";
 import { CacheCleanupConfirmDialog } from "./CacheCleanupConfirmDialog";
 
@@ -20,18 +20,19 @@ const IRRECOVERABLE_LYRIC_CATEGORIES: readonly CacheCategory[] = [
   "lyric-source",
 ];
 
-export function CacheCleanupPage({
-  error,
-  isClearing,
-  isLoading,
-  onClear,
-  onRefresh,
-  onToggleCategory,
-  onToggleScope,
-  selectedCategories,
-  selection,
-  stats,
-}: CacheCleanupPageProps) {
+export function CacheCleanupPage() {
+  const {
+    clear,
+    error,
+    isClearing,
+    isLoading,
+    refresh,
+    selectedCategories,
+    selection,
+    stats,
+    toggleCategory,
+    toggleScope,
+  } = useCacheManagement();
   const { t } = useI18n();
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const containsLyricData = useMemo(
@@ -43,7 +44,7 @@ export function CacheCleanupPage({
   );
 
   const confirmClear = async () => {
-    const result = await onClear();
+    const result = await clear();
     setIsConfirmOpen(false);
     if (!result) return;
     if (result.failedCategories.length > 0) {
@@ -59,7 +60,7 @@ export function CacheCleanupPage({
   };
 
   return (
-    <div className="relative flex w-full flex-col px-6 pt-8 pb-10 text-muted-foreground md:px-10 md:pb-12">
+    <div className="flex flex-col pb-10 md:pb-12">
       <div className="max-w-4xl">
         {/* 头部：去除冗余的局部返回按钮，将刷新按钮约束在 max-w-4xl 内容容器右侧 */}
         <div className="mb-8 flex items-center justify-between gap-4">
@@ -70,7 +71,7 @@ export function CacheCleanupPage({
             variant="outline"
             size="sm"
             disabled={isLoading || isClearing}
-            onClick={() => void onRefresh()}
+            onClick={() => void refresh()}
             className="shrink-0"
           >
             <RefreshCw className={cn("size-4", isLoading && "animate-spin")} />
@@ -105,7 +106,7 @@ export function CacheCleanupPage({
                     indeterminate={selectionState.indeterminate}
                     disabled={isLoading || isClearing}
                     label={t(`settings.cache.scope.${scope}.title`)}
-                    onCheckedChange={(checked) => onToggleScope(scope, checked)}
+                    onCheckedChange={(checked) => toggleScope(scope, checked)}
                   />
                   <p className="text-sm text-muted-foreground tabular-nums">
                     {t("settings.cache.cleanup.scopeSummary", {
@@ -129,7 +130,7 @@ export function CacheCleanupPage({
                           checked={selectedCategories.has(getCacheSelectionKey(scope, category))}
                           disabled={isLoading || isClearing || !categoryStats?.entryCount}
                           label={t(`settings.cache.category.${category}`)}
-                          onCheckedChange={(checked) => onToggleCategory(scope, category, checked)}
+                          onCheckedChange={(checked) => toggleCategory(scope, category, checked)}
                         />
                         <p className="shrink-0 text-right text-sm text-muted-foreground tabular-nums">
                           {t("settings.cache.cleanup.categorySummary", {

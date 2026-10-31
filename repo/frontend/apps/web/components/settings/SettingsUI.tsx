@@ -178,7 +178,7 @@ export function SettingButton({
 
 export function SettingsLoadingState() {
   return (
-    <div className="relative flex min-h-[80vh] w-full animate-in flex-col px-6 pt-8 pb-10 text-muted-foreground duration-500 fade-in md:px-10 md:pb-12">
+    <div className="relative flex min-h-[80vh] w-full animate-in flex-col pb-10 duration-500 fade-in md:pb-12">
       {/* 标题骨架 */}
       <div className="mb-8 flex items-center justify-between">
         <Skeleton className="h-10 w-32 bg-skeleton" />

@@ -10,14 +10,18 @@ import { runtime } from "@/lib/runtime";
 import { parseSettingsTab } from "@/lib/settings/tabs";
 import { useI18n } from "@/store/module/i18n";
 import type { SettingsTabId } from "@/types/settings/model";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
-import { DesktopSettingsTab } from "./DesktopSettingsTab";
-import { GeneralSettingsTab } from "./GeneralSettingsTab";
-import { NetworkSettingsTab } from "./NetworkSettingsTab";
-import { SaveChangesButton, SaveConfirmModal, SettingsLoadingState } from "./SettingsUI";
-import { StorageSettingsTab } from "./StorageSettingsTab";
-import { AppearanceSettingsTab } from "./AppearanceSettingsTab";
-import { NotificationSettingsTab } from "./NotificationSettingsTab";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { DesktopSettingsTab } from "@/components/settings/DesktopSettingsTab";
+import { GeneralSettingsTab } from "@/components/settings/GeneralSettingsTab";
+import { NetworkSettingsTab } from "@/components/settings/NetworkSettingsTab";
+import {
+  SaveChangesButton,
+  SaveConfirmModal,
+  SettingsLoadingState,
+} from "@/components/settings/SettingsUI";
+import { StorageSettingsTab } from "@/components/settings/StorageSettingsTab";
+import { AppearanceSettingsTab } from "@/components/settings/AppearanceSettingsTab";
+import { NotificationSettingsTab } from "@/components/settings/NotificationSettingsTab";
 
 const SettingsPage = () => {
   const { t } = useI18n();
@@ -40,7 +44,7 @@ const SettingsPage = () => {
   };
 
   return (
-    <div className="relative flex w-full flex-col px-6 pt-8 pb-10 text-muted-foreground md:px-10 md:pb-12">
+    <div className="flex flex-col pb-10 md:pb-12">
       <div className="mb-8 flex items-center justify-between">
         <h1 className="text-3xl font-black tracking-tight text-foreground md:text-4xl">
           {t("settings.title")}

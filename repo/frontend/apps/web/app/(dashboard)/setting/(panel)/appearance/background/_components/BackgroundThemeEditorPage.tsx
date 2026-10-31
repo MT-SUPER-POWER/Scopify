@@ -7,12 +7,12 @@ import { SETTINGS_ACTION_BUTTON_CLASS_NAME } from "@/constants/settings";
 import { useBackgroundThemeEditor } from "@/hooks/settings/useBackgroundThemeEditor";
 import { useI18n } from "@/store/module/i18n";
 import type { BackgroundThemeEditorProps } from "@/types/appearance/themeEditor";
-import { AppearancePreview } from "./AppearancePreview";
-import { SettingSection } from "./SettingsUI";
-import { ThemeEditorBoundary } from "./ThemeEditorBoundary";
-import { ThemeEditorFrame } from "./ThemeEditorFrame";
-import { ThemeEditorFields } from "./ThemeEditorFields";
-import { ThemeNameField } from "./ThemeNameField";
+import { AppearancePreview } from "@/components/settings/AppearancePreview";
+import { SettingSection } from "@/components/settings/SettingsUI";
+import { ThemeEditorBoundary } from "@/components/settings/ThemeEditorBoundary";
+import { ThemeEditorFrame } from "@/components/settings/ThemeEditorFrame";
+import { ThemeEditorFields } from "@/components/settings/ThemeEditorFields";
+import { ThemeNameField } from "@/components/settings/ThemeNameField";
 
 export function BackgroundThemeEditorPage() {
   const params = useSearchParams();

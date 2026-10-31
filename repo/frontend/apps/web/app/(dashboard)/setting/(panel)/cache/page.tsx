@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { CacheCleanupSettingsScreen } from "@/components/cache/CacheCleanupSettingsScreen";
+import { CacheCleanupPage } from "./_components/CacheCleanupPage";
 
 export const metadata: Metadata = {
   title: "缓存管理",
@@ -7,5 +7,5 @@ export const metadata: Metadata = {
 };
 
 export default function CachePage() {
-  return <CacheCleanupSettingsScreen />;
+  return <CacheCleanupPage />;
 }

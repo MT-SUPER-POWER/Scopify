@@ -6,12 +6,12 @@ import { subtitleThemeEditorHref } from "@/lib/settings/subtitleTheme";
 import { useSubtitleThemeEditor } from "@/hooks/settings/useSubtitleThemeEditor";
 import { useI18n } from "@/store/module/i18n";
 import type { SubtitleThemeEditorProps } from "@/types/lyrics/subtitlePreview";
-import { ThemeEditorBoundary } from "./ThemeEditorBoundary";
-import { ThemeEditorFrame } from "./ThemeEditorFrame";
-import { ThemeNameField } from "./ThemeNameField";
-import { SubtitlePreviewWorkspace } from "./SubtitlePreviewWorkspace";
-import { SubtitlePaletteFields } from "./SubtitlePaletteFields";
-import { SettingSection } from "./SettingsUI";
+import { ThemeEditorBoundary } from "@/components/settings/ThemeEditorBoundary";
+import { ThemeEditorFrame } from "@/components/settings/ThemeEditorFrame";
+import { ThemeNameField } from "@/components/settings/ThemeNameField";
+import { SubtitlePreviewWorkspace } from "@/components/settings/SubtitlePreviewWorkspace";
+import { SubtitlePaletteFields } from "@/components/settings/SubtitlePaletteFields";
+import { SettingSection } from "@/components/settings/SettingsUI";
 
 export function SubtitleThemeEditorPage() {
   const params = useSearchParams();
