@@ -1,12 +1,12 @@
 "use client";
 
 import { motion } from "motion/react";
-import { LoginBrand } from "@/components/auth/LoginBrand";
+import { LoginBrand } from "./LoginBrand";
 
 // 提取骨架屏组件，保持代码整洁
 const LoginSkeletonLoading = () => {
   return (
-    <div className="flex min-h-screen w-screen flex-col items-center justify-center overflow-hidden bg-surface p-4">
+    <>
       <LoginBrand />
 
       <div className="w-full max-w-80">
@@ -38,7 +38,7 @@ const LoginSkeletonLoading = () => {
           />
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

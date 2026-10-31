@@ -2,9 +2,9 @@
 
 import { X } from "lucide-react";
 
-import { AppCloseActions } from "@/components/appClose/AppCloseActions";
-import { AppCloseHeader } from "@/components/appClose/AppCloseHeader";
-import { AppCloseRememberChoice } from "@/components/appClose/AppCloseRememberChoice";
+import { AppCloseActions } from "./_components/AppCloseActions";
+import { AppCloseHeader } from "./_components/AppCloseHeader";
+import { AppCloseRememberChoice } from "./_components/AppCloseRememberChoice";
 import { useAppCloseState } from "@/hooks/appClose/useAppCloseState";
 import { useI18n } from "@/store/module/i18n";
 
