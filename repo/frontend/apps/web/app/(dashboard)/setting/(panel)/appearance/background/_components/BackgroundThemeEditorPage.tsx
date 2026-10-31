@@ -1,13 +1,13 @@
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
-import { HomeContent } from "@/components/home/HomeContent";
 import { BACKGROUND_THEME_EDITOR_PATH } from "@/constants/appearanceRoutes";
 import { SETTINGS_ACTION_BUTTON_CLASS_NAME } from "@/constants/settings";
 import { useBackgroundThemeEditor } from "@/hooks/settings/useBackgroundThemeEditor";
 import { useI18n } from "@/store/module/i18n";
 import type { BackgroundThemeEditorProps } from "@/types/appearance/themeEditor";
 import { AppearancePreview } from "@/components/settings/AppearancePreview";
+import { HomeStylePreview } from "@/components/settings/HomeStylePreview";
 import { SettingSection } from "@/components/settings/SettingsUI";
 import { ThemeEditorBoundary } from "@/components/settings/ThemeEditorBoundary";
 import { ThemeEditorFrame } from "@/components/settings/ThemeEditorFrame";
@@ -94,7 +94,7 @@ function BackgroundThemeEditor(props: BackgroundThemeEditorProps) {
           <div className="min-w-0 lg:sticky lg:top-8">
             <SettingSection title={t("appearance.preview")}>
               <AppearancePreview background={editor.preview} variant={editor.variant}>
-                <HomeContent />
+                <HomeStylePreview />
               </AppearancePreview>
             </SettingSection>
           </div>
