@@ -63,8 +63,9 @@ repo/
 
 新建或修改代码前，请先阅读：
 
-- **[AGENTS.md](./AGENTS.md)** — 项目结构规范
-- **[docs/structure.md](./docs/structure.md)** — 面向贡献者的结构说明与迁移进度
+- **[CONTRIBUTE.md](./CONTRIBUTE.md)** — 贡献指南与文档索引
+- **[项目结构与拆分原理](./docs/rules/architecture.md)**、**[组件规则](./docs/rules/components.md)**、**[数据请求与边界](./docs/rules/data-and-boundaries.md)** — 前端代码结构规范
+- **[AGENTS.md](./AGENTS.md)** — AI Agent 的工作约定
 
 ### 重要的三方库
 

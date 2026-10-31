@@ -2,7 +2,7 @@
 
 Scopify 是 **Next.js App Router + Electron** 的网易云音乐客户端。根目录是 pnpm Workspaces + Turborepo 编排层；所有应用源码收敛于 `repo/`，Web、Electron 和契约分别位于 `repo/frontend/apps/web`、`repo/frontend/apps/desktop` 和 `repo/frontend/packages/desktop-contract`。前端与 `repo/backend/api-enhanced` 解耦部署；后端有自己的 [AGENTS.md](./repo/backend/api-enhanced/AGENTS.md)。
 
-**本文件是前端/Electron 代码结构的唯一规范。** 下文中未加前缀的 `app/`、`components/`、`types/`、`hooks/`、`lib/` 和 `store/` 路径都相对于 `repo/frontend/apps/web/`。新建或修改代码时必须遵守；发现 inline 类型、散落 hook 等历史债务时，顺手迁移到正确目录。
+**本文件是 Agent 的入口与工作约定；Web 代码结构规范统一写在 [docs/rules/](./docs/rules/)，贡献者入口见 [CONTRIBUTE.md](./CONTRIBUTE.md)。** 下文中未加前缀的 `app/`、`components/`、`types/`、`hooks/`、`lib/` 和 `store/` 路径都相对于 `repo/frontend/apps/web/`。新建或修改代码时必须遵守；发现 inline 类型、散落 hook 等历史债务时，顺手迁移到正确目录。
 
 ---
 
@@ -117,21 +117,17 @@ Scopify/
 
 ## 代码规范与架构约定
 
-前端/Electron 的代码结构规范、`app/` 路由组装原则、类型定义放哪、组件拆分及 API 三层架构，统一托管于 Skill：👉 **[skills/nextjs-project-structure/](skills/nextjs-project-structure/SKILL.md)**
+前端代码结构的规范是三篇文档，新建或修改页面、组件、数据请求前先读对应的一篇：
 
-### 路由与组件归属
+| 文档 | 内容 |
+| --- | --- |
+| [项目结构与拆分原理](docs/rules/architecture.md) | layout / slot / page / template 的分工、页面怎么拆、类型与 hooks 放哪 |
+| [组件规则](docs/rules/components.md) | `@scopify/ui`、`components/`、`_components/` 三层归属与升级规则 |
+| [数据请求与边界](docs/rules/data-and-boundaries.md) | 请求三层封装、Query 边界、状态协议、slot 与 Suspense |
 
-`app/` 用 Next.js 的文件结构表达页面的组成：**layout 决定放在哪，slot 决定放什么，page 只是随 URL 切换的那一块**。排版（容器、栅格、背景、共享 Provider）写在 layout；同一页面里可独立加载、独立失败的业务区域，用并行路由 `@slot` 拆开；page 不再层层转发。类型、hooks、lib、constants、store 不变，仍全部放全局目录。
+核心原则：**layout 决定放在哪，slot 决定放什么，page 只是随 URL 切换的那一块**；组件分三层：纯展示的特色组件进 `@scopify/ui`，带业务耦合且多路由共用的进 `components/<领域>/`，页面专属的放路由 `_components/`，不允许被其他路由导入。
 
-组件分三层：
-
-- **`@scopify/ui/scopify/components`**：有 Scopify 特色、可复用的纯展示组件，不依赖 store、路由、API、i18n。
-- **`apps/web/components/<领域>/`**：带业务耦合、且被两个及以上路由使用的组件，以及跨页面的领域（播放器、歌词、侧栏、设置面板等）。
-- **`<路由>/_components/`**：页面或 slot 专属的组件。现有组件靠 props 和 token 做小改动适配不了时，才复制过来改造，不允许被其他路由导入。
-
-被第二个路由需要时升级：纯展示的进 `ui/scopify/components`，带业务耦合的进 `components/<领域>/`。
-
-layout、slot、`default.tsx`、共享状态、与 Query 边界的关系见 [rules/page.md](skills/nextjs-project-structure/rules/page.md)，三层归属和选择顺序见 [rules/components.md](skills/nextjs-project-structure/rules/components.md)。
+`skills/nextjs-project-structure/` 只负责在 Agent 工作时提示去读这三篇，规则以 `docs/rules/` 为准。
 
 ### `types/` 目录约定
 
@@ -139,7 +135,7 @@ layout、slot、`default.tsx`、共享状态、与 Query 边界的关系见 [rul
 
 ### Query 状态与错误边界
 
-任何新增或修改数据请求、页面加载/错误状态、分页、Mutation、媒体播放错误处理时，必须阅读并遵循 [Query 与错误边界规范](skills/nextjs-project-structure/rules/query-boundaries.md)。
+任何新增或修改数据请求、页面加载/错误状态、分页、Mutation、媒体播放错误处理时，必须阅读并遵循 [数据请求与边界](docs/rules/data-and-boundaries.md)。
 
 - Query 管理请求状态；React 边界决定失败影响范围。按可独立恢复的业务区域划分边界，禁止把独立请求的错误聚合成整页错误。
 - 调用 Query 的组件必须位于对应边界内部；首次无数据失败进入边界，有缓存的后台刷新失败保留内容。`undefined`、成功空数组、暂停请求、取消请求必须区分。
