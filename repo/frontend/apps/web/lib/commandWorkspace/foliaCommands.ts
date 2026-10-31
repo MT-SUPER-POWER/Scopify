@@ -1,3 +1,4 @@
+import { searchCommands } from "@/lib/commandWorkspace/commandSearch";
 import { FOLIA_LYRIC_COMMANDS } from "@/constants/foliaLyricCommands";
 import { buildPersonalFmCommands } from "@/lib/commandWorkspace/personalFmCommands";
 import { DESKTOP_FOLIA_VISUALIZER_OPTIONS } from "@/constants/desktopPlaybackController";
@@ -106,17 +107,14 @@ export function filterFoliaCommands(
   group: FoliaCommandGroup | null,
   query: string,
 ) {
-  const terms = query.trim().toLocaleLowerCase().split(/\s+/).filter(Boolean);
-  return entries.filter((entry) => {
-    if (!terms.length) return entry.parentId === group;
-    if (group) {
-      let parent = entry.parentId;
-      while (parent && parent !== group)
-        parent = entries.find((item) => item.id === parent)?.parentId ?? null;
-      if (parent !== group) return false;
-    }
-    const text =
-      `${entry.label} ${entry.summary} ${entry.keywords} ${entry.path}`.toLocaleLowerCase();
-    return terms.every((term) => text.includes(term));
-  });
+  if (!query.trim()) return entries.filter((entry) => entry.parentId === group);
+  const scoped = group
+    ? entries.filter((entry) => {
+        let parent = entry.parentId;
+        while (parent && parent !== group)
+          parent = entries.find((item) => item.id === parent)?.parentId ?? null;
+        return parent === group;
+      })
+    : entries;
+  return searchCommands(scoped, (entry) => entry, query).map((hit) => hit.item);
 }

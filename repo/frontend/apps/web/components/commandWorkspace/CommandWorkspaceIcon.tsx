@@ -1,3 +1,4 @@
+import { COMMAND_WORKSPACE_NAVIGATION_ICONS } from "@/constants/commandWorkspaceNavigation";
 import { getFoliaCommandIcon } from "@/constants/foliaCommandIcons";
 import {
   ListMusic,
@@ -14,6 +15,8 @@ import { ShortcutCommandIcon } from "@/components/shortcuts/ShortcutCommandIcon"
 import type { CommandWorkspaceIconProps } from "@/types/commandWorkspace/model";
 
 export function CommandWorkspaceIcon({ id }: CommandWorkspaceIconProps) {
+  const NavigationIcon = COMMAND_WORKSPACE_NAVIGATION_ICONS.get(id);
+  if (NavigationIcon) return <NavigationIcon className="size-4" aria-hidden />;
   if (id.startsWith("setting:language:")) return <Languages className="size-4" aria-hidden />;
   if (id.startsWith("setting:progress:")) return <Gauge className="size-4" aria-hidden />;
   if (id.startsWith("setting:appearance:")) return <SunMoon className="size-4" aria-hidden />;

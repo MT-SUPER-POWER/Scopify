@@ -1,5 +1,6 @@
 "use client";
 
+import { searchCommands } from "@/lib/commandWorkspace/commandSearch";
 import { Check, MonitorCog, RectangleEllipsis, Search, Settings2, Sparkles } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -97,11 +98,7 @@ export function CommandWorkspaceSettings({
     ];
   }, [isDesktop, navigate, onClose, onOpenFolia, onOpenDynamicIsland, quickSettings]);
 
-  const terms = query.trim().toLocaleLowerCase().split(/\s+/);
-  const filteredItems = items.filter((item) => {
-    const text = `${item.label} ${item.summary} ${item.keywords ?? ""}`.toLocaleLowerCase();
-    return terms.every((term) => text.includes(term));
-  });
+  const filteredItems = searchCommands(items, (item) => item, query).map((hit) => hit.item);
 
   useEffect(() => {
     listRef.current?.querySelector('[data-selected="true"]')?.scrollIntoView({ block: "nearest" });

@@ -565,6 +565,9 @@ importers:
       idb-keyval:
         specifier: ^6.3.0
         version: 6.3.0
+      pinyin-pro:
+        specifier: 3.26.0
+        version: 3.26.0
       pixi.js:
         specifier: ^8.19.0
         version: 8.22.0
@@ -8814,6 +8817,9 @@ packages:
   pino@6.14.0:
     resolution: {integrity: sha512-iuhEDel3Z3hF9Jfe44DPXR8l07bhjuFY3GMHIXbjnY9XcafbyDDwl2sN2vw2GjMPf5Nkoe+OFao7ffn9SXaKDg==}
     hasBin: true
+
+  pinyin-pro@3.26.0:
+    resolution: {integrity: sha512-HcBZZb0pvm0/JkPhZHWA5Hqp2cWHXrrW/WrV+OtaYYM+kf35ffvZppIUuGmyuQ7gDr1JDJKMkbEE+GN0wfMoGg==}
 
   pixi.js@8.22.0:
     resolution: {integrity: sha512-QbTANHMZ751MIjLiLSUSM8a7LNMWwMIf0KbRCqlW+SPS9hNLfSVS+cl1O2SEp9g1K/wyLzj/OJHv+1TUfiPr/w==}
@@ -19512,6 +19518,8 @@ snapshots:
       process-warning: 1.0.0
       quick-format-unescaped: 4.0.4
       sonic-boom: 1.4.1
+
+  pinyin-pro@3.26.0: {}
 
   pixi.js@8.22.0:
     dependencies:

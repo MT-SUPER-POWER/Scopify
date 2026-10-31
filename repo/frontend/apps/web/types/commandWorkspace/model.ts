@@ -5,6 +5,8 @@ import type { DragEvent, KeyboardEvent, RefObject } from "react";
 import type { LucideIcon } from "lucide-react";
 import type { ShortcutBinding, ShortcutCommandId } from "@/types/shortcuts/model";
 import type { SearchRecentEntry } from "@/types/search/model";
+import type { CommandSearchRange } from "@/types/commandWorkspace/search";
+import type { TranslationKey } from "@/lib/i18n";
 
 export type CommandWorkspacePage =
   | "root"
@@ -17,7 +19,6 @@ export type CommandWorkspacePage =
   | "track-list"
   | FoliaCommandGroup;
 export type CommandWorkspaceRootPage = Exclude<CommandWorkspacePage, "root" | "track-list">;
-export type CommandWorkspaceUsageCounts = Partial<Record<CommandWorkspaceRootPage, number>>;
 
 export interface CommandWorkspaceSettingsProps {
   onClose(): void;
@@ -57,13 +58,33 @@ export interface CommandWorkspaceRootItem {
   action?(): void;
   active?: boolean;
   binding?: ShortcutBinding | null;
+  href?: string;
   id: string;
+  keywords?: string;
   label: string;
+  /** label 中命中查询的片段，用于高亮。 */
+  labelRanges?: readonly CommandSearchRange[];
   page?: CommandWorkspaceRootPage;
+  path?: string;
   summary: string;
-  type: "shortcut" | "workspace" | "folia" | "action";
+  type: "shortcut" | "workspace" | "folia" | "action" | "navigation";
   foliaEntry?: FoliaCommandEntry;
-  usageCount: number;
+}
+
+export interface CommandWorkspaceNavigationTarget {
+  id: `go:${string}`;
+  href: string;
+  icon: LucideIcon;
+  keywords: string;
+  label?: string;
+  labelKey?: TranslationKey;
+  path?: string;
+  summary: string;
+}
+
+export interface CommandWorkspaceHighlightProps {
+  ranges?: readonly CommandSearchRange[];
+  text: string;
 }
 
 export interface CommandWorkspaceRootListProps {
