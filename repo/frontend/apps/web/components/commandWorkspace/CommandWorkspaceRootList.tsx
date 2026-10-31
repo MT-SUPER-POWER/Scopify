@@ -1,6 +1,7 @@
 "use client";
 
-import { ChevronRight } from "lucide-react";
+import { Check, ChevronRight } from "lucide-react";
+import { useEffect, useRef } from "react";
 import { CommandWorkspaceIcon } from "@/components/commandWorkspace/CommandWorkspaceIcon";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { getShortcutBindingLabel } from "@/lib/shortcuts/bindings";
@@ -12,13 +13,22 @@ export function CommandWorkspaceRootList({
   onSelect,
   selectedIndex,
 }: CommandWorkspaceRootListProps) {
+  const listRef = useRef<HTMLDivElement>(null);
+  const selectedId = items[selectedIndex]?.id;
+
+  useEffect(() => {
+    listRef.current?.querySelector('[data-selected="true"]')?.scrollIntoView({ block: "nearest" });
+  }, [selectedId]);
+
   return (
     <ScrollArea className="h-[min(52vh,32rem)]">
-      <div className="space-y-0.5 px-2.5 py-2">
+      <div ref={listRef} className="space-y-0.5 px-2.5 py-2">
         {items.map((item, index) => (
           <button
             key={item.id}
             type="button"
+            aria-pressed={item.active}
+            data-selected={selectedIndex === index}
             onClick={() => onSelect(item, index)}
             className={cn(
               "flex w-full items-center gap-3 rounded-lg px-3.5 py-2.5 text-left transition-colors",
@@ -28,6 +38,7 @@ export function CommandWorkspaceRootList({
             <span className="flex size-7 shrink-0 items-center justify-center rounded-md bg-content/8 text-content-muted">
               <CommandWorkspaceIcon id={item.id} />
             </span>
+            {item.active ? <Check aria-label="当前选择" className="size-4 shrink-0" /> : null}
             <span className="min-w-0 flex-1">
               <span className="block truncate text-sm font-medium text-content">{item.label}</span>
               <span className="block truncate text-xs text-content-muted">{item.summary}</span>

@@ -2,6 +2,7 @@
 
 import { type KeyboardEvent, useMemo, useRef, useState } from "react";
 import { useFoliaCommands } from "@/hooks/commandWorkspace/useFoliaCommands";
+import { useCommandWorkspaceQuickSettings } from "@/hooks/commandWorkspace/useCommandWorkspaceQuickSettings";
 import { COMMAND_WORKSPACE_ROOT_PAGES } from "@/constants/commandWorkspaceRoot";
 import { rankCommandWorkspaceEntries } from "@/lib/commandWorkspace/shortcutRanking";
 import { isShortcutCommandAvailable } from "@/lib/shortcuts/availability";
@@ -29,6 +30,7 @@ export function useCommandWorkspaceRoot({
   const [query, setQuery] = useState("");
   const [selectedIndex, setSelectedIndex] = useState(0);
   const folia = useFoliaCommands(null, query);
+  const quickSettings = useCommandWorkspaceQuickSettings();
   const commands = useShortcutRegistry().commands;
   const executeShortcut = useShortcutCommands();
   const commandWorkspaceUsageCounts = useShortcutStore(
@@ -70,6 +72,11 @@ export function useCommandWorkspaceRoot({
                 },
               ]
             : []),
+          ...quickSettings.map((setting) => ({
+            ...setting,
+            type: "action" as const,
+            usageCount: 0,
+          })),
           ...commands
             .filter((command) => (command.scope ?? "global") === "global")
             .filter((command) => command.showInCommandWorkspace !== false)
@@ -88,13 +95,22 @@ export function useCommandWorkspaceRoot({
         ],
         (command) => command.usageCount,
       ).filter((command) => {
-        const text = `${command.label} ${command.keywords}`.toLocaleLowerCase();
+        const text = `${command.label} ${command.summary} ${command.keywords}`.toLocaleLowerCase();
         const search = query.trim().toLocaleLowerCase();
-        return command.id === "dynamic-island"
+        return command.id === "dynamic-island" || command.id.startsWith("setting:")
           ? search.split(/\s+/).every((term) => text.includes(term))
           : text.includes(search);
       }),
-    [commandWorkspaceUsageCounts, commands, latticeActive, latticeAvailable, query, t, usageCounts],
+    [
+      commandWorkspaceUsageCounts,
+      commands,
+      latticeActive,
+      latticeAvailable,
+      query,
+      quickSettings,
+      t,
+      usageCounts,
+    ],
   );
 
   const items: CommandWorkspaceRootItem[] = [
@@ -121,6 +137,11 @@ export function useCommandWorkspaceRoot({
   };
 
   const runItem = (selected: CommandWorkspaceRootItem) => {
+    if (selected.action) {
+      selected.action();
+      onClose();
+      return;
+    }
     if (selected.type === "action" && selected.id === "exit-app") {
       onClose();
       runtime.app.exit();

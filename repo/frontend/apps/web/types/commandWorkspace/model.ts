@@ -37,6 +37,8 @@ export interface CommandWorkspaceSettingsItem {
   label: string;
   shortcutId?: ShortcutCommandId;
   summary: string;
+  keywords?: string;
+  active?: boolean;
 }
 
 export interface UseCommandWorkspaceNavigationOptions {
@@ -52,6 +54,8 @@ export interface CommandWorkspaceRootProps {
 }
 
 export interface CommandWorkspaceRootItem {
+  action?(): void;
+  active?: boolean;
   binding?: ShortcutBinding | null;
   id: string;
   label: string;
