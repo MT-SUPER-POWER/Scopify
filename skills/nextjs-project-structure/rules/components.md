@@ -1,5 +1,21 @@
 # 组件分类与拆分规则
 
+## 先判断组件放哪
+
+| 使用范围 | 放哪里 | 例子 |
+| --- | --- | --- |
+| 与业务无关的通用组件 | `components/ui/` | Button、Tooltip |
+| 跨多个路由、不属于单一领域 | `components/shared/` | QueryBoundary、NetworkRetryState |
+| 被两个及以上路由使用，或属于跨页面的领域 | `components/<领域>/` | 播放器、歌词、侧栏、曲目列表 |
+| 只被一个路由或一个 `@slot` 使用 | 该路由目录，与 `page.tsx` 同级 | 首页「新歌」栏目的 Section 与骨架屏 |
+
+- 就近组件文件多于约 5 个时，才收进该路由下的私有目录 `_components/`，为一两个文件不要提前建
+- 就近组件**不允许被其他路由导入**。第二个路由要用时，把它移到 `components/<领域>/` 再导入，这就是升级规则
+- 拿不准归属时先就近放置，需要共用时再升级；不要为了「以后可能复用」预先放进全局
+- 类型、hooks、常量仍然全局，就近组件通过 `@/types/...`、`@/hooks/...` 导入
+
+---
+
 ## `/components` 内部结构
 
 ```
@@ -35,8 +51,8 @@ components/
 ## 禁止事项
 
 ```
-# ❌ 禁止：_components 局部目录
-app/doc/_components/Sidebar.tsx
+# ❌ 禁止：就近组件被其他路由跨目录导入
+import { Foo } from "@/app/(dashboard)/album/Foo";   # 应升级到 components/<领域>/
 
 # ❌ 禁止：组件平铺在 components/ 根层
 components/DocSidebar.tsx

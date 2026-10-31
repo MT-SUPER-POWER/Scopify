@@ -1,6 +1,6 @@
 ---
 name: nextjs-project-structure
-description: 约束 Next.js App Router 项目的全局代码结构规范。当用户要求创建页面、组件、hooks、类型定义、工具函数、状态管理、常量配置时触发。强制类型/hooks/组件归全局目录；路由层（page/layout）适度组装，禁止无意义空壳转发与 _components 局部目录。适用于任何涉及新建或修改 .tsx/.ts 文件的任务。
+description: 约束 Next.js App Router 项目的代码结构规范。当用户要求创建页面、组件、hooks、类型定义、工具函数、状态管理、常量配置时触发。类型/hooks/工具/常量/状态归全局目录；组件按使用范围归属：多路由共用的进全局 components，单路由专属的就近放在 app 路由目录；页面内可独立加载的区域用并行路由 @slot，禁止无意义空壳转发。适用于任何涉及新建或修改 .tsx/.ts 文件的任务。
 allowed-tools: Bash(find . -type f -name "*.tsx" -o -name "*.ts" | grep -v node_modules), Bash(wc -l)
 ---
 
@@ -10,9 +10,10 @@ allowed-tools: Bash(find . -type f -name "*.tsx" -o -name "*.ts" | grep -v node_
 
 ## 核心原则
 
-1. **全局优先**：类型、hooks、组件、工具函数一律放全局目录，不允许散落在路由文件夹内
-2. **路由层适度组装**：`page` / `layout` 负责 URL 入口与 JSX 拼装；复杂块进 `components/`，但禁止无意义的 `return <Xxx />` 空壳转发
-3. **按领域分类**：全局目录内部再按业务领域建子目录，不允许所有文件平铺在一层
+1. **类型、hooks、工具、常量、状态全局**：一律放全局目录，不允许散落在路由文件夹内
+2. **组件按使用范围归属**：被两个及以上路由使用的进 `components/<领域>/`；只属于一个路由或一个 slot 的就近放在该路由目录，第二个路由要用时再升级为全局
+3. **路由层表达页面组成**：`page` / `layout` 负责 URL 入口与 JSX 拼装；页面内可独立加载、独立失败的区域用并行路由 `@slot` 拆开，禁止无意义的 `return <Xxx />` 空壳转发
+4. **按领域分类**：全局目录内部再按业务领域建子目录，不允许所有文件平铺在一层
 
 ---
 
@@ -20,7 +21,7 @@ allowed-tools: Bash(find . -type f -name "*.tsx" -o -name "*.ts" | grep -v node_
 
 ```
 project-root/
-├── app/                          # 仅放路由文件
+├── app/                          # 路由文件 + 路由专属组件（就近放置）
 │   ├── (marketing)/
 │   │   └── page.tsx              # 只做组装
 │   ├── doc/
@@ -65,13 +66,15 @@ project-root/
 
 ### page / layout → [rules/page.md](./rules/page.md)
 
-- 允许：import 组件拼装、读 params、SSR 数据预取、Next.js 导出
+- 允许：import 组件拼装、读 params、SSR 数据预取、Next.js 导出、用 `@slot` 组织页面内的独立区域
 - 禁止：定义 type/interface、API/hook 封装、无路由职责的单组件转发
 - 行数：**> 150 行** 再考虑拆分，不设 80 行硬限制
+- 并行路由的使用条件、`default.tsx`、共享状态与 Query 边界的关系见该文件「并行路由」一节
 
 ### 组件归类 → [rules/components.md](./rules/components.md)
 
-- **禁止使用** `_components/` 局部目录，所有组件进 `/components/<领域>/`
+- 被两个及以上路由使用的组件进 `/components/<领域>/`；只属于一个路由或一个 slot 的就近放在该路由目录，与 `page.tsx` 同级
+- 路由目录下同级文件较多时才使用私有目录 `_components/`，不要为一两个文件提前建
 - `/components` 内部必须按业务领域建子目录，禁止所有组件平铺在根层
 - 单个组件文件超过 **150 行** 必须拆分
 

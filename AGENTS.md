@@ -51,7 +51,7 @@ Scopify/
 │   ├── frontend/
 │   │   ├── apps/
 │   │   │   ├── web/                 # Next.js Web + Desktop Renderer 源码
-│   │   │   │   ├── app/             # URL 路由与页面组装
+│   │   │   │   ├── app/             # URL 路由、页面组装与路由专属组件
 │   │   │   │   ├── components/      # 按业务领域组织的 UI
 │   │   │   │   ├── types/           # 业务、API 与 Props 类型
 │   │   │   │   ├── hooks/           # 业务 hooks
@@ -118,6 +118,15 @@ Scopify/
 ## 代码规范与架构约定
 
 前端/Electron 的代码结构规范、`app/` 路由组装原则、类型定义放哪、组件拆分及 API 三层架构，统一托管于 Skill：👉 **[skills/nextjs-project-structure/](skills/nextjs-project-structure/SKILL.md)**
+
+### 路由与组件归属
+
+`app/` 用 Next.js 的文件结构表达页面的组成：同一页面里可独立加载、独立失败的业务区域，用并行路由 `@slot` 拆开，区域专属的组件、骨架屏就近放在对应路由目录下。类型、hooks、lib、constants、store 不变，仍全部放全局目录。
+
+- **全局 `components/`**：只放被两个及以上路由使用的组件，以及跨页面的领域（播放器、歌词、侧栏、设置面板等）和 `ui/`、`shared/`。
+- **路由就近**：只被一个路由或一个 slot 使用的组件，放在该路由目录下，与 `page.tsx` 同级；同级文件较多时才使用私有目录 `_components/`。
+- **升级规则**：第二个路由要使用某个就近组件时，把它移到 `components/<领域>/`，并按领域归类，不留在原路由里被其他路由跨目录导入。
+- **并行路由的用法、`default.tsx`、共享状态、与 Query 边界的关系**：见 [rules/page.md](skills/nextjs-project-structure/rules/page.md)。
 
 ### `types/` 目录约定
 
