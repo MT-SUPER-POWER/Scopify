@@ -2,10 +2,12 @@
 
 import { useSearchParams } from "next/navigation";
 import { useCallback } from "react";
+import { NetworkRetryState } from "@/components/shared/NetworkRetryState";
 import { usePlayActions } from "@/hooks/search/usePlayActions";
 import { useSearchData } from "@/hooks/search/useSearchData";
 import { useSmartRouter } from "@/hooks/core/useSmartRouter";
 import { buildSearchCategoryUrl, getSearchCategory } from "@/lib/search/searchCategory";
+import { useI18n } from "@/store/module/i18n";
 import type { Category } from "@/types/search/model";
 import { AllView } from "./_components/AllView";
 import { GridCategoryView } from "./_components/GridCategoryView";
@@ -13,12 +15,12 @@ import { CategorySkeleton } from "./_components/LoadingSkeleton";
 import { LyricsView } from "./_components/LyricsView";
 import { MvsView } from "./_components/MvsView";
 import { PodcastsView } from "./_components/PodcastsView";
-import { SearchOfflineState } from "./_components/SearchOfflineState";
 import { SheetsView } from "./_components/SheetsView";
 import { SongsView } from "./_components/SongsView";
 import { VoicesView } from "./_components/VoicesView";
 
 export default function SearchPage() {
+  const { t } = useI18n();
   const searchParams = useSearchParams();
   const keywords = searchParams.get("keywords") || "";
   const router = useSmartRouter();
@@ -58,7 +60,16 @@ export default function SearchPage() {
   return (
     <>
       {search.hasError && (
-        <SearchOfflineState isRetrying={search.loading} onRetry={() => void search.refetch()} />
+        <div className="mb-6">
+          <NetworkRetryState
+            compact
+            title={t("network.offline.title")}
+            subtitle={t("network.offline.subtitle")}
+            actionLabel={t("network.action.refresh")}
+            isRetrying={search.loading}
+            onRetry={() => void search.refetch()}
+          />
+        </div>
       )}
       {search.loading && <CategorySkeleton category={activeCategory} />}
       {!search.loading && activeCategory === "All" && (
