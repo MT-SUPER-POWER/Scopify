@@ -20,13 +20,13 @@ export default function AppClosePage() {
         }}
       />
       <main
-        className="size-full bg-transparent p-1 text-content"
+        className="size-full overflow-hidden rounded-xl border border-border bg-surface-overlay text-content"
         style={{ WebkitAppRegion: "drag" } as React.CSSProperties}
       >
         <section
           aria-describedby="app-close-description"
           aria-labelledby="app-close-title"
-          className="relative flex size-full flex-col items-center justify-center overflow-hidden rounded-xl border border-border bg-surface-overlay p-8"
+          className="relative flex size-full flex-col items-center justify-center p-8"
           style={{ WebkitAppRegion: "no-drag" } as React.CSSProperties}
         >
           <button
