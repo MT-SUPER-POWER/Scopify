@@ -3,11 +3,65 @@
   "locales": ["zh-CN", "zh-TW", "en-US"],
   "presets": [],
   "keyStyle": "flat",
-  "namespace": { "separator": "." },
-  "resources": [{ "pattern": "repo/frontend/apps/web/locales/{locale}/{namespace}.json" }],
+  "namespace": {
+    "separator": "."
+  },
+  "resources": [
+    {
+      "pattern": "repo/frontend/apps/web/locales/{locale}/{namespace}.json"
+    }
+  ],
+  "checks": {
+    "key-conflict": "off"
+  },
+  "extract": {
+    "ignore": ["**/styles/**", "**/lib/**", "**/types/**", "**/store/**", "**/constants/**"],
+    "ignoreCallees": ["cn", "clsx", "cva", "twMerge"],
+    "ignoreAttributes": [
+      "className",
+      "class",
+      "style",
+      "key",
+      "id",
+      "ref",
+      "href",
+      "src",
+      "type",
+      "name",
+      "width",
+      "height",
+      "target",
+      "rel",
+      "d"
+    ]
+  },
   "usage": {
-    "include": ["repo/frontend/apps/web/**/*.{ts,tsx}"],
-    "exclude": ["repo/frontend/apps/web/tests/**"],
-    "calls": [{ "callee": "t" }, { "callee": "translate", "key": 1 }]
+    "include": [
+      "repo/frontend/apps/web/**/*.{ts,tsx}",
+      "repo/frontend/packages/ui/folia/**/*.{ts,tsx}"
+    ],
+    "exclude": [
+      "repo/frontend/apps/web/tests/**",
+      "repo/frontend/apps/web/scripts/**",
+      "repo/frontend/apps/web/types/**"
+    ],
+    "calls": [
+      {
+        "callee": "t"
+      },
+      {
+        "callee": "translate",
+        "key": 1
+      }
+    ],
+    "regex": [
+      {
+        "extensions": ["ts", "tsx"],
+        "patterns": [
+          "(?<!operation: )(?<!Symbol.for\\()[\"']((?:album|appClose|appearance|artist|audioEqualizer|audioSettings|comments|common|contextMenu|desktopLyrics|desktopPlaybackController|devices|dynamicIsland|errorPage|folia|home|layout|library|login|lyrics|mv|network|notifications|nowPlaying|personalFm|playbar|playerBar|playlist|privateMessages|profile|queue|search|settings|shortcuts|sidebar|social|song|songResources|subtitleControl|subtitlePalette|subtitlePreview|subtitleSystem|taskbarLyric|themeEditor|trackPreview|tray|ui|updates|vipSign)\\.[a-zA-Z][a-zA-Z0-9.]+)[\"']"
+        ]
+      }
+    ],
+    "keysInUse": ["library.listeningReport.timeOfDay.*"]
   }
 }

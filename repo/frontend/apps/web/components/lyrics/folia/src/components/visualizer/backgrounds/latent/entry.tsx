@@ -62,7 +62,7 @@ export default defineVisualizerBackground({
       <>
         <FoliaQuickChip
           label={displayLabel}
-          title={`${t("options.latentDisplayMode")}: ${displayLabel}`}
+          title={`${t("folia.options.latentDisplayMode")}: ${displayLabel}`}
           onClick={() =>
             actions?.latent?.onTuningChange?.({
               displayMode: getSteppedMode(LATENT_DISPLAY_MODES, tuning.displayMode, 1),
@@ -71,7 +71,7 @@ export default defineVisualizerBackground({
         />
         <FoliaQuickChip
           label={colorLabel}
-          title={`${t("options.latentColorSource")}: ${colorLabel}`}
+          title={`${t("folia.options.latentColorSource")}: ${colorLabel}`}
           onClick={() =>
             actions?.latent?.onTuningChange?.({
               colorSource: getSteppedMode(LATENT_COLOR_SOURCES, tuning.colorSource, 1),
@@ -80,7 +80,7 @@ export default defineVisualizerBackground({
         />
         <FoliaQuickToggle
           active={tuning.overlayEnabled}
-          label={t("options.nomandBackgroundOverlay")}
+          label={t("folia.options.nomandBackgroundOverlay")}
           onToggle={() =>
             actions?.latent?.onTuningChange?.({ overlayEnabled: !tuning.overlayEnabled })
           }

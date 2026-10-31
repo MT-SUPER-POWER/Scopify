@@ -60,7 +60,7 @@ export default defineVisualizerBackground({
       <>
         <FoliaQuickChip
           label={sourceLabel}
-          title={`${t("options.nomandBackgroundSource")}: ${sourceLabel}`}
+          title={`${t("folia.options.nomandBackgroundSource")}: ${sourceLabel}`}
           disabled={!hasImage && source === "cover-derived"}
           onClick={() =>
             change({
@@ -71,12 +71,12 @@ export default defineVisualizerBackground({
         />
         <FoliaQuickChip
           label={effectLabel}
-          title={`${t("options.nomandBackgroundEffect")}: ${effectLabel}`}
+          title={`${t("folia.options.nomandBackgroundEffect")}: ${effectLabel}`}
           onClick={() => change({ effect: getSteppedMode(EFFECTS, tuning.effect, 1) })}
         />
         <FoliaQuickToggle
           active={tuning.overlayEnabled}
-          label={t("options.nomandBackgroundOverlay")}
+          label={t("folia.options.nomandBackgroundOverlay")}
           onToggle={() => change({ overlayEnabled: !tuning.overlayEnabled })}
         >
           <Layers size={14} />

@@ -3,10 +3,9 @@ import type Resources from "./resources.generated";
 
 declare module "i18next" {
   interface CustomTypeOptions {
-    defaultNS: "common";
+    defaultNS: readonly (keyof Resources)[];
     resources: Resources;
-    keySeparator: false;
-    nsSeparator: false;
-    enableSelector: "optimize";
+    keySeparator: ".";
+    nsSeparator: ".";
   }
 }

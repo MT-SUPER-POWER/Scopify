@@ -1,4 +1,5 @@
 import { createInstance, type TOptions } from "i18next";
+import { initReactI18next } from "react-i18next";
 import { resources } from "@/locales/resources";
 import type { AppLocale } from "@/types/settings/config";
 
@@ -16,32 +17,29 @@ export const languageLabelKeys: Record<AppLocale, TranslationKey> = {
   "en-US": "common.language.english",
 };
 
-const i18n = createInstance();
-void i18n.init({
+export const i18n = createInstance();
+const namespaces = Object.keys(resources["zh-CN"]) as (keyof SourceResources)[];
+void i18n.use(initReactI18next).init({
   resources,
   lng: "zh-CN",
   fallbackLng: "zh-CN",
-  defaultNS: "common",
+  ns: namespaces,
+  defaultNS: ["common", ...namespaces.filter((namespace) => namespace !== "common")],
   load: "currentOnly",
-  keySeparator: false,
-  nsSeparator: false,
+  keySeparator: ".",
+  nsSeparator: ".",
   initAsync: false,
   interpolation: { escapeValue: false },
   missingInterpolationHandler: () => "",
 });
 
-// Existing application keys include the namespace before the first dot.
 const translateResource = i18n.t.bind(i18n) as unknown as (
   key: string,
   options: TOptions,
 ) => string;
 
 export function translate(locale: AppLocale, key: TranslationKey, params?: TranslationParams) {
-  const separator = key.indexOf(".");
-  const namespace = key.slice(0, separator) as keyof SourceResources;
-  const resourceKey = key.slice(separator + 1);
-  return translateResource(resourceKey, {
-    ns: namespace,
+  return translateResource(key, {
     lng: locale,
     replace: params,
     skipInterpolation: !params,

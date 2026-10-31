@@ -1,9 +1,8 @@
 "use client";
 
-import { useCallback } from "react";
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
-import { type TranslationKey, type TranslationParams, translate } from "@/lib/i18n";
+import { i18n } from "@/lib/i18n";
 import { type AppLocale, DEFAULT_WEB_CONFIG } from "@/types/settings/config";
 
 interface I18nStore {
@@ -16,32 +15,17 @@ export const useI18nStore = create<I18nStore>()(
     (set) => ({
       // NOTE: setting 来控制的 i18n 的传入点
       locale: DEFAULT_WEB_CONFIG.app.locale,
-      setLocale: (locale) => set({ locale }),
+      setLocale: (locale) => {
+        void i18n.changeLanguage(locale);
+        set({ locale });
+      },
     }),
     {
       name: "i18n-storage",
       storage: createJSONStorage(() => localStorage),
+      onRehydrateStorage: () => (state) => {
+        if (state) void i18n.changeLanguage(state.locale);
+      },
     },
   ),
 );
-
-/**
- * 自定义的 i18n hooks
- * @description 这个 hooks 提供了当前语言环境、设置语言环境的函数，以及一个翻译函数
- * 翻译函数接受一个翻译键，并返回对应的翻译文本 t("")
- * @returns { locale, setLocale, t } - 当前语言环境，设置语言环境的函数，以及翻译函数
- */
-export function useI18n() {
-  const locale = useI18nStore((state) => state.locale);
-  const setLocale = useI18nStore((state) => state.setLocale);
-  const t = useCallback(
-    (key: TranslationKey, params?: TranslationParams) => translate(locale, key, params),
-    [locale],
-  );
-
-  return {
-    locale,
-    setLocale,
-    t,
-  };
-}

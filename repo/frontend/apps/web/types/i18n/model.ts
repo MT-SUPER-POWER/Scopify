@@ -1,3 +1,3 @@
-import type { TranslationKey, TranslationParams } from "@/lib/i18n";
+import type { TFunction } from "i18next";
 
-export type TranslateFn = (key: TranslationKey, params?: TranslationParams) => string;
+export type TranslateFn = TFunction;

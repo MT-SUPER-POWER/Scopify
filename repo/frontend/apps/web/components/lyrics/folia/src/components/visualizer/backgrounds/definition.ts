@@ -121,7 +121,7 @@ export interface VisualizerBackgroundSettingsProps {
 export interface VisualizerBackgroundQuickControlsProps {
   config?: VisualizerBackgroundConfig;
   actions?: VisualizerBackgroundActions;
-  t: (key: string) => string;
+  t: TranslateFn;
   isDaylight: boolean;
   theme: Theme;
 }

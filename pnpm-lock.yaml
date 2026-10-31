@@ -574,6 +574,9 @@ importers:
       react-day-picker:
         specifier: ^10.0.1
         version: 10.0.2(@types/react@19.3.0)(react@19.2.3)
+      react-i18next:
+        specifier: 17.1.9
+        version: 17.1.9(i18next@26.5.11(typescript@5.9.3))(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(typescript@5.9.3)
       recharts:
         specifier: ^3.10.1
         version: 3.10.1(@types/react@19.3.0)(react-dom@19.2.3(react@19.2.3))(react-is@16.13.1)(react@19.2.3)(redux@5.0.1)
