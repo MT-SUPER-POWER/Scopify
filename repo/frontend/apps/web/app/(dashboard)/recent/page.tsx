@@ -1,16 +1,17 @@
 "use client";
 
-import { History } from "lucide-react";
+import { BarChart3, History } from "lucide-react";
+import Link from "next/link";
 import { useMemo } from "react";
 import { LibraryErrorPage } from "@/components/library/LibraryErrorPage";
 import { LibraryStatePage } from "@/components/library/LibraryStatePage";
 import { PlaylistContent } from "@/components/Playlist/PlaylistContent";
 import { QuietState } from "@/components/shared/QuietState";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@scopify/ui/shadcn/components/tooltip";
 import { useRecentSongsQuery } from "@/hooks/library/useLibraryQueries";
 import { useLoginStatus } from "@/hooks/auth/useLoginStatus";
 import { useI18n } from "@/store/module/i18n";
 import type { PlaylistInfo } from "@/types/playlist/model";
-import { RecentReportLink } from "./_components/RecentReportLink";
 
 export default function RecentSongsPage() {
   const { t } = useI18n();
@@ -55,7 +56,22 @@ export default function RecentSongsPage() {
   return (
     <PlaylistContent
       dailyDate={null}
-      actionSlot={<RecentReportLink />}
+      actionSlot={
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Link
+              href="/recent/report"
+              aria-label={t("library.listeningReport.entry")}
+              className="relative inline-flex cursor-pointer items-center justify-center text-content-muted transition-colors hover:text-content"
+            >
+              <BarChart3 className="size-7 md:size-8" />
+            </Link>
+          </TooltipTrigger>
+          <TooltipContent side="top" sideOffset={8}>
+            {t("library.listeningReport.entry")}
+          </TooltipContent>
+        </Tooltip>
+      }
       isDailyRecommend={false}
       isLoading={recentSongsQuery.isLoading}
       playlistId={null}

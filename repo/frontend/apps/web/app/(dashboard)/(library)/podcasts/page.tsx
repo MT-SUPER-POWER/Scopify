@@ -4,8 +4,9 @@ import { Podcast } from "lucide-react";
 import { useState } from "react";
 import { LibraryContentState } from "@/components/library/LibraryContentState";
 import { LibraryMediaGrid } from "@/components/library/LibraryMediaGrid";
+import { PodcastViewToggle } from "@/components/library/PodcastViewToggle";
 import { QuietState } from "@/components/shared/QuietState";
-import { Tabs, TabsContent } from "@/components/ui/tabs";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   useCreatedPodcastsQuery,
   useLikedVoicesQuery,
@@ -17,9 +18,6 @@ import { useI18n } from "@/store/module/i18n";
 import type { PodcastLibraryTab, PodcastViewMode } from "@/types/library/model";
 import { LikedVoiceList } from "./_components/LikedVoiceList";
 import { PodcastRecommendations } from "./_components/PodcastRecommendations";
-import { PodcastsEmptyState } from "./_components/PodcastsEmptyState";
-import { PodcastsHeader } from "./_components/PodcastsHeader";
-import { PodcastsTabList } from "./_components/PodcastsTabList";
 import { SubscribedPodcastGrid } from "./_components/SubscribedPodcastGrid";
 import { SubscribedPodcastTable } from "./_components/SubscribedPodcastTable";
 
@@ -41,14 +39,44 @@ export default function PodcastsPage() {
     if (isPodcastLibraryTab(value)) setActiveTab(value);
   };
 
+  const emptyState = (
+    <QuietState
+      icon={Podcast}
+      title={t("library.empty.podcasts.title")}
+      description={t("library.empty.podcasts.description")}
+    />
+  );
+
   return (
     <Tabs value={activeTab} onValueChange={handleTabChange}>
-      <PodcastsHeader
-        onViewChange={setSubscribedView}
-        showViewToggle={isLoggedIn && activeTab === "subscribed"}
-        view={subscribedView}
-      />
-      {isLoggedIn ? <PodcastsTabList /> : null}
+      <header className="flex flex-wrap items-center justify-between gap-4 pb-5">
+        <h1 className="text-3xl font-bold text-content">{t("library.title.podcasts")}</h1>
+        {isLoggedIn && activeTab === "subscribed" ? (
+          <PodcastViewToggle value={subscribedView} onChange={setSubscribedView} />
+        ) : null}
+      </header>
+      {isLoggedIn ? (
+        <TabsList className="h-auto w-full justify-start gap-2 overflow-x-auto bg-transparent p-0">
+          <TabsTrigger
+            value="subscribed"
+            className="shrink-0 rounded-full border border-content/10 bg-content/5"
+          >
+            {t("library.podcasts.subscribed")}
+          </TabsTrigger>
+          <TabsTrigger
+            value="created"
+            className="shrink-0 rounded-full border border-content/10 bg-content/5"
+          >
+            {t("library.podcasts.created")}
+          </TabsTrigger>
+          <TabsTrigger
+            value="liked"
+            className="shrink-0 rounded-full border border-content/10 bg-content/5"
+          >
+            {t("library.podcasts.likedVoices")}
+          </TabsTrigger>
+        </TabsList>
+      ) : null}
 
       {!isLoggedIn ? (
         <QuietState icon={Podcast} title={t("library.loggedOut.podcasts")} />
@@ -60,7 +88,7 @@ export default function PodcastsPage() {
               isError={subscribedPodcastsQuery.isError}
               isLoading={subscribedPodcastsQuery.isLoading}
               isRetrying={subscribedPodcastsQuery.isRefetching}
-              emptyState={<PodcastsEmptyState />}
+              emptyState={emptyState}
               onRetry={() => void subscribedPodcastsQuery.refetch()}
             >
               {subscribedView === "list" ? (
@@ -84,7 +112,7 @@ export default function PodcastsPage() {
               isError={createdPodcastsQuery.isError}
               isLoading={createdPodcastsQuery.isLoading}
               isRetrying={createdPodcastsQuery.isRefetching}
-              emptyState={<PodcastsEmptyState />}
+              emptyState={emptyState}
               onRetry={() => void createdPodcastsQuery.refetch()}
             >
               <LibraryMediaGrid items={createdPodcastsQuery.data ?? []} />
@@ -97,7 +125,7 @@ export default function PodcastsPage() {
               isError={likedVoicesQuery.isError}
               isLoading={likedVoicesQuery.isLoading}
               isRetrying={likedVoicesQuery.isRefetching}
-              emptyState={<PodcastsEmptyState />}
+              emptyState={emptyState}
               onRetry={() => void likedVoicesQuery.refetch()}
             >
               <LikedVoiceList voices={likedVoicesQuery.data ?? []} />
