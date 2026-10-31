@@ -1,6 +1,7 @@
 "use client";
 
 import { Minimize, MonitorCog, Power, Settings, Wallpaper } from "lucide-react";
+import { Button } from "@scopify/ui/shadcn/components/button";
 import { SongTitle } from "@/components/shared/Marquee";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
@@ -8,10 +9,24 @@ import { VolumeControl } from "@/components/PlayBar/VolumeControl";
 import { useTrayPanel } from "@/hooks/desktop/useTrayPanel";
 import { runtime } from "@/lib/runtime";
 import { useI18n } from "@/store/module/i18n";
+import type { TrayMenuButtonProps } from "@/types/desktop/trayComponents";
 import { TrayLyricSurfaces } from "./_components/TrayLyricSurfaces";
-import { TrayMenuButton } from "./_components/TrayMenuButton";
 import { TrayPlaybackControls } from "./_components/TrayPlaybackControls";
 import { TraySwitchRow } from "./_components/TraySwitchRow";
+
+/** 托盘面板里“图标 + 文案”的菜单行，覆盖 Button 的默认样式让它更像菜单项。 */
+function TrayMenuButton({ icon: Icon, label, onClick }: TrayMenuButtonProps) {
+  return (
+    <Button
+      variant="ghost"
+      className="h-9 w-full justify-start gap-0 rounded-md px-3 font-normal text-content-muted transition-colors hover:bg-surface-elevated hover:text-content"
+      onClick={onClick}
+    >
+      <Icon className="mr-2 size-4" />
+      <span>{label}</span>
+    </Button>
+  );
+}
 
 export default function TrayPage() {
   const { t } = useI18n();
