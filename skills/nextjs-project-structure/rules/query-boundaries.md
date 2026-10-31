@@ -49,7 +49,13 @@ Query 必须在对应边界的子组件中调用。父组件已经调用 Query �
 - 资源身份变化（页面 ID、搜索词/Tab）重置对应边界，不能将旧资源的错误沿用到新资源；不要使用每次渲染都新建的对象作为无条件重置触发器。
 - QueryCache.onError / MutationCache.onError 用于统一记录。避免请求层、Query 层、边界和业务组件重复弹出同一错误。
 
-不强制迁移到 Suspense。普通 useQuery 配合 throwOnError 已能接入；含条件请求的 hook 不可直接替换成不支持 enabled 的 useSuspenseQuery。若同一边界使用多个 Suspense 查询，注意请求瀑布和并行策略。
+并行路由 `@slot` 的区域优先使用 Suspense：单一请求、无条件的读取用 `useSuspenseQuery`，骨架屏写在 slot 的 `loading.tsx`，失败仍进本节的 `QueryBoundary`。以下情况保留 `useQuery`，在区域内按「首次无数据且请求中」渲染骨架屏：
+
+- 含条件请求（`enabled`）：`useSuspenseQuery` 不支持。登录判断放在 Suspense 之外的门控组件，未登录直接返回 `null`，门控内部再用 Suspense Query。
+- 有备用数据源（`selectFallbackSource`）：Suspense Query 出错就抛，无法表达「一个失败用另一个」。
+- 需要展示「离线等待」（fetchStatus paused）：Suspense 会一直停在骨架屏。
+
+静态导出的预渲染阶段不得触发真实请求；首个迁移的 slot 先验证构建结果再推广。若同一边界使用多个 Suspense 查询，注意请求瀑布和并行策略。非 slot 区域仍不强制迁移，普通 useQuery 配合 throwOnError 已能接入。
 
 ## 禁止与迁移
 

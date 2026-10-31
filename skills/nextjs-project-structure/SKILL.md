@@ -1,6 +1,6 @@
 ---
 name: nextjs-project-structure
-description: 约束 Next.js App Router 项目的代码结构规范。当用户要求创建页面、组件、hooks、类型定义、工具函数、状态管理、常量配置时触发。类型/hooks/工具/常量/状态归全局目录；组件按使用范围归属：多路由共用的进全局 components，单路由专属的就近放在 app 路由目录；页面内可独立加载的区域用并行路由 @slot，禁止无意义空壳转发。适用于任何涉及新建或修改 .tsx/.ts 文件的任务。
+description: 约束 Next.js App Router 项目的代码结构规范。当用户要求创建页面、组件、hooks、类型定义、工具函数、状态管理、常量配置时触发。类型/hooks/工具/常量/状态归全局目录；组件分三层：纯展示的特色组件进 @scopify/ui/scopify，带业务耦合且多路由共用的进全局 components，页面专属的放路由 _components；layout 负责排版与摆放，页面内可独立加载的区域用并行路由 @slot，禁止无意义空壳转发。适用于任何涉及新建或修改 .tsx/.ts 文件的任务。
 allowed-tools: Bash(find . -type f -name "*.tsx" -o -name "*.ts" | grep -v node_modules), Bash(wc -l)
 ---
 
@@ -11,8 +11,8 @@ allowed-tools: Bash(find . -type f -name "*.tsx" -o -name "*.ts" | grep -v node_
 ## 核心原则
 
 1. **类型、hooks、工具、常量、状态全局**：一律放全局目录，不允许散落在路由文件夹内
-2. **组件按使用范围归属**：被两个及以上路由使用的进 `components/<领域>/`；只属于一个路由或一个 slot 的就近放在该路由目录，第二个路由要用时再升级为全局
-3. **路由层表达页面组成**：`page` / `layout` 负责 URL 入口与 JSX 拼装；页面内可独立加载、独立失败的区域用并行路由 `@slot` 拆开，禁止无意义的 `return <Xxx />` 空壳转发
+2. **组件分三层**：纯展示的特色组件进 `@scopify/ui/scopify/components`；带业务耦合且被两个及以上路由使用的进 `components/<领域>/`；页面或 slot 专属的放该路由的 `_components/`，第二个路由要用时再升级
+3. **layout 管排版，page 管切换**：容器、栅格、背景、共享 Provider 写在 layout；页面内可独立加载、独立失败的区域用并行路由 `@slot` 拆开，由 layout 摆放；禁止 `page → XxxPage → XxxContent` 式的层层转发
 4. **按领域分类**：全局目录内部再按业务领域建子目录，不允许所有文件平铺在一层
 
 ---
@@ -21,7 +21,7 @@ allowed-tools: Bash(find . -type f -name "*.tsx" -o -name "*.ts" | grep -v node_
 
 ```
 project-root/
-├── app/                          # 路由文件 + 路由专属组件（就近放置）
+├── app/                          # 路由文件 + 路由专属组件（_components/）
 │   ├── (marketing)/
 │   │   └── page.tsx              # 只做组装
 │   ├── doc/
@@ -69,12 +69,12 @@ project-root/
 - 允许：import 组件拼装、读 params、SSR 数据预取、Next.js 导出、用 `@slot` 组织页面内的独立区域
 - 禁止：定义 type/interface、API/hook 封装、无路由职责的单组件转发
 - 行数：**> 150 行** 再考虑拆分，不设 80 行硬限制
-- 并行路由的使用条件、`default.tsx`、共享状态与 Query 边界的关系见该文件「并行路由」一节
+- layout / slot / page 的分工、并行路由的使用条件、`default.tsx`、共享状态与 Query 边界的关系见该文件
 
 ### 组件归类 → [rules/components.md](./rules/components.md)
 
-- 被两个及以上路由使用的组件进 `/components/<领域>/`；只属于一个路由或一个 slot 的就近放在该路由目录，与 `page.tsx` 同级
-- 路由目录下同级文件较多时才使用私有目录 `_components/`，不要为一两个文件提前建
+- 三层归属与选择顺序：纯展示的特色组件进 `@scopify/ui/scopify/components`；带业务耦合且被两个及以上路由使用的进 `/components/<领域>/`；页面或 slot 专属的放该路由的 `_components/`
+- 现有组件靠 props 和 token 能满足就不复制；`_components/` 只放小改动适配不了、需要改造的组件，且不允许被其他路由导入
 - `/components` 内部必须按业务领域建子目录，禁止所有组件平铺在根层
 - 单个组件文件超过 **150 行** 必须拆分
 

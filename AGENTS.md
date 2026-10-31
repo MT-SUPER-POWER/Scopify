@@ -121,12 +121,17 @@ Scopify/
 
 ### 路由与组件归属
 
-`app/` 用 Next.js 的文件结构表达页面的组成：同一页面里可独立加载、独立失败的业务区域，用并行路由 `@slot` 拆开，区域专属的组件、骨架屏就近放在对应路由目录下。类型、hooks、lib、constants、store 不变，仍全部放全局目录。
+`app/` 用 Next.js 的文件结构表达页面的组成：**layout 决定放在哪，slot 决定放什么，page 只是随 URL 切换的那一块**。排版（容器、栅格、背景、共享 Provider）写在 layout；同一页面里可独立加载、独立失败的业务区域，用并行路由 `@slot` 拆开；page 不再层层转发。类型、hooks、lib、constants、store 不变，仍全部放全局目录。
 
-- **全局 `components/`**：只放被两个及以上路由使用的组件，以及跨页面的领域（播放器、歌词、侧栏、设置面板等）和 `ui/`、`shared/`。
-- **路由就近**：只被一个路由或一个 slot 使用的组件，放在该路由目录下，与 `page.tsx` 同级；同级文件较多时才使用私有目录 `_components/`。
-- **升级规则**：第二个路由要使用某个就近组件时，把它移到 `components/<领域>/`，并按领域归类，不留在原路由里被其他路由跨目录导入。
-- **并行路由的用法、`default.tsx`、共享状态、与 Query 边界的关系**：见 [rules/page.md](skills/nextjs-project-structure/rules/page.md)。
+组件分三层：
+
+- **`@scopify/ui/scopify/components`**：有 Scopify 特色、可复用的纯展示组件，不依赖 store、路由、API、i18n。
+- **`apps/web/components/<领域>/`**：带业务耦合、且被两个及以上路由使用的组件，以及跨页面的领域（播放器、歌词、侧栏、设置面板等）。
+- **`<路由>/_components/`**：页面或 slot 专属的组件。现有组件靠 props 和 token 做小改动适配不了时，才复制过来改造，不允许被其他路由导入。
+
+被第二个路由需要时升级：纯展示的进 `ui/scopify/components`，带业务耦合的进 `components/<领域>/`。
+
+layout、slot、`default.tsx`、共享状态、与 Query 边界的关系见 [rules/page.md](skills/nextjs-project-structure/rules/page.md)，三层归属和选择顺序见 [rules/components.md](skills/nextjs-project-structure/rules/components.md)。
 
 ### `types/` 目录约定
 

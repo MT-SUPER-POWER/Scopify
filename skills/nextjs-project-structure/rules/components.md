@@ -2,17 +2,27 @@
 
 ## 先判断组件放哪
 
-| 使用范围 | 放哪里 | 例子 |
+| 层 | 放什么 | 约束 |
 | --- | --- | --- |
-| 与业务无关的通用组件 | `components/ui/` | Button、Tooltip |
-| 跨多个路由、不属于单一领域 | `components/shared/` | QueryBoundary、NetworkRetryState |
-| 被两个及以上路由使用，或属于跨页面的领域 | `components/<领域>/` | 播放器、歌词、侧栏、曲目列表 |
-| 只被一个路由或一个 `@slot` 使用 | 该路由目录，与 `page.tsx` 同级 | 首页「新歌」栏目的 Section 与骨架屏 |
+| `@scopify/ui/scopify/components` | 有 Scopify 特色、可复用的纯展示组件 | 不依赖 store、路由、API、i18n；文案、回调全部通过 props 传入 |
+| `apps/web/components/<领域>/` | 带业务耦合（store、Query、i18n、路由）且被两个及以上路由使用的组件；跨页面的领域（播放器、歌词、侧栏） | 按业务领域分目录，`shared/` 只放跨领域的通用业务组件 |
+| `<路由>/_components/` | 页面或 slot 专属的组件 | 现有组件靠 props 和 token 做小改动适配不了时，才复制过来改造；不允许被其他路由导入 |
 
-- 就近组件文件多于约 5 个时，才收进该路由下的私有目录 `_components/`，为一两个文件不要提前建
-- 就近组件**不允许被其他路由导入**。第二个路由要用时，把它移到 `components/<领域>/` 再导入，这就是升级规则
-- 拿不准归属时先就近放置，需要共用时再升级；不要为了「以后可能复用」预先放进全局
-- 类型、hooks、常量仍然全局，就近组件通过 `@/types/...`、`@/hooks/...` 导入
+通用基础组件来自 `@scopify/ui/shadcn`，见 [ui-package-boundaries](../../ui-package-boundaries/SKILL.md)。
+
+### 选择顺序
+
+1. 有现成组件（`shadcn`、`scopify`、`components/`）能用 props 和 token 满足，就直接用，不复制
+2. 要新写的组件是纯展示、有 Scopify 特色且可复用，放 `ui/scopify/components`
+3. 带业务耦合、且被两个及以上路由使用，放 `components/<领域>/`
+4. 其余页面专属的写进该路由的 `_components/`
+
+### 升级规则
+
+- `_components/` 里的组件被第二个路由需要时，不要跨目录导入：纯展示的升级到 `ui/scopify/components`，带业务耦合的升级到 `components/<领域>/`
+- 拿不准归属时先放 `_components/`，需要共用时再升级；不要为了「以后可能复用」预先放进全局
+- `_components/` 可放在路由目录或 `@slot` 目录下，Next.js 不会把私有目录当路由
+- 类型、hooks、常量仍然全局，各层组件都通过 `@/types/...`、`@/hooks/...` 导入
 
 ---
 

@@ -49,6 +49,14 @@ Use this order before creating or changing a shared UI component.
    The extension may import public shadcn primitives when useful, but it must
    not edit or reach into shadcn implementation internals.
 
+   `scopify/components/` also holds **reusable product patterns**: purely
+   presentational components with a Scopify-specific look or structure that
+   several pages share (for example a media grid card or a section pager),
+   even when they are composed from native primitives. They must be driven
+   entirely by props: no stores, routes, API calls, or i18n lookups. Labels
+   and callbacks come from the caller. A pattern used by only one page stays
+   in that route's `_components/` until a second page needs it.
+
 3. **Keep business UI in the application.** A component coupled to Web routes,
    API responses, Zustand stores, app-specific permissions, or translations is
    business UI. Keep it under the Web application even when it composes shared
