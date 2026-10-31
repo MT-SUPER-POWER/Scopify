@@ -1,16 +1,16 @@
 "use client";
 
-import { BarChart3, History } from "lucide-react";
-import Link from "next/link";
+import { History } from "lucide-react";
 import { useMemo } from "react";
+import { LibraryErrorPage } from "@/components/library/LibraryErrorPage";
+import { LibraryStatePage } from "@/components/library/LibraryStatePage";
 import { PlaylistContent } from "@/components/Playlist/PlaylistContent";
-import { NetworkRetryState } from "@/components/shared/NetworkRetryState";
 import { QuietState } from "@/components/shared/QuietState";
-import { Tooltip, TooltipContent, TooltipTrigger } from "@scopify/ui/shadcn/components/tooltip";
 import { useRecentSongsQuery } from "@/hooks/library/useLibraryQueries";
 import { useLoginStatus } from "@/hooks/auth/useLoginStatus";
 import { useI18n } from "@/store/module/i18n";
 import type { PlaylistInfo } from "@/types/playlist/model";
+import { RecentReportLink } from "./_components/RecentReportLink";
 
 export default function RecentSongsPage() {
   const { t } = useI18n();
@@ -37,45 +37,25 @@ export default function RecentSongsPage() {
 
   if (!isLoggedIn) {
     return (
-      <main className="min-h-screen bg-surface-raised px-6 pt-8 pb-28 md:px-10">
+      <LibraryStatePage>
         <QuietState icon={History} title={t("library.loggedOut.recent")} />
-      </main>
+      </LibraryStatePage>
     );
   }
 
   if (recentSongsQuery.isError) {
     return (
-      <main className="min-h-screen bg-surface-raised px-6 pt-8 pb-28 md:px-10">
-        <NetworkRetryState
-          title={t("network.offline.title")}
-          subtitle={t("network.offline.subtitle")}
-          actionLabel={t("network.action.refresh")}
-          isRetrying={recentSongsQuery.isRefetching}
-          onRetry={() => void recentSongsQuery.refetch()}
-        />
-      </main>
+      <LibraryErrorPage
+        isRetrying={recentSongsQuery.isRefetching}
+        onRetry={() => void recentSongsQuery.refetch()}
+      />
     );
   }
 
   return (
     <PlaylistContent
       dailyDate={null}
-      actionSlot={
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <Link
-              href="/recent/report"
-              aria-label={t("library.listeningReport.entry")}
-              className="relative inline-flex cursor-pointer items-center justify-center text-content-muted transition-colors hover:text-content"
-            >
-              <BarChart3 className="size-7 md:size-8" />
-            </Link>
-          </TooltipTrigger>
-          <TooltipContent side="top" sideOffset={8}>
-            {t("library.listeningReport.entry")}
-          </TooltipContent>
-        </Tooltip>
-      }
+      actionSlot={<RecentReportLink />}
       isDailyRecommend={false}
       isLoading={recentSongsQuery.isLoading}
       playlistId={null}

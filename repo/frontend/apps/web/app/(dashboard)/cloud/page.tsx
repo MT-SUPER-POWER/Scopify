@@ -2,11 +2,9 @@
 
 import { Cloud } from "lucide-react";
 import { useMemo, useState } from "react";
-import { CloudDriveActions } from "@/components/library/CloudDriveActions";
-import { CloudMatchDialog } from "@/components/library/CloudMatchDialog";
-import { CloudStorageRing } from "@/components/library/CloudStorageRing";
+import { LibraryErrorPage } from "@/components/library/LibraryErrorPage";
+import { LibraryStatePage } from "@/components/library/LibraryStatePage";
 import { PlaylistContent } from "@/components/Playlist/PlaylistContent";
-import { NetworkRetryState } from "@/components/shared/NetworkRetryState";
 import { QuietState } from "@/components/shared/QuietState";
 import { SidebarPlaylistConfirmDialog } from "@/components/Siderbar/SidebarPlaylistConfirmDialog";
 import { CLOUD_SONG_FALLBACK_COVER } from "@/constants/cloud";
@@ -15,6 +13,9 @@ import { useI18n } from "@/store/module/i18n";
 import type { SongDetail } from "@/types/song/api";
 import type { CloudTrackActions } from "@/types/library/components";
 import type { PlaylistInfo } from "@/types/playlist/model";
+import { CloudDriveActions } from "./_components/CloudDriveActions";
+import { CloudMatchDialog } from "./_components/CloudMatchDialog";
+import { CloudStorageRing } from "./_components/CloudStorageRing";
 
 const EMPTY_TRACKS: SongDetail[] = [];
 
@@ -59,23 +60,15 @@ export default function CloudDrivePage() {
 
   if (!isLoggedIn) {
     return (
-      <main className="min-h-screen bg-surface-raised px-6 pt-8 pb-28 md:px-10">
+      <LibraryStatePage>
         <QuietState icon={Cloud} title={t("library.loggedOut.cloud")} />
-      </main>
+      </LibraryStatePage>
     );
   }
 
   if (query.isError) {
     return (
-      <main className="min-h-screen bg-surface-raised px-6 pt-8 pb-28 md:px-10">
-        <NetworkRetryState
-          title={t("network.offline.title")}
-          subtitle={t("network.offline.subtitle")}
-          actionLabel={t("network.action.refresh")}
-          isRetrying={query.isRefetching}
-          onRetry={() => void query.refetch()}
-        />
-      </main>
+      <LibraryErrorPage isRetrying={query.isRefetching} onRetry={() => void query.refetch()} />
     );
   }
 

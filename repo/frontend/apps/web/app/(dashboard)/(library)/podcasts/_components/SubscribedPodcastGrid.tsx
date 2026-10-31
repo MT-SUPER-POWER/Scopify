@@ -1,6 +1,6 @@
 "use client";
 
-import { SubscribedPodcastCard } from "@/components/library/SubscribedPodcastCard";
+import { SubscribedPodcastCard } from "./SubscribedPodcastCard";
 import { usePodcastPlay } from "@/hooks/library/usePodcastPlay";
 import { usePlayerStore } from "@/store";
 import type { SubscribedPodcastGridProps } from "@/types/library/components";

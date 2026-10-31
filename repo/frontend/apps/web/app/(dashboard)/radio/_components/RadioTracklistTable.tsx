@@ -3,7 +3,7 @@
 import { ChevronDown, ChevronUp, Clock } from "lucide-react";
 import { useCallback, useMemo, useState } from "react";
 
-import { RadioProgramRow } from "@/components/radio/RadioProgramRow";
+import { RadioProgramRow } from "./RadioProgramRow";
 import { TracklistResizeHandle } from "@/components/shared/TracklistResizeHandle";
 import {
   Table,

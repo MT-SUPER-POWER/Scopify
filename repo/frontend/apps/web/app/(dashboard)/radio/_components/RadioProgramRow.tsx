@@ -1,7 +1,7 @@
 "use client";
 
-import { RadioProgramPlaybackBadge } from "@/components/radio/RadioProgramPlaybackBadge";
-import { RadioProgramDescription } from "@/components/radio/RadioProgramDescription";
+import { RadioProgramPlaybackBadge } from "./RadioProgramPlaybackBadge";
+import { RadioProgramDescription } from "./RadioProgramDescription";
 import { SongContextMenu } from "@/components/shared/SongContextMenu";
 import { SongTitleWithAlia } from "@/components/shared/SongTitleWithAlia";
 import { TrackIndexCell } from "@/components/shared/TrackIndexCell";
