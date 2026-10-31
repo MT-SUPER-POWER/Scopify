@@ -17,6 +17,7 @@ import type { SidebarPlaylistLibraryProps } from "@/types/sidebar/components";
 import { SidebarSpecialPlaylists } from "./SidebarSpecialPlaylists";
 import { SidebarPlaylistLibraryContent } from "./SidebarPlaylistLibraryContent";
 import { SidebarPlaylistFailure } from "./SidebarPlaylistFailure";
+import { SidebarPlaylistSkeleton } from "./SidebarPlaylistSkeleton";
 
 export function SidebarPlaylistLibrary({ isCollapsed }: SidebarPlaylistLibraryProps) {
   const { t } = useTranslation();
@@ -57,6 +58,7 @@ export function SidebarPlaylistLibrary({ isCollapsed }: SidebarPlaylistLibraryPr
           resetKey={`sidebar-playlists:${isLoggedIn}:${userId ?? "anonymous"}`}
           compact
           renderFailure={(props) => <SidebarPlaylistFailure {...props} isCollapsed={isCollapsed} />}
+          renderWaiting={() => <SidebarPlaylistSkeleton isCollapsed={isCollapsed} />}
         >
           {isLoggedIn && <SidebarSpecialPlaylists isCollapsed={isCollapsed} />}
           <SidebarPlaylistLibraryContent

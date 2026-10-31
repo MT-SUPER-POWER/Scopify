@@ -1447,6 +1447,18 @@ export default interface Resources {
     "action.refresh": "重试";
     "offline.subtitle": "网络或服务暂时不可用";
     "offline.title": "加载失败";
+    "recovery.backendSettings": "后端设置";
+    "recovery.degraded.title": "暂时无法连接到服务";
+    "recovery.offline.detail": "恢复连接后会自动刷新内容";
+    "recovery.offline.title": "网络已断开";
+    "recovery.persistent.detail": "请检查网络或代理设置";
+    "recovery.persistent.title": "仍然无法连接";
+    "recovery.reconnecting": "正在重新连接…";
+    "recovery.restartBackend": "重启后端";
+    "recovery.restored": "已恢复连接";
+    "recovery.retryIn": "{{seconds}} 秒后自动重试";
+    "recovery.retryNow": "立即重试";
+    "recovery.waiting": "等待连接恢复";
   };
   notifications: {
     all: "全部";

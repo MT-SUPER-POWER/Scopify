@@ -1,5 +1,17 @@
 {
   "offline.title": "載入失敗",
   "offline.subtitle": "網路或服務暫時無法使用",
-  "action.refresh": "重試"
+  "action.refresh": "重試",
+  "recovery.offline.title": "網路已中斷",
+  "recovery.offline.detail": "恢復連線後會自動重新整理內容",
+  "recovery.degraded.title": "暫時無法連線到服務",
+  "recovery.persistent.title": "仍然無法連線",
+  "recovery.persistent.detail": "請檢查網路或代理設定",
+  "recovery.retryIn": "{{seconds}} 秒後自動重試",
+  "recovery.reconnecting": "正在重新連線…",
+  "recovery.retryNow": "立即重試",
+  "recovery.restored": "已恢復連線",
+  "recovery.waiting": "等待連線恢復",
+  "recovery.backendSettings": "後端設定",
+  "recovery.restartBackend": "重新啟動後端"
 }

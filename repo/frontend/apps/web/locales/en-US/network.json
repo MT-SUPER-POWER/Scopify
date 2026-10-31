@@ -1,5 +1,17 @@
 {
   "offline.title": "Couldn't load",
   "offline.subtitle": "The network or service is unavailable right now",
-  "action.refresh": "Retry"
+  "action.refresh": "Retry",
+  "recovery.offline.title": "You're offline",
+  "recovery.offline.detail": "Content refreshes when you reconnect",
+  "recovery.degraded.title": "Can't reach the service",
+  "recovery.persistent.title": "Still can't connect",
+  "recovery.persistent.detail": "Check your network or proxy settings",
+  "recovery.retryIn": "Retrying in {{seconds}}s",
+  "recovery.reconnecting": "Reconnecting…",
+  "recovery.retryNow": "Retry now",
+  "recovery.restored": "Connection restored",
+  "recovery.waiting": "Waiting for connection",
+  "recovery.backendSettings": "Backend settings",
+  "recovery.restartBackend": "Restart backend"
 }

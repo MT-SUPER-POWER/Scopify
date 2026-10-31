@@ -14,6 +14,8 @@ import { CenterLyricsView } from "@/components/lyrics/CenterLyricsView";
 import { FoliaSettingsMount } from "@/components/lyrics/FoliaSettingsMount";
 import { LyricStageMount } from "@/components/lyrics/LyricStageMount";
 import { NowPlayingCollapsedRail } from "@/components/nowPlaying/NowPlayingCollapsedRail";
+import { BackendUnavailableTakeover } from "@/components/network/BackendUnavailableTakeover";
+import { ConnectionBanner } from "@/components/network/ConnectionBanner";
 import { NowPlayingPanel } from "@/components/nowPlaying/NowPlayingPanel";
 import { NotificationRuntime } from "@/components/notifications/NotificationRuntime";
 import { PlaybackMediaRuntimeProvider } from "@/components/player/PlaybackMediaRuntimeProvider";
@@ -33,6 +35,7 @@ import {
   SIDEBAR_COLLAPSED_WIDTH,
   SIDEBAR_DEFAULT_SIZE_PERCENT,
 } from "@/constants/layout";
+import { useBackendTakeover, useQueryRecoveryRuntime } from "@/hooks/core/useQueryRecovery";
 import { useStoreHydration } from "@/hooks/core/useStoreHydration";
 import { useDesktopPlaybackWallpaperPresentation } from "@/hooks/desktopWallpaper/useDesktopPlaybackWallpaperPresentation";
 import { useAnimatedPanelCollapse } from "@/hooks/ui/useAnimatedPanelCollapse";
@@ -70,6 +73,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
 
 function DashboardShell({ children }: { children: ReactNode }) {
   useDashboardEffects();
+  useQueryRecoveryRuntime();
 
   const sidebarPanelRef = usePanelRef();
   const sidebarPanelElementRef = useRef<HTMLDivElement>(null);
@@ -145,6 +149,8 @@ function DashboardShell({ children }: { children: ReactNode }) {
         >
           <Header />
         </div>
+
+        <ConnectionBanner />
 
         <main className="relative min-h-0 w-full flex-1">
           {isMounted ? (
@@ -229,15 +235,23 @@ function DashboardMain({ className, children }: { className: string; children: R
   const isCenterLyricsOpen = useUiStore((s) => s.isCenterLyricsOpen);
   const setIsCenterLyricsOpen = useUiStore((s) => s.setIsCenterLyricsOpen);
   const setIsNowPlayingPanelOpen = useUiStore((s) => s.setIsNowPlayingPanelOpen);
+  const isBackendTakeover = useBackendTakeover();
 
   return (
     <div
       data-dashboard-main
       className={cn("group/main relative overflow-hidden rounded-lg bg-surface-raised", className)}
     >
-      <div className={cn("size-full overflow-hidden", isCenterLyricsOpen && "hidden")}>
+      {/* 路由内容只隐藏不卸载：等待中的区域保持登记，后端恢复后原地填回。 */}
+      <div
+        className={cn(
+          "size-full overflow-hidden",
+          (isCenterLyricsOpen || isBackendTakeover) && "hidden",
+        )}
+      >
         {children}
       </div>
+      {isBackendTakeover && !isCenterLyricsOpen && <BackendUnavailableTakeover />}
       {isCenterLyricsOpen && (
         <CenterLyricsView
           onClose={() => {

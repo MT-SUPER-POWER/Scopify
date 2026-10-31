@@ -10,3 +10,8 @@ export function getQueryFailureKind(error: unknown): QueryFailureKind {
   if (error.kind === "business" || error.kind === "unauthenticated") return error.kind;
   return "network";
 }
+
+/** 连不上服务（断网、超时）是全局问题；5xx 等仍按区域各自处理。 */
+export function isConnectivityFailure(error: unknown) {
+  return isApiError(error) && (error.kind === "network" || error.kind === "timeout");
+}
