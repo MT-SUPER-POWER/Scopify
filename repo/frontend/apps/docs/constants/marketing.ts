@@ -68,21 +68,24 @@ export const LANDING_FOLIA_STAGE_SCREENSHOT: LandingScreenshot = {
 
 /** 与 Folia 歌词动画选择器保持一致的模式与中文名。 */
 export const LANDING_VISUALIZER_MODES: readonly LandingVisualizerMode[] = [
-  { label: "流光", value: "classic" },
-  { label: "心象", value: "cadenza" },
-  { label: "云阶", value: "partita" },
-  { label: "浮名", value: "fume" },
-  { label: "倾诉", value: "tilt" },
-  { label: "回环", value: "claddagh" },
-  { label: "莫奈", value: "monet" },
-  { label: "时计", value: "pendolo" },
-  { label: "群唱", value: "cappella" },
-  { label: "镜台", value: "diorama" },
-  { label: "商籁", value: "sonnet" },
+  // 由静到闹排：先是安静的排版类动画，越往下滚舞台越满，最绚烂的几场压轴。
   { label: "静止", value: "still" },
+  { label: "流光", value: "classic" },
+  { label: "云阶", value: "partita" },
+  { label: "倾诉", value: "tilt" },
+  { label: "心象", value: "cadenza" },
+  { label: "浮名", value: "fume" },
+  { label: "回环", value: "claddagh" },
   { label: "档案", value: "archive" },
-  { label: "花火", value: "hanabi" },
+  { label: "群唱", value: "cappella" },
+  { label: "时计", value: "pendolo" },
+  { label: "莫奈", value: "monet" },
+  { label: "雾笺", value: "nebbia" },
+  { label: "镜台", value: "diorama" },
+  { label: "町景", value: "machi" },
+  { label: "商籁", value: "sonnet" },
   { label: "凝彩", value: "tempera" },
+  { label: "花火", value: "hanabi" },
 ];
 
 export const LANDING_DEFAULT_VISUALIZER = "sonnet";
