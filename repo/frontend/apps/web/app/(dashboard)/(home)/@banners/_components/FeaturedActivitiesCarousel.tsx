@@ -3,8 +3,8 @@
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
-import { ActivityBannerCard } from "@/components/home/ActivityBannerCard";
-import { CarouselDotNavigation } from "@/components/home/CarouselDotNavigation";
+import { ActivityBannerCard } from "./ActivityBannerCard";
+import { CarouselDotNavigation } from "./CarouselDotNavigation";
 import { useHomeBanners } from "@/hooks/home/useHomeBanners";
 import { useCarouselSwipe } from "@/hooks/home/useCarouselSwipe";
 import { cn } from "@/lib/utils";

@@ -4,35 +4,51 @@ import { AnimatePresence, motion } from "framer-motion";
 import { RefreshCw } from "lucide-react";
 import { useEffect, useState } from "react";
 
-import { CollapsibleSection } from "@/components/home/CollapsibleSection";
-import { SectionPagination } from "@/components/home/SectionPagination";
+import { CollapsibleSection } from "../../_components/CollapsibleSection";
+import { HomeSectionPending } from "../../_components/HomeSectionPending";
+import { SectionPagination } from "../../_components/SectionPagination";
 import { VoiceList } from "@/components/search/VoiceList";
 import { VoiceTranscriptDialog } from "@/components/voice/VoiceTranscriptDialog";
+import { useRecommendedVoiceListsQuery } from "@/hooks/home/useHomeQueries";
+import { toRecommendedVoice } from "@/lib/home/voiceAdapter";
 import { cn } from "@/lib/utils";
 import { useI18n } from "@/store/module/i18n";
-import type { RecommendedVoiceListsProps } from "@/types/home/components";
 import type { Voice } from "@/types/search/model";
 
-const DEFAULT_PAGE_SIZE = 6;
+const PAGE_SIZE = 6;
 
-export function RecommendedVoiceLists({
-  isRefreshing = false,
-  onRefresh,
-  pageSize = DEFAULT_PAGE_SIZE,
-  voices,
-}: RecommendedVoiceListsProps) {
+export function RecommendedVoiceLists() {
   const { t } = useI18n();
+  const query = useRecommendedVoiceListsQuery();
+  const voices = (query.data?.data?.recommendVoiceVOS ?? [])
+    .map((voice) =>
+      toRecommendedVoice(
+        voice,
+        t("home.voiceListMeta"),
+        t("common.meta.unknownAlbum"),
+        t("common.meta.unknownSong"),
+      ),
+    )
+    .filter((voice): voice is Voice => voice !== null);
   const [isOpen, setIsOpen] = useState(false);
   const [page, setPage] = useState(0);
   const [direction, setDirection] = useState<1 | -1>(1);
   const [selectedVoice, setSelectedVoice] = useState<Voice | null>(null);
 
-  const pageCount = Math.max(1, Math.ceil(voices.length / pageSize));
+  const pageCount = Math.max(1, Math.ceil(voices.length / PAGE_SIZE));
 
   useEffect(() => {
     setPage((currentPage) => Math.min(currentPage, pageCount - 1));
   }, [pageCount]);
 
+  if (query.isPending)
+    return (
+      <HomeSectionPending
+        isPaused={query.fetchStatus === "paused"}
+        kind="voices"
+        titleKey="home.recommendedVoiceLists"
+      />
+    );
   if (voices.length === 0) return null;
 
   const handleSelectPage = (targetPage: number) => {
@@ -44,12 +60,12 @@ export function RecommendedVoiceLists({
   const handleRefresh = (e: React.MouseEvent) => {
     e.stopPropagation();
     setPage(0);
-    onRefresh?.();
+    void query.refetch();
   };
 
   const visibleVoices = isOpen
-    ? voices.slice(page * pageSize, (page + 1) * pageSize)
-    : voices.slice(0, pageSize);
+    ? voices.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE)
+    : voices.slice(0, PAGE_SIZE);
 
   return (
     <section>
@@ -61,18 +77,16 @@ export function RecommendedVoiceLists({
             <h2 className="text-xl font-bold tracking-tight text-content sm:text-2xl">
               {t("home.recommendedVoiceLists")}
             </h2>
-            {onRefresh ? (
-              <button
-                type="button"
-                title={t("home.refreshVoiceLists")}
-                aria-label={t("home.refreshVoiceLists")}
-                disabled={isRefreshing}
-                onClick={handleRefresh}
-                className="flex size-7 shrink-0 items-center justify-center rounded-full text-content-muted transition-colors hover:bg-content/10 hover:text-content disabled:cursor-not-allowed disabled:opacity-50"
-              >
-                <RefreshCw className={cn("size-3.5", isRefreshing && "animate-spin")} />
-              </button>
-            ) : null}
+            <button
+              type="button"
+              title={t("home.refreshVoiceLists")}
+              aria-label={t("home.refreshVoiceLists")}
+              disabled={query.isFetching}
+              onClick={handleRefresh}
+              className="flex size-7 shrink-0 items-center justify-center rounded-full text-content-muted transition-colors hover:bg-content/10 hover:text-content disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              <RefreshCw className={cn("size-3.5", query.isFetching && "animate-spin")} />
+            </button>
           </div>
         }
         action={

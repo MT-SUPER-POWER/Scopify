@@ -4,31 +4,42 @@ import { AnimatePresence, motion } from "framer-motion";
 import { Play } from "lucide-react";
 import { useEffect, useState } from "react";
 
-import { CollapsibleSection } from "@/components/home/CollapsibleSection";
-import { SectionPagination } from "@/components/home/SectionPagination";
-import { NewSongItem } from "@/components/home/NewSongItem";
+import { NewSongItem } from "./NewSongItem";
+import { useHome } from "../../_components/HomeProvider";
+import { CollapsibleSection } from "../../_components/CollapsibleSection";
+import { HomeSectionPending } from "../../_components/HomeSectionPending";
+import { SectionPagination } from "../../_components/SectionPagination";
+import { useNewSongsQuery } from "@/hooks/home/useHomeQueries";
 import { useI18n } from "@/store/module/i18n";
-import type { NewSongsSectionProps } from "@/types/home/components";
+import { pruneSongDetail } from "@/types/song/api";
 
-const DEFAULT_PAGE_SIZE = 6;
+const PAGE_SIZE = 6;
 
-export function NewSongsSection({
-  onPlayAll,
-  onPlaySong,
-  pageSize = DEFAULT_PAGE_SIZE,
-  songs,
-}: NewSongsSectionProps) {
+export function NewSongsSection() {
   const { t } = useI18n();
+  const { actions } = useHome();
+  const query = useNewSongsQuery();
+  const songs = (query.data?.result ?? [])
+    .map((item) => pruneSongDetail(item.song))
+    .filter((song) => Boolean(song?.id));
   const [isOpen, setIsOpen] = useState(false);
   const [page, setPage] = useState(0);
   const [direction, setDirection] = useState<1 | -1>(1);
 
-  const pageCount = Math.max(1, Math.ceil(songs.length / pageSize));
+  const pageCount = Math.max(1, Math.ceil(songs.length / PAGE_SIZE));
 
   useEffect(() => {
     setPage((currentPage) => Math.min(currentPage, pageCount - 1));
   }, [pageCount]);
 
+  if (query.isPending)
+    return (
+      <HomeSectionPending
+        isPaused={query.fetchStatus === "paused"}
+        kind="songs"
+        titleKey="home.newSongs"
+      />
+    );
   if (songs.length === 0) return null;
 
   const handleSelectPage = (targetPage: number) => {
@@ -38,8 +49,8 @@ export function NewSongsSection({
   };
 
   const visibleSongs = isOpen
-    ? songs.slice(page * pageSize, (page + 1) * pageSize)
-    : songs.slice(0, pageSize);
+    ? songs.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE)
+    : songs.slice(0, PAGE_SIZE);
 
   return (
     <section>
@@ -55,7 +66,7 @@ export function NewSongsSection({
               type="button"
               onClick={(e) => {
                 e.stopPropagation();
-                onPlayAll();
+                void actions.playSongs(songs, 0);
               }}
               className="flex items-center gap-1.5 rounded-full bg-brand/10 px-3 py-1 text-xs font-semibold text-brand transition-colors hover:bg-brand hover:text-brand-foreground"
             >
@@ -87,9 +98,14 @@ export function NewSongsSection({
               className="grid grid-cols-1 gap-x-4 gap-y-2 md:grid-cols-2"
             >
               {visibleSongs.map((song, idx) => {
-                const globalIndex = isOpen ? page * pageSize + idx : idx;
+                const globalIndex = isOpen ? page * PAGE_SIZE + idx : idx;
                 return (
-                  <NewSongItem key={song.id} song={song} index={globalIndex} onPlay={onPlaySong} />
+                  <NewSongItem
+                    key={song.id}
+                    song={song}
+                    index={globalIndex}
+                    onPlay={(_song, index) => actions.playSongs(songs, index)}
+                  />
                 );
               })}
             </motion.div>

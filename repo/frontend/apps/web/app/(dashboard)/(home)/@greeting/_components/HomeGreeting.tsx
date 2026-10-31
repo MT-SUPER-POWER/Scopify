@@ -5,38 +5,46 @@ import { Loader2, Play } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 
-import { HomeDailyRecommendation } from "@/components/home/HomeDailyRecommendation";
-import { CollapsibleSection } from "@/components/home/CollapsibleSection";
-import { SectionPagination } from "@/components/home/SectionPagination";
+import { HomeDailyRecommendation } from "./HomeDailyRecommendation";
+import { useHome } from "../../_components/HomeProvider";
+import { CollapsibleSection } from "../../_components/CollapsibleSection";
+import { HomeSectionPending } from "../../_components/HomeSectionPending";
+import { SectionPagination } from "../../_components/SectionPagination";
+import { usePersonalizedPlaylistsQuery } from "@/hooks/home/useHomeQueries";
 import { useSmartRouter } from "@/hooks/core/useSmartRouter";
 import { useI18n } from "@/store/module/i18n";
-import type { HomeGreetingSectionProps } from "@/types/home/components";
+import { pruneRecommendPlaylist } from "@/types/playlist/api";
 
-const DEFAULT_PAGE_SIZE = 9;
+const PAGE_SIZE = 9;
 
-export function HomeGreetingSection({
-  dateInfo,
-  greeting,
-  loadingPlayId,
-  onPlayPlaylist,
-  pageSize = DEFAULT_PAGE_SIZE,
-  playlists,
-}: HomeGreetingSectionProps) {
+export function HomeGreeting() {
   const { t } = useI18n();
+  const { actions, dateInfo, greeting } = useHome();
   const smartRouter = useSmartRouter();
+  const query = usePersonalizedPlaylistsQuery();
+  const playlists = query.data?.result?.map(pruneRecommendPlaylist) ?? [];
   const [isOpen, setIsOpen] = useState(false);
   const [page, setPage] = useState(0);
   const [direction, setDirection] = useState<1 | -1>(1);
 
   // The first page reserves one slot for daily recommendations.
-  const page0PlaylistCount = Math.max(1, pageSize - 1);
+  const page0PlaylistCount = Math.max(1, PAGE_SIZE - 1);
   const remainingPlaylists = Math.max(0, playlists.length - page0PlaylistCount);
-  const subsequentPageCount = Math.ceil(remainingPlaylists / pageSize);
+  const subsequentPageCount = Math.ceil(remainingPlaylists / PAGE_SIZE);
   const pageCount = Math.max(1, 1 + subsequentPageCount);
 
   useEffect(() => {
     setPage((currentPage) => Math.min(currentPage, pageCount - 1));
   }, [pageCount]);
+
+  if (query.isPending)
+    return (
+      <HomeSectionPending
+        isPaused={query.fetchStatus === "paused"}
+        kind="greeting"
+        title={greeting}
+      />
+    );
 
   const handleSelectPage = (targetPage: number) => {
     if (targetPage === page) return;
@@ -48,13 +56,13 @@ export function HomeGreetingSection({
     page === 0
       ? playlists.slice(0, page0PlaylistCount)
       : playlists.slice(
-          page0PlaylistCount + (page - 1) * pageSize,
-          page0PlaylistCount + page * pageSize,
+          page0PlaylistCount + (page - 1) * PAGE_SIZE,
+          page0PlaylistCount + page * PAGE_SIZE,
         );
 
   const displayPlaylists = isOpen
     ? currentPlaylists
-    : playlists.slice(0, Math.max(page0PlaylistCount, pageSize));
+    : playlists.slice(0, Math.max(page0PlaylistCount, PAGE_SIZE));
 
   return (
     <section>
@@ -111,11 +119,11 @@ export function HomeGreetingSection({
                   </span>
                   <button
                     type="button"
-                    onClick={(event) => onPlayPlaylist(item.id, event)}
-                    disabled={loadingPlayId === `playlist-${item.id}`}
+                    onClick={(event) => actions.handlePlayPlaylist(item.id, event)}
+                    disabled={actions.loadingPlayId === `playlist-${item.id}`}
                     className="absolute right-4 z-20 flex size-10 translate-y-2 items-center justify-center rounded-full bg-brand text-brand-foreground opacity-0 shadow-brand transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100 hover:scale-105 hover:bg-brand-hover"
                   >
-                    {loadingPlayId === `playlist-${item.id}` ? (
+                    {actions.loadingPlayId === `playlist-${item.id}` ? (
                       <Loader2 className="size-4 animate-spin" />
                     ) : (
                       <Play className="ml-1 size-5 fill-current" />

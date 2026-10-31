@@ -3,28 +3,60 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useState } from "react";
 
-import { CollapsibleSection } from "@/components/home/CollapsibleSection";
+import { useHome } from "../../_components/HomeProvider";
+import { CollapsibleSection } from "../../_components/CollapsibleSection";
+import { HomeSectionPending } from "../../_components/HomeSectionPending";
+import { SectionPagination } from "../../_components/SectionPagination";
 import { GridCard } from "@/components/home/GridCard";
-import { SectionPagination } from "@/components/home/SectionPagination";
+import { useHotArtistsQuery, useFollowedArtistsQuery } from "@/hooks/home/useHomeQueries";
+import { useLoginStatus } from "@/hooks/auth/useLoginStatus";
 import { useSmartRouter } from "@/hooks/core/useSmartRouter";
+import { selectFallbackSource, toFallbackSource } from "@/lib/query/fallbackSource";
 import { useI18n } from "@/store/module/i18n";
-import type { SuggestedArtistsProps } from "@/types/home/components";
+import type { ArtistTopListItem } from "@/types/home/model";
 
-const DEFAULT_PAGE_SIZE = 10;
+const PAGE_SIZE = 10;
 
-export function SuggestedArtists({ artists, pageSize = DEFAULT_PAGE_SIZE }: SuggestedArtistsProps) {
+export function ArtistTopSongsSection() {
   const { t } = useI18n();
+  const { actions } = useHome();
   const smartRouter = useSmartRouter();
+  const isLogin = useLoginStatus();
+  const followed = useFollowedArtistsQuery(isLogin, 30, false);
+  const hot = useHotArtistsQuery(50, false);
+  const followedItems: ArtistTopListItem[] | undefined = followed.data?.data?.map((artist) => ({
+    id: artist.id,
+    name: artist.name,
+    picUrl: artist.picUrl || artist.avatarUrl || artist.img1v1Url || "",
+  }));
+  const hotItems = hot.data?.artists?.map((artist) => ({
+    id: artist.id,
+    name: artist.name,
+    picUrl: artist.picUrl || artist.img1v1Url || "",
+    musicSize: artist.musicSize,
+  }));
+  const result = selectFallbackSource<ArtistTopListItem[]>(
+    [
+      ...(isLogin ? [toFallbackSource(followed, followedItems)] : []),
+      toFallbackSource(hot, hotItems),
+    ],
+    (items) => items.length > 0,
+  );
+  const artists = result.data ?? [];
   const [isOpen, setIsOpen] = useState(false);
   const [page, setPage] = useState(0);
   const [direction, setDirection] = useState<1 | -1>(1);
 
-  const pageCount = Math.max(1, Math.ceil(artists.length / pageSize));
+  const pageCount = Math.max(1, Math.ceil(artists.length / PAGE_SIZE));
 
   useEffect(() => {
     setPage((currentPage) => Math.min(currentPage, pageCount - 1));
   }, [pageCount]);
 
+  if (result.isPending)
+    return (
+      <HomeSectionPending isPaused={result.isPaused} kind="grid" titleKey="home.artistTopSongs" />
+    );
   if (artists.length === 0) return null;
 
   const handleSelectPage = (targetPage: number) => {
@@ -34,8 +66,8 @@ export function SuggestedArtists({ artists, pageSize = DEFAULT_PAGE_SIZE }: Sugg
   };
 
   const visibleArtists = isOpen
-    ? artists.slice(page * pageSize, (page + 1) * pageSize)
-    : artists.slice(0, pageSize);
+    ? artists.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE)
+    : artists.slice(0, PAGE_SIZE);
 
   return (
     <section>
@@ -44,7 +76,7 @@ export function SuggestedArtists({ artists, pageSize = DEFAULT_PAGE_SIZE }: Sugg
         onOpenChange={setIsOpen}
         title={
           <h2 className="text-xl font-bold tracking-tight text-content sm:text-2xl">
-            {t("home.suggestedArtists")}
+            {t("home.artistTopSongs")}
           </h2>
         }
         action={
@@ -57,7 +89,7 @@ export function SuggestedArtists({ artists, pageSize = DEFAULT_PAGE_SIZE }: Sugg
           ) : null
         }
         collapsedRows={1}
-        collapsedHeight="260px"
+        collapsedHeight="280px"
       >
         <div className="relative overflow-hidden">
           <AnimatePresence mode="wait" initial={false}>
@@ -74,9 +106,11 @@ export function SuggestedArtists({ artists, pageSize = DEFAULT_PAGE_SIZE }: Sugg
                   key={artist.id}
                   appearance="home"
                   id={artist.id}
-                  name={artist.name}
-                  coverUrl={`${artist.picUrl}?param=200y200`}
-                  isArtist
+                  name={`${artist.name} 热门精选`}
+                  coverUrl={artist.picUrl ? `${artist.picUrl}?param=300y300` : ""}
+                  subtitle={t("home.artistTopSongsCardSubtitle")}
+                  isLoading={actions.loadingPlayId === `artist-${artist.id}`}
+                  onPlay={(event) => actions.handlePlayArtistTopSongs(artist.id, event)}
                   onClick={() => smartRouter.push(`/artist?id=${artist.id}`)}
                 />
               ))}

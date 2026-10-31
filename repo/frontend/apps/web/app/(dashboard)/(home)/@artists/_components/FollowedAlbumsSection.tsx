@@ -3,33 +3,44 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useState } from "react";
 
-import { CollapsibleSection } from "@/components/home/CollapsibleSection";
+import { useHome } from "../../_components/HomeProvider";
+import { CollapsibleSection } from "../../_components/CollapsibleSection";
+import { HomeSectionPending } from "../../_components/HomeSectionPending";
+import { SectionPagination } from "../../_components/SectionPagination";
 import { GridCard } from "@/components/home/GridCard";
-import { SectionPagination } from "@/components/home/SectionPagination";
+import { useFollowedArtistsAlbumsQuery } from "@/hooks/home/useHomeQueries";
+import { useLoginStatus } from "@/hooks/auth/useLoginStatus";
 import { useSmartRouter } from "@/hooks/core/useSmartRouter";
 import { useI18n } from "@/store/module/i18n";
-import type { NewAlbumsSectionProps } from "@/types/home/components";
 
-const DEFAULT_PAGE_SIZE = 10;
+const PAGE_SIZE = 10;
 
-export function NewAlbumsSection({
-  albums,
-  loadingPlayId,
-  onPlayAlbum,
-  pageSize = DEFAULT_PAGE_SIZE,
-}: NewAlbumsSectionProps) {
+export function FollowedAlbumsSection() {
   const { t } = useI18n();
+  const { actions } = useHome();
   const smartRouter = useSmartRouter();
+  const isLogin = useLoginStatus();
+  const query = useFollowedArtistsAlbumsQuery(isLogin);
+  const albums = (query.data ?? []).filter((album) => Boolean(album?.id && album.name));
   const [isOpen, setIsOpen] = useState(false);
   const [page, setPage] = useState(0);
   const [direction, setDirection] = useState<1 | -1>(1);
 
-  const pageCount = Math.max(1, Math.ceil(albums.length / pageSize));
+  const pageCount = Math.max(1, Math.ceil(albums.length / PAGE_SIZE));
 
   useEffect(() => {
     setPage((currentPage) => Math.min(currentPage, pageCount - 1));
   }, [pageCount]);
 
+  if (!isLogin) return null;
+  if (query.isPending)
+    return (
+      <HomeSectionPending
+        isPaused={query.fetchStatus === "paused"}
+        kind="grid"
+        titleKey="home.followedArtistsAlbums"
+      />
+    );
   if (albums.length === 0) return null;
 
   const handleSelectPage = (targetPage: number) => {
@@ -39,8 +50,8 @@ export function NewAlbumsSection({
   };
 
   const visibleAlbums = isOpen
-    ? albums.slice(page * pageSize, (page + 1) * pageSize)
-    : albums.slice(0, pageSize);
+    ? albums.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE)
+    : albums.slice(0, PAGE_SIZE);
 
   return (
     <section>
@@ -49,7 +60,7 @@ export function NewAlbumsSection({
         onOpenChange={setIsOpen}
         title={
           <h2 className="text-xl font-bold tracking-tight text-content sm:text-2xl">
-            {t("home.newAlbums")}
+            {t("home.followedArtistsAlbums")}
           </h2>
         }
         action={
@@ -96,8 +107,8 @@ export function NewAlbumsSection({
                     name={album.name || ""}
                     coverUrl={album.picUrl ? `${album.picUrl}?param=300y300` : ""}
                     subtitle={subtitle}
-                    isLoading={loadingPlayId === `album-${albumId}`}
-                    onPlay={(event) => onPlayAlbum(albumId, event)}
+                    isLoading={actions.loadingPlayId === `album-${albumId}`}
+                    onPlay={(event) => actions.handlePlayAlbum(albumId, event)}
                     onClick={() => smartRouter.push(`/album?id=${albumId}`)}
                   />
                 );

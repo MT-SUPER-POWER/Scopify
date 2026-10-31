@@ -3,33 +3,48 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useState } from "react";
 
-import { CollapsibleSection } from "@/components/home/CollapsibleSection";
+import { useHome } from "../../_components/HomeProvider";
+import { CollapsibleSection } from "../../_components/CollapsibleSection";
+import { HomeSectionPending } from "../../_components/HomeSectionPending";
+import { SectionPagination } from "../../_components/SectionPagination";
 import { GridCard } from "@/components/home/GridCard";
-import { SectionPagination } from "@/components/home/SectionPagination";
+import { useRecentPlaylistsQuery } from "@/hooks/home/useHomeQueries";
+import { useLoginStatus } from "@/hooks/auth/useLoginStatus";
 import { useSmartRouter } from "@/hooks/core/useSmartRouter";
 import { useI18n } from "@/store/module/i18n";
-import type { RecentlyPlayedPlaylistsProps } from "@/types/home/components";
+import { pruneRecommendPlaylist, type RawRecommendPlaylist } from "@/types/playlist/api";
 
-const DEFAULT_PAGE_SIZE = 10;
+const PAGE_SIZE = 10;
 
-export function RecentlyPlayedPlaylists({
-  loadingPlayId,
-  onPlayPlaylist,
-  pageSize = DEFAULT_PAGE_SIZE,
-  playlists,
-}: RecentlyPlayedPlaylistsProps) {
+export function RecentlyPlayedPlaylists() {
   const { t } = useI18n();
+  const { actions } = useHome();
   const smartRouter = useSmartRouter();
+  const isLogin = useLoginStatus();
+  const query = useRecentPlaylistsQuery(isLogin);
+  const playlists = (query.data?.data?.list ?? [])
+    .map((entry) => entry.data)
+    .filter((item): item is RawRecommendPlaylist => Boolean(item?.id && item.name))
+    .map(pruneRecommendPlaylist);
   const [isOpen, setIsOpen] = useState(false);
   const [page, setPage] = useState(0);
   const [direction, setDirection] = useState<1 | -1>(1);
 
-  const pageCount = Math.max(1, Math.ceil(playlists.length / pageSize));
+  const pageCount = Math.max(1, Math.ceil(playlists.length / PAGE_SIZE));
 
   useEffect(() => {
     setPage((currentPage) => Math.min(currentPage, pageCount - 1));
   }, [pageCount]);
 
+  if (!isLogin) return null;
+  if (query.isPending)
+    return (
+      <HomeSectionPending
+        isPaused={query.fetchStatus === "paused"}
+        kind="grid"
+        titleKey="home.recentlyPlayedPlaylists"
+      />
+    );
   if (playlists.length === 0) return null;
 
   const handleSelectPage = (targetPage: number) => {
@@ -39,8 +54,8 @@ export function RecentlyPlayedPlaylists({
   };
 
   const visiblePlaylists = isOpen
-    ? playlists.slice(page * pageSize, (page + 1) * pageSize)
-    : playlists.slice(0, pageSize);
+    ? playlists.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE)
+    : playlists.slice(0, PAGE_SIZE);
 
   return (
     <section>
@@ -93,8 +108,8 @@ export function RecentlyPlayedPlaylists({
                     coverUrl={playlist.picUrl ? `${playlist.picUrl}?param=300y300` : ""}
                     subtitle={subtitle}
                     playCount={playlist.playCount}
-                    isLoading={loadingPlayId === `playlist-${playlist.id}`}
-                    onPlay={(event) => onPlayPlaylist(playlist.id, event)}
+                    isLoading={actions.loadingPlayId === `playlist-${playlist.id}`}
+                    onPlay={(event) => actions.handlePlayPlaylist(playlist.id, event)}
                     onClick={() =>
                       smartRouter.push(`/playlist/?id=${playlist.id}&isRecommend=true`)
                     }

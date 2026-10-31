@@ -1,11 +1,7 @@
 import type { MouseEvent, ReactNode } from "react";
-import type { NeteaseAlbum } from "@/types/album/api";
 import type { NeteaseBanner } from "@/types/home/bannerApi";
 import type { SongDetail } from "@/types/song/api";
-import type { RecommendPlaylist } from "@/types/playlist/api";
-import type { ToplistDetailItem } from "@/types/home/toplistApi";
-import type { CarouselDirection, HomePlaybackActions } from "@/types/home/model";
-import type { Artist, Voice } from "@/types/search/model";
+import type { CarouselDirection, HomeContextValue } from "@/types/home/model";
 import type { TranslationKey } from "@/lib/i18n";
 
 export interface HomeSectionPendingProps {
@@ -13,15 +9,6 @@ export interface HomeSectionPendingProps {
   kind: "greeting" | "grid" | "artist" | "songs" | "voices" | "toplists";
   title?: string;
   titleKey?: TranslationKey;
-}
-
-export interface HomeQueryContentProps {
-  actions: HomePlaybackActions;
-}
-
-export interface HomeGreetingContentProps extends HomeQueryContentProps {
-  greeting: string;
-  dateInfo: HomeGreetingSectionProps["dateInfo"];
 }
 
 export interface ActivityBannerCardProps {
@@ -42,70 +29,8 @@ export interface CarouselDotNavigationProps {
   onSelect: (index: number) => void;
 }
 
-export interface PersonalizedPlaylistsProps {
-  loadingPlayId?: string | null;
-  onPlayPlaylist: (id: number | string, event: React.MouseEvent) => void;
-  pageSize?: number;
-  playlists: RecommendPlaylist[];
-}
-
-export interface HomeGreetingSectionProps {
-  dateInfo: {
-    dateNum: number;
-    dayOfWeek: string;
-  };
-  greeting: string;
-  loadingPlayId?: string | null;
-  onPlayPlaylist: (id: number | string, event: React.MouseEvent) => void;
-  pageSize?: number;
-  playlists: RecommendPlaylist[];
-}
-
-export interface SuggestedArtistsProps {
-  artists: Artist[];
-  pageSize?: number;
-}
-
-export interface RecommendedVoiceListsProps {
-  isRefreshing?: boolean;
-  onRefresh?: () => void | Promise<unknown>;
-  pageSize?: number;
-  voices: Voice[];
-}
-
-export interface NewSongsSectionProps {
-  songs: SongDetail[];
-  onPlaySong: (song: SongDetail, index: number) => void;
-  onPlayAll: () => void;
-  pageSize?: number;
-}
-
-export interface ToplistSectionProps {
-  toplists: ToplistDetailItem[];
-  loadingPlayId?: string | null;
-  onPlayToplist: (id: number | string, event: React.MouseEvent) => void;
-}
-
-export interface NewAlbumsSectionProps {
-  albums: NeteaseAlbum[];
-  loadingPlayId?: string | null;
-  onPlayAlbum: (id: number | string, event: React.MouseEvent) => void;
-  pageSize?: number;
-}
-
-export type RecentlyPlayedPlaylistsProps = PersonalizedPlaylistsProps;
-export type FollowedAlbumsSectionProps = NewAlbumsSectionProps;
-
-export interface ArtistTopSongsSectionProps {
-  artists: Array<{
-    id: number;
-    name: string;
-    picUrl: string;
-    musicSize?: number;
-  }>;
-  loadingPlayId?: string | null;
-  onPlayArtist: (artistId: number | string, event: React.MouseEvent) => void;
-  pageSize?: number;
+export interface HomeDailyRecommendationProps {
+  dateInfo: HomeContextValue["dateInfo"];
 }
 
 export interface SectionPaginationProps {
@@ -144,8 +69,6 @@ export interface CollapsibleSectionProps {
   disableHeightCollapse?: boolean;
   showTrigger?: boolean;
 }
-
-export type HomeDailyRecommendationProps = Pick<HomeGreetingSectionProps, "dateInfo">;
 
 export interface ToplistCarouselItem {
   artist: string;

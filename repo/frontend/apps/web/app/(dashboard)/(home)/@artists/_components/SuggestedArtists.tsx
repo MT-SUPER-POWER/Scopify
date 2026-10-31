@@ -3,34 +3,40 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useState } from "react";
 
-import { CollapsibleSection } from "@/components/home/CollapsibleSection";
+import { CollapsibleSection } from "../../_components/CollapsibleSection";
+import { HomeSectionPending } from "../../_components/HomeSectionPending";
+import { SectionPagination } from "../../_components/SectionPagination";
 import { GridCard } from "@/components/home/GridCard";
-import { SectionPagination } from "@/components/home/SectionPagination";
+import { useHotArtistsQuery } from "@/hooks/home/useHomeQueries";
 import { useSmartRouter } from "@/hooks/core/useSmartRouter";
 import { useI18n } from "@/store/module/i18n";
-import type { FollowedAlbumsSectionProps } from "@/types/home/components";
 
-const DEFAULT_PAGE_SIZE = 10;
+const PAGE_SIZE = 10;
 
-export function FollowedAlbumsSection({
-  albums,
-  loadingPlayId,
-  onPlayAlbum,
-  pageSize = DEFAULT_PAGE_SIZE,
-}: FollowedAlbumsSectionProps) {
+export function SuggestedArtists() {
   const { t } = useI18n();
   const smartRouter = useSmartRouter();
+  const query = useHotArtistsQuery();
+  const artists = query.data?.artists ?? [];
   const [isOpen, setIsOpen] = useState(false);
   const [page, setPage] = useState(0);
   const [direction, setDirection] = useState<1 | -1>(1);
 
-  const pageCount = Math.max(1, Math.ceil(albums.length / pageSize));
+  const pageCount = Math.max(1, Math.ceil(artists.length / PAGE_SIZE));
 
   useEffect(() => {
     setPage((currentPage) => Math.min(currentPage, pageCount - 1));
   }, [pageCount]);
 
-  if (albums.length === 0) return null;
+  if (query.isPending)
+    return (
+      <HomeSectionPending
+        isPaused={query.fetchStatus === "paused"}
+        kind="artist"
+        titleKey="home.suggestedArtists"
+      />
+    );
+  if (artists.length === 0) return null;
 
   const handleSelectPage = (targetPage: number) => {
     if (targetPage === page) return;
@@ -38,9 +44,9 @@ export function FollowedAlbumsSection({
     setPage(targetPage);
   };
 
-  const visibleAlbums = isOpen
-    ? albums.slice(page * pageSize, (page + 1) * pageSize)
-    : albums.slice(0, pageSize);
+  const visibleArtists = isOpen
+    ? artists.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE)
+    : artists.slice(0, PAGE_SIZE);
 
   return (
     <section>
@@ -49,7 +55,7 @@ export function FollowedAlbumsSection({
         onOpenChange={setIsOpen}
         title={
           <h2 className="text-xl font-bold tracking-tight text-content sm:text-2xl">
-            {t("home.followedArtistsAlbums")}
+            {t("home.suggestedArtists")}
           </h2>
         }
         action={
@@ -62,7 +68,7 @@ export function FollowedAlbumsSection({
           ) : null
         }
         collapsedRows={1}
-        collapsedHeight="280px"
+        collapsedHeight="260px"
       >
         <div className="relative overflow-hidden">
           <AnimatePresence mode="wait" initial={false}>
@@ -74,34 +80,17 @@ export function FollowedAlbumsSection({
               transition={{ duration: 0.22, ease: "easeOut" }}
               className="grid w-full min-w-0 grid-cols-[repeat(auto-fill,minmax(min(100%,176px),1fr))] gap-x-2 gap-y-4"
             >
-              {visibleAlbums.map((album) => {
-                if (!album.id) return null;
-                const albumId = album.id;
-                const year = album.publishTime
-                  ? new Date(album.publishTime).getFullYear()
-                  : undefined;
-                const subtitle =
-                  year && album.artist?.name
-                    ? t("home.albumSummary", {
-                        artist: album.artist.name,
-                        year,
-                      })
-                    : album.artist?.name || "";
-
-                return (
-                  <GridCard
-                    key={albumId}
-                    appearance="home"
-                    id={albumId}
-                    name={album.name || ""}
-                    coverUrl={album.picUrl ? `${album.picUrl}?param=300y300` : ""}
-                    subtitle={subtitle}
-                    isLoading={loadingPlayId === `album-${albumId}`}
-                    onPlay={(event) => onPlayAlbum(albumId, event)}
-                    onClick={() => smartRouter.push(`/album?id=${albumId}`)}
-                  />
-                );
-              })}
+              {visibleArtists.map((artist) => (
+                <GridCard
+                  key={artist.id}
+                  appearance="home"
+                  id={artist.id}
+                  name={artist.name}
+                  coverUrl={`${artist.picUrl}?param=200y200`}
+                  isArtist
+                  onClick={() => smartRouter.push(`/artist?id=${artist.id}`)}
+                />
+              ))}
             </motion.div>
           </AnimatePresence>
         </div>
