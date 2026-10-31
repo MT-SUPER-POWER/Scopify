@@ -5,6 +5,7 @@ export interface QueryBoundaryProps {
   resetKey: string;
   title?: string;
   compact?: boolean;
+  renderFailure?(props: QueryFailureProps): ReactNode;
 }
 
 export interface QueryPendingProps {

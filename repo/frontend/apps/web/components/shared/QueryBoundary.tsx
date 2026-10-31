@@ -36,6 +36,14 @@ class QueryRenderBoundary extends Component<QueryRenderBoundaryProps, QueryRende
   };
 
   render() {
+    if (this.state.error && this.props.renderFailure) {
+      return this.props.renderFailure({
+        error: this.state.error,
+        onRetry: this.reset,
+        title: this.props.title,
+        compact: this.props.compact,
+      });
+    }
     if (this.state.error)
       return (
         <QueryFailure

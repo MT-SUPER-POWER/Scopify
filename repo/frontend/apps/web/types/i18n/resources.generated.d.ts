@@ -2205,10 +2205,15 @@ export default interface Resources {
   };
   sidebar: {
     "card.loadFailed": "加载歌单失败";
+    "card.loading": "正在加载歌单";
     "card.loginSubtitle": "登录后即可查看你创建和收藏的所有歌单。";
     "card.loginTitle": "登录后查看你的歌单";
     "card.noPlaylistsSubtitle": "创建歌单或在网易云音乐中收藏歌单后，这里就会显示。";
     "card.noPlaylistsTitle": "你还没有任何歌单";
+    "card.reconnectHint": "网络恢复后会自动加载你的歌单。";
+    "card.refreshFailed": "更新失败，已保留歌单 · 重试";
+    "card.refreshing": "正在更新歌单";
+    "card.waitingForNetwork": "等待网络连接";
     "filter.expand": "展开侧边栏";
     "group.created": "创建的歌单";
     "group.personal": "专属音乐";

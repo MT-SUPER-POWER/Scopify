@@ -1,4 +1,25 @@
 import type { MouseEventHandler, ReactNode } from "react";
+import type { LucideIcon } from "lucide-react";
+import type { QueryFailureProps } from "@/types/query/boundaryComponents";
+
+export interface SidebarLibraryStateCardProps {
+  actionLabel?: string;
+  onAction?(): void;
+  subtitle: string;
+  title: string;
+  icon: LucideIcon;
+  isCollapsed: boolean;
+  busy?: boolean;
+}
+
+export interface SidebarPlaylistLibraryContentProps extends SidebarPlaylistLibraryProps {
+  onLogin(): void;
+  onCreate(): void;
+}
+
+export interface SidebarPlaylistFailureProps extends QueryFailureProps {
+  isCollapsed: boolean;
+}
 export interface SidebarConfirmDialogProps {
   open: boolean;
   title: string;

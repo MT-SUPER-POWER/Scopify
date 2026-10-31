@@ -11,7 +11,7 @@ import { SidebarLikedPlaylistItem } from "./SidebarLikedPlaylistItem";
 export function SidebarSpecialPlaylists({ isCollapsed }: SidebarPlaylistLibraryProps) {
   const { t } = useTranslation();
   const { playlists } = useSidebarPlaylists();
-  const likedPlaylist = playlists.find((playlist) => playlist.specialType === 5);
+  const likedPlaylist = playlists?.find((playlist) => playlist.specialType === 5);
   const items = (
     <>
       <PersonalFmPlaylistItem isCollapsed={isCollapsed} />
