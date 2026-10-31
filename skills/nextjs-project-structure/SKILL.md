@@ -1,20 +1,20 @@
 ---
 name: nextjs-project-structure
-description: 约束 Scopify Web 的代码结构。当用户要求创建或修改页面、路由、组件、hooks、类型定义、数据请求、骨架屏、错误处理，或涉及 layout / template / @slot / _components 时触发。规则的唯一来源是 docs/rules/ 下三篇文档，开工前按任务读对应的一篇。
+description: 约束 Scopify Web 的代码结构。当用户要求创建或修改页面、路由、组件、hooks、类型定义、数据请求、骨架屏、错误处理，或涉及 layout / template / @slot / _components 时触发。规则的唯一来源是本 skill 的 rules/ 下三篇文档，开工前按任务读对应的一篇。
 allowed-tools: Bash(find . -type f -name "*.tsx" -o -name "*.ts" | grep -v node_modules), Bash(wc -l)
 ---
 
 # Scopify 代码结构
 
-> 规则写在 [docs/rules/](../../docs/rules/)，贡献者入口是 [CONTRIBUTE.md](../../CONTRIBUTE.md)。本 skill 只负责提醒你读哪一篇，不重复规则内容；冲突时以文档为准。
+> 规则写在本 skill 的 [rules/](./rules/) 下，是唯一来源；贡献者入口是 [CONTRIBUTE.md](../../CONTRIBUTE.md)，`docs/rules/` 是给人浏览的索引。本 skill 只负责提醒你读哪一篇。
 
 ## 按任务读文档
 
 | 你要做的事 | 先读 |
 | --- | --- |
-| 新建页面、改路由、拆 slot、用 layout / template、不确定类型 hooks 放哪 | [项目结构与拆分原理](../../docs/rules/architecture.md) |
-| 新写、搬动、复用组件；判断 `@scopify/ui`、`components/`、`_components/` | [组件规则](../../docs/rules/components.md) |
-| 新增数据请求、骨架屏、错误处理、分页、Mutation | [数据请求与边界](../../docs/rules/data-and-boundaries.md) |
+| 新建页面、改路由、拆 slot、用 layout / template、不确定类型 hooks 放哪 | [项目结构与拆分原理](./rules/architecture.md) |
+| 新写、搬动、复用组件；判断 `@scopify/ui`、`components/`、`_components/` | [组件规则](./rules/components.md) |
+| 新增数据请求、骨架屏、错误处理、分页、Mutation | [数据请求与边界](./rules/data-and-boundaries.md) |
 | 新增或修改 `@scopify/ui` 里的组件 | [ui-package-boundaries](../ui-package-boundaries/SKILL.md) |
 
 ## 一句话原理

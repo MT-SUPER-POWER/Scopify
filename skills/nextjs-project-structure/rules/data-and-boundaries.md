@@ -128,4 +128,4 @@ slot 区域优先用 Suspense：单一请求、无条件的读取用 `useSuspens
 - 把分页、收藏、评论或播放失败升级成整页不可用。
 - 新增页面专用的失败栏目清单、全局 refetch 聚合器，或复制一套错误重试状态机。
 
-迁移进度记录在 [query-boundary-migration](../architecture/query-boundary-migration.md)，该文件只记进度，不定义约束。官方参考：[错误传播与缓存](https://tanstack.com/query/latest/docs/framework/react/guides/suspense#throwonerror-default)、[边界恢复范例](https://tanstack.com/query/latest/docs/framework/react/guides/suspense#resetting-error-boundaries)。
+迁移进度记录在 [query-boundary-migration](../../../docs/architecture/query-boundary-migration.md)，该文件只记进度，不定义约束。官方参考：[错误传播与缓存](https://tanstack.com/query/latest/docs/framework/react/guides/suspense#throwonerror-default)、[边界恢复范例](https://tanstack.com/query/latest/docs/framework/react/guides/suspense#resetting-error-boundaries)。

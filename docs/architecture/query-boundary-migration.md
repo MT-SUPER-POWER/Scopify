@@ -1,6 +1,6 @@
 # Query 边界迁移记录
 
-规范唯一来源：[数据请求与边界](../rules/data-and-boundaries.md)。本文件只记录迁移进度，不定义另一套约束。
+规范唯一来源：[数据请求与边界](../../skills/nextjs-project-structure/rules/data-and-boundaries.md)。本文件只记录迁移进度，不定义另一套约束。
 
 工作分支：`codex/query-boundaries-cleanup`，起点为圣杯布局分支。
 

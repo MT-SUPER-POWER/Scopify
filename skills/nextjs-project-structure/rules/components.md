@@ -66,7 +66,7 @@ Web 业务组件  →  @scopify/ui/scopify  →  @scopify/ui/shadcn
 - 只改颜色、圆角、间距这类 token 能表达的值，改主题 token，不要复制组件。
 - 样式沉淀到共享的 `scopify/theme.css` 必须是多个扩展都需要的产品语义；只有一处用的布局样式留在调用处。
 
-细则见 [ui-package-boundaries](../../skills/ui-package-boundaries/SKILL.md)。
+细则见 [ui-package-boundaries](../../ui-package-boundaries/SKILL.md)。
 
 ## 拆分与写法
 
@@ -74,7 +74,7 @@ Web 业务组件  →  @scopify/ui/scopify  →  @scopify/ui/shadcn
 - JSX 里有可识别的独立区块（header、body、footer）时，各自提取为同目录的独立文件。
 - 默认写 Server Component，用到 `useState`、`useEffect`、事件处理、浏览器 API 时才加 `'use client'`，并写在文件第一行。Client 组件尽量下推到叶子节点。
 - 组件内的逻辑超过 15 行、被多处复用或含 `useEffect` 加状态管理时，提取成 `hooks/` 里的 hook。
-- 在写新组件前，先看 shadcn 有没有现成组件，见 [shadcn 组件清单](../../skills/nextjs-project-structure/assets/shadcn.md)。
+- 在写新组件前，先看 shadcn 有没有现成组件，见 [shadcn 组件清单](../assets/shadcn.md)。
 
 ## 速查
 
