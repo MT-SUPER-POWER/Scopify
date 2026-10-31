@@ -6,8 +6,8 @@ import { useSocialAggregatedNotes } from "@/hooks/social/useSocialNotes";
 import type { UserFansGroupItem } from "@/types/fansGroup/api";
 import { uniqueById } from "@/lib/social/normalize";
 import { useI18n } from "@/store/module/i18n";
-import { SocialNoteGrid } from "./SocialNoteGrid";
-import { SocialLoadMore, SocialState } from "./SocialPrimitives";
+import { SocialNoteGrid } from "@/components/social/SocialNoteGrid";
+import { SocialLoadMore, SocialState } from "@/components/social/SocialPrimitives";
 
 /**
  * 聚合乐迷团笔记流组件

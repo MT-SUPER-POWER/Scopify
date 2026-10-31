@@ -1,21 +1,14 @@
 "use client";
 
-import { useSearchParams } from "next/navigation";
 import { useSocialAccount, useSocialEvent } from "@/hooks/social/useSocialQueries";
 import { useI18n } from "@/store/module/i18n";
 import type { SocialEventDetailProps } from "@/types/social/components";
-import { SocialEventCard } from "./SocialEventCard";
+import { SocialEventCard } from "@/components/social/SocialEventCard";
+import { SocialLogin, SocialState } from "@/components/social/SocialPrimitives";
+import s from "@/components/social/Social.module.css";
 import { SocialComments } from "./SocialComments";
-import { SocialLogin, SocialState } from "./SocialPrimitives";
-import s from "./Social.module.css";
 
-export function SocialEventPage() {
-  const params = useSearchParams(),
-    { account } = useSocialAccount();
-  const target = { id: params.get("id") ?? "", uid: params.get("uid") ?? "" };
-  return <SocialEventDetail key={account + ":" + target.id} target={target} />;
-}
-function SocialEventDetail({ target }: SocialEventDetailProps) {
+export function SocialEventDetail({ target }: SocialEventDetailProps) {
   const { t } = useI18n(),
     { uid } = useSocialAccount();
   const valid = /^\d+$/.test(target.id) && /^\d+$/.test(target.uid);

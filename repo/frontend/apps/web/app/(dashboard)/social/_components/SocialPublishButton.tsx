@@ -11,8 +11,8 @@ import {
 } from "@scopify/ui/shadcn/components/dialog";
 import { useRequireLoginAction } from "@/hooks/auth/useRequireLoginAction";
 import { useI18n } from "@/store/module/i18n";
-import { SocialComposer } from "./SocialComposer";
-import s from "./Social.module.css";
+import { SocialComposer } from "@/components/social/SocialComposer";
+import s from "@/components/social/Social.module.css";
 
 export function SocialPublishButton() {
   const [open, setOpen] = useState(false);

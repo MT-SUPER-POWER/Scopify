@@ -13,9 +13,9 @@ import { useSocialSendMessage } from "@/hooks/social/useSocialConversation";
 import { uniqueById } from "@/lib/social/normalize";
 import { useI18n } from "@/store/module/i18n";
 import type { SocialMessageDialogProps } from "@/types/social/components";
-import { SocialAvatar, SocialLoadMore, SocialState } from "./SocialPrimitives";
-import { SocialResourceCard } from "./SocialResourceCard";
-import s from "./Social.module.css";
+import { SocialAvatar, SocialLoadMore, SocialState } from "@/components/social/SocialPrimitives";
+import { SocialResourceCard } from "@/components/social/SocialResourceCard";
+import s from "@/components/social/Social.module.css";
 
 export function SocialMessageDialog({ user, open, onClose }: SocialMessageDialogProps) {
   const { t, locale } = useI18n(),

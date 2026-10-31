@@ -12,7 +12,7 @@ import { socialKey } from "@/lib/social/cache";
 import { useI18n } from "@/store/module/i18n";
 import type { SocialHeaderProps } from "@/types/social/components";
 import { SocialPublishButton } from "./SocialPublishButton";
-import s from "./Social.module.css";
+import s from "@/components/social/Social.module.css";
 
 /**
  * 动态页头部：标签与操作合并为一行吸顶（标题仅供读屏，侧栏已标明当前位置）。

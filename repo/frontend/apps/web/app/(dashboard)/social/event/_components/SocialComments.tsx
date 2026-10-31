@@ -21,9 +21,9 @@ import {
   SocialLoadMore,
   SocialLogin,
   SocialState,
-} from "./SocialPrimitives";
-import { SocialCommentsSkeleton } from "./SocialCommentsSkeleton";
-import s from "./Social.module.css";
+} from "@/components/social/SocialPrimitives";
+import { SocialCommentsSkeleton } from "@/components/social/SocialCommentsSkeleton";
+import s from "@/components/social/Social.module.css";
 
 function CommentRow({ event, comment, onReply }: SocialCommentRowProps) {
   const { uid } = useSocialAccount(),

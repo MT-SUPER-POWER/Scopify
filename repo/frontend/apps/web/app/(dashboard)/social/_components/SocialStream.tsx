@@ -8,21 +8,17 @@ import { useSocialViewport } from "@/hooks/social/useSocialViewport";
 import { useUserFansGroupsQuery } from "@/hooks/fansGroup/useFansGroupQueries";
 import { SOCIAL_DISCOVERY_GROUP } from "@/constants/social";
 import { useI18n } from "@/store/module/i18n";
-import { SocialFeed } from "./SocialFeed";
-import { SocialPeople } from "./SocialPeople";
+import { SocialFeed } from "@/components/social/SocialFeed";
+import { SocialPeople } from "@/components/social/SocialPeople";
 import { SocialSearchForm } from "./SocialSearchForm";
 import { SocialNotesFeed } from "./SocialNotesFeed";
 import { SocialFansGroupRail } from "./SocialFansGroupRail";
 import { SocialAggregatedNotesFeed } from "./SocialAggregatedNotesFeed";
 import { SocialHeader } from "./SocialHeader";
 import { SocialPostModal } from "./SocialPostModal";
-import s from "./Social.module.css";
+import s from "@/components/social/Social.module.css";
 
-export function SocialPage() {
-  const { account } = useSocialAccount();
-  return <SocialPageContent key={account} />;
-}
-function SocialPageContent() {
+export function SocialStream() {
   const { t } = useI18n();
   const { uid } = useSocialAccount();
   const router = useRouter();

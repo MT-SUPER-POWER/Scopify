@@ -28,21 +28,21 @@ import type {
   SocialPostViewProps,
 } from "@/types/social/components";
 import type { SocialComment } from "@/types/social/model";
-import { SocialComposer } from "./SocialComposer";
-import { SocialEventCard } from "./SocialEventCard";
-import { SocialEventMenu } from "./SocialEventMenu";
-import { SocialInlineText } from "./SocialInlineText";
-import { SocialPostText } from "./SocialPostText";
+import { SocialComposer } from "@/components/social/SocialComposer";
+import { SocialEventCard } from "@/components/social/SocialEventCard";
+import { SocialEventMenu } from "@/components/social/SocialEventMenu";
+import { SocialInlineText } from "@/components/social/SocialInlineText";
+import { SocialPostText } from "@/components/social/SocialPostText";
 import {
   FollowButton,
   SocialAuthor,
   SocialAvatar,
   SocialLoadMore,
   SocialState,
-} from "./SocialPrimitives";
-import { SocialResourceCard } from "./SocialResourceCard";
-import { SocialCommentsSkeleton } from "./SocialCommentsSkeleton";
-import s from "./Social.module.css";
+} from "@/components/social/SocialPrimitives";
+import { SocialResourceCard } from "@/components/social/SocialResourceCard";
+import { SocialCommentsSkeleton } from "@/components/social/SocialCommentsSkeleton";
+import s from "@/components/social/Social.module.css";
 
 /**
  * 动态浮层（参考小红书）：左侧大图；右侧作者与关注、正文、评论，底部评论框与互动计数。

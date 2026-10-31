@@ -1,30 +1,23 @@
 "use client";
 
 import { useSearchParams } from "next/navigation";
-import { useState, type CSSProperties } from "react";
-import { useCoverThemeColor } from "@/hooks/playlist/useCoverThemeColor";
+import { useState } from "react";
 import { useSocialAccount, useSocialProfile } from "@/hooks/social/useSocialQueries";
 import { useSocialEditProfile } from "@/hooks/social/useSocialActions";
 import { useRequireLoginAction } from "@/hooks/auth/useRequireLoginAction";
 import { useSmartRouter } from "@/hooks/core/useSmartRouter";
-import { getSizedImageUrl } from "@/lib/music/imageUrl";
 import { useI18n } from "@/store/module/i18n";
 import { SocialLogin, SocialState } from "@/components/social/SocialPrimitives";
-import { SocialMessageDialog } from "@/components/social/SocialMessageDialog";
-import { EditUserProfileDialog } from "./EditUserProfileDialog";
-import { SocialProfileHero } from "./SocialProfileHero";
-import { ProfileSkeletonContent } from "./ProfilePageSkeleton";
-import { SocialProfileBody } from "./SocialProfileBody";
+import { ProfileSkeletonContent } from "@/components/profile/ProfilePageSkeleton";
 import type { SocialFeedProps } from "@/types/social/components";
 import s from "@/components/social/Social.module.css";
+import { EditUserProfileDialog } from "./EditUserProfileDialog";
+import { ProfileGlow } from "./ProfileGlow";
+import { SocialMessageDialog } from "./SocialMessageDialog";
+import { SocialProfileBody } from "./SocialProfileBody";
+import { SocialProfileHero } from "./SocialProfileHero";
 
-export function SocialProfilePage() {
-  const { uid: self, account } = useSocialAccount();
-  const params = useSearchParams();
-  const uid = params.get("userId") || self;
-  return <SocialProfileContent key={account + ":" + uid} uid={/^\d+$/.test(uid) ? uid : ""} />;
-}
-function SocialProfileContent({ uid = "" }: SocialFeedProps) {
+export function ProfileContent({ uid = "" }: SocialFeedProps) {
   const { t } = useI18n();
   const { uid: self } = useSocialAccount();
   const params = useSearchParams(),
@@ -40,13 +33,9 @@ function SocialProfileContent({ uid = "" }: SocialFeedProps) {
   const [editing, setEditing] = useState(false);
   const messaging = !isSelf && !!self && params.get("action") === "message";
   const user = query.data;
-  const tint = useCoverThemeColor(user?.avatar ? getSizedImageUrl(user.avatar, 100) : null);
   return (
-    <div
-      className={s.page + " " + s.profilePage}
-      style={tint ? ({ "--profile-tint": tint } as CSSProperties) : undefined}
-    >
-      {user && <div className={s.profileGlow} aria-hidden="true" />}
+    <>
+      {user && <ProfileGlow avatar={user.avatar} />}
       <div className={s.profileShell}>
         {!uid ? (
           self ? (
@@ -109,6 +98,6 @@ function SocialProfileContent({ uid = "" }: SocialFeedProps) {
           </SocialState>
         )}
       </div>
-    </div>
+    </>
   );
 }
