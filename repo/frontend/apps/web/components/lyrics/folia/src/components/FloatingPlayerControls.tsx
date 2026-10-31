@@ -4,7 +4,8 @@ import { Play, Pause, Repeat, Repeat1, RepeatOff, ChartBar } from "lucide-react"
 import { MotionValue } from "framer-motion";
 import { useSongChorus } from "@/hooks/lyrics/useSongChorus";
 import { getChorusProgressRanges } from "@/lib/player/chorusMarkers";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import { FoliaTrackTitleNavigator } from "@/components/lyrics/FoliaTrackTitleNavigator";
 import { usePlayerStore } from "@/store/module/player";
 import type { ProgressRangeMarker } from "@/types/shared/sliderComponents";
@@ -71,7 +72,7 @@ const FloatingPlayerControls: React.FC<FloatingPlayerControlsProps> = ({
   hideControlBar = false,
   controlsDisabled = false,
 }) => {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const currentSongId = usePlayerStore((state) => state.currentSongDetail?.id ?? null);
   const chorusQuery = useSongChorus(currentSongId);
   const chorusRanges = useMemo(
@@ -298,7 +299,7 @@ const ExpandedView: React.FC<ExpandedViewProps> = ({
   rangeMarkers = [],
   markerColor,
 }) => {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   return (
     <div className="grid w-full grid-cols-[1fr_auto_1fr] items-center gap-x-4 gap-y-2 sm:grid-cols-[auto_minmax(0,1fr)_auto]">
       {/* Desktop Layout - responsive grid positions apply from the sm breakpoint */}

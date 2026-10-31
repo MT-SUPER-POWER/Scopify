@@ -1,0 +1,20 @@
+{
+  "wiki": "音乐百科",
+  "sheets": "乐谱",
+  "emptyWiki": "暂无百科信息",
+  "emptySheets": "这首歌暂无可用乐谱",
+  "preview": "乐谱预览",
+  "previewEmpty": "暂无可预览的谱页，可能需要相应权限",
+  "loginRequired": "登录后查看乐谱内容",
+  "login": "登录",
+  "pages": "{{count}} 页",
+  "page": "第 {{page}} 页",
+  "imageError": "谱页图片加载失败",
+  "keepSearching": "继续查找更多乐谱",
+  "sheetCount": "{{count}} 份乐谱",
+  "moreSheets": "还有 {{count}} 份乐谱，查看全部",
+  "more": "查看全部",
+  "searchHint": "按歌曲查找乐谱，仅展示有可用乐谱的歌曲。",
+  "openSheets": "查看乐谱",
+  "noSongs": "没有匹配的歌曲"
+}

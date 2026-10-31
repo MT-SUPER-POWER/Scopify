@@ -22,7 +22,8 @@ import {
 } from "@/components/lyrics/folia/src/types";
 import { isTemperaPoolWriteLocked } from "@/lib/lyrics/folia/temperaImagePool";
 import { downloadBlob, formatLocalDateStamp, sanitizeDownloadFileName } from "@/lib/web/download";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type {
   TemperaImageLayerCommit,
   TemperaPoolBusyAction,
@@ -53,7 +54,7 @@ export function useTemperaImagePool({
   frequency,
   onCommit,
 }: UseTemperaImagePoolOptions) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
   const [draft, setDraft] = useState<TemperaImageLayerCommit>({
     layerImages: images,
@@ -238,7 +239,7 @@ export function useTemperaImagePool({
       downloadBlob(archive.blob, `${baseName}-${formatLocalDateStamp()}.zip`);
       // A picture whose file has gone missing is left out of the zip; say so now rather than
       // letting the user discover it on a restore.
-      const notes = [t("folia.options.temperaPoolExported", { count: archive.exported })];
+      const notes: string[] = [t("folia.options.temperaPoolExported", { count: archive.exported })];
       if (archive.skipped > 0) {
         notes.push(t("folia.options.temperaPoolExportSkipped", { count: archive.skipped }));
       }

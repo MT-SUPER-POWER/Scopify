@@ -8,7 +8,8 @@ import {
 import { useFoliaModalFocus } from "@/hooks/lyrics/useFoliaModalFocus";
 import { useFoliaSettingsStore } from "@/store/module/foliaSettings";
 import { useLyricStageStore } from "@/store/module/lyrics";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import { FoliaSettingsPreview } from "@/components/lyrics/FoliaSettingsPreview";
 import { FoliaStyleShelf } from "@/components/lyrics/FoliaStyleShelf";
 import { FoliaBackgroundShelf } from "@/components/lyrics/FoliaBackgroundShelf";
@@ -27,7 +28,7 @@ export function FoliaVisualSettingsDialog({
   section,
   theme,
 }: FoliaVisualSettingsDialogProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const isDaylight = theme.name === "snow";
   const controlsTheme = {
     ...theme,

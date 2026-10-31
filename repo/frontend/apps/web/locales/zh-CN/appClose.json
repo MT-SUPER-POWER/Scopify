@@ -1,0 +1,7 @@
+{
+  "title": "关闭 Scopify",
+  "subtitle": "关闭应用后，希望默认执行什么操作？",
+  "minimize": "最小化到托盘",
+  "exit": "退出程序",
+  "remember": "下次不再提示"
+}

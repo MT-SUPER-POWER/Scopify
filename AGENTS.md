@@ -2,7 +2,7 @@
 
 Scopify 是 **Next.js App Router + Electron** 的网易云音乐客户端。根目录是 pnpm Workspaces + Turborepo 编排层；所有应用源码收敛于 `repo/`，Web、Electron 和契约分别位于 `repo/frontend/apps/web`、`repo/frontend/apps/desktop` 和 `repo/frontend/packages/desktop-contract`。前端与 `repo/backend/api-enhanced` 解耦部署；后端有自己的 [AGENTS.md](./repo/backend/api-enhanced/AGENTS.md)。
 
-**本文件是前端/Electron 代码结构的唯一规范。** 下文中未加前缀的 `app/`、`components/`、`types/`、`hooks/`、`lib/` 和 `store/` 路径都相对于 `repo/frontend/apps/web/`。新建或修改代码时必须遵守；发现 inline 类型、散落 hook 等历史债务时，顺手迁移到正确目录。
+**本文件是 Agent 的入口与工作约定；Web 代码结构规范统一写在 [skills/nextjs-project-structure/rules/](./skills/nextjs-project-structure/rules/)，贡献者入口见 [CONTRIBUTE.md](./CONTRIBUTE.md)。** 下文中未加前缀的 `app/`、`components/`、`types/`、`hooks/`、`lib/` 和 `store/` 路径都相对于 `repo/frontend/apps/web/`。新建或修改代码时必须遵守；发现 inline 类型、散落 hook 等历史债务时，顺手迁移到正确目录。
 
 ---
 
@@ -10,9 +10,9 @@ Scopify 是 **Next.js App Router + Electron** 的网易云音乐客户端。根�
 
 本地仅在提交时运行暂存文件检查与轻量架构检查；push 不运行质量检查。全仓 lint 和 typecheck 由开发者按需执行，并由 CI 兜底。不要把“提交前检查”理解为 Agent 必须额外执行一轮检查。
 
-- **正常提交即可**：只暂存本次任务文件，通过 `git commit` 触发 `.husky/pre-commit`，由 Turbo 的根任务 `lint:staged` 依赖 `lint:architecture` 后执行 `lint-staged`。暂存文件交给 Prettier 和所在工作区的 ESLint；工作区依据自身 `package.json` 的 `lint` 声明自动识别。暂存 Web 文件时调用 Turbo 的 `lint:theme` 任务。无需手动重复钩子检查。
+- **正常提交即可**：只暂存本次任务文件，通过 `git commit` 触发 `.husky/pre-commit`，由 Turbo 的根任务 `lint:staged` 依赖 `lint:architecture` 后执行 `lint-staged`。暂存文件交给 Prettier 和所在工作区的 ESLint；工作区依据自身 `package.json` 的 `lint` 声明自动识别。无需手动重复钩子检查。
 - **正常推送即可**：不设置 pre-push 检查，不在 push 时执行 lint、TypeScript 或 build。需要本地确认时，开发者按需执行 `pnpm run lint` 或 `pnpm run typecheck`；CI 独立执行全仓质量检查。
-- **统一编排**：`pnpm run lint` 仅调用 Turbo，工作区 `lint` 通过 `^lint` 声明上游关系，架构检查、共享包脚本覆盖检查和 Web 主题检查均由 `turbo.json` 组合。Desktop 的虚拟 lint 节点只依赖前端契约包，避免引入独立后端的 lint；不因此新增 Desktop ESLint 或放宽既有规则。
+- **统一编排**：`pnpm run lint` 仅调用 Turbo，工作区 `lint` 通过 `^lint` 声明上游关系，架构检查与共享包脚本覆盖检查均由 `turbo.json` 组合。Desktop 的虚拟 lint 节点只依赖前端契约包，避免引入独立后端的 lint；不因此新增 Desktop ESLint 或放宽既有规则。
 - **钩子失败时再处理**：读取实际错误，修复本次改动引起的问题后重新提交。不得跳过或禁用钩子（包括 `--no-verify`），也不得为了通过而擅自修改无关文件或放宽规则；既有问题应说明情况并交给用户决定。
 - **禁止主动追加重复检查**：无论阶段完成还是准备提交，都不要自行运行全仓或包级的 lint、TypeScript/typecheck、Prettier 检查、build，也不要手动重复提交钩子已覆盖的检查。用户明确要求某项检查时，才按指定范围执行。
 - **明确覆盖边界**：提交钩子不执行全仓 ESLint 或 TypeScript 检查，push 成功也不代表这些检查通过。全量 lint、类型检查、格式检查、测试与提交信息检查由 `.github/workflows/ci.yml` 兜底；只报告实际执行结果。
@@ -51,7 +51,7 @@ Scopify/
 │   ├── frontend/
 │   │   ├── apps/
 │   │   │   ├── web/                 # Next.js Web + Desktop Renderer 源码
-│   │   │   │   ├── app/             # URL 路由与页面组装
+│   │   │   │   ├── app/             # URL 路由、页面组装与路由专属组件
 │   │   │   │   ├── components/      # 按业务领域组织的 UI
 │   │   │   │   ├── types/           # 业务、API 与 Props 类型
 │   │   │   │   ├── hooks/           # 业务 hooks
@@ -117,15 +117,25 @@ Scopify/
 
 ## 代码规范与架构约定
 
-前端/Electron 的代码结构规范、`app/` 路由组装原则、类型定义放哪、组件拆分及 API 三层架构，统一托管于 Skill：👉 **[skills/nextjs-project-structure/](skills/nextjs-project-structure/SKILL.md)**
+前端代码结构的规范是三篇文档，新建或修改页面、组件、数据请求前先读对应的一篇：
+
+| 文档 | 内容 |
+| --- | --- |
+| [项目结构与拆分原理](skills/nextjs-project-structure/rules/architecture.md) | layout / slot / page / template 的分工、页面怎么拆、类型与 hooks 放哪 |
+| [组件规则](skills/nextjs-project-structure/rules/components.md) | `@scopify/ui`、`components/`、`_components/` 三层归属与升级规则 |
+| [数据请求与边界](skills/nextjs-project-structure/rules/data-and-boundaries.md) | 请求三层封装、Query 边界、状态协议、slot 与 Suspense |
+
+核心原则：**layout 决定放在哪，slot 决定放什么，page 只是随 URL 切换的那一块**；组件分三层：可抽象为最小复用案例的原子 Base 进 `@scopify/ui`（类似 shadcn 可拆解层次的跨路由基础）；Base 满足不了要求时、基于 Base 改造且多路由复用的业务组件进 `components/<领域>/`；页面特有、基于 Base 改造且不多路复用的小组件放路由专属 `_components/`（禁止跨路由导入）；拆分是因内容多且某一块集中表达一个独立功能，一切为了功能聚焦与清晰表达，不为拆而拆。
+
+规则文件放在 `skills/nextjs-project-structure/rules/`，是唯一来源；`docs/rules/` 只是给人浏览的索引。
 
 ### `types/` 目录约定
 
-`types/` 先按业务领域建目录（尽量与 `components/` 业务目录同名，如 `types/playlist/`、`types/user/`），目录内再分层：`model.ts`（业务实体）、`api.ts`（请求/响应）、`components.ts`（复用 Props）；同一领域有更多主题时用 `<主题>.ts`、`<主题>Api.ts`、`<主题>Components.ts`。不建 `index.ts` 聚合出口，导入时直接指向具体文件，例如 `@/types/playlist/api`。根目录只保留 `i18n.generated.d.ts`（生成文件）与 `electron.d.ts`（`window.electronAPI` 全局声明，路径被架构检查引用）。新增类型先查 [types/README.md](repo/frontend/apps/web/types/README.md) 的领域索引。
+`types/` 先按业务领域建目录（尽量与 `components/` 业务目录同名，如 `types/playlist/`、`types/user/`），目录内再分层：`model.ts`（业务实体）、`api.ts`（请求/响应）、`components.ts`（复用 Props）；同一领域有更多主题时用 `<主题>.ts`、`<主题>Api.ts`、`<主题>Components.ts`。不建 `index.ts` 聚合出口，导入时直接指向具体文件，例如 `@/types/playlist/api`。根目录只保留 `electron.d.ts`（`window.electronAPI` 全局声明，路径被架构检查引用）。新增类型先查 [types/README.md](repo/frontend/apps/web/types/README.md) 的领域索引。
 
 ### Query 状态与错误边界
 
-任何新增或修改数据请求、页面加载/错误状态、分页、Mutation、媒体播放错误处理时，必须阅读并遵循 [Query 与错误边界规范](skills/nextjs-project-structure/rules/query-boundaries.md)。
+任何新增或修改数据请求、页面加载/错误状态、分页、Mutation、媒体播放错误处理时，必须阅读并遵循 [数据请求与边界](skills/nextjs-project-structure/rules/data-and-boundaries.md)。
 
 - Query 管理请求状态；React 边界决定失败影响范围。按可独立恢复的业务区域划分边界，禁止把独立请求的错误聚合成整页错误。
 - 调用 Query 的组件必须位于对应边界内部；首次无数据失败进入边界，有缓存的后台刷新失败保留内容。`undefined`、成功空数组、暂停请求、取消请求必须区分。

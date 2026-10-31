@@ -7,13 +7,14 @@ import { INBOX_SCROLL_CLASS } from "@/constants/inbox";
 import { usePrivateConversations } from "@/hooks/messages/usePrivateConversations";
 import { conversationUnread } from "@/lib/messages/normalize";
 import { useSmartRouter } from "@/hooks/core/useSmartRouter";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { FriendsPanelProps } from "@/types/messages/components";
 import { ConversationRow } from "./ConversationRow";
 import { PrivateConversationView } from "./PrivateConversationView";
 
 export function FriendsPanel(props: FriendsPanelProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const router = useSmartRouter();
   const query = usePrivateConversations(props.accountId, !props.peer);
   if (props.accountId && props.peer)

@@ -1,4 +1,5 @@
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { ThemeEditorFieldsProps } from "@/types/appearance/model";
 import { SettingRow } from "./SettingsUI";
 import { ThemeColorControl } from "./ThemeColorControl";
@@ -11,7 +12,7 @@ export function ThemeEditorFields({
   variant,
   onVariantChange,
 }: ThemeEditorFieldsProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   return (
     <>
       <div role="group" aria-label={t("settings.appearance.label")} className="mb-4 flex gap-2">

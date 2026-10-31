@@ -58,17 +58,21 @@ Scopify Web is a Next.js application that provides a modern music listening expe
 - `test` - Run Web unit tests
 - `lint` - Run ESLint
 - `format` - Format code with Prettier
-- `i18n:types` - Regenerate typed translation helpers
-- `i18n:audit` - Find likely untranslated UI text
+- `i18n:audit` - List hard-coded text candidates with x18n
 
 ### Internationalization
 
-Translation resources, runtime helpers, generated types, and i18n tooling belong to this Web workspace. Run these commands from `repo/frontend/apps/web/`:
+Translation resources, runtime helpers, and i18n tooling belong to this Web workspace. Run these commands from `repo/frontend/apps/web/`:
+
+React components use `useTranslation` from `react-i18next`. Translation keys keep the resource namespace before the first dot (for example, `ui.next` refers to `next` in `ui.json`, while `folia.ui.next` refers to `ui.next` in `folia.json`). The saved app locale is synchronized with the i18next instance.
 
 ```bash
-pnpm run i18n:types # Regenerate types/i18n.generated.d.ts from the translation resources
-pnpm run i18n:audit # Find likely untranslated text in app/ and components/
+pnpm run i18n:audit # List hard-coded text candidates with x18n
 ```
+
+From the repository root, `pnpm i18n:x18n check` also checks translation resources and usage. Its configuration recognizes literal keys stored in tables or passed through state, in addition to direct translation calls. When adding a locale namespace, add it to the `usage.regex` namespace alternatives in `x18n.config.json`. Add a narrow `usage.keysInUse` pattern for keys constructed dynamically outside translation calls.
+
+The literal-key scan is conservative: a matching string can count as usage even if it is not translated, and a reported unused key may still be used dynamically. Review references before removing translations; type declarations and tests are excluded from usage scans.
 
 ## Project Structure
 

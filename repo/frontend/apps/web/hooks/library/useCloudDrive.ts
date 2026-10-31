@@ -13,7 +13,8 @@ import {
 import { useLoginStatus } from "@/hooks/auth/useLoginStatus";
 import { musicQueryKeys } from "@/lib/query/queryKeys";
 import { useUserStore } from "@/store";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import {
   getCloudDownloadUrl,
   getCloudSongId,
@@ -44,7 +45,7 @@ async function fetchCloudDrive(): Promise<CloudDriveData> {
 }
 
 export function useCloudDrive() {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const queryClient = useQueryClient();
   const isLoggedIn = useLoginStatus();
   const userId = useUserStore((state) => state.user?.userId);

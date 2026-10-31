@@ -1,0 +1,22 @@
+{
+  "menu.notifications": "Notifications",
+  "menu.friends": "Friends",
+  "menu.profile": "Profile",
+  "menu.vipSign": "NetEase Check-in",
+  "menu.signToday": "Today",
+  "menu.signIn": "Sign In",
+  "menu.viewMonthlySign": "Monthly Sign-in",
+  "menu.listeningReport": "Music Footprint",
+  "menu.settings": "Settings",
+  "menu.download": "Download Client",
+  "menu.aboutMe": "About Me",
+  "toast.updateSuccess": "Profile updated",
+  "toast.updateFailed": "Failed to update profile",
+  "edit.title": "Edit Profile",
+  "edit.nickname": "Nickname",
+  "edit.signature": "Signature",
+  "edit.gender": "Gender",
+  "edit.genderPrivate": "Private",
+  "edit.genderMale": "Male",
+  "edit.genderFemale": "Female"
+}

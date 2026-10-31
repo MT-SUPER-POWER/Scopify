@@ -4,12 +4,13 @@ import { UserRound } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@scopify/ui/shadcn/components/avatar";
 import { renderEmojiContent } from "@/components/Comment/renderEmojiContent";
 import { cn } from "@/lib/utils";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { PrivateMessageBubbleProps } from "@/types/messages/components";
 import { PrivateMessageCard } from "./PrivateMessageCard";
 
 export function PrivateMessageBubble({ message }: PrivateMessageBubbleProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   return (
     <article
       className={cn("flex items-start gap-2.5", message.own && "flex-row-reverse")}

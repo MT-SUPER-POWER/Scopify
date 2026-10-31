@@ -6,7 +6,8 @@ import { QueryPending } from "@/components/shared/QueryPending";
 import { QuietState } from "@/components/shared/QuietState";
 import { useAuth } from "@/hooks/auth/useAuth";
 import { useSongWikiQuery } from "@/hooks/song/useSongResources";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { SongResourceSectionProps } from "@/types/songResources/components";
 
 export function SongWikiSection(props: SongResourceSectionProps) {
@@ -21,7 +22,7 @@ export function SongWikiSection(props: SongResourceSectionProps) {
   );
 }
 function SongWikiContent({ songId, compact }: SongResourceSectionProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const query = useSongWikiQuery(songId);
   if (songId <= 0)
     return <QuietState compact icon={BookOpen} title={t("songResources.emptyWiki")} />;

@@ -4,7 +4,8 @@ import { AnimatePresence } from "framer-motion";
 import { FoliaStudioWindow } from "@scopify/ui/scopify/components/folia-studio/window";
 import { AudioEqualizerPanel } from "@/components/player/AudioEqualizerPanel";
 import { useFoliaModalFocus } from "@/hooks/lyrics/useFoliaModalFocus";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { FoliaAudioEqualizerDialogProps } from "@/types/lyrics/components";
 
 export function FoliaAudioEqualizerDialog({
@@ -12,7 +13,7 @@ export function FoliaAudioEqualizerDialog({
   onClose,
   theme,
 }: FoliaAudioEqualizerDialogProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const dialogRef = useFoliaModalFocus(isOpen, onClose);
   return (
     <AnimatePresence>

@@ -7,11 +7,12 @@ import { LoaderCircle, RotateCcw } from "lucide-react";
 import { FoliaLyricMatchPreview } from "@/components/lyrics/FoliaLyricMatchPreview";
 import { FoliaLyricMatchSearch } from "@/components/lyrics/FoliaLyricMatchSearch";
 import { useLyricMatch } from "@/hooks/lyrics/useLyricMatch";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { FoliaLyricMatchDialogProps } from "@/types/lyrics/components";
 
 export function FoliaLyricMatchDialog({ isOpen, onClose, theme }: FoliaLyricMatchDialogProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const match = useLyricMatch(isOpen);
   const isDaylight = theme.name === "snow";
 

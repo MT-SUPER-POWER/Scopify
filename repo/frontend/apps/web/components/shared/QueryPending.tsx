@@ -3,11 +3,12 @@
 import { WifiOff } from "lucide-react";
 import { Skeleton } from "@scopify/ui/shadcn/components/skeleton";
 import { QuietState } from "@/components/shared/QuietState";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { QueryPendingProps } from "@/types/query/boundaryComponents";
 
 export function QueryPending({ isPaused }: QueryPendingProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   return isPaused ? (
     <QuietState compact icon={WifiOff} title={t("network.offline.subtitle")} />
   ) : (

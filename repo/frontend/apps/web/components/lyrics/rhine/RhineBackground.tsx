@@ -2,13 +2,14 @@
 
 import { DEFAULT_RHINE_BACKGROUND_TUNING } from "@/constants/rhineBackground";
 import { useRhineBackground } from "@/hooks/lyrics/useRhineBackground";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { RhineBackgroundProps } from "@/types/lyrics/rhine/background";
 import styles from "./RhineBackground.module.css";
 
 export default function RhineBackground(props: RhineBackgroundProps) {
   const { canvasRef, status, attempt, retry } = useRhineBackground(props);
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const tuning = { ...DEFAULT_RHINE_BACKGROUND_TUNING, ...props.config?.rhine?.tuning };
   const dark = tuning.colorMode === "auto" ? !props.isDaylight : tuning.colorMode === "dark";
   const background = dark ? "#11181b" : "#eae5e1";

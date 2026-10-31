@@ -2,7 +2,8 @@
 
 import { Mic2 } from "lucide-react";
 import { ShortcutHint } from "@/components/shortcuts/ShortcutHint";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import { useUiStore } from "@/store/module/ui";
 import {
   Tooltip,
@@ -12,7 +13,7 @@ import {
 } from "@scopify/ui/shadcn/components/tooltip";
 
 export function LyricStageButton() {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const isLyricsOpen = useUiStore((s) => s.isLyricsOpen);
   const toggleLyrics = useUiStore((s) => s.toggleLyrics);
   const lyricsActionLabel = t(isLyricsOpen ? "ui.hideLyrics" : "ui.showLyrics");

@@ -3,11 +3,12 @@ import { getPlaylistAllTracks, getUserLikeLists } from "@/lib/api/playlist";
 import { useRequireLoginAction } from "@/hooks/auth/useRequireLoginAction";
 import { useSmartRouter } from "@/hooks/core/useSmartRouter";
 import { usePlayerStore, useUserStore } from "@/store";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import { pruneSongDetail } from "@/types/song/api";
 
 export function useSidebarPlaylistPlayback(playlistID: number | string) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const smartRouter = useSmartRouter();
   const requireLoginAction = useRequireLoginAction();
   return async () => {

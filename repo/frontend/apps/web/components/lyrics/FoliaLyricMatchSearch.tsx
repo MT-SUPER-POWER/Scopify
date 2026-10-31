@@ -3,7 +3,8 @@
 import { LoaderCircle, Search } from "lucide-react";
 
 import { FoliaLyricMatchResults } from "@/components/lyrics/FoliaLyricMatchResults";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { FoliaLyricMatchSearchProps } from "@/types/lyrics/components";
 
 export function FoliaLyricMatchSearch({
@@ -20,7 +21,7 @@ export function FoliaLyricMatchSearch({
   song,
   theme,
 }: FoliaLyricMatchSearchProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const borderClass = isDaylight ? "border-black/5" : "border-white/10";
   const inputClass = isDaylight
     ? "border-black/10 bg-black/5 focus-within:border-black/20 focus-within:bg-black/10"

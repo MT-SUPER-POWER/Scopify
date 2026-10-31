@@ -2,7 +2,7 @@ import { expect, mock, test } from "bun:test";
 import { createElement } from "react";
 import { renderToString } from "react-dom/server";
 
-mock.module("@/store/module/i18n", () => ({ useI18n: () => ({ t: (key: string) => key }) }));
+mock.module("react-i18next", () => ({ useTranslation: () => ({ t: (key: string) => key }) }));
 mock.module("@/store/module/shortcuts", () => ({
   useShortcutStore: (
     select: (state: { overrides: { "toggle-playback": { key: string } } }) => unknown,

@@ -3,7 +3,8 @@
 import { Check, LoaderCircle, Music2 } from "lucide-react";
 
 import { getLyricMatchScore } from "@/lib/lyrics/match";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { FoliaLyricMatchResultsProps } from "@/types/lyrics/components";
 
 export function FoliaLyricMatchResults({
@@ -17,7 +18,7 @@ export function FoliaLyricMatchResults({
   song,
   theme,
 }: FoliaLyricMatchResultsProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
 
   if (isLoading) {
     return (

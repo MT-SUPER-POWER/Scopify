@@ -1,17 +1,20 @@
 "use client";
 
-import { Loader2 } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import { useMemo } from "react";
 import { PlaylistContent } from "@/components/Playlist/PlaylistContent";
 import { NetworkRetryState } from "@/components/shared/NetworkRetryState";
 import { useArtistData } from "@/hooks/artist/useArtistData";
 import { useArtistPopularSongsTheme } from "@/hooks/artist/useArtistPopularSongsTheme";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { PlaylistInfo } from "@/types/playlist/model";
+import { ArtistInvalidId } from "../_components/ArtistInvalidId";
+import { ArtistLoading } from "../_components/ArtistLoading";
+import { ArtistRefetchError } from "../_components/ArtistRefetchError";
 
 export default function ArtistPopularSongsPage() {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const artistId = useSearchParams().get("id");
   const {
     artist,
@@ -40,18 +43,13 @@ export default function ArtistPopularSongsPage() {
   }, [artist, popularTracks.length, t]);
   const themeColor = useArtistPopularSongsTheme(playlistInfo?.cover);
 
-  if (!artistId) return <div className="p-8 text-content">{t("artist.page.invalidId")}</div>;
+  if (!artistId) return <ArtistInvalidId />;
 
-  if (isLoading)
-    return (
-      <div className="flex h-screen items-center justify-center bg-surface-raised p-8 text-content">
-        <Loader2 className="size-8 animate-spin text-brand" />
-      </div>
-    );
+  if (isLoading) return <ArtistLoading />;
 
   if (!artist)
     return (
-      <main className="min-h-screen bg-surface-raised px-6 pt-8 pb-28 md:px-10">
+      <main className="px-6 pt-8 pb-28 md:px-10">
         <NetworkRetryState
           title={t("network.offline.title")}
           subtitle={t("network.offline.subtitle")}
@@ -64,18 +62,7 @@ export default function ArtistPopularSongsPage() {
 
   return (
     <>
-      {isError && (
-        <div className="bg-surface-raised px-6 pt-6 md:px-8">
-          <NetworkRetryState
-            compact
-            title={t("network.offline.title")}
-            subtitle={t("network.offline.subtitle")}
-            actionLabel={t("network.action.refresh")}
-            isRetrying={isRefreshing}
-            onRetry={() => void refetch()}
-          />
-        </div>
-      )}
+      {isError && <ArtistRefetchError isRefreshing={isRefreshing} onRetry={() => void refetch()} />}
       <PlaylistContent
         dailyDate={null}
         isDailyRecommend={false}

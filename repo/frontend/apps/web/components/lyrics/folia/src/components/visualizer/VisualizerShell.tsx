@@ -1,6 +1,7 @@
 import React, { forwardRef, useState } from "react";
 import { motion, MotionValue } from "framer-motion";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import { ChevronDown } from "lucide-react";
 import { AudioBands, Theme } from "../../types";
 import { resolveThemeFontStack } from "../../utils/fontStacks";
@@ -54,7 +55,7 @@ const VisualizerShell = forwardRef<HTMLDivElement, VisualizerShellProps>(
     },
     ref,
   ) => {
-    const { t } = useI18n();
+    const { t } = useTranslation();
     const [showBackButton, setShowBackButton] = useState(false);
     const resolvedCoverUrl = sharedProps?.coverUrl;
     const resolvedIsDaylight = sharedProps?.isDaylight ?? false;

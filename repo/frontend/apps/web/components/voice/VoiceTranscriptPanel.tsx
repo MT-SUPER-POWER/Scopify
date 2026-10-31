@@ -5,7 +5,8 @@ import { LoaderCircle, ScrollText } from "lucide-react";
 
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn, formatDuration } from "@/lib/utils";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { VoiceLyricSentence } from "@/types/voice/api";
 import type { Voice } from "@/types/search/model";
 
@@ -27,7 +28,7 @@ export function VoiceTranscriptPanel({
   voice,
   variant = "compact",
 }: VoiceTranscriptPanelProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const isDialog = variant === "dialog";
 
   return (

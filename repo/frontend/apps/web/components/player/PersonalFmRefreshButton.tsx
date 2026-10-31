@@ -2,12 +2,13 @@
 
 import { RefreshCw } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@scopify/ui/shadcn/components/tooltip";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import { cn } from "@/lib/utils";
 import type { PersonalFmRefreshButtonProps } from "@/types/personalFm/model";
 
 export function PersonalFmRefreshButton({ isRefreshing, onRefresh }: PersonalFmRefreshButtonProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   return (
     <Tooltip>
       <TooltipTrigger asChild>

@@ -1,7 +1,8 @@
 "use client";
 
 import { Switch } from "@scopify/ui/shadcn/components/switch";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { NotificationDeliverySettingsProps } from "@/types/notifications/components";
 import { NotificationTestButton } from "./NotificationTestButton";
 import { SettingInput, SettingRow, SettingSection } from "./SettingsUI";
@@ -15,7 +16,7 @@ export function NotificationDeliverySettings({
   testing,
   onTest,
 }: NotificationDeliverySettingsProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   return (
     <SettingSection title={t("notifications.interruption")}>
       <SettingRow

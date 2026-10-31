@@ -4,7 +4,7 @@ import { Volume, Volume1, Volume2, VolumeOff } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { SmoothSlider } from "@/components/shared/SmoothSlider";
 import { cn } from "@/lib/utils";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
 
 interface VolumeControlProps {
   initialVolume?: number;
@@ -21,7 +21,7 @@ export const VolumeControl = ({
   variant = "popup",
   className = "",
 }: VolumeControlProps) => {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const [volume, setVolume] = useState(initialVolume);
   const [isMuted, setMuted] = useState(false);
   const prevVolumeRef = useRef<number>(initialVolume);

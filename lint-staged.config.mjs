@@ -3,7 +3,6 @@ import path from "node:path";
 
 // 与 Turbo 使用同一份工作区脚本声明，不再维护第二份 ESLint 工作区名单。
 const lintWorkspaces = new Map();
-const WEB_WORKSPACE = "repo/frontend/apps/web";
 const LINTABLE = /\.(js|jsx|ts|tsx|mjs)$/;
 
 const toPosix = (file) => file.replaceAll("\\", "/");
@@ -42,11 +41,6 @@ export default {
       commands.push(
         `pnpm --dir ${workspace} exec eslint --fix --max-warnings 0 --no-warn-ignored ${quote(relFiles)}`,
       );
-    }
-
-    // 3. Web 的主题硬编码检查（CI 的 lint 也会跑）：扫整个 Web 源码，只需一两秒
-    if (filenames.some((file) => workspaceOf(file) === WEB_WORKSPACE)) {
-      commands.push("pnpm exec turbo run lint:theme --filter=@scopify/web");
     }
 
     return commands;

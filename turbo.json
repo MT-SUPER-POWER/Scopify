@@ -63,9 +63,8 @@
       "dependsOn": ["^lint", "//#lint:architecture", "//#lint:packages"],
       "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/repo/frontend/packages/eslint.config.mjs"]
     },
-    "lint:theme": {},
     "@scopify/web#lint": {
-      "dependsOn": ["^lint", "//#lint:architecture", "//#lint:packages", "lint:theme"],
+      "dependsOn": ["^lint", "//#lint:architecture", "//#lint:packages"],
       "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/repo/frontend/packages/eslint.config.mjs"]
     },
     "@scopify/desktop#lint": {

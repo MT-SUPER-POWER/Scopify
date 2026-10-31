@@ -19,7 +19,8 @@ import { useSmartRouter } from "@/hooks/core/useSmartRouter";
 import { runtime } from "@/lib/runtime";
 import { usePlayerStore, useUserStore } from "@/store";
 import { useFriendsStore } from "@/store/module/friends";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { ProfileMenuNavigationProps } from "@/types/user/profileMenuComponents";
 
 const itemClassName =
@@ -28,7 +29,7 @@ const iconClassName = "size-5 text-content-muted";
 const arrowClassName = "ml-auto size-4 text-content-muted";
 
 export function ProfileMenuNavigation({ isLoggedIn }: ProfileMenuNavigationProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const smartRouter = useSmartRouter();
   const logout = () => {
     useUserStore.getState().handleLogout();

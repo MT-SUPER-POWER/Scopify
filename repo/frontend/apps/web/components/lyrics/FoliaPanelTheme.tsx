@@ -9,14 +9,15 @@ import {
 import { useFoliaThemeCarousel } from "@/hooks/lyrics/useFoliaThemeCarousel";
 import type { FoliaPanelThemeProps } from "@/types/lyrics/components";
 import { FoliaThemeRecord } from "@/components/lyrics/FoliaThemeRecord";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import { useLyricStageStore } from "@/store/module/lyrics";
 
 // Theme name and appearance first, then the complete library as a horizontally scrollable row.
 // Library order stays stable while the selected swatch is brought into view.
 
 export function FoliaPanelTheme({ onOpenThemeLibrary }: FoliaPanelThemeProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const themeId = useLyricStageStore((state) => state.themeId);
   const themes = useLyricStageStore((state) => state.themes);
   const themeVariant = useLyricStageStore((state) => state.themeVariant);

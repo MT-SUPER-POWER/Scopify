@@ -18,7 +18,7 @@ export interface LibraryNavigationProps extends SidebarPlaylistLibraryProps {
   headerAction?: ReactNode;
 }
 
-export interface SiderBarMenuProps {
+export interface SidebarMenuProps {
   isCollapsed?: boolean;
 }
 

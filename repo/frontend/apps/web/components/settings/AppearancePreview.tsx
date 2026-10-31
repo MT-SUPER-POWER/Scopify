@@ -2,7 +2,8 @@
 
 import { BackgroundPreviewContext } from "@/lib/settings/backgroundPreviewContext";
 import { usePreviewScale } from "@/hooks/settings/usePreviewScale";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { AppearancePreviewProps } from "@/types/appearance/model";
 
 const PREVIEW_WIDTH = 1100;
@@ -10,7 +11,7 @@ const PREVIEW_HEIGHT = 800;
 
 /** The caller supplies the same content component used by the actual route. */
 export function AppearancePreview({ children, background, variant }: AppearancePreviewProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const { containerRef, scale } = usePreviewScale(PREVIEW_WIDTH);
   return (
     <div

@@ -2,13 +2,14 @@
 
 import { Dialog } from "radix-ui";
 import { X } from "lucide-react";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { VipSignModalProps } from "@/types/vipSign/components";
 import { VipSignTicket } from "./VipSignTicket";
 import styles from "./VipSignTicket.module.css";
 
 export function VipSignModal({ open, onClose, todayRecord }: VipSignModalProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   return (
     <Dialog.Root
       open={open}

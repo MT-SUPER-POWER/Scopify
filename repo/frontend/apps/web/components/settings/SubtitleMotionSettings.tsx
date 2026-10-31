@@ -9,7 +9,8 @@ import {
 } from "@scopify/ui/shadcn/components/select";
 
 import type { SubtitleSettingsEditorProps } from "@/types/lyrics/subtitlePreview";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { LyricsPreviewSettings } from "@/types/appearance/model";
 import { AppearanceRange } from "./AppearanceRange";
 import { SettingRow, SettingSection } from "./SettingsUI";
@@ -18,7 +19,7 @@ export function SubtitleMotionSettings({
   settings,
   onChange: update,
 }: SubtitleSettingsEditorProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   return (
     <SettingSection title={t("subtitlePreview.motion")}>
       <SettingRow

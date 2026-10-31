@@ -1,6 +1,7 @@
 // Copyright (c) 2026 chthollyphile
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import { DEFAULT_HANABI_TUNING, type Line, type Theme } from "../../../types";
 import { loadLucideIcons } from "../../../services/lucideIconResolver";
 import { resolveThemeFontStack, resolveThemeFontWeight } from "../../../utils/fontStacks";
@@ -53,7 +54,7 @@ const VisualizerHanabi: React.FC<VisualizerSharedProps> = (props) => {
     subtitleOverlayBackground,
     hanabiTuning: storedTuning = DEFAULT_HANABI_TUNING,
   } = props;
-  const { t } = useI18n();
+  const { t } = useTranslation();
   // The store clamps what it saves; this also fills fields an older saved tuning lacks.
   const hanabiTuning = useMemo(() => normalizeHanabiTuning(storedTuning), [storedTuning]);
   const hostRef = useRef<HTMLDivElement>(null);

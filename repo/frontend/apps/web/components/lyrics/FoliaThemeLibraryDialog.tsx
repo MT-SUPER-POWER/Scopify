@@ -10,7 +10,8 @@ import { FoliaThemeUnsavedDialog } from "@/components/lyrics/FoliaThemeUnsavedDi
 import { FoliaThemeWorkbenchHeader } from "@/components/lyrics/FoliaThemeWorkbenchHeader";
 import { FoliaThemeWorkbenchLayout } from "@/components/lyrics/FoliaThemeWorkbenchLayout";
 import { useFoliaThemeWorkbench } from "@/hooks/lyrics/useFoliaThemeWorkbench";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { FoliaThemeLibraryDialogProps } from "@/types/lyrics/components";
 import { FoliaStudioWindow } from "@scopify/ui/scopify/components/folia-studio/window";
 
@@ -20,7 +21,7 @@ export function FoliaThemeLibraryDialog({
   onClose,
   theme,
 }: FoliaThemeLibraryDialogProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const model = useFoliaThemeWorkbench(isOpen, onClose);
   const closeRequest = useFoliaSettingsStore((state) => state.themeCloseRequest);
   const seenCloseRequest = useRef(0);

@@ -4,12 +4,13 @@ import { LocateFixed } from "lucide-react";
 import { useRef } from "react";
 import { PlayerQueueList } from "@/components/player/PlayerQueueList";
 import { usePlayerStore } from "@/store";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { PlayerQueueListHandle } from "@/types/player/components";
 
 /** 面板的队列视图：复用播放栏浮层的可拖拽排序列表，高度随面板伸展。 */
 export function NowPlayingQueueView() {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const queueLength = usePlayerStore((s) => s.queue.length);
   const queueListRef = useRef<PlayerQueueListHandle>(null);
 

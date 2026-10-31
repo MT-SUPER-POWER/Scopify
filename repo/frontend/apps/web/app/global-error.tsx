@@ -3,11 +3,13 @@
 import "./globals.css";
 
 import { ErrorFallback } from "@/components/shared/ErrorFallback";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+import { useI18nStore } from "@/store/module/i18n";
 import type { ErrorFallbackProps } from "@/types/shared/errorComponents";
 
 export default function GlobalError({ error, reset }: ErrorFallbackProps) {
-  const { locale, t } = useI18n();
+  const { t } = useTranslation(),
+    locale = useI18nStore((state) => state.locale);
 
   return (
     <html lang={locale} data-theme="scopify-default" suppressHydrationWarning>

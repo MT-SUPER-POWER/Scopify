@@ -1,0 +1,34 @@
+"use client";
+
+import { User } from "lucide-react";
+import { useTranslation } from "react-i18next";
+
+import type { Artist } from "@/types/search/model";
+import { getSizedImageUrl } from "@/lib/music/imageUrl";
+
+export function ArtistCard({ artist, onClick }: { artist: Artist; onClick?: () => void }) {
+  const { t } = useTranslation();
+
+  return (
+    <div
+      className="group flex min-w-0 cursor-pointer flex-col items-center rounded-xl bg-surface-elevated p-4 text-center transition-colors hover:bg-surface-overlay active:bg-surface-sunken"
+      onClick={onClick}
+    >
+      <div className="mb-4 flex aspect-square w-full items-center justify-center overflow-hidden rounded-full bg-surface-sunken shadow-panel">
+        {artist.picUrl || artist.img1v1Url ? (
+          <img
+            src={getSizedImageUrl(artist.picUrl || artist.img1v1Url, 400)}
+            alt={artist.name}
+            className="size-full object-cover"
+          />
+        ) : (
+          <User className="size-12 text-content-subtle" />
+        )}
+      </div>
+      <h4 className="mb-1 w-full truncate text-base font-bold">{artist.name}</h4>
+      <p className="mt-1 w-full truncate text-sm text-content-muted">
+        {t("search.section.artistLabel")}
+      </p>
+    </div>
+  );
+}

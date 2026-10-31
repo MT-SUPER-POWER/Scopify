@@ -5,7 +5,8 @@ import { toast } from "sonner";
 
 import { getRadioDetail, getRadioPrograms } from "@/lib/api/radio";
 import { usePlayerStore } from "@/store";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import { pruneSongDetail, type SongDetail } from "@/types/song/api";
 import type { RadioDetail, RadioDetailResponse, RadioProgram } from "@/types/radio/api";
 
@@ -59,7 +60,7 @@ function getRadioFromResponse(
 export function usePodcastPlay() {
   const [loadingPodcastId, setLoadingPodcastId] = useState<string | number | null>(null);
   const { setQueue, playQueueIndex } = usePlayerStore();
-  const { t } = useI18n();
+  const { t } = useTranslation();
 
   const handlePlayPodcast = useCallback(
     async (id: string | number, e?: React.MouseEvent) => {

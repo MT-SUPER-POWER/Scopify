@@ -18,7 +18,8 @@ import { AnimatePresence, motion } from "motion/react";
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { MCP_PLAYBACK_CAPABILITIES, type McpCapability } from "@scopify/desktop-contract";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type {
   CapabilityItemDef,
   McpCapabilitiesModalProps,
@@ -129,7 +130,7 @@ export function McpCapabilitiesModal({
   onClose,
   open,
 }: McpCapabilitiesModalProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const [isMounted, setIsMounted] = useState(false);
   const activeSet = resolveActiveGranularCapabilities(capabilities);
 

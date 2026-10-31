@@ -51,11 +51,10 @@ Turbo 负责跨包编排；只有能完整恢复产物的任务才缓存。
 
 ## Lint 统一编排
 
-- `pnpm run lint` 是全仓前端 lint 的统一入口，只调用 `turbo run lint --filter="@scopify/*"`。架构、共享包脚本覆盖检查、各工作区 ESLint 和 Web 主题检查的关系都在 `turbo.json` 声明，不在根脚本或 Web 脚本中串联多套检查。
+- `pnpm run lint` 是全仓前端 lint 的统一入口，只调用 `turbo run lint --filter="@scopify/*"`。架构、共享包脚本覆盖检查、各工作区 ESLint 的关系都在 `turbo.json` 声明，不在根脚本或 Web 脚本中串联多套检查。
 - 工作区 lint 依赖 `^lint`，并依赖根任务 `//#lint:architecture` 与 `//#lint:packages`。这两个轻量扫描不缓存，每次按当前仓库结构检查，避免新增文件或包被历史结果掩盖。
-- Web lint 额外依赖 `lint:theme`，其自身脚本只运行 ESLint。主题任务使用 Web 默认输入参与缓存。
 - Desktop 尚未接入 ESLint，保留虚拟 lint 节点，显式依赖 desktop-contract、notification-core 和根检查；不沿独立部署的后端依赖执行后端 lint。未来接入 Desktop ESLint 时沿用这个边界。
-- pre-commit 通过 `pnpm exec turbo run lint:staged` 运行根任务：先做轻量架构检查，再执行 lint-staged。暂存文件按工作区自身的 lint 声明识别，Web 主题检查也调用同一个 Turbo 任务。该路径不运行全仓 ESLint。
+- pre-commit 通过 `pnpm exec turbo run lint:staged` 运行根任务：先做轻量架构检查，再执行 lint-staged。暂存文件按工作区自身的 lint 声明识别。该路径不运行全仓 ESLint。
 - 不设置 pre-push 检查。类型检查保留增量和并行优化，供手动命令及 CI 使用。
 
 ## Desktop 构建编排

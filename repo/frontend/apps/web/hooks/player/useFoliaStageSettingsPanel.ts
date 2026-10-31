@@ -28,7 +28,8 @@ import {
 import { hasVisualizerTuningMode } from "@/components/lyrics/folia/src/components/visualizer/tuningRegistry";
 import type { VisualizerBackgroundActions } from "@/components/lyrics/folia/src/components/visualizer/backgrounds/definition";
 import { useLyricStageStore } from "@/store/module/lyrics";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { FoliaStageAssets } from "@/types/lyrics/folia/assets";
 import type { FoliaStageEditSection } from "@/types/lyrics/folia/stage";
 
@@ -46,7 +47,7 @@ export function useFoliaStageSettingsPanel(
   assets: FoliaStageAssets,
   onOpenFontPicker: (target: "lyrics" | "subtitle") => void,
 ) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const settings = useLyricStageStore();
   const isDaylight = theme.name === "snow";
   const builtinFontOptions = useMemo(

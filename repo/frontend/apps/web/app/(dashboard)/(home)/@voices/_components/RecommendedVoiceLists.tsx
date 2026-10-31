@@ -1,0 +1,123 @@
+"use client";
+
+import { AnimatePresence, motion } from "framer-motion";
+import { RefreshCw } from "lucide-react";
+import { useEffect, useState } from "react";
+
+import { CollapsibleSection } from "../../_components/CollapsibleSection";
+import { SectionPagination } from "../../_components/SectionPagination";
+import { VoiceList } from "@/components/search/VoiceList";
+import { VoiceTranscriptDialog } from "@/components/voice/VoiceTranscriptDialog";
+import { useRecommendedVoiceListsQuery } from "@/hooks/home/useHomeQueries";
+import { toRecommendedVoice } from "@/lib/home/voiceAdapter";
+import { cn } from "@/lib/utils";
+import { useTranslation } from "react-i18next";
+
+import type { Voice } from "@/types/search/model";
+
+const PAGE_SIZE = 6;
+
+export function RecommendedVoiceLists() {
+  const { t } = useTranslation();
+  const query = useRecommendedVoiceListsQuery();
+  const voices = (query.data.data?.recommendVoiceVOS ?? [])
+    .map((voice) =>
+      toRecommendedVoice(
+        voice,
+        t("home.voiceListMeta"),
+        t("common.meta.unknownAlbum"),
+        t("common.meta.unknownSong"),
+      ),
+    )
+    .filter((voice): voice is Voice => voice !== null);
+  const [isOpen, setIsOpen] = useState(false);
+  const [page, setPage] = useState(0);
+  const [direction, setDirection] = useState<1 | -1>(1);
+  const [selectedVoice, setSelectedVoice] = useState<Voice | null>(null);
+
+  const pageCount = Math.max(1, Math.ceil(voices.length / PAGE_SIZE));
+
+  useEffect(() => {
+    setPage((currentPage) => Math.min(currentPage, pageCount - 1));
+  }, [pageCount]);
+
+  if (voices.length === 0) return null;
+
+  const handleSelectPage = (targetPage: number) => {
+    if (targetPage === page) return;
+    setDirection(targetPage > page ? 1 : -1);
+    setPage(targetPage);
+  };
+
+  const handleRefresh = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setPage(0);
+    void query.refetch();
+  };
+
+  const visibleVoices = isOpen
+    ? voices.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE)
+    : voices.slice(0, PAGE_SIZE);
+
+  return (
+    <section>
+      <CollapsibleSection
+        open={isOpen}
+        onOpenChange={setIsOpen}
+        title={
+          <div className="flex items-center gap-2">
+            <h2 className="text-xl font-bold tracking-tight text-content sm:text-2xl">
+              {t("home.recommendedVoiceLists")}
+            </h2>
+            <button
+              type="button"
+              title={t("home.refreshVoiceLists")}
+              aria-label={t("home.refreshVoiceLists")}
+              disabled={query.isFetching}
+              onClick={handleRefresh}
+              className="flex size-7 shrink-0 items-center justify-center rounded-full text-content-muted transition-colors hover:bg-content/10 hover:text-content disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              <RefreshCw className={cn("size-3.5", query.isFetching && "animate-spin")} />
+            </button>
+          </div>
+        }
+        action={
+          isOpen && pageCount > 1 ? (
+            <SectionPagination
+              currentPage={page}
+              pageCount={pageCount}
+              onPageChange={handleSelectPage}
+            />
+          ) : null
+        }
+        disableHeightCollapse
+        showTrigger={pageCount > 1}
+      >
+        <div className="relative overflow-hidden">
+          <AnimatePresence mode="wait" initial={false}>
+            <motion.div
+              key={isOpen ? page : "collapsed"}
+              initial={{ opacity: 0, x: direction * 16 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -direction * 16 }}
+              transition={{ duration: 0.22, ease: "easeOut" }}
+            >
+              <VoiceList
+                voices={visibleVoices}
+                variant="preview"
+                onViewTranscript={setSelectedVoice}
+              />
+            </motion.div>
+          </AnimatePresence>
+        </div>
+      </CollapsibleSection>
+      <VoiceTranscriptDialog
+        open={selectedVoice !== null}
+        voice={selectedVoice}
+        onOpenChange={(open) => {
+          if (!open) setSelectedVoice(null);
+        }}
+      />
+    </section>
+  );
+}

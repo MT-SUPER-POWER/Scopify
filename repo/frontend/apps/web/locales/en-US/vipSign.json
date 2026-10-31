@@ -1,0 +1,13 @@
+{
+  "ticketTitle": "Daily Music Ticket",
+  "memberCenter": "Cloud Music VIP Center",
+  "tearHint": "Hold and peel up or down",
+  "tearAction": "Tear off the stub and close the ticket",
+  "playFailed": "Unable to play this song. Please try again.",
+  "recommendedSong": "Today's Pick",
+  "monthlyCheckIn": "Monthly Check-ins",
+  "days": "Days",
+  "qrHint": "Check in daily for membership growth value",
+  "commentFrom": "- comment by @{{nickname}}",
+  "qrAlt": "QR Code"
+}

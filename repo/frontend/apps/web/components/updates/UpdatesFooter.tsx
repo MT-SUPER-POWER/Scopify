@@ -8,12 +8,13 @@ import {
   SelectValue,
 } from "@scopify/ui/shadcn/components/select";
 import { UPDATES, UPDATES_UNRELEASED_KEY } from "@/constants/updates";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { UpdatesFooterProps } from "@/types/updates/model";
 import styles from "./WhatsNewModal.module.css";
 
 export function UpdatesFooter({ releaseKey, onReleaseChange, onClose }: UpdatesFooterProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   return (
     <footer className={styles.footer}>
       <div className={styles.footerGroup}>

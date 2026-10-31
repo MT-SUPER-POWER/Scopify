@@ -1,0 +1,138 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { ShortcutSettings } from "@/components/shortcuts/ShortcutSettings";
+import { SETTINGS_TABS } from "@/constants/settings";
+import { useSettingsState } from "@/hooks/settings/useSettingsState";
+import { useSettingsSectionNavigation } from "@/hooks/settings/useSettingsSectionNavigation";
+import { runtime } from "@/lib/runtime";
+import { parseSettingsTab } from "@/lib/settings/tabs";
+import { useTranslation } from "react-i18next";
+
+import type { SettingsTabId } from "@/types/settings/model";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { DesktopSettingsTab } from "@/components/settings/DesktopSettingsTab";
+import { GeneralSettingsTab } from "@/components/settings/GeneralSettingsTab";
+import { NetworkSettingsTab } from "@/components/settings/NetworkSettingsTab";
+import {
+  SaveChangesButton,
+  SaveConfirmModal,
+  SettingsLoadingState,
+} from "@/components/settings/SettingsUI";
+import { StorageSettingsTab } from "@/components/settings/StorageSettingsTab";
+import { AppearanceSettingsTab } from "@/components/settings/AppearanceSettingsTab";
+import { NotificationSettingsTab } from "@/components/settings/NotificationSettingsTab";
+
+const SettingsPage = () => {
+  const { t } = useTranslation();
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const queryTab = parseSettingsTab(searchParams.get("tab") ?? undefined);
+  const [activeTab, setActiveTab] = useState(queryTab);
+  const settings = useSettingsState();
+
+  useEffect(() => setActiveTab(queryTab), [queryTab]);
+  useSettingsSectionNavigation(activeTab, Boolean(settings.config));
+
+  if (!settings.config) return <SettingsLoadingState />;
+
+  const handleTabChange = (tab: string) => {
+    const nextTab = tab as SettingsTabId;
+    setActiveTab(nextTab);
+    router.replace(`${pathname}?tab=${nextTab}`, { scroll: false });
+  };
+
+  return (
+    <div className="flex flex-col pb-10 md:pb-12">
+      <div className="mb-8 flex items-center justify-between">
+        <h1 className="text-3xl font-black tracking-tight text-foreground md:text-4xl">
+          {t("settings.title")}
+        </h1>
+      </div>
+      <Tabs value={activeTab} onValueChange={handleTabChange} className="flex flex-col">
+        <TabsList className="h-auto w-fit max-w-full justify-start gap-1 self-start overflow-x-auto bg-surface-sunken p-1">
+          {SETTINGS_TABS.filter((tab) => tab.id !== "desktop" || runtime.isDesktop).map((tab) => (
+            <TabsTrigger key={tab.id} value={tab.id} className="shrink-0 px-4 py-2">
+              {t(tab.labelKey)}
+            </TabsTrigger>
+          ))}
+        </TabsList>
+        <div className="py-8 pb-12">
+          {/*常规*/}
+          <TabsContent value="general">
+            <GeneralSettingsTab
+              config={settings.config}
+              onWebChange={settings.handleWebChange}
+              onDesktopChange={settings.handleDesktopChange}
+            />
+          </TabsContent>
+          {/*外观和样式*/}
+          <TabsContent value="appearance">
+            <AppearanceSettingsTab />
+          </TabsContent>
+          {/*网络*/}
+          <TabsContent value="network">
+            <NetworkSettingsTab
+              backendPingResult={settings.backendPingResult}
+              config={settings.config}
+              isPingingBackend={settings.isPingingBackend}
+              onWebChange={settings.handleWebChange}
+              onDesktopChange={settings.handleDesktopChange}
+              onPingBackend={settings.handlePingBackend}
+              onBackendHostBlur={settings.handleBackendHostBlur}
+            />
+          </TabsContent>
+          {/*存储*/}
+          <TabsContent value="storage">
+            <StorageSettingsTab
+              config={settings.config.desktop}
+              onChange={settings.handleDesktopChange}
+              cacheStats={settings.cacheStats}
+              cachePreferences={settings.cachePreferences}
+              onCachePreferencesChange={settings.handleCachePreferencesChange}
+            />
+          </TabsContent>
+          {/*桌面端*/}
+          {settings.config.desktop ? (
+            <TabsContent value="desktop">
+              <DesktopSettingsTab
+                backendStatus={settings.backendStatus}
+                config={settings.config.desktop}
+                discordStatus={settings.discordStatus}
+                isTestingDiscord={settings.isTestingDiscord}
+                mcpStatusRefreshKey={settings.mcpStatusRefreshKey}
+                onChange={settings.handleDesktopChange}
+                onTestDiscord={settings.handleTestDiscord}
+              />
+            </TabsContent>
+          ) : null}
+          {/*快捷键*/}
+          <TabsContent value="shortcuts">
+            <ShortcutSettings />
+          </TabsContent>
+          <TabsContent value="notifications">
+            <NotificationSettingsTab />
+          </TabsContent>
+        </div>
+      </Tabs>
+      {activeTab !== "appearance" && activeTab !== "notifications" && (
+        <SaveChangesButton
+          visible={settings.hasChanges}
+          onClick={() => settings.setIsModalOpen(true)}
+        />
+      )}
+      <SaveConfirmModal
+        open={settings.isModalOpen}
+        isSaving={settings.isSaving}
+        onClose={() => settings.setIsModalOpen(false)}
+        onConfirm={() => void settings.handleConfirmSave()}
+        requiresRestart={settings.requiresRestart}
+        isWeb={!runtime.isDesktop}
+      />
+    </div>
+  );
+};
+
+export default SettingsPage;

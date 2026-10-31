@@ -2,7 +2,8 @@
 
 import { useSocialAccount, useSocialPeople } from "@/hooks/social/useSocialQueries";
 import { uniqueById } from "@/lib/social/normalize";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { SocialPeopleProps } from "@/types/social/components";
 import {
   FollowButton,
@@ -15,7 +16,7 @@ import {
 import s from "./Social.module.css";
 
 export function SocialPeople({ uid = "", mode, query: search = "" }: SocialPeopleProps) {
-  const { t } = useI18n(),
+  const { t } = useTranslation(),
     { uid: self } = useSocialAccount();
   const query = useSocialPeople(uid || self, mode, search);
   const items = uniqueById(query.data?.pages.flatMap((page) => page.items) ?? []);

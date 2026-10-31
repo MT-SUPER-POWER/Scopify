@@ -2,11 +2,12 @@
 
 import { useState } from "react";
 import { Button } from "@scopify/ui/shadcn/components/button";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { SheetPageImageProps } from "@/types/songResources/components";
 
 export function SheetPageImage({ url, label }: SheetPageImageProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const [failed, setFailed] = useState(false);
   return failed ? (
     <div className="flex min-h-48 flex-col items-center justify-center gap-3 text-sm text-content-muted">

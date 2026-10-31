@@ -86,11 +86,13 @@ export const getVisualizerRegistryEntry = (mode: VisualizerMode) =>
 
 export const getVisualizerModeLabel = (
   mode: VisualizerMode,
-  t: import("@/types/i18n.generated").TranslateFn,
+  t: import("@/types/i18n/model").TranslateFn,
 ) => {
   const entry = getVisualizerRegistryEntry(mode);
   const translated = t(entry.labelKey);
-  return !translated || translated === entry.labelKey ? entry.labelFallback : translated;
+  return !translated || (translated as string) === entry.labelKey
+    ? entry.labelFallback
+    : translated;
 };
 
 export const getVisualizerPreviewStartOffset = (mode: VisualizerMode, loopDuration: number) => {

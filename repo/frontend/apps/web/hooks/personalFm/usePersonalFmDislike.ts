@@ -6,7 +6,8 @@ import { toast } from "sonner";
 import { isPersonalFmPlaybackSource } from "@/constants/personalFm";
 import { trashPersonalFmSong } from "@/lib/api/personalFm";
 import { dislikePersonalFmTrack } from "@/lib/personalFm/dislike";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import { usePersonalFmStore } from "@/store/module/personalFm";
 import { usePlayerStore } from "@/store/module/player";
 import type { SongDetail } from "@/types/song/api";
@@ -17,7 +18,7 @@ import type { SongDetail } from "@/types/song/api";
  * point at which local playback state may change.
  */
 export function usePersonalFmDislike() {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const [isDisliking, setIsDisliking] = useState(false);
   const isDislikingRef = useRef(false);
 

@@ -3,7 +3,8 @@
 import { CheckCheck, Settings2 } from "lucide-react";
 import { Switch } from "@scopify/ui/shadcn/components/switch";
 import { cn } from "@/lib/utils";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import { useNotificationStore } from "@/store/module/notifications";
 import type { NotificationToolbarProps } from "@/types/notifications/components";
 
@@ -12,7 +13,7 @@ const actionClass =
   "flex items-center gap-1.5 rounded-lg px-2 py-1.5 text-content-muted transition-colors hover:bg-foreground/7 hover:text-foreground disabled:opacity-35 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring";
 
 export function NotificationToolbar(props: NotificationToolbarProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const pending = useNotificationStore((state) => state.pending);
   return (
     <header className="shrink-0 px-4 pt-2">

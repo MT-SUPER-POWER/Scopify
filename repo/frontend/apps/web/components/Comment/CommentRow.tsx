@@ -14,7 +14,8 @@ import {
 import { resolveCommentIpLocation } from "@/lib/comment/commentResource";
 import { getSizedImageUrl } from "@/lib/music/imageUrl";
 import { cn, formatPlayCount } from "@/lib/utils";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { CommentRowProps } from "@/types/comment/components";
 
 /**
@@ -37,7 +38,7 @@ export function CommentRow({
   onReplySubmit,
   children,
 }: CommentRowProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const profileHref = `/profile?userId=${comment.user.userId}`;
   const ipLocation = resolveCommentIpLocation(comment);
   const repliedTo = comment.beReplied?.[0];

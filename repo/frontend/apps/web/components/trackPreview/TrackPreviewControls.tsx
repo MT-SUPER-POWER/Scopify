@@ -2,7 +2,8 @@
 
 import { ArrowDown, ArrowUp, Volume2, VolumeX, X } from "lucide-react";
 import { TrackPreviewActions } from "./TrackPreviewActions";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { TrackPreviewControlsProps } from "@/types/player/trackPreviewComponents";
 
 const ICON_BTN =
@@ -20,7 +21,7 @@ export function TrackPreviewControls({
   hasPrevious,
   hasNext,
 }: TrackPreviewControlsProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   return (
     <div className="flex flex-col items-center justify-between">
       <div className="flex flex-col items-center gap-1">

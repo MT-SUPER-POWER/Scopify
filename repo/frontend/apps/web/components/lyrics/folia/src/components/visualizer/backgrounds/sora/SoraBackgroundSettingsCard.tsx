@@ -1,4 +1,4 @@
-import type { TranslateFn } from "@/types/i18n.generated";
+import type { TranslateFn } from "@/types/i18n/model";
 import {
   DEFAULT_SORA_BACKGROUND_TUNING,
   type SoraBackgroundTuning,

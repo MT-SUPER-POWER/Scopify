@@ -5,7 +5,8 @@ import { isNotificationQuiet } from "@scopify/notification-core";
 import { INBOX_SCROLL_CLASS } from "@/constants/inbox";
 import { ScrollArea } from "@scopify/ui/shadcn/components/scroll-area";
 import { useNotificationStore } from "@/store/module/notifications";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+import { useI18nStore } from "@/store/module/i18n";
 import { runtime } from "@/lib/runtime";
 import { performNotificationAction } from "@/lib/notifications/actions";
 import type { NotificationPanelProps } from "@/types/notifications/components";
@@ -16,7 +17,8 @@ const actionClass =
   "flex shrink-0 items-center gap-2 rounded-lg px-2 py-1.5 text-content-muted transition-colors hover:bg-foreground/7 hover:text-foreground disabled:opacity-35 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring";
 
 export function NotificationPanel(props: NotificationPanelProps) {
-  const { t, locale } = useI18n();
+  const { t } = useTranslation(),
+    locale = useI18nStore((state) => state.locale);
   const { snapshot, pending, localError } = useNotificationStore();
   const quiet = snapshot && isNotificationQuiet(snapshot.preferences);
   const syncing = snapshot?.syncing || pending;

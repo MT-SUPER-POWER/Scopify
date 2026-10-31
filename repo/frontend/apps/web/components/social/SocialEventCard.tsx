@@ -4,7 +4,8 @@ import Link from "next/link";
 import { useSocialEventActions } from "@/hooks/social/useSocialActions";
 import { eventHref } from "@/lib/social/normalize";
 import { formatSocialTime } from "@/lib/social/time";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+import { useI18nStore } from "@/store/module/i18n";
 import type { SocialEventProps } from "@/types/social/components";
 import { SocialAvatar, SocialAuthor } from "./SocialPrimitives";
 import { SocialEventActions } from "./SocialEventActions";
@@ -16,7 +17,8 @@ import { SocialResourceCard } from "./SocialResourceCard";
 import s from "./Social.module.css";
 
 export function SocialEventCard({ event, quoted = false, detail = false }: SocialEventProps) {
-  const { t, locale } = useI18n();
+  const { t } = useTranslation(),
+    locale = useI18nStore((state) => state.locale);
   const actions = useSocialEventActions(event);
   const href = eventHref(event);
   return (
