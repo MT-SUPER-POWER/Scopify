@@ -4,7 +4,6 @@ import { useMasonryColumns } from "@/hooks/ui/useMasonryColumns";
 import type { SocialNoteGridProps } from "@/types/social/components";
 import type { SocialEvent } from "@/types/social/model";
 import { SocialNoteTile } from "./SocialNoteTile";
-import s from "./Social.module.css";
 
 const MIN_COLUMN_WIDTH = 220;
 const COLUMN_GAP = 20;
@@ -30,9 +29,9 @@ export function SocialNoteGrid({ items, getSource }: SocialNoteGridProps) {
     heights[target] += estimateHeight(event);
   }
   return (
-    <div ref={ref} className={s.noteGrid} style={{ gap: COLUMN_GAP }}>
+    <div ref={ref} className="flex items-start pt-2 pb-6" style={{ gap: COLUMN_GAP }}>
       {columns.map((column, index) => (
-        <div key={index} className={s.noteColumn}>
+        <div key={index} className="flex min-w-0 flex-1 flex-col gap-7">
           {column.map((event) => (
             <SocialNoteTile key={event.id} event={event} source={getSource?.(event)} />
           ))}

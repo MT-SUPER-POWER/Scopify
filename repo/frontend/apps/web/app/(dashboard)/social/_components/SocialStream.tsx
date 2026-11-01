@@ -17,7 +17,12 @@ import { SocialFansGroupRail } from "./SocialFansGroupRail";
 import { SocialAggregatedNotesFeed } from "./SocialAggregatedNotesFeed";
 import { SocialHeader } from "./SocialHeader";
 import { SocialPostModal } from "./SocialPostModal";
-import s from "@/components/social/Social.module.css";
+import { cn } from "@/lib/utils";
+import {
+  socialPageClass,
+  socialSectionTitleClass,
+  socialStreamPageClass,
+} from "@/components/social/socialClasses";
 
 export function SocialStream() {
   const { t } = useTranslation();
@@ -57,9 +62,10 @@ export function SocialStream() {
   };
 
   return (
-    <div ref={pageRef} className={s.page + " " + s.streamPage}>
-      <div className={s.feedLayout}>
-        <main className={s.main}>
+    <div ref={pageRef} className={cn(socialPageClass, socialStreamPageClass)}>
+      {/* 动态页铺满面板宽度做瀑布流，超宽屏时限制总宽避免列过多 */}
+      <div className="relative z-1 m-auto block min-h-[calc(var(--social-viewport-height,100dvh)-52px)] max-w-310">
+        <main className="min-w-0">
           <SocialHeader
             view={people ? "people" : following ? "friends" : "hot"}
             groupId={groupId}
@@ -68,9 +74,9 @@ export function SocialStream() {
           {!uid ? (
             <QuietState icon={MessagesSquare} title={t("social.login")} />
           ) : people ? (
-            <section className={s.peopleBrowser}>
+            <section className="mx-auto max-w-170 py-5">
               <SocialSearchForm key={search} query={search} />
-              <h2 className={s.sectionTitle}>
+              <h2 className={socialSectionTitleClass}>
                 {t(search ? "social.searchResults" : "social.following")}
               </h2>
               <SocialPeople

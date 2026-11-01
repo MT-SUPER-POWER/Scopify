@@ -13,7 +13,28 @@ import { useTranslation } from "react-i18next";
 
 import type { SocialHeaderProps } from "@/types/social/components";
 import { SocialPublishButton } from "./SocialPublishButton";
-import s from "@/components/social/Social.module.css";
+import { cn } from "@/lib/utils";
+import {
+  socialIconButtonClass,
+  socialTabClass,
+  socialTabsClass,
+} from "@/components/social/socialClasses";
+
+/*
+ * 磨砂底板常驻，滚动时只过渡 opacity（合成层动画，不触发布局/重建 backdrop 层），
+ * 材质与时长对齐全局顶栏；左右与底部用 mask 淡出，不再是一块硬边灰板。
+ * 底色与主面板同色（surface-raised = --card），吸顶时不出现一块颜色不同的灰板。
+ */
+const streamHeaderClass =
+  "sticky top-0 z-10 before:pointer-events-none before:absolute before:inset-[0_-24px_-28px] before:-z-1 before:bg-card/88 before:backdrop-blur-[16px] before:[mask-image:linear-gradient(to_right,transparent,var(--foreground)_24px,var(--foreground)_calc(100%-24px),transparent),linear-gradient(var(--foreground)_calc(100%-28px),transparent)] before:[mask-composite:intersect] before:transition-opacity before:duration-300 before:ease-[ease] before:will-change-[opacity] data-[top=true]:before:opacity-0";
+const streamToolbarClass =
+  "flex min-h-14 items-stretch gap-7 @max-[500px]:gap-[18px] @max-[360px]:gap-3";
+/** 页签靠字号与明暗区分，不画下划线 */
+const streamTabClass = cn(
+  socialTabClass,
+  "px-0.5 py-0 text-[18px] font-bold tracking-[-0.02em] transition-[color] duration-200 ease-[ease] hover:text-foreground",
+);
+const contextHoverClass = "hover:text-foreground";
 
 /**
  * 动态页头部：标签与操作合并为一行吸顶（标题仅供读屏，侧栏已标明当前位置）。
@@ -41,7 +62,11 @@ export function SocialHeader({ view, groupId, groups }: SocialHeaderProps) {
   let context: ReactNode = null;
   if (view === "people") {
     context = (
-      <Link href="/social" scroll={false} className={s.contextBack}>
+      <Link
+        href="/social"
+        scroll={false}
+        className={cn("inline-flex items-center gap-1.5 font-semibold", contextHoverClass)}
+      >
         <ArrowLeft aria-hidden="true" className="size-4" />
         {t("social.backToFeed")}
       </Link>
@@ -49,7 +74,7 @@ export function SocialHeader({ view, groupId, groups }: SocialHeaderProps) {
   } else if (view === "hot" && selectedGroup) {
     const level = selectedGroup.userLevel?.level;
     context = (
-      <span className={s.contextGroup}>
+      <span className="flex min-w-0 items-center gap-2">
         {selectedGroup.headAvatarUrl && (
           <Image
             src={`${selectedGroup.headAvatarUrl}?param=48y48`}
@@ -59,11 +84,20 @@ export function SocialHeader({ view, groupId, groups }: SocialHeaderProps) {
             className="size-5 rounded-full object-cover"
           />
         )}
-        <strong title={selectedGroup.fansGroupName}>{selectedGroup.fansGroupName}</strong>
-        {level ? <span className={s.contextLevel}>Lv.{level}</span> : null}
+        <strong title={selectedGroup.fansGroupName} className="truncate font-[650] text-foreground">
+          {selectedGroup.fansGroupName}
+        </strong>
+        {level ? (
+          <span className="shrink-0 rounded-full bg-secondary px-1.5 py-px text-[10px] font-bold text-muted-foreground">
+            Lv.{level}
+          </span>
+        ) : null}
         <Link
           href={`/artist?id=${selectedGroup.headId}`}
-          className={s.contextLink}
+          className={cn(
+            "ml-1 inline-flex shrink-0 items-center gap-px text-[12px]",
+            contextHoverClass,
+          )}
           title={t("social.viewArtist")}
         >
           {t("social.viewArtist")}
@@ -73,10 +107,10 @@ export function SocialHeader({ view, groupId, groups }: SocialHeaderProps) {
     );
   } else if (view === "hot" && !hasGroups) {
     context = (
-      <span className={s.contextGroup}>
+      <span className="flex min-w-0 items-center gap-2">
         <span>{t("social.squareContext")}</span>
         {community.data && (
-          <span className={s.sourceLabel} title={community.data.name}>
+          <span className="truncate text-[11px] text-muted-foreground" title={community.data.name}>
             {t("social.communitySource", { name: community.data.name })}
           </span>
         )}
@@ -87,9 +121,11 @@ export function SocialHeader({ view, groupId, groups }: SocialHeaderProps) {
   // 未登录时标签、发布、找人与刷新都不可用，只保留标题
   if (!uid) {
     return (
-      <header className={s.streamHeader} data-top={isAtTop}>
-        <div className={s.streamToolbar}>
-          <h1 className={s.streamTitle}>{t("social.title")}</h1>
+      <header className={streamHeaderClass} data-top={isAtTop}>
+        <div className={streamToolbarClass}>
+          <h1 className="self-center text-[24px] font-[750] tracking-[-0.04em] @max-[500px]:text-[21px]">
+            {t("social.title")}
+          </h1>
         </div>
       </header>
     );
@@ -97,14 +133,17 @@ export function SocialHeader({ view, groupId, groups }: SocialHeaderProps) {
 
   return (
     <>
-      <header className={s.streamHeader} data-top={isAtTop}>
-        <div className={s.streamToolbar}>
+      <header className={streamHeaderClass} data-top={isAtTop}>
+        <div className={streamToolbarClass}>
           <h1 className="sr-only">{t("social.title")}</h1>
-          <nav className={s.tabs} aria-label={t("social.title")}>
+          <nav
+            className={cn(socialTabsClass, "min-h-0 gap-6 @max-[500px]:gap-[18px]")}
+            aria-label={t("social.title")}
+          >
             <Link
               href="/social?view=following"
               scroll={false}
-              className={s.tab}
+              className={streamTabClass}
               data-active={view === "friends"}
               aria-current={view === "friends" ? "page" : undefined}
             >
@@ -113,18 +152,18 @@ export function SocialHeader({ view, groupId, groups }: SocialHeaderProps) {
             <Link
               href="/social"
               scroll={false}
-              className={s.tab}
+              className={streamTabClass}
               data-active={view === "hot"}
               aria-current={view === "hot" ? "page" : undefined}
             >
               {discoverTab}
             </Link>
           </nav>
-          <div className={s.headerActions}>
+          <div className="ml-auto flex items-center gap-1.5">
             {view !== "people" && (
               <button
                 type="button"
-                className={s.iconButton}
+                className={socialIconButtonClass}
                 disabled={refreshing}
                 aria-label={t("social.refresh")}
                 title={t("social.refresh")}
@@ -136,7 +175,10 @@ export function SocialHeader({ view, groupId, groups }: SocialHeaderProps) {
             <Link
               href="/social?view=people"
               scroll={false}
-              className={s.iconButton}
+              className={cn(
+                socialIconButtonClass,
+                "data-[active=true]:bg-secondary data-[active=true]:text-foreground",
+              )}
               data-active={view === "people"}
               aria-label={t("social.people")}
               title={t("social.people")}
@@ -148,8 +190,8 @@ export function SocialHeader({ view, groupId, groups }: SocialHeaderProps) {
         </div>
       </header>
       {context && (
-        <div className={s.feedToolbar}>
-          <div className={s.feedContext}>{context}</div>
+        <div className="flex min-h-13 items-center justify-between gap-3 text-[13px] text-muted-foreground">
+          <div className="min-w-0 flex-1 @max-[500px]:text-[12px]">{context}</div>
         </div>
       )}
     </>

@@ -10,7 +10,6 @@ import type { SocialFeedProps } from "@/types/social/components";
 import { SocialEventCard } from "./SocialEventCard";
 import { SocialNoteGrid } from "./SocialNoteGrid";
 import { SocialLoadMore, SocialLogin, SocialState } from "./SocialPrimitives";
-import s from "./Social.module.css";
 
 export function SocialFeed({ uid, enabled = true, grid = false }: SocialFeedProps) {
   const { uid: self } = useSocialAccount(),
@@ -36,7 +35,7 @@ export function SocialFeed({ uid, enabled = true, grid = false }: SocialFeedProp
       {grid ? (
         <SocialNoteGrid items={items} />
       ) : (
-        <div className={s.timeline}>
+        <div>
           {items.map((event) => (
             <SocialEventCard key={event.id} event={event} />
           ))}

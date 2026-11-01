@@ -14,7 +14,21 @@ import type { SocialResource } from "@/types/social/model";
 import { SocialAvatar } from "./SocialPrimitives";
 import { SocialResourceCard } from "./SocialResourceCard";
 import { SocialResourcePicker } from "./SocialResourcePicker";
-import s from "./Social.module.css";
+import { cn } from "@/lib/utils";
+import {
+  socialActionClass,
+  socialBetweenClass,
+  socialButtonClass,
+  socialCounterClass,
+  socialIconButtonClass,
+  socialMutedClass,
+  socialPostTextClass,
+  socialPrimaryClass,
+  socialQuoteClass,
+  socialRowClass,
+  socialTextareaClass,
+  socialTextButtonClass,
+} from "./socialClasses";
 
 export function SocialComposer({ forwarded, onDone }: SocialComposerProps) {
   const { t } = useTranslation(),
@@ -42,8 +56,10 @@ export function SocialComposer({ forwarded, onDone }: SocialComposerProps) {
   }
   return (
     <>
+      {/* 发布框只出现在弹窗和个人主页动态栏，后者通过 data-slot 改成紧凑的输入卡片 */}
       <form
-        className={s.composer}
+        data-slot="social-composer"
+        className="flex gap-3.5 pt-6"
         onSubmit={(e) => {
           e.preventDefault();
           void submit();
@@ -59,9 +75,9 @@ export function SocialComposer({ forwarded, onDone }: SocialComposerProps) {
             mutual: false,
           }}
         />
-        <div className={s.composerBody}>
+        <div className="min-w-0 flex-1">
           <textarea
-            className={s.textarea}
+            className={socialTextareaClass}
             value={text}
             disabled={mutation.isPending}
             aria-label={t(forwarded ? "social.forwardPlaceholder" : "social.compose")}
@@ -70,18 +86,23 @@ export function SocialComposer({ forwarded, onDone }: SocialComposerProps) {
             rows={2}
           />
           {forwarded && (
-            <div className={s.quote}>
+            <div className={socialQuoteClass}>
               <strong className="text-sm">{forwarded.user.name}</strong>
-              <p className={s.postText}>{forwarded.text || t("social.unknownPost")}</p>
+              <p
+                data-slot="social-post-text"
+                className={cn(socialPostTextClass, "text-[14px] leading-1.75")}
+              >
+                {forwarded.text || t("social.unknownPost")}
+              </p>
             </div>
           )}
           {resource && (
             <div>
-              <div className={s.between}>
-                <span className={s.muted}>{t("social.attach")}</span>
+              <div className={socialBetweenClass}>
+                <span className={socialMutedClass}>{t("social.attach")}</span>
                 <button
                   type="button"
-                  className={s.iconButton}
+                  className={socialIconButtonClass}
                   disabled={mutation.isPending}
                   aria-label={t("social.removeAttachment")}
                   onClick={() => setResource(undefined)}
@@ -92,24 +113,27 @@ export function SocialComposer({ forwarded, onDone }: SocialComposerProps) {
               <SocialResourceCard resource={resource} compact />
             </div>
           )}
-          <div className={s.composerFooter}>
-            <div className={s.composerTools}>
+          <div
+            data-slot="social-composer-footer"
+            className="mt-3 flex items-center justify-between gap-2.5"
+          >
+            <div className="flex items-center gap-2 text-primary">
               {!forwarded && (
                 <>
                   <button
                     type="button"
-                    className={s.action}
+                    className={socialActionClass}
                     disabled={mutation.isPending}
                     onClick={() => setPicker(true)}
                     title={t("social.attach")}
                   >
                     <Music2 />
-                    <span className={s.toolLabel}>{t("social.attach")}</span>
+                    <span className="max-[768px]:hidden">{t("social.attach")}</span>
                   </button>
                   {Boolean(song?.id) && song && (
                     <button
                       type="button"
-                      className={s.textButton + " " + s.toolLabel}
+                      className={cn(socialTextButtonClass, "max-[768px]:hidden")}
                       disabled={mutation.isPending}
                       onClick={() =>
                         setResource({
@@ -131,16 +155,16 @@ export function SocialComposer({ forwarded, onDone }: SocialComposerProps) {
                 <Globe2 className="size-3.5 text-content-muted" />
               </span>
             </div>
-            <div className={s.row}>
+            <div className={socialRowClass}>
               <span
-                className={s.counter + (length > 140 ? " text-destructive!" : "")}
+                className={cn(socialCounterClass, length > 140 && "text-destructive!")}
                 aria-live="polite"
               >
                 {length}/140
               </span>
               <button
                 type="submit"
-                className={s.button + " " + s.primary}
+                className={cn(socialButtonClass, socialPrimaryClass)}
                 disabled={
                   mutation.isPending || length > 140 || (!text.trim() && !resource && !forwarded)
                 }

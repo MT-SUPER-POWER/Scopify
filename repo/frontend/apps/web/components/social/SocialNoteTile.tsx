@@ -13,7 +13,13 @@ import { useI18nStore } from "@/store/module/i18n";
 import type { SocialNoteTileProps, SocialResourceProps } from "@/types/social/components";
 import { SocialAuthor, SocialAvatar } from "./SocialPrimitives";
 import { SocialInlineText } from "./SocialInlineText";
-import s from "./Social.module.css";
+
+const tileMediaClass = "relative block overflow-hidden rounded-[14px] bg-foreground/6";
+const tileImageClass =
+  "block h-auto max-h-[420px] min-h-[120px] w-full object-cover transition-transform duration-400 ease-[ease] group-hover/tile:scale-[1.03]";
+/** 作者与来源用「·」分隔；个人主页动态栏会隐藏头像和作者名，只留来源。 */
+const tileAuthorClass =
+  "flex min-w-0 flex-1 items-center gap-1.5 *:inline-flex *:min-w-0 *:items-center *:gap-[3px] *:overflow-hidden *:text-ellipsis *:whitespace-nowrap [&_a:hover]:text-foreground [&_svg]:size-3 [&>:first-child]:max-w-[60%] [&>:first-child]:shrink-0 [&>:first-child]:text-[12px] [&>:first-child]:font-medium [&>:not(:first-child)]:before:mr-[3px] [&>:not(:first-child)]:before:content-['·']";
 
 /**
  * 瀑布流中的一条动态：封面（图片 / 歌曲封面 / 文字卡）+ 标题 + 作者与点赞。
@@ -36,39 +42,63 @@ export function SocialNoteTile({ event, source }: SocialNoteTileProps) {
     : "";
 
   return (
-    <article className={s.tile}>
+    <article className="group/tile min-w-0">
       {picture ? (
-        <Link href={href} scroll={false} className={s.tileMedia}>
-          <img src={picture} alt="" loading="lazy" referrerPolicy="no-referrer" />
+        <Link href={href} scroll={false} className={tileMediaClass}>
+          <img
+            src={picture}
+            alt=""
+            loading="lazy"
+            referrerPolicy="no-referrer"
+            className={tileImageClass}
+          />
           {content.pictures.length > 1 && (
-            <span className={s.tileBadge}>
+            <span className="absolute top-2 right-2 inline-flex items-center gap-1 rounded-full bg-black/55 px-2 py-0.5 text-[11px] font-semibold text-white [&_svg]:size-3">
               <Images aria-hidden="true" />
               {content.pictures.length}
             </span>
           )}
         </Link>
       ) : resource?.cover ? (
-        <Link href={href} scroll={false} className={s.tileMedia} data-square="true">
-          <img src={resource.cover} alt="" loading="lazy" referrerPolicy="no-referrer" />
+        <Link href={href} scroll={false} className={tileMediaClass} data-square="true">
+          <img
+            src={resource.cover}
+            alt=""
+            loading="lazy"
+            referrerPolicy="no-referrer"
+            className={tileImageClass + " aspect-square"}
+          />
         </Link>
       ) : (
-        <Link href={href} scroll={false} className={s.tileQuote}>
-          <p>
+        // 没有图片的动态：以文字本身做封面
+        <Link
+          href={href}
+          scroll={false}
+          className="flex min-h-[150px] items-end rounded-[14px] bg-[color-mix(in_srgb,var(--primary)_10%,var(--card))] p-[18px] transition-[background-color] duration-200 ease-[ease] hover:bg-[color-mix(in_srgb,var(--primary)_16%,var(--card))]"
+        >
+          <p className="leading-1.7 line-clamp-7 text-[15px] font-semibold wrap-anywhere whitespace-pre-line">
             <SocialInlineText text={caption || t("social.unknownPost")} />
           </p>
         </Link>
       )}
 
-      <div className={s.tileBody}>
+      <div className="px-0.5 pt-2.5">
         {(picture || resource?.cover) && caption && (
-          <Link href={href} scroll={false} className={s.tileCaption}>
+          <Link
+            href={href}
+            scroll={false}
+            className="leading-1.55 line-clamp-2 text-[14px] font-semibold wrap-anywhere text-foreground"
+          >
             <SocialInlineText text={caption} />
           </Link>
         )}
         {resource && <SocialResourceChip resource={resource} />}
-        <footer className={s.tileMeta}>
-          <SocialAvatar user={event.user} className={s.tileAvatar} />
-          <span className={s.tileAuthor}>
+        <footer
+          data-slot="social-tile-meta"
+          className="mt-2.5 flex items-center gap-2 text-[12px] text-muted-foreground"
+        >
+          <SocialAvatar user={event.user} className="size-[22px] max-[768px]:size-[22px]" />
+          <span data-slot="social-tile-author" className={tileAuthorClass}>
             <SocialAuthor user={event.user} />
             {source ? (
               <Link href={source.href} scroll={false} title={source.name}>
@@ -85,7 +115,7 @@ export function SocialNoteTile({ event, source }: SocialNoteTileProps) {
           </span>
           <button
             type="button"
-            className={s.tileLike}
+            className="inline-flex shrink-0 items-center gap-1 p-1 text-[12px] text-muted-foreground hover:text-primary data-[active=true]:text-primary [&_svg]:size-[15px] data-[active=true]:[&_svg]:fill-current"
             data-active={event.liked}
             aria-pressed={event.liked}
             disabled={actions.liking || !event.threadId}
@@ -109,7 +139,7 @@ function SocialResourceChip({ resource }: SocialResourceProps) {
   const [failedCover, setFailedCover] = useState<string | null>(null);
   const label = resource.subtitle ? `${resource.name} · ${resource.subtitle}` : resource.name;
   return (
-    <div className={s.tileResource}>
+    <div className="mt-2 flex min-h-[30px] items-center gap-1.5 rounded-full bg-foreground/6 py-[3px] pr-[3px] pl-2.5 text-[12px] text-muted-foreground">
       {cover && cover !== failedCover ? (
         <img
           src={cover}
@@ -119,15 +149,19 @@ function SocialResourceChip({ resource }: SocialResourceProps) {
           loading="lazy"
           decoding="async"
           referrerPolicy="no-referrer"
+          className="size-5 shrink-0 rounded-[3px] object-cover"
           onError={() => setFailedCover(cover)}
         />
       ) : (
-        <Music2 aria-hidden="true" />
+        <Music2 aria-hidden="true" className="size-[13px] shrink-0" />
       )}
-      <span title={label}>{label}</span>
+      <span title={label} className="min-w-0 flex-1 truncate">
+        {label}
+      </span>
       {playable && (
         <button
           type="button"
+          className="inline-flex size-6 shrink-0 items-center justify-center rounded-full bg-foreground text-card [&_svg]:size-[11px]"
           disabled={pending}
           aria-label={t("social.play") + " " + resource.name}
           onClick={() => void play()}

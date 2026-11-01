@@ -24,7 +24,26 @@ import {
   SocialState,
 } from "@/components/social/SocialPrimitives";
 import { SocialCommentsSkeleton } from "@/components/social/SocialCommentsSkeleton";
-import s from "@/components/social/Social.module.css";
+import { cn } from "@/lib/utils";
+import {
+  socialActionClass,
+  socialActionsClass,
+  socialBetweenClass,
+  socialButtonClass,
+  socialCommentClass,
+  socialCounterClass,
+  socialDangerClass,
+  socialDialogClass,
+  socialEventBodyClass,
+  socialEventHeaderClass,
+  socialIconButtonClass,
+  socialMutedClass,
+  socialPostTextClass,
+  socialPrimaryClass,
+  socialRowClass,
+  socialSectionTitleClass,
+  socialTextareaClass,
+} from "@/components/social/socialClasses";
 
 function CommentRow({ event, comment, onReply }: SocialCommentRowProps) {
   const { uid } = useSocialAccount(),
@@ -34,10 +53,10 @@ function CommentRow({ event, comment, onReply }: SocialCommentRowProps) {
   const actions = useSocialCommentActions(event, comment),
     [deleting, setDeleting] = useState(false);
   return (
-    <div className={s.comment}>
+    <div className={socialCommentClass}>
       <SocialAvatar user={comment.user} size="small" />
-      <div className={s.eventBody}>
-        <div className={s.eventHeader}>
+      <div className={socialEventBodyClass}>
+        <div className={socialEventHeaderClass}>
           <SocialAuthor user={comment.user} />
           {comment.time > 0 && (
             <time dateTime={new Date(comment.time).toISOString()}>
@@ -50,23 +69,23 @@ function CommentRow({ event, comment, onReply }: SocialCommentRowProps) {
             </time>
           )}
         </div>
-        <p className={s.postText}>{comment.text}</p>
+        <p className={cn(socialPostTextClass, "text-[14px] leading-1.75")}>{comment.text}</p>
         {comment.reply && (
-          <blockquote className={s.reply}>
+          <blockquote className="border-l-2 border-foreground/10 pl-3 text-[13px] wrap-anywhere whitespace-pre-wrap text-muted-foreground">
             <SocialAuthor user={comment.reply.user} />：{comment.reply.text}
           </blockquote>
         )}
-        <div className={s.actions}>
+        <div className={socialActionsClass}>
           <button
             type="button"
-            className={s.action}
+            className={socialActionClass}
             onClick={() => void requireLogin(() => onReply(comment))}
           >
             {t("social.reply")}
           </button>
           <button
             type="button"
-            className={s.action}
+            className={socialActionClass}
             data-active={comment.liked}
             aria-pressed={comment.liked}
             aria-label={t(comment.liked ? "social.unlike" : "social.like")}
@@ -79,7 +98,7 @@ function CommentRow({ event, comment, onReply }: SocialCommentRowProps) {
           {comment.user.id === uid && (
             <button
               type="button"
-              className={s.iconButton}
+              className={socialIconButtonClass}
               aria-label={t("social.delete")}
               onClick={() => setDeleting(true)}
             >
@@ -94,13 +113,13 @@ function CommentRow({ event, comment, onReply }: SocialCommentRowProps) {
           if (!actions.remove.isPending) setDeleting(value);
         }}
       >
-        <DialogContent className={s.dialog}>
+        <DialogContent className={socialDialogClass}>
           <DialogTitle>{t("social.deleteComment")}</DialogTitle>
           <DialogDescription>{t("social.deleteCommentHint")}</DialogDescription>
-          <div className={s.row + " justify-end"}>
+          <div className={cn(socialRowClass, "justify-end")}>
             <button
               type="button"
-              className={s.button}
+              className={socialButtonClass}
               disabled={actions.remove.isPending}
               onClick={() => setDeleting(false)}
             >
@@ -108,7 +127,7 @@ function CommentRow({ event, comment, onReply }: SocialCommentRowProps) {
             </button>
             <button
               type="button"
-              className={s.button + " " + s.danger}
+              className={cn(socialButtonClass, socialDangerClass)}
               disabled={actions.remove.isPending}
               onClick={() =>
                 actions.remove.mutate(undefined, { onSuccess: () => setDeleting(false) })
@@ -145,23 +164,25 @@ export function SocialComments({ event }: SocialEventProps) {
   }
   return (
     <section id="social-comments" className="scroll-mt-8">
-      <h2 className={s.sectionTitle + " mt-6"}>
+      <h2 className={cn(socialSectionTitleClass, "mt-6")}>
         {t("social.comments")}{" "}
-        <span className={s.muted}>{query.data?.pages[0]?.total ?? event.comments}</span>
+        <span className={socialMutedClass}>{query.data?.pages[0]?.total ?? event.comments}</span>
       </h2>
       <form
-        className={s.commentForm}
+        className="border-b border-foreground/10 py-5"
         onSubmit={(e) => {
           e.preventDefault();
           void submit();
         }}
       >
         {reply && (
-          <div className={s.between}>
-            <span className={s.muted}>{t("social.replyTo", { name: reply.user.name })}</span>
+          <div className={socialBetweenClass}>
+            <span className={socialMutedClass}>
+              {t("social.replyTo", { name: reply.user.name })}
+            </span>
             <button
               type="button"
-              className={s.iconButton}
+              className={socialIconButtonClass}
               aria-label={t("social.cancel")}
               disabled={write.isPending}
               onClick={() => setReply(undefined)}
@@ -173,7 +194,7 @@ export function SocialComments({ event }: SocialEventProps) {
         <textarea
           ref={input}
           rows={2}
-          className={s.textarea}
+          className={socialTextareaClass}
           disabled={write.isPending}
           maxLength={140}
           value={text}
@@ -181,11 +202,11 @@ export function SocialComments({ event }: SocialEventProps) {
           placeholder={t("social.commentPlaceholder")}
           aria-label={t("social.commentPlaceholder")}
         />
-        <div className={s.row + " justify-end"}>
-          <span className={s.counter}>{text.length}/140</span>
+        <div className={cn(socialRowClass, "justify-end")}>
+          <span className={socialCounterClass}>{text.length}/140</span>
           <button
             type="submit"
-            className={s.button + " " + s.primary}
+            className={cn(socialButtonClass, socialPrimaryClass)}
             disabled={write.isPending || !text.trim()}
           >
             {t(write.isPending ? "social.sending" : "social.send")}

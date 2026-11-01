@@ -1,6 +1,19 @@
 import { Skeleton } from "@scopify/ui/shadcn/components/skeleton";
 import type { SocialCommentsSkeletonProps } from "@/types/social/components";
-import s from "./Social.module.css";
+import { cn } from "@/lib/utils";
+import {
+  postCommentAuthorClass,
+  postCommentClass,
+  postCommentMetaClass,
+  postCommentTextClass,
+  postCommentTimeClass,
+  socialActionsClass,
+  socialAuthorClass,
+  socialCommentClass,
+  socialEventBodyClass,
+  socialEventHeaderClass,
+  socialPostTextClass,
+} from "./socialClasses";
 
 /** 每条评论的正文行宽，错开长短，避免整齐得像一块砖。 */
 const TEXT_ROWS = [["w-11/12"], ["w-full", "w-2/5"], ["w-3/5"], ["w-full", "w-4/5"]];
@@ -28,19 +41,19 @@ export function SocialCommentsSkeleton({ variant }: SocialCommentsSkeletonProps)
     <div aria-busy="true">
       {TEXT_ROWS.map((widths, row) =>
         variant === "modal" ? (
-          <div key={row} className={s.postComment}>
+          <div key={row} className={postCommentClass}>
             <Skeleton className="size-9 shrink-0 rounded-full bg-skeleton" />
             <div className="min-w-0 flex-1">
-              <span className={s.author}>
+              <span className={cn(socialAuthorClass, postCommentAuthorClass)}>
                 <Bar className="w-24" />
               </span>
-              <div className={s.postCommentText}>
+              <div className={postCommentTextClass}>
                 <Lines widths={widths} />
               </div>
-              <div className={s.postCommentTime}>
+              <div className={postCommentTimeClass}>
                 <Bar className="w-14" />
               </div>
-              <div className={s.postCommentMeta}>
+              <div className={postCommentMetaClass}>
                 <span>
                   <Bar className="w-10" />
                 </span>
@@ -51,10 +64,10 @@ export function SocialCommentsSkeleton({ variant }: SocialCommentsSkeletonProps)
             </div>
           </div>
         ) : (
-          <div key={row} className={s.comment}>
+          <div key={row} className={socialCommentClass}>
             <Skeleton className="size-9 shrink-0 rounded-full bg-skeleton" />
-            <div className={s.eventBody}>
-              <div className={s.eventHeader}>
+            <div className={socialEventBodyClass}>
+              <div className={socialEventHeaderClass}>
                 <span>
                   <Bar className="w-24" />
                 </span>
@@ -62,10 +75,10 @@ export function SocialCommentsSkeleton({ variant }: SocialCommentsSkeletonProps)
                   <Bar className="w-16" />
                 </span>
               </div>
-              <div className={s.postText}>
+              <div className={cn(socialPostTextClass, "text-[14px] leading-1.75")}>
                 <Lines widths={widths} />
               </div>
-              <div className={s.actions}>
+              <div className={socialActionsClass}>
                 {[0, 1].map((index) => (
                   <span key={index} className="flex h-9 min-w-9 items-center">
                     <Bar className="w-8" />

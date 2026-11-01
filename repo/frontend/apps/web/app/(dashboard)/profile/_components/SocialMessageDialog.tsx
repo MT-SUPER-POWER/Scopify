@@ -16,7 +16,18 @@ import { useI18nStore } from "@/store/module/i18n";
 import type { SocialMessageDialogProps } from "@/types/social/components";
 import { SocialAvatar, SocialLoadMore, SocialState } from "@/components/social/SocialPrimitives";
 import { SocialResourceCard } from "@/components/social/SocialResourceCard";
-import s from "@/components/social/Social.module.css";
+import { cn } from "@/lib/utils";
+import {
+  socialBetweenClass,
+  socialButtonClass,
+  socialCounterClass,
+  socialDialogClass,
+  socialIconButtonClass,
+  socialMutedClass,
+  socialPrimaryClass,
+  socialRowClass,
+  socialTextareaClass,
+} from "@/components/social/socialClasses";
 
 export function SocialMessageDialog({ user, open, onClose }: SocialMessageDialogProps) {
   const { t } = useTranslation(),
@@ -49,17 +60,17 @@ export function SocialMessageDialog({ user, open, onClose }: SocialMessageDialog
         if (!value && !send.isPending) onClose();
       }}
     >
-      <DialogContent className={s.dialog + " sm:max-w-xl"}>
-        <DialogTitle className={s.row}>
+      <DialogContent className={cn(socialDialogClass, "sm:max-w-xl")}>
+        <DialogTitle className={socialRowClass}>
           <SocialAvatar user={user} size="small" linked={false} />
           {user.name}
         </DialogTitle>
         <DialogDescription className="sr-only">{t("social.message")}</DialogDescription>
-        <div className={s.between}>
-          <span className={s.muted}>{t("social.message")}</span>
+        <div className={socialBetweenClass}>
+          <span className={socialMutedClass}>{t("social.message")}</span>
           <button
             type="button"
-            className={s.iconButton}
+            className={socialIconButtonClass}
             disabled={query.isFetching}
             aria-label={t("social.refreshMessages")}
             onClick={() => void query.refetch()}
@@ -73,7 +84,10 @@ export function SocialMessageDialog({ user, open, onClose }: SocialMessageDialog
           onRetry={() => void query.refetch()}
           empty={!items.length ? t("social.emptyMessages") : undefined}
         >
-          <div className={s.messages} ref={viewport}>
+          <div
+            className="flex max-h-[45dvh] flex-col gap-4 overflow-y-auto px-1 py-2.5"
+            ref={viewport}
+          >
             {(query.hasNextPage || query.isError) && (
               <SocialLoadMore
                 more={query.hasNextPage}
@@ -83,12 +97,25 @@ export function SocialMessageDialog({ user, open, onClose }: SocialMessageDialog
               />
             )}
             {items.map((item) => (
-              <div key={item.id} className={s.message} data-self={item.from.id === uid}>
-                <div className={s.bubble}>
+              <div
+                key={item.id}
+                className="max-w-[88%] self-start data-[self=true]:self-end"
+                data-self={item.from.id === uid}
+              >
+                <div
+                  className={cn(
+                    "leading-1.7 rounded-[14px] bg-secondary px-4 py-3 text-[14px] wrap-anywhere whitespace-pre-wrap",
+                    item.from.id === uid &&
+                      "bg-[color:color-mix(in_srgb,var(--primary)_12%,var(--secondary))]",
+                  )}
+                >
                   {item.text || (!item.resource ? t("social.unknownMessage") : "")}
                   {item.resource && <SocialResourceCard resource={item.resource} compact />}
                 </div>
-                <time dateTime={item.time ? new Date(item.time).toISOString() : undefined}>
+                <time
+                  className="mx-[3px] mt-[5px] block text-[11px] text-muted-foreground"
+                  dateTime={item.time ? new Date(item.time).toISOString() : undefined}
+                >
                   {item.time
                     ? new Date(item.time).toLocaleString(locale, {
                         month: "short",
@@ -109,7 +136,7 @@ export function SocialMessageDialog({ user, open, onClose }: SocialMessageDialog
           }}
         >
           <textarea
-            className={s.textarea}
+            className={socialTextareaClass}
             rows={2}
             maxLength={500}
             value={text}
@@ -118,11 +145,11 @@ export function SocialMessageDialog({ user, open, onClose }: SocialMessageDialog
             placeholder={t("social.messagePlaceholder")}
             onChange={(e) => setText(e.target.value)}
           />
-          <div className={s.row + " justify-end"}>
-            <span className={s.counter}>{text.length}/500</span>
+          <div className={cn(socialRowClass, "justify-end")}>
+            <span className={socialCounterClass}>{text.length}/500</span>
             <button
               type="submit"
-              className={s.button + " " + s.primary}
+              className={cn(socialButtonClass, socialPrimaryClass)}
               disabled={send.isPending || !text.trim()}
             >
               {t(send.isPending ? "social.sending" : "social.send")}

@@ -13,7 +13,6 @@ import {
   SocialLogin,
   SocialState,
 } from "./SocialPrimitives";
-import s from "./Social.module.css";
 
 export function SocialPeople({ uid = "", mode, query: search = "" }: SocialPeopleProps) {
   const { t } = useTranslation(),
@@ -33,11 +32,13 @@ export function SocialPeople({ uid = "", mode, query: search = "" }: SocialPeopl
       }
     >
       {items.map((user) => (
-        <div className={s.person} key={user.id}>
+        <div className="flex items-center gap-3 border-b border-foreground/10 py-4" key={user.id}>
           <SocialAvatar user={user} />
-          <div className={s.personText}>
+          <div className="min-w-0 flex-1">
             <SocialAuthor user={user} />
-            <p>{user.signature || t("social.noSignature")}</p>
+            <p className="mt-1 truncate text-[12px] text-muted-foreground">
+              {user.signature || t("social.noSignature")}
+            </p>
           </div>
           <FollowButton user={user} />
         </div>

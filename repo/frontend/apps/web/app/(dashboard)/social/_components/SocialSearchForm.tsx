@@ -6,7 +6,11 @@ import { useSmartRouter } from "@/hooks/core/useSmartRouter";
 import { useTranslation } from "react-i18next";
 
 import type { SocialSearchFormProps } from "@/types/social/components";
-import s from "@/components/social/Social.module.css";
+import {
+  socialSearchClass,
+  socialSearchInputClass,
+  socialTextButtonClass,
+} from "@/components/social/socialClasses";
 
 export function SocialSearchForm({ query = "" }: SocialSearchFormProps) {
   const [search, setSearch] = useState(query);
@@ -14,7 +18,7 @@ export function SocialSearchForm({ query = "" }: SocialSearchFormProps) {
   const { t } = useTranslation();
   return (
     <form
-      className={s.search}
+      className={socialSearchClass}
       role="search"
       onSubmit={(event) => {
         event.preventDefault();
@@ -23,12 +27,13 @@ export function SocialSearchForm({ query = "" }: SocialSearchFormProps) {
     >
       <Search aria-hidden="true" />
       <input
+        className={socialSearchInputClass}
         value={search}
         onChange={(event) => setSearch(event.target.value)}
         aria-label={t("social.searchPeople")}
         placeholder={t("social.searchPeople")}
       />
-      <button type="submit" className={s.textButton}>
+      <button type="submit" className={socialTextButtonClass}>
         {t("social.search")}
       </button>
     </form>

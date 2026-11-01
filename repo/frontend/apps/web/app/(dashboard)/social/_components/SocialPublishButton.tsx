@@ -13,7 +13,12 @@ import { useRequireLoginAction } from "@/hooks/auth/useRequireLoginAction";
 import { useTranslation } from "react-i18next";
 
 import { SocialComposer } from "@/components/social/SocialComposer";
-import s from "@/components/social/Social.module.css";
+import { cn } from "@/lib/utils";
+import {
+  socialButtonClass,
+  socialDialogClass,
+  socialMutedClass,
+} from "@/components/social/socialClasses";
 
 export function SocialPublishButton() {
   const [open, setOpen] = useState(false);
@@ -33,16 +38,22 @@ export function SocialPublishButton() {
         type="button"
         aria-label={t("social.publishPost")}
         title={t("social.publishPost")}
-        className={s.button + " " + s.publishButton}
+        className={cn(
+          socialButtonClass,
+          "min-h-[34px] bg-transparent py-1.5 pr-3.5 pl-[11px] text-[13px] text-foreground hover:border-[color:color-mix(in_srgb,var(--primary)_55%,color-mix(in_srgb,var(--foreground)_10%,transparent))] hover:bg-primary/8 @max-[500px]:px-3",
+        )}
         onClick={() => void requireLogin(() => setOpen(true))}
       >
-        <Plus aria-hidden="true" className="size-4" />
-        <span>{t("social.publishPost")}</span>
+        <Plus aria-hidden="true" className="size-4 text-primary" />
+        <span className="@max-[360px]:hidden">{t("social.publishPost")}</span>
       </button>
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className={s.dialog + " sm:max-w-2xl"}>
+        <DialogContent className={cn(socialDialogClass, "sm:max-w-2xl")}>
           <DialogTitle>{t("social.publish")}</DialogTitle>
-          <DialogDescription className={s.muted}>{t("social.publishTarget")}</DialogDescription>
+          {/* 保留 DialogDescription 默认 text-sm 的行高，只改字号与颜色 */}
+          <DialogDescription className={cn(socialMutedClass, "leading-[calc(1.25/0.875)]")}>
+            {t("social.publishTarget")}
+          </DialogDescription>
           <SocialComposer onDone={handleDone} />
         </DialogContent>
       </Dialog>

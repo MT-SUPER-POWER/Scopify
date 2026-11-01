@@ -8,7 +8,12 @@ import { useTranslation } from "react-i18next";
 import { SocialState } from "@/components/social/SocialPrimitives";
 import type { ProfilePlaylistShelvesProps } from "@/types/social/components";
 import { ProfilePlaylistTile } from "./ProfilePlaylistTile";
-import s from "@/components/social/Social.module.css";
+import {
+  profileSectionClass,
+  profileSectionTitleClass,
+  profileShelfClass,
+  socialTextButtonClass,
+} from "@/components/social/socialClasses";
 
 const SHELF_SIZE = 6;
 
@@ -28,18 +33,18 @@ export function ProfilePlaylistShelves({ uid }: ProfilePlaylistShelvesProps) {
       onRetry={() => void query.refetch()}
     >
       {shelves.map((shelf) => (
-        <section key={shelf.key} className={s.profileSection}>
-          <div className={s.sectionTitle}>
+        <section key={shelf.key} className={profileSectionClass}>
+          <div className={profileSectionTitleClass}>
             <h2>{shelf.title}</h2>
             <Link
               href={profileHref(uid) + "&tab=playlists"}
               scroll={false}
-              className={s.textButton}
+              className={socialTextButtonClass}
             >
               {t("social.all")}
             </Link>
           </div>
-          <div className={s.profileShelf}>
+          <div className={profileShelfClass}>
             {shelf.items.slice(0, SHELF_SIZE).map((item) => (
               <ProfilePlaylistTile key={item.id} item={item} caption={shelf.title} />
             ))}

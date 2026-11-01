@@ -13,7 +13,15 @@ import { useTranslation } from "react-i18next";
 import { SocialLogin, SocialState } from "@/components/social/SocialPrimitives";
 import { ProfileSkeletonContent } from "@/components/profile/ProfilePageSkeleton";
 import type { SocialFeedProps } from "@/types/social/components";
-import s from "@/components/social/Social.module.css";
+import {
+  profileShellClass,
+  socialMutedClass,
+  socialTextButtonClass,
+} from "@/components/social/socialClasses";
+
+/** 头部背景光：左上角主题色光晕叠在头像取色（--profile-tint）到面板底色的渐变上。 */
+const profileGlowClass =
+  "pointer-events-none absolute inset-x-0 top-0 z-0 h-[480px] animate-in bg-[radial-gradient(60%_90%_at_12%_0%,color-mix(in_oklab,var(--primary)_16%,transparent),transparent_70%),linear-gradient(to_bottom,color-mix(in_oklab,var(--profile-tint,var(--secondary))_62%,var(--card))_0%,var(--card)_100%)] duration-500 ease-out fade-in fill-mode-both";
 import { EditUserProfileDialog } from "./EditUserProfileDialog";
 import { SocialMessageDialog } from "./SocialMessageDialog";
 import { SocialProfileBody } from "./SocialProfileBody";
@@ -40,12 +48,12 @@ export function ProfileContent({ uid = "" }: SocialFeedProps) {
     <>
       {user && (
         <div
-          className={s.profileGlow}
+          className={profileGlowClass}
           style={tint ? ({ "--profile-tint": tint } as CSSProperties) : undefined}
           aria-hidden="true"
         />
       )}
-      <div className={s.profileShell}>
+      <div className={profileShellClass}>
         {!uid ? (
           self ? (
             <SocialState empty={t("social.noProfile")} />
@@ -58,11 +66,11 @@ export function ProfileContent({ uid = "" }: SocialFeedProps) {
             {user && (
               <>
                 {query.isError && (
-                  <p role="alert" className={s.muted}>
+                  <p role="alert" className={socialMutedClass}>
                     {t("social.failed")}{" "}
                     <button
                       type="button"
-                      className={s.textButton}
+                      className={socialTextButtonClass}
                       onClick={() => void query.refetch()}
                     >
                       {t("social.retry")}

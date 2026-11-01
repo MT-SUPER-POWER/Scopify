@@ -10,7 +10,17 @@ import { usePlayerStore } from "@/store/module/player";
 import { SocialState } from "@/components/social/SocialPrimitives";
 import type { ProfileListeningRankProps } from "@/types/social/components";
 import type { ListeningRankPeriod } from "@/types/user/profile";
-import s from "@/components/social/Social.module.css";
+import { cn } from "@/lib/utils";
+import {
+  profileRankCoverClass,
+  profileRankListClass,
+  profileRankRowClass,
+  profileRankTextClass,
+  profileSectionClass,
+  profileSectionTitleClass,
+  socialSegmentedButtonClass,
+  socialSegmentedClass,
+} from "@/components/social/socialClasses";
 
 const PERIODS: ListeningRankPeriod[] = ["week", "all"];
 
@@ -31,14 +41,15 @@ export function ProfileListeningRank({ uid, isSelf }: ProfileListeningRankProps)
     }
   }
   return (
-    <section className={s.profileSection}>
-      <div className={s.sectionTitle}>
+    <section className={profileSectionClass}>
+      <div className={profileSectionTitleClass}>
         <h2>{t("social.topTracks")}</h2>
-        <div className={s.segmented} role="group" aria-label={t("social.topTracks")}>
+        <div className={socialSegmentedClass} role="group" aria-label={t("social.topTracks")}>
           {PERIODS.map((item) => (
             <button
               key={item}
               type="button"
+              className={socialSegmentedButtonClass}
               aria-pressed={period === item}
               onClick={() => setPeriod(item)}
             >
@@ -59,12 +70,24 @@ export function ProfileListeningRank({ uid, isSelf }: ProfileListeningRankProps)
         }
         onRetry={() => void query.refetch()}
       >
-        <ol className={s.rankList}>
+        <ol className={profileRankListClass}>
           {songs.map((song, index) => (
             <li key={song.id}>
-              <button type="button" className={s.rankRow} onClick={() => void play(index)}>
-                <span className={s.rankNo}>{index + 1}</span>
-                <span className={s.rankCover}>
+              <button
+                type="button"
+                className={cn(profileRankRowClass, "hover:bg-foreground/8")}
+                onClick={() => void play(index)}
+              >
+                <span
+                  className={cn(
+                    "w-5 shrink-0 text-center text-[14px] text-muted-foreground tabular-nums",
+                    // 前三名高亮
+                    index < 3 && "font-bold text-primary",
+                  )}
+                >
+                  {index + 1}
+                </span>
+                <span className={profileRankCoverClass}>
                   <img
                     src={getSizedImageUrl(song.al.picUrl, 96)}
                     alt=""
@@ -72,9 +95,11 @@ export function ProfileListeningRank({ uid, isSelf }: ProfileListeningRankProps)
                     referrerPolicy="no-referrer"
                   />
                 </span>
-                <span className={s.rankText}>
-                  <strong>{song.name}</strong>
-                  <span>{song.ar.map((artist) => artist.name).join(" / ")}</span>
+                <span className={profileRankTextClass}>
+                  <strong className="block truncate text-[14px] font-[650]">{song.name}</strong>
+                  <span className="mt-0.5 block truncate text-[12px] text-muted-foreground">
+                    {song.ar.map((artist) => artist.name).join(" / ")}
+                  </span>
                 </span>
               </button>
             </li>

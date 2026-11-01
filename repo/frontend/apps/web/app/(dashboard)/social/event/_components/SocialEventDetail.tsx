@@ -6,7 +6,7 @@ import { useTranslation } from "react-i18next";
 import type { SocialEventDetailProps } from "@/types/social/components";
 import { SocialEventCard } from "@/components/social/SocialEventCard";
 import { SocialLogin, SocialState } from "@/components/social/SocialPrimitives";
-import s from "@/components/social/Social.module.css";
+import { socialPageClass } from "@/components/social/socialClasses";
 import { SocialComments } from "./SocialComments";
 
 export function SocialEventDetail({ target }: SocialEventDetailProps) {
@@ -15,9 +15,9 @@ export function SocialEventDetail({ target }: SocialEventDetailProps) {
   const valid = /^\d+$/.test(target.id) && /^\d+$/.test(target.uid);
   const query = useSocialEvent(valid ? target : { id: "", uid: "" });
   return (
-    <div className={s.page}>
-      <main className={s.detail}>
-        <h1 className={s.detailHeading}>{t("social.detail")}</h1>
+    <div className={socialPageClass}>
+      <main className="relative z-1 m-auto max-w-[850px]">
+        <h1 className="mb-3 text-[24px] font-bold">{t("social.detail")}</h1>
         {!uid ? (
           <SocialLogin />
         ) : !valid ? (

@@ -14,7 +14,16 @@ import { SocialEventMenu } from "./SocialEventMenu";
 import { SocialPostText } from "./SocialPostText";
 import { SocialInlineText } from "./SocialInlineText";
 import { SocialResourceCard } from "./SocialResourceCard";
-import s from "./Social.module.css";
+import { cn } from "@/lib/utils";
+import {
+  socialEventBodyClass,
+  socialEventHeaderClass,
+  socialMutedClass,
+  socialPostTextClass,
+  socialQuoteClass,
+  socialQuoteTextClass,
+  socialTextButtonClass,
+} from "./socialClasses";
 
 export function SocialEventCard({ event, quoted = false, detail = false }: SocialEventProps) {
   const { t } = useTranslation(),
@@ -22,11 +31,20 @@ export function SocialEventCard({ event, quoted = false, detail = false }: Socia
   const actions = useSocialEventActions(event);
   const href = eventHref(event);
   return (
-    <article className={s.event} data-media={event.pictures.length > 0}>
+    <article
+      className={cn(
+        "flex min-w-0",
+        // 被引用的动态嵌在引用框里，去掉自身的分隔线与留白
+        quoted
+          ? "gap-2.5"
+          : "gap-3.5 border-b border-foreground/10 pt-[23px] pb-[17px] max-[768px]:gap-2.5",
+      )}
+      data-media={event.pictures.length > 0}
+    >
       <SocialAvatar user={event.user} size={quoted ? "small" : undefined} />
-      <div className={s.eventBody}>
-        <div className={s.eventHeader}>
-          <div className={s.eventIdentity}>
+      <div className={socialEventBodyClass}>
+        <div className={socialEventHeaderClass}>
+          <div className="flex min-w-0 flex-wrap items-baseline gap-x-2.5 gap-y-1 pt-[5px]">
             <SocialAuthor user={event.user} />
             {event.time > 0 && (
               <Link href={href} scroll={false} title={new Date(event.time).toLocaleString(locale)}>
@@ -36,13 +54,13 @@ export function SocialEventCard({ event, quoted = false, detail = false }: Socia
               </Link>
             )}
             {event.privacy !== undefined && event.privacy !== 0 && (
-              <span className={s.privateNote}>
+              <span className="text-[11px] text-muted-foreground">
                 {t(event.privacy === 2 ? "social.selfOnly" : "social.restricted")}
               </span>
             )}
           </div>
           {!quoted && (
-            <div className={s.eventTools}>
+            <div className="ml-auto flex shrink-0 items-center gap-1.5">
               <SocialEventMenu
                 event={event}
                 pending={actions.remove.isPending}
@@ -52,8 +70,13 @@ export function SocialEventCard({ event, quoted = false, detail = false }: Socia
           )}
         </div>
         {event.title && (
-          <h2 className={s.postTitle}>
-            <Link href={href} scroll={false}>
+          <h2
+            className={cn(
+              quoted ? "text-[15px]" : "text-[19px] @max-[500px]:text-[17px]",
+              "mt-2 mb-1 leading-normal font-[650] wrap-anywhere",
+            )}
+          >
+            <Link href={href} scroll={false} className="hover:underline hover:underline-offset-4">
               <SocialInlineText text={event.title} />
             </Link>
           </h2>
@@ -65,21 +88,26 @@ export function SocialEventCard({ event, quoted = false, detail = false }: Socia
           !event.resource &&
           !event.forward &&
           !event.pictures.length && (
-            <p className={s.postText + " " + s.muted}>{t("social.unknownPost")}</p>
+            <p
+              data-slot="social-post-text"
+              className={cn(socialPostTextClass, "text-muted-foreground")}
+            >
+              {t("social.unknownPost")}
+            </p>
           )
         )}
         {event.forward && !event.unavailableForward && (
-          <div className={s.quote}>
+          <div className={cn(socialQuoteClass, socialQuoteTextClass)}>
             <SocialEventCard event={event.forward} quoted />
           </div>
         )}
         {event.unavailableForward && (
-          <div className={s.quote + " " + s.muted}>{t("social.unavailable")}</div>
+          <div className={cn(socialQuoteClass, socialMutedClass)}>{t("social.unavailable")}</div>
         )}
         {event.pictures.length > 0 && <SocialEventMedia event={event} />}
         {event.resource && <SocialResourceCard resource={event.resource} compact={quoted} />}
         {quoted ? (
-          <Link href={href} scroll={false} className={s.textButton}>
+          <Link href={href} scroll={false} className={socialTextButtonClass}>
             {t("social.viewOriginal")}
           </Link>
         ) : (

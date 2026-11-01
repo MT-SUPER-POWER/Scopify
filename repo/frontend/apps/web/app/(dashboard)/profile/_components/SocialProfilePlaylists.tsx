@@ -7,7 +7,6 @@ import { useTranslation } from "react-i18next";
 import { SocialLoadMore, SocialState } from "@/components/social/SocialPrimitives";
 import type { SocialFeedProps } from "@/types/social/components";
 import { ProfilePlaylistTile } from "./ProfilePlaylistTile";
-import s from "@/components/social/Social.module.css";
 
 export function SocialProfilePlaylists({ uid = "" }: SocialFeedProps) {
   const { t } = useTranslation(),
@@ -20,7 +19,7 @@ export function SocialProfilePlaylists({ uid = "" }: SocialFeedProps) {
       onRetry={() => void query.refetch()}
       empty={!items.length ? t("social.emptyPlaylists") : undefined}
     >
-      <div className={s.playlistGrid}>
+      <div className="grid grid-cols-[repeat(auto-fill,minmax(172px,1fr))] gap-x-5 gap-y-6 py-6">
         {items.map((item) => (
           <ProfilePlaylistTile
             key={item.id}

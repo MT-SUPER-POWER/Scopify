@@ -43,7 +43,34 @@ import {
 } from "@/components/social/SocialPrimitives";
 import { SocialResourceCard } from "@/components/social/SocialResourceCard";
 import { SocialCommentsSkeleton } from "@/components/social/SocialCommentsSkeleton";
-import s from "@/components/social/Social.module.css";
+import { cn } from "@/lib/utils";
+import {
+  postCommentAuthorClass,
+  postCommentClass,
+  postCommentMetaClass,
+  postCommentTextClass,
+  postCommentTimeClass,
+  socialDialogClass,
+  socialQuoteClass,
+} from "@/components/social/socialClasses";
+
+/**
+ * 浮层本身透明无边框，宽度随是否有媒体切换；900px 以下改为上下布局。
+ * 浮层内分隔线比页面稍淡（foreground/9）。
+ */
+const postModalClass =
+  "group/post-modal block h-[min(860px,calc(100dvh-48px))] w-[min(1200px,calc(100vw-128px))] max-w-none border-0 bg-transparent p-0 text-foreground shadow-none data-[media=false]:w-[min(560px,calc(100vw-128px))] sm:max-w-none max-[900px]:w-[calc(100vw-32px)] max-[900px]:data-[media=false]:w-[calc(100vw-32px)] [&_a]:no-underline [&_button]:cursor-pointer [&_button:disabled]:cursor-not-allowed [&_button:disabled]:opacity-45 [&_:is(button,a,input):focus-visible]:outline-2 [&_:is(button,a,input):focus-visible]:outline-offset-2 [&_:is(button,a,input):focus-visible]:outline-primary";
+/** 正文区：正文不留上下外边距，附带的资源卡片与引用框统一上间距。 */
+const postCaptionClass =
+  "border-b border-foreground/9 pb-5 [&_[data-slot=social-post-text]]:m-0 [&_[data-slot=social-post-text]]:text-[15px] [&_[data-slot=social-post-text]]:leading-[1.75] [&_[data-slot=social-resource]]:mt-3.5 [&_[data-slot=social-resource]]:mb-0";
+const postMediaClass =
+  "relative flex min-w-0 flex-[1_1_auto] items-center justify-center overflow-hidden bg-black max-[900px]:flex-[0_0_42%]";
+const postMediaNavClass =
+  "absolute top-1/2 inline-flex size-9 -translate-y-1/2 items-center justify-center rounded-full bg-white/85 text-[#111] [&_svg]:size-5";
+const postActionButtonClass =
+  "inline-flex items-center gap-[5px] text-[14px] text-foreground transition-opacity duration-150 ease-[ease] hover:opacity-65 data-[active=true]:text-primary [&_svg]:size-[22px] data-[active=true]:[&_svg]:fill-current";
+const postCommentMetaButtonClass =
+  "inline-flex items-center gap-1 hover:text-foreground data-[active=true]:text-primary data-[danger=true]:text-destructive [&_svg]:size-[15px] data-[active=true]:[&_svg]:fill-current";
 
 /**
  * 动态浮层（参考小红书）：左侧大图；右侧作者与关注、正文、评论，底部评论框与互动计数。
@@ -63,21 +90,24 @@ export function SocialPostModal() {
     >
       <DialogContent
         showCloseButton={false}
-        className={s.postModal}
+        className={postModalClass}
         data-media={event ? hasMedia(event) : true}
       >
         <DialogTitle className="sr-only">{t("social.detail")}</DialogTitle>
         <DialogDescription className="sr-only">
           {event?.title || event?.text || t("social.detail")}
         </DialogDescription>
-        <DialogClose className={s.postModalClose} aria-label={t("social.close")}>
+        <DialogClose
+          className="absolute top-0 -left-14 inline-flex size-10 items-center justify-center rounded-full bg-card/80 text-foreground transition-[background-color] duration-200 ease-[ease] hover:bg-card max-[900px]:top-2.5 max-[900px]:left-2.5 max-[900px]:z-1 [&_svg]:size-5"
+          aria-label={t("social.close")}
+        >
           <X />
         </DialogClose>
-        <div className={s.postModalFrame}>
+        <div className="flex size-full overflow-hidden rounded-[20px] bg-card max-[900px]:flex-col">
           {event ? (
             <SocialPostView key={event.id} event={event} onDeleted={close} />
           ) : (
-            <div className={s.postModalState}>
+            <div className="grid flex-1 place-items-center">
               <SocialState
                 loading={query.isPending}
                 error={query.isError}
@@ -132,28 +162,34 @@ function SocialPostView({ event, onDeleted }: SocialPostViewProps) {
   return (
     <>
       {hasMedia(event) && <SocialPostMedia event={content} />}
-      <section className={s.postPanel}>
-        <header className={s.postPanelHeader}>
-          <SocialAvatar user={event.user} />
-          <SocialAuthor user={event.user} />
-          <FollowButton user={event.user} className={s.postFollow} />
+      <section className="flex min-h-0 w-110 flex-none flex-col group-data-[media=false]/post-modal:w-full max-[900px]:w-full max-[900px]:flex-1">
+        <header className="flex items-center gap-3 px-6 pt-[22px] pb-3.5 text-[15px]">
+          <SocialAvatar user={event.user} className="size-10 max-[768px]:size-10" />
+          <SocialAuthor
+            user={event.user}
+            className="min-w-0 flex-1 truncate font-medium"
+          />
+          <FollowButton
+            user={event.user}
+            className="min-h-[38px] min-w-22 rounded-full border border-primary bg-transparent px-5 py-0 text-[15px] font-semibold text-primary hover:bg-primary/12 aria-pressed:border-foreground/9 aria-pressed:text-muted-foreground"
+          />
         </header>
 
-        <div className={s.postPanelScroll}>
-          <article className={s.postCaption}>
+        <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-6 pt-1 pb-4">
+          <article className={postCaptionClass}>
             {event.title && (
-              <h2 className={s.postCaptionTitle}>
+              <h2 className="mt-1 mb-2 text-[18px] leading-normal font-bold wrap-anywhere">
                 <SocialInlineText text={event.title} />
               </h2>
             )}
             {event.text && <SocialPostText text={event.text} expanded />}
             {event.forward && !event.unavailableForward && content === event && (
-              <div className={s.quote}>
+              <div className={cn(socialQuoteClass, "mt-3.5 border-foreground/9")}>
                 <SocialEventCard event={event.forward} quoted />
               </div>
             )}
             {content.resource && <SocialResourceCard resource={content.resource} />}
-            <div className={s.postMeta}>
+            <div className="mt-3 flex items-center justify-between text-[13px] text-muted-foreground">
               {event.time > 0 && (
                 <time dateTime={new Date(event.time).toISOString()}>
                   {formatSocialTime(event.time, locale)}
@@ -175,10 +211,12 @@ function SocialPostView({ event, onDeleted }: SocialPostViewProps) {
           </article>
 
           {!uid ? null : !event.threadId ? (
-            <p className={s.postPanelNote}>{t("social.commentUnavailable")}</p>
+            <p className="py-6 text-center text-[13px] text-muted-foreground">
+              {t("social.commentUnavailable")}
+            </p>
           ) : (
-            <section className={s.postComments}>
-              <h3 className={s.postCommentsTotal}>
+            <section className="pt-[18px]">
+              <h3 className="mb-[18px] text-[14px] font-normal text-muted-foreground">
                 {t("social.commentsTotal", {
                   count: comments.data?.pages[0]?.total ?? event.comments,
                 })}
@@ -214,11 +252,11 @@ function SocialPostView({ event, onDeleted }: SocialPostViewProps) {
           )}
         </div>
 
-        <footer className={s.postPanelFooter}>
+        <footer className="border-t border-foreground/9 px-5 pt-3 pb-4">
           {reply && (
             <button
               type="button"
-              className={s.postReplyTag}
+              className="mb-2 ml-1 inline-flex items-center gap-1 rounded-full bg-foreground/8 px-2.5 py-0.5 text-[12px] text-muted-foreground [&_svg]:size-3"
               aria-label={t("social.cancel")}
               onClick={() => setReply(undefined)}
             >
@@ -226,10 +264,10 @@ function SocialPostView({ event, onDeleted }: SocialPostViewProps) {
               <X aria-hidden="true" />
             </button>
           )}
-          <div className={s.postBar}>
+          <div className="flex items-center gap-3.5">
             {canComment && (
               <form
-                className={s.postCommentForm}
+                className="flex h-10 min-w-0 flex-1 items-center gap-2 rounded-full bg-foreground/7 pr-1.5 pl-4"
                 onSubmit={(e) => {
                   e.preventDefault();
                   void submit();
@@ -237,6 +275,7 @@ function SocialPostView({ event, onDeleted }: SocialPostViewProps) {
               >
                 <input
                   ref={input}
+                  className="h-full min-w-0 flex-1 border-0 bg-transparent text-[14px] text-foreground outline-none"
                   value={text}
                   maxLength={140}
                   disabled={write.isPending}
@@ -245,16 +284,21 @@ function SocialPostView({ event, onDeleted }: SocialPostViewProps) {
                   aria-label={t("social.commentPlaceholder")}
                 />
                 {text.trim() && (
-                  <button type="submit" disabled={write.isPending}>
+                  <button
+                    type="submit"
+                    className="h-[30px] rounded-full bg-primary px-3.5 text-[13px] font-semibold text-primary-foreground"
+                    disabled={write.isPending}
+                  >
                     {t(write.isPending ? "social.sending" : "social.send")}
                   </button>
                 )}
               </form>
             )}
             {!text.trim() && (
-              <div className={s.postActions}>
+              <div className="ml-auto flex shrink-0 items-center gap-3.5">
                 <button
                   type="button"
+                  className={postActionButtonClass}
                   data-active={event.liked}
                   aria-pressed={event.liked}
                   disabled={actions.liking || !event.threadId}
@@ -266,6 +310,7 @@ function SocialPostView({ event, onDeleted }: SocialPostViewProps) {
                 </button>
                 <button
                   type="button"
+                  className={postActionButtonClass}
                   aria-label={t("social.comments")}
                   disabled={!canComment}
                   onClick={() => input.current?.focus()}
@@ -275,6 +320,7 @@ function SocialPostView({ event, onDeleted }: SocialPostViewProps) {
                 </button>
                 <button
                   type="button"
+                  className={postActionButtonClass}
                   aria-label={t("social.forward")}
                   disabled={!event.user.id}
                   onClick={() => void requireLogin(() => setForwarding(true))}
@@ -284,6 +330,7 @@ function SocialPostView({ event, onDeleted }: SocialPostViewProps) {
                 </button>
                 <button
                   type="button"
+                  className={postActionButtonClass}
                   aria-label={t("social.share")}
                   onClick={() => void copyLink()}
                 >
@@ -296,7 +343,7 @@ function SocialPostView({ event, onDeleted }: SocialPostViewProps) {
       </section>
 
       <Dialog open={forwarding} onOpenChange={setForwarding}>
-        <DialogContent className={s.dialog + " sm:max-w-2xl"}>
+        <DialogContent className={cn(socialDialogClass, "sm:max-w-2xl")}>
           <DialogTitle>{t("social.forward")}</DialogTitle>
           <DialogDescription className="sr-only">
             {t("social.forwardPlaceholder")}
@@ -315,15 +362,15 @@ function SocialPostMedia({ event }: SocialEventProps) {
   const count = event.pictures.length;
   if (!count && event.resource?.cover) {
     return (
-      <div className={s.postMedia} data-kind="cover">
+      <div className={postMediaClass} data-kind="cover">
         <img
-          className={s.postMediaBackdrop}
+          className="absolute -inset-10 size-[calc(100%+80px)] object-cover blur-2xl brightness-50"
           src={event.resource.cover}
           alt=""
           referrerPolicy="no-referrer"
         />
         <img
-          className={s.postMediaCover}
+          className="relative aspect-square h-auto w-[min(68%,440px)] rounded-[12px] object-cover shadow-[0_24px_60px_rgb(0_0_0/0.5)]"
           src={event.resource.cover}
           alt=""
           referrerPolicy="no-referrer"
@@ -332,8 +379,9 @@ function SocialPostMedia({ event }: SocialEventProps) {
     );
   }
   return (
-    <div className={s.postMedia}>
+    <div className={postMediaClass}>
       <img
+        className="size-full object-contain"
         src={event.pictures[index]}
         alt={t("social.picture", { index: index + 1 })}
         referrerPolicy="no-referrer"
@@ -343,7 +391,7 @@ function SocialPostMedia({ event }: SocialEventProps) {
           {index > 0 && (
             <button
               type="button"
-              className={s.postMediaNav}
+              className={cn(postMediaNavClass, "left-3.5")}
               data-side="prev"
               aria-label={t("social.previousImage")}
               onClick={() => setIndex(index - 1)}
@@ -354,7 +402,7 @@ function SocialPostMedia({ event }: SocialEventProps) {
           {index < count - 1 && (
             <button
               type="button"
-              className={s.postMediaNav}
+              className={cn(postMediaNavClass, "right-3.5")}
               data-side="next"
               aria-label={t("social.nextImage")}
               onClick={() => setIndex(index + 1)}
@@ -362,9 +410,16 @@ function SocialPostMedia({ event }: SocialEventProps) {
               <ChevronRight />
             </button>
           )}
-          <div className={s.postMediaDots} aria-live="polite">
+          <div
+            className="absolute bottom-4 left-1/2 flex -translate-x-1/2 gap-[5px]"
+            aria-live="polite"
+          >
             {event.pictures.map((url, dot) => (
-              <span key={url + dot} data-active={dot === index} />
+              <span
+                key={url + dot}
+                data-active={dot === index}
+                className="size-1.5 rounded-full bg-white/40 data-[active=true]:bg-white"
+              />
             ))}
           </div>
         </>
@@ -382,22 +437,23 @@ function SocialPostComment({ event, comment, onReply }: SocialCommentRowProps) {
   const actions = useSocialCommentActions(event, comment);
   const [confirming, setConfirming] = useState(false);
   return (
-    <div className={s.postComment}>
-      <SocialAvatar user={comment.user} />
+    <div className={postCommentClass}>
+      <SocialAvatar user={comment.user} className="size-9 max-[768px]:size-9" />
       <div className="min-w-0 flex-1">
-        <SocialAuthor user={comment.user} />
-        <p className={s.postCommentText}>{comment.text}</p>
+        <SocialAuthor user={comment.user} className={postCommentAuthorClass} />
+        <p className={postCommentTextClass}>{comment.text}</p>
         {comment.reply && (
-          <p className={s.postCommentQuote}>
+          <p className="leading-1.6 mt-1.5 border-l-2 border-foreground/9 pl-2.5 text-[13px] wrap-anywhere text-muted-foreground">
             {t("social.replyTo", { name: comment.reply.user.name })}：{comment.reply.text}
           </p>
         )}
         {comment.time > 0 && (
-          <time className={s.postCommentTime}>{formatSocialTime(comment.time, locale)}</time>
+          <time className={postCommentTimeClass}>{formatSocialTime(comment.time, locale)}</time>
         )}
-        <div className={s.postCommentMeta}>
+        <div className={postCommentMetaClass}>
           <button
             type="button"
+            className={postCommentMetaButtonClass}
             data-active={comment.liked}
             aria-pressed={comment.liked}
             aria-label={t(comment.liked ? "social.unlike" : "social.like")}
@@ -407,13 +463,18 @@ function SocialPostComment({ event, comment, onReply }: SocialCommentRowProps) {
             <Heart />
             {formatCount(comment.likes, locale) || t("social.like")}
           </button>
-          <button type="button" onClick={() => void requireLogin(() => onReply(comment))}>
+          <button
+            type="button"
+            className={postCommentMetaButtonClass}
+            onClick={() => void requireLogin(() => onReply(comment))}
+          >
             <MessageCircle />
             {t("social.reply")}
           </button>
           {comment.user.id === uid && (
             <button
               type="button"
+              className={postCommentMetaButtonClass}
               data-danger={confirming}
               disabled={actions.remove.isPending}
               onClick={() => (confirming ? actions.remove.mutate(undefined) : setConfirming(true))}
