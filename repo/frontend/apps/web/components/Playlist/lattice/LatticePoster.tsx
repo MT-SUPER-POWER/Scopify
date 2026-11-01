@@ -2,15 +2,25 @@
 
 import { lazy, memo, Suspense, useEffect, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
+import { cn } from "@/lib/utils";
 import { useLatticeExpansionSettled } from "@/hooks/playlist/useLatticeExpansionSettled";
 import { useTranslation } from "react-i18next";
 
 import type { LatticePosterProps } from "@/types/playlist/latticeComponents";
 import { LatticePosterArtwork } from "./LatticePosterArtwork";
 import { LatticePlaybackControls } from "./LatticePlaybackControls";
-import styles from "./PlaylistLattice.module.css";
+import { posterCopyClass, posterSubtitleClass, posterTitleClass } from "./latticePosterCopy";
 
 const LatticeLyrics = lazy(() => import("./LatticeLyrics"));
+
+// Hover/focus lifts a tile above the expanded one (z-1); lights-off dims every tile except the
+// current or expanded one. Plain :hover keeps the original touch behaviour.
+const posterClass =
+  "group/poster absolute top-0 left-0 overflow-hidden bg-secondary text-white transition-[filter] duration-300 ease-[ease] [contain:layout_paint] focus-visible:outline-4 focus-visible:-outline-offset-6 focus-visible:outline-white data-[expanded=true]:shadow-[0_24px_64px_#0006] data-[expanded=true]:[&:not(:hover,:focus-within)]:z-1 [&:hover,&:focus-within]:z-2 group-data-[lights-off=true]/lattice:not-data-[current=true]:not-data-[expanded=true]:brightness-28";
+
+// Current-track frame drawn above the artwork and lyrics.
+const currentFrameClass =
+  "data-[current=true]:after:pointer-events-none data-[current=true]:after:absolute data-[current=true]:after:inset-0 data-[current=true]:after:z-2 data-[current=true]:after:border-2 data-[current=true]:after:border-primary";
 
 export const LatticePoster = memo(
   function LatticePoster({
@@ -35,14 +45,18 @@ export const LatticePoster = memo(
     }, [expanded]);
     const artist = track.ar.map((item) => item.name).join(" / ");
     const copy = (
-      <span className={styles.copy}>
-        <strong title={track.name}>{track.name}</strong>
-        <small title={artist || track.al.name}>{artist || track.al.name}</small>
+      <span className={posterCopyClass}>
+        <strong className={posterTitleClass} title={track.name}>
+          {track.name}
+        </strong>
+        <small className={posterSubtitleClass} title={artist || track.al.name}>
+          {artist || track.al.name}
+        </small>
       </span>
     );
     return (
       <motion.article
-        className={styles.poster}
+        className={cn(posterClass, currentFrameClass)}
         data-instance={instance.instanceId}
         role={expanded ? "group" : "button"}
         tabIndex={focused ? 0 : -1}

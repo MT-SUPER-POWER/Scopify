@@ -8,7 +8,7 @@ import { useFontsEpoch } from "@/components/lyrics/folia/src/hooks/useFontsEpoch
 import { useLatticeLyricCanvas } from "@/hooks/playlist/useLatticeLyricCanvas";
 import type { LatticeLyricsProps } from "@/types/playlist/latticeComponents";
 import type { LatticeLyricInput } from "@/types/playlist/latticeLyrics";
-import styles from "./PlaylistLattice.module.css";
+import { posterCopyClass, posterSubtitleClass, posterTitleClass } from "./latticePosterCopy";
 
 export default function LatticeLyrics({ track }: LatticeLyricsProps) {
   const bridge = useFoliaPlaybackBridge();
@@ -58,12 +58,37 @@ export default function LatticeLyrics({ track }: LatticeLyricsProps) {
   const artist = track.ar.map((item) => item.name).join(" / ");
   return (
     <>
-      <span className={ready ? styles.lyricMetadata : styles.copy}>
-        <strong title={track.name}>{track.name}</strong>
-        <small title={artist}>{artist}</small>
+      <span
+        className={
+          ready ? "absolute top-18 right-18 left-10 flex flex-col gap-1.5" : posterCopyClass
+        }
+      >
+        <strong
+          className={ready ? "truncate text-[22px] leading-tight font-semibold" : posterTitleClass}
+          title={track.name}
+        >
+          {track.name}
+        </strong>
+        <small
+          className={
+            ready
+              ? "leading-1.35 truncate text-[14px] font-medium opacity-65"
+              : posterSubtitleClass
+          }
+          title={artist}
+        >
+          {artist}
+        </small>
       </span>
-      <div className={styles.lyrics} data-ready={ready}>
-        <div ref={host} className={styles.lyricCanvas} aria-hidden="true" />
+      <div
+        className="pointer-events-none absolute inset-x-8 top-35 bottom-46 z-1 opacity-0 data-[ready=true]:opacity-100"
+        data-ready={ready}
+      >
+        <div
+          ref={host}
+          className="absolute inset-0 overflow-hidden [&_canvas]:block [&_canvas]:size-full"
+          aria-hidden="true"
+        />
         {ready && <span className="sr-only">{input.lines[input.currentLineIndex]?.fullText}</span>}
       </div>
     </>
