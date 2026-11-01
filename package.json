@@ -14,7 +14,7 @@
     "dev:web": "turbo run dev --filter=@scopify/web",
     "dev:docs": "turbo run dev --filter=@scopify/docs",
     "dev:desktop": "turbo run dev --filter=@scopify/desktop",
-    "dev:backend": "node repo/backend/api-enhanced/app.js",
+    "dev:backend": "node scripts/dev-backend.mjs",
     "dev:full": "concurrently -n \"CLIENTS,NETEASE\" -c \"yellow,red\" --kill-others \"pnpm run dev\" \"pnpm run dev:backend\"",
     "build": "turbo run build",
     "build:web": "turbo run build --filter=@scopify/web",

@@ -8,10 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useTranslation } from "react-i18next";
 
-interface PasswordLoginFormProps {
-  isLoading: boolean;
-  onSubmit: (phone: string, password: string) => void;
-}
+import type { PasswordLoginFormProps } from "@/types/auth/login";
 
 export function PasswordLoginForm({ isLoading, onSubmit }: PasswordLoginFormProps) {
   const [phone, setPhone] = useState("");
@@ -34,7 +31,9 @@ export function PasswordLoginForm({ isLoading, onSubmit }: PasswordLoginFormProp
         </Label>
         <Input
           id="phone"
-          type="text"
+          type="tel"
+          autoComplete="tel"
+          disabled={isLoading}
           value={phone}
           onChange={(e) => setPhone(e.target.value)}
           placeholder={t("login.form.phonePlaceholder")}
@@ -48,6 +47,8 @@ export function PasswordLoginForm({ isLoading, onSubmit }: PasswordLoginFormProp
         <div className="group relative">
           <Input
             id="password"
+            autoComplete="current-password"
+            disabled={isLoading}
             type={showPassword ? "text" : "password"}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
@@ -57,6 +58,8 @@ export function PasswordLoginForm({ isLoading, onSubmit }: PasswordLoginFormProp
           <button
             type="button"
             onClick={() => setShowPassword(!showPassword)}
+            aria-label={t("login.form.passwordLabel")}
+            aria-pressed={showPassword}
             className="absolute top-1/2 right-3 -translate-y-1/2 text-content-subtle transition-colors outline-none hover:text-content"
           >
             {showPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}

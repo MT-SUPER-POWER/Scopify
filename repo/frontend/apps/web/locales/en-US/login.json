@@ -1,9 +1,6 @@
 {
   "page.backHomeTitle": "Back to Home",
   "page.tagline": "Find the melody that belongs to you",
-  "page.qrOnlyNoticePrefix": "Only ",
-  "page.qrOnlyNoticeStrong": "QR login",
-  "page.qrOnlyNoticeSuffix": " is currently available. Other methods are temporarily unavailable.",
   "page.loginFailed": "Login failed. Please check your account details.",
   "page.sendCaptchaFailed": "Failed to send verification code",
   "mode.qr": "QR",
@@ -16,7 +13,7 @@
   "form.passwordSubmitting": "Signing in...",
   "form.passwordSubmit": "Sign In",
   "form.captchaLabel": "Verification Code",
-  "form.captchaPlaceholder": "4-digit code",
+  "form.captchaPlaceholder": "SMS code",
   "form.getCaptcha": "Get Code",
   "form.verifying": "Verifying...",
   "form.verifyAndLogin": "Verify and Sign In",
@@ -32,5 +29,9 @@
   "qr.confirmOnPhone": "Confirm on your phone",
   "qr.scanHint": "Scan with the NetEase Cloud Music app",
   "qr.toast.success": "Login successful",
-  "required.toast": "Please log in to use this feature"
+  "required.toast": "Please log in to use this feature",
+  "page.securityVerification": "Complete security verification",
+  "page.cancelVerification": "Cancel verification",
+  "page.securityFailed": "Security verification failed. Please try again.",
+  "page.secondaryVerification": "SMS verification is required. Request and enter the verification code."
 }

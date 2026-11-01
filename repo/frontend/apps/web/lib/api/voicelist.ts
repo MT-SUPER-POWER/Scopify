@@ -29,7 +29,7 @@ export function getRecommendedPodcasts(limit = 6) {
 }
 
 export function getRecommendedVoiceLists(limit = 24) {
-  return request.get<RecommendedVoiceListsResponse>("/v1/pc/voicelist/rcmd/list", {
+  return request.get<RecommendedVoiceListsResponse>("/pc/voicelist/rcmd/list", {
     params: { limit },
   });
 }

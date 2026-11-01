@@ -1330,7 +1330,7 @@ export default interface Resources {
   };
   login: {
     "form.captchaLabel": "验证码";
-    "form.captchaPlaceholder": "4 位验证码";
+    "form.captchaPlaceholder": "短信验证码";
     "form.getCaptcha": "获取验证码";
     "form.passwordLabel": "密码";
     "form.passwordPlaceholder": "请输入密码";
@@ -1344,10 +1344,11 @@ export default interface Resources {
     "mode.qr": "扫码";
     "mode.sms": "短信";
     "page.backHomeTitle": "返回主页";
+    "page.cancelVerification": "取消验证";
     "page.loginFailed": "登录失败，请检查账号信息";
-    "page.qrOnlyNoticePrefix": "目前只有";
-    "page.qrOnlyNoticeStrong": "扫码登录";
-    "page.qrOnlyNoticeSuffix": "可用，其他登录方式暂不可用。";
+    "page.secondaryVerification": "需要短信二次验证，请获取并输入验证码。";
+    "page.securityFailed": "安全验证失败，请重试";
+    "page.securityVerification": "请完成安全验证";
     "page.sendCaptchaFailed": "发送验证码失败";
     "page.tagline": "发现属于你的旋律";
     "qr.alt": "登录二维码";

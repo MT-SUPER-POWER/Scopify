@@ -1,6 +1,6 @@
 "use client";
 
-import { Lock, QrCode, Smartphone, TriangleAlert, X } from "lucide-react";
+import { Lock, QrCode, Smartphone, X } from "lucide-react";
 import Link from "next/link";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useLoginFlow } from "@/hooks/auth/useLoginFlow";
@@ -20,6 +20,10 @@ export function LoginForm() {
   const {
     mode,
     setMode,
+    sliderHost,
+    isVerifying,
+    verificationPhone,
+    cancelVerification,
     isLoading,
     deviceName,
     isLoggedIn,
@@ -59,6 +63,7 @@ export function LoginForm() {
           {/* 3. Tab 切换器 */}
           <TabsList className="mb-4 grid h-10 grid-cols-3 rounded-xl border border-content/5 bg-content/5 p-1">
             <TabsTrigger
+              disabled={isLoading}
               value="qr"
               title={t("login.mode.qr")}
               className="rounded-lg text-xs data-[state=active]:bg-surface-elevated"
@@ -67,6 +72,7 @@ export function LoginForm() {
               {t("login.mode.qr")}
             </TabsTrigger>
             <TabsTrigger
+              disabled={isLoading}
               value="password"
               title={t("login.mode.password")}
               className="rounded-lg text-xs data-[state=active]:bg-surface-elevated"
@@ -75,6 +81,7 @@ export function LoginForm() {
               {t("login.mode.password")}
             </TabsTrigger>
             <TabsTrigger
+              disabled={isLoading}
               value="sms"
               title={t("login.mode.sms")}
               className="rounded-lg text-xs data-[state=active]:bg-surface-elevated"
@@ -101,6 +108,8 @@ export function LoginForm() {
 
             <TabsContent value="sms" className="mt-0 outline-none">
               <SmsLoginForm
+                key={verificationPhone || "sms"}
+                initialPhone={verificationPhone}
                 isLoading={isLoading}
                 onSendCaptcha={handleSendCaptcha}
                 onSubmit={(phone, captcha) => handleSubmit(phone, captcha)}
@@ -110,20 +119,26 @@ export function LoginForm() {
             <TabsContent value="qr" className="mt-0 outline-none">
               <QrLogin onSuccess={finishLogin} deviceName={deviceName} />
             </TabsContent>
+            <div hidden={!isVerifying} className="mt-4 space-y-3">
+              <p role="status" className="text-sm text-content-muted">
+                {t("login.page.securityVerification")}
+              </p>
+              <div ref={sliderHost} />
+              <button
+                type="button"
+                onClick={cancelVerification}
+                className="text-sm text-content-muted underline"
+              >
+                {t("login.page.cancelVerification")}
+              </button>
+            </div>
+            {verificationPhone && mode === "sms" && (
+              <p role="status" className="mt-3 text-xs text-content-muted">
+                {t("login.page.secondaryVerification")}
+              </p>
+            )}
           </div>
         </Tabs>
-
-        {/* 底部文案 */}
-        <div className="mt-6 flex items-center justify-center gap-1.5 text-center text-[12px] font-medium text-content-subtle">
-          <TriangleAlert aria-hidden="true" className="size-4 shrink-0 text-warning" />
-          <p>
-            {t("login.page.qrOnlyNoticePrefix")}
-            <strong className="font-semibold text-content">
-              {t("login.page.qrOnlyNoticeStrong")}
-            </strong>
-            {t("login.page.qrOnlyNoticeSuffix")}
-          </p>
-        </div>
       </div>
     </>
   );

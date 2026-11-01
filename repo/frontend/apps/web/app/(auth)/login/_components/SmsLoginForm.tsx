@@ -7,20 +7,21 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useTranslation } from "react-i18next";
 
-interface SmsLoginFormProps {
-  isLoading: boolean;
-  onSendCaptcha: (phone: string) => Promise<boolean>;
-  onSubmit: (phone: string, captcha: string) => void;
-}
+import type { SmsLoginFormProps } from "@/types/auth/login";
 
-export function SmsLoginForm({ isLoading, onSendCaptcha, onSubmit }: SmsLoginFormProps) {
-  const [phone, setPhone] = useState("");
+export function SmsLoginForm({
+  isLoading,
+  initialPhone = "",
+  onSendCaptcha,
+  onSubmit,
+}: SmsLoginFormProps) {
+  const [phone, setPhone] = useState(initialPhone);
   const [captcha, setCaptcha] = useState("");
   const [countdown, setCountdown] = useState(0);
   const { t } = useTranslation();
 
   const handleSendCaptcha = async () => {
-    if (!phone || countdown > 0) return;
+    if (!phone || isLoading || countdown > 0) return;
     const success = await onSendCaptcha(phone);
     if (success) {
       setCountdown(60);
@@ -48,7 +49,9 @@ export function SmsLoginForm({ isLoading, onSendCaptcha, onSubmit }: SmsLoginFor
         </Label>
         <Input
           id="phone-sms"
-          type="text"
+          type="tel"
+          autoComplete="tel"
+          disabled={isLoading || !!initialPhone}
           value={phone}
           onChange={(e) => setPhone(e.target.value)}
           placeholder={t("login.form.phonePlaceholder")}
@@ -63,6 +66,9 @@ export function SmsLoginForm({ isLoading, onSendCaptcha, onSubmit }: SmsLoginFor
           <Input
             id="captcha"
             type="text"
+            inputMode="numeric"
+            autoComplete="one-time-code"
+            disabled={isLoading}
             value={captcha}
             onChange={(e) => setCaptcha(e.target.value)}
             placeholder={t("login.form.captchaPlaceholder")}
@@ -72,7 +78,7 @@ export function SmsLoginForm({ isLoading, onSendCaptcha, onSubmit }: SmsLoginFor
             type="button"
             variant="outline"
             onClick={handleSendCaptcha}
-            disabled={countdown > 0}
+            disabled={isLoading || !phone.trim() || countdown > 0}
             className="h-10 shrink-0 rounded-md border-content/10 px-3 text-xs font-bold text-content transition-colors hover:bg-content/5 disabled:opacity-50"
           >
             {countdown > 0 ? `${countdown}s` : t("login.form.getCaptcha")}
