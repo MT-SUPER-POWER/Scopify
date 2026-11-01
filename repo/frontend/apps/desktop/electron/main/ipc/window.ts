@@ -1,4 +1,4 @@
-import { ipcMain, type BrowserWindow } from "electron";
+import { ipcMain, nativeTheme, type BrowserWindow } from "electron";
 import { ipcLog } from "@main/utils/logger";
 import { loginWindow } from "@main/window/login";
 import { MAIN_WINDOW_TITLE_BAR_HEIGHT } from "@main/window/mainWindow";
@@ -11,8 +11,11 @@ export function registerWindowIpc(mainWindow: BrowserWindow | null) {
     mainWindow?.reload();
   });
   ipcMain.on("update-titlebar-color", (_event, color: unknown) => {
-    // setTitleBarOverlay 仅 Windows / Linux 支持；macOS 红绿灯颜色由系统决定
-    if (typeof color !== "string" || process.platform === "darwin") return;
+    if (typeof color !== "string") return;
+    const isDark = color.toLowerCase() === "#ffffff" || color.toLowerCase() === "white";
+    nativeTheme.themeSource = isDark ? "dark" : "light";
+    // setTitleBarOverlay 仅 Windows / Linux 支持；macOS 红绿灯明暗外观由 nativeTheme 同步
+    if (process.platform === "darwin") return;
     mainWindow?.setTitleBarOverlay({
       color: "rgba(0,0,0,0)",
       height: MAIN_WINDOW_TITLE_BAR_HEIGHT,
