@@ -565,6 +565,9 @@ importers:
       idb-keyval:
         specifier: ^6.3.0
         version: 6.3.0
+      modern-screenshot:
+        specifier: 4.7.0
+        version: 4.7.0
       pinyin-pro:
         specifier: 3.26.0
         version: 3.26.0
@@ -8328,6 +8331,9 @@ packages:
     resolution: {integrity: sha512-VyCeUdGN3A9lmCTTgG4yuvY9ixxaDk+xt2R/7/+1AP6EqNG+G9OKkzBwhVtVYoNX8YsxNSgAl8mOv3IAeOpFbw==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
     hasBin: true
+
+  modern-screenshot@4.7.0:
+    resolution: {integrity: sha512-9YxN+ddPSMMlhylOv25VHzXrl9u67QRxoh7+SEewGtgUw7t6hHTrjptSDJUSne9oG4Xk/h2cwG15nIt4Hc9ujg==}
 
   motion-dom@12.43.0:
     resolution: {integrity: sha512-azKON4d9S65PEoFUiQTMTgPheEmzf2QngdRc50AKfJp9Q9mmcBVw22c8eMq9k8kxOFHdL7+WZY7N/5F/lwiDag==}
@@ -18982,6 +18988,8 @@ snapshots:
       yargs: 17.7.3
       yargs-parser: 21.1.1
       yargs-unparser: 2.0.0
+
+  modern-screenshot@4.7.0: {}
 
   motion-dom@12.43.0:
     dependencies:
