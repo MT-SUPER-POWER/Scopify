@@ -189,16 +189,16 @@ export function ListeningReportView() {
       <ListeningReportTopArtists summary={summary} />
       <ListeningReportTasteDistribution summary={summary} />
       <ListeningReportRecordWall selectedMonth={selectedMonth} summary={summary} />
-      {/* 底部大块总结横幅（Grand Finale Banner） */}
-      <ListeningReportGrandFinaleBanner footerSummary={footerSummary} />
 
+      {/* 今日实时收听轨迹（作为报告与当下连接的延续章节） */}
       {(period === "week" || (period === "month" && selectedMonth.isCurrent)) &&
       todaySongsQuery.data &&
       todaySongsQuery.data.length > 0 ? (
-        <div className="mx-auto mt-10 w-full max-w-360 px-5 sm:px-8 lg:px-12">
-          <ListeningReportTodayFeed songs={todaySongsQuery.data} />
-        </div>
+        <ListeningReportTodayFeed songs={todaySongsQuery.data} />
       ) : null}
+
+      {/* 底部仪式感尾声总结（Grand Finale Outro） */}
+      <ListeningReportGrandFinaleBanner footerSummary={footerSummary} />
     </div>
   ) : (
     <div className="flex h-screen w-full flex-col justify-center px-5 sm:px-8 lg:px-12">

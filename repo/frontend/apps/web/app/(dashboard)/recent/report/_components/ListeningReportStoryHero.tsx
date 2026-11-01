@@ -59,13 +59,20 @@ export function ListeningReportStoryHero({
       className="group/hero relative isolate flex h-screen min-h-screen w-full flex-col justify-center overflow-hidden bg-surface"
       data-testid="listening-report-story-hero"
     >
+      {/* 唱片封套质感纹理：仅在深色模式下以克制的透明度呈现，浅色模式隐藏以确保白底通透无脏斑 */}
       <img
         alt=""
         aria-hidden="true"
-        className="absolute inset-0 z-0 size-full object-cover opacity-80"
+        className="pointer-events-none absolute inset-0 z-0 hidden size-full object-cover opacity-35 select-none dark:block"
         decoding="async"
         loading="eager"
         src="/images/listening-report/album-sleeve-texture.png"
+      />
+
+      {/* 浅色模式专属环境光：柔和高雅的微光氛围 */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 z-0 bg-[radial-gradient(ellipse_75%_50%_at_12%_15%,var(--color-brand)/4%,transparent_75%)] select-none dark:hidden"
       />
 
       {showCoverCollage && covers.length > 0 ? (

@@ -22,10 +22,10 @@ export function ListeningReportHonor({
       <img
         alt=""
         aria-hidden="true"
-        className="pointer-events-none absolute top-1/2 left-1/2 w-72 max-w-none -translate-1/2 scale-y-75 opacity-95 mix-blend-screen drop-shadow-[0_0_14px_rgba(214,179,106,0.4)]"
+        className="pointer-events-none absolute top-1/2 left-1/2 w-72 max-w-none -translate-1/2 scale-y-75 opacity-95 mix-blend-normal drop-shadow-[0_2px_10px_rgba(214,179,106,0.25)] dark:mix-blend-screen dark:drop-shadow-[0_0_14px_rgba(214,179,106,0.4)]"
         src="/images/listening-report/honor-laurel.png"
       />
-      <div className="relative flex h-full flex-col items-center justify-center pt-1 text-center drop-shadow-[0_2px_8px_rgba(0,0,0,0.95)]">
+      <div className="relative flex h-full flex-col items-center justify-center pt-1 text-center drop-shadow-none dark:drop-shadow-[0_2px_8px_rgba(0,0,0,0.95)]">
         <div className="flex items-center justify-center gap-1.5 text-warning">
           <span className="h-px w-7 bg-linear-to-r from-transparent to-warning/80" />
           <IconTrophy className="size-3" stroke={2.25} />

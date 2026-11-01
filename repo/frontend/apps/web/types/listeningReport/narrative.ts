@@ -24,5 +24,7 @@ export interface ListeningReportNarrative {
 export interface ListeningReportFooterSummary {
   brandingText: string;
   coverUrl: string | null;
+  periodLabel?: string;
   quote: string;
+  subQuote?: string;
 }

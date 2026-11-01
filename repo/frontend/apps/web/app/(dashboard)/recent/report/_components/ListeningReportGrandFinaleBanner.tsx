@@ -22,11 +22,16 @@ export function ListeningReportGrandFinaleBanner({
 
         {/* 主文案与品牌标识 */}
         <div className="relative z-10 flex flex-col justify-center pl-[48%] sm:pl-[42%] lg:pl-[35%]">
-          <h3 className="max-w-3xl text-[24px] leading-snug font-black tracking-tight text-content">
+          <h3 className="max-w-3xl text-xl leading-snug font-black tracking-tight text-content sm:text-2xl lg:text-[26px]">
             {footerSummary.quote}
           </h3>
+          {footerSummary.subQuote ? (
+            <p className="mt-2.5 max-w-2xl text-xs leading-relaxed text-content-muted sm:text-sm">
+              {footerSummary.subQuote}
+            </p>
+          ) : null}
           <div className="mt-4 flex items-center gap-2.5 text-xs font-semibold text-content-muted sm:text-sm">
-            <ScopifyBrand withWordmark={false} iconClassName="size-5" />
+            <ScopifyBrand withWordmark={false} iconClassName="size-4.5" />
             <span>{footerSummary.brandingText}</span>
           </div>
         </div>
