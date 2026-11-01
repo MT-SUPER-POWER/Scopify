@@ -67,9 +67,27 @@ Web 业务组件  →  @scopify/ui/scopify  →  @scopify/ui/shadcn
 - 只有改了 DOM 结构、交互或无障碍行为，或者样式无法用 token 表达时，才把原生组件复制到 `scopify/components/` 再扩展。扩展起一个体现产品概念的名字（如 `PlaybackButton`），不要覆盖原生名字（`Button`）。
 - 一个无业务逻辑的特有组件只有一个页面在用时，留在那个页面的 `_components/`，第二个页面需要共用且可抽象为最小案例时再升级到 `scopify/`。
 - 只改颜色、圆角、间距这类 token 能表达的值，改主题 token，不要复制组件。
-- 样式沉淀到共享的 `scopify/theme.css` 必须是多个扩展都需要的产品语义；只有一处用的布局样式留在调用处。
+- 样式写在哪里见下一节「样式归属」。
 
 细则见 [ui-package-boundaries](../../ui-package-boundaries/SKILL.md)。
+
+## 样式归属
+
+项目用 Tailwind CSS v4，**不新建 `*.module.css`**。样式按下面三层归属，从上往下选，能停在哪层就停在哪层：
+
+| 层 | 写在哪 | 适用 |
+| --- | --- | --- |
+| 1. 组件内 Tailwind | 组件的 `className`，颜色、圆角、间距用主题 token（如 `text-content-muted`、`border-border`） | 默认选择。布局、排版、状态样式，绝大多数场景 |
+| 2. 共享 `@utility` | `packages/ui/styles/<能力>.css`，由 `theme.css` 聚合导入 | 两处及以上会复用、与业务无关的视觉能力，如撕边、票据缺口、齿孔、滚动条、动画 |
+| 3. 组件内一次性复杂样式 | 组件内的 Tailwind 任意值（`[mask:…]`、`max-[650px]:`），或 TS 文件里的样式常量 / CSS 变量 | Tailwind 原子类表达不了、且只有一处用的效果，如长 `clip-path` 多边形、3D 卷曲、可视化特效 |
+
+规则：
+
+- 第 1 层能写的不要抽到第 2 层；不要为了「整齐」把一次性样式搬进全局文件，全局文件只放被复用的能力。
+- 第 2 层按能力命名，不按业务命名：写 `torn-edge-y`、`ticket-notch`、`scrollbar-none`，不写 `receipt-edge`、`vip-ticket`。文件按能力分组（`paper.css`、`scrollbar.css`、`animations.css`），动画用 `@theme` 的 `--animate-*` 注册成 `animate-*` 类。
+- 第 2 层是原子 utility，不承载组件结构；不依赖路由、store、i18n，不引用 Web 应用 `public/` 下的资源。
+- 第 3 层的效果出现第二个使用方、且能抽象成与业务无关的能力时，再升级到第 2 层。
+- 主题 token（颜色、圆角、阴影等设计变量）仍归 `shadcn/theme.css` 与 `scopify/theme.css`，不放进 `styles/`。
 
 ## 拆分的标准
 

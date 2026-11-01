@@ -92,8 +92,9 @@ the distinction is non-obvious.
   Radix/accessibility semantics unless the requirement explicitly changes
   them. Note the source primitive in a short file comment when the copied
   origin is not obvious.
-- Promote a style to shared `scopify/theme.css` only when multiple extensions
-  need the same product semantic. Keep one-off layout styling at the caller.
+- Promote a token to shared `scopify/theme.css` only when multiple extensions
+  need the same product semantic. Where other styles belong is decided by
+  [Style Placement](#style-placement).
 
 ## Theme Boundary
 
@@ -108,6 +109,37 @@ the distinction is non-obvious.
 - Theme changes should first be expressed as tokens. Do not fork a native
   component only to change a color, radius, spacing, or other token-backed
   visual value.
+
+## Style Placement
+
+The project uses Tailwind CSS v4. Do not add new `*.module.css` files. Pick the
+first tier that can express the style:
+
+1. **Component Tailwind (default).** Write layout, typography and state styles
+   as `className` utilities on the component, using theme tokens for color,
+   radius and spacing.
+2. **Shared `@utility` in `packages/ui/styles/`.** Visual capabilities that are
+   reused in two or more places and carry no business meaning, such as torn
+   edges, ticket notches, perforations, scrollbars and animations. Group files
+   by capability (`paper.css`, `scrollbar.css`, `animations.css`), aggregate them
+   through `theme.css`, and register animations as `--animate-*` in `@theme`.
+3. **One-off complex styles stay in the component.** Effects Tailwind utilities
+   cannot express and only one component uses (long `clip-path` polygons, 3D
+   curls, visualizer effects) are written as Tailwind arbitrary values or as a
+   style constant / CSS variable in the component's TS file.
+
+Rules:
+
+- Do not move tier-1 or tier-3 styles into a global file just for tidiness;
+  `styles/` only holds reused capabilities.
+- Name tier-2 utilities after the capability, not the feature: `torn-edge-y`,
+  `ticket-notch`, `scrollbar-none`, not `receipt-edge` or `vip-ticket`.
+- Tier-2 utilities are atomic: no component structure, no dependency on routes,
+  stores or i18n, and no references to assets under an app's `public/`.
+- Promote a tier-3 effect to tier 2 once a second consumer needs it and it can
+  be stated without business meaning.
+- Design tokens stay in `shadcn/theme.css` and `scopify/theme.css`, not in
+  `styles/`.
 
 ## Change Checklist
 
