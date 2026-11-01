@@ -2,7 +2,6 @@
 
 import dynamic from "next/dynamic";
 import { memo } from "react";
-import styles from "./VipSignTicket.module.css";
 
 const PaperTexture = dynamic(
   () => import("@paper-design/shaders-react").then((module) => module.PaperTexture),
@@ -15,7 +14,10 @@ const TICKET_PAPER_BACK_COLOR = "\x23eee2c9";
 /** Generated cotton-paper scan remains visible while the static shader loads. */
 export const TicketPaper = memo(function TicketPaper() {
   return (
-    <div aria-hidden="true" className={styles.paper}>
+    <div
+      aria-hidden="true"
+      className="pointer-events-none absolute inset-0 -z-1 bg-[#f7efdf] bg-[url(/images/vip-sign/concert-paper.png)] bg-cover bg-center *:opacity-50"
+    >
       <PaperTexture
         width="100%"
         height="100%"

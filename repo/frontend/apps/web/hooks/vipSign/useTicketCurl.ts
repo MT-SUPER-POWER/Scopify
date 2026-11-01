@@ -2,9 +2,13 @@
 
 import { useEffect, useRef } from "react";
 import type { TicketCurlProps } from "@/types/vipSign/components";
-import styles from "@/components/VipSign/VipSignTicket.module.css";
 
 const STRIPS = 48;
+
+const STRIP_CLASS = "absolute top-0 left-0 w-full origin-center transform-3d";
+const FACE_CLASS =
+  "absolute inset-0 overflow-hidden backface-hidden after:pointer-events-none after:absolute after:inset-0 after:bg-black after:opacity-[var(--curl-shade,0)]";
+const BACK_CLASS = `${FACE_CLASS} rotate-x-180 bg-[#eee1c8] bg-[url(/images/vip-sign/concert-paper.png)] bg-size-[360px_auto] bg-center shadow-[inset_0_0_1px_#79644230]`;
 
 /** Cylindrical paper bend: the untouched rows stay attached below the tear front. */
 export function useTicketCurl({ source, progress, direction }: TicketCurlProps) {
@@ -48,10 +52,10 @@ export function useTicketCurl({ source, progress, direction }: TicketCurlProps) 
       const fragment = document.createDocumentFragment();
       strips = Array.from({ length: STRIPS }, (_, index) => {
         const strip = document.createElement("div");
-        strip.className = styles.curlStrip;
+        strip.className = STRIP_CLASS;
         strip.style.height = `${height / STRIPS + 0.5}px`;
         const face = document.createElement("div");
-        face.className = styles.curlFront;
+        face.className = FACE_CLASS;
         const clone = paper.cloneNode(true) as HTMLDivElement;
         clone.style.cssText = `position:absolute;width:${width}px;height:${height}px;top:${(-index * height) / STRIPS}px;opacity:1;pointer-events:none`;
         clone.querySelectorAll("canvas, [id]").forEach((node) => {
@@ -60,7 +64,7 @@ export function useTicketCurl({ source, progress, direction }: TicketCurlProps) 
         });
         face.append(clone);
         const back = document.createElement("div");
-        back.className = styles.curlBack;
+        back.className = BACK_CLASS;
         back.style.backgroundPosition = `center ${(-index * height) / STRIPS}px`;
         strip.append(face, back);
         fragment.append(strip);
