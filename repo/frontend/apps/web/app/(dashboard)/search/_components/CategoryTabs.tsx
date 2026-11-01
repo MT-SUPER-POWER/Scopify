@@ -38,7 +38,7 @@ export function CategoryTabs() {
   return (
     <div
       onWheel={handleWheel}
-      className="scrollbar-custom-h mb-8 flex items-center gap-2 overflow-x-auto pb-2"
+      className="mb-8 scrollbar-custom flex items-center gap-2 overflow-x-auto pb-2"
     >
       {CATEGORIES.map((cat) => (
         <button

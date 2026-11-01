@@ -1,0 +1,48 @@
+/* Seamless marquees: the track holds its items twice, so shifting by half loops cleanly. */
+@theme {
+  --animate-marquee-left: marquee-left 42s linear infinite;
+  --animate-marquee-right: marquee-right 48s linear infinite;
+  --animate-marquee-up: marquee-up 28s linear infinite;
+  --animate-marquee-down: marquee-down 32s linear infinite;
+
+  @keyframes marquee-left {
+    from {
+      transform: translate3d(0, 0, 0);
+    }
+    to {
+      transform: translate3d(-50%, 0, 0);
+    }
+  }
+
+  @keyframes marquee-right {
+    from {
+      transform: translate3d(-50%, 0, 0);
+    }
+    to {
+      transform: translate3d(0, 0, 0);
+    }
+  }
+
+  @keyframes marquee-up {
+    from {
+      transform: translate3d(0, 0, 0);
+    }
+    to {
+      transform: translate3d(0, -50%, 0);
+    }
+  }
+
+  @keyframes marquee-down {
+    from {
+      transform: translate3d(0, -50%, 0);
+    }
+    to {
+      transform: translate3d(0, 0, 0);
+    }
+  }
+}
+
+/* Pause any running animation while hovered, e.g. `animate-marquee-left hover:animation-paused`. */
+@utility animation-paused {
+  animation-play-state: paused;
+}

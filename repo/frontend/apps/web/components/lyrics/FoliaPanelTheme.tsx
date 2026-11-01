@@ -75,7 +75,7 @@ export function FoliaPanelTheme({ onOpenThemeLibrary }: FoliaPanelThemeProps) {
         ) : null}
         <div
           ref={carousel.ref}
-          className="hide-scrollbar flex min-w-0 flex-1 gap-3 overflow-x-auto overscroll-x-contain p-1"
+          className="scrollbar-none flex min-w-0 flex-1 gap-3 overflow-x-auto overscroll-x-contain p-1"
         >
           {themes.map((item) => (
             <button

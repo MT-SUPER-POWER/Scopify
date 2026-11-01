@@ -21,7 +21,7 @@ export function NotificationToolbar(props: NotificationToolbarProps) {
         <div
           role="group"
           aria-label={t("notifications.title")}
-          className="hide-scrollbar flex min-w-0 flex-1 overflow-x-auto"
+          className="scrollbar-none flex min-w-0 flex-1 overflow-x-auto"
         >
           {filters.map((filter) => (
             <button

@@ -44,7 +44,7 @@ export function ListeningReportHeroPosterMural({ covers }: ListeningReportHeroPo
         <div className="grid grid-cols-3 gap-0 lg:grid-cols-4">
           {/* 第 1 列：从上往下缓慢滚动 */}
           <div
-            className="animate-marquee-down flex flex-col gap-0"
+            className="flex h-max animate-marquee-down flex-col gap-0 will-change-transform hover:animation-paused"
             style={{ animationDuration: "50s" }}
           >
             {columns[0]?.map((url, i) => (
@@ -67,7 +67,7 @@ export function ListeningReportHeroPosterMural({ covers }: ListeningReportHeroPo
 
           {/* 第 2 列：从下往上缓慢滚动 */}
           <div
-            className="animate-marquee-up flex flex-col gap-0"
+            className="flex h-max animate-marquee-up flex-col gap-0 will-change-transform hover:animation-paused"
             style={{ animationDuration: "58s" }}
           >
             {columns[1]?.map((url, i) => (
@@ -90,7 +90,7 @@ export function ListeningReportHeroPosterMural({ covers }: ListeningReportHeroPo
 
           {/* 第 3 列：从上往下缓慢滚动 */}
           <div
-            className="animate-marquee-down flex flex-col gap-0"
+            className="flex h-max animate-marquee-down flex-col gap-0 will-change-transform hover:animation-paused"
             style={{ animationDuration: "44s" }}
           >
             {columns[2]?.map((url, i) => (
@@ -113,7 +113,7 @@ export function ListeningReportHeroPosterMural({ covers }: ListeningReportHeroPo
 
           {/* 第 4 列：从下往上缓慢滚动 */}
           <div
-            className="animate-marquee-up hidden flex-col gap-0 lg:flex"
+            className="hidden h-max animate-marquee-up flex-col gap-0 will-change-transform hover:animation-paused lg:flex"
             style={{ animationDuration: "52s" }}
           >
             {columns[3]?.map((url, i) => (

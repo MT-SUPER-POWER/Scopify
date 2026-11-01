@@ -71,7 +71,7 @@ export function ListeningReportRecordWall({
           <div className="flex flex-col gap-3 sm:gap-4">
             {/* 第 1 行：向左平滑循环滚动 */}
             <div
-              className="animate-marquee-left flex gap-3 sm:gap-4"
+              className="flex w-max animate-marquee-left gap-3 will-change-transform hover:animation-paused sm:gap-4"
               style={{ animationDuration: "48s" }}
             >
               {rows[0]?.map((url, index) => (
@@ -92,7 +92,7 @@ export function ListeningReportRecordWall({
 
             {/* 第 2 行：向右平滑循环滚动（上下错位流向） */}
             <div
-              className="animate-marquee-right flex gap-3 sm:gap-4"
+              className="flex w-max animate-marquee-right gap-3 will-change-transform hover:animation-paused sm:gap-4"
               style={{ animationDuration: "54s" }}
             >
               {rows[1]?.map((url, index) => (

@@ -137,7 +137,7 @@ export function CommentComposer({
                 onOpenAutoFocus={(event) => event.preventDefault()}
                 onCloseAutoFocus={(event) => event.preventDefault()}
               >
-                <div className="scrollbar-hide grid max-h-55 grid-cols-8 gap-2 overflow-y-auto">
+                <div className="scrollbar-none grid max-h-55 grid-cols-8 gap-2 overflow-y-auto">
                   {Object.entries(emojiData).map(([name, url]) => (
                     <button
                       key={name}

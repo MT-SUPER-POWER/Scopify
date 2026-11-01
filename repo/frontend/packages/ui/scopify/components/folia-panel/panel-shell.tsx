@@ -138,7 +138,7 @@ function FoliaPanelSurface({
       exit={{ ...away, transition: kitTransition("move", reduced) }}
       data-still={isStill || undefined}
       onClick={(event) => event.stopPropagation()}
-      className="st-window hide-scrollbar @container pointer-events-auto relative flex w-[360px] max-w-[calc(100vw-2rem)] flex-col overflow-x-hidden overflow-y-auto rounded-[20px] bg-[var(--pn-glass)] text-[color:var(--st-t1)] shadow-[var(--pn-shadow)] backdrop-blur-[40px] backdrop-saturate-[1.3] [&[data-still]_*]:transition-none"
+      className="st-window scrollbar-none @container pointer-events-auto relative flex w-[360px] max-w-[calc(100vw-2rem)] flex-col overflow-x-hidden overflow-y-auto rounded-[20px] bg-[var(--pn-glass)] text-[color:var(--st-t1)] shadow-[var(--pn-shadow)] backdrop-blur-[40px] backdrop-saturate-[1.3] [&[data-still]_*]:transition-none"
       style={
         {
           ...panelTokens(isDaylight, colors, reduced),
