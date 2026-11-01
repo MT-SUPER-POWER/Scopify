@@ -1,5 +1,6 @@
 "use client";
 
+import { cn } from "@/lib/utils";
 import {
   ArrowUpRight,
   Heart,
@@ -20,7 +21,9 @@ import { useTranslation } from "react-i18next";
 import { isPersonalFmPlaybackSource } from "@/constants/personalFm";
 import type { LatticePlaybackControlsProps } from "@/types/playlist/latticeComponents";
 import { LatticeProgress } from "./LatticeProgress";
-import styles from "./LatticeControls.module.css";
+
+const transportButton =
+  "grid size-12 shrink-0 cursor-pointer place-items-center rounded-full opacity-72 transition-[opacity,background-color] duration-200 focus-visible:bg-white/10 focus-visible:opacity-100 focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-white enabled:hover:bg-white/10 enabled:hover:opacity-100 disabled:cursor-default disabled:opacity-25 aria-pressed:text-primary aria-pressed:opacity-100 [&_svg]:size-[25px]";
 
 export function LatticePlaybackControls({
   track,
@@ -45,19 +48,28 @@ export function LatticePlaybackControls({
       .setRepeatMode(repeatMode === "off" ? "all" : repeatMode === "all" ? "one" : "off");
   };
   return (
-    <div className={styles.chrome} data-lattice-controls="" data-revealed={revealed}>
-      <div className={styles.transport}>
+    <div
+      className="group/chrome absolute inset-x-10 bottom-8 z-2 cursor-auto text-white motion-reduce:**:transition-none"
+      data-lattice-controls=""
+      data-revealed={revealed}
+    >
+      <div className="flex items-center gap-4">
         <button
           type="button"
-          className={styles.play}
+          className={cn(transportButton, "size-14 opacity-100 [&_svg]:size-[34px]")}
           aria-label={`${t(playing ? "ui.pause" : "ui.play")} ${track.name}`}
           onClick={() => onPlay(track)}
         >
           {playing ? <Pause fill="currentColor" /> : <Play fill="currentColor" />}
         </button>
-        <div className={styles.details} inert={!revealed} aria-hidden={!revealed}>
+        <div
+          className="flex translate-y-1 items-center gap-1 opacity-0 transition-[opacity,translate] duration-200 group-data-[revealed=true]/chrome:translate-y-0 group-data-[revealed=true]/chrome:opacity-100"
+          inert={!revealed}
+          aria-hidden={!revealed}
+        >
           <button
             type="button"
+            className={transportButton}
             disabled={!canControl || (personalFm && historyIndex <= 0)}
             aria-label={t("ui.previous")}
             title={t("ui.previous")}
@@ -67,6 +79,7 @@ export function LatticePlaybackControls({
           </button>
           <button
             type="button"
+            className={transportButton}
             disabled={!canControl}
             aria-label={t("ui.like")}
             aria-pressed={current && playback.liked}
@@ -78,6 +91,7 @@ export function LatticePlaybackControls({
           {!personalFm && (
             <button
               type="button"
+              className={transportButton}
               disabled={!canControl}
               aria-label={t(
                 repeatMode === "one"
@@ -95,6 +109,7 @@ export function LatticePlaybackControls({
           {!personalFm && (
             <button
               type="button"
+              className={transportButton}
               disabled={!canControl}
               aria-label={t(shuffle ? "ui.shuffleOn" : "ui.shuffleOff")}
               aria-pressed={shuffle}
@@ -105,6 +120,7 @@ export function LatticePlaybackControls({
           )}
           <button
             type="button"
+            className={transportButton}
             disabled={!canControl}
             aria-label={t("ui.next")}
             title={t("ui.next")}
@@ -115,7 +131,7 @@ export function LatticePlaybackControls({
         </div>
         <button
           type="button"
-          className={styles.open}
+          className={cn(transportButton, "ml-auto")}
           disabled={!current}
           aria-label={t("ui.showLyrics")}
           title={t("ui.showLyrics")}

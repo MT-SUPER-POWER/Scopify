@@ -1,3 +1,18 @@
+/* Bouncing bars of a "now playing" equalizer; stagger bars with animation-delay. */
+@theme {
+  --animate-equalizer: equalizer 0.8s ease-in-out infinite;
+
+  @keyframes equalizer {
+    0%,
+    100% {
+      transform: scaleY(0.4);
+    }
+    50% {
+      transform: scaleY(1);
+    }
+  }
+}
+
 /* Seamless marquees: the track holds its items twice, so shifting by half loops cleanly. */
 @theme {
   --animate-marquee-left: marquee-left 42s linear infinite;
