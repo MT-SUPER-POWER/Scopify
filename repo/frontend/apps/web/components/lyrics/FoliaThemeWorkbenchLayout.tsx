@@ -63,7 +63,7 @@ export function FoliaThemeWorkbenchLayout({
 
   if (!isDesktopLayout) {
     return (
-      <div className="scrollbar-overlay grid h-full min-h-0 gap-4 overflow-y-auto">
+      <div className="scrollbar-thin grid h-full min-h-0 scrollbar-thumb-white/18 gap-4 overflow-y-auto">
         <div className="min-h-52">{library}</div>
         {editor}
       </div>

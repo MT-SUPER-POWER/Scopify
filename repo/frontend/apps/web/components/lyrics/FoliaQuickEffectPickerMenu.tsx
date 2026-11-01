@@ -43,7 +43,7 @@ export function FoliaQuickEffectPickerMenu<Value extends string>({
           }}
         >
           <div
-            className="scrollbar-overlay overflow-y-auto p-1.5"
+            className="scrollbar-thin scrollbar-thumb-white/18 overflow-y-auto p-1.5"
             style={{
               ["--scrollbar-thumb-color" as string]: isDaylight
                 ? "rgba(0, 0, 0, 0.16)"

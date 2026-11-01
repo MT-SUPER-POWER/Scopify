@@ -23,7 +23,7 @@ export function SongPlaylistMenuItems({ actions, model }: SongContextMenuSection
           <PlusCircle className="mr-4 size-4" />
           {isMulti ? `添加所选 (${targetSongs.length} 首) 到歌单` : t("contextMenu.addToPlaylist")}
         </ContextMenuSubTrigger>
-        <ContextMenuSubContent className="scrollbar-custom z-9999 max-h-72 max-w-80 overflow-y-auto">
+        <ContextMenuSubContent className="z-9999 scrollbar-thin max-h-72 max-w-80 overflow-y-auto">
           {filteredPlaylists.length === 0 && (
             <ContextMenuItem disabled>{t("song.similar.noPlaylists")}</ContextMenuItem>
           )}

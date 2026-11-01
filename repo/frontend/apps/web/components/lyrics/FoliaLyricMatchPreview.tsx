@@ -31,7 +31,7 @@ export function FoliaLyricMatchPreview({
 
   return (
     <section className="flex min-h-0 flex-col items-center justify-between overflow-hidden border-l border-white/10 p-6 text-center">
-      <div className="scrollbar-overlay flex min-h-0 w-full flex-1 flex-col items-center overflow-y-auto pr-1">
+      <div className="scrollbar-thin flex min-h-0 w-full flex-1 scrollbar-thumb-white/18 flex-col items-center overflow-y-auto pr-1">
         <div className="flex size-32 min-h-16 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-zinc-800 shadow-md">
           {coverUrl ? (
             <img alt="" className="size-full object-cover" src={coverUrl} />

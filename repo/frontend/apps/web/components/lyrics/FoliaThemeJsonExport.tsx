@@ -25,7 +25,7 @@ export function FoliaThemeJsonExport({
       </span>
 
       <div
-        className="scrollbar-overlay max-h-36 overflow-y-auto rounded-xl border p-2.5"
+        className="scrollbar-thin max-h-36 scrollbar-thumb-white/18 overflow-y-auto rounded-xl border p-2.5"
         style={{
           backgroundColor: colorWithAlpha(colors.backgroundColor, 0.72),
           borderColor: colorWithAlpha(colors.primaryColor, 0.1),

@@ -72,7 +72,7 @@ export function FoliaLyricMatchSearch({
         </form>
       </div>
 
-      <div className="scrollbar-overlay min-h-0 flex-1 overflow-y-auto px-4 pb-4">
+      <div className="scrollbar-thin min-h-0 flex-1 scrollbar-thumb-white/18 overflow-y-auto px-4 pb-4">
         <div className="space-y-1.5">
           <FoliaLyricMatchResults
             candidates={candidates}
