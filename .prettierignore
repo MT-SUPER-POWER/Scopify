@@ -40,7 +40,6 @@ repo/frontend/packages/ui/shadcn/**
 .gemini/
 .opencode/
 .superpowers/
-skills/
 
 # Mermaid sources (Markdown and MDX are formatted; tables stay compact via
 # prettier-plugin-markdown-compact-tables)
