@@ -14,8 +14,8 @@ import { useTranslation } from "react-i18next";
 import { useI18nStore } from "@/store/module/i18n";
 import type { LoginDeviceDetailsProps } from "@/types/devices/components";
 import { DeviceIllustration } from "./DeviceIllustration";
-import styles from "./LoginDevices.module.css";
 
+const detailRowClass = "flex justify-between gap-5 border-b border-border py-4 text-[13px]";
 export function LoginDeviceDetails({ device, onClose, onAction }: LoginDeviceDetailsProps) {
   const { t } = useTranslation(),
     locale = useI18nStore((state) => state.locale);
@@ -43,17 +43,17 @@ export function LoginDeviceDetails({ device, onClose, onAction }: LoginDeviceDet
         </SheetClose>
         {device && (
           <div className="flex flex-1 flex-col px-7 pb-8">
-            <div className={styles.detailStage}>
+            <div className="my-3.5 flex h-60 justify-center rounded-[14px] bg-[url(/images/devices/studio.png)] bg-cover bg-center [&>[data-asset]]:w-60">
               <DeviceIllustration kind={device.kind} tone={device.tone} />
             </div>
             <h2 className="mt-3 text-2xl font-semibold tracking-tight">{device.name}</h2>
             {device.current && <p className="mt-2 text-sm text-brand">{t("devices.current")}</p>}
-            <dl className={styles.detailList}>
-              <div>
+            <dl className="mt-[26px] [&_dd]:text-right [&_dt]:text-muted-foreground">
+              <div className={detailRowClass}>
                 <dt>{t("devices.platform")}</dt>
                 <dd>{device.platform}</dd>
               </div>
-              <div>
+              <div className={detailRowClass}>
                 <dt>{t("devices.lastActive")}</dt>
                 <dd>
                   {device.lastActiveTime
@@ -61,11 +61,11 @@ export function LoginDeviceDetails({ device, onClose, onAction }: LoginDeviceDet
                     : t("devices.unknown")}
                 </dd>
               </div>
-              <div>
+              <div className={detailRowClass}>
                 <dt>{t("devices.region")}</dt>
                 <dd>{device.region}</dd>
               </div>
-              <div>
+              <div className={detailRowClass}>
                 <dt>{t("devices.loginMethod")}</dt>
                 <dd>{device.loginMethod}</dd>
               </div>

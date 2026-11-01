@@ -1,6 +1,5 @@
 import Image from "next/image";
 import type { DeviceIllustrationProps } from "@/types/devices/components";
-import styles from "./LoginDevices.module.css";
 
 export function DeviceIllustration({ kind, tone, hero = false }: DeviceIllustrationProps) {
   const asset =
@@ -12,7 +11,7 @@ export function DeviceIllustration({ kind, tone, hero = false }: DeviceIllustrat
           ? "monitor"
           : "tower";
   return (
-    <div className={styles.illustration} data-asset={asset} aria-hidden="true">
+    <div className="relative aspect-square w-full" data-asset={asset} aria-hidden="true">
       <Image
         src={`/images/devices/${asset}.png`}
         alt=""
@@ -20,6 +19,7 @@ export function DeviceIllustration({ kind, tone, hero = false }: DeviceIllustrat
         height={1024}
         sizes={hero ? "(max-width: 700px) 180px, 360px" : "(max-width: 700px) 120px, 240px"}
         priority={hero}
+        className="size-full object-contain"
       />
     </div>
   );

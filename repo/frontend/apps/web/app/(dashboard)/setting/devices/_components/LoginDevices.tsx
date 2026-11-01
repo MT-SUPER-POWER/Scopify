@@ -8,7 +8,12 @@ import { runtime } from "@/lib/runtime";
 import { useSmartRouter } from "@/hooks/core/useSmartRouter";
 import { LoginDevicesHeader } from "./LoginDevicesHeader";
 import { LoginDevicesContent } from "./LoginDevicesContent";
-import styles from "./LoginDevices.module.css";
+// 页面根是容器查询的参照；按钮焦点环沿用整页统一的描边样式
+const pageClass =
+  "@container mx-auto max-w-[1440px] px-[34px] py-8 text-foreground max-[700px]:px-[18px] max-[700px]:pt-6 max-[700px]:pb-7 [&_button:focus-visible]:rounded-[5px] [&_button:focus-visible]:outline-2 [&_button:focus-visible]:outline-offset-4 [&_button:focus-visible]:outline-ring [&_button:focus-visible]:outline-solid";
+const pageStateClass =
+  "flex flex-col items-center gap-5 px-5 py-[72px] text-center text-muted-foreground";
+const pageStateTitleClass = "text-[20px] font-semibold text-foreground";
 export function LoginDevices() {
   const query = useLoginDevices();
   const { t } = useTranslation();
@@ -16,7 +21,7 @@ export function LoginDevices() {
   const login = () =>
     openLoginWindowOrFallback(runtime.auth, () => router.push("/login?redirect=/setting/devices"));
   return (
-    <div className={styles.page}>
+    <div className={pageClass}>
       <LoginDevicesHeader
         allowance={query.data?.allowance ?? null}
         refreshing={query.isFetching}
@@ -24,18 +29,18 @@ export function LoginDevices() {
         authenticated={query.authenticated}
       />
       {!query.authenticated ? (
-        <div className={styles.pageState}>
-          <h2>{t("devices.loginRequired")}</h2>
+        <div className={pageStateClass}>
+          <h2 className={pageStateTitleClass}>{t("devices.loginRequired")}</h2>
           <Button onClick={login}>{t("devices.loginAction")}</Button>
         </div>
       ) : query.isPending ? (
-        <div className={styles.pageState} role="status" aria-live="polite">
-          <div className={styles.loadingStage} />
+        <div className={pageStateClass} role="status" aria-live="polite">
+          <div className="h-60 w-full rounded-[16px] bg-muted" />
           <p>{t("devices.loading")}</p>
         </div>
       ) : query.isError && !query.data ? (
-        <div className={styles.pageState} role="alert">
-          <h2>{t("devices.loadFailed")}</h2>
+        <div className={pageStateClass} role="alert">
+          <h2 className={pageStateTitleClass}>{t("devices.loadFailed")}</h2>
           <p>{query.error.message}</p>
           <Button onClick={() => void query.refetch()}>{t("devices.retry")}</Button>
           <Button variant="ghost" onClick={login}>
@@ -52,8 +57,8 @@ export function LoginDevices() {
           <LoginDevicesContent key={query.scope} snapshot={query.data} scope={query.scope} />
         </>
       ) : (
-        <div className={styles.pageState}>
-          <h2>{t("devices.emptyList")}</h2>
+        <div className={pageStateClass}>
+          <h2 className={pageStateTitleClass}>{t("devices.emptyList")}</h2>
           <p>{t("devices.emptyListHint")}</p>
         </div>
       )}
