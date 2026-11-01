@@ -227,7 +227,7 @@ const LyricsTimelineModal: React.FC<LyricsTimelineModalProps> = ({
               ref={scrollContainerRef}
               onScroll={handleScroll}
               onTouchMove={handleScroll}
-              className="flex-1 scrollbar-thin scrollbar-thumb-white/20 scrollbar-track-transparent overflow-x-hidden overflow-y-auto px-8"
+              className="scrollbar-thin flex-1 scrollbar-thumb-white/20 scrollbar-track-transparent overflow-x-hidden overflow-y-auto px-8"
               style={{
                 scrollbarWidth: "thin",
                 scrollbarColor: "rgba(255,255,255,0.2) transparent",

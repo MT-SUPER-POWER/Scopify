@@ -165,10 +165,7 @@ function SocialPostView({ event, onDeleted }: SocialPostViewProps) {
       <section className="flex min-h-0 w-110 flex-none flex-col group-data-[media=false]/post-modal:w-full max-[900px]:w-full max-[900px]:flex-1">
         <header className="flex items-center gap-3 px-6 pt-[22px] pb-3.5 text-[15px]">
           <SocialAvatar user={event.user} className="size-10 max-[768px]:size-10" />
-          <SocialAuthor
-            user={event.user}
-            className="min-w-0 flex-1 truncate font-medium"
-          />
+          <SocialAuthor user={event.user} className="min-w-0 flex-1 truncate font-medium" />
           <FollowButton
             user={event.user}
             className="min-h-[38px] min-w-22 rounded-full border border-primary bg-transparent px-5 py-0 text-[15px] font-semibold text-primary hover:bg-primary/12 aria-pressed:border-foreground/9 aria-pressed:text-muted-foreground"

@@ -40,10 +40,7 @@ export function ProfileSkeletonContent() {
           <div className={profileIdentityTextClass}>
             <div className={profileTitleRowClass}>
               <div
-                className={cn(
-                  "flex h-[1.1em] w-2/5 max-w-md items-center",
-                  profileNameSizeClass,
-                )}
+                className={cn("flex h-[1.1em] w-2/5 max-w-md items-center", profileNameSizeClass)}
               >
                 <Skeleton className={`${bar} h-[0.7em] w-full`} />
               </div>

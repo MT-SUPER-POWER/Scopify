@@ -40,9 +40,7 @@ export function LoginDevicesHeader({
           )}
         </div>
       </div>
-      <p className="leading-1.7 mt-3 text-[14px] text-muted-foreground">
-        {t("devices.subtitle")}
-      </p>
+      <p className="leading-1.7 mt-3 text-[14px] text-muted-foreground">{t("devices.subtitle")}</p>
     </header>
   );
 }

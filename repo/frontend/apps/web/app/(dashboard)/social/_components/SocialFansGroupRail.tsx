@@ -30,7 +30,7 @@ export function SocialFansGroupRail({
 
   return (
     <div
-      className="-mx-1 flex scrollbar-none items-center gap-2 overflow-x-auto [mask-image:linear-gradient(to_right,#000_calc(100%-32px),transparent)] px-1 pt-4 pb-3"
+      className="-mx-1 scrollbar-none flex items-center gap-2 overflow-x-auto [mask-image:linear-gradient(to_right,#000_calc(100%-32px),transparent)] px-1 pt-4 pb-3"
       role="tablist"
       aria-label={t("social.myFansGroups")}
     >

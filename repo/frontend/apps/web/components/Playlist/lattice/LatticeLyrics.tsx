@@ -71,9 +71,7 @@ export default function LatticeLyrics({ track }: LatticeLyricsProps) {
         </strong>
         <small
           className={
-            ready
-              ? "leading-1.35 truncate text-[14px] font-medium opacity-65"
-              : posterSubtitleClass
+            ready ? "leading-1.35 truncate text-[14px] font-medium opacity-65" : posterSubtitleClass
           }
           title={artist}
         >

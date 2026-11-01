@@ -14,10 +14,7 @@ export function LatticePosterArtwork({
   const size = expanded ? 800 : 500;
   return (
     <div className="absolute inset-0 size-full cursor-pointer border-0 p-0 text-left text-inherit">
-      <Disc3
-        className="absolute top-[24%] left-[24%] size-[52%] opacity-12"
-        aria-hidden="true"
-      />
+      <Disc3 className="absolute top-[24%] left-[24%] size-[52%] opacity-12" aria-hidden="true" />
       {cover && (
         <img
           src={getSizedImageUrl(cover, size)}
