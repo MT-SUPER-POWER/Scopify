@@ -43,6 +43,12 @@ export default {
       );
     }
 
+    // 3. ESLint --fix 会改写类名（如 leading-[1.7] → leading-1.7），行变短后需要 Prettier 重新排版，
+    //    否则 CI 的 format:check 会失败。
+    if (byWorkspace.size) {
+      commands.push(`prettier --write ${quote([...byWorkspace.values()].flat())}`);
+    }
+
     return commands;
   },
   // Markdown/MDX: tables are printed compactly by prettier-plugin-markdown-compact-tables,
