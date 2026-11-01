@@ -49,7 +49,9 @@ jobs:
         run: bun .github/scripts/apply-release.ts ${{ github.ref_name }} --changelog
 
       - name: Generate release notes from commits
-        run: pnpm exec git-cliff --latest --strip all --output release_notes.md
+        run: |
+          pnpm exec git-cliff --latest --strip all --output release_notes.md
+          bun .github/scripts/format-release-notes.ts ${{ github.ref_name }} release_notes.md
 
       - name: Upload release notes
         uses: actions/upload-artifact@v4

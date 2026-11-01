@@ -30,6 +30,29 @@
 
 支持网页端与客户端，由于设备有限，目前仅保证 `Windows` 和 `MacOS` 系统的适配，App 开发中。
 
+## 客户端下载与安装
+
+前往 [GitHub Releases](https://github.com/MT-SUPER-POWER/Scopify/releases) 获取适合当前系统的安装包：
+
+| 平台 | 架构 | 安装包格式 | 适用机型 |
+| :-- | :-- | :-- | :-- |
+| <img src="docs/img/platforms/apple.png" width="16" height="16" alt="macOS" /> **macOS** | Apple Silicon (`arm64`) | `.dmg` / `.zip` | Apple Silicon Mac（推荐） |
+| <img src="docs/img/platforms/apple.png" width="16" height="16" alt="macOS" /> **macOS** | Intel (`x64`) | `.dmg` / `.zip` | Intel 处理器 Mac |
+| <img src="docs/img/platforms/windows.png" width="16" height="16" alt="Windows" /> **Windows** | 64 位 (`x64`) | `.exe` | Intel / AMD 处理器（绝大多数用户推荐） |
+| <img src="docs/img/platforms/windows.png" width="16" height="16" alt="Windows" /> **Windows** | ARM64 | `.exe` | ARM 架构 Windows 设备 |
+
+> [!NOTE] **macOS 首次安装提示“对系统有害”或“已损坏”的处理方法：**
+>
+> Scopify 为个人开源项目，未向 Apple 购买付费商业开发者证书公证。从网络下载未公证的应用时，macOS Gatekeeper 安全机制会自动打上隔离标志并弹出警告，**这并非应用存在恶意行为或真正损坏**。
+>
+> 1. 打开下载的 `.dmg` 镜像，**务必先将 `Scopify.app` 拖入系统的「应用程序」（Applications）目录**（切勿直接在只读 DMG 中双击运行）；
+> 2. 打开系统自带的「终端」（Terminal），粘贴并运行以下命令解除隔离：
+>    ```bash
+>    sudo xattr -rd com.apple.quarantine /Applications/Scopify.app
+>    ```
+> 3. 输入开机密码后回车（输入时密码不显示字符），即可正常双击启动 Scopify。
+> 4. _(备选)_ 也可以在 Mac **「系统设置」→「隐私与安全性」→「安全性」** 中找到拦截提示，点击 **“仍要打开”**。
+
 ## 技术栈总览
 
 1. Next.js + React: 前端框架
