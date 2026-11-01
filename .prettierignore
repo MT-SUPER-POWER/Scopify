@@ -3,11 +3,22 @@ node_modules/
 .next/
 .next-dev/
 out/
+.tmp/
 dist/
 build/
 .turbo/
 coverage/
 .vercel/
+
+# native crates: build output and napi-generated bindings (ignored by each crate's own .gitignore,
+# which Prettier does not read; CI never sees them)
+repo/frontend/apps/desktop/native/**/target/
+repo/frontend/apps/desktop/native/*/index.js
+repo/frontend/apps/desktop/native/*/index.d.ts
+
+# generated or machine-local files that each package's .gitignore covers
+**/next-env.d.ts
+repo/frontend/apps/desktop/config/app.config.yml
 
 # isolated submodules & external apps
 repo/backend/
