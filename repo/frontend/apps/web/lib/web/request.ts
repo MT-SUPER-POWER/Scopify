@@ -87,6 +87,7 @@ function getNetworkConfig(): WebConfig["network"] {
 }
 
 function isNoLoginRequest(config?: ScopifyRequestConfig) {
+  if (config?.noLogin === true) return true;
   const params = config?.params as unknown;
   return isRecord(params) && params.noLogin === true;
 }
@@ -184,12 +185,15 @@ request.interceptors.request.use((config: InternalAxiosRequestConfig & ScopifyRe
       ? attachMusicSessionCredential(requestParams, credential)
       : requestParams;
 
-  config.params = {
-    ...sessionParams,
-    timestamp: Date.now(),
-    ...(runtime.isDesktop ? { os: "pc" } : { platform: "web" }),
-    randomCNIP: networkConfig.randomCNIP,
-  };
+  config.params =
+    config.includeDefaultParams === false
+      ? sessionParams
+      : {
+          ...sessionParams,
+          timestamp: Date.now(),
+          ...(runtime.isDesktop ? { os: "pc" } : { platform: "web" }),
+          randomCNIP: networkConfig.randomCNIP,
+        };
 
   return config;
 });

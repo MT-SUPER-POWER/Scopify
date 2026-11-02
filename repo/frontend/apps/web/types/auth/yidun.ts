@@ -15,10 +15,17 @@ export interface YidunResponse {
 export interface YidunLoginParams {
   sid: string;
   phone: string;
+  countrycode?: string;
+  ctcode?: string;
   password?: string;
   captcha?: string;
   sca?: string;
 }
+
+export type YidunSendParams = Pick<
+  YidunLoginParams,
+  "sid" | "phone" | "sca" | "countrycode" | "ctcode"
+>;
 
 export interface YidunInstance {
   destroy: () => void;

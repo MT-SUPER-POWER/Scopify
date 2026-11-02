@@ -32,6 +32,10 @@ export interface BackendPingFailure {
 export type BackendPingResult = BackendPingFailure | BackendPingSuccess;
 
 export interface ScopifyRequestConfig<D = unknown> extends AxiosRequestConfig<D> {
+  /** Do not attach an existing music session or expire it on authentication errors. */
+  noLogin?: boolean;
+  /** False keeps caller-supplied parameters without platform, timestamp or IP defaults. */
+  includeDefaultParams?: boolean;
   /** Operation context appended to the final transport failure event. */
   errorContext?: LogMetadata;
   /** Expected top-level business codes for endpoints that reply with HTTP 200 on failure. */
