@@ -22,6 +22,25 @@ function installSdk(initNECaptcha: InitNECaptcha) {
 }
 
 describe("Yidun verification lifecycle", () => {
+  test("uses the challenge captchaId and reports when the widget is ready", async () => {
+    let captchaId = "";
+    let ready = false;
+    installSdk((config, onReady) => {
+      captchaId = config.captchaId;
+      onReady({ destroy() {} });
+      config.onVerify(null, { validate: "challenge-token" });
+    });
+    const result = await verifyYidunSlider(host().element, "zh-CN", new AbortController().signal, {
+      captchaId: "73a18dc827b24b18ad0783701a75277d",
+      onReady: () => {
+        ready = true;
+      },
+    });
+    expect(result).toBe("challenge-token");
+    expect(captchaId).toBe("73a18dc827b24b18ad0783701a75277d");
+    expect(ready).toBe(true);
+  });
+
   test("an incorrect drag remains retryable, success resolves and destroys the widget", async () => {
     let options: Parameters<InitNECaptcha>[0] | undefined;
     let destroys = 0;

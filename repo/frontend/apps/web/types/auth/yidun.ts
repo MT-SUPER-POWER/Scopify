@@ -9,6 +9,12 @@ export interface YidunSession {
 export interface YidunResponse {
   code: number;
   msg?: string;
+  message?: string;
+  captchaId?: string;
+  body?: {
+    captchaId?: string;
+    message?: string;
+  };
   cookie?: string;
 }
 
@@ -26,6 +32,18 @@ export type YidunSendParams = Pick<
   YidunLoginParams,
   "sid" | "phone" | "sca" | "countrycode" | "ctcode"
 >;
+
+export interface YidunClientOptions {
+  signal: AbortSignal;
+  backend: string;
+  verifySlider: (signal: AbortSignal, challenge: YidunResponse) => Promise<string>;
+  onRetry?: () => void;
+}
+
+export interface YidunSliderOptions {
+  captchaId?: string;
+  onReady?: () => void;
+}
 
 export interface YidunInstance {
   destroy: () => void;
