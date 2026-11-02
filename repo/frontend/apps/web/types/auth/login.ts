@@ -1,6 +1,17 @@
 import type { ReactNode } from "react";
+import type { YidunSession, YidunVerification } from "@/types/auth/yidun";
 
-export type LoginMode = "password" | "sms" | "qr";
+export interface LoginVerificationDialogProps {
+  verification: YidunVerification | null;
+  onHostChange: (host: HTMLDivElement | null) => void;
+  onCancel: () => void;
+  smsSession: Pick<YidunSession, "sid" | "phone" | "countrycode"> | null;
+  isLoading: boolean;
+  onSendCaptcha: () => Promise<boolean>;
+  onSubmitCaptcha: (captcha: string) => Promise<void>;
+}
+
+export type LoginMode = "password" | "qr";
 
 export type QrStatus = "expired" | "loading" | "scanned" | "success" | "waiting";
 

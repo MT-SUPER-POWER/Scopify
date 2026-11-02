@@ -31,6 +31,7 @@
   "qr.toast.success": "Login successful",
   "required.toast": "Please log in to use this feature",
   "page.securityVerification": "Complete security verification",
+  "page.sliderVerificationDescription": "Drag the slider to complete the puzzle",
   "page.cancelVerification": "Cancel verification",
   "page.securityFailed": "Security verification failed. Please try again.",
   "page.pleaseSendCaptchaFirst": "Please request the verification code first",
@@ -40,5 +41,10 @@
   "countryCode.searchPlaceholder": "Search country, region or code...",
   "countryCode.noResults": "No matching country or region found",
   "countryCode.popular": "Popular",
-  "countryCode.all": "All"
+  "countryCode.all": "All",
+  "page.securityLoading": "Loading security verification…",
+  "page.securitySubmitting": "Verification passed. Continuing your request…",
+  "page.securityRetryHint": "Return to login and try security verification again.",
+  "page.securityBackToLogin": "Back to login",
+  "page.secondaryVerificationTitle": "SMS verification"
 }

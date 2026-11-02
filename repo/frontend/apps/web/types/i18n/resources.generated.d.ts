@@ -1354,9 +1354,15 @@ export default interface Resources {
     "page.loginFailed": "登录失败，请检查账号信息";
     "page.pleaseSendCaptchaFirst": "请先获取短信验证码";
     "page.secondaryVerification": "需要短信二次验证，请获取并输入验证码。";
+    "page.secondaryVerificationTitle": "短信二次验证";
+    "page.securityBackToLogin": "返回登录";
     "page.securityFailed": "安全验证失败，请重试";
+    "page.securityLoading": "正在加载安全验证…";
+    "page.securityRetryHint": "请返回登录后重试安全验证。";
+    "page.securitySubmitting": "验证已通过，正在继续提交…";
     "page.securityVerification": "请完成安全验证";
     "page.sendCaptchaFailed": "发送验证码失败";
+    "page.sliderVerificationDescription": "向右拖动滑块完成拼图";
     "page.tagline": "发现属于你的旋律";
     "qr.alt": "登录二维码";
     "qr.confirmOnPhone": "请在手机上确认";

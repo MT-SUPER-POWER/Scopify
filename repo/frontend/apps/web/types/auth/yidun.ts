@@ -3,7 +3,10 @@ import type { FreshLoginDevice } from "@/types/devices/model";
 export interface YidunSession {
   sid: string;
   phone: string;
+  countrycode?: string;
   device: FreshLoginDevice;
+  captchaSent?: boolean;
+  captchaSentAt?: number;
 }
 
 export interface YidunResponse {
@@ -38,6 +41,13 @@ export interface YidunClientOptions {
   backend: string;
   verifySlider: (signal: AbortSignal, challenge: YidunResponse) => Promise<string>;
   onRetry?: () => void;
+}
+
+export type YidunVerificationStage = "loading" | "ready" | "retrying" | "sms" | "failed";
+
+export interface YidunVerification {
+  stage: YidunVerificationStage;
+  message?: string;
 }
 
 export interface YidunSliderOptions {

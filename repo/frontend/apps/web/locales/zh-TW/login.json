@@ -31,6 +31,7 @@
   "qr.toast.success": "登入成功",
   "required.toast": "請先登入後使用此功能",
   "page.securityVerification": "請完成安全驗證",
+  "page.sliderVerificationDescription": "向右拖動滑塊完成拼圖",
   "page.cancelVerification": "取消驗證",
   "page.securityFailed": "安全驗證失敗，請重試",
   "page.pleaseSendCaptchaFirst": "請先取得簡訊驗證碼",
@@ -40,5 +41,10 @@
   "countryCode.searchPlaceholder": "搜尋國家/地區或代碼...",
   "countryCode.noResults": "未找到相符的國家或地區",
   "countryCode.popular": "常用",
-  "countryCode.all": "全部"
+  "countryCode.all": "全部",
+  "page.securityLoading": "正在載入安全驗證…",
+  "page.securitySubmitting": "驗證已通過，正在繼續提交…",
+  "page.securityRetryHint": "請返回登入後重試安全驗證。",
+  "page.securityBackToLogin": "返回登入",
+  "page.secondaryVerificationTitle": "簡訊二次驗證"
 }

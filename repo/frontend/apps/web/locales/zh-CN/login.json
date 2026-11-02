@@ -31,6 +31,7 @@
   "qr.toast.success": "登录成功",
   "required.toast": "请先登录后使用该功能",
   "page.securityVerification": "请完成安全验证",
+  "page.sliderVerificationDescription": "向右拖动滑块完成拼图",
   "page.cancelVerification": "取消验证",
   "page.securityFailed": "安全验证失败，请重试",
   "page.pleaseSendCaptchaFirst": "请先获取短信验证码",
@@ -40,5 +41,10 @@
   "countryCode.searchPlaceholder": "搜索国家/地区或代码...",
   "countryCode.noResults": "未找到匹配的国家或地区",
   "countryCode.popular": "常用",
-  "countryCode.all": "全部"
+  "countryCode.all": "全部",
+  "page.securityLoading": "正在加载安全验证…",
+  "page.securitySubmitting": "验证已通过，正在继续提交…",
+  "page.securityRetryHint": "请返回登录后重试安全验证。",
+  "page.securityBackToLogin": "返回登录",
+  "page.secondaryVerificationTitle": "短信二次验证"
 }
