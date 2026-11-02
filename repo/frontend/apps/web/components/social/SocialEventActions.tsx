@@ -12,13 +12,16 @@ import {
 import { useSocialShare } from "@/hooks/social/useSocialShare";
 import { useRequireLoginAction } from "@/hooks/auth/useRequireLoginAction";
 import { eventHref } from "@/lib/social/normalize";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+import { useI18nStore } from "@/store/module/i18n";
 import type { SocialEventActionsProps } from "@/types/social/components";
 import { SocialComposer } from "./SocialComposer";
-import s from "./Social.module.css";
+import { cn } from "@/lib/utils";
+import { socialActionClass, socialActionsClass, socialDialogClass } from "./socialClasses";
 
 export function SocialEventActions({ event, detail, liking, onLike }: SocialEventActionsProps) {
-  const { t, locale } = useI18n();
+  const { t } = useTranslation(),
+    locale = useI18nStore((state) => state.locale);
   const requireLogin = useRequireLoginAction();
   const copyLink = useSocialShare(event);
   const [forward, setForward] = useState(false);
@@ -27,11 +30,11 @@ export function SocialEventActions({ event, detail, liking, onLike }: SocialEven
   const href = eventHref(event);
   return (
     <>
-      <div className={s.actions}>
+      <div className={socialActionsClass}>
         <Link
           scroll={false}
           href={detail ? href + "#social-comments" : href}
-          className={s.action}
+          className={socialActionClass}
           aria-label={t("social.comments") + " " + event.comments}
           title={t("social.comments")}
         >
@@ -40,7 +43,7 @@ export function SocialEventActions({ event, detail, liking, onLike }: SocialEven
         </Link>
         <button
           type="button"
-          className={s.action}
+          className={socialActionClass}
           disabled={!event.user.id}
           aria-label={t("social.forward") + " " + event.forwards}
           title={t("social.forward")}
@@ -51,7 +54,7 @@ export function SocialEventActions({ event, detail, liking, onLike }: SocialEven
         </button>
         <button
           type="button"
-          className={s.action}
+          className={socialActionClass}
           data-active={event.liked}
           aria-pressed={event.liked}
           disabled={liking || !event.threadId}
@@ -70,7 +73,7 @@ export function SocialEventActions({ event, detail, liking, onLike }: SocialEven
         </button>
         <button
           type="button"
-          className={s.action}
+          className={socialActionClass}
           aria-label={t("social.share")}
           title={t("social.share")}
           onClick={() => void copyLink()}
@@ -79,7 +82,7 @@ export function SocialEventActions({ event, detail, liking, onLike }: SocialEven
         </button>
       </div>
       <Dialog open={forward} onOpenChange={setForward}>
-        <DialogContent className={s.dialog + " sm:max-w-2xl"}>
+        <DialogContent className={cn(socialDialogClass, "sm:max-w-2xl")}>
           <DialogTitle>{t("social.forward")}</DialogTitle>
           <DialogDescription className="sr-only">
             {t("social.forwardPlaceholder")}

@@ -6,7 +6,8 @@ import { useEffect } from "react";
 import { ShortcutHelpSection } from "@/components/shortcuts/ShortcutHelpSection";
 import { SHORTCUT_GROUP_LABEL_KEYS, SHORTCUT_GROUPS } from "@/constants/shortcuts";
 import { useShortcutRegistry } from "@/hooks/shortcuts/useShortcutRegistry";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import { useUiStore } from "@/store/module/ui";
 import type { ShortcutCommandId } from "@/types/shortcuts/model";
 import type { ShortcutHelpCommand } from "@/types/shortcuts/components";
@@ -19,7 +20,7 @@ const RECOMMENDED_COMMAND_IDS = [
 ] as const satisfies readonly ShortcutCommandId[];
 
 export function KeyboardShortcutHelp() {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const isOpen = useUiStore((state) => state.isShortcutHelpOpen);
   const setIsOpen = useUiStore((state) => state.setIsShortcutHelpOpen);
   const { commands } = useShortcutRegistry();

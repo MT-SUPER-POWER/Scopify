@@ -1,0 +1,20 @@
+{
+  "close": "Close",
+  "previous": "Previous",
+  "next": "Next",
+  "play": "Play",
+  "pause": "Pause",
+  "shuffleOn": "Shuffle: On",
+  "shuffleOff": "Shuffle: Off",
+  "repeatOff": "Repeat: Off",
+  "repeatAll": "Repeat: All",
+  "repeatOne": "Repeat: One",
+  "showLyrics": "Open lyrics",
+  "hideLyrics": "Close lyrics",
+  "fullscreen": "Enter fullscreen",
+  "exitFullscreen": "Exit fullscreen",
+  "unmute": "Unmute",
+  "like": "Like",
+  "volume": "Volume",
+  "backToHome": "Back to Home"
+}

@@ -23,12 +23,13 @@ import { usePlaybackCommands } from "@/hooks/player/usePlaybackCommands";
 import { requestDesktopPlaybackControllerThemeEditor } from "@/lib/desktopPlaybackWallpaper/controllerThemeEditor";
 import { runtime } from "@/lib/runtime";
 import { cn } from "@/lib/utils";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import { useLyricStageStore } from "@/store/module/lyrics";
 import type { DesktopPlaybackControllerTab } from "@/types/desktop/playbackWallpaper";
 
 export function DesktopPlaybackController() {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState<DesktopPlaybackControllerTab>("appearance");
   const [layout, setLayout] = useState<DesktopPlaybackControllerLayout>("compact");
   const [isLayoutPending, setIsLayoutPending] = useState(false);

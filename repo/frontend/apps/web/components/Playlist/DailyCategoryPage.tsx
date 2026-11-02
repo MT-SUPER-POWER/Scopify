@@ -10,13 +10,14 @@ import { QueryBoundary } from "@/components/shared/QueryBoundary";
 import { useDailyCategorySongs } from "@/hooks/playlist/useDailyCategoryRecommendations";
 import { useSmartRouter } from "@/hooks/core/useSmartRouter";
 import { useUserStore } from "@/store";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+import { useI18nStore } from "@/store/module/i18n";
 import { pruneSongDetail } from "@/types/song/api";
 import type { DailyCategoryPageBodyProps } from "@/types/playlist/components";
 
 export function DailyCategoryPage() {
   const accountId = useUserStore((state) => state.user?.userId);
-  const { t } = useI18n();
+  const { t } = useTranslation();
   return (
     <div className="relative bg-surface-raised">
       {accountId ? (
@@ -31,7 +32,8 @@ export function DailyCategoryPage() {
 }
 
 function DailyCategoryPageBody({ accountId }: DailyCategoryPageBodyProps) {
-  const { locale, t } = useI18n();
+  const { t } = useTranslation(),
+    locale = useI18nStore((state) => state.locale);
   const router = useSmartRouter();
   const dailyDate = useSearchParams().get("dailyDate");
   const dailyUrl = dailyDate

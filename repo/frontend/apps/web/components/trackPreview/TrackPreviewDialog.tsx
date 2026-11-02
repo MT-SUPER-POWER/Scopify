@@ -5,7 +5,8 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { TrackPreviewDetails } from "./TrackPreviewDetails";
 import { TrackPreviewControls } from "./TrackPreviewControls";
 import { TrackPreviewVideo } from "./TrackPreviewVideo";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { TrackPreviewDialogProps } from "@/types/player/trackPreviewComponents";
 import {
   Dialog,
@@ -30,7 +31,7 @@ export function TrackPreviewDialog({
   allTracks,
   playlistId,
 }: TrackPreviewDialogProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const [index, setIndex] = useState(0);
   const [direction, setDirection] = useState<1 | -1>(1);
   const [muted, setMuted] = useState(false);

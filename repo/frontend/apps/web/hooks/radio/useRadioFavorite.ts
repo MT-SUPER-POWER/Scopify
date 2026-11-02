@@ -7,7 +7,8 @@ import { subscribeRadio } from "@/lib/api/radio";
 import { useRequireLoginAction } from "@/hooks/auth/useRequireLoginAction";
 import { musicQueryKeys } from "@/lib/query/queryKeys";
 import { useUserStore } from "@/store";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { RadioSubscriptionVariables } from "@/types/radio/model";
 
 export function invalidateRadioFavoriteCaches(queryClient: QueryClient, userId: number) {
@@ -22,7 +23,7 @@ export function invalidateRadioFavoriteCaches(queryClient: QueryClient, userId: 
 }
 
 export function useRadioFavorite(initialFavorite = false) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const requireLoginAction = useRequireLoginAction();
   const queryClient = useQueryClient();
   const userId = useUserStore((state) => state.user?.userId);

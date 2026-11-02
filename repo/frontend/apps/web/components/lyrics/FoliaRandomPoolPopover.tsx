@@ -4,7 +4,8 @@ import { FoliaPopover } from "@scopify/ui/scopify/components/folia-panel/popover
 import { FoliaPictureChecks } from "@scopify/ui/scopify/components/folia-panel/picture-grid";
 import { FoliaPickerMoreButton } from "@scopify/ui/scopify/components/folia-panel/mode-stepper-row";
 import { drawPoolPicture } from "@/components/lyrics/FoliaPanelModePictures";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { FoliaRandomPoolPopoverProps } from "@/types/lyrics/components";
 
 export function FoliaRandomPoolPopover({
@@ -14,7 +15,7 @@ export function FoliaRandomPoolPopover({
   onOpenMore,
   pool,
 }: FoliaRandomPoolPopoverProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   return (
     <FoliaPopover
       anchorRef={anchorRef}

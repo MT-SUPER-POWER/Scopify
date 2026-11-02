@@ -6,7 +6,8 @@ import { useTheme } from "next-themes";
 import { Plus, Trash2 } from "lucide-react";
 import { Button } from "@scopify/ui/shadcn/components/button";
 import { useAppearanceStore } from "@/store/module/appearance";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { SavedBackgroundTheme, SavedThemeLibraryProps } from "@/types/appearance/model";
 import { ThemeCard } from "./ThemeCard";
 import { ThemeBulkDeleteDialog } from "./ThemeBulkDeleteDialog";
@@ -14,7 +15,7 @@ import { ThemeBulkDeleteDialog } from "./ThemeBulkDeleteDialog";
 export function SavedThemeLibrary({ activeId, onCreate, onEdit }: SavedThemeLibraryProps) {
   const { resolvedTheme } = useTheme();
   const variant = resolvedTheme === "light" ? "light" : "dark";
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const themes = useAppearanceStore((state) => state.themes);
   const apply = useAppearanceStore((state) => state.applyTheme);
   const remove = useAppearanceStore((state) => state.deleteThemes);

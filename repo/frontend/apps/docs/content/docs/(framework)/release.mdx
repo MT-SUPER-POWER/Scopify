@@ -48,7 +48,7 @@ CI 中的 `.github/scripts/apply-release.ts` 会：
 1. 把 tag 版本写入根 `package.json` 与 web / desktop / docs 的 `package.json`，桌面安装包和自动更新元数据因此与 tag 一致；
 2. 用 git-cliff 重新生成 `docs/CHANGELOG.md`，Renderer 内嵌的 What's New 包含当前版本。
 
-Release job 用 `git-cliff --latest` 生成 GitHub Release Notes。发布完成后，writeback job 把 CHANGELOG 和版本号提交回 master（`chore(release): vX.Y.Z [skip ci]`）；tag 不在 master 上时跳过回写。
+Release job 使用 `git-cliff --latest` 生成提交变更，并通过 `.github/scripts/format-release-notes.ts` 在 GitHub Release Notes 顶部自动拼装各平台客户端的快速下载直达表格与 macOS 隔离解除指引。发布完成后，writeback job 把 CHANGELOG 和版本号提交回 master（`chore(release): vX.Y.Z [skip ci]`）；tag 不在 master 上时跳过回写。
 
 ## CI/CD 阶段
 

@@ -5,7 +5,8 @@ import { AnimatePresence } from "framer-motion";
 import { AlertTriangle } from "lucide-react";
 
 import { useFoliaModalFocus } from "@/hooks/lyrics/useFoliaModalFocus";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { FoliaSonnetPerformanceWarningDialogProps } from "@/types/lyrics/components";
 
 export function FoliaSonnetPerformanceWarningDialog({
@@ -16,7 +17,7 @@ export function FoliaSonnetPerformanceWarningDialog({
   onConfirm,
   onDontShowAgainChange,
 }: FoliaSonnetPerformanceWarningDialogProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const dialogRef = useFoliaModalFocus(isOpen, onClose);
 
   return (

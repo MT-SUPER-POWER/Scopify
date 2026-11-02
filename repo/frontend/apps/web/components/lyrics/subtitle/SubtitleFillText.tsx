@@ -3,7 +3,10 @@
 import { useMemo, type CSSProperties } from "react";
 import { splitLyricGraphemes } from "@/components/lyrics/folia/src/utils/lyrics/graphemeTiming";
 import type { SubtitleFillTextProps } from "@/types/lyrics/subtitlePreview";
-import styles from "./subtitle-capsule.module.css";
+
+/** Reveals the sung colour left to right with a soft edge: --fill is 0..1, --feather the edge width. */
+const SUNG_MASK =
+  "linear-gradient(to right, #000 calc(var(--fill) * (100% + var(--feather)) - var(--feather)), transparent calc(var(--fill) * (100% + var(--feather))))";
 
 export function SubtitleFillText({ text, settings, progress }: SubtitleFillTextProps) {
   const characters = useMemo(() => splitLyricGraphemes(text), [text]);
@@ -13,7 +16,7 @@ export function SubtitleFillText({ text, settings, progress }: SubtitleFillTextP
         <span
           aria-hidden="true"
           key={index}
-          className={styles.glyph}
+          className="relative inline-block whitespace-pre"
           style={
             {
               color: settings.unsungColor,
@@ -26,9 +29,11 @@ export function SubtitleFillText({ text, settings, progress }: SubtitleFillTextP
         >
           {character}
           <span
-            className={styles.sung}
-            style={
-              settings.colorMode === "gradient"
+            className="absolute inset-0"
+            style={{
+              maskImage: SUNG_MASK,
+              WebkitMaskImage: SUNG_MASK,
+              ...(settings.colorMode === "gradient"
                 ? {
                     backgroundImage: `linear-gradient(${settings.gradientAngle}deg, ${settings.color}, ${settings.gradientColor})`,
                     backgroundSize: `${characters.length * 100}% 100%`,
@@ -37,8 +42,8 @@ export function SubtitleFillText({ text, settings, progress }: SubtitleFillTextP
                     WebkitBackgroundClip: "text",
                     color: "transparent",
                   }
-                : { color: settings.color }
-            }
+                : { color: settings.color }),
+            }}
           >
             {character}
           </span>

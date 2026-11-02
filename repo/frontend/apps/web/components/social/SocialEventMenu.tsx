@@ -16,12 +16,20 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useSocialAccount } from "@/hooks/social/useSocialQueries";
 import { useSocialShare } from "@/hooks/social/useSocialShare";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { SocialEventMenuProps } from "@/types/social/components";
-import s from "./Social.module.css";
+import { cn } from "@/lib/utils";
+import {
+  socialButtonClass,
+  socialDangerClass,
+  socialDialogClass,
+  socialIconButtonClass,
+  socialRowClass,
+} from "./socialClasses";
 
 export function SocialEventMenu({ event, pending, onDelete }: SocialEventMenuProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const { uid } = useSocialAccount();
   const copyLink = useSocialShare(event);
   const [deleting, setDeleting] = useState(false);
@@ -29,7 +37,7 @@ export function SocialEventMenu({ event, pending, onDelete }: SocialEventMenuPro
     <>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <button type="button" className={s.iconButton} aria-label={t("social.more")}>
+          <button type="button" className={socialIconButtonClass} aria-label={t("social.more")}>
             <MoreHorizontal />
           </button>
         </DropdownMenuTrigger>
@@ -52,13 +60,13 @@ export function SocialEventMenu({ event, pending, onDelete }: SocialEventMenuPro
           if (!pending) setDeleting(value);
         }}
       >
-        <DialogContent className={s.dialog}>
+        <DialogContent className={socialDialogClass}>
           <DialogTitle>{t("social.deleteTitle")}</DialogTitle>
           <DialogDescription>{t("social.deleteHint")}</DialogDescription>
-          <div className={s.row + " justify-end"}>
+          <div className={cn(socialRowClass, "justify-end")}>
             <button
               type="button"
-              className={s.button}
+              className={socialButtonClass}
               disabled={pending}
               onClick={() => setDeleting(false)}
             >
@@ -66,7 +74,7 @@ export function SocialEventMenu({ event, pending, onDelete }: SocialEventMenuPro
             </button>
             <button
               type="button"
-              className={s.button + " " + s.danger}
+              className={cn(socialButtonClass, socialDangerClass)}
               disabled={pending}
               onClick={() => onDelete(() => setDeleting(false))}
             >

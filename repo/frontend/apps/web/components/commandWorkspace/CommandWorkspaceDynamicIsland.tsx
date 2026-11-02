@@ -3,11 +3,12 @@
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { DYNAMIC_ISLAND_SCALE_OPTIONS } from "@/constants/desktopCompanion";
 import { useCommandWorkspaceDynamicIsland } from "@/hooks/commandWorkspace/useCommandWorkspaceDynamicIsland";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { DynamicIslandTransition } from "@/types/desktop/dynamicIsland";
 
 export function CommandWorkspaceDynamicIsland() {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const { preferences, update, isUpdating, error } = useCommandWorkspaceDynamicIsland();
   const toggles = [
     "enabled",

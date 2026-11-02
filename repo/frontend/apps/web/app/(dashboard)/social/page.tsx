@@ -1,10 +1,9 @@
-import { Suspense } from "react";
-import { SocialPage } from "@/components/social/SocialPage";
+"use client";
+
+import { useSocialAccount } from "@/hooks/social/useSocialQueries";
+import { SocialStream } from "./_components/SocialStream";
 
 export default function Page() {
-  return (
-    <Suspense>
-      <SocialPage />
-    </Suspense>
-  );
+  const { account } = useSocialAccount();
+  return <SocialStream key={account} />;
 }

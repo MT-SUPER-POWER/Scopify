@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from "react";
 import { Globe, Plus, Pencil, Trash2, Check, X } from "lucide-react";
-import type { TranslateFn } from "@/types/i18n.generated";
+import type { TranslateFn } from "@/types/i18n/model";
 import type { Theme, UrlBackgroundItem } from "../../../../types";
 import { colorWithAlpha } from "../../colorMix";
 import { normalizeUrlBackgroundUrl } from "../../../../utils/urlBackground";

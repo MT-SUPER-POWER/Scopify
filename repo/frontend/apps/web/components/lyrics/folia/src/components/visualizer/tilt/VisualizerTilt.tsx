@@ -1,6 +1,7 @@
 import React, { useMemo, useState, useRef, useInsertionEffect, useLayoutEffect } from "react";
 import { motion, AnimatePresence, MotionValue, motionValue } from "framer-motion";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import { prepareWithSegments, layoutWithLines } from "@chenglou/pretext";
 import {
   Line,
@@ -636,7 +637,7 @@ const VisualizerTilt: React.FC<VisualizerTiltProps & { staticMode?: boolean }> =
     subtitleContentMode,
     tiltTuning = DEFAULT_TILT_TUNING,
   } = props;
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const [visibleSegmentIndex, setVisibleSegmentIndex] = useState(-1);
 
   const { activeLine, recentCompletedLine, nextLines } = useVisualizerRuntime({

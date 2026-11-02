@@ -2,7 +2,7 @@
 
 import { MediaInfoBadge } from "@/components/shared/MediaInfoBadge";
 import { getSongQualityBadge } from "@/lib/song/qualityBadge";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
 
 import type { SongQualityBadgeProps } from "@/types/song/quality";
 
@@ -17,7 +17,7 @@ const qualityLabelKeys = {
 } as const;
 
 export function SongQualityBadge({ className, qualityLevel }: SongQualityBadgeProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const badge = getSongQualityBadge(qualityLevel);
 
   if (!badge) return null;

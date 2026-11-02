@@ -1,0 +1,14 @@
+{
+  "open": "Preview",
+  "openWithCount": "Preview {{count}} music videos",
+  "description": "Preview the songs in this list that have music videos",
+  "position": "{{index}} / {{total}}",
+  "next": "Next",
+  "previous": "Previous",
+  "mute": "Mute",
+  "unmute": "Unmute",
+  "playSong": "Play this song",
+  "openMv": "Open music video page",
+  "queueAdded": "Added to queue",
+  "queueExists": "This song is already in the queue"
+}

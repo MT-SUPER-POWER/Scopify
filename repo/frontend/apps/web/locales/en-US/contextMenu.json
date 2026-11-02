@@ -1,0 +1,21 @@
+{
+  "play": "Play",
+  "pause": "Pause",
+  "addToQueue": "Add to Queue",
+  "addToLiked": "Add to Liked Songs",
+  "removeFromLiked": "Remove from Liked Songs",
+  "addToPlaylist": "Add to Playlist",
+  "comments": "Comments",
+  "commentsWithCount": "Comments ({{count}})",
+  "viewComments": "View comments",
+  "viewCommentsWithCount": "View comments ({{count}})",
+  "copyLink": "Copy Link",
+  "removeFromPlaylist": "Remove from current playlist",
+  "removeFromQueue": "Remove from queue",
+  "recommendLess": "Recommend less",
+  "goToArtist": "View Artist",
+  "view": "View",
+  "updatePlaylist": "Update Playlist",
+  "deletePlaylist": "Delete Playlist",
+  "copyPlaylistLink": "Copy Playlist Link"
+}

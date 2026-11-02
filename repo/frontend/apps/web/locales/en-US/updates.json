@@ -1,0 +1,16 @@
+{
+  "title": "What's New",
+  "version": "Choose a version",
+  "current": "Current version",
+  "empty": "No user-facing changes in this version.",
+  "close": "Got it",
+  "closeLabel": "Close",
+  "noDate": "Release date not recorded",
+  "unreleased": "Coming next",
+  "unreleasedHint": "Dev preview: commits since the last release",
+  "fullHistory": "Full changelog",
+  "viewCommit": "View commit {{hash}} on GitHub",
+  "added": "New",
+  "fixed": "Fixed",
+  "improved": "Improved"
+}

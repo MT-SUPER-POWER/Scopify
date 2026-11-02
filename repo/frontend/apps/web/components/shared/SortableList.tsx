@@ -5,12 +5,13 @@ import { SortableContext } from "@dnd-kit/sortable";
 import { createPortal } from "react-dom";
 import { thumbnailModifiers, useSortableListDrag } from "@/hooks/playlist/useSortableListDrag";
 import { SortableListContext } from "@/lib/playlist/sortableListContext";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { SortableListProps } from "@/types/tracklist/sortableList";
 import "./trackDrag.css";
 
 export function SortableList(props: SortableListProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const drag = useSortableListDrag({ ...props, disabled: props.disabled || props.busy });
   return (
     <DndContext

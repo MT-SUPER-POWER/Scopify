@@ -1,0 +1,15 @@
+{
+  "title": "靈動島",
+  "enabled.label": "開啟靈動島",
+  "enabled.sublabel": "在螢幕頂部顯示帶封面的歌詞膠囊，可隨意拖動，靠近頂邊放開會自動吸附。",
+  "transition.label": "換行動畫",
+  "transition.bounce": "回彈",
+  "transition.smooth": "平滑",
+  "scale.label": "大小",
+  "showTranslation.label": "顯示翻譯",
+  "snapCentered.label": "吸附時置中",
+  "snapCentered.sublabel": "關閉後吸附到頂邊時保留拖動到的水平位置。",
+  "nonOcclusive.label": "非遮擋模式",
+  "nonOcclusive.sublabel": "滑鼠點擊直接穿透靈動島，懸停時自動淡出；此模式下無法拖動。",
+  "alwaysOnTop.label": "保持置頂"
+}

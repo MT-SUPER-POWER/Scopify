@@ -1,7 +1,7 @@
 "use client";
 
 import { FileInput, Upload } from "lucide-react";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
 
 import { colorWithAlpha } from "@/components/lyrics/folia/src/components/visualizer/colorMix";
 import { FoliaThemeJsonImportPreview } from "@/components/lyrics/FoliaThemeJsonImportPreview";
@@ -24,7 +24,7 @@ export function FoliaThemeJsonImport({
   themeName,
   validation,
 }: FoliaThemeJsonImportProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const isReady = validation === "valid";
   const surfaceStyle = {
     backgroundColor: colorWithAlpha(colors.backgroundColor, 0.42),

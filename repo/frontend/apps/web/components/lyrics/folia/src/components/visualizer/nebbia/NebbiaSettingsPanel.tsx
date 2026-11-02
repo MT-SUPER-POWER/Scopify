@@ -38,7 +38,7 @@ export const NEBBIA_FADE_LABEL_KEYS: Record<NebbiaFadeStyle, TranslationKey> = {
 };
 const LAYOUT_LABEL_KEYS = Object.fromEntries(
   NEBBIA_LAYOUTS.map((l) => [l, `folia.options.nebbiaLayout_${l}`]),
-) as Record<NebbiaLayout, TranslationKey>;
+) as unknown as Record<NebbiaLayout, TranslationKey>;
 
 const seconds = (value: number) => `${value.toFixed(1)}s`;
 type SliderSpec = [NebbiaNumberKey, TranslationKey, number, (value: number) => string];

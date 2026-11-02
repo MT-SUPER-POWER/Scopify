@@ -310,6 +310,150 @@ export function buildListeningReportNarrative(
   };
 }
 
+function generatePersonalizedOutroNarrative(
+  period: ListeningReportPeriod,
+  summary: ListeningReportSummary | null | undefined,
+  dateInfo: { month: number; monthName: string; year: number },
+): { quote: string; subQuote: string } {
+  const topSongName = summary?.topSong?.title?.trim();
+  const topArtistName =
+    summary?.topArtist?.title?.trim() || summary?.topArtistsList[0]?.artistName?.trim();
+  const topGenre =
+    summary?.topStyle?.genreName?.trim() || summary?.topStylesList[0]?.genreName?.trim();
+  const timeOfDay = getDominantTimeOfDay(summary);
+  const timeLabel = timeOfDay.label || "每个时刻";
+  const timePeriod = timeOfDay.period;
+  const isNight = timePeriod === "night" || timePeriod === "deep_night";
+  const isMorning = timePeriod === "morning" || timePeriod === "early_morning";
+  const isAfternoon = timePeriod === "afternoon" || timePeriod === "noon";
+  const activeDays = summary?.activeDays ?? 0;
+
+  // 1. 周报（Week）
+  if (period === "week") {
+    const quote = "旋律把日子过得有声，下一周见。";
+
+    // 结合代表歌曲 + 歌手
+    if (topSongName && topArtistName) {
+      if (isNight) {
+        return {
+          quote,
+          subQuote: `夜深人静的时刻，耳机里循环的《${topSongName}》替你收拢了许多心绪。感谢${topArtistName}的歌声，让这一周有了安稳的落点。`,
+        };
+      }
+      if (isMorning) {
+        return {
+          quote,
+          subQuote: `清晨与上午的晨光里，伴着《${topSongName}》与${topArtistName}的歌声，你把这一周的日常过得格外有声。生活往前走，音乐一直在身边。`,
+        };
+      }
+      if (isAfternoon) {
+        return {
+          quote,
+          subQuote: `午后漫过窗台的阳光里，${topArtistName}的《${topSongName}》替你把快节奏的日子慢慢调松。生活向前，好声音一直都在。`,
+        };
+      }
+      return {
+        quote,
+        subQuote: `伴着${topArtistName}的歌声与一再播放的《${topSongName}》，这一周的日常有了专属的温暖注脚。下一周，继续有声。`,
+      };
+    }
+
+    // 结合代表歌手 + 音乐风格/时段
+    if (topArtistName && topGenre) {
+      if (isNight) {
+        return {
+          quote,
+          subQuote: `深夜的静谧里，${topArtistName}的${topGenre}旋律替你收拢了一整天的疲惫与思绪。生活往前走，好声音始终陪在身边。`,
+        };
+      }
+      return {
+        quote,
+        subQuote: `${timeLabel}的轻快时光，伴着${topArtistName}的歌声与${topGenre}的节拍，替你把这一周的日常过得格外有声。下一周见。`,
+      };
+    }
+
+    // 结合音乐风格 + 时段
+    if (topGenre) {
+      if (isNight) {
+        return {
+          quote,
+          subQuote: `深夜的微光与${topGenre}的流淌旋律，替你收拢了这一周奔波的心绪。音乐一直在，好声音一直在身边。`,
+        };
+      }
+      return {
+        quote,
+        subQuote: `${timeLabel}的轻快时光，伴着${topGenre}律动的节拍，替你把这一周的日常过得格外有声。生活往前走，音乐一直在身边。`,
+      };
+    }
+
+    // 结合全勤/高活跃天数
+    if (activeDays >= 7) {
+      return {
+        quote,
+        subQuote: `整整 7 天里，音乐从未在你的生活里缺席。那些熟悉的旋律一直陪你把平凡的日常过得有声有色。下一周见。`,
+      };
+    }
+
+    return {
+      quote,
+      subQuote: `${timeLabel}的微光与流动的旋律，替你把这一周的日常过得格外有声。生活往前走，音乐一直在身边。`,
+    };
+  }
+
+  // 2. 月报（Month）
+  if (period === "month") {
+    const quote = "每个月，都是一段独特的声响记忆。";
+    const monthName = dateInfo.monthName;
+
+    if (topArtistName && topSongName) {
+      return {
+        quote,
+        subQuote: `${monthName}的日子里，${topArtistName}的《${topSongName}》最常替你留住片刻属于自己的时间。下个月，继续在歌声里相遇。`,
+      };
+    }
+
+    if (topArtistName && topGenre) {
+      return {
+        quote,
+        subQuote: `${monthName}的时光里，${topArtistName}的歌声与${topGenre}的旋律，已化作这一程生活独特的底色。下个月，继续在歌声里相见。`,
+      };
+    }
+
+    if (topGenre) {
+      return {
+        quote,
+        subQuote: `${monthName}的${timeLabel}与${topGenre}，已化作这一程生活里独特的底色。下个月，继续在歌声里相遇。`,
+      };
+    }
+
+    return {
+      quote,
+      subQuote: `${monthName}的每一个音乐瞬间，都已化作生活里独特的底色。下个月，继续在歌声里相遇。`,
+    };
+  }
+
+  // 3. 年报（Year）
+  const quote = "一整年的声响，都是时光给你的回信。";
+  if (topArtistName && topSongName) {
+    return {
+      quote,
+      subQuote: `在这一年奔波与驻足的旅途中，《${topSongName}》与${topArtistName}的歌声始终在耳边陪伴。新的一年，愿好歌常伴。`,
+    };
+  }
+
+  if (topGenre) {
+    return {
+      quote,
+      subQuote: `在 ${dateInfo.year} 年的每一段旅途中，${topGenre}与那些熟悉的旋律始终替你记下生活的真实回声。新的一年，愿旋律常在。`,
+    };
+  }
+
+  return {
+    quote,
+    subQuote: `在 ${dateInfo.year} 年的每一段旅途中，感谢那些熟悉的旋律，始终替你记下生活的真实回声。新的一年，愿好歌常伴。`,
+  };
+}
+
 export function buildListeningReportFooterSummary(
   summary: ListeningReportSummary | null | undefined,
   fallbackMonth: MonthOption,
@@ -317,33 +461,29 @@ export function buildListeningReportFooterSummary(
   const period = getReportPeriod(summary);
   const { month, year } = getReportDate(summary, fallbackMonth);
   const monthName = getMonthName(month);
-  const timeOfDay = getDominantTimeOfDay(summary);
-  const timeLabel = timeOfDay.label || "清晨";
-  const topGenre = summary?.topStyle?.genreName || summary?.topStylesList[0]?.genreName || "电子乐";
 
-  const totalDays = getDaysInMonth(year, month);
-  const activeDays = summary?.activeDays ?? totalDays;
-  let attendancePhrase = `从未缺席的 ${totalDays} 天`;
-  if (activeDays >= totalDays && totalDays > 0) {
-    attendancePhrase = `从未缺席的 ${totalDays} 天`;
-  } else if (activeDays > 0) {
-    attendancePhrase = `持续在场的 ${activeDays} 天`;
-  }
+  const { quote, subQuote } = generatePersonalizedOutroNarrative(period, summary, {
+    month,
+    monthName,
+    year,
+  });
 
-  let quote = `这就是你的${monthName}：${timeLabel}、${topGenre}，和${attendancePhrase}。`;
+  let brandingText = "";
   if (period === "week") {
-    quote = `这就是你的这一周：${timeLabel}、${topGenre}，和流动的旋律。`;
+    brandingText = `Scopify 声音周报 · ${year}年`;
   } else if (period === "year") {
-    quote = `这就是你的 ${year} 年：${timeLabel}、${topGenre}，和一路相伴的声音。`;
+    brandingText = `Scopify 声音年报 · ${year}年度声音印记`;
+  } else {
+    brandingText = `Scopify 声音月报 · ${year}年${month}月`;
   }
 
-  const brandingText = `Scopify · ${year}年${month}月`;
   const coverUrl = summary?.topSong?.imageUrl || summary?.wallpaperUrls[0] || null;
 
   return {
     brandingText,
     coverUrl,
     quote,
+    subQuote,
   };
 }
 

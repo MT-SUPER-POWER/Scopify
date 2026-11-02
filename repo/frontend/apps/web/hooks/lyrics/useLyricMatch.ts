@@ -21,7 +21,8 @@ import {
 } from "@/lib/lyrics/match";
 import { adaptNeteaseLyric } from "@/lib/lyrics/neteaseLyricAdapter";
 import { musicQueryKeys } from "@/lib/query/queryKeys";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import { usePlayerStore } from "@/store/module/player";
 import type { LyricMatchOverride } from "@/types/lyrics/model";
 
@@ -33,7 +34,7 @@ const CANDIDATE_LIMIT = 15;
  * 不再当作「未找到」或「没有歌词」。使用 / 还原是用户操作，反馈留在操作本身。
  */
 export function useLyricMatch(isOpen: boolean) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const queryClient = useQueryClient();
   const song = usePlayerStore((state) => state.currentSongDetail);
   const [openedFor, setOpenedFor] = useState<number | null>(null);

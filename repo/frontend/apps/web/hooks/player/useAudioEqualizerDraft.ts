@@ -4,7 +4,8 @@ import { useEffect, useRef, useState } from "react";
 
 import { AUDIO_EQUALIZER_PRESETS, DEFAULT_AUDIO_EFFECT_SETTINGS } from "@/constants/audioEqualizer";
 import { useAudioEqualizerStore } from "@/store/module/audioEqualizer";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type {
   AudioEffectId,
   AudioEqualizerModeId,
@@ -21,7 +22,7 @@ export const isUserPresetId = (value: AudioEqualizerModeId): value is AudioEqual
  * it into a user preset first, so built-ins never change under the user.
  */
 export function useAudioEqualizerDraft() {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const settings = useAudioEqualizerStore((state) => state.settings);
   const commitSettings = useAudioEqualizerStore((state) => state.commitSettings);
   const createCustomPreset = useAudioEqualizerStore((state) => state.createCustomPreset);

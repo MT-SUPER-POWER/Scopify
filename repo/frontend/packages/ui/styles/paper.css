@@ -1,0 +1,154 @@
+/*
+ * Printed-paper edge effects for tickets, receipts and stubs. Masks cut real holes that
+ * expose whatever sits behind the paper instead of painting fake backdrop-coloured shapes.
+ */
+
+/* Serrated top and bottom edges of a slip torn off a roll. Tooth width: --torn-edge-tooth. */
+@utility torn-edge-y {
+  mask:
+    conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) bottom /
+      var(--torn-edge-tooth, 12px) 51% repeat-x,
+    conic-gradient(from 135deg at top, #0000, #000 1deg 89deg, #0000 90deg) top /
+      var(--torn-edge-tooth, 12px) 51% repeat-x;
+}
+
+/* Round punched cutouts at all four corners. Radius: --ticket-notch-size. */
+@utility ticket-notch {
+  mask-image:
+    radial-gradient(
+      circle at 0 0,
+      transparent var(--ticket-notch-size, 12px),
+      #000 calc(var(--ticket-notch-size, 12px) + 0.5px)
+    ),
+    radial-gradient(
+      circle at 100% 0,
+      transparent var(--ticket-notch-size, 12px),
+      #000 calc(var(--ticket-notch-size, 12px) + 0.5px)
+    ),
+    radial-gradient(
+      circle at 0 100%,
+      transparent var(--ticket-notch-size, 12px),
+      #000 calc(var(--ticket-notch-size, 12px) + 0.5px)
+    ),
+    radial-gradient(
+      circle at 100% 100%,
+      transparent var(--ticket-notch-size, 12px),
+      #000 calc(var(--ticket-notch-size, 12px) + 0.5px)
+    );
+  mask-composite: intersect;
+}
+
+/* Rough 2px torn line along the right edge, where a stub was perforated off. */
+@utility perforated-edge-r {
+  clip-path: polygon(
+    0 0,
+    100% 0,
+    100% 2.5%,
+    calc(100% - 2px) 5%,
+    100% 7.5%,
+    calc(100% - 2px) 10%,
+    100% 12.5%,
+    calc(100% - 2px) 15%,
+    100% 17.5%,
+    calc(100% - 2px) 20%,
+    100% 22.5%,
+    calc(100% - 2px) 25%,
+    100% 27.5%,
+    calc(100% - 2px) 30%,
+    100% 32.5%,
+    calc(100% - 2px) 35%,
+    100% 37.5%,
+    calc(100% - 2px) 40%,
+    100% 42.5%,
+    calc(100% - 2px) 45%,
+    100% 47.5%,
+    calc(100% - 2px) 50%,
+    100% 52.5%,
+    calc(100% - 2px) 55%,
+    100% 57.5%,
+    calc(100% - 2px) 60%,
+    100% 62.5%,
+    calc(100% - 2px) 65%,
+    100% 67.5%,
+    calc(100% - 2px) 70%,
+    100% 72.5%,
+    calc(100% - 2px) 75%,
+    100% 77.5%,
+    calc(100% - 2px) 80%,
+    100% 82.5%,
+    calc(100% - 2px) 85%,
+    100% 87.5%,
+    calc(100% - 2px) 90%,
+    100% 92.5%,
+    calc(100% - 2px) 95%,
+    100% 97.5%,
+    100% 100%,
+    0 100%
+  );
+}
+
+/* Mirror of perforated-edge-r for the stub side. */
+@utility perforated-edge-l {
+  clip-path: polygon(
+    0 0,
+    100% 0,
+    100% 100%,
+    0 100%,
+    0 97.5%,
+    2px 95%,
+    0 92.5%,
+    2px 90%,
+    0 87.5%,
+    2px 85%,
+    0 82.5%,
+    2px 80%,
+    0 77.5%,
+    2px 75%,
+    0 72.5%,
+    2px 70%,
+    0 67.5%,
+    2px 65%,
+    0 62.5%,
+    2px 60%,
+    0 57.5%,
+    2px 55%,
+    0 52.5%,
+    2px 50%,
+    0 47.5%,
+    2px 45%,
+    0 42.5%,
+    2px 40%,
+    0 37.5%,
+    2px 35%,
+    0 32.5%,
+    2px 30%,
+    0 27.5%,
+    2px 25%,
+    0 22.5%,
+    2px 20%,
+    0 17.5%,
+    2px 15%,
+    0 12.5%,
+    2px 10%,
+    0 7.5%,
+    2px 5%,
+    0 2.5%
+  );
+}
+
+/* Printed dashed rules in currentColor. Dash / gap: --dash-size / --dash-gap. */
+@utility dash-rule-x {
+  background: repeating-linear-gradient(
+    90deg,
+    currentColor 0 var(--dash-size, 5px),
+    transparent var(--dash-size, 5px) calc(var(--dash-size, 5px) + var(--dash-gap, 4px))
+  );
+}
+
+@utility dash-rule-y {
+  background: repeating-linear-gradient(
+    to bottom,
+    currentColor 0 var(--dash-size, 5px),
+    transparent var(--dash-size, 5px) calc(var(--dash-size, 5px) + var(--dash-gap, 4px))
+  );
+}

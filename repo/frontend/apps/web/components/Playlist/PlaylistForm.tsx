@@ -10,7 +10,8 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { UpdatePlaylistDialogProps } from "@/types/playlist/components";
 
 export function UpdatePlaylistDialog({
@@ -19,7 +20,7 @@ export function UpdatePlaylistDialog({
   onConfirm,
   onCancel,
 }: UpdatePlaylistDialogProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [tags, setTags] = useState<string[]>([]);

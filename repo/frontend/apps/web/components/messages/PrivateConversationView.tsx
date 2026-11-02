@@ -6,13 +6,15 @@ import { ScrollArea } from "@scopify/ui/shadcn/components/scroll-area";
 import { INBOX_SCROLL_CLASS } from "@/constants/inbox";
 import { usePrivateConversation } from "@/hooks/messages/usePrivateConversation";
 import { useConversationScroll } from "@/hooks/messages/useConversationScroll";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+import { useI18nStore } from "@/store/module/i18n";
 import type { PrivateConversationViewProps } from "@/types/messages/components";
 import { PrivateMessageBubble } from "./PrivateMessageBubble";
 import { PrivateMessageComposer } from "./PrivateMessageComposer";
 
 export function PrivateConversationView({ accountId, peer, onBack }: PrivateConversationViewProps) {
-  const { t, locale } = useI18n();
+  const { t } = useTranslation(),
+    locale = useI18nStore((state) => state.locale);
   const conversation = usePrivateConversation(accountId, peer);
   const scroll = useConversationScroll(conversation.messages);
   return (

@@ -1,0 +1,11 @@
+{
+  "similar.action": "接着听相似歌曲",
+  "similar.description": "与「{{name}}」相似的歌曲。右键可加入歌单或播放队列。",
+  "similar.loading": "正在寻找相似歌曲…",
+  "similar.empty": "暂时没有相似歌曲推荐",
+  "similar.error": "暂时无法获取推荐，请稍后重试。",
+  "similar.retry": "重新加载",
+  "similar.count": "{{count}} 首推荐",
+  "similar.noPlaylists": "暂无可添加的歌单",
+  "similar.close": "关闭"
+}

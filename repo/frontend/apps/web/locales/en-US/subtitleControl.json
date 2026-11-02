@@ -1,0 +1,9 @@
+{
+  "title": "Desktop subtitle controls",
+  "popoverTitle": "Desktop lyrics & music",
+  "toggle": "Toggle desktop subtitles",
+  "enabled": "Show desktop subtitles",
+  "style": "Lyric style",
+  "failed": "Desktop subtitle operation failed. Please retry.",
+  "retry": "Retry"
+}

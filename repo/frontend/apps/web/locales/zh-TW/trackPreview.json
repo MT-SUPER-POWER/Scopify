@@ -1,0 +1,14 @@
+{
+  "open": "預覽",
+  "openWithCount": "預覽 {{count}} 首 MV",
+  "description": "逐首預覽清單中帶 MV 的歌曲",
+  "position": "{{index}} / {{total}}",
+  "next": "下一首",
+  "previous": "上一首",
+  "mute": "靜音",
+  "unmute": "取消靜音",
+  "playSong": "播放這首歌",
+  "openMv": "開啟 MV 頁",
+  "queueAdded": "已加入播放佇列",
+  "queueExists": "這首歌已在播放佇列中"
+}

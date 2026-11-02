@@ -5,24 +5,29 @@ import { type KeyboardEvent, type PointerEvent, useRef } from "react";
 
 import { LANDING_VISUALIZER_MODES } from "@/constants/marketing";
 
-/** 齿轮半径（px）：圆心在屏幕右侧之外，只露出左边一段弧。 */
-const DIAL_RADIUS = 380;
-/** 相邻两种动画在齿轮上相隔的角度。 */
-const STEP_DEG = 8.5;
-/** 齿的间隔角度，绕满一圈。 */
-const TOOTH_STEP_DEG = 1.7;
-/** 齿轮最左侧离容器左边的距离（px），给固定的指示留位置。 */
-const RIM_INSET = 24;
-/** 拖动多远（px）算转过一档：正好是相邻两档之间的弧长。 */
-const DRAG_PX_PER_MODE = (DIAL_RADIUS * STEP_DEG * Math.PI) / 180;
+/**
+ * 齿轮的尺寸：圆心在屏幕右侧之外，只露出左边一段弧。
+ * `radius` 齿轮半径（px）；`stepDeg` 相邻两种动画相隔的角度；`rimInset` 轮缘离容器左边的距离（px），给固定的指示留位置。
+ * 手机上用小一号的齿轮，只留每一档的主齿，让出歌词的位置。
+ */
+const DIAL_SIZES = {
+  regular: { radius: 380, stepDeg: 8.5, rimInset: 24, toothStepDeg: 1.7 },
+  compact: { radius: 240, stepDeg: 10, rimInset: 20, toothStepDeg: 10 },
+} as const;
 /** 按下后移动超过这么多（px）才算拖动，否则当作点击。 */
 const DRAG_THRESHOLD = 4;
 
 const MODE_COUNT = LANDING_VISUALIZER_MODES.length;
-const TEETH = Array.from({ length: Math.round(360 / TOOTH_STEP_DEG) }, (_, index) => {
-  const angle = index * TOOTH_STEP_DEG;
-  return { angle, isMajor: index % Math.round(STEP_DEG / TOOTH_STEP_DEG) === 0 };
-});
+
+const buildTeeth = (stepDeg: number, toothStepDeg: number) =>
+  Array.from({ length: Math.round(360 / toothStepDeg) }, (_, index) => {
+    const angle = index * toothStepDeg;
+    return { angle, isMajor: index % Math.round(stepDeg / toothStepDeg) === 0 };
+  });
+const DIAL_TEETH = {
+  regular: buildTeeth(DIAL_SIZES.regular.stepDeg, DIAL_SIZES.regular.toothStepDeg),
+  compact: buildTeeth(DIAL_SIZES.compact.stepDeg, DIAL_SIZES.compact.toothStepDeg),
+} as const;
 
 /**
  * 从圆心出发、转过 `angle` 度后再往左推 `distance`：0° 是齿轮最左侧（9 点钟方向），
@@ -31,6 +36,8 @@ const TEETH = Array.from({ length: Math.round(360 / TOOTH_STEP_DEG) }, (_, index
 const spoke = (angle: number, distance: number) => `rotate(${angle}deg) translateX(${-distance}px)`;
 
 interface LandingModeDialProps {
+  /** `compact` 是手机上的小齿轮。 */
+  size?: keyof typeof DIAL_SIZES;
   modeIndex: number;
   /** 节目单上的连续位置（不带阻尼），拖动从这里起算。 */
   modePosition: MotionValue<number>;
@@ -49,6 +56,7 @@ interface LandingModeDialProps {
  * 可以用鼠标上下拖着转（触屏直接滑动页面即可），松手吸到最近一档，也可以点任意一档跳过去。
  */
 export function LandingModeDial({
+  size = "regular",
   modeIndex,
   modePosition,
   onPick,
@@ -56,7 +64,11 @@ export function LandingModeDial({
   onSettle,
   position,
 }: LandingModeDialProps) {
-  const rotate = useTransform(position, (value) => value * STEP_DEG);
+  const { radius, rimInset, stepDeg } = DIAL_SIZES[size];
+  const isCompact = size === "compact";
+  /** 拖动多远（px）算转过一档：正好是相邻两档之间的弧长。 */
+  const dragPxPerMode = (radius * stepDeg * Math.PI) / 180;
+  const rotate = useTransform(position, (value) => value * stepDeg);
   const dragRef = useRef<{ dragging: boolean; from: number; startY: number } | null>(null);
 
   const handlePointerDown = (event: PointerEvent<HTMLDivElement>) => {
@@ -75,7 +87,7 @@ export function LandingModeDial({
       event.currentTarget.setPointerCapture(event.pointerId);
     }
     // 往上拖，轮缘跟着往上走，后面的档位转上来。
-    onScrub(drag.from - deltaY / DRAG_PX_PER_MODE);
+    onScrub(drag.from - deltaY / dragPxPerMode);
   };
   const handlePointerEnd = () => {
     if (dragRef.current?.dragging) onSettle();
@@ -97,35 +109,34 @@ export function LandingModeDial({
       onPointerUp={handlePointerEnd}
       onPointerCancel={handlePointerEnd}
       onKeyDown={handleKeyDown}
-      className="relative h-[70svh] w-36 cursor-grab overflow-hidden [mask-image:linear-gradient(180deg,transparent,#000_22%,#000_78%,transparent)] select-none active:cursor-grabbing"
+      className={`relative cursor-grab overflow-hidden [mask-image:linear-gradient(180deg,transparent,#000_22%,#000_78%,transparent)] select-none active:cursor-grabbing ${
+        isCompact ? "h-[52svh] w-20" : "h-[70svh] w-36"
+      }`}
     >
       {/* 从屏幕边缘压一层暗，凝彩这类会把整块舞台铺成浅色纸面的动画上也看得清刻度。 */}
       <span
         aria-hidden="true"
         className="absolute inset-0 bg-[linear-gradient(270deg,rgba(5,6,11,0.7),rgba(5,6,11,0.35)_60%,transparent)]"
       />
-      <motion.div
-        className="absolute top-1/2 size-0"
-        style={{ left: RIM_INSET + DIAL_RADIUS, rotate }}
-      >
+      <motion.div className="absolute top-1/2 size-0" style={{ left: rimInset + radius, rotate }}>
         <span
           aria-hidden="true"
           className="absolute rounded-full border border-white/12"
           style={{
-            height: DIAL_RADIUS * 2,
-            left: -DIAL_RADIUS,
-            top: -DIAL_RADIUS,
-            width: DIAL_RADIUS * 2,
+            height: radius * 2,
+            left: -radius,
+            top: -radius,
+            width: radius * 2,
           }}
         />
-        {TEETH.map(({ angle, isMajor }) => (
+        {DIAL_TEETH[size].map(({ angle, isMajor }) => (
           <span
             key={angle}
             aria-hidden="true"
             className={`absolute top-0 left-0 h-px origin-left ${
               isMajor ? "w-2.5 bg-white/45" : "w-1.5 bg-white/20"
             }`}
-            style={{ transform: spoke(angle, DIAL_RADIUS + (isMajor ? 10 : 6)) }}
+            style={{ transform: spoke(angle, radius + (isMajor ? 10 : 6)) }}
           />
         ))}
         {LANDING_VISUALIZER_MODES.map((item, index) => {
@@ -135,7 +146,7 @@ export function LandingModeDial({
             <span
               key={item.value}
               className="absolute top-0 left-0 size-0"
-              style={{ transform: spoke(-index * STEP_DEG, DIAL_RADIUS - 10) }}
+              style={{ transform: spoke(-index * stepDeg, radius - 10) }}
             >
               <button
                 type="button"
@@ -149,18 +160,20 @@ export function LandingModeDial({
                     isCurrent ? "bg-[#1ed760]" : "bg-white/40"
                   }`}
                 />
-                <span
-                  className={`font-mono text-[0.6rem] leading-none tabular-nums transition-colors duration-300 ${
-                    isCurrent ? "text-white" : "text-white/40 group-hover:text-white/75"
-                  }`}
-                >
-                  {number}
-                </span>
+                {isCompact ? null : (
+                  <span
+                    className={`font-mono text-[0.6rem] leading-none tabular-nums transition-colors duration-300 ${
+                      isCurrent ? "text-white" : "text-white/40 group-hover:text-white/75"
+                    }`}
+                  >
+                    {number}
+                  </span>
+                )}
                 <span
                   className={`leading-none transition-all duration-300 ${
                     isCurrent
-                      ? "text-sm font-semibold text-white"
-                      : "text-[0.72rem] text-white/45 group-hover:text-white/80"
+                      ? `${isCompact ? "text-xs" : "text-sm"} font-semibold text-white`
+                      : `${isCompact ? "text-[0.62rem]" : "text-[0.72rem]"} text-white/45 group-hover:text-white/80`
                   }`}
                 >
                   {item.label}
@@ -175,7 +188,7 @@ export function LandingModeDial({
       <span
         aria-hidden="true"
         className="absolute top-1/2 -mt-[5px] border-y-[5px] border-l-[6px] border-y-transparent border-l-[#1ed760] drop-shadow-[0_0_6px_rgba(30,215,96,0.6)]"
-        style={{ left: RIM_INSET - 18 }}
+        style={{ left: rimInset - 18 }}
       />
     </div>
   );

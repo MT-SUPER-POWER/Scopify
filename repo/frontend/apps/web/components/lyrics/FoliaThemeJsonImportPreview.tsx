@@ -1,7 +1,7 @@
 "use client";
 
 import { AlertCircle, CheckCircle2 } from "lucide-react";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
 
 import { colorWithAlpha } from "@/components/lyrics/folia/src/components/visualizer/colorMix";
 import type { FoliaThemeColors } from "@/types/lyrics/folia/stage";
@@ -22,7 +22,7 @@ export function FoliaThemeJsonImportPreview({
   themeName,
   validation,
 }: FoliaThemeJsonImportPreviewProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const isReady = validation === "valid";
 
   return (

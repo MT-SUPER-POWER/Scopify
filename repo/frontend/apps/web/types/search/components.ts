@@ -143,10 +143,6 @@ export interface SearchLyricDialogProps extends Pick<
   isPlaying: boolean;
 }
 
-export interface CategoryTabsProps {
-  active: Category;
-  onChange: (category: Category) => void;
-}
 export interface SheetsViewProps {
   keyword: string;
 }

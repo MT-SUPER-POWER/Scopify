@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import { DEFAULT_TEMPERA_TUNING } from "../../../types";
 import type { Line } from "../../../types";
 import { extractRepresentativeColors } from "../../../utils/colorExtractor";
@@ -51,7 +52,7 @@ const VisualizerTempera: React.FC<VisualizerSharedProps> = (props) => {
     subtitleOverlayBackground,
     temperaTuning = DEFAULT_TEMPERA_TUNING,
   } = props;
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const hostRef = useRef<HTMLDivElement>(null);
   const pausedRef = useRef(paused);
   pausedRef.current = paused;

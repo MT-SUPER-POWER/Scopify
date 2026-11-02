@@ -23,6 +23,10 @@ export interface UiStore {
   isLyricsOpen: boolean;
   setIsLyricsOpen: (open: boolean) => void;
   toggleLyrics: () => void;
+  /** 中心内容区域的轻量歌词全屏显示（保留侧边栏）。 */
+  isCenterLyricsOpen: boolean;
+  setIsCenterLyricsOpen: (open: boolean) => void;
+  toggleCenterLyrics: () => void;
   isCollapsed: boolean;
   setIsCollapsed: (collapsed: boolean) => void;
   toggleSidebar: () => void;

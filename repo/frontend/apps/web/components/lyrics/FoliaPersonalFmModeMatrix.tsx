@@ -10,7 +10,8 @@ import {
   PERSONAL_FM_SCENE_CATEGORY_LABELS,
   PERSONAL_FM_SCENES,
 } from "@/constants/personalFm";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import { useHorizontalDragScroll } from "@/hooks/ui/useHorizontalDragScroll";
 import { usePersonalFmStore } from "@/store/module/personalFm";
 import type { PersonalFmModeId, PersonalFmSceneCategory } from "@/types/personalFm/model";
@@ -31,7 +32,7 @@ export function FoliaPersonalFmModeMatrix({
   compact = false,
   theme,
 }: FoliaPersonalFmModeMatrixProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const selection = usePersonalFmStore((state) => state.selection);
   const isLoading = usePersonalFmStore((state) => state.status === "loading");
   const selectionLabel = getPersonalFmSelectionLabel(selection, t);

@@ -1,6 +1,7 @@
 import { Check, Eye, Pencil } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { ThemeAssetCardProps } from "@/types/appearance/themeEditor";
 
 export function ThemeAssetCard({
@@ -12,7 +13,7 @@ export function ThemeAssetCard({
   onOpen,
   preview,
 }: ThemeAssetCardProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   return (
     <div className="group/asset relative min-w-0">
       <button

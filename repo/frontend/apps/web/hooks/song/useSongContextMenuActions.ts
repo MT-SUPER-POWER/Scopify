@@ -8,7 +8,8 @@ import { useSongStatsEnrichment } from "@/hooks/player/useSongStatsEnrichment";
 import { useVoiceLike } from "@/hooks/voice/useVoiceLike";
 import { useLoginStatus } from "@/hooks/auth/useLoginStatus";
 import { usePlayerStore, useUserStore } from "@/store";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { NeteasePlaylist } from "@/types/playlist/api";
 import type { SongContextMenuActionsProps } from "@/types/song/contextMenuComponents";
 
@@ -19,7 +20,7 @@ export function useSongContextMenuActions({
   playlistID,
   onPlay,
 }: SongContextMenuActionsProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const { batchLike } = useBatchSongLike();
 
   const isMulti = Boolean(

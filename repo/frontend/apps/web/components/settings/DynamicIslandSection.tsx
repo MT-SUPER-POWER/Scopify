@@ -14,7 +14,8 @@ import {
 } from "@/constants/desktopCompanion";
 import { useCompanionPreferences } from "@/hooks/desktopCompanion/useCompanionPreferences";
 import { runtime } from "@/lib/runtime";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { BooleanKeys } from "@/types/desktop/companion";
 import type {
   DynamicIslandPreferences,
@@ -24,7 +25,7 @@ import type {
 import { SettingRow, SettingSection, Toggle } from "./SettingsUI";
 
 export function DynamicIslandSection() {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const [stored, setStored] = useCompanionPreferences(
     runtime.dynamicIsland.getPreferences,
     runtime.dynamicIsland.onPreferencesChanged,

@@ -6,11 +6,12 @@ import { NetworkRetryState } from "@/components/shared/NetworkRetryState";
 import { QuietState } from "@/components/shared/QuietState";
 import { getQueryFailureKind } from "@/lib/query/errorPolicy";
 import { isApiError } from "@/lib/web/apiError";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { QueryFailureProps } from "@/types/query/boundaryComponents";
 
 export function QueryFailure({ error, onRetry, title, compact }: QueryFailureProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const kind = getQueryFailureKind(error);
   const failureTitle =
     kind === "unexpected"

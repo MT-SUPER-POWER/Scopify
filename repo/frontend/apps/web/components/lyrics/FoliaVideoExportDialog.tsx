@@ -7,7 +7,8 @@ import { useEffect, useRef, useState } from "react";
 import { useFoliaModalFocus } from "@/hooks/lyrics/useFoliaModalFocus";
 import { createPortal } from "react-dom";
 
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import { createCroppedVideoStream } from "@/lib/lyrics/videoExportCapture";
 import { runtime } from "@/lib/runtime";
 import type { FoliaVideoExportDialogProps } from "@/types/lyrics/components";
@@ -37,7 +38,7 @@ const stopStream = (stream: MediaStream | null) =>
   stream?.getTracks().forEach((track) => track.stop());
 
 export function FoliaVideoExportDialog({ isOpen, onClose, theme }: FoliaVideoExportDialogProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const [presetId, setPresetId] = useState<(typeof PRESETS)[number]["id"]>("1080p");
   const [status, setStatus] = useState<ExportStatus>("idle");
   const [elapsed, setElapsed] = useState(0);

@@ -12,12 +12,13 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
 import { usePlayerStore } from "@/store";
 import { useAppDragStore } from "@/store/module/appDrag";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { PlayerQueueListHandle, PlayerQueueListProps } from "@/types/player/components";
 
 export const PlayerQueueList = forwardRef<PlayerQueueListHandle, PlayerQueueListProps>(
   function PlayerQueueList({ isOpen, className }, ref) {
-    const { t } = useI18n();
+    const { t } = useTranslation();
     const queue = usePlayerStore((state) => state.queue);
     const queueIndex = usePlayerStore((state) => state.queueIndex);
     const moveQueueItem = usePlayerStore((state) => state.moveQueueItem);

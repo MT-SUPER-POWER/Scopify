@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useMemo, useRef, useState } from "react";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
 
 import { FoliaThemeJsonExport } from "@/components/lyrics/FoliaThemeJsonExport";
 import { FoliaThemeJsonImport } from "@/components/lyrics/FoliaThemeJsonImport";
@@ -14,7 +14,7 @@ import type {
 } from "@/types/lyrics/components";
 
 export function FoliaThemeJsonTransfer({ onSelectTheme, theme }: FoliaThemeJsonTransferProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const addTheme = useLyricStageStore((state) => state.addTheme);
   const updateTheme = useLyricStageStore((state) => state.updateTheme);
   const setThemeId = useLyricStageStore((state) => state.setThemeId);

@@ -1,6 +1,6 @@
 import React, { useMemo } from "react";
 import { ImagePlus, Trash2 } from "lucide-react";
-import type { TranslateFn } from "@/types/i18n.generated";
+import type { TranslateFn } from "@/types/i18n/model";
 import type {
   TemperaLayerImage,
   TemperaLayerImageAlign,

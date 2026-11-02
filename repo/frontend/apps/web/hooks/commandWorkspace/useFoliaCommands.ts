@@ -7,11 +7,12 @@ import { buildFoliaCommands, filterFoliaCommands } from "@/lib/commandWorkspace/
 import { useFoliaSettingsStore } from "@/store/module/foliaSettings";
 import { useLyricStageStore } from "@/store/module/lyrics";
 import { useUiStore } from "@/store/module/ui";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { FoliaCommandEntry, FoliaCommandGroup } from "@/types/lyrics/folia/commands";
 
 export function useFoliaCommands(group: FoliaCommandGroup | null, query: string) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const catalog = useMemo(() => buildFoliaCommands(t), [t]);
   const entries = useMemo(
     () => filterFoliaCommands(catalog, group, query),

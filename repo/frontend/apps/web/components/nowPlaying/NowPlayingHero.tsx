@@ -14,7 +14,8 @@ import { useNowPlayingMv } from "@/hooks/ui/useNowPlayingMv";
 import { getSizedImageUrl } from "@/lib/music/imageUrl";
 import { resolveCoverUrl } from "@/lib/music/resolveCoverUrl";
 import { cn } from "@/lib/utils";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import { useUiStore } from "@/store/module/ui";
 import type { NowPlayingSectionProps } from "@/types/player/nowPlayingComponents";
 
@@ -26,7 +27,7 @@ const ACTION_BTN =
  * 歌曲有 MV 时可在同一媒体位切换为 16:9 的 MV 播放器，标题随之移到画面下方。
  */
 export function NowPlayingHero({ song }: NowPlayingSectionProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const playback = usePlaybackProjection();
   const commands = usePlaybackCommands();
   const songMvId = useSongMvId(song);

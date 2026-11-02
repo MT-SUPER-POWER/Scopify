@@ -1,0 +1,7 @@
+{
+  "title": "Close Scopify",
+  "subtitle": "What should happen by default when you close the app?",
+  "minimize": "Minimize to Tray",
+  "exit": "Exit Application",
+  "remember": "Don't ask again"
+}

@@ -12,6 +12,7 @@ allowBuilds:
   es5-ext: true
   # Not trusted under bun either; electron is installed by desktop's electron:ensure.
   electron-winstaller: false
+  "@swc/core": false
   esbuild: false
   msw: false
 

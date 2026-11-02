@@ -1,0 +1,16 @@
+{
+  "title": "What's New",
+  "version": "選擇版本",
+  "current": "目前版本",
+  "empty": "這個版本沒有面向使用者的改動。",
+  "close": "知道了",
+  "closeLabel": "關閉",
+  "noDate": "發布日期未記錄",
+  "unreleased": "即將發布",
+  "unreleasedHint": "開發預覽：上個版本之後的提交",
+  "fullHistory": "完整更新記錄",
+  "viewCommit": "在 GitHub 查看提交 {{hash}}",
+  "added": "新增",
+  "fixed": "修復",
+  "improved": "優化"
+}

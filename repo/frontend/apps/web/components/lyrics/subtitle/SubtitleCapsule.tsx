@@ -9,7 +9,6 @@ import { CompanionSubtitleFillText } from "@/components/lyrics/companion/Compani
 import { LYRICS_PREVIEW_FONTS } from "@/constants/appearance";
 import { useSubtitleEntrance } from "@/hooks/settings/useSubtitleEntrance";
 import type { SubtitleCapsuleProps } from "@/types/lyrics/subtitlePreview";
-import styles from "./subtitle-capsule.module.css";
 
 // Adapted from subtitle-app's SubtitleOverlay.vue. No store or host IPC dependency.
 export function SubtitleCapsule(props: SubtitleCapsuleProps) {
@@ -81,7 +80,7 @@ function SubtitleCapsuleLine({
       {!settings.fillEnabled && entrance.streaming && (
         <span
           aria-hidden="true"
-          className={styles.cursor}
+          className="ml-1.5 inline-block h-[0.9em] w-[3px] animate-pulse rounded-xs align-middle [animation-duration:900ms] motion-reduce:animate-none"
           style={{ backgroundColor: settings.color }}
         />
       )}
@@ -93,7 +92,7 @@ function SubtitleCapsuleLine({
   return (
     <div
       ref={entrance.ref}
-      className={styles.capsule}
+      className="box-border w-fit min-w-0 shrink border border-white/10 transition-[background-color,border-radius] duration-200 ease-out motion-reduce:transition-none"
       style={{
         maxWidth: singleLine ? "100%" : settings.maxWidth,
         padding: `${settings.paddingY}px ${settings.paddingX}px`,
@@ -106,7 +105,12 @@ function SubtitleCapsuleLine({
     >
       <div
         ref={sourceRef}
-        className={cn(styles.source, singleLine && styles.singleLine)}
+        className={cn(
+          "leading-normal tracking-wide wrap-anywhere whitespace-pre-wrap",
+          // Single-line mode: overflow is scrolled horizontally by useSubtitleMarquee.
+          singleLine &&
+            "flex overflow-hidden whitespace-nowrap data-[align=center]:justify-center-safe data-[align=left]:justify-start data-[align=right]:justify-end-safe",
+        )}
         data-align={settings.textAlign}
         style={{
           fontSize: settings.fontSize,
@@ -115,7 +119,7 @@ function SubtitleCapsuleLine({
         }}
       >
         {singleLine ? (
-          <span ref={marquee.contentRef} className={styles.marquee}>
+          <span ref={marquee.contentRef} className="inline-block shrink-0 will-change-transform">
             {sourceContent}
           </span>
         ) : (
@@ -124,7 +128,10 @@ function SubtitleCapsuleLine({
       </div>
       {translation && (
         <div
-          className={cn(styles.translation, singleLine && styles.singleLineTranslation)}
+          className={cn(
+            "leading-1.4 mt-1 wrap-anywhere whitespace-pre-wrap",
+            singleLine && "truncate",
+          )}
           style={{
             fontSize: settings.secondarySize,
             color: settings.secondaryColor,

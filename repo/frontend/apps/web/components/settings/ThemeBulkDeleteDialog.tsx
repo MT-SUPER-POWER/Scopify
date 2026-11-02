@@ -11,12 +11,13 @@ import {
 } from "@scopify/ui/shadcn/components/dialog";
 import { useAppearanceBackground } from "@/hooks/settings/useAppearanceBackground";
 import { useAppearanceStore } from "@/store/module/appearance";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import { useTheme } from "next-themes";
 import type { ThemeBulkDeleteDialogProps } from "@/types/appearance/model";
 
 export function ThemeBulkDeleteDialog({ themes, onClose, onConfirm }: ThemeBulkDeleteDialogProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const { resolvedTheme } = useTheme();
   const variant = resolvedTheme === "light" ? "light" : "dark";
   const { palette, settings } = useAppearanceBackground();

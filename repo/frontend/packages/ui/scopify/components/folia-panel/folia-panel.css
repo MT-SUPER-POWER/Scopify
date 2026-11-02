@@ -42,11 +42,11 @@
   background-clip: content-box;
 }
 
-.st-window.hide-scrollbar {
+.st-window.scrollbar-none {
   scrollbar-width: none;
 }
 
-.st-window.hide-scrollbar::-webkit-scrollbar {
+.st-window.scrollbar-none::-webkit-scrollbar {
   display: none;
 }
 

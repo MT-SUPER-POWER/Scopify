@@ -5,7 +5,8 @@ import { useEffect, useState } from "react";
 
 import { FoliaPlaybackProgressBar } from "@/components/desktopWallpaper/FoliaPlaybackProgressBar";
 import { DesktopPlaybackTransportControls } from "@/components/desktopWallpaper/DesktopPlaybackTransportControls";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { DesktopPlaybackPlayerControlsProps } from "@/types/desktop/playbackWallpaperComponents";
 
 const LYRIC_REVEAL_DELAY_MS = 800;
@@ -25,7 +26,7 @@ export function DesktopPlaybackPlayerControls({
   track,
   volume,
 }: DesktopPlaybackPlayerControlsProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const [isControlAreaHovered, setIsControlAreaHovered] = useState(false);
   const [showLyrics, setShowLyrics] = useState(false);
   const artworkUrl =

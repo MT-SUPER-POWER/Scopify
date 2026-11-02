@@ -39,7 +39,8 @@ import { useSmartRouter } from "@/hooks/core/useSmartRouter";
 import { getCommentHref } from "@/lib/comment/commentResource";
 import { cn, formatCompactCount } from "@/lib/utils";
 import { usePlayerStore, useUserStore } from "@/store";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+import { useI18nStore } from "@/store/module/i18n";
 import { useQueryClient } from "@tanstack/react-query";
 
 function formatDateKey(date: Date) {
@@ -58,7 +59,8 @@ function getHistoryRequestErrorMessage(error: unknown, fallback: string) {
 }
 
 export default function PlaylistActions(props: PlaylistActionsProps) {
-  const { locale, t } = useI18n();
+  const { t } = useTranslation(),
+    locale = useI18nStore((state) => state.locale);
   const queryClient = useQueryClient();
   const requireLogin = useRequireLoginAction();
   const {
@@ -209,7 +211,8 @@ export default function PlaylistActions(props: PlaylistActionsProps) {
     commentCount === undefined
       ? t("playlist.actions.comments")
       : t("playlist.actions.commentsWithCount", {
-          count: formatCompactCount(commentCount),
+          count: commentCount,
+          replace: { count: formatCompactCount(commentCount) },
         });
 
   return (

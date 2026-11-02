@@ -6,12 +6,12 @@ import { usePlaybackCommands } from "@/hooks/player/usePlaybackCommands";
 import { usePlaybackProjection } from "@/hooks/player/usePlaybackProjection";
 import { useLatticePreferences } from "@/store/module/lattice";
 import { usePlayerStore } from "@/store";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { SongDetail } from "@/types/song/api";
 import type { PlaylistLatticeProps } from "@/types/playlist/latticeComponents";
 import { LatticeToolbar } from "./LatticeToolbar";
 import { LatticePoster } from "./LatticePoster";
-import styles from "./PlaylistLattice.module.css";
 
 export default function PlaylistLattice({
   tracks,
@@ -20,7 +20,7 @@ export default function PlaylistLattice({
   onTrackPlay,
   onClose,
 }: PlaylistLatticeProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const rootRef = useRef<HTMLElement>(null);
   const hintId = useId();
   const wall = useLatticeWall(tracks.length);
@@ -51,7 +51,7 @@ export default function PlaylistLattice({
     <section
       ref={rootRef}
       tabIndex={-1}
-      className={styles.root}
+      className="group/lattice @container absolute inset-0 isolate z-15 overflow-hidden bg-card text-foreground outline-none motion-reduce:**:transition-none"
       data-lights-off={lightsOff && currentIndex >= 0}
       aria-label={t("playlist.lattice.open")}
       aria-describedby={hintId}
@@ -66,12 +66,12 @@ export default function PlaylistLattice({
       />
       <div
         ref={wall.fieldRef}
-        className={styles.field}
+        className="absolute inset-0 cursor-grab touch-none overflow-clip overscroll-none outline-none select-none data-[dragging=true]:cursor-grabbing data-[dragging=true]:**:cursor-grabbing"
         aria-label={title}
         tabIndex={0}
         {...wall.pointerHandlers}
       >
-        <div ref={wall.worldRef} className={styles.world}>
+        <div ref={wall.worldRef} className="absolute inset-0 origin-top-left will-change-transform">
           {wall.instances.map((instance) => {
             const track = tracks[instance.queueIndex];
             if (!track) return null;
@@ -93,7 +93,11 @@ export default function PlaylistLattice({
           })}
         </div>
       </div>
-      {tracks.length === 0 && <div className={styles.empty}>{t("playlist.table.noSongs")}</div>}
+      {tracks.length === 0 && (
+        <div className="absolute inset-x-0 top-14 bottom-0 grid place-content-center text-muted-foreground">
+          {t("playlist.table.noSongs")}
+        </div>
+      )}
       <p id={hintId} className="sr-only">
         {t("playlist.lattice.hint")}
       </p>

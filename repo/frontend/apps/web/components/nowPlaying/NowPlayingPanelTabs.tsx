@@ -1,7 +1,8 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import { useUiStore } from "@/store/module/ui";
 import type {
   NowPlayingPanelTabsProps,
@@ -16,7 +17,7 @@ const TABS = [
 
 /** 面板顶部的视图切换胶囊。 */
 export function NowPlayingPanelTabs({ view, overlay = false }: NowPlayingPanelTabsProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
 
   const select = (next: NowPlayingPanelView) => {
     const ui = useUiStore.getState();

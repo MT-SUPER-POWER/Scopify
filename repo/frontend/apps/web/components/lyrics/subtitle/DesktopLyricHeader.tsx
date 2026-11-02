@@ -21,7 +21,8 @@ import { runtime } from "@/lib/runtime";
 import { cn } from "@/lib/utils";
 import { useAppearanceStore } from "@/store/module/appearance";
 import { useDesktopSubtitleControl } from "@/store/module/desktopSubtitleControl";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { DesktopLyricHeaderProps } from "@/types/desktop/lyric";
 
 const BUTTON_CLASS =
@@ -32,7 +33,7 @@ const BUTTON_CLASS =
  * 窗口尺寸固定，锁定按钮始终停在右上角；锁定后只有它在悬停时出现并可点击。
  */
 export function DesktopLyricHeader({ hovered, locked }: DesktopLyricHeaderProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const control = useDesktopSubtitleControl();
   const playback = usePlaybackProjection();
   const commands = usePlaybackCommands();

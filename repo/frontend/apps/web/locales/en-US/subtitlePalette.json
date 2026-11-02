@@ -1,0 +1,13 @@
+{
+  "builtin": "Built-in palettes",
+  "new": "New palette",
+  "name": "Palette name",
+  "saveAs": "Save as new palette",
+  "empty": "No custom palettes yet.",
+  "untitled": "My palette {{number}}",
+  "effects": "Backdrop and shadow",
+  "playback": "Fill and animation",
+  "previewHint": "Scenes, text and playback are for preview only.",
+  "library": "My palettes",
+  "waiting": "Waiting for music"
+}

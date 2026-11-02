@@ -1,10 +1,11 @@
 "use client";
 
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { NotificationPreviewProps } from "@/types/notifications/components";
 
 export function NotificationPreview({ item }: NotificationPreviewProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const report = item.category === "reports";
   const bodyParts = report ? item.body.split(" · ") : [];
   const reportDate = /^\d{4}-\d{2}-\d{2}$/.test(bodyParts[0] ?? "") ? bodyParts.shift() : null;

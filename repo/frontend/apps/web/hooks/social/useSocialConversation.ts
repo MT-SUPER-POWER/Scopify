@@ -5,12 +5,12 @@ import { toast } from "sonner";
 import { sendMessage } from "@/lib/api/social";
 import { socialKey } from "@/lib/social/cache";
 import { useSocialAccount } from "./useSocialQueries";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
 
 export function useSocialSendMessage(uid: string) {
   const { account } = useSocialAccount(),
     client = useQueryClient(),
-    { t } = useI18n();
+    { t } = useTranslation();
   return useMutation({
     mutationFn: (text: string) => sendMessage(uid, text),
     onSuccess: () => {

@@ -1,5 +1,6 @@
 import { formatPlayCount } from "@/lib/utils";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+import { useI18nStore } from "@/store/module/i18n";
 import type { Voice } from "@/types/search/model";
 
 function formatVoiceDate(timestamp: number, locale: string) {
@@ -15,7 +16,8 @@ interface LikedVoiceMetadataProps {
 }
 
 export function LikedVoiceMetadata({ voice }: LikedVoiceMetadataProps) {
-  const { locale, t } = useI18n();
+  const { t } = useTranslation(),
+    locale = useI18nStore((state) => state.locale);
   const date = (timestamp: number) => formatVoiceDate(timestamp, locale);
   const metadata = [
     voice.likeTime ? t("library.voice.meta.likedAt", { date: date(voice.likeTime) }) : null,
@@ -26,9 +28,12 @@ export function LikedVoiceMetadata({ voice }: LikedVoiceMetadataProps) {
       ? t("library.voice.meta.publishedAt", { date: date(voice.publishTime) })
       : null,
     typeof voice.playCount === "number"
-      ? t("library.voice.meta.playCount", { count: formatPlayCount(voice.playCount) })
+      ? t("library.voice.meta.playCount", {
+          count: voice.playCount,
+          replace: { count: formatPlayCount(voice.playCount) },
+        })
       : null,
-  ].filter((item): item is string => Boolean(item));
+  ].filter((item): item is NonNullable<typeof item> => Boolean(item));
 
   return (
     <>

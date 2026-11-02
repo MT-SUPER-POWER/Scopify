@@ -1,0 +1,20 @@
+{
+  "close": "關閉",
+  "previous": "上一首",
+  "next": "下一首",
+  "play": "播放",
+  "pause": "暫停",
+  "shuffleOn": "隨機播放：開啟",
+  "shuffleOff": "隨機播放：關閉",
+  "repeatOff": "循環模式：順序播放",
+  "repeatAll": "循環模式：列表循環",
+  "repeatOne": "循環模式：單曲循環",
+  "showLyrics": "開啟歌詞介面",
+  "hideLyrics": "關閉歌詞介面",
+  "fullscreen": "進入全螢幕",
+  "exitFullscreen": "退出全螢幕",
+  "unmute": "取消靜音",
+  "like": "喜歡",
+  "volume": "音量",
+  "backToHome": "返回首頁"
+}

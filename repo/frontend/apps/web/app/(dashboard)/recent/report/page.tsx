@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import { ListeningReportView } from "@/components/listeningReport/ListeningReportView";
+import { ListeningReportView } from "./_components/ListeningReportView";
 
 export default function RecentListeningReportPage() {
   return (

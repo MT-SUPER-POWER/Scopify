@@ -3,7 +3,8 @@
 import { Expand, MinimizeIcon } from "lucide-react";
 import { ShortcutHint } from "@/components/shortcuts/ShortcutHint";
 import { toggleApplicationFullscreen } from "@/lib/shortcuts/fullscreen";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import { useUiStore } from "@/store/module/ui";
 import {
   Tooltip,
@@ -13,7 +14,7 @@ import {
 } from "@scopify/ui/shadcn/components/tooltip";
 
 export function FullscreenButton() {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const isFullscreen = useUiStore((s) => s.isFullscreen);
   const fullscreenActionLabel = t(isFullscreen ? "ui.exitFullscreen" : "ui.fullscreen");
 

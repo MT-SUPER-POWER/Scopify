@@ -1,6 +1,7 @@
 "use client";
 
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { NotificationSummaryProps } from "@/types/notifications/components";
 
 export function NotificationSummary({
@@ -9,7 +10,7 @@ export function NotificationSummary({
   detailId,
   onAction,
 }: NotificationSummaryProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   return (
     <>
       {item.progress !== undefined && (

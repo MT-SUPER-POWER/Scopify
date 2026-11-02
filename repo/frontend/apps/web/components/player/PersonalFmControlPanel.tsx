@@ -11,7 +11,8 @@ import {
   isPersonalFmPlaybackSource,
 } from "@/constants/personalFm";
 import { cn } from "@/lib/utils";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import { usePersonalFmStore } from "@/store/module/personalFm";
 import { usePlayerStore } from "@/store/module/player";
 import type { PersonalFmModeId, PersonalFmSceneCategory } from "@/types/personalFm/model";
@@ -28,7 +29,7 @@ interface PersonalFmControlPanelProps {
 }
 
 export function PersonalFmControlPanel({ placement = "playbar" }: PersonalFmControlPanelProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const isPersonalFm = usePlayerStore((state) => isPersonalFmPlaybackSource(state.playlistId));
   const selection = usePersonalFmStore((state) => state.selection);
   const isLoading = usePersonalFmStore((state) => state.status === "loading");

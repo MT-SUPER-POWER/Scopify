@@ -10,7 +10,8 @@ import {
 } from "@/lib/settings/appearance";
 import { isThemeNameValid, uniqueThemeName } from "@/lib/settings/themeNames";
 import { useAppearanceStore } from "@/store/module/appearance";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type {
   BackgroundTheme,
   BackgroundThemeVariant,
@@ -19,7 +20,7 @@ import type {
 import type { BackgroundThemeEditorProps } from "@/types/appearance/themeEditor";
 
 export function useBackgroundThemeEditor({ themeId, copyFrom }: BackgroundThemeEditorProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const { resolvedTheme } = useTheme();
   const [variant, setVariant] = useState<BackgroundThemeVariant>(
     resolvedTheme === "light" ? "light" : "dark",

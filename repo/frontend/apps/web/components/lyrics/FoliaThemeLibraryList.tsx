@@ -1,7 +1,7 @@
 "use client";
 
 import { PanelLeftClose, PanelLeftOpen, Plus, RotateCcw } from "lucide-react";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
 
 import { FoliaThemeLibraryItem } from "@/components/lyrics/FoliaThemeLibraryItem";
 import { createFoliaStageTheme } from "@scopify/ui/folia";
@@ -17,7 +17,7 @@ export function FoliaThemeLibraryList({
   onToggleCollapsed,
   selectedThemeId,
 }: FoliaThemeLibraryListProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const restoreBuiltinThemes = useLyricStageStore((state) => state.restoreBuiltinThemes);
   const addTheme = useLyricStageStore((state) => state.addTheme);
   const themes = useLyricStageStore((state) => state.themes);

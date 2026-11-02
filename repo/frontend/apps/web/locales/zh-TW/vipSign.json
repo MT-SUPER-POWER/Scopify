@@ -1,0 +1,13 @@
+{
+  "ticketTitle": "每日樂簽",
+  "memberCenter": "雲音樂會員中心",
+  "tearHint": "按住票根 · 上下捲撕",
+  "tearAction": "撕下票根並關閉樂簽",
+  "playFailed": "歌曲暫時無法播放，請稍後重試",
+  "recommendedSong": "今日推薦",
+  "monthlyCheckIn": "本月累計打卡",
+  "days": "天",
+  "qrHint": "會員每日打卡得成長值",
+  "commentFrom": "- 來自 @{{nickname}} 的評論",
+  "qrAlt": "QR Code"
+}

@@ -11,7 +11,7 @@ import { useShortcutCommands } from "@/hooks/shortcuts/useShortcutCommands";
 import { runtime } from "@/lib/runtime";
 import { cn } from "@/lib/utils";
 import { useDesktopSubtitleControl } from "@/store/module/desktopSubtitleControl";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
 
 const STAGE_JUSTIFY = {
   left: "justify-start",
@@ -20,7 +20,7 @@ const STAGE_JUSTIFY = {
 } as const;
 
 export function DesktopLyricView() {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const view = useDesktopSubtitle();
   const locked = useDesktopSubtitleControl((state) => Boolean(state.preferences?.locked));
   const hovered = useCompanionCursorInside(runtime.desktopLyrics.onCursorInsideChanged);

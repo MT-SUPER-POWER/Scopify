@@ -10,7 +10,8 @@ import { createPortal } from "react-dom";
 import { FoliaGlobalLyricOffsetRuler } from "@/components/lyrics/FoliaGlobalLyricOffsetRuler";
 import { useFoliaPlaybackBridge } from "@/hooks/player/useFoliaPlaybackBridge";
 import { useLyricStageStore } from "@/store/module/lyrics";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { FoliaGlobalLyricOffsetDialogProps } from "@/types/lyrics/components";
 
 const LIMIT_MS = 2000;
@@ -21,7 +22,7 @@ export function FoliaGlobalLyricOffsetDialog({
   onClose,
   theme,
 }: FoliaGlobalLyricOffsetDialogProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const bridge = useFoliaPlaybackBridge();
   const applied = useLyricStageStore((state) => state.lyricOffsetMs);
   const patchSettings = useLyricStageStore((state) => state.patchSettings);

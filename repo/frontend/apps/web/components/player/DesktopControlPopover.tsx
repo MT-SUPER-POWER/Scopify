@@ -20,11 +20,11 @@ import { runtime } from "@/lib/runtime";
 import { cn } from "@/lib/utils";
 import { useAppearanceStore } from "@/store/module/appearance";
 import { useDesktopSubtitleControl } from "@/store/module/desktopSubtitleControl";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
 
 /** 桌面小歌词与桌面音乐共用的播放栏入口：一个按钮、一个浮层。 */
 export function DesktopControlPopover() {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const control = useDesktopSubtitleControl();
   const wallpaper = useDesktopPlaybackWallpaperController();
   const showTranslation = useAppearanceStore((state) => state.lyricsPreview.showTranslation);

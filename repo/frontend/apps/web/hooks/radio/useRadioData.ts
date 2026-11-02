@@ -12,7 +12,8 @@ import {
   isSubscribedRadio,
   useRadioSubscriptionsQuery,
 } from "@/hooks/radio/useRadioSubscriptionsQuery";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import { pruneSongDetail, type SongDetail } from "@/types/song/api";
 import type {
   RadioDetail,
@@ -88,7 +89,7 @@ async function fetchRadioContent(radioId: string): Promise<RadioContent> {
 }
 
 export function useRadioData() {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const searchParams = useSearchParams();
   const radioId = searchParams.get("id");
   const radioQuery = useQuery({

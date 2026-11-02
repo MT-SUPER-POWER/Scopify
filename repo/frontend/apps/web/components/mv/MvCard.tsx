@@ -17,7 +17,8 @@ import { useSmartRouter } from "@/hooks/core/useSmartRouter";
 import { getSizedImageUrl } from "@/lib/music/imageUrl";
 import { getMvArtistNames, getMvCover } from "@/lib/music/mvCover";
 import { cn, formatDuration, formatPlayCount } from "@/lib/utils";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { MvCardProps } from "@/types/mv/components";
 
 /** 悬停多久后开始播放预览，避免鼠标划过时到处起播。 */
@@ -28,7 +29,7 @@ const PREVIEW_DELAY_MS = 600;
  * 悬停片刻后静音预览；下方 36px 艺人头像、16px 两行标题、艺人名，悬停时右侧出现更多菜单。
  */
 export function MvCard({ mv }: MvCardProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const smartRouter = useSmartRouter();
   const [isHovering, setIsHovering] = useState(false);
   const [isPreviewing, setIsPreviewing] = useState(false);

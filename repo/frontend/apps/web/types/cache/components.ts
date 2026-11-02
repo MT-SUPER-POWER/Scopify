@@ -1,23 +1,4 @@
-import type {
-  CacheCategory,
-  CacheClearResult,
-  CacheSelectionSummary,
-  CacheSelectionKey,
-  CacheStats,
-} from "@/types/cache/model";
-
-export interface CacheCleanupPageProps {
-  error: string | null;
-  isClearing: boolean;
-  isLoading: boolean;
-  onClear: () => Promise<CacheClearResult | null>;
-  onRefresh: () => Promise<void>;
-  onToggleCategory: (scope: "page" | "playback", category: CacheCategory, checked: boolean) => void;
-  onToggleScope: (scope: "page" | "playback", checked: boolean) => void;
-  selectedCategories: ReadonlySet<CacheSelectionKey>;
-  selection: CacheSelectionSummary;
-  stats: CacheStats | null;
-}
+import type { CacheSelectionSummary } from "@/types/cache/model";
 
 export interface CacheCheckboxProps {
   checked: boolean;

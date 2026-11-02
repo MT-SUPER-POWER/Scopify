@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import MePage from "@/components/me/MePage";
+import MePage from "./_components/MePage";
 
 export const metadata: Metadata = {
   title: "我的",

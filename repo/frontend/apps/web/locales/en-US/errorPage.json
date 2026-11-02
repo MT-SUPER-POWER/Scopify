@@ -1,0 +1,6 @@
+{
+  "notFound.description": "The page you requested does not exist, has moved, or the link is no longer valid.",
+  "notFound.title": "We couldn't find that page",
+  "unexpected.description": "This page cannot continue right now. Try again, or return home to keep using Scopify.",
+  "unexpected.title": "Something went wrong"
+}

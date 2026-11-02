@@ -6,13 +6,14 @@ import { runtime } from "@/lib/runtime";
 import { getBackendBaseUrl } from "@/lib/web/request";
 import { useUserStore } from "@/store/module/user";
 import { usePlayerStore } from "@/store";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { DeviceKickoffInput } from "@/types/devices/model";
 import { getDeviceSessionScope } from "./useDeviceSession";
 
 export function useDeviceActions(scope: string) {
   const client = useQueryClient();
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const ensureSession = () => {
     if (scope !== getDeviceSessionScope()) throw new Error(t("devices.sessionChanged"));
   };

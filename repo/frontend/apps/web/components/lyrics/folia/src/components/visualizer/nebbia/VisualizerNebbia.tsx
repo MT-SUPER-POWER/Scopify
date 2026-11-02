@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { Line } from "../../../types";
 import { resolveThemeFontStack, resolveThemeFontWeight } from "../../../utils/fontStacks";
 import { getLineRenderEndTime } from "../../../utils/lyrics/renderHints";
@@ -45,7 +46,7 @@ const VisualizerNebbia: React.FC<Props> = (props) => {
     subtitleOverlayBackground,
     nebbiaTuning = DEFAULT_NEBBIA_TUNING,
   } = props;
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const hostRef = useRef<HTMLDivElement>(null);
   const runtimeRef = useRef<NebbiaRuntime | null>(null);
   const [failed, setFailed] = useState(false);

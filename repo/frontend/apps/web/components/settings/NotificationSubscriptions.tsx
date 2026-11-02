@@ -1,7 +1,8 @@
 "use client";
 
 import { Switch } from "@scopify/ui/shadcn/components/switch";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { NotificationPreferenceSectionProps } from "@/types/notifications/components";
 import { SettingInput, SettingRow, SettingSection } from "./SettingsUI";
 
@@ -20,7 +21,7 @@ export function NotificationSubscriptions({
   disabled,
   onChange,
 }: NotificationPreferenceSectionProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   return (
     <SettingSection title={t("notifications.subscriptions")}>
       {SOURCES.map((source) => (

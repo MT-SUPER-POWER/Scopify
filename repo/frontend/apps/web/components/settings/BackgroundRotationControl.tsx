@@ -14,14 +14,15 @@ import { Button } from "@scopify/ui/shadcn/components/button";
 import { useAppearanceBackground } from "@/hooks/settings/useAppearanceBackground";
 import { useThemeOptions } from "@/hooks/settings/useThemeOptions";
 import { useAppearanceStore } from "@/store/module/appearance";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { ThemeRotationDialogProps } from "@/types/appearance/model";
 import { SettingRow } from "./SettingsUI";
 import { ThemeRotationDialog } from "./ThemeRotationDialog";
 import { ThemeTimeline } from "./ThemeTimeline";
 
 export function BackgroundRotationControl() {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const { settings } = useAppearanceBackground();
   const options = useThemeOptions();
   const schedule = useAppearanceStore((state) => state.schedule);

@@ -8,13 +8,14 @@ import { subscribeArtist } from "@/lib/api/artist";
 import { useLoginStatus } from "@/hooks/auth/useLoginStatus";
 import { musicQueryKeys } from "@/lib/query/queryKeys";
 import { useUserStore } from "@/store";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { ArtistFollowCountResponse } from "@/types/artist/api";
 
 /** 艺人关注状态、粉丝数与关注切换；歌手页与正在播放面板共用。 */
 export function useArtistFollow(artistId: number | string) {
   const [loading, setLoading] = useState(false);
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const queryClient = useQueryClient();
   const isLoggedIn = useLoginStatus();
 

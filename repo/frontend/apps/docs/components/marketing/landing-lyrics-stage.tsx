@@ -86,12 +86,13 @@ export function LandingLyricsStage() {
           </p>
         </motion.div>
 
-        {/* 立在最右侧边缘的齿轮就是节目单：舞台推到跟前才出现，熄灯时一起退场。 */}
+        {/* 立在最右侧边缘的齿轮就是节目单：舞台推到跟前才出现，熄灯时一起退场；手机上换小一号的。 */}
         <motion.div
           className="absolute top-1/2 right-0 z-30 -translate-y-1/2"
           style={{ opacity: stage.ringOpacity, pointerEvents: stage.ringPointerEvents }}
         >
           <LandingModeDial
+            size={isWide ? "regular" : "compact"}
             modeIndex={stage.modeIndex}
             modePosition={stage.modePosition}
             onPick={stage.jumpToMode}

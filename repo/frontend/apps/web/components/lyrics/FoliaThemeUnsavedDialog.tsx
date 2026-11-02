@@ -10,7 +10,8 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { FoliaThemeUnsavedDialogProps } from "@/types/lyrics/components";
 
 export function FoliaThemeUnsavedDialog({
@@ -20,7 +21,7 @@ export function FoliaThemeUnsavedDialog({
   open,
   isDaylight,
 }: FoliaThemeUnsavedDialogProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
 
   return (
     <AlertDialog open={open} onOpenChange={(nextOpen) => !nextOpen && onCancel()}>

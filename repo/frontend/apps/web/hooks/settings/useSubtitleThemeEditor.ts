@@ -6,7 +6,8 @@ import { subtitlePalette } from "@/lib/settings/subtitlePalette";
 import { isThemeNameValid, uniqueThemeName } from "@/lib/settings/themeNames";
 import { useAppearanceStore } from "@/store/module/appearance";
 import { useSubtitleThemeStore } from "@/store/module/subtitleThemes";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type {
   SavedSubtitleTheme,
   SubtitlePalette,
@@ -18,7 +19,7 @@ export function useSubtitleThemeEditor({
   copyFrom,
   useCurrent,
 }: SubtitleThemeEditorProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const themes = useSubtitleThemeStore((state) => state.themes);
   const save = useSubtitleThemeStore((state) => state.save);
   const setActiveId = useSubtitleThemeStore((state) => state.setActiveId);

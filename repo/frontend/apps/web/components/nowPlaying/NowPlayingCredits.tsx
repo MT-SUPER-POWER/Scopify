@@ -6,12 +6,14 @@ import { NowPlayingCard } from "./NowPlayingCard";
 import { NowPlayingCreditRow } from "./NowPlayingCreditRow";
 import { getSizedImageUrl } from "@/lib/music/imageUrl";
 import { resolveCoverUrl } from "@/lib/music/resolveCoverUrl";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+import { useI18nStore } from "@/store/module/i18n";
 import type { NowPlayingSectionProps } from "@/types/player/nowPlayingComponents";
 
 /** 「演职人员」：每位艺人可单独关注，末尾附所属专辑与发行时间。 */
 export function NowPlayingCredits({ song }: NowPlayingSectionProps) {
-  const { t, locale } = useI18n();
+  const { t } = useTranslation(),
+    locale = useI18nStore((state) => state.locale);
   const artists = (song.ar ?? []).filter((artist) => artist.id);
   const hasAlbum = Boolean(song.al?.id && song.al.name);
   const albumCover = resolveCoverUrl(song.al?.picUrl, song.al?.coverUrl);

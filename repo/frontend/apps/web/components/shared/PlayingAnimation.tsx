@@ -1,14 +1,14 @@
 import React from "react";
 import { cn } from "@/lib/utils";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { PlayingAnimationProps } from "@/types/shared/playingAnimation";
-import styles from "./PlayingAnimation.module.css";
 
 export const PlayingAnimation = React.memo(function PlayingAnimation({
   className,
   size = 14,
 }: PlayingAnimationProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
 
   return (
     <div className={cn("flex shrink-0 items-end gap-0.5", className)}>
@@ -21,7 +21,7 @@ export const PlayingAnimation = React.memo(function PlayingAnimation({
         className="text-brand"
       >
         <rect
-          className={styles.bar}
+          className="origin-bottom [transform-box:fill-box] motion-safe:animate-equalizer"
           x="1.5"
           y="2"
           width="3"
@@ -30,7 +30,8 @@ export const PlayingAnimation = React.memo(function PlayingAnimation({
           fill="currentColor"
         />
         <rect
-          className={styles.bar}
+          className="origin-bottom [transform-box:fill-box] motion-safe:animate-equalizer"
+          style={{ animationDelay: "0.2s" }}
           x="5.5"
           y="2"
           width="3"
@@ -39,7 +40,8 @@ export const PlayingAnimation = React.memo(function PlayingAnimation({
           fill="currentColor"
         />
         <rect
-          className={styles.bar}
+          className="origin-bottom [transform-box:fill-box] motion-safe:animate-equalizer"
+          style={{ animationDelay: "0.4s" }}
           x="9.5"
           y="2"
           width="3"

@@ -2,12 +2,13 @@
 
 import { Switch } from "@scopify/ui/shadcn/components/switch";
 import type { SubtitleSettingsEditorProps } from "@/types/lyrics/subtitlePreview";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import { SettingRow, SettingSection } from "./SettingsUI";
 import { AppearanceRange } from "./AppearanceRange";
 
 export function SubtitleFillSettings({ settings, onChange: update }: SubtitleSettingsEditorProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   return (
     <SettingSection title={t("subtitleSystem.fill")}>
       <SettingRow

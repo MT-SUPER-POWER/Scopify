@@ -1,7 +1,8 @@
 import { CalendarDays, Circle } from "lucide-react";
 import { useMemo } from "react";
 import { cn } from "@/lib/utils";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { VipSignMenuCardProps } from "@/types/vipSign/components";
 
 export function VipSignMenuCard({
@@ -13,7 +14,7 @@ export function VipSignMenuCard({
   onSelectSignDay,
   signHistory,
 }: VipSignMenuCardProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const recentRecords = useMemo(() => signHistory?.signInfoList.slice(-3) ?? [], [signHistory]);
 
   return (

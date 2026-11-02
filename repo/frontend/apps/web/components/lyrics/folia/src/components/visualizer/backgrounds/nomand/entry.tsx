@@ -4,6 +4,7 @@ import {
 } from "@scopify/ui/scopify/components/folia-panel/controls";
 import { getSteppedMode } from "@scopify/ui/scopify/components/folia-panel/mode-stepper-row";
 import type { NomandBackgroundSource, NomandBackgroundTuning } from "../../../../types";
+import type { TranslationKey } from "@/lib/i18n";
 import { EFFECT_LABEL_KEYS, EFFECTS } from "./NomandBackgroundEffectSettings";
 import React, { lazy } from "react";
 import { Layers } from "lucide-react";
@@ -16,9 +17,9 @@ const NomandBackgroundLayer = lazy(() => import("./NomandBackgroundLayer"));
 // src/components/visualizer/backgrounds/nomand/entry.tsx
 // Registers the Paper image-effect shell background.
 
-const SOURCE_LABEL_KEYS: Record<NomandBackgroundSource, string> = {
-  "cover-derived": "options.monetBackgroundSourceCover",
-  "uploaded-global": "options.monetBackgroundSourceUploaded",
+const SOURCE_LABEL_KEYS: Record<NomandBackgroundSource, TranslationKey> = {
+  "cover-derived": "folia.options.monetBackgroundSourceCover",
+  "uploaded-global": "folia.options.monetBackgroundSourceUploaded",
 };
 
 export default defineVisualizerBackground({
@@ -60,7 +61,7 @@ export default defineVisualizerBackground({
       <>
         <FoliaQuickChip
           label={sourceLabel}
-          title={`${t("options.nomandBackgroundSource")}: ${sourceLabel}`}
+          title={`${t("folia.options.nomandBackgroundSource")}: ${sourceLabel}`}
           disabled={!hasImage && source === "cover-derived"}
           onClick={() =>
             change({
@@ -71,12 +72,12 @@ export default defineVisualizerBackground({
         />
         <FoliaQuickChip
           label={effectLabel}
-          title={`${t("options.nomandBackgroundEffect")}: ${effectLabel}`}
+          title={`${t("folia.options.nomandBackgroundEffect")}: ${effectLabel}`}
           onClick={() => change({ effect: getSteppedMode(EFFECTS, tuning.effect, 1) })}
         />
         <FoliaQuickToggle
           active={tuning.overlayEnabled}
-          label={t("options.nomandBackgroundOverlay")}
+          label={t("folia.options.nomandBackgroundOverlay")}
           onToggle={() => change({ overlayEnabled: !tuning.overlayEnabled })}
         >
           <Layers size={14} />

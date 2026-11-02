@@ -6,12 +6,13 @@ import { useSmartRouter } from "@/hooks/core/useSmartRouter";
 import { runtime } from "@/lib/runtime";
 import { createFreshLoginDevice } from "@/lib/devices/clientIdentity";
 import { completeFreshLogin } from "@/lib/devices/completeLogin";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { QrLoginProps, QrStatus } from "@/types/auth/login";
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 export function useQrLogin({ onSuccess, deviceName }: QrLoginProps) {
   const smartRouter = useSmartRouter();
-  const { t } = useI18n();
+  const { t } = useTranslation();
 
   // ref 避免 smartRouter 每次渲染新引用导致 useEffect 反复执行
   const routerRef = useRef(smartRouter);
@@ -24,7 +25,7 @@ export function useQrLogin({ onSuccess, deviceName }: QrLoginProps) {
 
   const [qrImg, setQrImg] = useState("");
   const [qrStatus, setQrStatus] = useState<QrStatus>("loading");
-  const [qrStatusText, setQrStatusText] = useState(t("login.qr.loading"));
+  const [qrStatusText, setQrStatusText] = useState<string>(t("login.qr.loading"));
 
   // 强制刷新触发器，用于用户手动点击刷新
   const [refreshKey, setRefreshKey] = useState(0);

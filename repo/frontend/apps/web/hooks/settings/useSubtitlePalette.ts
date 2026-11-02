@@ -4,11 +4,12 @@ import { SUBTITLE_COLOR_PRESETS } from "@/constants/subtitle-preview";
 import { isSubtitleThemeActive, subtitleThemePatch } from "@/lib/settings/subtitleTheme";
 import { useAppearanceStore } from "@/store/module/appearance";
 import { useSubtitleThemeStore } from "@/store/module/subtitleThemes";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { SavedSubtitleTheme } from "@/types/lyrics/subtitlePreview";
 
 export function useSubtitlePalette() {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const settings = useAppearanceStore((state) => state.lyricsPreview);
   const update = useAppearanceStore((state) => state.updateLyricsPreview);
   const themes = useSubtitleThemeStore((state) => state.themes);

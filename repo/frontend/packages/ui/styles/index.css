@@ -1,0 +1,4 @@
+/* Shared Tailwind utilities grouped by capability; see skills/ui-package-boundaries (Style Placement). */
+@import "./scrollbar.css";
+@import "./animations.css";
+@import "./paper.css";

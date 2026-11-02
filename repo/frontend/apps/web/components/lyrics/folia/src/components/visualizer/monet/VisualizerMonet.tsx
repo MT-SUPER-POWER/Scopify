@@ -1,5 +1,6 @@
 import React, { useMemo, useState, useEffect, useRef } from "react";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import { motion, useMotionValueEvent, useDragControls, useMotionValue } from "framer-motion";
 import { RotateCcw } from "lucide-react";
 import { useElementWidth } from "../../../hooks/useElementWidth";
@@ -53,7 +54,7 @@ const VisualizerMonet: React.FC<VisualizerSharedProps> = (props) => {
     onLyricLineSeek,
     seed,
   } = props;
-  const { t } = useI18n();
+  const { t } = useTranslation();
 
   const handleSetMonetTuning = onMonetTuningChange;
 

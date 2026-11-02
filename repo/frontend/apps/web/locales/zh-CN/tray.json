@@ -1,0 +1,13 @@
+{
+  "previous": "上一首",
+  "next": "下一首",
+  "play": "播放",
+  "pause": "暂停",
+  "like": "喜欢",
+  "unlike": "取消喜欢",
+  "desktopWallpaper": "桌面动态壁纸",
+  "openDesktopController": "悬浮控制器",
+  "settings": "设置",
+  "minimize": "最小化",
+  "exit": "退出"
+}

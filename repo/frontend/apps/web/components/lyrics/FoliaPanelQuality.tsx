@@ -6,14 +6,14 @@ import { FoliaPanelRow, FoliaSegments } from "@scopify/ui/scopify/components/fol
 import { IMMERSE_TYPES } from "@/constants/musicQuality";
 import { QUALITY_OPTIONS } from "@/constants/playerBar";
 import { useMusicQuality } from "@/hooks/player/useMusicQuality";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
 
 // The quality tab, in the place of Folia's account tab (panelTab/AccountTab.tsx keeps the default
 // audio quality there): every quality as one row, the one in use ticked, and the immersive variant
 // as a choice under 沉浸声 while it is in use.
 
 export function FoliaPanelQuality() {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const { changeMusicQuality, changeImmerseType, immerseType, musicQuality, isChanging } =
     useMusicQuality();
 

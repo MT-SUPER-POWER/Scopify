@@ -4,7 +4,8 @@ import { Pause, Play, SkipBack, SkipForward } from "lucide-react";
 import { usePlaybackCommands } from "@/hooks/player/usePlaybackCommands";
 import { usePlaybackProjection } from "@/hooks/player/usePlaybackProjection";
 import { cn } from "@/lib/utils";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { TaskbarLyricControlsProps } from "@/types/desktop/taskbarLyric";
 
 const BUTTON_CLASS =
@@ -12,7 +13,7 @@ const BUTTON_CLASS =
 
 /** 悬停时从封面旁展开的上一首 / 播放暂停 / 下一首。 */
 export function TaskbarLyricControls({ visible }: TaskbarLyricControlsProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const playback = usePlaybackProjection();
   const commands = usePlaybackCommands();
 

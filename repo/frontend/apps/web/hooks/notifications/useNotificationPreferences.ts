@@ -6,12 +6,13 @@ import { toast } from "sonner";
 import { runtime } from "@/lib/runtime";
 import { performNotificationAction } from "@/lib/notifications/actions";
 import { useNotificationStore } from "@/store/module/notifications";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { NotificationPreferencesDraft } from "@/types/notifications/model";
 
 export function useNotificationPreferences() {
   const store = useNotificationStore();
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const [draft, setDraft] = useState<NotificationPreferencesDraft | null>(null);
   const [saving, setSaving] = useState(false);
   const [testResult, setTestResult] = useState<"sent" | "blocked" | null>(null);

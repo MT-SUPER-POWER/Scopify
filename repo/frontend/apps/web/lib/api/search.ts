@@ -15,7 +15,7 @@ import request from "../web/request";
  * @return res.data.showKeyword
  */
 export function searchDefault() {
-  return request.get("/v1/search/default/keyword/pc");
+  return request.get("/search/default/pc");
 }
 
 /**
@@ -37,19 +37,20 @@ export function searchSuggest(keyword: string) {
 }
 
 export function searchSongs(keyword: string, limit = 15, offset = 0, signal?: AbortSignal) {
-  return request.get<SongSearchResponse>("/v1/search/song/pc", {
+  return request.get<SongSearchResponse>("/search/song/list/page", {
     signal,
     params: {
       keyword: keyword,
       limit: limit,
       offset: offset,
       needCorrect: true,
+      channel: "typing",
     },
   });
 }
 
 export function searchPlaylists(s: string, limit = 15, offset = 0) {
-  return request.get<PlaylistSearchResponse>("/v1/search/playlist/pc", {
+  return request.get<PlaylistSearchResponse>("/search/playlist/v1", {
     params: {
       s: s,
       limit: limit,
@@ -60,7 +61,7 @@ export function searchPlaylists(s: string, limit = 15, offset = 0) {
 }
 
 export function searchAlbums(s: string, limit = 15, offset = 0) {
-  return request.get<AlbumSearchResponse>("/v1/search/album/pc", {
+  return request.get<AlbumSearchResponse>("/search/album/v1", {
     params: {
       s: s,
       limit: limit,
@@ -71,7 +72,7 @@ export function searchAlbums(s: string, limit = 15, offset = 0) {
 }
 
 export function searchArtists(s: string, limit = 15, offset = 0) {
-  return request.get<ArtistSearchResponse>("/v1/search/artist/pc", {
+  return request.get<ArtistSearchResponse>("/search/artist/v1", {
     params: {
       s: s,
       limit: limit,

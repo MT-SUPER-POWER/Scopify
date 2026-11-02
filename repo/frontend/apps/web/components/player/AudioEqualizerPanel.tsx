@@ -26,7 +26,8 @@ import { EqualizerCurve } from "@scopify/ui/scopify/components/equalizer-curve";
 import { isUserPresetId, useAudioEqualizerDraft } from "@/hooks/player/useAudioEqualizerDraft";
 import { cn } from "@/lib/utils";
 import { useAudioEqualizerStore } from "@/store/module/audioEqualizer";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { AudioEqualizerModeId, AudioEqualizerPresetId } from "@/types/audio/equalizer";
 import type {
   AudioEqualizerPanelProps,
@@ -46,7 +47,7 @@ export function AudioEqualizerPanel({
   selectContentStyle,
   style,
 }: AudioEqualizerPanelProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const { commit, draft, resetBands, resetEffects, updateBand, updateEffect } =
     useAudioEqualizerDraft();
   const [nameDraft, setNameDraft] = useState("");

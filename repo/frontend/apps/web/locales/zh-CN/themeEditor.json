@@ -1,0 +1,14 @@
+{
+  "view": "查看",
+  "copy": "创建副本",
+  "copyName": "{{name}} 副本",
+  "builtinHint": "内置 · 只读",
+  "saved": "已保存并应用",
+  "missing": "找不到这个主题，可能已被删除。请通过顶部导航返回设置。",
+  "edit": "编辑",
+  "styleLabel": "字幕样式",
+  "paletteLabel": "字幕配色",
+  "unsaved": "有未保存的修改，离开页面后不会保留。",
+  "draftHint": "修改仅在此预览，保存后应用。",
+  "reset": "撤销修改"
+}

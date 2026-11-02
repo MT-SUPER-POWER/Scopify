@@ -4,12 +4,13 @@ import Link from "next/link";
 import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import { UserVipBadge } from "@/components/shared/UserVipBadge";
 import { useUserStore } from "@/store";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { ProfileMenuIdentityProps } from "@/types/user/profileMenuComponents";
 import { getSizedImageUrl } from "@/lib/music/imageUrl";
 
 export function ProfileMenuIdentity({ isLoggedIn, onLogin }: ProfileMenuIdentityProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const user = useUserStore((state) => state.user);
   const className =
     "group flex cursor-pointer items-center gap-5 rounded-none px-6 py-6 focus:bg-content/5";

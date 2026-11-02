@@ -38,7 +38,8 @@ import { FoliaPersonalFmControlsTab } from "@/components/lyrics/FoliaPersonalFmC
 import { isPersonalFmPlaybackSource } from "@/constants/personalFm";
 import { useFoliaPanelControls } from "@/hooks/player/useFoliaPanelControls";
 import { useFoliaSettingsStore } from "@/store/module/foliaSettings";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import { usePlayerStore } from "@/store/module/player";
 import type { FoliaStageSettingsProps } from "@/types/lyrics/components";
 import type { FoliaPanelTab } from "@/types/lyrics/folia/stage";
@@ -54,7 +55,7 @@ export function FoliaStageSettings({
   onOpenChange,
   theme,
 }: FoliaStageSettingsProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const model = useFoliaPanelControls();
   const song = usePlayerStore((state) => state.currentSongDetail);
   const isPersonalFm = usePlayerStore((state) => isPersonalFmPlaybackSource(state.playlistId));

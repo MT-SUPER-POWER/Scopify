@@ -11,11 +11,12 @@ import {
 } from "@scopify/ui/shadcn/components/dialog";
 import { SimilarSongRow } from "@/components/song/SimilarSongRow";
 import { useSimilarSongs } from "@/hooks/song/useSimilarSongs";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { SimilarSongsDialogProps } from "@/types/song/similarComponents";
 
 export function SimilarSongsDialog({ song, open, onOpenChange }: SimilarSongsDialogProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const query = useSimilarSongs(song.id, open);
   const songs = query.data ?? [];
   return (

@@ -1,6 +1,7 @@
 [submodule "backend/api-enhanced"]
 	path = repo/backend/api-enhanced
-	url = https://github.com/ScopifyMusicPlayer/api-enhanced
+	url = https://github.com/NeteaseCloudMusicApiEnhanced/api-enhanced.git
+	branch = main
 [submodule "frontend/apps/mobile"]
 	path = repo/frontend/apps/mobile
 	url = https://github.com/ScopifyMusicPlayer/scopify-mobile-flutter.git

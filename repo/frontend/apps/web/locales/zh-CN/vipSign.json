@@ -1,0 +1,13 @@
+{
+  "ticketTitle": "每日乐签",
+  "memberCenter": "云音乐会员中心",
+  "tearHint": "按住票根 · 上下卷撕",
+  "tearAction": "撕下票根并关闭乐签",
+  "playFailed": "歌曲暂时无法播放，请稍后重试",
+  "recommendedSong": "今日推荐",
+  "monthlyCheckIn": "本月累计打卡",
+  "days": "天",
+  "qrHint": "会员每日打卡得成长值",
+  "commentFrom": "- 来自 @{{nickname}} 的评论",
+  "qrAlt": "二维码"
+}

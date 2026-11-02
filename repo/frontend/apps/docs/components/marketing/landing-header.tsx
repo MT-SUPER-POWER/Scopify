@@ -27,14 +27,15 @@ export function LandingHeader() {
           : "border-b border-transparent"
       }`}
     >
-      <div className="mx-auto flex h-16 w-full max-w-360 items-center justify-between px-5 sm:px-8 lg:px-12">
-        <Link href="/" aria-label="Scopify" className="flex items-center gap-2.5">
+      <div className="mx-auto flex h-16 w-full max-w-360 items-center justify-between gap-3 px-4 sm:px-8 lg:px-12">
+        <Link href="/" aria-label="Scopify" className="flex shrink-0 items-center gap-2 sm:gap-2.5">
           <Image src={scopifyLogo} alt="" className="size-7 object-contain" priority />
-          <ScopifyWordmark tone="on-dark" className="w-28" />
+          <ScopifyWordmark tone="on-dark" className="w-22 sm:w-28" />
         </Link>
+        {/* 手机上一行放不下全部入口：在线体验与 GitHub 收起（页底仍有），文字一律不折行。 */}
         <nav
           aria-label="站点导航"
-          className="flex items-center gap-1 text-sm text-white/60 sm:gap-2"
+          className="flex items-center gap-0.5 text-sm whitespace-nowrap text-white/60 sm:gap-2"
         >
           <a
             href={LANDING_WEB_APP_URL}
@@ -46,7 +47,7 @@ export function LandingHeader() {
           </a>
           <Link
             href="/docs"
-            className="rounded-full px-3 py-1.5 transition-colors hover:text-white"
+            className="rounded-full px-2.5 py-1.5 transition-colors hover:text-white sm:px-3"
           >
             文档
           </Link>
@@ -54,7 +55,7 @@ export function LandingHeader() {
             href={LANDING_GITHUB_URL}
             target="_blank"
             rel="noreferrer"
-            className="rounded-full px-3 py-1.5 transition-colors hover:text-white"
+            className="hidden rounded-full px-3 py-1.5 transition-colors hover:text-white min-[400px]:block"
           >
             GitHub
           </a>
@@ -62,7 +63,7 @@ export function LandingHeader() {
             href={LANDING_RELEASES_URL}
             target="_blank"
             rel="noreferrer"
-            className="ml-1 inline-flex h-8 items-center gap-1.5 rounded-full bg-white px-3.5 text-[0.8rem] font-semibold text-black transition-transform hover:scale-[1.03] active:scale-[0.98]"
+            className="ml-1 inline-flex h-8 shrink-0 items-center gap-1.5 rounded-full bg-white px-3.5 text-[0.8rem] font-semibold text-black transition-transform hover:scale-[1.03] active:scale-[0.98]"
           >
             <Download className="size-3.5" strokeWidth={2.4} />
             下载

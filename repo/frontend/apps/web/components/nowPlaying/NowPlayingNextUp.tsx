@@ -7,12 +7,13 @@ import { usePlaybackCommands } from "@/hooks/player/usePlaybackCommands";
 import { getSizedImageUrl } from "@/lib/music/imageUrl";
 import { resolveCoverUrl } from "@/lib/music/resolveCoverUrl";
 import { usePlayerStore } from "@/store";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import { useUiStore } from "@/store/module/ui";
 
 /** 「下一首」：队列中紧随当前歌曲的曲目，点击直接播放，标题旁可打开完整队列。 */
 export function NowPlayingNextUp() {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const commands = usePlaybackCommands();
   const nextIndex = usePlayerStore((s) => s.queueIndex + 1);
   const nextSong = usePlayerStore((s) =>

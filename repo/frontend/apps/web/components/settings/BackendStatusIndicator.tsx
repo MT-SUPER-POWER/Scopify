@@ -1,11 +1,12 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { BackendStatusIndicatorProps } from "@/types/settings/components";
 
 export function BackendStatusIndicator({ status }: BackendStatusIndicatorProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const state = status?.state ?? "stopped";
   const label = t(`settings.localBackend.status.${state}`);
   const isRunning = state === "running";

@@ -112,7 +112,7 @@ export interface RawSongAlbum {
 
 /**
  * 原始歌曲对象会因端点不同使用 `ar`/`al` 或 `artists`/`album`。
- * 字段由 `/album` 与 `/v1/artist/songs` 的实际响应确认。
+ * 字段由 `/album` 与 `/artist/songs/v2` 的实际响应确认。
  */
 export interface RawSongDetail {
   al?: RawSongAlbum;

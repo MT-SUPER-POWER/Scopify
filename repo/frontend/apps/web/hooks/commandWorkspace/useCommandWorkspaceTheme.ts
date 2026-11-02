@@ -1,12 +1,14 @@
 "use client";
 
+import { searchCommands } from "@/lib/commandWorkspace/commandSearch";
 import { useMemo, useRef, useState, useEffect, type KeyboardEvent } from "react";
 import { useTheme } from "next-themes";
 import { Laptop, Moon, Sun, type LucideIcon } from "lucide-react";
 import { useAppearanceStore } from "@/store/module/appearance";
 import { useAppearanceBackground } from "@/hooks/settings/useAppearanceBackground";
 import { useThemeOptions } from "@/hooks/settings/useThemeOptions";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { BackgroundPresetId } from "@/types/appearance/model";
 import type { CommandWorkspaceThemeProps } from "@/types/commandWorkspace/model";
 
@@ -23,7 +25,7 @@ export interface CommandWorkspaceThemeItem {
 }
 
 export function useCommandWorkspaceTheme({ onBack, onClose }: CommandWorkspaceThemeProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const { setTheme, theme, resolvedTheme } = useTheme();
   const applyTheme = useAppearanceStore((state) => state.applyTheme);
   const { palette } = useAppearanceBackground();
@@ -97,13 +99,10 @@ export function useCommandWorkspaceTheme({ onBack, onClose }: CommandWorkspaceTh
 
   const allItems = useMemo(() => [...modeItems, ...presetItems], [modeItems, presetItems]);
 
-  const filteredItems = useMemo(() => {
-    const q = query.trim().toLowerCase();
-    if (!q) return allItems;
-    return allItems.filter((item) =>
-      `${item.label} ${item.summary} ${item.keywords}`.toLowerCase().includes(q),
-    );
-  }, [allItems, query]);
+  const filteredItems = useMemo(
+    () => searchCommands(allItems, (item) => item, query).map((hit) => hit.item),
+    [allItems, query],
+  );
 
   useEffect(() => {
     listRef.current?.querySelector('[data-selected="true"]')?.scrollIntoView({ block: "nearest" });

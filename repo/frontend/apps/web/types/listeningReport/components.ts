@@ -1,3 +1,5 @@
+import type { ReactNode, Ref } from "react";
+
 import type { MonthOption, WeekOption } from "@/lib/listeningReport/dateHelpers";
 import type { SongPlayRankItem, TodayListeningSongDTO } from "@/types/listeningReport/api";
 import type { ListeningReportSummary } from "@/types/listeningReport/model";
@@ -26,6 +28,21 @@ export interface ListeningReportPosterModalProps {
   onClose: () => void;
   selectedMonth: MonthOption;
   summary: ListeningReportSummary;
+}
+
+export interface ListeningReportReceiptProps {
+  /** Disables the pointer tilt, e.g. while the receipt is zoomed in for reading. */
+  interactive?: boolean;
+  nickname: string;
+  /** The printed slip itself, used as the image export source. */
+  paperRef?: Ref<HTMLDivElement>;
+  selectedMonth: MonthOption;
+  summary: ListeningReportSummary;
+}
+
+export interface ListeningReportReceiptViewerProps extends ListeningReportReceiptProps {
+  /** Extra actions rendered after the zoom controls in the bottom toolbar. */
+  children?: ReactNode;
 }
 
 export interface ListeningReportRecordWallProps {

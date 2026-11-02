@@ -1,0 +1,13 @@
+{
+  "builtin": "內建配色",
+  "new": "新增配色",
+  "name": "配色名稱",
+  "saveAs": "另存為新配色",
+  "empty": "尚無自訂配色",
+  "untitled": "我的配色 {{number}}",
+  "effects": "背景與陰影",
+  "playback": "填色與動畫",
+  "previewHint": "情境、文字與播放僅供預覽。",
+  "library": "我的配色",
+  "waiting": "等待播放音樂"
+}

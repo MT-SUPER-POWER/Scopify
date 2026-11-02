@@ -7,7 +7,8 @@ import { toast } from "sonner";
 import { usePlaylistContentQuery } from "@/hooks/playlist/usePlaylistContentQuery";
 import { resolveDailyRecommendationRequest } from "@/lib/playlist/dailyRecommendationRequest";
 import { getMainColorFromImage } from "@/lib/web/imageColor";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { PlaylistInfo } from "@/types/playlist/model";
 
 const colorCache = new Map<string, string>([["daily", "#c42b2b"]]);
@@ -22,7 +23,7 @@ function setColorCache(key: string, value: string) {
 }
 
 export function usePlaylist(playlistIdOverride?: null | string) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const searchParams = useSearchParams();
   const playlistId = playlistIdOverride === undefined ? searchParams.get("id") : playlistIdOverride;
   const isRecommend = searchParams.get("isRecommend") === "true";

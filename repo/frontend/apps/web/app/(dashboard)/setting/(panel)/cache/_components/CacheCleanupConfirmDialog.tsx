@@ -1,0 +1,58 @@
+"use client";
+
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import { formatCacheSize } from "@/lib/cache/presentation";
+import { useTranslation } from "react-i18next";
+
+import type { CacheCleanupConfirmDialogProps } from "@/types/cache/components";
+
+export function CacheCleanupConfirmDialog({
+  containsLyricData,
+  isClearing,
+  onClose,
+  onConfirm,
+  open,
+  selection,
+}: CacheCleanupConfirmDialogProps) {
+  const { t } = useTranslation();
+
+  return (
+    <AlertDialog open={open} onOpenChange={(nextOpen) => !nextOpen && onClose()}>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>{t("settings.cache.cleanup.confirm.title")}</AlertDialogTitle>
+          <AlertDialogDescription>
+            {t("settings.cache.cleanup.confirm.description", {
+              count: selection.entryCount,
+              size: formatCacheSize(selection.sizeBytes),
+            })}
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        {containsLyricData ? (
+          <p className="text-sm text-destructive">
+            {t("settings.cache.cleanup.confirm.lyricWarning")}
+          </p>
+        ) : null}
+        <AlertDialogFooter>
+          <AlertDialogCancel disabled={isClearing}>
+            {t("settings.confirm.cancel")}
+          </AlertDialogCancel>
+          <AlertDialogAction variant="destructive" disabled={isClearing} onClick={onConfirm}>
+            {isClearing
+              ? t("settings.cache.cleanup.confirm.clearing")
+              : t("settings.cache.cleanup.confirm.action")}
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+  );
+}

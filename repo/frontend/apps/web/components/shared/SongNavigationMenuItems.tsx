@@ -37,7 +37,8 @@ export function SongNavigationMenuItems({ actions, model }: SongContextMenuSecti
           {commentCount === undefined
             ? t("contextMenu.comments")
             : t("contextMenu.commentsWithCount", {
-                count: formatCompactCount(commentCount),
+                count: commentCount,
+                replace: { count: formatCompactCount(commentCount) },
               })}
         </Link>
       </ContextMenuItem>

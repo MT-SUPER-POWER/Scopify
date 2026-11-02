@@ -23,7 +23,7 @@ Git commit conventions for Claude Code. Auto-enforced after installation, works 
    - Filter `git status` output to match **only** the session files.
    - (Optional) Run `git diff <session-files>` only on those target files if diff details are needed to compose the commit message.
    - Run `git add <file1> <file2> ...` to stage only the target files.
-   - *Exception*: Only scan and inspect all workspace changes if the user explicitly requests an all-inclusive commit (e.g., "commit all changes", "整理并全量提交所有修改").
+   - _Exception_: Only scan and inspect all workspace changes if the user explicitly requests an all-inclusive commit (e.g., "commit all changes", "整理并全量提交所有修改").
 4. **Create Commit**: Craft a Conventional Commit message and commit.
 
 ## Commit Format
@@ -39,16 +39,16 @@ Follow [Conventional Commits](https://www.conventionalcommits.org/):
 
 ### Types
 
-| Type       | Purpose                                |
-| ---------- | -------------------------------------- |
-| `feat`     | New user or system capability          |
-| `fix`      | Bug fix                                |
-| `docs`     | Documentation only                     |
+| Type | Purpose |
+| --- | --- |
+| `feat` | New user or system capability |
+| `fix` | Bug fix |
+| `docs` | Documentation only |
 | `refactor` | Code restructuring, no behavior change |
-| `test`     | Adding or adjusting tests              |
-| `perf`     | Performance improvement                |
-| `build`    | Build system or dependency changes     |
-| `chore`    | Other maintenance tasks                |
+| `test` | Adding or adjusting tests |
+| `perf` | Performance improvement |
+| `build` | Build system or dependency changes |
+| `chore` | Other maintenance tasks |
 
 ### Scope
 
@@ -58,14 +58,14 @@ Choose a scope that accurately describes the **boundary of change**. Common exam
 
 ### Action Labels (Body)
 
-| Label        | Purpose                         |
-| ------------ | ------------------------------- |
-| `[Add]`      | New feature, resource, or file  |
-| `[Fix]`      | Fix an error or inconsistency   |
-| `[Refactor]` | Structural change, no behavior  |
-| `[Docs]`     | Documentation or comment update |
-| `[Test]`     | Test addition or adjustment     |
-| `[Chore]`    | Config, build, or maintenance   |
+| Label | Purpose |
+| --- | --- |
+| `[Add]` | New feature, resource, or file |
+| `[Fix]` | Fix an error or inconsistency |
+| `[Refactor]` | Structural change, no behavior |
+| `[Docs]` | Documentation or comment update |
+| `[Test]` | Test addition or adjustment |
+| `[Chore]` | Config, build, or maintenance |
 
 Body is optional but **recommended** for cross-module changes, behavior changes, or when there are important verification results. Wrap body lines at ~72 columns. Only use labels that match the actual diff.
 

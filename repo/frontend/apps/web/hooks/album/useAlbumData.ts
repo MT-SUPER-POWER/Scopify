@@ -11,7 +11,8 @@ import { subscribeAlbum } from "@/lib/api/album";
 import { useRequireLoginAction } from "@/hooks/auth/useRequireLoginAction";
 import { musicQueryKeys } from "@/lib/query/queryKeys";
 import { usePlayerStore, useUserStore } from "@/store";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import { pruneSongDetail } from "@/types/song/api";
 
 import { useAlbumQuery } from "./useAlbumQuery";
@@ -21,7 +22,7 @@ const colorCache = new Map<string, string>();
 const COLOR_CACHE_LIMIT = 10;
 
 export function useAlbumData() {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const searchParams = useSearchParams();
   const albumId = searchParams.get("id");
   const requireLoginAction = useRequireLoginAction();

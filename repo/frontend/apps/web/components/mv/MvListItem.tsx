@@ -6,7 +6,8 @@ import { Play } from "lucide-react";
 import { getSizedImageUrl } from "@/lib/music/imageUrl";
 import { getMvArtistNames, getMvCover } from "@/lib/music/mvCover";
 import { cn, formatDuration, formatPlayCount } from "@/lib/utils";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { MvListItemProps } from "@/types/mv/components";
 
 const ROW_CLASS =
@@ -21,7 +22,7 @@ export function MvListItem({
   badge,
   size = "sm",
 }: MvListItemProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const cover = getMvCover(mv);
   const artistNames = getMvArtistNames(mv);
 
@@ -72,7 +73,10 @@ export function MvListItem({
             <span className="block truncate">{artistNames}</span>
             {mv.playCount ? (
               <span className="block truncate">
-                {t("mv.meta.views", { count: formatPlayCount(mv.playCount) })}
+                {t("mv.meta.views", {
+                  count: mv.playCount,
+                  replace: { count: formatPlayCount(mv.playCount) },
+                })}
               </span>
             ) : null}
           </span>

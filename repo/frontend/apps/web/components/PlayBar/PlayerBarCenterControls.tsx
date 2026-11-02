@@ -7,7 +7,8 @@ import { usePlaybackCommands } from "@/hooks/player/usePlaybackCommands";
 import { usePlaybackProjection } from "@/hooks/player/usePlaybackProjection";
 import { cn } from "@/lib/utils";
 import { usePlayerStore } from "@/store";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import {
   Tooltip,
   TooltipContent,
@@ -20,7 +21,7 @@ export interface PlayerBarCenterControlsProps {
 }
 
 export function PlayerBarCenterControls({ isLyricStageBar = false }: PlayerBarCenterControlsProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const playback = usePlaybackProjection();
   const commands = usePlaybackCommands();
 

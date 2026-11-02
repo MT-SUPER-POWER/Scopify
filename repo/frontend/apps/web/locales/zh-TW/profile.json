@@ -1,0 +1,22 @@
+{
+  "menu.notifications": "通知",
+  "menu.friends": "好友",
+  "menu.profile": "個人主頁",
+  "menu.vipSign": "網易雲簽到",
+  "menu.signToday": "今日",
+  "menu.signIn": "簽到",
+  "menu.viewMonthlySign": "查看月簽",
+  "menu.listeningReport": "音樂足跡",
+  "menu.settings": "設定",
+  "menu.download": "下載桌面端",
+  "menu.aboutMe": "關於我",
+  "toast.updateSuccess": "個人資訊已更新",
+  "toast.updateFailed": "更新個人資訊失敗",
+  "edit.title": "編輯個人資訊",
+  "edit.nickname": "暱稱",
+  "edit.signature": "簽名",
+  "edit.gender": "性別",
+  "edit.genderPrivate": "保密",
+  "edit.genderMale": "男",
+  "edit.genderFemale": "女"
+}

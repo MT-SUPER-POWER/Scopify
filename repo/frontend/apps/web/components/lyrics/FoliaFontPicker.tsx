@@ -3,7 +3,7 @@
 import { FoliaStudioWindow } from "@scopify/ui/scopify/components/folia-studio/window";
 import { Search, Upload } from "lucide-react";
 import { useRef } from "react";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
 
 import { useFoliaFontPicker } from "@/hooks/player/useFoliaFontPicker";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -12,7 +12,7 @@ import { useFoliaModalFocus } from "@/hooks/lyrics/useFoliaModalFocus";
 import { useLyricStageStore } from "@/store/module/lyrics";
 
 export function FoliaFontPicker({ assets, onClose, target, theme }: FoliaFontPickerProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const inputRef = useRef<HTMLInputElement>(null);
   const warningOpen = useLyricStageStore((state) => state.sonnetPerformanceWarningOpen);
   const dialogRef = useFoliaModalFocus(!warningOpen, onClose);

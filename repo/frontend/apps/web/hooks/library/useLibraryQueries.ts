@@ -15,6 +15,7 @@ import { getUserLikeLists, getUserPlaylist } from "@/lib/api/playlist";
 import { getRecentSongs } from "@/lib/api/user";
 import { useLoginStatus } from "@/hooks/auth/useLoginStatus";
 import { musicQueryKeys } from "@/lib/query/queryKeys";
+import { throwQueryErrorWithoutData } from "@/lib/query/errorPolicy";
 import { useUserStore } from "@/store";
 import { prunePlaylist, type NeteasePlaylist, type RawNeteasePlaylist } from "@/types/playlist/api";
 import { pruneSongDetail, type SongDetail } from "@/types/song/api";
@@ -311,12 +312,13 @@ export function useCreatedPodcastsQuery() {
   });
 }
 
-export function useUserPlaylistsQuery() {
+export function useUserPlaylistsQuery(throwOnError = false) {
   const { isLoggedIn, userId } = useLibrarySession();
 
   const query = useQuery({
     enabled: isLoggedIn && Boolean(userId),
     queryKey: musicQueryKeys.library.playlists(userId ?? 0),
+    throwOnError: throwOnError ? throwQueryErrorWithoutData : false,
     meta: { persist: true, scope: "account" },
     queryFn: async (): Promise<NeteasePlaylist[]> => {
       if (!userId) throw new Error("Missing user ID.");

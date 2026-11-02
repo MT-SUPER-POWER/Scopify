@@ -1,13 +1,14 @@
 "use client";
 
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import { BackgroundRotationControl } from "./BackgroundRotationControl";
 import { AppearanceModeControl } from "./AppearanceModeControl";
 import { BackgroundThemePicker } from "./BackgroundThemePicker";
 import { SettingSection } from "./SettingsUI";
 
 export function BackgroundSettingsSection() {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   return (
     <SettingSection title={t("appearance.background")}>
       <AppearanceModeControl />

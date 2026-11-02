@@ -7,11 +7,12 @@ import {
   DESKTOP_FOLIA_BACKGROUND_OPTIONS,
   DESKTOP_FOLIA_VISUALIZER_OPTIONS,
 } from "@/constants/desktopPlaybackController";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import { useLyricStageStore } from "@/store/module/lyrics";
 
 export function DesktopPlaybackFoliaModeControls() {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const settings = useLyricStageStore();
 
   return (

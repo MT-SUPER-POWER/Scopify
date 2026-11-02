@@ -9,14 +9,15 @@ import { getPlaylistOrderIds } from "@/lib/playlist/playlistOrder";
 import { clearPageCache } from "@/lib/cache/pageCache";
 import { musicQueryKeys } from "@/lib/query/queryKeys";
 import { useUserStore } from "@/store";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import { prunePlaylist, type PlaylistContent } from "@/types/playlist/api";
 import type { InlineOrderMove } from "@/types/playlist/order";
 
 export function usePlaylistOrderMutation() {
   const queryClient = useQueryClient();
   const userId = useUserStore((state) => state.user?.userId);
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const contentKey = (playlistId: string) => ["playlist", "content", "playlist", playlistId];
   return useMutation({
     retry: false,

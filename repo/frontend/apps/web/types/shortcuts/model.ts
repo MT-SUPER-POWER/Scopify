@@ -1,10 +1,7 @@
 import type { LucideIcon } from "lucide-react";
 import type { SHORTCUT_COMMAND_DEFINITIONS } from "@/constants/shortcuts";
 import type { TranslationKey } from "@/lib/i18n";
-import type {
-  CommandWorkspaceRootPage,
-  CommandWorkspaceUsageCounts,
-} from "@/types/commandWorkspace/model";
+import type { CommandUsageRecord } from "@/types/commandWorkspace/search";
 
 export interface ShortcutCommandIconProps {
   className?: string;
@@ -62,10 +59,11 @@ export type ShortcutOverrides = Partial<Record<ShortcutCommandId, ShortcutBindin
 export type ShortcutUsageCounts = Partial<Record<ShortcutCommandId, number>>;
 
 export interface ShortcutStoreState {
-  commandWorkspaceUsageCounts: CommandWorkspaceUsageCounts;
+  /** 命令面板里每条命令的使用次数与最近使用时间，用于频率排序。 */
+  commandUsage: CommandUsageRecord;
   overrides: ShortcutOverrides;
   usageCounts: ShortcutUsageCounts;
-  incrementCommandWorkspaceUsage: (page: CommandWorkspaceRootPage) => void;
+  recordCommandUsage: (id: string) => void;
   setOverride: (commandId: ShortcutCommandId, binding: ShortcutBinding | null) => void;
   resetOverride: (commandId: ShortcutCommandId) => void;
   resetAllOverrides: () => void;

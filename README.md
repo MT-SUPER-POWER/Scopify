@@ -30,6 +30,29 @@
 
 支持网页端与客户端，由于设备有限，目前仅保证 `Windows` 和 `MacOS` 系统的适配，App 开发中。
 
+## 客户端下载与安装
+
+前往 [GitHub Releases](https://github.com/MT-SUPER-POWER/Scopify/releases) 获取适合当前系统的安装包：
+
+| 平台 | 架构 | 安装包格式 | 适用机型 |
+| :-- | :-- | :-- | :-- |
+| <img src="docs/img/platforms/apple.png" width="16" height="16" alt="macOS" /> **macOS** | Apple Silicon (`arm64`) | `.dmg` / `.zip` | Apple Silicon Mac（推荐） |
+| <img src="docs/img/platforms/apple.png" width="16" height="16" alt="macOS" /> **macOS** | Intel (`x64`) | `.dmg` / `.zip` | Intel 处理器 Mac |
+| <img src="docs/img/platforms/windows.png" width="16" height="16" alt="Windows" /> **Windows** | 64 位 (`x64`) | `.exe` | Intel / AMD 处理器（绝大多数用户推荐） |
+| <img src="docs/img/platforms/windows.png" width="16" height="16" alt="Windows" /> **Windows** | ARM64 | `.exe` | ARM 架构 Windows 设备 |
+
+> [!NOTE] **macOS 首次安装提示“对系统有害”或“已损坏”的处理方法：**
+>
+> Scopify 为个人开源项目，未向 Apple 购买付费商业开发者证书公证。从网络下载未公证的应用时，macOS Gatekeeper 安全机制会自动打上隔离标志并弹出警告，**这并非应用存在恶意行为或真正损坏**。
+>
+> 1. 打开下载的 `.dmg` 镜像，**务必先将 `Scopify.app` 拖入系统的「应用程序」（Applications）目录**（切勿直接在只读 DMG 中双击运行）；
+> 2. 打开系统自带的「终端」（Terminal），粘贴并运行以下命令解除隔离：
+>    ```bash
+>    sudo xattr -rd com.apple.quarantine /Applications/Scopify.app
+>    ```
+> 3. 输入开机密码后回车（输入时密码不显示字符），即可正常双击启动 Scopify。
+> 4. _(备选)_ 也可以在 Mac **「系统设置」→「隐私与安全性」→「安全性」** 中找到拦截提示，点击 **“仍要打开”**。
+
 ## 技术栈总览
 
 1. Next.js + React: 前端框架
@@ -43,6 +66,7 @@
 9. Framer-Motion: 动画框架
 10. TanStack-Virtual: 虚拟列表
 11. WebGL: 歌词舞台可视化
+12. i18next + x18n: 多语言运行时与翻译管理（[国际化文档](./docs/i18n.md)）
 
 ### 代码结构
 
@@ -63,8 +87,9 @@ repo/
 
 新建或修改代码前，请先阅读：
 
-- **[AGENTS.md](./AGENTS.md)** — 项目结构规范
-- **[docs/structure.md](./docs/structure.md)** — 面向贡献者的结构说明与迁移进度
+- **[CONTRIBUTE.md](./CONTRIBUTE.md)** — 贡献指南与文档索引
+- **[项目结构与拆分原理](./skills/nextjs-project-structure/rules/architecture.md)**、**[组件规则](./skills/nextjs-project-structure/rules/components.md)**、**[数据请求与边界](./skills/nextjs-project-structure/rules/data-and-boundaries.md)** — 前端代码结构规范
+- **[AGENTS.md](./AGENTS.md)** — AI Agent 的工作约定
 
 ### 重要的三方库
 
@@ -81,6 +106,7 @@ repo/
 2. [Electron Doc](https://www.electronjs.org/zh/docs/latest/api/app)
 3. [Netease Cloud Music API Doc](https://docs-neteasecloudmusicapi.focalors.ltd/#/)
 4. [Electron Builder Help Doc - Not Official](https://github.com/QDMarkMan/CodeBlog/blob/master/Electron/electron-builder%E6%89%93%E5%8C%85%E8%AF%A6%E8%A7%A3.md)
+5. [国际化开发](./docs/i18n.md)
 
 ## 部署方法
 

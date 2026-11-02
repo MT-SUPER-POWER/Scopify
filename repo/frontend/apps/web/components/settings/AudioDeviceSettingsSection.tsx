@@ -14,12 +14,12 @@ import { useEffect, useState } from "react";
 import { useAudioDevices } from "@/hooks/player/useAudioDevices";
 import { getPlaybackAudioElement, setAudioElementOutputDevice } from "@/lib/player/audioOutput";
 import { useAudioOutputStore } from "@/store/module/audioOutput";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
 
 import { SettingRow, SettingSection } from "./SettingsUI";
 
 export function AudioDeviceSettingsSection() {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const selectedInputDeviceId = useAudioOutputStore((state) => state.selectedInputDeviceId);
   const selectedOutputDeviceId = useAudioOutputStore((state) => state.selectedDeviceId);
   const setSelectedInputDeviceId = useAudioOutputStore((state) => state.setSelectedInputDeviceId);

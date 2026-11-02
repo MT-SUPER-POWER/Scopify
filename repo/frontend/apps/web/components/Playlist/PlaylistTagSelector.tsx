@@ -5,12 +5,13 @@ import { useCallback, useEffect, useState } from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { getPlaylistHighQualityTags } from "@/lib/api/playlist";
 import { cn } from "@/lib/utils";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { PlaylistTag } from "@/types/playlist/tagsApi";
 import type { PlaylistTagSelectorProps } from "@/types/playlist/components";
 
 export function PlaylistTagSelector({ value, maxSelected, onChange }: PlaylistTagSelectorProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const [tags, setTags] = useState<PlaylistTag[]>([]);
   const [loading, setLoading] = useState(false);
   const [failed, setFailed] = useState(false);

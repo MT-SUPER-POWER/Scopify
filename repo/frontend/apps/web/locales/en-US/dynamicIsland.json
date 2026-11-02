@@ -1,0 +1,15 @@
+{
+  "title": "Dynamic Island",
+  "enabled.label": "Show Dynamic Island",
+  "enabled.sublabel": "A lyric capsule with artwork at the top of the screen. Drag it anywhere and release near the top edge to snap back.",
+  "transition.label": "Line transition",
+  "transition.bounce": "Bounce",
+  "transition.smooth": "Smooth",
+  "scale.label": "Size",
+  "showTranslation.label": "Show translation",
+  "snapCentered.label": "Center when snapped",
+  "snapCentered.sublabel": "When off, the island keeps the horizontal position you dragged it to.",
+  "nonOcclusive.label": "Non-occlusive mode",
+  "nonOcclusive.sublabel": "Clicks pass through and the island fades out on hover. It can't be dragged in this mode.",
+  "alwaysOnTop.label": "Keep on top"
+}

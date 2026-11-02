@@ -11,6 +11,7 @@ import {
   LANDING_RELEASES_URL,
   LANDING_WEB_APP_URL,
 } from "@/constants/marketing";
+import { useMediaQuery } from "@/hooks/use-media-query";
 import { useScrollTransform } from "@/hooks/use-scroll-transform";
 import {
   HERO_PUSH_START_VH,
@@ -18,11 +19,13 @@ import {
   HERO_STICKY_VH,
   heroAt,
 } from "@/lib/marketing/landing-hero-timeline";
-import { approachScale } from "@/lib/marketing/landing-stage-camera";
+import { approachScale, clamp01 } from "@/lib/marketing/landing-stage-camera";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 /** 镜头穿过窗口时窗口最终放大到的倍数。 */
 const PUSH_SCALE = 2.8;
+/** 手机上窗口下半扇的渐隐在这里（前奏吸顶段的 vh）完全退开，赶在封面浮起之前。 */
+const WINDOW_UNVEIL_VH = 76;
 const pushProgress = (progress: number) =>
   (progress * HERO_STICKY_VH - HERO_PUSH_START_VH) / (HERO_STICKY_VH - HERO_PUSH_START_VH);
 
@@ -33,6 +36,7 @@ const pushProgress = (progress: number) =>
 export function LandingHero() {
   const sectionRef = useRef<HTMLElement>(null);
   const prefersReducedMotion = useReducedMotion() ?? false;
+  const isWide = useMediaQuery("(min-width: 640px)");
   const { scrollYProgress } = useScroll({
     target: sectionRef,
     offset: ["start start", "end end"],
@@ -47,7 +51,26 @@ export function LandingHero() {
     ["blur(0px)", "blur(12px)"],
   );
   const windowStops = [0, heroAt(85), heroAt(114), heroAt(163)];
-  const windowY = useScrollTransform(scrollYProgress, windowStops, ["60vh", "0vh", "0vh", "13vh"]);
+  // 手机上窗口本身很矮，按桌面的距离往下压只剩屏幕底边一道缝：少压一些，紧贴在按钮下方，
+  // 下半扇由一道渐隐遮住，升起放平的过程中渐隐退开，「半遮面」靠遮罩而不是靠屏幕边缘。
+  const windowYWide = useScrollTransform(scrollYProgress, windowStops, [
+    "60vh",
+    "0vh",
+    "0vh",
+    "13vh",
+  ]);
+  const windowYNarrow = useScrollTransform(scrollYProgress, windowStops, [
+    "30vh",
+    "0vh",
+    "0vh",
+    "6vh",
+  ]);
+  const windowMaskNarrow = useTransform(scrollYProgress, (value) => {
+    const rise = clamp01(value / heroAt(WINDOW_UNVEIL_VH));
+    if (rise >= 1) return "none";
+    const solid = 25 + rise * 75;
+    return `linear-gradient(180deg, #000 ${solid.toFixed(1)}%, transparent ${(solid + 50).toFixed(1)}%)`;
+  });
   const windowRotate = useScrollTransform(
     scrollYProgress,
     [0, heroAt(85)],
@@ -103,7 +126,7 @@ export function LandingHero() {
     >
       <div className="sticky top-0 flex h-svh items-center justify-center overflow-hidden">
         <motion.div
-          className="absolute inset-x-0 top-0 flex h-[74svh] flex-col items-center justify-center px-5 pt-10 text-center"
+          className="absolute inset-x-0 top-0 flex h-[66svh] flex-col items-center justify-center px-5 pt-10 text-center sm:h-[74svh]"
           style={{ opacity: titleOpacity, y: titleY, scale: titleScale, filter: titleFilter }}
         >
           <div
@@ -154,7 +177,7 @@ export function LandingHero() {
         </motion.div>
 
         <motion.div
-          className="pointer-events-none absolute inset-x-0 top-[10svh] z-10 px-5 text-center"
+          className="pointer-events-none absolute inset-x-0 top-[calc(4rem+4svh)] z-10 px-5 text-center sm:top-[10svh]"
           style={{ opacity: captionOpacity, y: captionY, scale: captionScale }}
         >
           <p className="landing-display text-[clamp(1.6rem,3.4vw,2.9rem)] font-semibold tracking-[-0.03em] text-white">
@@ -171,12 +194,18 @@ export function LandingHero() {
           style={{ scale: pushScale, opacity: pushOpacity, filter: pushFilter }}
         >
           <motion.div
-            className="relative w-[min(88vw,70rem,calc((100svh-9rem)*1.8))] origin-[50%_0%] transform-3d"
-            style={{ y: windowY, rotateX: windowRotate, scale: windowScale }}
+            className="relative w-[92vw] origin-[50%_0%] transform-3d sm:w-[min(88vw,70rem,calc((100svh-9rem)*1.8))]"
+            style={{
+              y: isWide ? windowYWide : windowYNarrow,
+              rotateX: windowRotate,
+              scale: windowScale,
+              maskImage: isWide ? undefined : windowMaskNarrow,
+              WebkitMaskImage: isWide ? undefined : windowMaskNarrow,
+            }}
           >
             <LandingAppWindow
               screenshot={LANDING_MAIN_SCREENSHOT}
-              sizes="(min-width: 1280px) 70rem, 88vw"
+              sizes="(min-width: 1280px) 70rem, (min-width: 640px) 88vw, 92vw"
               priority
             />
             <LandingHeroCovers progress={scrollYProgress} />

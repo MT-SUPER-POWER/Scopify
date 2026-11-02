@@ -1,7 +1,6 @@
 "use client";
 
-import type { TranslationKey } from "@/lib/i18n";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
 
 import {
   DEFAULT_VISUALIZER_BACKGROUND_MODE,
@@ -17,7 +16,7 @@ export function FoliaBackgroundQuickControl({
   isDaylight,
   theme,
 }: FoliaBackgroundQuickControlProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const settings = useLyricStageStore();
   const mode = settings.background.mode ?? DEFAULT_VISUALIZER_BACKGROUND_MODE;
   const entry = getVisualizerBackgroundRegistryEntry(mode);
@@ -38,7 +37,7 @@ export function FoliaBackgroundQuickControl({
     actions,
     config: { ...settings.background, customImage: assets.monetBackgroundImage },
     isDaylight,
-    t: (key) => String(t((key.startsWith("folia.") ? key : `folia.${key}`) as TranslationKey)),
+    t,
     theme,
   });
 }

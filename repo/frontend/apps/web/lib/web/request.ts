@@ -52,6 +52,7 @@ const INITIAL_BACKEND_CONFIG = loadInitialBackendConfig();
 let baseURL = buildBackendBaseUrl(INITIAL_BACKEND_CONFIG);
 let runtimeNetworkConfig: WebConfig["network"] = { ...webConfig.network };
 let runtimeBackendConfig: WebConfig["backend"] = { ...INITIAL_BACKEND_CONFIG };
+let desktopBackendOrigin: string | null = null;
 
 export function getBackendBaseUrl() {
   if (runtime.isDesktop && baseURL) {
@@ -64,7 +65,9 @@ function applyRuntimeConfig(config: Pick<WebConfig, "backend" | "network">) {
   runtimeNetworkConfig = { ...config.network };
   const resolved = normalizeBackendConfig(config.backend);
   runtimeBackendConfig = resolved.ok ? resolved.backend : { ...config.backend };
-  baseURL = resolved.ok ? resolved.url : buildBackendBaseUrl(runtimeBackendConfig);
+  baseURL =
+    desktopBackendOrigin ??
+    (resolved.ok ? resolved.url : buildBackendBaseUrl(runtimeBackendConfig));
   request.defaults.baseURL = baseURL;
 }
 
@@ -84,6 +87,7 @@ function getNetworkConfig(): WebConfig["network"] {
 }
 
 function isNoLoginRequest(config?: ScopifyRequestConfig) {
+  if (config?.noLogin === true) return true;
   const params = config?.params as unknown;
   return isRecord(params) && params.noLogin === true;
 }
@@ -145,13 +149,20 @@ if (typeof window !== "undefined") {
   if (runtime.isDesktop) {
     void Promise.resolve(runtime.backend.getStatus()).then((status) => {
       if (status?.origin && status.state === "running") {
+        desktopBackendOrigin = status.origin;
         baseURL = status.origin;
         request.defaults.baseURL = baseURL;
       }
     });
 
     runtime.backend.onStatusChanged((status) => {
+      if (status?.state === "disabled") {
+        desktopBackendOrigin = null;
+        baseURL = buildBackendBaseUrl(runtimeBackendConfig);
+        request.defaults.baseURL = baseURL;
+      }
       if (status?.origin && status.state === "running") {
+        desktopBackendOrigin = status.origin;
         baseURL = status.origin;
         request.defaults.baseURL = baseURL;
       }
@@ -174,12 +185,15 @@ request.interceptors.request.use((config: InternalAxiosRequestConfig & ScopifyRe
       ? attachMusicSessionCredential(requestParams, credential)
       : requestParams;
 
-  config.params = {
-    ...sessionParams,
-    timestamp: Date.now(),
-    ...(runtime.isDesktop ? { os: "pc" } : { platform: "web" }),
-    randomCNIP: networkConfig.randomCNIP,
-  };
+  config.params =
+    config.includeDefaultParams === false
+      ? sessionParams
+      : {
+          ...sessionParams,
+          timestamp: Date.now(),
+          ...(runtime.isDesktop ? { os: "pc" } : { platform: "web" }),
+          randomCNIP: networkConfig.randomCNIP,
+        };
 
   return config;
 });

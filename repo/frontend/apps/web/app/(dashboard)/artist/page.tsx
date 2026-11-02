@@ -1,20 +1,23 @@
 "use client";
 
-import { Loader2 } from "lucide-react";
 import { useSearchParams } from "next/navigation";
-import { AboutSection } from "@/components/artist/AboutSection";
-import { ActionBar } from "@/components/artist/ActionBar";
-import { ArtistHero } from "@/components/artist/ArtistHero";
-import { DiscographyGrid } from "@/components/artist/DiscographyGrid";
-import { PopularTracks } from "@/components/artist/PopularTracks";
 import { NetworkRetryState } from "@/components/shared/NetworkRetryState";
 import { useArtistData } from "@/hooks/artist/useArtistData";
 import { useArtistPlay } from "@/hooks/artist/useArtistPlay";
 import { useSmartRouter } from "@/hooks/core/useSmartRouter";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
+import { AboutSection } from "./_components/AboutSection";
+import { ActionBar } from "./_components/ActionBar";
+import { ArtistHero } from "./_components/ArtistHero";
+import { ArtistInvalidId } from "./_components/ArtistInvalidId";
+import { ArtistLoading } from "./_components/ArtistLoading";
+import { ArtistRefetchError } from "./_components/ArtistRefetchError";
+import { DiscographyGrid } from "./_components/DiscographyGrid";
+import { PopularTracks } from "./_components/PopularTracks";
 
 export default function ArtistPage() {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const artistId = useSearchParams().get("id");
   const router = useSmartRouter();
 
@@ -31,23 +34,13 @@ export default function ArtistPage() {
   const { isPlayingArtist, loadingAlbumId, handlePlayArtist, handlePlayAlbum } =
     useArtistPlay(hotTracksQueue);
 
-  if (!artistId)
-    return (
-      <div className="h-screen bg-surface-raised p-8 text-content">
-        {t("artist.page.invalidId")}
-      </div>
-    );
+  if (!artistId) return <ArtistInvalidId />;
 
-  if (isLoading)
-    return (
-      <div className="flex h-screen items-center justify-center bg-surface-raised p-8 text-content">
-        <Loader2 className="size-8 animate-spin text-brand" />
-      </div>
-    );
+  if (isLoading) return <ArtistLoading />;
 
   if (!artist)
     return (
-      <div className="min-h-screen bg-surface-raised p-8">
+      <div className="p-8">
         <NetworkRetryState
           title={t("network.offline.title")}
           subtitle={t("network.offline.subtitle")}
@@ -59,23 +52,12 @@ export default function ArtistPage() {
     );
 
   return (
-    <div className="min-h-screen bg-surface-raised pb-24 font-sans text-content">
+    <>
       <ArtistHero artist={artist} />
 
-      {isError && (
-        <div className="px-6 pt-6 md:px-8">
-          <NetworkRetryState
-            compact
-            title={t("network.offline.title")}
-            subtitle={t("network.offline.subtitle")}
-            actionLabel={t("network.action.refresh")}
-            isRetrying={isRefreshing}
-            onRetry={() => void refetch()}
-          />
-        </div>
-      )}
+      {isError && <ArtistRefetchError isRefreshing={isRefreshing} onRetry={() => void refetch()} />}
 
-      <div className="hero-content-transition mx-auto w-full max-w-7xl">
+      <div className="hero-content-transition mx-auto w-full max-w-7xl pb-24">
         <ActionBar
           artistId={artist.id}
           isPlayingArtist={isPlayingArtist}
@@ -97,6 +79,6 @@ export default function ArtistPage() {
           onClickAlbum={(id) => router.push(`/album?id=${id}`)}
         />
       </div>
-    </div>
+    </>
   );
 }

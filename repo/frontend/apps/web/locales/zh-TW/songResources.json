@@ -1,0 +1,20 @@
+{
+  "wiki": "音樂百科",
+  "sheets": "樂譜",
+  "emptyWiki": "暫無百科資訊",
+  "emptySheets": "這首歌暫無可用樂譜",
+  "preview": "樂譜預覽",
+  "previewEmpty": "暫無可預覽的譜頁，可能需要相應權限",
+  "loginRequired": "登入後查看樂譜內容",
+  "login": "登入",
+  "pages": "{{count}} 頁",
+  "page": "第 {{page}} 頁",
+  "imageError": "譜頁圖片載入失敗",
+  "keepSearching": "繼續尋找更多樂譜",
+  "sheetCount": "{{count}} 份樂譜",
+  "moreSheets": "還有 {{count}} 份樂譜，查看全部",
+  "more": "查看全部",
+  "searchHint": "按歌曲尋找樂譜，僅顯示有可用樂譜的歌曲。",
+  "openSheets": "查看樂譜",
+  "noSongs": "沒有相符的歌曲"
+}

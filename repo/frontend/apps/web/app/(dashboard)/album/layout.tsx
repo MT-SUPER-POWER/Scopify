@@ -6,5 +6,5 @@ export const metadata: Metadata = {
 };
 
 export default function AlbumLayout({ children }: { children: React.ReactNode }) {
-  return children;
+  return <div className="relative min-h-screen w-full bg-surface-raised font-sans">{children}</div>;
 }

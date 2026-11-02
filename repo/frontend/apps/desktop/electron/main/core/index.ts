@@ -79,8 +79,14 @@ const shutdown = createApplicationShutdown({
   onError: (error) => coreLog.error("[app] shutdown cleanup failed", error),
   onStarted: () => {
     quitting = true;
+    coreLog.info("[app] quit requested; releasing services");
   },
-  requestQuit: () => app.quit(),
+  exit: () => {
+    coreLog.info("[app] exiting process");
+    // Cmd+Q, the close dialog and exit IPC already shared before-quit cleanup.
+    // Do not start another app.quit() cycle that a window can cancel again.
+    app.exit(0);
+  },
 });
 
 /** Create the UI without making managed Backend availability part of the critical startup path. */
@@ -187,6 +193,7 @@ function configureChromium() {
 
 function registerLifecycle() {
   const activateMainWindow = async () => {
+    if (quitting) return;
     if (!mainWindow) {
       await createApplicationWindow();
       return;

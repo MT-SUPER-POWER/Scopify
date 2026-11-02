@@ -11,7 +11,8 @@ import {
   pickRandomVisualizerMode,
   resolveRandomVisualizerPool,
 } from "@/lib/lyrics/randomVisualizerPool";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import { useLyricStageStore } from "@/store/module/lyrics";
 import type { LyricVisualizerMode } from "@/types/lyrics/model";
 
@@ -20,7 +21,7 @@ import type { LyricVisualizerMode } from "@/types/lyrics/model";
  * registry order, which are on, a count, and drawing another style for the playing song.
  */
 export function useFoliaRandomPool() {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const saved = useLyricStageStore((state) => state.randomVisualizerModes);
   const mode = useLyricStageStore((state) => state.mode);
   const options = useMemo(

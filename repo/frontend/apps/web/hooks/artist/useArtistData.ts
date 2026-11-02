@@ -8,11 +8,12 @@ import {
   useArtistFollowCountQuery,
   useArtistTopSongsQuery,
 } from "@/hooks/artist/useArtistQueries";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import { pruneSongDetail } from "@/types/song/api";
 
 export function useArtistData(artistId: null | string) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const artistDetailQuery = useArtistDetailQuery(artistId);
   const followCountQuery = useArtistFollowCountQuery(artistId);
   const topSongsQuery = useArtistTopSongsQuery(artistId);

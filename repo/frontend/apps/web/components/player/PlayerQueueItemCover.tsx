@@ -5,7 +5,8 @@ import Image from "next/image";
 
 import { cn } from "@/lib/utils";
 import SPOTIFYANIME from "@/resources/eq-playing.svg";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { PlayerQueueItemCoverProps } from "@/types/player/components";
 import { getSizedImageUrl } from "@/lib/music/imageUrl";
 
@@ -15,7 +16,7 @@ export function PlayerQueueItemCover({
   isPlaying,
   song,
 }: PlayerQueueItemCoverProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
 
   return (
     <div className="flex shrink-0 items-center gap-2">

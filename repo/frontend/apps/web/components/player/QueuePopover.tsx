@@ -15,12 +15,13 @@ import {
   TooltipTrigger,
 } from "@scopify/ui/shadcn/components/tooltip";
 import { usePlayerStore } from "@/store";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import { useUiStore } from "@/store/module/ui";
 import type { PlayerQueueListHandle } from "@/types/player/components";
 
 export const QueuePopover = () => {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const queue = usePlayerStore((state) => state.queue);
   const open = useUiStore((state) => state.isQueueOpen);
   const setOpen = useUiStore((state) => state.setIsQueueOpen);

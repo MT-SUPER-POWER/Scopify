@@ -13,7 +13,8 @@ import { SETTINGS_ACTION_BUTTON_CLASS_NAME } from "@/constants/settings";
 import type { DesktopProxyMode } from "@scopify/desktop-contract";
 import type { NetworkSettingsTabProps } from "@/types/settings/components";
 import { isBackendHostInputValid } from "@/lib/web/backendUrl";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import { SettingInput, SettingRow, SettingSection } from "./SettingsUI";
 
 export function NetworkSettingsTab({
@@ -25,7 +26,7 @@ export function NetworkSettingsTab({
   onWebChange,
   onBackendHostBlur,
 }: NetworkSettingsTabProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const isCustomProxy = config.desktop?.network.proxyMode === "custom";
 
   const hostTrimmed = config.web.backend.host.trim();

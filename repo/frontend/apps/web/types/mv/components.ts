@@ -17,11 +17,8 @@ export interface MvCardProps {
   mv: MvSummary;
 }
 
-export interface MvPageContentProps {
+export interface MvSimilarContentProps {
   mvid: number;
-}
-
-export interface MvSimilarContentProps extends MvPageContentProps {
   detail: MvDetail;
   isTheater: boolean;
   onNextChange: (id: number | null) => void;
@@ -78,6 +75,7 @@ export interface MvInfoProps {
 export interface SongMvBadgeProps {
   /** 歌曲关联的 MV id；缺省或 0 时不渲染。 */
   mvId?: number;
+  onNavigate?: () => void;
 }
 
 export interface MvArtistAvatarProps {

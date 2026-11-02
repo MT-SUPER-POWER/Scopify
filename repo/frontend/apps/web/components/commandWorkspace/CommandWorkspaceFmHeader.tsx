@@ -1,7 +1,8 @@
 "use client";
 
 import { CircleHelp, Search, X } from "lucide-react";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { CommandWorkspaceFmHeaderProps } from "@/types/commandWorkspace/personalFm";
 
 export function CommandWorkspaceFmHeader({
@@ -13,7 +14,7 @@ export function CommandWorkspaceFmHeader({
   onToggleHelp,
   showHelp,
 }: CommandWorkspaceFmHeaderProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   return (
     <div className="flex items-center gap-2 border-b border-border p-4 sm:gap-3">
       <Search className="size-4 shrink-0 text-content-muted" />

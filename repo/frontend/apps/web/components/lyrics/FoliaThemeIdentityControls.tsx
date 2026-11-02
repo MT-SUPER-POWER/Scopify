@@ -3,7 +3,8 @@
 import { Moon, Sun, Trash2 } from "lucide-react";
 
 import { useLyricStageStore } from "@/store/module/lyrics";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { FoliaThemeIdentityControlsProps } from "@/types/lyrics/components";
 
 export function FoliaThemeIdentityControls({
@@ -11,7 +12,7 @@ export function FoliaThemeIdentityControls({
   onDeleteTheme,
   onDraftChange,
 }: FoliaThemeIdentityControlsProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   const themeVariant = useLyricStageStore((state) => state.themeVariant);
   const setThemeVariant = useLyricStageStore((state) => state.setThemeVariant);
 

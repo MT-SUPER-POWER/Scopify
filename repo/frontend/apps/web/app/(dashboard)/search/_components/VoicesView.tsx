@@ -1,0 +1,30 @@
+import { LoaderCircle } from "lucide-react";
+import { VoiceList } from "@/components/search/VoiceList";
+import { useInfiniteScrollTrigger } from "@/hooks/search/useInfiniteScrollTrigger";
+import type { VoicesViewProps } from "@/types/search/components";
+import { SearchCategoryHeader } from "./SearchCategoryHeader";
+
+export function VoicesView({
+  hasNextPage,
+  isFetchingNextPage,
+  onLoadMore,
+  voices,
+}: VoicesViewProps) {
+  const loadMoreRef = useInfiniteScrollTrigger({
+    enabled: hasNextPage && !isFetchingNextPage,
+    onIntersect: onLoadMore,
+  });
+
+  return (
+    <div className="pb-10">
+      <SearchCategoryHeader category="Voices" />
+      <VoiceList enableContextMenu voices={voices} layout="grid" transcriptMode="popover" />
+      <div ref={loadMoreRef} aria-hidden className="h-px" />
+      {isFetchingNextPage ? (
+        <div className="flex justify-center py-6 text-content-muted" aria-live="polite">
+          <LoaderCircle className="size-5 animate-spin" />
+        </div>
+      ) : null}
+    </div>
+  );
+}

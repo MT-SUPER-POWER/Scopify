@@ -11,7 +11,8 @@ import {
 import { Switch } from "@scopify/ui/shadcn/components/switch";
 import { LYRICS_PREVIEW_FONTS } from "@/constants/appearance";
 import type { SubtitleSettingsEditorProps } from "@/types/lyrics/subtitlePreview";
-import { useI18n } from "@/store/module/i18n";
+import { useTranslation } from "react-i18next";
+
 import type { LyricsPreviewFont, LyricsPreviewSettings } from "@/types/appearance/model";
 import { AppearanceRange } from "./AppearanceRange";
 import { SettingRow } from "./SettingsUI";
@@ -20,7 +21,7 @@ export function SubtitleLayoutSettings({
   settings,
   onChange: update,
 }: SubtitleSettingsEditorProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation();
   return (
     <div>
       <SettingRow

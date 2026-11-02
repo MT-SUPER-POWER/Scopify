@@ -57,14 +57,14 @@ export default defineVisualizerBackground({
       <>
         <FoliaQuickToggle
           active={Boolean(tuning.blank)}
-          label={t("options.soraBlank")}
+          label={t("folia.options.soraBlank")}
           onToggle={() => actions?.sora?.onTuningChange?.({ blank: !tuning.blank })}
         >
           <Square size={14} />
         </FoliaQuickToggle>
         <FoliaQuickToggle
           active={vignette}
-          label={t("options.sonnetPostProcessVignette")}
+          label={t("folia.options.sonnetPostProcessVignette")}
           onToggle={() => actions?.common?.onDisableVignetteChange?.(vignette)}
         >
           <Aperture size={14} />
