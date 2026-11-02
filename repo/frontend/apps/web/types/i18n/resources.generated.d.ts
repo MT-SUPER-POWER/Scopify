@@ -1329,8 +1329,12 @@ export default interface Resources {
     "voiceTranscript.unavailable": "文字稿暂时无法读取。";
   };
   login: {
+    "countryCode.all": "全部";
+    "countryCode.noResults": "未找到匹配的国家或地区";
+    "countryCode.popular": "常用";
+    "countryCode.searchPlaceholder": "搜索国家/地区或代码...";
     "form.captchaLabel": "验证码";
-    "form.captchaPlaceholder": "短信验证码";
+    "form.captchaPlaceholder": "4 位短信验证码";
     "form.getCaptcha": "获取验证码";
     "form.passwordLabel": "密码";
     "form.passwordPlaceholder": "请输入密码";
@@ -1345,7 +1349,10 @@ export default interface Resources {
     "mode.sms": "短信";
     "page.backHomeTitle": "返回主页";
     "page.cancelVerification": "取消验证";
+    "page.captchaExpired": "验证码已过期，请重新获取";
+    "page.invalidCaptchaLength": "请输入 4 位短信验证码";
     "page.loginFailed": "登录失败，请检查账号信息";
+    "page.pleaseSendCaptchaFirst": "请先获取短信验证码";
     "page.secondaryVerification": "需要短信二次验证，请获取并输入验证码。";
     "page.securityFailed": "安全验证失败，请重试";
     "page.securityVerification": "请完成安全验证";

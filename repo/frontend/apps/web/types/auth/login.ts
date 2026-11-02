@@ -15,12 +15,27 @@ export interface LoginHydrationGateProps {
 
 export interface PasswordLoginFormProps {
   isLoading: boolean;
-  onSubmit: (phone: string, password: string) => void;
+  onSubmit: (phone: string, password: string, countrycode?: string) => void;
 }
 
 export interface SmsLoginFormProps {
   isLoading: boolean;
   initialPhone?: string;
-  onSendCaptcha: (phone: string) => Promise<boolean>;
-  onSubmit: (phone: string, captcha: string) => void;
+  initialCountryCode?: string;
+  onSendCaptcha: (phone: string, countrycode?: string) => Promise<boolean>;
+  onSubmit: (phone: string, captcha: string, countrycode?: string) => void;
+}
+
+export interface CountryCodeItem {
+  code: string;
+  nameZh: string;
+  nameEn: string;
+  flag: string;
+  popular?: boolean;
+}
+
+export interface CountryCodeSelectProps {
+  value: string;
+  onChange: (code: string) => void;
+  disabled?: boolean;
 }
