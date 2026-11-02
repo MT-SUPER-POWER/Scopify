@@ -1,4 +1,4 @@
-import type { InitNECaptcha, YidunInstance } from "@/types/auth/yidun";
+import type { InitNECaptcha, YidunInstance, YidunSliderOptions } from "@/types/auth/yidun";
 
 let sdkPromise: Promise<InitNECaptcha> | undefined;
 
@@ -37,6 +37,7 @@ export function verifyYidunSlider(
   host: HTMLElement,
   lang: string,
   signal: AbortSignal,
+  options: YidunSliderOptions = {},
 ): Promise<string> {
   return new Promise((resolve, reject) => {
     let instance: YidunInstance | undefined;
@@ -65,12 +66,13 @@ export function verifyYidunSlider(
     void loadSdk()
       .then((init) => {
         if (settled) return;
+        const sliderWidth = host.clientWidth >= 280 ? host.clientWidth : 320;
         init(
           {
-            captchaId: "aefd3e6914a546a2a7263b20a5e8304f",
+            captchaId: options.captchaId || "aefd3e6914a546a2a7263b20a5e8304f",
             element: host,
             mode: "embed",
-            width: `${Math.max(200, host.clientWidth)}px`,
+            width: `${sliderWidth}px`,
             lang,
             onVerify: (error, data) => {
               if (error) return; // An incorrect drag can be retried in the same widget.
@@ -81,7 +83,10 @@ export function verifyYidunSlider(
           },
           (ready) => {
             if (settled) ready.destroy();
-            else instance = ready;
+            else {
+              instance = ready;
+              options.onReady?.();
+            }
           },
           cancel,
         );

@@ -2,6 +2,7 @@ import { afterEach, expect, test } from "bun:test";
 import request from "@/lib/web/request";
 import { getYidunErrorMessage } from "@/lib/auth/yidunError";
 import { loginWithYidun, sendYidunCaptcha } from "@/lib/api/yidun";
+import type { ScopifyRequestConfig } from "@/types/network/model";
 
 const originalAdapter = request.defaults.adapter;
 afterEach(() => {
@@ -11,10 +12,19 @@ afterEach(() => {
 test("risk responses survive HTTP errors and both steps keep the same isolated session", async () => {
   const calls: { url?: string; sid: string }[] = [];
   request.defaults.adapter = async (config) => {
-    const body = JSON.parse(String(config.data)) as { sid: string; password?: string };
+    const body = JSON.parse(String(config.data)) as {
+      sid: string;
+      password?: string;
+      countrycode?: string;
+      ctcode?: string;
+    };
     calls.push({ url: config.url, sid: body.sid });
     expect(config.method).toBe("post");
-    expect(config.params.noLogin).toBe(true);
+    expect((config as ScopifyRequestConfig).noLogin).toBe(true);
+    expect(config.params).toEqual({});
+    expect(config.withCredentials).toBe(false);
+    expect(body.countrycode).toBe("852");
+    expect(body.ctcode).toBe("852");
     expect(config.params.password).toBeUndefined();
     expect(config.validateStatus?.(400)).toBe(true);
     return {
@@ -29,8 +39,13 @@ test("risk responses survive HTTP errors and both steps keep the same isolated s
     sid: "unique-session",
     phone: "13800000000",
     password: "private-password",
+    countrycode: "852",
   });
-  const send = await sendYidunCaptcha({ sid: "unique-session", phone: "13800000000" });
+  const send = await sendYidunCaptcha({
+    sid: "unique-session",
+    phone: "13800000000",
+    countrycode: "852",
+  });
   expect(login.data.code).toBe(8830);
   expect(send.data.code).toBe(8821);
   expect(calls).toEqual([

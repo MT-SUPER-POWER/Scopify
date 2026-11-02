@@ -7,10 +7,14 @@ import { Button } from "@scopify/ui/shadcn/components/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useTranslation } from "react-i18next";
+import { toast } from "sonner";
 
+import { CountryCodeSelect } from "./CountryCodeSelect";
+import { cleanPhoneNumber, validatePassword, validatePhoneNumber } from "@/lib/auth/authValidator";
 import type { PasswordLoginFormProps } from "@/types/auth/login";
 
 export function PasswordLoginForm({ isLoading, onSubmit }: PasswordLoginFormProps) {
+  const [countryCode, setCountryCode] = useState("86");
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -18,9 +22,17 @@ export function PasswordLoginForm({ isLoading, onSubmit }: PasswordLoginFormProp
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (phone && password) {
-      onSubmit(phone, password);
+    const phoneCheck = validatePhoneNumber(phone, countryCode);
+    if (!phoneCheck.valid) {
+      toast.warning(phoneCheck.message);
+      return;
     }
+    const pwdCheck = validatePassword(password);
+    if (!pwdCheck.valid) {
+      toast.warning(pwdCheck.message);
+      return;
+    }
+    onSubmit(cleanPhoneNumber(phone), password, countryCode);
   };
 
   return (
@@ -29,16 +41,19 @@ export function PasswordLoginForm({ isLoading, onSubmit }: PasswordLoginFormProp
         <Label htmlFor="phone" className="text-xs text-content-muted">
           {t("login.form.phoneLabel")}
         </Label>
-        <Input
-          id="phone"
-          type="tel"
-          autoComplete="tel"
-          disabled={isLoading}
-          value={phone}
-          onChange={(e) => setPhone(e.target.value)}
-          placeholder={t("login.form.phonePlaceholder")}
-          className="h-10 border-content/10 bg-content/5 text-sm text-content"
-        />
+        <div className="flex gap-2">
+          <CountryCodeSelect value={countryCode} onChange={setCountryCode} disabled={isLoading} />
+          <Input
+            id="phone"
+            type="tel"
+            autoComplete="tel"
+            disabled={isLoading}
+            value={phone}
+            onChange={(e) => setPhone(e.target.value)}
+            placeholder={t("login.form.phonePlaceholder")}
+            className="h-10 flex-1 border-content/10 bg-content/5 text-sm text-content"
+          />
+        </div>
       </div>
       <div className="space-y-1.5">
         <Label htmlFor="password" className="text-xs text-content-muted">
