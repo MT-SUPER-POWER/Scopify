@@ -25,6 +25,32 @@ import type {
 import type { LoginMode } from "@/types/auth/login";
 
 const CAPTCHA_VALIDITY_MS = 10 * 60 * 1000;
+const LOGIN_MODE_STORAGE_KEY = "scopify-last-login-mode";
+
+function getRememberedLoginMode(): LoginMode | null {
+  if (typeof window === "undefined") return null;
+  try {
+    const saved = localStorage.getItem(LOGIN_MODE_STORAGE_KEY);
+    if (saved === "qr" || saved === "password") {
+      return saved;
+    }
+  } catch {
+    /* Storage can be unavailable. */
+  }
+  return null;
+}
+
+function rememberLoginMode(mode: LoginMode) {
+  if (typeof window === "undefined") return;
+  try {
+    if (mode === "qr" || mode === "password") {
+      localStorage.setItem(LOGIN_MODE_STORAGE_KEY, mode);
+    }
+  } catch {
+    /* Storage can be unavailable. */
+  }
+}
+
 export function useLoginFlow() {
   const smartRouter = useSmartRouter();
   const searchParams = useSearchParams();
@@ -45,6 +71,7 @@ export function useLoginFlow() {
   useEffect(() => () => operation.current?.abort(), []);
   const setMode = (next: LoginMode) => {
     if (operation.current || verification) return;
+    rememberLoginMode(next);
     updateMode(next);
   };
   const [deviceName, setDeviceName] = useState("");
@@ -239,7 +266,17 @@ export function useLoginFlow() {
 
   useEffect(() => {
     setIsMounted(true);
-  }, []);
+    const urlMode = searchParams.get("mode");
+    if (urlMode === "qr" || urlMode === "password") {
+      updateMode(urlMode);
+      rememberLoginMode(urlMode);
+      return;
+    }
+    const remembered = getRememberedLoginMode();
+    if (remembered) {
+      updateMode(remembered);
+    }
+  }, [searchParams]);
 
   return {
     mode,
