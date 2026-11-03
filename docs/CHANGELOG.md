@@ -2,7 +2,7 @@
 
 > 根据 commit 自动生成，请勿手动编辑；推送版本 tag 后由 CI 更新。v2.0.3 及更早版本见[历史更新记录](archive/CHANGELOG-legacy.md)。
 
-## v3.3.2 — 2026-11-02
+## v3.3.2 — 2026-11-03
 
 ### 新增
 
@@ -15,6 +15,7 @@
 
 ### 修复
 
+- 修复后端路由机制的问题 ([0a2a0c21](https://github.com/MT-SUPER-POWER/Scopify/commit/0a2a0c2117ff28415edddb3681ab03fb492870f9))
 - 在同一弹窗内完成滑块与短信二次验证 ([9c3bdef4](https://github.com/MT-SUPER-POWER/Scopify/commit/9c3bdef4de0eca4f1998a9a62eaa89fb9cd9ad29))
 - 隔离登录请求参数并保留风控响应 ([18e02f25](https://github.com/MT-SUPER-POWER/Scopify/commit/18e02f25871bdd719b801d00a66e1681f23ced6c))
 - 同步窗口顶栏明暗模式以保持 macOS 红绿灯失焦可见 ([2b0d5026](https://github.com/MT-SUPER-POWER/Scopify/commit/2b0d502658f4ce719551529b169145680db22489))
