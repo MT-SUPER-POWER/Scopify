@@ -2,6 +2,24 @@
 
 > 根据 commit 自动生成，请勿手动编辑；推送版本 tag 后由 CI 更新。v2.0.3 及更早版本见[历史更新记录](archive/CHANGELOG-legacy.md)。
 
+## v3.3.2 — 2026-11-02
+
+### 新增
+
+- 记住上次使用的登录方式 ([70f46909](https://github.com/MT-SUPER-POWER/Scopify/commit/70f46909e3667b2622eab33da0aa3dd4c4bdba1b))
+- 支持国际区号选择与登录输入校验 ([a705913e](https://github.com/MT-SUPER-POWER/Scopify/commit/a705913e56fc837b3de031bcb3978fe44a85b317))
+- 恢复密码与短信登录并切换维护中的后端 ([1ffdf8ff](https://github.com/MT-SUPER-POWER/Scopify/commit/1ffdf8ff4ce6df9dad2fd7a376e33ca54a2d0acb))
+- 听歌报告海报改为可缩放、可导出图片的 3D 小票 ([24ec2262](https://github.com/MT-SUPER-POWER/Scopify/commit/24ec226258f711b63228176e46d6b971308e0732))
+- 优化听歌周报浅色模式视觉与动态叙事寄语 ([36115cbc](https://github.com/MT-SUPER-POWER/Scopify/commit/36115cbcc39ef02467eb6745e10864db52c6bf7a))
+- 歌词舞台新增雾笺与町景，动画由静到闹排列 ([4eb0b7d5](https://github.com/MT-SUPER-POWER/Scopify/commit/4eb0b7d5c6c9cc408abe23117154b77120f09750))
+
+### 修复
+
+- 在同一弹窗内完成滑块与短信二次验证 ([9c3bdef4](https://github.com/MT-SUPER-POWER/Scopify/commit/9c3bdef4de0eca4f1998a9a62eaa89fb9cd9ad29))
+- 隔离登录请求参数并保留风控响应 ([18e02f25](https://github.com/MT-SUPER-POWER/Scopify/commit/18e02f25871bdd719b801d00a66e1681f23ced6c))
+- 同步窗口顶栏明暗模式以保持 macOS 红绿灯失焦可见 ([2b0d5026](https://github.com/MT-SUPER-POWER/Scopify/commit/2b0d502658f4ce719551529b169145680db22489))
+- 优化落地页在手机上的显示 ([0589d7b2](https://github.com/MT-SUPER-POWER/Scopify/commit/0589d7b2afe9d253b2da145052a60b16898dd8c9))
+
 ## v3.3.1 — 2026-10-31
 
 ### 新增
