@@ -1,14 +1,11 @@
 "use client";
 
-import { useCallback, useEffect, useId, useRef } from "react";
+import { useEffect, useId, useRef } from "react";
 import { useLatticeWall } from "@/hooks/playlist/useLatticeWall";
-import { usePlaybackCommands } from "@/hooks/player/usePlaybackCommands";
-import { usePlaybackProjection } from "@/hooks/player/usePlaybackProjection";
+import { usePlaylistViewPlayback } from "@/hooks/playlist/usePlaylistViewPlayback";
 import { useLatticePreferences } from "@/store/module/lattice";
-import { usePlayerStore } from "@/store";
 import { useTranslation } from "react-i18next";
 
-import type { SongDetail } from "@/types/song/api";
 import type { PlaylistLatticeProps } from "@/types/playlist/latticeComponents";
 import { LatticeToolbar } from "./LatticeToolbar";
 import { LatticePoster } from "./LatticePoster";
@@ -19,6 +16,7 @@ export default function PlaylistLattice({
   sourceId,
   onTrackPlay,
   onClose,
+  onModeChange,
 }: PlaylistLatticeProps) {
   const { t } = useTranslation();
   const rootRef = useRef<HTMLElement>(null);
@@ -26,20 +24,7 @@ export default function PlaylistLattice({
   const wall = useLatticeWall(tracks.length);
   const followCurrent = useLatticePreferences((state) => state.followCurrent);
   const lightsOff = useLatticePreferences((state) => state.lightsOff);
-  const playback = usePlaybackProjection();
-  const commands = usePlaybackCommands();
-  const queueSource = usePlayerStore((state) => state.playlistId);
-  const playFromSong = usePlayerStore((state) => state.playFromSong);
-  const currentIndex =
-    queueSource === sourceId ? tracks.findIndex((track) => track.id === playback.track?.id) : -1;
-  const play = useCallback(
-    (track: SongDetail) => {
-      if (queueSource === sourceId && track.id === playback.track?.id) void commands.toggle();
-      else if (onTrackPlay) onTrackPlay(track);
-      else void playFromSong(track, tracks, sourceId);
-    },
-    [commands, onTrackPlay, playback.track?.id, playFromSong, queueSource, sourceId, tracks],
-  );
+  const { currentIndex, play } = usePlaylistViewPlayback({ tracks, sourceId, onTrackPlay });
   useEffect(() => {
     wall.fieldRef.current?.focus({ preventScroll: true });
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -53,7 +38,7 @@ export default function PlaylistLattice({
       tabIndex={-1}
       className="group/lattice @container absolute inset-0 isolate z-15 overflow-hidden bg-card text-foreground outline-none motion-reduce:**:transition-none"
       data-lights-off={lightsOff && currentIndex >= 0}
-      aria-label={t("playlist.lattice.open")}
+      aria-label={t("playlist.view.lattice")}
       aria-describedby={hintId}
       onKeyDown={(event) => wall.onKeyDown(event, onClose)}
     >
@@ -63,6 +48,9 @@ export default function PlaylistLattice({
         canLocate={currentIndex >= 0}
         onLocate={() => wall.locate(currentIndex)}
         onClose={onClose}
+        mode="lattice"
+        onModeChange={onModeChange}
+        hint={t("playlist.lattice.hint")}
       />
       <div
         ref={wall.fieldRef}

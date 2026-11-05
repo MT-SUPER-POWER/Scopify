@@ -7,12 +7,18 @@ export const useLatticePreferences = create<LatticePreferences>()(
     (set) => ({
       followCurrent: false,
       lightsOff: false,
+      viewMode: "lattice",
       setFollowCurrent: (followCurrent) => set({ followCurrent }),
       setLightsOff: (lightsOff) => set({ lightsOff }),
+      setViewMode: (viewMode) => set({ viewMode }),
     }),
     {
       name: "scopify-lattice-preferences",
-      partialize: (state) => ({ followCurrent: state.followCurrent, lightsOff: state.lightsOff }),
+      partialize: (state) => ({
+        followCurrent: state.followCurrent,
+        lightsOff: state.lightsOff,
+        viewMode: state.viewMode,
+      }),
     },
   ),
 );

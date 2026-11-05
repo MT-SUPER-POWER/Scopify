@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import type { SongDetail } from "@/types/song/api";
-import type { QueueInstance, ReflowTile } from "@/types/playlist/lattice";
+import type { PlaylistViewMode, QueueInstance, ReflowTile } from "@/types/playlist/lattice";
 
 export interface PlaylistLatticeProps {
   tracks: SongDetail[];
@@ -8,14 +8,19 @@ export interface PlaylistLatticeProps {
   sourceId: string | null;
   onTrackPlay?: (track: SongDetail) => void;
   onClose: () => void;
+  /** Jumps to another immersive view without going back to the list first. */
+  onModeChange: (mode: PlaylistViewMode) => void;
 }
 
-export interface PlaylistLatticeViewProps extends Omit<PlaylistLatticeProps, "onClose"> {
-  children: (open: () => void) => ReactNode;
+export interface PlaylistLatticeViewProps extends Omit<
+  PlaylistLatticeProps,
+  "onClose" | "onModeChange"
+> {
+  children: (open: (mode?: PlaylistViewMode) => void) => ReactNode;
 }
 
 export interface PlaylistViewButtonProps {
-  onOpen: () => void;
+  onOpen: (mode?: PlaylistViewMode) => void;
   disabled?: boolean;
 }
 
@@ -34,6 +39,10 @@ export interface LatticePosterProps {
 export interface LatticeToolbarProps {
   title: string;
   count: number;
+  mode: PlaylistViewMode;
+  onModeChange: (mode: PlaylistViewMode) => void;
+  /** Usage hint for the current view, shown at the bottom of the options menu. */
+  hint: string;
   canLocate: boolean;
   onLocate: () => void;
   onClose: () => void;

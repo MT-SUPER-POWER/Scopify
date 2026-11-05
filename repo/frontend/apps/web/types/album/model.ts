@@ -1,4 +1,5 @@
 import type { SongDetail } from "@/types/song/api";
+import type { PlaylistViewMode } from "@/types/playlist/lattice";
 
 export interface AlbumInfo {
   artistAvatar: string;
@@ -27,7 +28,7 @@ export interface AlbumActionsProps {
   isAlbumCollected: boolean;
   isPlaying: boolean;
   isTogglingAlbumSubscribe: boolean;
-  onOpenLattice: () => void;
+  onOpenLattice: (mode?: PlaylistViewMode) => void;
   onPlay: () => void;
   onToggleSubscribe: () => void;
 }

@@ -3,6 +3,7 @@ import type { HTMLAttributes, ReactNode, RefObject } from "react";
 import type { SongDetail } from "@/types/song/api";
 import type { CommentResourceKind } from "@/types/comment/api";
 import type { PlaylistInfo } from "@/types/playlist/model";
+import type { PlaylistViewMode } from "@/types/playlist/lattice";
 import type { CloudTrackActions } from "@/types/library/components";
 import type { DailyCategory } from "@/types/playlist/api";
 
@@ -37,7 +38,7 @@ export interface PlaylistActionsProps {
   inputRef: RefObject<HTMLInputElement | null>;
   isDaily: boolean;
   isSticky?: boolean;
-  onOpenLattice?: () => void;
+  onOpenLattice?: (mode?: PlaylistViewMode) => void;
   onPlayToggle?: () => void;
   onSearchChange: (query: string) => void;
   onSearchClose: () => void;

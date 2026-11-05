@@ -3,7 +3,13 @@
 import { useCallback, useLayoutEffect, useRef, useState } from "react";
 import { animate, useReducedMotion } from "framer-motion";
 import { useLatticePointer } from "@/hooks/playlist/useLatticePointer";
-import type { Bounds, LatticeCamera, LatticeViewport, ReflowTile } from "@/types/playlist/lattice";
+import type {
+  Bounds,
+  LatticeCamera,
+  LatticeCameraOptions,
+  LatticeViewport,
+  ReflowTile,
+} from "@/types/playlist/lattice";
 
 // The wall fills the pane; keep focused posters below the overlaid h-16 Header.
 const HEADER_INSET = 64;
@@ -15,7 +21,7 @@ const getBounds = (camera: LatticeCamera, viewport: LatticeViewport): Bounds => 
   bottom: (viewport.height - camera.y) / camera.scale,
 });
 
-export function useLatticeCamera() {
+export function useLatticeCamera({ centered = false, onFrame }: LatticeCameraOptions = {}) {
   const fieldRef = useRef<HTMLDivElement>(null);
   const worldRef = useRef<HTMLDivElement>(null);
   const cameraRef = useRef<LatticeCamera>({ x: 0, y: 0, scale: 0.65 });
@@ -25,6 +31,8 @@ export function useLatticeCamera() {
   const [viewport, setViewport] = useState(viewportRef.current);
   const animationRef = useRef<{ stop: () => void } | null>(null);
   const reducedMotion = useReducedMotion();
+  const onFrameRef = useRef(onFrame);
+  onFrameRef.current = onFrame;
   const stop = useCallback(() => {
     animationRef.current?.stop();
     animationRef.current = null;
@@ -33,6 +41,7 @@ export function useLatticeCamera() {
     cameraRef.current = next;
     if (worldRef.current)
       worldRef.current.style.transform = `translate3d(${next.x}px, ${next.y}px, 0) scale(${next.scale})`;
+    onFrameRef.current?.(next);
     const visible = getBounds(next, viewportRef.current);
     const culled = boundsRef.current;
     // 500 world-pixel overscan; refill with 180 pixels still in reserve.
@@ -62,7 +71,9 @@ export function useLatticeCamera() {
               x: camera.x + (next.width - previous.width) / 2,
               y: camera.y + (next.height - previous.height) / 2,
             }
-          : { ...camera, scale: Math.min(0.65, Math.max(0.35, next.width / 1750)) },
+          : centered
+            ? { x: next.width / 2, y: next.height / 2, scale: 1 }
+            : { ...camera, scale: Math.min(0.65, Math.max(0.35, next.width / 1750)) },
         true,
       );
       setViewport(next);
@@ -74,12 +85,13 @@ export function useLatticeCamera() {
       observer.disconnect();
       stop();
     };
-  }, [apply, stop]);
+  }, [apply, centered, stop]);
   const center = useCallback(
     (rect: Omit<ReflowTile, "instanceId">, fit = true) => {
       stop();
       const viewport = viewportRef.current;
-      const contentHeight = Math.max(0, viewport.height - HEADER_INSET);
+      const inset = centered ? 0 : HEADER_INSET;
+      const contentHeight = Math.max(0, viewport.height - inset);
       const start = cameraRef.current;
       const scale = fit
         ? Math.min(
@@ -90,7 +102,7 @@ export function useLatticeCamera() {
         : start.scale;
       const next = {
         x: (viewport.width - rect.width * scale) / 2 - rect.x * scale,
-        y: HEADER_INSET + (contentHeight - rect.height * scale) / 2 - rect.y * scale,
+        y: inset + (contentHeight - rect.height * scale) / 2 - rect.y * scale,
         scale,
       };
       if (reducedMotion) {
@@ -109,7 +121,7 @@ export function useLatticeCamera() {
         onComplete: () => apply(next, true),
       });
     },
-    [apply, reducedMotion, stop],
+    [apply, centered, reducedMotion, stop],
   );
   const pointerHandlers = useLatticePointer({
     fieldRef,

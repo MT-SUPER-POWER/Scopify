@@ -7,6 +7,12 @@ export interface LatticeCamera {
   y: number;
   scale: number;
 }
+export interface LatticeCameraOptions {
+  /** Starts at scale 1 with the world origin in the middle of the pane, and centres without the header inset. */
+  centered?: boolean;
+  /** Called with every camera the wall applies, including drag and inertia frames. */
+  onFrame?: (camera: LatticeCamera) => void;
+}
 export interface LatticeViewport {
   width: number;
   height: number;
@@ -87,16 +93,23 @@ export type Axis = {
   crossSize: "height" | "width";
   sign: 1 | -1;
 };
+/** Immersive alternatives to the track table; each one takes over the whole content pane. */
+export type PlaylistViewMode = "lattice" | "grid";
+
 export interface LatticePreferences {
   followCurrent: boolean;
   lightsOff: boolean;
+  /** The immersive view the header button and shortcuts open. */
+  viewMode: PlaylistViewMode;
   setFollowCurrent: (value: boolean) => void;
   setLightsOff: (value: boolean) => void;
+  setViewMode: (value: PlaylistViewMode) => void;
 }
 
-/** Opens or closes the lattice view of the playlist page that is currently mounted. */
+/** Opens or closes the immersive view of the playlist page that is currently mounted. */
 export interface LatticeViewController {
-  open: () => void;
+  /** Without a mode, opens the remembered one. Switching modes while open is allowed. */
+  open: (mode?: PlaylistViewMode) => void;
   close: () => void;
 }
 

@@ -7,13 +7,17 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuCheckboxItem,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
   DropdownMenuSeparator,
   DropdownMenuLabel,
 } from "@scopify/ui/shadcn/components/dropdown-menu";
 import { useTranslation } from "react-i18next";
 
+import { PLAYLIST_VIEW_MODES } from "@/constants/playlistViews";
 import { useUiStore } from "@/store/module/ui";
 import { useLatticePreferences } from "@/store/module/lattice";
+import type { PlaylistViewMode } from "@/types/playlist/lattice";
 import type { LatticeToolbarProps } from "@/types/playlist/latticeComponents";
 
 const toolButtonClass =
@@ -22,6 +26,9 @@ const toolButtonClass =
 export function LatticeToolbar({
   title,
   count,
+  mode,
+  onModeChange,
+  hint,
   canLocate,
   onLocate,
   onClose,
@@ -75,6 +82,18 @@ export function LatticeToolbar({
             <DropdownMenuLabel className="truncate text-xs text-muted-foreground">
               {title} · {count}
             </DropdownMenuLabel>
+            <DropdownMenuRadioGroup
+              value={mode}
+              onValueChange={(next) => onModeChange(next as PlaylistViewMode)}
+            >
+              {PLAYLIST_VIEW_MODES.map(({ mode: value, icon: Icon, labelKey }) => (
+                <DropdownMenuRadioItem key={value} value={value}>
+                  <Icon />
+                  {t(labelKey)}
+                </DropdownMenuRadioItem>
+              ))}
+            </DropdownMenuRadioGroup>
+            <DropdownMenuSeparator />
             <DropdownMenuItem disabled={!canLocate} onSelect={onLocate}>
               <Crosshair />
               {t("playlist.lattice.locate")}
@@ -96,9 +115,7 @@ export function LatticeToolbar({
               <ListMusic />
               {t("queue.title")}
             </DropdownMenuItem>
-            <p className="p-2 text-xs leading-relaxed text-muted-foreground">
-              {t("playlist.lattice.hint")}
-            </p>
+            <p className="p-2 text-xs leading-relaxed text-muted-foreground">{hint}</p>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>

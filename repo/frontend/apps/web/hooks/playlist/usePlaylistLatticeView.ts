@@ -1,12 +1,16 @@
 "use client";
 
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
-import { useLatticeView } from "@/store/module/lattice";
+import { useLatticePreferences, useLatticeView } from "@/store/module/lattice";
+import type { PlaylistViewMode } from "@/types/playlist/lattice";
 
 export function usePlaylistLatticeView() {
   const contentRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLElement | null>(null);
   const [container, setContainer] = useState<HTMLElement | null>(null);
+  const [mode, setMode] = useState<PlaylistViewMode>(
+    () => useLatticePreferences.getState().viewMode,
+  );
   useLayoutEffect(() => {
     if (!container) return;
     container.dataset.latticeActive = "true";
@@ -17,11 +21,17 @@ export function usePlaylistLatticeView() {
       setActive(false);
     };
   }, [container]);
-  const open = useCallback(() => {
+  const open = useCallback((requested?: PlaylistViewMode) => {
+    const preferences = useLatticePreferences.getState();
+    const next = requested ?? preferences.viewMode;
+    if (requested) preferences.setViewMode(requested);
+    setMode(next);
     const host = contentRef.current?.closest<HTMLElement>("[data-dashboard-main]");
     if (!host) return;
-    triggerRef.current =
-      document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    // Switching modes while open keeps the element that opened the view as the focus target.
+    if (!host.dataset.latticeActive)
+      triggerRef.current =
+        document.activeElement instanceof HTMLElement ? document.activeElement : null;
     setContainer(host);
   }, []);
   const close = useCallback(() => {
@@ -32,5 +42,5 @@ export function usePlaylistLatticeView() {
   }, []);
   // Lets the global header and shortcut commands switch this page's view mode.
   useEffect(() => useLatticeView.getState().register({ open, close }), [open, close]);
-  return { contentRef, container, open, close };
+  return { contentRef, container, mode, open, close };
 }
