@@ -25,6 +25,7 @@ export function registerWindowIpc(mainWindow: BrowserWindow | null) {
   ipcMain.on("window-enter-full-screen", () => mainWindow?.setFullScreen(true));
   ipcMain.on("window-exit-full-screen", () => mainWindow?.setFullScreen(false));
   ipcMain.on("main-window-reload", () => mainWindow?.reload());
+  ipcMain.on("main-window-minimize", () => mainWindow?.minimize());
   ipcMain.on("navigate-main-window", (_event, path) => {
     if (!mainWindow) return;
     if (mainWindow.isMinimized()) mainWindow.restore();

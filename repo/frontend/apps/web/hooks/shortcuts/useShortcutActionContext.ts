@@ -134,6 +134,8 @@ export function useShortcutActionContext(
       },
       desktop: {
         reloadWindow: () => runtime.window.reload(),
+        hideToTray: () => runtime.window.minimize(),
+        minimizeToTaskbar: () => runtime.window.minimizeToTaskbar(),
         toggleDynamicIsland: () => {
           if (runtime.isDesktop) void runtime.dynamicIsland.toggle();
         },

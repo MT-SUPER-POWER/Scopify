@@ -2178,7 +2178,9 @@ export default interface Resources {
   shortcuts: {
     "command.decreaseVolume": "减小音量";
     "command.focusPlaylistSearch": "在歌单内搜索";
+    "command.hideToTray": "隐藏到托盘";
     "command.increaseVolume": "增大音量";
+    "command.minimizeToTaskbar": "最小化到任务栏";
     "command.navigateBack": "后退";
     "command.navigateForward": "前进";
     "command.nextTrack": "下一首";

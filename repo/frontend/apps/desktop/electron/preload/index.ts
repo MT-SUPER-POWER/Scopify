@@ -216,6 +216,9 @@ const electronAPI: DesktopBridge = {
   minimizeApp: () => {
     ipcRenderer.send("minimize-to-tray");
   },
+  minimizeMainWindow: () => {
+    ipcRenderer.send("main-window-minimize");
+  },
   sendAppCloseAction: (action: "minimize" | "exit" | "cancel", remember: boolean) => {
     ipcRenderer.send("app-close-action", action, remember);
   },

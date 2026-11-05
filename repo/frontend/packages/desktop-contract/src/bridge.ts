@@ -166,6 +166,8 @@ export interface DesktopBridge<TLyrics = unknown> {
   getVideoExportCaptureSource(): Promise<DesktopVideoExportSource | null>;
   loginSuccess(): void;
   minimizeApp(): void;
+  /** 缩到任务栏，区别于 `minimizeApp` 的隐藏到托盘。 */
+  minimizeMainWindow(): void;
   navigateTo(path: string): void;
   onControlAudio(callback: (action: "next" | "prev" | "toggle-play") => void): Unsubscribe;
   onDesktopLyricCommand(callback: (command: DesktopLyricCommand) => void): Unsubscribe;

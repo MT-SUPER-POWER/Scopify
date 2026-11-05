@@ -39,6 +39,8 @@
   "command.toggleFullscreen": "切換全螢幕",
   "command.toggleDeveloperTools": "開啟/關閉開發者工具",
   "command.reloadWindow": "重新載入視窗",
+  "command.hideToTray": "隱藏到系統匣",
+  "command.minimizeToTaskbar": "最小化到工作列",
   "command.openCurrentTrackComments": "查看目前歌曲評論",
   "command.focusPlaylistSearch": "在歌單內搜尋",
   "command.playlistViewList": "歌單展示：清單",

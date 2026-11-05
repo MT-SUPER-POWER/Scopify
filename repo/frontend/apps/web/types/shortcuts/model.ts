@@ -116,6 +116,8 @@ export interface ShortcutActionContext {
   };
   desktop: {
     reloadWindow(): void;
+    hideToTray(): void;
+    minimizeToTaskbar(): void;
     toggleDynamicIsland(): void;
     toggleTaskbarLyric(): void;
     toggleDesktopSubtitle(): void;

@@ -490,6 +490,7 @@ export function createBrowserRuntime(
     },
     window: {
       minimize: NOOP,
+      minimizeToTaskbar: NOOP,
       reload: () => environment.location?.reload(),
       onFullscreenChanged: (callback) => {
         const doc = environment.document;

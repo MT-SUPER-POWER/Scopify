@@ -39,6 +39,8 @@
   "command.toggleFullscreen": "Toggle Fullscreen",
   "command.toggleDeveloperTools": "Toggle Developer Tools",
   "command.reloadWindow": "Reload Window",
+  "command.hideToTray": "Hide to Tray",
+  "command.minimizeToTaskbar": "Minimize to Taskbar",
   "command.openCurrentTrackComments": "Open Current Track Comments",
   "command.focusPlaylistSearch": "Search Within Playlist",
   "command.playlistViewList": "Playlist View: List",

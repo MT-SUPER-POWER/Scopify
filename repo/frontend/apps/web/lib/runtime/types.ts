@@ -228,7 +228,10 @@ export interface RuntimeUpdates {
 }
 
 export interface RuntimeWindowControls {
+  /** 隐藏到系统托盘。 */
   minimize(): void;
+  /** 缩到任务栏。 */
+  minimizeToTaskbar(): void;
   reload(): void;
   onFullscreenChanged(callback: (isFullscreen: boolean) => void): RuntimeUnsubscribe;
   onVisibilityChanged(callback: (isVisible: boolean) => void): RuntimeUnsubscribe;

@@ -31,8 +31,8 @@ function actionRecorder() {
 
 describe("shortcut command contracts", () => {
   test("every command has a unique ID, icon and executable declaration", () => {
-    expect(SHORTCUT_COMMANDS).toHaveLength(42);
-    expect(new Set(SHORTCUT_COMMANDS.map(({ id }) => id)).size).toBe(42);
+    expect(SHORTCUT_COMMANDS).toHaveLength(44);
+    expect(new Set(SHORTCUT_COMMANDS.map(({ id }) => id)).size).toBe(44);
     for (const command of SHORTCUT_COMMANDS) {
       expect(getCommandDefinition(command.id)).toBe(command);
       expect(command.icon).toBeTruthy();
@@ -54,6 +54,8 @@ describe("shortcut command contracts", () => {
     ["open-folia-theme-library", "folia.openFoliaThemeLibrary", []],
     ["toggle-desktop-music-mode", "desktop.toggleDesktopMusicMode", []],
     ["reload-window", "desktop.reloadWindow", []],
+    ["hide-to-tray", "desktop.hideToTray", []],
+    ["minimize-to-taskbar", "desktop.minimizeToTaskbar", []],
     ["focus-playlist-search", "playlist.focusSearch", []],
     ["open-current-track-comments", "track.openCurrentComments", []],
   ] as const)("%s routes to its domain capability", (id, action, args) => {
