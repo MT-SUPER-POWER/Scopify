@@ -12,10 +12,12 @@ import type { ComponentType } from "react";
 
 const PlaylistLattice = dynamic(() => import("./PlaylistLattice"), { ssr: false });
 const PlaylistGrid = dynamic(() => import("../grid/PlaylistGrid"), { ssr: false });
+const PlaylistBravais = dynamic(() => import("../bravais/PlaylistBravais"), { ssr: false });
 
 const VIEWS: Record<PlaylistViewMode, ComponentType<PlaylistLatticeProps>> = {
   lattice: PlaylistLattice,
   grid: PlaylistGrid,
+  bravais: PlaylistBravais,
 };
 
 export function PlaylistLatticeView({ children, ...props }: PlaylistLatticeViewProps) {

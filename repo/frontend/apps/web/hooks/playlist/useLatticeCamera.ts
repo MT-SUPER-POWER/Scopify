@@ -21,7 +21,12 @@ const getBounds = (camera: LatticeCamera, viewport: LatticeViewport): Bounds => 
   bottom: (viewport.height - camera.y) / camera.scale,
 });
 
-export function useLatticeCamera({ centered = false, onFrame }: LatticeCameraOptions = {}) {
+export function useLatticeCamera({
+  centered = false,
+  origin,
+  clamp,
+  onFrame,
+}: LatticeCameraOptions = {}) {
   const fieldRef = useRef<HTMLDivElement>(null);
   const worldRef = useRef<HTMLDivElement>(null);
   const cameraRef = useRef<LatticeCamera>({ x: 0, y: 0, scale: 0.65 });
@@ -33,11 +38,16 @@ export function useLatticeCamera({ centered = false, onFrame }: LatticeCameraOpt
   const reducedMotion = useReducedMotion();
   const onFrameRef = useRef(onFrame);
   onFrameRef.current = onFrame;
+  const clampRef = useRef(clamp);
+  clampRef.current = clamp;
+  const originRef = useRef(origin);
+  originRef.current = origin;
   const stop = useCallback(() => {
     animationRef.current?.stop();
     animationRef.current = null;
   }, []);
-  const apply = useCallback((next: LatticeCamera, force = false) => {
+  const apply = useCallback((requested: LatticeCamera, force = false) => {
+    const next = clampRef.current?.(requested, viewportRef.current) ?? requested;
     cameraRef.current = next;
     if (worldRef.current)
       worldRef.current.style.transform = `translate3d(${next.x}px, ${next.y}px, 0) scale(${next.scale})`;
@@ -72,7 +82,11 @@ export function useLatticeCamera({ centered = false, onFrame }: LatticeCameraOpt
               y: camera.y + (next.height - previous.height) / 2,
             }
           : centered
-            ? { x: next.width / 2, y: next.height / 2, scale: 1 }
+            ? {
+                x: next.width / 2 - (originRef.current?.x ?? 0),
+                y: next.height / 2 - (originRef.current?.y ?? 0),
+                scale: 1,
+              }
             : { ...camera, scale: Math.min(0.65, Math.max(0.35, next.width / 1750)) },
         true,
       );

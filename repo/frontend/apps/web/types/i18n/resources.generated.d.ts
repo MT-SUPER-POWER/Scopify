@@ -1715,6 +1715,9 @@ export default interface Resources {
     "actions.subscribeSuccess": "已收藏歌单";
     "actions.unsubscribe": "取消收藏";
     "actions.unsubscribeSuccess": "已取消收藏";
+    "bravais.hint": "拖动或滚轮浏览海报墙 · 点击海报或列表选中，双击播放 · 方向键切换 · Enter 播放 · Esc 取消选中，再按返回";
+    "bravais.select": "选中 {{name}}";
+    "bravais.summary": "{{count}} 首 · {{minutes}} 分钟";
     "drop.adding": "正在添加到歌单…";
     "drop.alreadyLiked": "所选歌曲已在我喜欢的音乐中";
     "drop.concurrentDuplicate": "目标歌单已有部分歌曲，请刷新后重试；重复歌曲会自动跳过";
@@ -1780,6 +1783,7 @@ export default interface Resources {
     "table.searchNoResults": "没有找到与“{{query}}”相关的歌曲";
     "track.likedAdded": "已添加到喜欢的歌曲";
     "track.likedRemoved": "已从喜欢的歌曲中移除";
+    "view.bravais": "Bravais 裂缝墙";
     "view.grid": "Grid 卡片墙";
     "view.lattice": "Lattice 拼贴";
     "view.open": "歌单视图";

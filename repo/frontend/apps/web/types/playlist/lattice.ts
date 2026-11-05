@@ -10,6 +10,10 @@ export interface LatticeCamera {
 export interface LatticeCameraOptions {
   /** Starts at scale 1 with the world origin in the middle of the pane, and centres without the header inset. */
   centered?: boolean;
+  /** With `centered`: the world point shown in the middle of the pane at first layout. */
+  origin?: { x: number; y: number };
+  /** Constrains every camera the wall applies, so a finite wall cannot be dragged out of reach. */
+  clamp?: (camera: LatticeCamera, viewport: LatticeViewport) => LatticeCamera;
   /** Called with every camera the wall applies, including drag and inertia frames. */
   onFrame?: (camera: LatticeCamera) => void;
 }
@@ -94,7 +98,7 @@ export type Axis = {
   sign: 1 | -1;
 };
 /** Immersive alternatives to the track table; each one takes over the whole content pane. */
-export type PlaylistViewMode = "lattice" | "grid";
+export type PlaylistViewMode = "lattice" | "grid" | "bravais";
 
 export interface LatticePreferences {
   followCurrent: boolean;
