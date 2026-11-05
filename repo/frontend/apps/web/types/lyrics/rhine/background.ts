@@ -14,6 +14,15 @@ export interface RhineBackgroundTuning {
 }
 export type RhineBackgroundProps = VisualizerBackgroundRenderProps;
 export type RhineLoadState = "loading" | "ready" | "error";
+/** Where the time of one background load went, in milliseconds; filled in as each stage finishes. */
+export interface RhineLoadTimings {
+  /** Network (or cache) time until the model file is fully read. */
+  fetchMs?: number;
+  /** GLTFLoader.parseAsync: reading the file into a three.js scene. */
+  parseMs?: number;
+  /** Building the archive model: cloned geometry and materials, instanced meshes. */
+  modelMs?: number;
+}
 export interface RhineAudioSample {
   low: number;
   mid: number;

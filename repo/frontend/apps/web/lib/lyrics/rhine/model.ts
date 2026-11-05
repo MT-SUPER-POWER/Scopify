@@ -6,7 +6,7 @@ import { CardAppearance } from "./appearance";
 import { configureInternalOptics } from "./internalOptics";
 import { themeMaterial } from "./themeMaterial";
 import { RhineSongPlate } from "./songPlate";
-import type { RhineArchiveTrack } from "@/types/lyrics/rhine/background";
+import type { RhineArchiveTrack, RhineLoadTimings } from "@/types/lyrics/rhine/background";
 
 const arraySurfaces = new Set([
   "Frosted_Polymer",
@@ -218,13 +218,25 @@ export class RhineModel {
   }
 }
 
-export async function loadRhineModel(capacity: number, signal: AbortSignal) {
+export async function loadRhineModel(
+  capacity: number,
+  signal: AbortSignal,
+  timings?: RhineLoadTimings,
+) {
+  const fetchStart = performance.now();
   const response = await fetch(RHINE_MODEL_URL, { signal });
   if (!response.ok) throw new Error(`Rhine model: HTTP ${response.status}`);
-  const gltf = await new GLTFLoader().parseAsync(await response.arrayBuffer(), "");
+  const bytes = await response.arrayBuffer();
+  const parseStart = performance.now();
+  if (timings) timings.fetchMs = parseStart - fetchStart;
+  const gltf = await new GLTFLoader().parseAsync(bytes, "");
+  const modelStart = performance.now();
+  if (timings) timings.parseMs = modelStart - parseStart;
   try {
     signal.throwIfAborted();
-    return new RhineModel(gltf.scene, capacity);
+    const model = new RhineModel(gltf.scene, capacity);
+    if (timings) timings.modelMs = performance.now() - modelStart;
+    return model;
   } finally {
     const geometries = new Set<THREE.BufferGeometry>();
     const materials = new Set<THREE.Material>();

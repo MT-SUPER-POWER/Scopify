@@ -7,11 +7,13 @@ import {
   RHINE_ROWS,
 } from "@/constants/rhineBackground";
 import { loadRhineModel, RhineModel } from "@/lib/lyrics/rhine/model";
+import { startRhineLoadDiagnostics } from "@/lib/lyrics/rhine/loadDiagnostics";
 import { RhineRenderer } from "@/lib/lyrics/rhine/renderer";
 import { RhineScene } from "@/lib/lyrics/rhine/scene";
 import type {
   RhineBackgroundProps,
   RhineLoadState,
+  RhineLoadTimings,
   RhineSceneInput,
 } from "@/types/lyrics/rhine/background";
 
@@ -143,16 +145,22 @@ export function useRhineBackground(props: RhineBackgroundProps) {
     canvas.addEventListener("webglcontextlost", contextLost);
 
     void (async () => {
+      const diagnostics = startRhineLoadDiagnostics();
+      const timings: RhineLoadTimings = {};
       try {
-        model = await loadRhineModel(RHINE_ROWS * RHINE_LANES, controller.signal);
+        model = await loadRhineModel(RHINE_ROWS * RHINE_LANES, controller.signal, timings);
         if (controller.signal.aborted) {
+          diagnostics.cancel();
           model.dispose();
           return;
         }
         const input = sceneInput(latest.current);
+        const rendererStart = performance.now();
         view = new RhineRenderer(canvas);
         view.initialize(input.tuning.quality);
+        const sceneStart = performance.now();
         scene = new RhineScene(view, model, input);
+        const sceneEnd = performance.now();
         view.onAssetsReady = model.onArtworkReady = () => {
           if (failed || controller.signal.aborted) return;
           try {
@@ -164,7 +172,15 @@ export function useRhineBackground(props: RhineBackgroundProps) {
         scene.resize(width, height);
         setStatus("ready");
         sync();
+        diagnostics.finish({
+          timings,
+          rendererMs: sceneStart - rendererStart,
+          sceneMs: sceneEnd - sceneStart,
+          warmUpMs: scene.warmUpMs,
+          warmUpPaintMs: scene.warmUpPaintMs,
+        });
       } catch (error) {
+        diagnostics.cancel();
         // Construction can fail before the scene owns these resources.
         if (!scene) {
           model?.dispose();

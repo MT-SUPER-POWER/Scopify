@@ -51,6 +51,9 @@ export class RhineScene {
   private seed: string;
   private time = 0;
   private input: RhineSceneInput;
+  /** Load diagnostics: time spent in the construction-time warm-up draw, in total and per paint. */
+  warmUpMs = 0;
+  readonly warmUpPaintMs: number[] = [];
 
   constructor(
     readonly view: RhineRenderer,
@@ -88,6 +91,7 @@ export class RhineScene {
    * `renderer.compile()` skips, is built here rather than on the first song change.
    */
   private warmUp() {
+    const warmUpStart = performance.now();
     const card = this.model.createCard(this.input.track);
     const hidden: THREE.Object3D[] = [];
     card.traverse((child) => {
@@ -100,11 +104,14 @@ export class RhineScene {
     // Rising and fully lifted files interpolate clearcoat to and from zero,
     // which selects a different program; draw both ends.
     for (const progress of [0, 1]) {
+      const paintStart = performance.now();
       this.model.appearance.apply(card, progress);
       this.paint();
+      this.warmUpPaintMs.push(performance.now() - paintStart);
     }
     for (const child of hidden) child.visible = false;
     this.model.releaseCard(card);
+    this.warmUpMs = performance.now() - warmUpStart;
   }
 
   setInput(input: RhineSceneInput) {
