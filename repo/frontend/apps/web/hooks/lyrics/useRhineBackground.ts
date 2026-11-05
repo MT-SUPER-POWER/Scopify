@@ -8,6 +8,7 @@ import {
 } from "@/constants/rhineBackground";
 import { loadRhineModel, RhineModel } from "@/lib/lyrics/rhine/model";
 import { startRhineLoadDiagnostics } from "@/lib/lyrics/rhine/loadDiagnostics";
+import { yieldToMain } from "@/lib/lyrics/rhine/programWarmup";
 import { RhineRenderer } from "@/lib/lyrics/rhine/renderer";
 import { RhineScene } from "@/lib/lyrics/rhine/scene";
 import type {
@@ -46,6 +47,8 @@ export function useRhineBackground(props: RhineBackgroundProps) {
     if (!canvas || !container) return;
     const controller = new AbortController();
     let scene: RhineScene | undefined;
+    // Built but still warming up: not animated or painted by anything else until it is promoted to `scene`.
+    let pending: RhineScene | undefined;
     let model: RhineModel | undefined;
     let view: RhineRenderer | undefined;
     let request = 0;
@@ -154,13 +157,22 @@ export function useRhineBackground(props: RhineBackgroundProps) {
           model.dispose();
           return;
         }
+        // Each heavy step below gets its own task so the interface keeps moving in between.
+        await yieldToMain();
+        controller.signal.throwIfAborted();
         const input = sceneInput(latest.current);
         const rendererStart = performance.now();
         view = new RhineRenderer(canvas);
         view.initialize(input.tuning.quality);
         const sceneStart = performance.now();
-        scene = new RhineScene(view, model, input);
+        const created = new RhineScene(view, model, input);
+        pending = created;
         const sceneEnd = performance.now();
+        await yieldToMain();
+        await created.warmUp(controller.signal);
+        controller.signal.throwIfAborted();
+        pending = undefined;
+        scene = created;
         view.onAssetsReady = model.onArtworkReady = () => {
           if (failed || controller.signal.aborted) return;
           try {
@@ -177,12 +189,16 @@ export function useRhineBackground(props: RhineBackgroundProps) {
           rendererMs: sceneStart - rendererStart,
           sceneMs: sceneEnd - sceneStart,
           warmUpMs: scene.warmUpMs,
+          precompileMs: scene.precompileMs,
           warmUpPaintMs: scene.warmUpPaintMs,
         });
       } catch (error) {
         diagnostics.cancel();
-        // Construction can fail before the scene owns these resources.
-        if (!scene) {
+        // Construction can fail (or be aborted) before `scene` owns these resources.
+        if (pending) {
+          pending.dispose();
+          pending = undefined;
+        } else if (!scene) {
           model?.dispose();
           view?.dispose();
         }

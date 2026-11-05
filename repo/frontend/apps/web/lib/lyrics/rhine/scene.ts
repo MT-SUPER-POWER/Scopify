@@ -22,6 +22,7 @@ import {
   smooth,
   Spring,
 } from "./motion";
+import { yieldToMain } from "./programWarmup";
 import { RhineRenderer } from "./renderer";
 import { RhythmMotion, rhythmDisplacement } from "./rhythm";
 import { ThemeWave } from "./themeWave";
@@ -53,6 +54,8 @@ export class RhineScene {
   private input: RhineSceneInput;
   /** Load diagnostics: time spent in the construction-time warm-up draw, in total and per paint. */
   warmUpMs = 0;
+  /** The part of the warm-up spent handing programs to the GPU and waiting for them. */
+  precompileMs = 0;
   readonly warmUpPaintMs: number[] = [];
 
   constructor(
@@ -82,15 +85,16 @@ export class RhineScene {
     this.view.scene.add(model.array);
     this.updateVisibility();
     this.updateField(0);
-    this.warmUp();
   }
 
   /**
-   * Draw one archive while the background is still loading and hidden, so every
-   * shader variant it needs, including the transmission back face that
-   * `renderer.compile()` skips, is built here rather than on the first song change.
+   * Builds, while the background is still loading and hidden, every shader variant one archive needs, so none is
+   * built on the first song change: the programs go to the GPU in the background (`RhineRenderer.precompile`,
+   * including the transmission back faces that `renderer.compile()` skips), then one archive is drawn at both ends
+   * of its lift. Rising and fully lifted files interpolate clearcoat to and from zero, which selects a different
+   * program, so both ends are drawn. Call it once, before the scene is painted or animated by anything else.
    */
-  private warmUp() {
+  async warmUp(signal: AbortSignal) {
     const warmUpStart = performance.now();
     const card = this.model.createCard(this.input.track);
     const hidden: THREE.Object3D[] = [];
@@ -101,16 +105,22 @@ export class RhineScene {
     });
     card.position.set(this.active.x, -4.6, this.active.z);
     this.view.scene.add(card);
-    // Rising and fully lifted files interpolate clearcoat to and from zero,
-    // which selects a different program; draw both ends.
-    for (const progress of [0, 1]) {
-      const paintStart = performance.now();
-      this.model.appearance.apply(card, progress);
-      this.paint();
-      this.warmUpPaintMs.push(performance.now() - paintStart);
+    try {
+      const precompileStart = performance.now();
+      await this.view.precompile(signal);
+      this.precompileMs = performance.now() - precompileStart;
+      for (const progress of [0, 1]) {
+        await yieldToMain();
+        signal.throwIfAborted();
+        const paintStart = performance.now();
+        this.model.appearance.apply(card, progress);
+        this.paint();
+        this.warmUpPaintMs.push(performance.now() - paintStart);
+      }
+    } finally {
+      for (const child of hidden) child.visible = false;
+      this.model.releaseCard(card);
     }
-    for (const child of hidden) child.visible = false;
-    this.model.releaseCard(card);
     this.warmUpMs = performance.now() - warmUpStart;
   }
 

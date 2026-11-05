@@ -9,6 +9,7 @@ import { RHINE_QUALITY } from "@/constants/rhineBackground";
 import type { RhineQuality } from "@/types/lyrics/rhine/background";
 import { RhineAOPass } from "./ambientOcclusion";
 import { createAtmospherePass } from "./atmosphere";
+import { submitSceneCompile, waitForPrograms } from "./programWarmup";
 import { themeEnvironment } from "./themeMaterial";
 
 export class RhineRenderer {
@@ -123,6 +124,16 @@ export class RhineRenderer {
     this.atmosphere = createAtmospherePass();
     this.composer.addPass(this.atmosphere);
     this.applyQuality();
+  }
+
+  /**
+   * Compiles the scene's shader programs in the background and waits for them without blocking the main thread
+   * (programWarmup.ts), so the first frames find them built. Needs the lights, environment and shadow settings
+   * from `initialize()` and whatever should be drawn already in the scene.
+   */
+  async precompile(signal: AbortSignal) {
+    submitSceneCompile(this.renderer, this.composer?.readBuffer ?? null, this.scene, this.camera);
+    await waitForPrograms(this.renderer, signal);
   }
 
   setQuality(quality: RhineQuality) {

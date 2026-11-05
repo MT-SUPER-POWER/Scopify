@@ -18,9 +18,11 @@ export interface RhineLoadStages {
   timings: RhineLoadTimings;
   /** Renderer construction and `initialize()`: context, environment map, composer passes. */
   rendererMs: number;
-  /** Scene construction including the warm-up draw. */
+  /** Scene construction (the cell grid and first field); the warm-up is separate. */
   sceneMs: number;
   warmUpMs: number;
+  /** Part of the warm-up spent compiling shader programs in the background. */
+  precompileMs: number;
   warmUpPaintMs: readonly number[];
   /** Whole load, from the start of the model request to the scene being ready. */
   totalMs: number;
@@ -57,7 +59,7 @@ export function startRhineLoadDiagnostics() {
         `[RhineBackground] ready in ${round(totalMs)} ms: model fetch ${round(stages.timings.fetchMs)}, ` +
           `parse ${round(stages.timings.parseMs)}, model ${round(stages.timings.modelMs)}, ` +
           `renderer ${round(stages.rendererMs)}, scene ${round(stages.sceneMs)} ` +
-          `(warm-up ${round(stages.warmUpMs)}, paints ${stages.warmUpPaintMs.map(round).join("/")})`,
+          `(warm-up ${round(stages.warmUpMs)}: precompile ${round(stages.precompileMs)}, paints ${stages.warmUpPaintMs.map(round).join("/")})`,
       );
       timer = window.setTimeout(() => {
         observer?.takeRecords().forEach((entry) => {
