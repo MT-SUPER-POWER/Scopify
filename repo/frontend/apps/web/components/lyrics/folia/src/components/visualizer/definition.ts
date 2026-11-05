@@ -208,6 +208,18 @@ export interface VisualizerRegistryEntry {
   previewSeed: string;
   previewStartOffset: number;
   tuningKind: VisualizerTuningKind;
+  /**
+   * Work started while the main window sits idle, so the style's first mount does not wait for it
+   * (雾笺: nebbia/nebbiaShaderWarmup.ts compiles its shaders in the background). It must not block the
+   * main thread for long, and it should import its code lazily. Run by prewarmVisualizers.ts.
+   */
+  prewarm?: () => void;
+  /**
+   * True when `prewarm` also runs for a style that is not the saved one, once the page is idle: for a
+   * cost that otherwise lands on the first switch to the style (雾笺's cold shader compile, which can
+   * outlast the switch's wait for the first frame). Only for a style whose first switch is slow.
+   */
+  prewarmWhenIdle?: boolean;
   render: (props: VisualizerSharedProps) => React.ReactElement;
   renderSettingsPanel?: (props: VisualizerSettingsPanelProps) => React.ReactNode;
   renderQuickControls?: (props: VisualizerSettingsPanelProps) => React.ReactNode;

@@ -12,6 +12,7 @@ import { Sidebar } from "@/components/Sidebar";
 import { CommandWorkspaceModal } from "@/components/commandWorkspace/CommandWorkspaceModal";
 import { CenterLyricsView } from "@/components/lyrics/CenterLyricsView";
 import { FoliaSettingsMount } from "@/components/lyrics/FoliaSettingsMount";
+import { FoliaVisualizerPrewarm } from "@/components/lyrics/FoliaVisualizerPrewarm";
 import { LyricStageMount } from "@/components/lyrics/LyricStageMount";
 import { NowPlayingCollapsedRail } from "@/components/nowPlaying/NowPlayingCollapsedRail";
 import { BackendUnavailableTakeover } from "@/components/network/BackendUnavailableTakeover";
@@ -139,6 +140,7 @@ function DashboardShell({ children }: { children: ReactNode }) {
         <CommandWorkspaceModal isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
         <KeyboardShortcutHelp />
         <WhatsNewModal />
+        <FoliaVisualizerPrewarm />
         <LyricStageMount />
         <FoliaSettingsMount />
 
