@@ -47,6 +47,10 @@
 
 暖场因此改为异步：`RhineScene.warmUp()` 不再在构造函数里同步画两次，而是先由 `RhineRenderer.precompile()` 把场景的着色器程序一次交给 GPU 后台编译（`programWarmup.ts`，KHR_parallel_shader_compile），主线程只隔一会儿问一次好了没有，编好后才画两次暖场；加载的各步之间让出主线程，`useRhineBackground.ts` 在暖场完成后才把场景换成 `scene` 开始动画，期间尺寸变化不会提前触发绘制。three 的 `renderer.compile()` 只对 `transparent` 的双面材质拆出背面 / 正面两个程序，而透射材质的透射 pass 同样按背面、正面各画一次，所以 `submitSceneCompile` 对三个透射的双面材质（Frosted_Polymer、Ivory_Edges、Optical_Edges）手动各编一遍。编译在合成器自己的缓冲上进行，程序变体按画进哪种目标区分。后处理（SSAO、SMAA、输出、氛围）的程序和阴影深度程序不在场景里，仍在暖场绘制时同步编译。
 
+## 显存
+
+2026-11-06 对照安装版日志（`%APPDATA%\Scopify\logs` 的 `[memory] working set`）：打开莱茵后 GPU 进程稳定多出约 590 MB（162 → 约 750 MB，峰值 1228 MB），主进程约多 180 MB。按 829 万像素预算估算缓冲：画布 4 倍多重采样加深度约 265 MB（无用，已去掉并改为销毁时 `forceContextLoss`），合成器 2 个半精度缓冲加深度约 200 MB，SSAO 缓冲约 230 MB，玻璃透射缓冲约 120 MB，SMAA 约 66 MB。这些缓冲都随像素数线性增长，所以「原始」画质的像素比上限由 2 降到 1.5（2x 屏上像素数降到 56%）；「精细」仍是 2。数字是估算，以后的实际变化看同一份日志。
+
 ## 交付状态
 
 本阶段交付源码、模型、设置和来源说明。初次交付未运行应用或附加校验。

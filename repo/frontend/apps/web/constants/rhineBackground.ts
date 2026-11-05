@@ -41,7 +41,10 @@ export const RHINE_QUALITY: Record<RhineQuality, RhineQualitySettings> = {
   },
   original: {
     scale: 1,
-    pixelRatio: 2,
+    // The buffers (composer, SSAO, transmission, SMAA) all scale with the pixel count. 1.5 instead of 2 cuts them
+    // to 56% on a 2x display; the background sits under a reading-space fade and the glass is frosted, so the
+    // lost sharpness is hard to see. "high" keeps 2.
+    pixelRatio: 1.5,
     shadows: 2048,
     ao: 32,
     antialias: true,
