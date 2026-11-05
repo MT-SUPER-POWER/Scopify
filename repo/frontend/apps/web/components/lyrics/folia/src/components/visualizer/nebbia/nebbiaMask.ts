@@ -2,13 +2,14 @@ import { NebbiaBreathMask } from "./nebbiaBreath";
 import { clamp, NEBBIA_FIXED, MASK_SCALE, smooth } from "./nebbiaConstants";
 import { windDrift, type NebbiaGlassMotion } from "./nebbiaDrops";
 import type { NebbiaHits } from "./nebbiaHits";
-import { drawChar, strokePath, strokeTrail, type InkContext } from "./nebbiaInk";
+import { drawChar, strokeTrail, type InkContext } from "./nebbiaInk";
+import { NebbiaSegments } from "./nebbiaSegments";
 import { yieldFactor, type LaidLine } from "./nebbiaScene";
 import { buildWipe, isSwept, streakProgress } from "./nebbiaWipe";
 import type { NebbiaTuning } from "./types";
 
 // src/components/visualizer/nebbia/nebbiaMask.ts
-// 每帧画一次擦痕遮罩：每句按它的淡出方式算清晰度（写的时候 1，下一句开始后保持 hold 秒、屏上还空着就多留一会儿，再用 refog 秒起雾；
+// 每帧收一次擦痕遮罩的线段（nebbiaSegments.ts，由 nebbiaMaskGl.ts 在 GPU 上画）：每句按它的淡出方式算清晰度（写的时候 1，下一句开始后保持 hold 秒、屏上还空着就多留一会儿，再用 refog 秒起雾；
 // 或几根手指来回抹掉、抹过的地方再起雾），再画雨点和被震落的水珠留下的水痕。让位时被哈气盖掉的句子，
 // 白气另画一张遮罩（nebbiaBreath.ts）。水珠实例同时攒进 motion。
 
@@ -17,19 +18,14 @@ const SMEAR_HOLD = 8;
 const SMEAR_REFOG = 2.5;
 
 export class NebbiaMask {
-  readonly canvas = document.createElement("canvas");
+  /** 这一帧的擦痕线段。 */
+  readonly ctx = new NebbiaSegments();
   readonly breath = new NebbiaBreathMask();
-  private readonly ctx: CanvasRenderingContext2D;
-
-  constructor() {
-    const ctx = this.canvas.getContext("2d");
-    if (!ctx) throw new Error("Nebbia: no 2D context for the wipe mask");
-    this.ctx = ctx;
-  }
+  /** 画面高（CSS 像素）。 */
+  private H = 1;
 
   resize(W: number, H: number) {
-    this.canvas.width = Math.max(1, Math.round(W * MASK_SCALE));
-    this.canvas.height = Math.max(1, Math.round(H * MASK_SCALE));
+    this.H = H;
     this.breath.resize(W, H);
   }
 
@@ -44,13 +40,7 @@ export class NebbiaMask {
     rainSize: number,
   ) {
     const { ctx } = this;
-    ctx.setTransform(1, 0, 0, 1, 0, 0);
-    ctx.globalCompositeOperation = "source-over";
-    ctx.fillStyle = "#000";
-    ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
-    ctx.globalCompositeOperation = "lighten";
-    ctx.lineCap = "round";
-    ctx.lineJoin = "round";
+    ctx.clear();
     this.breath.begin();
     const ink: InkContext = {
       ctx,
@@ -107,16 +97,15 @@ export class NebbiaMask {
           n = pts.length - 1,
           f = lp * n,
           i = Math.floor(f);
-        const path = new Path2D();
-        path.moveTo(pts[0][0], pts[0][1]);
-        for (let k = 1; k <= Math.min(i, n); k += 1) path.lineTo(pts[k][0], pts[k][1]);
+        ctx.moveTo(pts[0][0], pts[0][1]);
+        for (let k = 1; k <= Math.min(i, n); k += 1) ctx.lineTo(pts[k][0], pts[k][1]);
         if (i < n) {
           const a = pts[i],
             b = pts[i + 1],
             r = f - i;
-          path.lineTo(a[0] + (b[0] - a[0]) * r, a[1] + (b[1] - a[1]) * r);
+          ctx.lineTo(a[0] + (b[0] - a[0]) * r, a[1] + (b[1] - a[1]) * r);
         }
-        strokePath(ctx, path, st.w, vw);
+        ctx.stroke(st.w, vw);
       }
     ctx.setTransform(1, 0, 0, 1, 0, 0);
     if (ue >= 1) for (const b of w.beads) ink.motion.put(b.x, b.y, b.r * (0.55 + 0.45 * vbw), vbw);
@@ -139,10 +128,9 @@ export class NebbiaMask {
         smears.splice(i, 1);
         continue;
       }
-      const p = new Path2D();
-      p.moveTo(m.x + m.ax, m.y + m.ay);
-      p.lineTo(m.x + m.bx, m.y + m.by);
-      strokePath(ctx, p, m.w * 0.14, v * 0.9);
+      ctx.moveTo(m.x + m.ax, m.y + m.ay);
+      ctx.lineTo(m.x + m.bx, m.y + m.by);
+      ctx.stroke(m.w * 0.14, v * 0.9);
     }
     const trails = motion.trails;
     for (let i = trails.length - 1; i >= 0; i -= 1) {
@@ -154,7 +142,7 @@ export class NebbiaMask {
         continue;
       }
       // 太短的、整条在屏幕下面的不画（照样按时间回雾、丢掉）
-      if (tr.y1 - tr.y0 < 2 || tr.y0 > this.canvas.height / MASK_SCALE) continue;
+      if (tr.y1 - tr.y0 < 2 || tr.y0 > this.H) continue;
       ctx.setTransform(MASK_SCALE, 0, 0, MASK_SCALE, 0, 0);
       const wob = (y: number) =>
         Math.sin(y * 0.07 + tr.seed) * 1.4 +

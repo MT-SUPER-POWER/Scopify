@@ -2,41 +2,23 @@ import { clamp, NEBBIA_FIXED, MASK_SCALE, smooth } from "./nebbiaConstants";
 import { windDrift, type NebbiaGlassMotion } from "./nebbiaDrops";
 import { type Drip, type LaidChar } from "./nebbiaScene";
 import { pointAt, type GlyphStroke } from "./nebbiaGlyphs";
+import type { NebbiaSegments } from "./nebbiaSegments";
 
 // src/components/visualizer/nebbia/nebbiaInk.ts
-// 在擦痕遮罩（2D 画布，半分辨率，亮 = 擦开）上画手指写的字：按演唱时长一笔一笔写，笔尖前推着一颗收笔水珠，
+// 在擦痕遮罩（半分辨率，亮 = 擦开；线段先收进 nebbiaSegments.ts，再由 nebbiaMaskGl.ts 在 GPU 上画）上画手指写的字：按演唱时长一笔一笔写，笔尖前推着一颗收笔水珠，
 // 擦痕边凝出小水珠，少数笔画写完后淌下一颗水珠、留下水痕。着色器再按噪声给遮罩取阈值，边缘毛糙。
 
 export interface InkContext {
-  ctx: CanvasRenderingContext2D;
+  ctx: NebbiaSegments;
   motion: NebbiaGlassMotion;
   strokeWidth: number;
   writeSpeed: number;
   busSpeed: number;
 }
 
-/** 一条手指擦痕：三层由宽到窄、由暗到亮，叠成边缘渐变。 */
-export const strokePath = (
-  ctx: CanvasRenderingContext2D,
-  path: Path2D,
-  width: number,
-  v: number,
-) => {
-  for (const [wk, vk] of [
-    [1.3, 0.38],
-    [1.0, 0.72],
-    [0.62, 1],
-  ]) {
-    const c = Math.round(255 * v * vk);
-    ctx.strokeStyle = `rgb(${c},${c},${c})`;
-    ctx.lineWidth = width * wk;
-    ctx.stroke(path);
-  }
-};
-
 /** 水珠流下来的水痕：宽度接近水珠本身，边缘起伏，越往上越细；wob(y) 是 y 处的横向偏移，和水珠头同一条。 */
 export const strokeTrail = (
-  ctx: CanvasRenderingContext2D,
+  ctx: NebbiaSegments,
   x: number,
   y0: number,
   y1: number,
@@ -51,17 +33,15 @@ export const strokeTrail = (
     const along = (y - y0) / Math.max(1, y1 - y0);
     const w =
       width * (0.72 + 0.28 * along) * (0.85 + 0.3 * (0.5 + 0.5 * Math.sin(y * 0.19 + seed * 3)));
-    const p = new Path2D();
-    p.moveTo(x + wob(y), y);
-    p.lineTo(x + wob(ye), ye);
-    strokePath(ctx, p, w, v);
+    ctx.moveTo(x + wob(y), y);
+    ctx.lineTo(x + wob(ye), ye);
+    ctx.stroke(w, v);
   }
 };
 
-// 某一笔在 [0, len] 上画到 l 的部分
-const partialPath = (st: GlyphStroke, l: number) => {
-  const p = new Path2D(),
-    { pts, cum } = st;
+// 某一笔在 [0, len] 上画到 l 的部分，放进 p 的当前路径
+const partialPath = (p: NebbiaSegments, st: GlyphStroke, l: number) => {
+  const { pts, cum } = st;
   p.moveTo(pts[0][0], pts[0][1]);
   for (let i = 1; i < pts.length; i += 1) {
     if (cum[i] >= l) {
@@ -70,11 +50,10 @@ const partialPath = (st: GlyphStroke, l: number) => {
         pts[i - 1][0] + (pts[i][0] - pts[i - 1][0]) * k,
         pts[i - 1][1] + (pts[i][1] - pts[i - 1][1]) * k,
       );
-      return p;
+      return;
     }
     p.lineTo(pts[i][0], pts[i][1]);
   }
-  return p;
 };
 
 // 字内 em 坐标 → 屏幕 CSS 像素
@@ -178,7 +157,10 @@ export const drawChar = (
     if (local <= 0) return;
     const p = dur > 0 ? clamp(local / dur) : 1;
     const drawn = (p * 0.4 + smooth(p) * 0.6) * st.len;
-    if (clarity > 0.002) strokePath(ctx, partialPath(st, drawn), width, clarity);
+    if (clarity > 0.002) {
+      partialPath(ctx, st, drawn);
+      ctx.stroke(width, clarity);
+    }
     if (!fadeIn) {
       for (const b of c.beads[si]) {
         if (b.s > drawn) break;
