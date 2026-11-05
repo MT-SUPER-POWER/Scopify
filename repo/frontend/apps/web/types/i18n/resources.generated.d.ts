@@ -621,10 +621,10 @@ export default interface Resources {
     "options.lyricsRenderer": "歌词动画";
     "options.lyricsStyleSettings": "Folia 设置";
     "options.machiAdaptive": "自动降级";
-    "options.machiAdaptiveHint": "帧率长期偏低时，在这套设置之下逐步降低（先关景深的虚化，再降倒影、阴影、辉光，最后才动抗锯齿和分辨率），不会高过你选的。改了设置会从新的这套重新开始。";
+    "options.machiAdaptiveHint": "帧率长期偏低时，在这套设置之下逐步降低（先退超采样和几何边缘的 MSAA，然后是辉光、倒影、景深的虚化、分辨率、后期抗锯齿，阴影最后），不会高过你选的。改了设置会从新的这套重新开始。";
     "options.machiAntialias": "抗锯齿";
     "options.machiAntialiasFxaa": "FXAA";
-    "options.machiAntialiasHint": "FXAA 最省，字会略软；SMAA 边缘干净，墨线和雨丝也平滑，代价稍高；超采样按 2 倍分辨率画再缩回来，最细也最贵。";
+    "options.machiAntialiasHint": "FXAA 最省，字会略软；SMAA 边缘干净，墨线和雨丝也平滑，代价稍高；超采样按 2 倍分辨率画再缩回来，最细也最贵。默认是 SMAA。";
     "options.machiAntialiasOff": "关";
     "options.machiAntialiasSmaa": "SMAA";
     "options.machiAntialiasSsaa": "超采样";
@@ -654,6 +654,7 @@ export default interface Resources {
     "options.machiFocusLyrics": "歌词屏";
     "options.machiFocusManual": "手动";
     "options.machiFocusOffset": "对焦前后";
+    "options.machiFollowGlobal": "默认";
     "options.machiFontSizeAutoNotice": "町景会按场景里屏幕和招牌的大小自动排歌词字号；通用字体尺寸设置在此模式下只影响底部字幕。";
     "options.machiGlow": "辉光与光条";
     "options.machiGlowHint": "夜里灯和招牌晕开的光，以及横向的镜头光条。";
@@ -670,7 +671,7 @@ export default interface Resources {
     "options.machiReflections": "倒影";
     "options.machiReflectionsHint": "湿路面上灯和招牌的倒影；只在路面湿的时候才画。";
     "options.machiRenderScale": "分辨率";
-    "options.machiRenderScaleHint": "按屏幕像素的几成来画：低一些会糊一点，但快很多。高 DPI 屏上最多按 2 倍算。";
+    "options.machiRenderScaleHint": "按屏幕像素的几成来画：低一些会糊一点，但快很多。高 DPI 屏上最多按 2 倍算。默认是 1 倍。";
     "options.machiScene": "场景";
     "options.machiSceneAuto": "自动";
     "options.machiSceneHint": "自动：每首歌选一个场景，同一首歌总是同一个。";
