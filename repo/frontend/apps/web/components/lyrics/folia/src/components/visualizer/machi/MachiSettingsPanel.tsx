@@ -36,6 +36,7 @@ import {
   MACHI_FOCUS_MODES,
   MACHI_MOTION_SPEED_LIMITS,
   MACHI_QUALITY_PRESET_IDS,
+  MACHI_FOLLOW_GLOBAL,
   MACHI_QUALITY_PRESETS,
   MACHI_RENDER_SCALES,
   MACHI_SCENE_IDS,
@@ -443,26 +444,34 @@ const MachiSettingsPanel: React.FC<VisualizerSettingsPanelProps> = ({
         >
           <Segmented<string>
             value={String(quality.renderScale)}
-            options={MACHI_RENDER_SCALES.map((scale) => ({
-              value: String(scale),
-              label: `${Math.round(scale * 100)}%`,
-            }))}
+            options={[
+              { value: MACHI_FOLLOW_GLOBAL, label: t("folia.options.machiFollowGlobal") },
+              ...MACHI_RENDER_SCALES.map((scale) => ({
+                value: String(scale),
+                label: `${Math.round(scale * 100)}%`,
+              })),
+            ]}
             onChange={(value) =>
               setQuality({
                 renderScale:
-                  MACHI_RENDER_SCALES.find((scale) => String(scale) === value) ??
-                  quality.renderScale,
+                  value === MACHI_FOLLOW_GLOBAL
+                    ? MACHI_FOLLOW_GLOBAL
+                    : (MACHI_RENDER_SCALES.find((scale) => String(scale) === value) ??
+                      quality.renderScale),
               })
             }
           />
         </Row>
         <Row label={t("folia.options.machiAntialias")} note={t("folia.options.machiAntialiasHint")}>
-          <Segmented<MachiAntialias>
+          <Segmented<MachiQuality["antialias"]>
             value={quality.antialias}
-            options={MACHI_ANTIALIAS_MODES.map((mode) => ({
-              value: mode,
-              label: t(ANTIALIAS_LABEL_KEYS[mode]),
-            }))}
+            options={[
+              { value: MACHI_FOLLOW_GLOBAL, label: t("folia.options.machiFollowGlobal") },
+              ...MACHI_ANTIALIAS_MODES.map((mode) => ({
+                value: mode,
+                label: t(ANTIALIAS_LABEL_KEYS[mode]),
+              })),
+            ]}
             onChange={(antialias) => setQuality({ antialias })}
           />
         </Row>

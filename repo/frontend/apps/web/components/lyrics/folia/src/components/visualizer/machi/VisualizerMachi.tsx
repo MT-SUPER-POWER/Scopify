@@ -14,6 +14,10 @@ import { resolveThemeFontStack, resolveThemeFontWeight } from "../../../utils/fo
 import { getLineRenderEndTime } from "../../../utils/lyrics/renderHints";
 import type { VisualizerSharedProps } from "../definition";
 import { useVisualizerPixiHost } from "@/hooks/lyrics/useVisualizerPixiHost";
+import {
+  useGlobalLyricRenderQuality,
+  useLyricRenderQualityPin,
+} from "../renderQuality/lyricRenderQualityPin";
 import { useVisualizerRuntime } from "../runtime";
 import { useVisualizerSongCommit } from "@/hooks/lyrics/useVisualizerSongCommit";
 import { resolveSubtitleFontSizes } from "../subtitleFontSizes";
@@ -22,12 +26,13 @@ import VisualizerSubtitleOverlay from "../VisualizerSubtitleOverlay";
 import { closeMachiCameraBar, isMachiCameraBarOpen, subscribeMachiCameraBar } from "./cameraBar";
 import type { MachiRuntime, MachiSongContext } from "./createMachiRuntime";
 import MachiCameraBar from "./MachiCameraBar";
+import { pinMachiQualityForExport } from "./machiTuning";
 import type { MachiSceneId, MachiTuning } from "./types";
 
 // src/components/visualizer/machi/VisualizerMachi.tsx
 // 町景的 React 外壳：挂共享 shell 与底部字幕层，把按需加载的 three.js 运行时建一次（useVisualizerPixiHost 托管，
 // 它与渲染器无关），换歌、换主题、换设置（场景、时间、天气）、暂停、静态模式都就地推给运行时。
-// WebGL 上下文丢了就换一个 epoch 重建。
+// WebGL 上下文丢了就换一个 epoch 重建；透明模式（播放页透明）切换时也重建（画布带不带 alpha 只能在建上下文时定）。
 // 每帧的时间只在运行时的循环里读 currentTime，不进 React state。
 // 播放页上（不是预览、宿主存得下改动）控制面板的摄影机按钮打开取景控制条（MachiCameraBar）：开着时底部字幕让开；
 // 拖它的滑块时改动先记在这里的草稿上、只推给运行时，松手或收起时再一次存下。
@@ -73,9 +78,15 @@ const VisualizerMachi: React.FC<VisualizerMachiProps> = (props) => {
     subtitleOverlayBackground,
     onMachiTuningChange: onVisualizerTuningChange,
   } = props;
+  // 透明模式：町景不画天空，只留街景本身。样式小图也把背景标成透明，那只是「不画共用背景」，小图照样画天空。
+  const transparent = !isPreviewMode && (props.background?.transparent ?? false);
   const { t } = useTranslation();
   const hostRef = useRef<HTMLDivElement>(null);
   const [runtimeFailed, setRuntimeFailed] = useState(false);
+  // 歌词画布的全局分辨率与抗锯齿挡位：画质里跟随全局的两项用它。视频导出钉住了 1× 时，町景自己选的分辨率、抗锯齿和自动降级
+  // 也不算（下面 shownTuning，pinMachiQualityForExport）。
+  const renderQuality = useGlobalLyricRenderQuality();
+  const renderPinned = useLyricRenderQualityPin() !== null;
   const [contextEpoch, setContextEpoch] = useState(0);
   // 取景控制条：预览不接拖拽，也没有地方存改动；Scopify 里 Folia 舞台就是播放页，所以只看有没有存改动的回调。
   const cameraBarAvailable = !isPreviewMode && Boolean(onVisualizerTuningChange);
@@ -86,10 +97,12 @@ const VisualizerMachi: React.FC<VisualizerMachiProps> = (props) => {
   // 取景控制条拖动中的改动（还没存）：画面用存下的 tuning 叠上它。
   const barDraftRef = useRef<Partial<MachiTuning> | null>(null);
   const [barDraft, setBarDraft] = useState<Partial<MachiTuning> | null>(null);
-  const shownTuning = useMemo(
-    () => (barDraft ? { ...machiTuning, ...barDraft } : machiTuning),
-    [machiTuning, barDraft],
-  );
+  const shownTuning = useMemo(() => {
+    const tuning = barDraft ? { ...machiTuning, ...barDraft } : machiTuning;
+    if (!renderPinned) return tuning;
+    const quality = pinMachiQualityForExport(tuning.quality);
+    return quality === tuning.quality ? tuning : { ...tuning, quality };
+  }, [machiTuning, barDraft, renderPinned]);
 
   // 运行时创建期间这些输入可能已经变了；create 完成后按最新值补一次。
   const latestRef = useRef({
@@ -99,6 +112,7 @@ const VisualizerMachi: React.FC<VisualizerMachiProps> = (props) => {
     staticMode,
     machiTuning,
     shownTuning,
+    renderQuality,
     onVisualizerTuningChange,
   });
   latestRef.current = {
@@ -108,6 +122,7 @@ const VisualizerMachi: React.FC<VisualizerMachiProps> = (props) => {
     staticMode,
     machiTuning,
     shownTuning,
+    renderQuality,
     onVisualizerTuningChange,
   };
 
@@ -158,7 +173,7 @@ const VisualizerMachi: React.FC<VisualizerMachiProps> = (props) => {
     hostRef,
     label: "Machi",
     // 只有真正需要新 WebGL 上下文的输入；歌、主题、暂停、静态模式都就地推给运行时。
-    rebuildKey: [currentTime, audioPower, audioBands, isPreviewMode, contextEpoch],
+    rebuildKey: [currentTime, audioPower, audioBands, isPreviewMode, transparent, contextEpoch],
     song: songContext,
     create: async (host, song, signal) => {
       const [{ MachiRuntime: Runtime }] = await Promise.all([
@@ -171,6 +186,7 @@ const VisualizerMachi: React.FC<VisualizerMachiProps> = (props) => {
         song,
         theme: latest.theme,
         tuning: latest.shownTuning,
+        renderQuality: latest.renderQuality,
         currentTime,
         audioPower,
         audioBands,
@@ -178,6 +194,7 @@ const VisualizerMachi: React.FC<VisualizerMachiProps> = (props) => {
         staticMode: latest.staticMode,
         showText: latest.showText,
         previewMode: isPreviewMode,
+        transparent,
         // 自定义视角下拖动停稳了：新视角存进 tuning 里这个场景的那一份（宿主经 onVisualizerTuningChange 存）。
         onViewChange: (view, scene) => {
           const latest = latestRef.current;
@@ -194,6 +211,7 @@ const VisualizerMachi: React.FC<VisualizerMachiProps> = (props) => {
       const current = latestRef.current;
       runtime.setTheme(current.theme);
       runtime.setTuning(current.shownTuning);
+      runtime.setRenderQuality(current.renderQuality);
       runtime.setShowText(current.showText);
       runtime.setStaticMode(current.staticMode);
       runtime.setPaused(current.paused);
@@ -220,6 +238,10 @@ const VisualizerMachi: React.FC<VisualizerMachiProps> = (props) => {
   useEffect(() => {
     runtimeRef.current?.setTuning(shownTuning);
   }, [shownTuning, runtimeRef]);
+
+  useEffect(() => {
+    runtimeRef.current?.setRenderQuality(renderQuality);
+  }, [renderQuality, runtimeRef]);
 
   useEffect(() => {
     runtimeRef.current?.setShowText(showText);
