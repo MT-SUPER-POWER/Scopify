@@ -37,9 +37,13 @@ export class RhineRenderer {
   private readonly imageReady = () => this.onAssetsReady?.();
 
   constructor(canvas: HTMLCanvasElement) {
+    // The scene is drawn into the composer's own buffers; the canvas only receives the last full-screen pass.
+    // Multisampling or a depth buffer on the canvas itself would cost about 265 MB of GPU memory at the pixel
+    // budget (4 samples of colour and depth over 8.3 M pixels) for nothing: SMAA does the anti-aliasing.
     this.renderer = new THREE.WebGLRenderer({
       canvas,
-      antialias: true,
+      antialias: false,
+      depth: false,
       powerPreference: "high-performance",
     });
   }
@@ -49,7 +53,8 @@ export class RhineRenderer {
     this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
     this.renderer.toneMappingExposure = 1.05;
     this.renderer.shadowMap.enabled = true;
-    this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    // three 0.185 deprecated PCFSoftShadowMap and draws PCFShadowMap in its place (it logs a warning every time).
+    this.renderer.shadowMap.type = THREE.PCFShadowMap;
     this.renderer.shadowMap.autoUpdate = false;
     this.scene.background = new THREE.Color("#eae5e1");
     this.scene.fog = new THREE.Fog("#eae5e1", 151, 179);
@@ -204,5 +209,7 @@ export class RhineRenderer {
     this.ground.material.dispose();
     this.scene.clear();
     this.renderer.dispose();
+    // dispose() frees three.js's own objects but leaves the context, and its buffers, to the garbage collector.
+    this.renderer.forceContextLoss();
   }
 }
