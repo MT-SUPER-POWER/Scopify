@@ -5,4 +5,4 @@ export const BRAVAIS_METRICS: WallMetrics = { cellSize: 64, gap: 6 };
 
 export const BRAVAIS_SEAM_MIN_WIDTH = 300;
 export const BRAVAIS_SEAM_MAX_WIDTH = 400;
-export const BRAVAIS_SEAM_ROW_HEIGHT = 52;
+export const BRAVAIS_SEAM_ROW_HEIGHT = 50;
