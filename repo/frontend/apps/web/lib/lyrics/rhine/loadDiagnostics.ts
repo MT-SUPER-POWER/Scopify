@@ -1,3 +1,4 @@
+import { createFrameStats } from "@/lib/lyrics/frameStats";
 import type { RhineLoadTimings } from "@/types/lyrics/rhine/background";
 
 // lib/lyrics/rhine/loadDiagnostics.ts
@@ -43,30 +44,7 @@ const FRAME_REPORT_MS = 30_000;
  * intervals with no long tasks mean the main thread is idle and the GPU is the one falling behind.
  */
 export function createRhineFrameStats() {
-  let intervals: number[] = [];
-  let last = 0;
-  let windowStart = 0;
-  return {
-    sample(now: number) {
-      if (last > 0) intervals.push(now - last);
-      else if (windowStart === 0) windowStart = now;
-      last = now;
-      if (now - windowStart < FRAME_REPORT_MS || intervals.length === 0) return;
-      const sorted = [...intervals].sort((a, b) => a - b);
-      const average = sorted.reduce((sum, value) => sum + value, 0) / sorted.length;
-      const p95 = sorted[Math.floor(sorted.length * 0.95)] ?? 0;
-      console.info(
-        `[RhineBackground] ${sorted.length} frames in the last ${Math.round((now - windowStart) / 1000)} s: ` +
-          `average ${average.toFixed(1)} ms, p95 ${p95.toFixed(1)} ms, longest ${(sorted.at(-1) ?? 0).toFixed(1)} ms`,
-      );
-      intervals = [];
-      windowStart = now;
-    },
-    /** The loop stopped (hidden, paused): the time until it restarts is not a frame interval. */
-    pause() {
-      last = 0;
-    },
-  };
+  return createFrameStats("RhineBackground", { reportMs: FRAME_REPORT_MS });
 }
 
 /** Starts collecting long tasks; `finish` stops after a short settle period and logs the whole picture. */

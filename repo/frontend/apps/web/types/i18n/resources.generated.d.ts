@@ -860,6 +860,15 @@ export default interface Resources {
     "options.previewSubtitleSettings": "字幕";
     "options.previewVisualizerHotspot": "歌词动画设置";
     "options.previewVisualizerSettings": "歌词动画";
+    "options.prismaAudio": "随音乐起伏";
+    "options.prismaBurst": "散开力度";
+    "options.prismaFlow": "气流";
+    "options.prismaGloss": "高光";
+    "options.prismaShardSize": "粒子大小";
+    "options.prismaShards": "粒子";
+    "options.prismaShowTitle": "前奏聚成歌名";
+    "options.prismaShowTitleHint": "前奏较长或没有歌词时显示歌名";
+    "options.prismaSwarm": "唱到前的显现";
     "options.randomPool": "随机池";
     "options.randomPoolChoose": "选择随机池";
     "options.randomPoolCount": "已选 {{selected}}/{{total}}";
@@ -1153,6 +1162,7 @@ export default interface Resources {
     "ui.visualizerNebbia": "雾笺";
     "ui.visualizerPartita": "云阶";
     "ui.visualizerPendolo": "时计";
+    "ui.visualizerPrisma": "聚散";
     "ui.visualizerRandom": "随机";
     "ui.visualizerSonnet": "商籁";
     "ui.visualizerStill": "静止";
