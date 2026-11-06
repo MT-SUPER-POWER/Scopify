@@ -127,6 +127,8 @@ export interface FoliaLyricMatchPreviewProps {
 }
 
 export interface LyricStageProps {
+  /** Whether the stage has finished sliding in and still covers the page. */
+  hasEntered: boolean;
   onClose: () => void;
 }
 

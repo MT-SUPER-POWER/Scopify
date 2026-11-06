@@ -10,6 +10,7 @@ import type { LyricStageProps } from "@/types/lyrics/components";
 import { useFoliaPlaybackBridge } from "@/hooks/player/useFoliaPlaybackBridge";
 import { useFoliaPresentationAppearance } from "@/hooks/player/useFoliaPresentationAppearance";
 import { useFoliaStageControls } from "@/hooks/lyrics/useFoliaStageControls";
+import { useLyricStageCover } from "@/hooks/lyrics/useLyricStageCover";
 import { usePlaybackCommands } from "@/hooks/player/usePlaybackCommands";
 import { usePlaybackProjection } from "@/hooks/player/usePlaybackProjection";
 import { usePlaybackWakeLock } from "@/hooks/player/usePlaybackWakeLock";
@@ -20,7 +21,7 @@ import { FoliaPresentationSurface } from "./FoliaPresentationSurface";
 import { FoliaStageSettings } from "./FoliaStageSettings";
 
 /** Scopify host for Folia's pinned playback-stage presentation runtime. */
-export function LyricStage({ onClose }: LyricStageProps) {
+export function LyricStage({ hasEntered, onClose }: LyricStageProps) {
   const {
     isBorderVisible,
     isCursorHidden,
@@ -29,6 +30,7 @@ export function LyricStage({ onClose }: LyricStageProps) {
     isTransparent,
     setIsSettingsOpen,
   } = useFoliaStageControls({ onClose });
+  useLyricStageCover(hasEntered && !isTransparent);
   const isSettingsModalOpen = useFoliaSettingsStore(
     (state) => state.visualSection !== null || state.themeLibraryOpen,
   );

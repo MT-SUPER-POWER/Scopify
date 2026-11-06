@@ -32,6 +32,11 @@
     cursor: none !important;
   }
 
+  /* 全屏歌词舞台完全盖住页面时，跳过被盖区域的样式、布局和绘制。 */
+  html[data-lyric-stage-covers] [data-under-lyric-stage] {
+    content-visibility: hidden;
+  }
+
   /* 给 ShadCN 的 DropdownMenu Label 使用的浅色文字样式 */
   .dropdown-menu-label-momo {
     color: var(--muted-foreground);

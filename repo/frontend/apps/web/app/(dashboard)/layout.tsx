@@ -147,6 +147,7 @@ function DashboardShell({ children }: { children: ReactNode }) {
         {/* 顶栏行连同外边距一起作为桌面端窗口拖拽区（系统标题栏已隐藏） */}
         <div
           data-track-drag-chrome
+          data-under-lyric-stage
           className="relative z-30 -mx-2 -mt-2 px-2 pt-2 [-webkit-app-region:drag]"
         >
           <Header />
@@ -154,7 +155,7 @@ function DashboardShell({ children }: { children: ReactNode }) {
 
         <ConnectionBanner />
 
-        <main className="relative min-h-0 w-full flex-1">
+        <main data-under-lyric-stage className="relative min-h-0 w-full flex-1">
           {isMounted ? (
             <ResizablePanelGroup
               orientation="horizontal"
@@ -224,7 +225,7 @@ function DashboardShell({ children }: { children: ReactNode }) {
           )}
         </main>
 
-        <footer data-track-drag-chrome hidden={isPlayerBarHidden}>
+        <footer data-track-drag-chrome data-under-lyric-stage hidden={isPlayerBarHidden}>
           <PlayerBar />
         </footer>
       </div>
