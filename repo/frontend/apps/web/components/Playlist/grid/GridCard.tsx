@@ -35,7 +35,7 @@ export const GridCard = memo(function GridCard({
       data-centered="false"
       data-current={current}
       aria-label={t("playlist.grid.select", { name: track.name })}
-      className="group/card absolute cursor-pointer text-foreground will-change-transform [contain:layout_paint] focus-visible:outline-none"
+      className="group/card absolute cursor-pointer text-foreground [contain:layout_paint] focus-visible:outline-none"
       style={{
         left: -GRID_METRICS.cardWidth / 2,
         top: -GRID_METRICS.cardHeight / 2,

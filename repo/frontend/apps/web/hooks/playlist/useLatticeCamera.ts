@@ -48,11 +48,22 @@ export function useLatticeCamera({
     animationRef.current?.stop();
     animationRef.current = null;
   }, []);
+  const crispTimer = useRef<number | undefined>(undefined);
   const apply = useCallback((requested: LatticeCamera, force = false) => {
     const next = clampRef.current?.(requested, viewportRef.current) ?? requested;
     cameraRef.current = next;
-    if (worldRef.current)
-      worldRef.current.style.transform = `translate3d(${next.x}px, ${next.y}px, 0) scale(${next.scale})`;
+    const world = worldRef.current;
+    if (world) {
+      // While moving, keep the world on its own layer so panning stays on the compositor. A layer
+      // rasterised before a zoom is only stretched afterwards, so once the camera rests the hint is
+      // dropped and the browser redraws everything at the scale it is shown at.
+      if (world.style.willChange !== "transform") world.style.willChange = "transform";
+      world.style.transform = `translate3d(${next.x}px, ${next.y}px, 0) scale(${next.scale})`;
+      window.clearTimeout(crispTimer.current);
+      crispTimer.current = window.setTimeout(() => {
+        world.style.willChange = "auto";
+      }, 160);
+    }
     onFrameRef.current?.(next);
     const visible = getBounds(next, viewportRef.current);
     const culled = boundsRef.current;
@@ -99,6 +110,7 @@ export function useLatticeCamera({
     observer.observe(field);
     return () => {
       observer.disconnect();
+      window.clearTimeout(crispTimer.current);
       stop();
     };
   }, [apply, centered, stop]);
