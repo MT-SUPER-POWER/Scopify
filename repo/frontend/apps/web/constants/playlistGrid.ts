@@ -6,5 +6,5 @@ export const GRID_METRICS: GridMetrics = {
   cardHeight: 278,
   spacingX: 218,
   spacingY: 296,
-  maxDistance: 540,
+  maxDistance: 760,
 };

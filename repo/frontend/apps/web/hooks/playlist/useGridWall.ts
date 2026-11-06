@@ -4,7 +4,7 @@ import { useCallback, useEffect, useMemo, useRef } from "react";
 import type { KeyboardEvent } from "react";
 import { useLatticeCamera } from "@/hooks/playlist/useLatticeCamera";
 import { GRID_METRICS } from "@/constants/playlistGrid";
-import { computeCardFrame } from "@/lib/playlist/grid/falloff";
+import { computeCardCurve, computeCardFrame } from "@/lib/playlist/grid/falloff";
 import { adjacentHexCell, locateHexCell, visibleHexCells } from "@/lib/playlist/grid/hex";
 import { ZOOM_STEP, zoomKeyDirection } from "@/lib/playlist/zoomKeys";
 import type { GridCell, GridDirection } from "@/types/playlist/grid";
@@ -20,9 +20,11 @@ const writeFrame = (
   view: { width: number; height: number },
 ) => {
   // The falloff is measured in world pixels, so zooming magnifies the same picture.
+  const dx = cell.x + (camera.x - view.width / 2) / camera.scale;
+  const dy = cell.y + (camera.y - view.height / 2) / camera.scale;
   const frame = computeCardFrame(
-    cell.x + (camera.x - view.width / 2) / camera.scale,
-    cell.y + (camera.y - view.height / 2) / camera.scale,
+    dx,
+    dy,
     view.width / camera.scale,
     view.height / camera.scale,
     GRID_METRICS,
@@ -30,7 +32,11 @@ const writeFrame = (
   const { style, dataset } = element;
   style.display = frame.visible ? "" : "none";
   if (!frame.visible) return null;
-  style.transform = `translate3d(${cell.x}px, ${cell.y}px, 0) scale(${frame.scale.toFixed(4)})`;
+  const curve = computeCardCurve(dx, dy, camera.scale, view.width, frame.progress);
+  style.transform =
+    `translate3d(${cell.x}px, ${cell.y}px, ${curve.z.toFixed(1)}px) ` +
+    `rotateY(${curve.rotateY.toFixed(2)}deg) rotateX(${curve.rotateX.toFixed(2)}deg) ` +
+    `scale(${frame.scale.toFixed(4)})`;
   style.opacity = frame.opacity.toFixed(3);
   style.zIndex = String(frame.zIndex);
   const centered = String(frame.centered);

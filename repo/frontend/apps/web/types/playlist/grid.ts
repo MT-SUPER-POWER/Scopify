@@ -23,6 +23,8 @@ export interface GridCardFrame {
   visible: boolean;
   scale: number;
   opacity: number;
+  /** 0 at the pane centre, 1 at `maxDistance` and beyond. */
+  progress: number;
   zIndex: number;
   /** Close enough to the pane centre to count as the focused card. */
   centered: boolean;

@@ -80,12 +80,15 @@ export default function PlaylistGrid({
       />
       <div
         ref={fieldRef}
-        className="absolute inset-0 cursor-grab touch-none overflow-clip overscroll-none outline-none select-none data-[dragging=true]:cursor-grabbing data-[dragging=true]:**:cursor-grabbing"
+        className="absolute inset-0 cursor-grab touch-none overflow-clip overscroll-none outline-none select-none [perspective:1800px] data-[dragging=true]:cursor-grabbing data-[dragging=true]:**:cursor-grabbing"
         aria-label={title}
         tabIndex={0}
         {...wall.pointerHandlers}
       >
-        <div ref={wall.worldRef} className="absolute inset-0 origin-top-left will-change-transform">
+        <div
+          ref={wall.worldRef}
+          className="absolute inset-0 origin-top-left will-change-transform [transform-style:preserve-3d]"
+        >
           {wall.visible.map((cell) => {
             const track = tracks[cell.index];
             if (!track) return null;
@@ -104,6 +107,11 @@ export default function PlaylistGrid({
           })}
         </div>
       </div>
+      {/* Vignette that sells the concave screen: the sides fall into shadow, the middle stays lit. */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 z-1 bg-[radial-gradient(ellipse_70%_75%_at_50%_50%,transparent_45%,color-mix(in_oklab,var(--card)_85%,transparent)_100%)]"
+      />
       {tracks.length === 0 && (
         <div className="absolute inset-x-0 top-14 bottom-0 grid place-content-center text-muted-foreground">
           {t("playlist.table.noSongs")}
