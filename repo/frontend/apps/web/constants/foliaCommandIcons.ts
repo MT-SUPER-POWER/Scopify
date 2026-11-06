@@ -1,5 +1,6 @@
 import {
   PiArchive,
+  PiSparkle,
   PiTextAlignCenter,
   PiWaveform,
   PiStairs,
@@ -46,6 +47,7 @@ export const FOLIA_VISUALIZER_ICONS: Record<LyricVisualizerMode, IconType> = {
   hanabi: PiShootingStar,
   machi: PiStorefront,
   nebbia: PiCloudRain,
+  prisma: PiSparkle,
 };
 
 const visualizerIconsByCommand = new Map(

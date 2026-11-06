@@ -22,6 +22,8 @@ import {
   type TemperaLayerImage,
 } from "@/components/lyrics/folia/src/types";
 import { normalizeMachiTuning } from "@/components/lyrics/folia/src/components/visualizer/machi/machiTuning";
+import { normalizePrismaTuning } from "@/lib/lyrics/prisma/tuning";
+import { DEFAULT_PRISMA_TUNING } from "@/types/lyrics/prisma/model";
 import { normalizeNebbiaTuning } from "@/components/lyrics/folia/src/components/visualizer/nebbia/nebbiaTuning";
 import {
   createBuiltinFoliaStageThemes,
@@ -164,6 +166,7 @@ const STRING_ENUMS = {
     "nebbia",
     "partita",
     "pendolo",
+    "prisma",
     "sonnet",
     "still",
     "tempera",
@@ -243,6 +246,7 @@ export function createDefaultFoliaStageSettings(): FoliaStageSettings {
       nebbia: structuredClone(DEFAULT_NEBBIA_TUNING),
       partita: structuredClone(DEFAULT_PARTITA_TUNING),
       pendolo: structuredClone(DEFAULT_PENDOLO_TUNING),
+      prisma: structuredClone(DEFAULT_PRISMA_TUNING),
       sonnet: structuredClone(DEFAULT_SONNET_TUNING),
       tempera: structuredClone(DEFAULT_TEMPERA_TUNING),
       tilt: structuredClone(DEFAULT_TILT_TUNING),
@@ -341,6 +345,10 @@ function normalizeAgainstSchema<T>(candidate: unknown, schema: T, path: string):
 
   if (path === "tunings.nebbia") {
     return (candidate === undefined ? schema : normalizeNebbiaTuning(candidate)) as T;
+  }
+
+  if (path === "tunings.prisma") {
+    return (candidate === undefined ? schema : normalizePrismaTuning(candidate)) as T;
   }
 
   if (path === "tunings.tempera.layerImages") {

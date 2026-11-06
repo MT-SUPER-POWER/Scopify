@@ -27,6 +27,8 @@ import hanabiTuning from "./hanabi/tuning";
 import machiTuning from "./machi/tuning";
 import monetTuning from "./monet/tuning";
 import nebbiaTuning from "./nebbia/tuning";
+import prismaTuning from "./prisma/tuning";
+import type { PrismaTuning } from "@/types/lyrics/prisma/model";
 import partitaTuning from "./partita/tuning";
 import pendoloTuning from "./pendolo/tuning";
 import sonnetTuning from "./sonnet/tuning";
@@ -51,6 +53,7 @@ export interface VisualizerTuningMap {
   hanabi: HanabiTuning;
   machi: MachiTuning;
   nebbia: NebbiaTuning;
+  prisma: PrismaTuning;
 }
 
 export type VisualizerTuningMode = keyof VisualizerTuningMap;
@@ -93,6 +96,7 @@ const tuningModules: Record<string, VisualizerTuningModule> = {
   "./nebbia/tuning.ts": { default: nebbiaTuning as VisualizerTuningAdapter },
   "./partita/tuning.ts": { default: partitaTuning as VisualizerTuningAdapter },
   "./pendolo/tuning.ts": { default: pendoloTuning as VisualizerTuningAdapter },
+  "./prisma/tuning.ts": { default: prismaTuning as VisualizerTuningAdapter },
   "./sonnet/tuning.ts": { default: sonnetTuning as VisualizerTuningAdapter },
   "./tempera/tuning.ts": { default: temperaTuning as VisualizerTuningAdapter },
   "./tilt/tuning.ts": { default: tiltTuning as VisualizerTuningAdapter },

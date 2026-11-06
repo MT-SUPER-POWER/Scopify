@@ -27,6 +27,7 @@ import {
   type TiltTuning,
   type VisualizerMode,
 } from "../../types";
+import type { PrismaTuning } from "@/types/lyrics/prisma/model";
 import type { VisualizerTuningBundle } from "./tuningRegistry";
 import type { VisualizerBackgroundConfig } from "./backgrounds/definition";
 
@@ -48,7 +49,8 @@ export type VisualizerTuningKind =
   | "tempera"
   | "hanabi"
   | "machi"
-  | "nebbia";
+  | "nebbia"
+  | "prisma";
 
 export interface VisualizerSharedProps {
   currentTime: MotionValue<number>;
@@ -112,6 +114,8 @@ export interface VisualizerSharedProps {
   onMachiTuningChange?: (patch: Partial<MachiTuning>) => void;
   nebbiaTuning?: NebbiaTuning;
   onNebbiaTuningChange?: (patch: Partial<NebbiaTuning>) => void;
+  prismaTuning?: PrismaTuning;
+  onPrismaTuningChange?: (patch: Partial<PrismaTuning>) => void;
 }
 
 export interface VisualizerSettingsPanelProps {
@@ -165,6 +169,8 @@ export interface VisualizerSettingsPanelProps {
   onMachiTuningChange?: (patch: Partial<MachiTuning>) => void;
   nebbiaTuning?: NebbiaTuning;
   onNebbiaTuningChange?: (patch: Partial<NebbiaTuning>) => void;
+  prismaTuning?: PrismaTuning;
+  onPrismaTuningChange?: (patch: Partial<PrismaTuning>) => void;
   /** Closes the player panel the controls sit in: for a control that opens something on the player page itself (Machi's viewfinder bar). */
   onClosePanel?: () => void;
   /** Mark slider drag start so onChange only updates draft. */
@@ -189,6 +195,7 @@ export interface VisualizerSettingsResetProps {
   resetHanabiTuning?: () => void;
   resetMachiTuning?: () => void;
   resetNebbiaTuning?: () => void;
+  resetPrismaTuning?: () => void;
   setDraftCadenzaTuning?: (tuning: CadenzaTuning) => void;
   setDraftFumeTuning?: (tuning: FumeTuning) => void;
   setDraftCladdaghTuning?: (tuning: CladdaghTuning) => void;
@@ -198,6 +205,7 @@ export interface VisualizerSettingsResetProps {
   setDraftHanabiTuning?: (tuning: HanabiTuning) => void;
   setDraftMachiTuning?: (tuning: MachiTuning) => void;
   setDraftNebbiaTuning?: (tuning: NebbiaTuning) => void;
+  setDraftPrismaTuning?: (tuning: PrismaTuning) => void;
 }
 
 export interface VisualizerRegistryEntry {

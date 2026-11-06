@@ -49,6 +49,8 @@ export function FoliaVisualizerQuickControl({
     onMachiTuningChange: (patch) => settings.patchTuning("machi", patch),
     nebbiaTuning: settings.tunings.nebbia,
     onNebbiaTuningChange: (patch) => settings.patchTuning("nebbia", patch),
+    prismaTuning: settings.tunings.prisma,
+    onPrismaTuningChange: (patch) => settings.patchTuning("prisma", patch),
     onClosePanel,
   };
   return getVisualizerRegistryEntry(settings.mode).renderQuickControls?.(props);

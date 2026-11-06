@@ -102,6 +102,13 @@ const VISUALIZER_GLYPHS: Record<string, ReactNode> = {
       <path d="M8 8v1.5M15.5 7.5v2" opacity="0.5" />
     </>
   ),
+  // 聚散：一个字的笔画碎成几片飞开
+  prisma: (
+    <>
+      <path d="M4 7h7M4 12h7M4 17h7M7.5 7v10" />
+      <path d="M15 6.5l2-1M18 11l2.5-.5M15.5 15l1.8 1.2M19 18l1.5.8" opacity="0.6" />
+    </>
+  ),
   partita: (
     <>
       <path d="M4 7h7" />

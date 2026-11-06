@@ -18,4 +18,5 @@ export const FOLIA_VISUALIZER_DESCRIPTIONS: Record<LyricVisualizerMode, string> 
   hanabi: "歌词跳上色块，烟花随字绽放，整个画面一镜接一镜向上升",
   machi: "微缩街景里的招牌与 LED 屏上点亮歌词",
   nebbia: "雨夜公交车窗，在起雾的玻璃上一笔一划写歌词",
+  prisma: "每句歌词碎成粒子随气流飞散，又在唱到时聚成下一句",
 };

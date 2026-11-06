@@ -14,6 +14,7 @@ import partitaEntry from "./partita/entry";
 import pendoloEntry from "./pendolo/entry";
 import sonnetEntry from "./sonnet/entry";
 import stillEntry from "./still/entry";
+import prismaEntry from "./prisma/entry";
 import temperaEntry from "./tempera/entry";
 import tiltEntry from "./tilt/entry";
 import archiveEntry from "./archive/entry";
@@ -41,6 +42,7 @@ const visualizerEntryModules: Record<string, VisualizerEntryModule> = {
   "./nebbia/entry.tsx": { default: nebbiaEntry },
   "./partita/entry.tsx": { default: partitaEntry },
   "./pendolo/entry.tsx": { default: pendoloEntry },
+  "./prisma/entry.tsx": { default: prismaEntry },
   "./sonnet/entry.tsx": { default: sonnetEntry },
   "./still/entry.tsx": { default: stillEntry },
   "./tempera/entry.tsx": { default: temperaEntry },

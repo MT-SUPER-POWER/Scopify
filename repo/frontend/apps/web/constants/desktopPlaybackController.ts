@@ -24,6 +24,7 @@ export const DESKTOP_FOLIA_VISUALIZER_OPTIONS = [
   { labelKey: "folia.ui.visualizerHanabi", value: "hanabi" },
   { labelKey: "folia.ui.visualizerMachi", value: "machi" },
   { labelKey: "folia.ui.visualizerNebbia", value: "nebbia" },
+  { labelKey: "folia.ui.visualizerPrisma", value: "prisma" },
 ] as const satisfies readonly { labelKey: string; value: LyricVisualizerMode }[];
 
 export const DESKTOP_FOLIA_BACKGROUND_OPTIONS = [

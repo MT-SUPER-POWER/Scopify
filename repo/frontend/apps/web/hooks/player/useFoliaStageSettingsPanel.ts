@@ -2,6 +2,8 @@
 
 import { useMemo } from "react";
 
+import { DEFAULT_PRISMA_TUNING } from "@/types/lyrics/prisma/model";
+
 import {
   DEFAULT_CADENZA_TUNING,
   DEFAULT_CAPPELLA_TUNING,
@@ -174,6 +176,7 @@ export function useFoliaStageSettingsPanel(
     hanabiTuning: settings.tunings.hanabi ?? DEFAULT_HANABI_TUNING,
     machiTuning: settings.tunings.machi ?? DEFAULT_MACHI_TUNING,
     nebbiaTuning: settings.tunings.nebbia ?? DEFAULT_NEBBIA_TUNING,
+    prismaTuning: settings.tunings.prisma ?? DEFAULT_PRISMA_TUNING,
     hideTranslationSubtitle: settings.hideTranslationSubtitle,
     isDaylight,
     isLoadingCappellaCustomAvatarPack: assets.isLoadingCappellaCustomAvatarPack,
@@ -214,6 +217,8 @@ export function useFoliaStageSettingsPanel(
       settings.patchTuning("machi", patch),
     onNebbiaTuningChange: (patch: Partial<typeof DEFAULT_NEBBIA_TUNING>) =>
       settings.patchTuning("nebbia", patch),
+    onPrismaTuningChange: (patch: Partial<typeof DEFAULT_PRISMA_TUNING>) =>
+      settings.patchTuning("prisma", patch),
     onImportCappellaCustomAvatar: assets.importCappellaCustomAvatar,
     onImportCappellaCustomEmojiPack: assets.importCappellaCustomEmojiPack,
     onMonetTuningChange: (patch: Partial<typeof DEFAULT_MONET_TUNING>) =>
