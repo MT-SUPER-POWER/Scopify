@@ -28,8 +28,45 @@ export interface RhineLoadStages {
   /** Part of the warm-up spent compiling shader programs in the background. */
   precompileMs: number;
   warmUpPaintMs: readonly number[];
+  /** The adapter the context runs on, as the driver names it. */
+  adapter: string;
   /** Whole load, from the start of the model request to the scene being ready. */
   totalMs: number;
+}
+
+/** How often a running background logs how it keeps up. */
+const FRAME_REPORT_MS = 30_000;
+
+/**
+ * Animation frame intervals while the background runs. The load window above ends 1.5 s after the scene is ready,
+ * which says nothing about the running frame rate. Short intervals with no long tasks are a healthy loop; long
+ * intervals with no long tasks mean the main thread is idle and the GPU is the one falling behind.
+ */
+export function createRhineFrameStats() {
+  let intervals: number[] = [];
+  let last = 0;
+  let windowStart = 0;
+  return {
+    sample(now: number) {
+      if (last > 0) intervals.push(now - last);
+      else if (windowStart === 0) windowStart = now;
+      last = now;
+      if (now - windowStart < FRAME_REPORT_MS || intervals.length === 0) return;
+      const sorted = [...intervals].sort((a, b) => a - b);
+      const average = sorted.reduce((sum, value) => sum + value, 0) / sorted.length;
+      const p95 = sorted[Math.floor(sorted.length * 0.95)] ?? 0;
+      console.info(
+        `[RhineBackground] ${sorted.length} frames in the last ${Math.round((now - windowStart) / 1000)} s: ` +
+          `average ${average.toFixed(1)} ms, p95 ${p95.toFixed(1)} ms, longest ${(sorted.at(-1) ?? 0).toFixed(1)} ms`,
+      );
+      intervals = [];
+      windowStart = now;
+    },
+    /** The loop stopped (hidden, paused): the time until it restarts is not a frame interval. */
+    pause() {
+      last = 0;
+    },
+  };
 }
 
 /** Starts collecting long tasks; `finish` stops after a short settle period and logs the whole picture. */
@@ -77,7 +114,7 @@ export function startRhineLoadDiagnostics() {
         `[RhineBackground] ready in ${round(totalMs)} ms: model fetch ${round(stages.timings.fetchMs)}, ` +
           `parse ${round(stages.timings.parseMs)}, model ${round(stages.timings.modelMs)}, ` +
           `renderer ${round(stages.rendererMs)}, scene ${round(stages.sceneMs)} ` +
-          `(warm-up ${round(stages.warmUpMs)}: precompile ${round(stages.precompileMs)}, paints ${stages.warmUpPaintMs.map(round).join("/")})`,
+          `(warm-up ${round(stages.warmUpMs)}: precompile ${round(stages.precompileMs)}, paints ${stages.warmUpPaintMs.map(round).join("/")}) on ${stages.adapter}`,
       );
       timer = window.setTimeout(() => {
         observer?.takeRecords().forEach((entry) => {

@@ -7,7 +7,10 @@ import {
   RHINE_ROWS,
 } from "@/constants/rhineBackground";
 import { loadRhineModel, RhineModel } from "@/lib/lyrics/rhine/model";
-import { startRhineLoadDiagnostics } from "@/lib/lyrics/rhine/loadDiagnostics";
+import {
+  createRhineFrameStats,
+  startRhineLoadDiagnostics,
+} from "@/lib/lyrics/rhine/loadDiagnostics";
 import { yieldToMain } from "@/lib/lyrics/rhine/programWarmup";
 import { RhineRenderer } from "@/lib/lyrics/rhine/renderer";
 import { RhineScene } from "@/lib/lyrics/rhine/scene";
@@ -57,12 +60,14 @@ export function useRhineBackground(props: RhineBackgroundProps) {
     let failed = false;
     let width = container.clientWidth;
     let height = container.clientHeight;
+    const frameStats = createRhineFrameStats();
     setStatus("loading");
 
     const stop = () => {
       cancelAnimationFrame(request);
       request = 0;
       previousTime = null;
+      frameStats.pause();
     };
     const running = () =>
       !controller.signal.aborted &&
@@ -84,8 +89,10 @@ export function useRhineBackground(props: RhineBackgroundProps) {
       request = 0;
       if (!scene || !running()) {
         previousTime = null;
+        frameStats.pause();
         return;
       }
+      frameStats.sample(now);
       const interval = 1000 / Number(sceneInput(latest.current).tuning.frameRate);
       if (previousTime === null) previousTime = now;
       const elapsed = now - previousTime;
@@ -191,6 +198,7 @@ export function useRhineBackground(props: RhineBackgroundProps) {
           warmUpMs: scene.warmUpMs,
           precompileMs: scene.precompileMs,
           warmUpPaintMs: scene.warmUpPaintMs,
+          adapter: view.adapter,
         });
       } catch (error) {
         diagnostics.cancel();

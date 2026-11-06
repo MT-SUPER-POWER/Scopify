@@ -48,6 +48,13 @@ export class RhineRenderer {
     });
   }
 
+  /** The adapter this context really runs on, as the driver names it (for the load log). */
+  get adapter() {
+    const gl = this.renderer.getContext();
+    const info = gl.getExtension("WEBGL_debug_renderer_info");
+    return info ? String(gl.getParameter(info.UNMASKED_RENDERER_WEBGL)) : "unknown adapter";
+  }
+
   initialize(quality: RhineQuality) {
     this.quality = quality;
     this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
