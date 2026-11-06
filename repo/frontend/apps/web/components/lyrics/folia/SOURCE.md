@@ -136,5 +136,6 @@ The copied source remains licensed under AGPL-3.0. See [LICENSE](./LICENSE). Sco
 - Scopify exposes Nomand's daylight sampling rule through a small pure helper so the host can regression-test light and dark behavior without mounting WebGL.
 - Sonnet keeps Folia's lazy Pixi v8 runtime and full scene/tuning implementation; Scopify adapts its i18n keys, persists its tuning bundle, and owns the one-time performance-warning dialog at the host boundary.
 - Tempera keeps Folia's lazy Pixi runtime and deterministic composition engine; Scopify persists image blobs in the existing `scopify-folia-stage` asset store and keeps only normalized placement descriptors in the synced tuning bundle.
+- `FloatingPlayerControls` stops painting and stops layout projection once it has faded out, so the idle stage does not repaint a blurred bar nobody can see.
 
 `.vendor-closure.ps1` records and reproduces the source dependency closure. Any upstream refresh must record the reviewed commit above and review every host adaptation against that snapshot.

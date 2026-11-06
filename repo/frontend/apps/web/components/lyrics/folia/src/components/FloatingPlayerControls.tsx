@@ -166,11 +166,12 @@ const FloatingPlayerControls: React.FC<FloatingPlayerControlsProps> = ({
       <motion.div
         className={`pointer-events-none absolute bottom-8 left-1/2 z-60 flex w-full -translate-x-1/2 justify-center transition-all duration-300 ${currentView === "home" ? "max-w-[calc(100vw-120px)] md:max-w-lg" : "max-w-lg px-4"}`}
         initial={false}
-        animate={{
-          opacity: isHidden ? 0 : 1,
-          y: isHidden ? 24 : 0,
-          scale: isHidden ? 0.97 : 1,
-        }}
+        // Once faded out, nothing here paints: the glass blur is costly and the progress keeps writing behind it.
+        animate={
+          isHidden
+            ? { opacity: 0, y: 24, scale: 0.97, transitionEnd: { visibility: "hidden" } }
+            : { opacity: 1, y: 0, scale: 1, visibility: "visible" }
+        }
         transition={{ duration: 0.26, ease: "easeOut" }}
         style={{ pointerEvents: isHidden ? "none" : "auto" }}
         onClick={(e) => e.stopPropagation()}
@@ -185,12 +186,16 @@ const FloatingPlayerControls: React.FC<FloatingPlayerControlsProps> = ({
           }}
         >
           <motion.div
-            layout
+            layout={!isHidden}
             transition={{ layout: CONTROL_LAYOUT_SPRING }}
             onClick={handleClick}
             className={`relative cursor-pointer overflow-hidden rounded-full shadow-2xl backdrop-blur-3xl transition-colors duration-300 ${showExpanded ? `p-3 ${glassBgExpanded} w-full` : `px-4 py-2 ${glassBgCollapsed} w-[80%] md:w-[60%]`}`}
           >
-            <motion.div layout transition={{ layout: CONTROL_LAYOUT_SPRING }} className="w-full">
+            <motion.div
+              layout={!isHidden}
+              transition={{ layout: CONTROL_LAYOUT_SPRING }}
+              className="w-full"
+            >
               {showExpanded ? (
                 <ExpandedView
                   currentSong={currentSong}
