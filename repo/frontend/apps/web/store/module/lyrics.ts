@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { DEFAULT_FACET_BACKGROUND_TUNING } from "@/constants/facetBackground";
 import { DEFAULT_RHINE_BACKGROUND_TUNING } from "@/constants/rhineBackground";
 import { createJSONStorage, persist } from "zustand/middleware";
 
@@ -143,6 +144,19 @@ export const useLyricStageStore = create<FoliaStageStore>()(
             },
           },
         })),
+      patchFacetBackground: (patch) =>
+        set((state) => ({
+          background: {
+            ...state.background,
+            facet: {
+              tuning: {
+                ...DEFAULT_FACET_BACKGROUND_TUNING,
+                ...state.background.facet?.tuning,
+                ...patch,
+              },
+            },
+          },
+        })),
       patchTuning: (mode, patch) =>
         set((state) => ({
           tunings: {
@@ -183,6 +197,7 @@ export const useLyricStageStore = create<FoliaStageStore>()(
         if (mode === "latent") get().patchLatentBackground(DEFAULT_LATENT_BACKGROUND_TUNING);
         if (mode === "sora") get().patchSoraBackground(DEFAULT_SORA_BACKGROUND_TUNING);
         if (mode === "rhine") get().patchRhineBackground(DEFAULT_RHINE_BACKGROUND_TUNING);
+        if (mode === "facet") get().patchFacetBackground(DEFAULT_FACET_BACKGROUND_TUNING);
       },
       resetTuning: (mode) =>
         set((state) => ({

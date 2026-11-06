@@ -32,11 +32,14 @@ import {
   normalizeFoliaStageThemes,
 } from "@scopify/ui/folia";
 import type { FoliaStageSettings } from "@/types/lyrics/folia/stage";
+import { DEFAULT_FACET_BACKGROUND_TUNING } from "@/constants/facetBackground";
 import { DEFAULT_RHINE_BACKGROUND_TUNING } from "@/constants/rhineBackground";
 
 const NUMERIC_RANGES = {
   "background.rhine.tuning.strength": [0, 2],
   "background.rhine.tuning.overlayOpacity": [0, 0.85],
+  "background.facet.tuning.strength": [0, 2],
+  "background.facet.tuning.overlayOpacity": [0, 0.85],
   "background.common.opacity": [0, 1],
   "background.latent.tuning.ditheringAudioSpeed": [0, 2],
   "background.latent.tuning.ditheringOpacity": [0, 1],
@@ -141,11 +144,13 @@ const STRING_ENUMS = {
   animationIntensity: ["calm", "normal", "chaotic"],
   "background.latent.tuning.colorSource": ["cover-theme", "cover-only"],
   "background.latent.tuning.displayMode": ["dithering", "mesh", "both"],
-  "background.mode": ["common", "monet", "nomand", "latent", "url", "sora", "rhine"],
+  "background.mode": ["common", "monet", "nomand", "latent", "url", "sora", "rhine", "facet"],
   "background.rhine.tuning.colorMode": ["auto", "light", "dark"],
   "background.rhine.tuning.quality": ["performance", "original", "high"],
   "background.rhine.tuning.rhythmStyle": ["legacy", "wave", "lift", "beat"],
   "background.rhine.tuning.frameRate": ["30", "60"],
+  "background.facet.tuning.quality": ["performance", "balanced", "high"],
+  "background.facet.tuning.frameRate": ["30", "60"],
   "background.monet.tuning.backgroundLayout": ["full-overlay", "half-pane-gradient"],
   "background.monet.tuning.backgroundSource": ["cover-derived", "uploaded-global"],
   "background.monet.tuning.backgroundWashColorMode": ["theme", "custom"],
@@ -209,6 +214,7 @@ export function createDefaultFoliaStageSettings(): FoliaStageSettings {
       nomand: { tuning: structuredClone(DEFAULT_NOMAND_BACKGROUND_TUNING) },
       sora: { tuning: structuredClone(DEFAULT_SORA_BACKGROUND_TUNING) },
       rhine: { tuning: structuredClone(DEFAULT_RHINE_BACKGROUND_TUNING) },
+      facet: { tuning: structuredClone(DEFAULT_FACET_BACKGROUND_TUNING) },
       url: { items: [], selectedId: null },
     },
     fontFamily: null,

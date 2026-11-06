@@ -35,6 +35,7 @@ export const DESKTOP_FOLIA_BACKGROUND_OPTIONS = [
   { labelKey: "folia.options.visualizerBackgroundModeUrl", value: "url" },
   { labelKey: "folia.options.visualizerBackgroundModeSora", value: "sora" },
   { labelKey: "folia.options.visualizerBackgroundModeRhine", value: "rhine" },
+  { labelKey: "folia.options.visualizerBackgroundModeFacet", value: "facet" },
 ] as const satisfies readonly { labelKey: string; value: VisualizerBackgroundMode }[];
 
 export const DESKTOP_FOLIA_ANIMATION_OPTIONS = [

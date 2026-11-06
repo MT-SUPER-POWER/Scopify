@@ -413,6 +413,19 @@ export default interface Resources {
     "archive.untitled": "未命名档案";
     "cappella.emojiAlt": "表情";
     "common.reset": "重置";
+    "facet.credit": "改编自 igneus 的 Hex Glitch（CC BY-NC-SA 3.0，仅限非商业使用）。";
+    "facet.description": "六边形随每句歌词翻面，涟漪随音量和鼓点流动，配色取自主题和封面。";
+    "facet.frameRate": "帧率";
+    "facet.loadError": "棱面背景暂时无法加载";
+    "facet.musicEnabled": "音乐律动";
+    "facet.overlayOpacity": "背景遮罩";
+    "facet.quality": "画质";
+    "facet.qualityBalanced": "均衡";
+    "facet.qualityHigh": "精细";
+    "facet.qualityPerformance": "节能";
+    "facet.retry": "重试";
+    "facet.strength": "律动强度";
+    "facet.title": "棱面故障";
     "floatingControls.viewTimeline": "查看歌词时间轴";
     "localMusic.replayGainAlbum": "专辑";
     "localMusic.replayGainOff": "关闭";
@@ -1066,6 +1079,7 @@ export default interface Resources {
     "options.visualSettings": "视觉设置";
     "options.visualizerBackgroundMode": "背景类型";
     "options.visualizerBackgroundModeCommon": "通用";
+    "options.visualizerBackgroundModeFacet": "棱面";
     "options.visualizerBackgroundModeLatent": "隐现";
     "options.visualizerBackgroundModeMonet": "莫奈";
     "options.visualizerBackgroundModeNomand": "漫游";

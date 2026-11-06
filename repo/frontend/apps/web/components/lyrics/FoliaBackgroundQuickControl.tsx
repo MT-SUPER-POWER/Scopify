@@ -31,6 +31,7 @@ export function FoliaBackgroundQuickControl({
     nomand: { onTuningChange: settings.patchNomandBackground },
     sora: { onTuningChange: settings.patchSoraBackground },
     rhine: { onTuningChange: settings.patchRhineBackground },
+    facet: { onTuningChange: settings.patchFacetBackground },
   };
 
   return entry.renderQuickControls?.({

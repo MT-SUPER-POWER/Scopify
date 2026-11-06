@@ -1,4 +1,5 @@
 import React from "react";
+import type { FacetBackgroundTuning } from "@/types/lyrics/facet/background";
 import type { RhineBackgroundTuning } from "@/types/lyrics/rhine/background";
 import type { MotionValue } from "framer-motion";
 import type { TranslationKey } from "@/lib/i18n";
@@ -11,6 +12,7 @@ import type {
   NomandBackgroundTuning,
   SoraBackgroundTuning,
   Theme,
+  Line,
   UrlBackgroundItem,
   VisualizerBackgroundMode,
 } from "../../../types";
@@ -44,6 +46,9 @@ export interface VisualizerBackgroundConfig {
   };
   rhine?: {
     tuning?: RhineBackgroundTuning;
+  };
+  facet?: {
+    tuning?: FacetBackgroundTuning;
   };
   url?: {
     items?: UrlBackgroundItem[];
@@ -84,6 +89,10 @@ export interface VisualizerBackgroundActions {
     onTuningChange?: (patch: Partial<RhineBackgroundTuning>) => void;
     onResetTuning?: () => void;
   };
+  facet?: {
+    onTuningChange?: (patch: Partial<FacetBackgroundTuning>) => void;
+    onResetTuning?: () => void;
+  };
   url?: {
     onAdd?: (item: UrlBackgroundItem) => void;
     onUpdate?: (id: string, patch: Partial<Omit<UrlBackgroundItem, "id">>) => void;
@@ -103,6 +112,12 @@ export interface VisualizerBackgroundRenderProps {
   seed?: string | number;
   staticMode: boolean;
   paused: boolean;
+  /** The stage's lyrics, for a background the stage hosts and that follows the singing. */
+  lyric?: {
+    lines: Line[];
+    currentLineIndex: number;
+    currentTime: MotionValue<number>;
+  };
 }
 
 export interface VisualizerBackgroundSettingsProps {

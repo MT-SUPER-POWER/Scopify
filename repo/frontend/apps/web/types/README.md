@@ -58,7 +58,7 @@ Web 与 Desktop Renderer 共用的 TypeScript 类型。**先按业务领域找�
 | `audio/` | 均衡器、输出设备、音频特征发布 |
 | `personalFm/` | 私人 FM |
 | `tracklist/` | 曲目列表列配置、拖拽、可排序列表 |
-| `lyrics/` | 歌词数据与歌词页、字幕预览、视频导出；`folia/` 歌词舞台，`rhine/` 背景 |
+| `lyrics/` | 歌词数据与歌词页、字幕预览、视频导出；`folia/` 歌词舞台，`rhine/`、`facet/` 背景 |
 | `listeningReport/` | 听歌报告与听歌打点 |
 
 ### 应用与桌面

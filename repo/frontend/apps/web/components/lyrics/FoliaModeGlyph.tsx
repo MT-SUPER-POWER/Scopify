@@ -185,6 +185,12 @@ const BACKGROUND_GLYPHS: Record<string, ReactNode> = {
       <path d="M11 19l9-6" />
     </>
   ),
+  facet: (
+    <>
+      <path d="M12 3.5l7.4 4.25v8.5L12 20.5l-7.4-4.25v-8.5z" />
+      <path d="M3.5 13.5h7M14 10.5h6.5" opacity="0.55" />
+    </>
+  ),
   sora: (
     <>
       <path d="M12 5.5l1.2 2.9 2.9 1.2-2.9 1.2L12 13.7l-1.2-2.9-2.9-1.2 2.9-1.2z" />

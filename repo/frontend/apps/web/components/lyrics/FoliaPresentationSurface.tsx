@@ -57,7 +57,9 @@ export function FoliaPresentationSurface({
   ]);
   const { assets, isDaylight, settings, subtitleTheme, theme } = appearance;
   const transparentBackground = !layers.background;
-  const hostRhineBackground = layers.background && settings.background.mode === "rhine";
+  const hostBackground =
+    layers.background &&
+    (settings.background.mode === "rhine" || settings.background.mode === "facet");
   const appStyle = useMemo(
     () =>
       buildAppStyle({
@@ -80,10 +82,8 @@ export function FoliaPresentationSurface({
     },
   };
   // Song-keyed lyric directors (and random mode changes) can remount their entire shell.
-  // Rhine's canvas and scene belong to the stage so track changes reach the existing animation.
-  const lyricBackground = hostRhineBackground
-    ? { ...background, renderedByHost: true }
-    : background;
+  // These backgrounds' canvases and scenes belong to the stage so track changes reach the running animation.
+  const lyricBackground = hostBackground ? { ...background, renderedByHost: true } : background;
 
   if (!layers.background && !layers.lyrics) return null;
 
@@ -110,7 +110,7 @@ export function FoliaPresentationSurface({
         backgroundColor: transparentBackground ? "transparent" : theme.backgroundColor,
       }}
     >
-      {hostRhineBackground ? (
+      {hostBackground ? (
         <div
           className="pointer-events-none absolute inset-0"
           style={{ opacity: settings.visualizerOpacity }}
@@ -126,6 +126,11 @@ export function FoliaPresentationSurface({
             seed={track?.id}
             staticMode={staticMode}
             paused={!bridge.isPlaying}
+            lyric={{
+              lines: bridge.lines,
+              currentLineIndex: bridge.currentLineIndex,
+              currentTime: bridge.lyricCurrentTime,
+            }}
           />
         </div>
       ) : null}

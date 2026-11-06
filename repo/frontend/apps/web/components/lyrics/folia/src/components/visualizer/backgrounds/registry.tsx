@@ -9,6 +9,7 @@ import monetEntry from "./monet/entry";
 import nomandEntry from "./nomand/entry";
 import soraEntry from "./sora/entry";
 import rhineEntry from "./rhine/entry";
+import facetEntry from "./facet/entry";
 import urlEntry from "./url/entry";
 
 // src/components/visualizer/backgrounds/registry.tsx
@@ -22,6 +23,7 @@ const backgroundEntryModules: Record<string, VisualizerBackgroundEntryModule> = 
   "./nomand/entry.tsx": { default: nomandEntry },
   "./sora/entry.tsx": { default: soraEntry },
   "./rhine/entry.tsx": { default: rhineEntry },
+  "./facet/entry.tsx": { default: facetEntry },
   "./url/entry.tsx": { default: urlEntry },
 };
 
