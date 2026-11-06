@@ -188,6 +188,11 @@ function configureChromium() {
   if (!desktopConfig.app.gpuAcceleration) {
     app.disableHardwareAcceleration();
     coreLog.warn("[app] hardware acceleration disabled by configuration");
+  } else if (process.platform === "win32") {
+    // On a hybrid-graphics laptop Chromium renders on the adapter driving the display, normally the integrated
+    // one, and ignores WebGL's powerPreference. The 3D lyric styles and backgrounds saturate an integrated GPU,
+    // and the whole interface composites through that same busy GPU. Machines with one GPU are unaffected.
+    app.commandLine.appendSwitch("force_high_performance_gpu");
   }
 }
 
