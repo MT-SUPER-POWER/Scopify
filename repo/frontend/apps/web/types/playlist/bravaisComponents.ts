@@ -1,4 +1,3 @@
-import type { BravaisSeat } from "@/types/playlist/bravais";
 import type { QueueInstance } from "@/types/playlist/lattice";
 import type { SongDetail } from "@/types/song/api";
 
@@ -9,22 +8,21 @@ export interface BravaisSelection {
 }
 
 export interface BravaisTileProps {
-  seat: BravaisSeat;
+  instance: QueueInstance;
   track: SongDetail;
   selected: boolean;
   current: boolean;
   playing: boolean;
-  /** Filtered out by the seam's filter box. */
+  /** Filtered out by the panel's filter box. */
   dimmed: boolean;
   onSelect: (instance: QueueInstance) => void;
   onPlay: (track: SongDetail) => void;
 }
 
-export interface BravaisSeamProps {
+export interface BravaisPanelProps {
   title: string;
   tracks: SongDetail[];
-  /** Width the panel's content is laid out at; the panel itself opens and closes around it. */
-  contentWidth: number;
+  width: number;
   query: string;
   onQueryChange: (query: string) => void;
   /** Indexes of the tracks the filter lets through, in playlist order. */

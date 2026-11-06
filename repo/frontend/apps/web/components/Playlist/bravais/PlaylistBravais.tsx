@@ -10,7 +10,7 @@ import { useTranslation } from "react-i18next";
 
 import type { PlaylistLatticeProps } from "@/types/playlist/latticeComponents";
 import { PlaylistViewTools } from "../lattice/PlaylistViewTools";
-import { BravaisSeam } from "./BravaisSeam";
+import { BravaisPanel } from "./BravaisPanel";
 import { BravaisTile } from "./BravaisTile";
 
 export default function PlaylistBravais({
@@ -126,20 +126,20 @@ export default function PlaylistBravais({
         {...wall.pointerHandlers}
       >
         <div ref={wall.worldRef} className="absolute inset-0 origin-top-left will-change-transform">
-          {wall.visible.map((seat) => {
-            const track = tracks[seat.trackIndex];
+          {wall.visible.map((instance) => {
+            const track = tracks[instance.queueIndex];
             if (!track) return null;
-            const current = seat.trackIndex === currentIndex;
+            const current = instance.queueIndex === currentIndex;
             return (
               <BravaisTile
-                key={seat.instance.instanceId}
-                seat={seat}
+                key={instance.instanceId}
+                instance={instance}
                 track={track}
-                selected={seat.instance.instanceId === selected?.instance.instanceId}
+                selected={instance.instanceId === selected?.instance.instanceId}
                 current={current}
                 playing={current && isPlaying}
                 dimmed={
-                  (filtering && !matchSet.has(seat.trackIndex)) ||
+                  (filtering && !matchSet.has(instance.queueIndex)) ||
                   (lightsOff && currentIndex >= 0 && !current)
                 }
                 onSelect={selectInstance}
@@ -148,22 +148,21 @@ export default function PlaylistBravais({
             );
           })}
         </div>
-        <div ref={wall.panelRef} className="absolute top-0 left-0 h-full w-0">
-          <BravaisSeam
-            title={title}
-            tracks={tracks}
-            contentWidth={wall.seamWidth}
-            query={query}
-            onQueryChange={setQuery}
-            matches={matches}
-            selectedIndex={selectedIndex}
-            currentIndex={currentIndex}
-            isPlaying={isPlaying}
-            onSelect={selectTrack}
-            onPlay={play}
-          />
-        </div>
       </div>
+      {/* Outside the field, so neither a drag nor the wheel over the panel moves the wall. */}
+      <BravaisPanel
+        title={title}
+        tracks={tracks}
+        width={wall.panelWidth}
+        query={query}
+        onQueryChange={setQuery}
+        matches={matches}
+        selectedIndex={selectedIndex}
+        currentIndex={currentIndex}
+        isPlaying={isPlaying}
+        onSelect={selectTrack}
+        onPlay={play}
+      />
       {tracks.length === 0 && (
         <div className="absolute inset-x-0 top-14 bottom-0 grid place-content-center text-muted-foreground">
           {t("playlist.table.noSongs")}

@@ -1,47 +1,39 @@
-import { BRAVAIS_METRICS } from "@/constants/playlistBravais";
+import { BRAVAIS_METRICS, BRAVAIS_PANEL_INSET } from "@/constants/playlistBravais";
 import {
-  getInstanceBlock,
   getLatticeGeometry,
   layoutLattice,
   locateNearestInstance,
 } from "@/lib/playlist/lattice/layout";
-import type { BravaisSeat, BravaisWall } from "@/types/playlist/bravais";
-import type { Bounds, QueueInstance } from "@/types/playlist/lattice";
+import type { BravaisWall } from "@/types/playlist/bravais";
+import type {
+  Bounds,
+  LatticeCamera,
+  LatticeViewport,
+  QueueInstance,
+} from "@/types/playlist/lattice";
 import type { SongDetail } from "@/types/song/api";
-
-// Blocks abut, so the gap midline sits half a gap before the boundary column's first seat.
-const boundaryXFor = (column: number, blockWidth: number) =>
-  column * blockWidth - BRAVAIS_METRICS.gap / 2;
 
 /**
  * The endless wall is the Lattice block layout: one pass over the songs fills a cell, and the cell
- * repeats in every direction. The seam sits on the block column nearest the middle at first.
+ * repeats in every direction. It starts with a block boundary behind the panel, so the panel hides
+ * the join between two blocks rather than the middle of one.
  */
-export function createBravaisWall(trackCount: number, anchorColumn?: number): BravaisWall {
+export function createBravaisWall(trackCount: number): BravaisWall {
   const geometry = getLatticeGeometry(Math.max(trackCount, 1), BRAVAIS_METRICS);
-  const anchor = anchorColumn ?? Math.floor(geometry.blocksPerRow / 2);
   return {
     geometry,
     trackCount,
-    anchorColumn: anchor,
-    boundaryX: boundaryXFor(anchor, geometry.blockWidth),
+    originX: Math.floor(geometry.blocksPerRow / 2) * geometry.blockWidth - BRAVAIS_METRICS.gap / 2,
   };
 }
 
-/** Seats whose tile can touch the pane; `overscan` is world pixels on every side. */
-export function bravaisSeatsIn(wall: BravaisWall, bounds: Bounds, overscan: number): BravaisSeat[] {
-  return layoutLattice(wall.geometry, wall.trackCount, bounds, overscan, BRAVAIS_METRICS).map(
-    (instance) => ({
-      instance,
-      trackIndex: instance.queueIndex,
-      side: getInstanceBlock(wall.geometry, instance).column < wall.anchorColumn ? "left" : "right",
-    }),
-  );
-}
-
-/** The side of the seam a seat of this wall is on. */
-export function bravaisSideOf(wall: BravaisWall, instance: QueueInstance): "left" | "right" {
-  return getInstanceBlock(wall.geometry, instance).column < wall.anchorColumn ? "left" : "right";
+/** Tiles that can touch the pane; `overscan` is world pixels on every side. */
+export function bravaisTilesIn(
+  wall: BravaisWall,
+  bounds: Bounds,
+  overscan: number,
+): QueueInstance[] {
+  return layoutLattice(wall.geometry, wall.trackCount, bounds, overscan, BRAVAIS_METRICS);
 }
 
 /** The copy of a song closest to a world point; the wall repeats, so there are many. */
@@ -53,27 +45,41 @@ export function nearestBravaisInstance(
   return locateNearestInstance(wall.geometry, wall.trackCount, index, point, BRAVAIS_METRICS);
 }
 
-/** The block boundary nearest to a world x, where the seam may open. */
-export function nearestSeamColumn(wall: BravaisWall, worldX: number): number {
-  return Math.round((worldX + BRAVAIS_METRICS.gap / 2) / wall.geometry.blockWidth);
-}
-
-/** World x of the gap midline a seam on `column` opens on. */
-export function seamBoundaryX(wall: BravaisWall, column: number): number {
-  return boundaryXFor(column, wall.geometry.blockWidth);
-}
-
 /**
- * Maps an x on screen-world (where the seam has pushed the halves apart by `seam` world pixels) back
- * to the wall's own layout x. Inside the seam itself it maps to the boundary.
+ * Where the camera has to be for a tile to be seen beside the pinned panel. A tile already in full
+ * view stays put; otherwise it goes to whichever side of the panel is the shorter trip, centred in
+ * that side, or against the panel if it is wider than the side.
  */
-export function unshiftWallX(wall: BravaisWall, seam: number, x: number): number {
-  if (x <= wall.boundaryX - seam / 2) return x + seam / 2;
-  if (x >= wall.boundaryX + seam / 2) return x - seam / 2;
-  return wall.boundaryX;
+export function revealBravaisTile(
+  tile: QueueInstance,
+  camera: LatticeCamera,
+  view: LatticeViewport,
+  panelWidth: number,
+): { x: number; y: number } {
+  const { x, y, scale } = camera;
+  const left = x + tile.x * scale;
+  const top = y + tile.y * scale;
+  const width = tile.width * scale;
+  const height = tile.height * scale;
+  const side = (view.width - panelWidth) / 2 - BRAVAIS_PANEL_INSET;
+  const sideRight = view.width - side;
+  const fitsAcross =
+    (left >= 0 && left + width <= side) || (left >= sideRight && left + width <= view.width);
+  const fitsDown = top >= 0 && top + height <= view.height;
+  let nextX = x;
+  if (!fitsAcross) {
+    const spare = side - width;
+    const toLeft = (spare >= 0 ? spare / 2 : spare) - left;
+    const toRight = sideRight + Math.max(0, spare / 2) - left;
+    nextX = x + (Math.abs(toLeft) <= Math.abs(toRight) ? toLeft : toRight);
+  }
+  return {
+    x: nextX,
+    y: fitsDown ? y : (view.height - height) / 2 - tile.y * scale,
+  };
 }
 
-/** Whether a track matches the seam's filter box (name, artist or album). */
+/** Whether a track matches the panel's filter box (name, artist or album). */
 export function matchesTrackFilter(track: SongDetail, query: string) {
   if (!query) return true;
   const needle = query.toLowerCase();
