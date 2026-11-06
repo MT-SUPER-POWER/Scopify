@@ -2,6 +2,12 @@
 
 > 根据 commit 自动生成，请勿手动编辑；推送版本 tag 后由 CI 更新。v2.0.3 及更早版本见[历史更新记录](archive/CHANGELOG-legacy.md)。
 
+## v3.3.3 — 2026-11-05
+
+### 新增
+
+- 新增“隐藏到托盘”和“最小化到任务栏”命令 ([bc2d78c3](https://github.com/MT-SUPER-POWER/Scopify/commit/bc2d78c39b0f0a90d25feaa7ff4a1d718bde93da))
+
 ## v3.3.2 — 2026-11-03
 
 ### 新增
