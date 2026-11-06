@@ -4,7 +4,12 @@ import {
   splitLyricGraphemes,
 } from "@/components/lyrics/folia/src/utils/lyrics/graphemeTiming";
 import { getLineRenderEndTime } from "@/components/lyrics/folia/src/utils/lyrics/renderHints";
-import type { PrismaGlyph, PrismaLine, PrismaMotion } from "@/types/lyrics/prisma/model";
+import type {
+  PrismaGlyph,
+  PrismaIntensity,
+  PrismaLine,
+  PrismaMotion,
+} from "@/types/lyrics/prisma/model";
 import { at } from "./at";
 
 // lib/lyrics/prisma/timeline.ts
@@ -66,19 +71,38 @@ const toTitleLine = (title: string, end: number): PrismaLine => {
 
 /** Ways a flight can move at random: 0 scatter, 1 whirl, 2 gust, 3 drift, 4 ribbon, 5 core, 6 ripple. */
 export const PRISMA_MOTION_COUNT = 7;
-/** The big ones, kept for flights that touch a chorus. */
-const CHORUS_MOTIONS = [0, 1, 5];
 /** A motion stays out of the running for this many flights after it plays. */
 const MOTION_REST = 2;
 /** The firework is never drawn at random: it marks a moment, and it stays rare. */
 export const PRISMA_FIREWORK = PRISMA_MOTION_COUNT;
-const FIREWORK_SPACING = 6;
-/** A wait this long before a line is a moment worth marking. */
-const FIREWORK_GAP = 3;
 /** The line it lands on needs this long, or most of its shards land before seeing the sky. */
 const FIREWORK_MIN_LINE = 1.5;
-/** A song with no chorus marks and no pauses still gets one this often. */
-const FIREWORK_FALLBACK = 18;
+
+/**
+ * What the song's animation intensity allows. `chorus` is the set for flights that touch a chorus. For the
+ * firework, `spacing` is the fewest flights between two, `gap` a wait before a line worth marking, and `fallback`
+ * how often a song with no chorus marks and no pauses still gets one. Calm has no fireworks at all.
+ */
+const MOTION_PROFILES: Record<
+  PrismaIntensity,
+  {
+    pool: number[];
+    chorus: number[];
+    firework: { spacing: number; gap: number; fallback: number } | null;
+  }
+> = {
+  calm: { pool: [0, 3, 4, 6], chorus: [0, 4, 6], firework: null },
+  normal: {
+    pool: [0, 1, 2, 3, 4, 5, 6],
+    chorus: [0, 1, 5],
+    firework: { spacing: 6, gap: 3, fallback: 18 },
+  },
+  chaotic: {
+    pool: [0, 1, 2, 3, 4, 5, 6],
+    chorus: [0, 1, 2, 5],
+    firework: { spacing: 3, gap: 1.5, fallback: 8 },
+  },
+};
 
 const seedHash = (seed: string | number) => {
   let hash = 2166136261;
@@ -90,7 +114,13 @@ const seedHash = (seed: string | number) => {
  * One motion per flight (flight i goes from line i - 1 to line i, so one more than there are lines). It comes
  * from the song and the position alone: a seek or a replay of the same song shows the same thing.
  */
-export const pickPrismaMotions = (script: PrismaLine[], seed: string | number): PrismaMotion[] => {
+export const pickPrismaMotions = (
+  script: PrismaLine[],
+  seed: string | number,
+  intensity: PrismaIntensity = "normal",
+): PrismaMotion[] => {
+  const profile = MOTION_PROFILES[intensity];
+  const rule = profile.firework;
   let state = seedHash(seed);
   const random = () => {
     state = (state + 0x6d2b79f5) >>> 0;
@@ -98,29 +128,29 @@ export const pickPrismaMotions = (script: PrismaLine[], seed: string | number): 
     mixed ^= mixed + Math.imul(mixed ^ (mixed >>> 7), mixed | 61);
     return ((mixed ^ (mixed >>> 14)) >>> 0) / 4294967296;
   };
-  const everyMotion = Array.from({ length: PRISMA_MOTION_COUNT }, (_, motion) => motion);
   const recent: number[] = [];
   const motions: PrismaMotion[] = [];
-  let sinceFirework = FIREWORK_SPACING;
+  let sinceFirework = rule?.spacing ?? 0;
   for (let flight = 0; flight <= script.length; flight += 1) {
     const before = script[flight - 1];
     const after = script[flight];
     const chorus = before?.isChorus === true || after?.isChorus === true;
     const firework =
+      rule !== null &&
       before !== undefined &&
       after !== undefined &&
-      sinceFirework >= FIREWORK_SPACING &&
+      sinceFirework >= rule.spacing &&
       after.end - after.start >= FIREWORK_MIN_LINE &&
       ((after.isChorus && !before.isChorus) ||
-        after.start - before.end >= FIREWORK_GAP ||
-        sinceFirework >= FIREWORK_FALLBACK);
+        after.start - before.end >= rule.gap ||
+        sinceFirework >= rule.fallback);
     sinceFirework += 1;
     if (firework) {
       sinceFirework = 1;
       motions.push({ motion: PRISMA_FIREWORK, turn: random() < 0.5 ? -1 : 1 });
       continue;
     }
-    const pool = (chorus ? CHORUS_MOTIONS : everyMotion).filter(
+    const pool = (chorus ? profile.chorus : profile.pool).filter(
       (motion) => !recent.includes(motion),
     );
     const motion = at(pool, Math.floor(random() * pool.length));

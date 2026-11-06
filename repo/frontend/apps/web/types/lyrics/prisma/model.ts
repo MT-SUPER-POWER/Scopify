@@ -133,3 +133,6 @@ export interface PrismaMotion {
   motion: number;
   turn: number;
 }
+
+/** The theme's animation intensity, the same setting the other lyric styles follow. */
+export type PrismaIntensity = "calm" | "normal" | "chaotic";

@@ -35,6 +35,7 @@ uniform float u_bass;
 uniform float u_motion;
 uniform float u_turn;
 uniform float u_fireAt;
+uniform float u_cloud;
 uniform float u_fromVoid;
 uniform float u_toVoid;
 ${SPACE}
@@ -82,7 +83,7 @@ void main() {
   // The cloud around the target: wide while the glyph is far off and only ever drawing in. The flight heads for
   // this spot rather than the glyph itself, so a shard never reaches the text and is pushed back out again.
   float untilLand = max(land - t, 0.);
-  float radius = unit * (.016 + .2 * (1. - exp(-untilLand / 1.4)));
+  float radius = unit * (.016 + .2 * u_cloud * (1. - exp(-untilLand / 1.4)));
   vec3 drift = current(to / scale + a_random.yzx * 3., t * .5);
   vec3 offset = (normalize(a_random.xyz - .5) + drift * .5) * radius * (1. + .1 * u_bass);
   offset.z *= .6;
@@ -338,6 +339,7 @@ uniform float u_pad;
 uniform float u_always;
 uniform float u_music;
 uniform float u_bass;
+uniform float u_energy;
 ${SPACE}
 ${PROJECT}
 out vec2 v_uv;
@@ -347,6 +349,7 @@ flat out float v_flash;
 flat out float v_held;
 flat out float v_sung;
 flat out float v_glint;
+flat out float v_energy;
 
 void main() {
   bool shown = u_always > .5 || (u_time >= a_span.x && u_time < a_span.y);
@@ -382,11 +385,12 @@ void main() {
   float breath = (1. - staying) * staying * 4. * arrived;
 
   float music = min(u_music, 1.2);
-  float scale = 1. + alive * music * (ring * .13 + held * .055 + u_bass * .05 * recent + breath * .025);
-  float lean = alive * (ring * .1 * (seed - .5) * 2. * music + sway * .014);
+  float idle = max(u_energy, .7);
+  float scale = 1. + alive * music * u_energy * (ring * .13 + held * .055 + u_bass * .05 * recent + breath * .025);
+  float lean = alive * (ring * .1 * (seed - .5) * 2. * music * u_energy + sway * .014 * idle);
   vec2 shift = vec2(
-    sway * .007,
-    swell * .016 - music * (ring * .075 + held * .035 + u_bass * .025 * recent)
+    sway * .007 * idle,
+    swell * .016 * idle - music * u_energy * (ring * .075 + held * .035 + u_bass * .025 * recent)
   ) * rowSize * alive;
 
   vec2 reach = (css - middle) * scale;
@@ -397,7 +401,8 @@ void main() {
   v_uv = css / u_view;
   v_local = corner * 2. - 1.;
   v_color = a_color.rgb;
-  v_flash = u_always > .5 || age < 0. ? 0. : exp(-age * 3.2);
+  v_energy = min(u_energy, 1.);
+  v_flash = u_always > .5 || age < 0. ? 0. : exp(-age * 3.2) * v_energy;
   v_held = u_always > .5 ? 0. : held;
   v_sung = clamp(age / (sungUntil - a_span.z), 0., 1.);
   v_glint = u_always > .5 || age < 0. ? 3. : age * 4.2 - 1.2;
@@ -415,6 +420,7 @@ flat in float v_flash;
 flat in float v_held;
 flat in float v_sung;
 flat in float v_glint;
+flat in float v_energy;
 uniform sampler2DArray u_plates;
 uniform float u_layer;
 uniform vec3 u_accent;
@@ -439,7 +445,7 @@ void main() {
   float slanted = v_local.x + v_local.y * .35;
   float glint = exp(-(slanted - v_glint) * (slanted - v_glint) * 9.);
   float tint = max(v_flash * .6, v_held * .42 * (1. - toFill));
-  vec3 body = mix(v_color, u_accent, min(1., tint + glint * .55));
+  vec3 body = mix(v_color, u_accent, min(1., tint + glint * .55 * v_energy));
   color = vec4(body * ink.r, ink.r);
 }
 `;

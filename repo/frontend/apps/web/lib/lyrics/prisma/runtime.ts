@@ -7,6 +7,7 @@ import { resolveWordColor } from "@/components/lyrics/folia/src/components/visua
 import { createFrameStats, type FrameStatsReport } from "@/lib/lyrics/frameStats";
 import type {
   PrismaBatchEnd,
+  PrismaIntensity,
   PrismaLine,
   PrismaLineLayout,
   PrismaMotion,
@@ -43,6 +44,15 @@ const SLOW_P95_MS = 40;
 const THROTTLED_GAP_MS = 250;
 const MAX_DPR = 2;
 const CHORUS_BURST = 1.35;
+/** How hard everything moves at each animation intensity. Normal is 1 throughout. */
+const FEEL: Record<
+  PrismaIntensity,
+  { burst: number; flow: number; cloud: number; energy: number; bass: number }
+> = {
+  calm: { burst: 0.55, flow: 0.6, cloud: 0.65, energy: 0.4, bass: 0.5 },
+  normal: { burst: 1, flow: 1, cloud: 1, energy: 1, bass: 1 },
+  chaotic: { burst: 1.3, flow: 1.35, cloud: 1.2, energy: 1.5, bass: 1.4 },
+};
 /** A firework goes off this long after its flight starts, leaving the line time to stream up. */
 const FIREWORK_DELAY = 0.5;
 
@@ -71,6 +81,8 @@ export class PrismaRuntime {
     motion: 0,
     turn: 1,
     fireAt: 0,
+    cloud: 1,
+    energy: 1,
     flow: 1,
     swarm: 0,
     bass: 0,
@@ -284,8 +296,14 @@ export class PrismaRuntime {
     this.script = this.showText
       ? buildPrismaScript(lines, this.tuning.showTitle ? (title ?? null) : null)
       : [];
-    this.motions = pickPrismaMotions(this.script, this.song.seed);
+    this.motions = pickPrismaMotions(this.script, this.song.seed, this.intensity);
     this.requestFrame();
+  }
+
+  private get intensity(): PrismaIntensity {
+    // Themes can come from outside (AI themes), so an unknown value just means normal.
+    const value = this.theme.animationIntensity;
+    return value === "calm" || value === "chaotic" ? value : "normal";
   }
 
   private colorOf = (line: PrismaLine, glyphIndex: number): Rgb => {
@@ -445,10 +463,13 @@ export class PrismaRuntime {
   private drawFrame(time: number, current: number) {
     const { gl, frameUniforms: frame, tuning } = this;
     const audio = tuning.audio;
+    const feel = FEEL[this.intensity];
     frame.time = time;
-    frame.flow = tuning.flow * (1 + this.power * 0.5 * audio);
+    frame.flow = tuning.flow * feel.flow * (1 + this.power * 0.5 * audio);
+    frame.cloud = feel.cloud;
+    frame.energy = feel.energy;
     frame.swarm = tuning.swarm;
-    frame.bass = this.bass * audio;
+    frame.bass = this.bass * audio * feel.bass;
     frame.pulse = this.bass * 0.004 * audio;
     frame.treble = this.treble * audio;
     frame.gloss = tuning.gloss;
@@ -474,7 +495,7 @@ export class PrismaRuntime {
       if (fromLayer === undefined || toLayer === undefined) continue;
       const chorus =
         this.script[index - 1]?.isChorus === true || this.script[index]?.isChorus === true;
-      frame.burst = tuning.burst * (chorus ? CHORUS_BURST : 1);
+      frame.burst = tuning.burst * feel.burst * (chorus ? CHORUS_BURST : 1);
       frame.motion = this.motions[index]?.motion ?? 0;
       frame.turn = this.motions[index]?.turn ?? 1;
       frame.fireAt = batch.from + FIREWORK_DELAY;

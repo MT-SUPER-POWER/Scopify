@@ -180,6 +180,8 @@ export interface PrismaFrameUniforms {
   motion: number;
   turn: number;
   fireAt: number;
+  cloud: number;
+  energy: number;
   flow: number;
   swarm: number;
   bass: number;
@@ -264,6 +266,7 @@ export class PrismaGl {
       "u_motion",
       "u_turn",
       "u_fireAt",
+      "u_cloud",
       "u_flow",
       "u_swarm",
       "u_bass",
@@ -294,6 +297,7 @@ export class PrismaGl {
       "u_always",
       "u_music",
       "u_bass",
+      "u_energy",
       "u_plates",
       "u_layer",
       "u_accent",
@@ -508,6 +512,7 @@ export class PrismaGl {
     gl.uniform1f(u.u_motion ?? null, frame.motion);
     gl.uniform1f(u.u_turn ?? null, frame.turn);
     gl.uniform1f(u.u_fireAt ?? null, frame.fireAt);
+    gl.uniform1f(u.u_cloud ?? null, frame.cloud);
     gl.uniform1f(u.u_flow ?? null, frame.flow);
     gl.uniform1f(u.u_swarm ?? null, frame.swarm);
     gl.uniform1f(u.u_bass ?? null, frame.bass);
@@ -578,6 +583,7 @@ export class PrismaGl {
     gl.uniform1f(u.u_always ?? null, always ? 1 : 0);
     gl.uniform1f(u.u_music ?? null, frame.music);
     gl.uniform1f(u.u_bass ?? null, frame.bass);
+    gl.uniform1f(u.u_energy ?? null, frame.energy);
     gl.uniform1f(u.u_layer ?? null, layer);
     gl.uniform3f(u.u_accent ?? null, this.accent[0], this.accent[1], this.accent[2]);
     gl.uniform1f(u.u_glow ?? null, glow ? 1 : 0);

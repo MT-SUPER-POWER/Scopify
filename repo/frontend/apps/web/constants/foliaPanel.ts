@@ -9,4 +9,5 @@ export const INTENSITY_VISUALIZER_MODES = new Set<string>([
   "diorama",
   "pendolo",
   "sonnet",
+  "prisma",
 ]);

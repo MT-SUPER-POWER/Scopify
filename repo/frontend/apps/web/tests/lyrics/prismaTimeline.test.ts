@@ -165,6 +165,18 @@ describe("pickPrismaMotions", () => {
     expect(fireworkFlights([verse(0), line("late", 20, 23)])).toEqual([1]);
   });
 
+  it("follows the animation intensity", () => {
+    const motionsAt = (intensity: "calm" | "normal" | "chaotic") =>
+      pickPrismaMotions(script, "song-a", intensity).map((entry) => entry.motion);
+    const fireworks = (motions: number[]) =>
+      motions.filter((motion) => motion === PRISMA_FIREWORK).length;
+    expect(pickPrismaMotions(script, "song-a")).toEqual(
+      pickPrismaMotions(script, "song-a", "normal"),
+    );
+    expect(new Set(motionsAt("calm"))).toEqual(new Set([0, 3, 4, 6]));
+    expect(fireworks(motionsAt("chaotic"))).toBeGreaterThan(fireworks(motionsAt("normal")));
+  });
+
   it("keeps fireworks apart and off short lines", () => {
     const paused = Array.from({ length: 20 }, (_, index) =>
       line(`p${index}`, index * 10 + 5, index * 10 + 8),
