@@ -18,7 +18,7 @@ import {
 export const PRISMA_PLATE_LAYERS = 6;
 
 const DYNAMIC_STRIDE = 48;
-const GLYPH_STRIDE = 32;
+const GLYPH_STRIDE = 36;
 const PATH_VARYINGS = ["v_state", "v_motion", "v_look"];
 const COMPLETION_STATUS_KHR = 0x91b1;
 
@@ -293,6 +293,7 @@ export class PrismaGl {
       "u_pad",
       "u_always",
       "u_music",
+      "u_bass",
       "u_plates",
       "u_layer",
       "u_accent",
@@ -444,7 +445,7 @@ export class PrismaGl {
 
   createGlyphs(
     layout: PrismaLineLayout,
-    times: (glyphIndex: number) => [number, number, number],
+    times: (glyphIndex: number) => [number, number, number, number],
   ): PrismaGpuGlyphs {
     const gl = this.gl;
     const buffer = gl.createBuffer();
@@ -455,7 +456,7 @@ export class PrismaGl {
     const bytes = new Uint8Array(raw);
     layout.glyphs.forEach((glyph, index) => {
       const offset = (index * GLYPH_STRIDE) / 4;
-      const [land, release, sung] = times(glyph.glyphIndex);
+      const [land, release, sung, sungUntil] = times(glyph.glyphIndex);
       floats[offset] = glyph.x;
       floats[offset + 1] = glyph.y;
       floats[offset + 2] = glyph.width;
@@ -464,7 +465,8 @@ export class PrismaGl {
       // A float attribute cannot hold Infinity safely on every driver.
       floats[offset + 5] = Number.isFinite(release) ? release : 1e7;
       floats[offset + 6] = sung;
-      bytes.set([...glyph.color, 255], index * GLYPH_STRIDE + 28);
+      floats[offset + 7] = sungUntil;
+      bytes.set([...glyph.color, 255], index * GLYPH_STRIDE + 32);
     });
     gl.bindVertexArray(vao);
     gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
@@ -473,10 +475,10 @@ export class PrismaGl {
     gl.vertexAttribPointer(0, 4, gl.FLOAT, false, GLYPH_STRIDE, 0);
     gl.vertexAttribDivisor(0, 1);
     gl.enableVertexAttribArray(1);
-    gl.vertexAttribPointer(1, 3, gl.FLOAT, false, GLYPH_STRIDE, 16);
+    gl.vertexAttribPointer(1, 4, gl.FLOAT, false, GLYPH_STRIDE, 16);
     gl.vertexAttribDivisor(1, 1);
     gl.enableVertexAttribArray(2);
-    gl.vertexAttribPointer(2, 4, gl.UNSIGNED_BYTE, true, GLYPH_STRIDE, 28);
+    gl.vertexAttribPointer(2, 4, gl.UNSIGNED_BYTE, true, GLYPH_STRIDE, 32);
     gl.vertexAttribDivisor(2, 1);
     gl.bindVertexArray(null);
     gl.bindBuffer(gl.ARRAY_BUFFER, null);
@@ -575,6 +577,7 @@ export class PrismaGl {
     gl.uniform1f(u.u_pad ?? null, glow ? pad : 0);
     gl.uniform1f(u.u_always ?? null, always ? 1 : 0);
     gl.uniform1f(u.u_music ?? null, frame.music);
+    gl.uniform1f(u.u_bass ?? null, frame.bass);
     gl.uniform1f(u.u_layer ?? null, layer);
     gl.uniform3f(u.u_accent ?? null, this.accent[0], this.accent[1], this.accent[2]);
     gl.uniform1f(u.u_glow ?? null, glow ? 1 : 0);

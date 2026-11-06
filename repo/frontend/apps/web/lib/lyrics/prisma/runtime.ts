@@ -347,7 +347,7 @@ export class PrismaRuntime {
       const line = at(this.script, index);
       existing.glyphs = this.gl.createGlyphs(existing.layout, (glyphIndex) => {
         const glyph = at(line.glyphs, glyphIndex);
-        return [glyph.land, glyph.release, glyph.start];
+        return [glyph.land, glyph.release, glyph.start, glyph.end];
       });
       return true;
     }

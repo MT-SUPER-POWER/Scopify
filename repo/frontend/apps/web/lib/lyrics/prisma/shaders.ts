@@ -330,19 +330,23 @@ void main() {
 export const GLYPH_VERTEX = /* glsl */ `#version 300 es
 precision highp float;
 layout(location = 0) in vec4 a_rect;
-layout(location = 1) in vec3 a_span;
+layout(location = 1) in vec4 a_span; // lands, leaves, sung from, sung until
 layout(location = 2) in vec4 a_color;
 
 uniform float u_time;
 uniform float u_pad;
 uniform float u_always;
 uniform float u_music;
+uniform float u_bass;
 ${SPACE}
 ${PROJECT}
 out vec2 v_uv;
 out vec2 v_local;
 flat out vec3 v_color;
 flat out float v_flash;
+flat out float v_held;
+flat out float v_sung;
+flat out float v_glint;
 
 void main() {
   bool shown = u_always > .5 || (u_time >= a_span.x && u_time < a_span.y);
@@ -354,14 +358,50 @@ void main() {
   vec2 size = a_rect.zw + u_pad * 2.;
   vec2 css = a_rect.xy - u_pad + corner * size;
   float age = u_time - a_span.z;
-  float rising = clamp(age / .34, 0., 1.);
-  float pop = u_always > .5 ? 1. : 1. + .07 * u_music * sin(3.14159265 * rising);
+  float settled = max(age, 0.);
+  float sungUntil = max(a_span.w, a_span.z + .05);
   vec2 middle = a_rect.xy + a_rect.zw * .5;
+  float rowSize = a_rect.w;
+  float seed = fract(sin(dot(a_rect.xy, vec2(12.9898, 78.233))) * 43758.5453);
+
+  // All of this is zero the moment shards hand a glyph over and the moment they take it back, so the shard and
+  // the glyph still match pixel for pixel at both ends.
+  float arrived = smoothstep(0., .3, u_time - a_span.x);
+  float staying = smoothstep(0., .4, a_span.y - u_time);
+  float alive = u_always > .5 ? 0. : arrived * staying;
+
+  // Struck when sung: a damped spring that hops, grows and leans, then keeps ringing a little.
+  float ring = exp(-settled * 5.) * sin(settled * 15.) * step(0., age);
+  // Held: rises and swells for as long as the note lasts.
+  float held = smoothstep(a_span.z, a_span.z + .12, u_time) * (1. - smoothstep(sungUntil, sungUntil + .28, u_time));
+  // Afterwards the line never quite stops: a slow swell runs along it, and each glyph sways on its own.
+  float swell = sin(u_time * 1.15 - middle.x / rowSize * .75);
+  float sway = sin(u_time * (.6 + seed * .5) + seed * 6.283);
+  float recent = exp(-settled * 1.1);
+  // Takes a breath just before it breaks apart.
+  float breath = (1. - staying) * staying * 4. * arrived;
+
+  float music = min(u_music, 1.2);
+  float scale = 1. + alive * music * (ring * .13 + held * .055 + u_bass * .05 * recent + breath * .025);
+  float lean = alive * (ring * .1 * (seed - .5) * 2. * music + sway * .014);
+  vec2 shift = vec2(
+    sway * .007,
+    swell * .016 - music * (ring * .075 + held * .035 + u_bass * .025 * recent)
+  ) * rowSize * alive;
+
+  vec2 reach = (css - middle) * scale;
+  float cosine = cos(lean);
+  float sine = sin(lean);
+  vec2 placed = middle + shift + vec2(reach.x * cosine - reach.y * sine, reach.x * sine + reach.y * cosine);
+
   v_uv = css / u_view;
   v_local = corner * 2. - 1.;
   v_color = a_color.rgb;
   v_flash = u_always > .5 || age < 0. ? 0. : exp(-age * 3.2);
-  gl_Position = project(toWorld(middle + (css - middle) * pop), 1.);
+  v_held = u_always > .5 ? 0. : held;
+  v_sung = clamp(age / (sungUntil - a_span.z), 0., 1.);
+  v_glint = u_always > .5 || age < 0. ? 3. : age * 4.2 - 1.2;
+  gl_Position = project(toWorld(placed), 1.);
 }
 `;
 
@@ -372,6 +412,9 @@ in vec2 v_uv;
 in vec2 v_local;
 flat in vec3 v_color;
 flat in float v_flash;
+flat in float v_held;
+flat in float v_sung;
+flat in float v_glint;
 uniform sampler2DArray u_plates;
 uniform float u_layer;
 uniform vec3 u_accent;
@@ -390,7 +433,13 @@ void main() {
     return;
   }
   if (ink.r < .004) discard;
-  vec3 body = mix(v_color, u_accent, v_flash * .6);
+  // The note fills the glyph from the left while it is held, and one glint crosses it when it is struck.
+  float across = v_local.x * .5 + .5;
+  float toFill = smoothstep(v_sung - .18, v_sung + .18, across);
+  float slanted = v_local.x + v_local.y * .35;
+  float glint = exp(-(slanted - v_glint) * (slanted - v_glint) * 9.);
+  float tint = max(v_flash * .6, v_held * .42 * (1. - toFill));
+  vec3 body = mix(v_color, u_accent, min(1., tint + glint * .55));
   color = vec4(body * ink.r, ink.r);
 }
 `;
