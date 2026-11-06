@@ -2,6 +2,34 @@
 
 > 根据 commit 自动生成，请勿手动编辑；推送版本 tag 后由 CI 更新。v2.0.3 及更早版本见[历史更新记录](archive/CHANGELOG-legacy.md)。
 
+## v3.4.0 — 2026-11-06
+
+### 新增
+
+- Bravais 的缝与海报改成 Folia 的样子 ([0f37e7f9](https://github.com/MT-SUPER-POWER/Scopify/commit/0f37e7f95c4acbf6412648b8c158b235fc6acae9))
+- 沉浸视图的切换与选项收进右下角的浮动球 ([de8bac49](https://github.com/MT-SUPER-POWER/Scopify/commit/de8bac4900658e7eefbffc627fe877a54afda743))
+- Bravais 的缝重新设计成嵌进墙里的凹槽 ([492a1ed5](https://github.com/MT-SUPER-POWER/Scopify/commit/492a1ed5ea2d84831ea9aec05fc2e01326b93152))
+- Grid 卡片墙有了曲面屏的凹陷感 ([b6a92294](https://github.com/MT-SUPER-POWER/Scopify/commit/b6a92294cd5f68dd73dfb2c1073c55094425b2f6))
+- Bravais 改为无限铺满并支持缩放 ([3591accc](https://github.com/MT-SUPER-POWER/Scopify/commit/3591accc29fb5773738452a3296ef7fc7bd26027))
+- Lattice 与 Grid 支持缩放，Grid 改为无限铺满的卡片墙 ([1f09710b](https://github.com/MT-SUPER-POWER/Scopify/commit/1f09710ba8c7ce9f1627e18316ba16535b11efd3))
+- 沉浸视图下顶栏常驻视图切换，不用再找右下角的菜单 ([ca07a3c0](https://github.com/MT-SUPER-POWER/Scopify/commit/ca07a3c00132df1a453e1bbeff5dc8a2734ca45d))
+- 歌单新增 Bravais 裂缝墙视图 ([92c35bbd](https://github.com/MT-SUPER-POWER/Scopify/commit/92c35bbd5373d9c7f8c953abb871ffeff65dc848))
+- 歌单新增 Grid 卡片墙视图，可与 Lattice 互相切换 ([e4beb85d](https://github.com/MT-SUPER-POWER/Scopify/commit/e4beb85dc91fbb295a966f1f8386732dfdea3a9b))
+
+### 修复
+
+- Grid 曲面改为真正的圆柱凹面，卡片按弧线排开并做对应的 Y 轴偏转 ([3427e753](https://github.com/MT-SUPER-POWER/Scopify/commit/3427e75396429e62b3b2d0d38040a275b743bb4e))
+- 沉浸视图放大后画面不再发糊 ([2d43d3d0](https://github.com/MT-SUPER-POWER/Scopify/commit/2d43d3d07b563fb36dc790261ccdd6d94a07ea54))
+
+### 优化
+
+- 莱茵的环境光遮蔽改用半分辨率，再省下一大块显存 ([ef9f88e6](https://github.com/MT-SUPER-POWER/Scopify/commit/ef9f88e6af34bb5d9a89feec01f031e17bc30156))
+- 莱茵默认画质在高分屏上的显存和算力占用约减半 ([cd143e3d](https://github.com/MT-SUPER-POWER/Scopify/commit/cd143e3d3772fb4241dd2433b50236bbc53ca5e7))
+- 莱茵背景占用的显存明显减少，离开后及时释放 ([192acca1](https://github.com/MT-SUPER-POWER/Scopify/commit/192acca1b710161908122f976188af7f83c1962e))
+- 莱茵背景加载时不再长时间卡住界面 ([18962ff8](https://github.com/MT-SUPER-POWER/Scopify/commit/18962ff8d3d898b577620f7ca5596b17aaea0726))
+- 町景切换时不再长时间卡住界面，高分屏更流畅 ([da049e08](https://github.com/MT-SUPER-POWER/Scopify/commit/da049e08e14c51f1a1d5df1f1d7445cb0979540f))
+- 雾笺首次切换时不再长时间卡住界面 ([ee127bb5](https://github.com/MT-SUPER-POWER/Scopify/commit/ee127bb5179810e922f15c0f1c3c76a8737db3a4))
+
 ## v3.3.3 — 2026-11-05
 
 ### 新增
