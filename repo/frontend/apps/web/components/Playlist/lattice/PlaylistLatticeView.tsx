@@ -9,6 +9,7 @@ import type {
   PlaylistLatticeViewProps,
 } from "@/types/playlist/latticeComponents";
 import type { ComponentType } from "react";
+import { PlaylistViewSkeleton } from "./PlaylistViewSkeleton";
 
 const PlaylistLattice = dynamic(() => import("./PlaylistLattice"), { ssr: false });
 const PlaylistGrid = dynamic(() => import("../grid/PlaylistGrid"), { ssr: false });
@@ -20,7 +21,7 @@ const VIEWS: Record<PlaylistViewMode, ComponentType<PlaylistLatticeProps>> = {
   bravais: PlaylistBravais,
 };
 
-export function PlaylistLatticeView({ children, ...props }: PlaylistLatticeViewProps) {
+export function PlaylistLatticeView({ children, loading, ...props }: PlaylistLatticeViewProps) {
   const { contentRef, container, mode, open, close } = usePlaylistLatticeView();
   const View = VIEWS[mode];
   return (
@@ -33,7 +34,14 @@ export function PlaylistLatticeView({ children, ...props }: PlaylistLatticeViewP
         {children(open)}
       </div>
       {container &&
-        createPortal(<View key={mode} {...props} onClose={close} onModeChange={open} />, container)}
+        createPortal(
+          loading ? (
+            <PlaylistViewSkeleton mode={mode} />
+          ) : (
+            <View key={mode} {...props} onClose={close} onModeChange={open} />
+          ),
+          container,
+        )}
     </>
   );
 }

@@ -63,6 +63,7 @@ export function PlaylistContent({
   return (
     <PlaylistLatticeView
       key={sourceId}
+      loading={isLoading}
       tracks={tracks}
       title={dynamicPlaylistInfo?.title ?? t("playlist.actions.listLabel")}
       sourceId={sourceId}

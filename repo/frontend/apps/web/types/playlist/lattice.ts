@@ -110,9 +110,12 @@ export interface LatticePreferences {
   lightsOff: boolean;
   /** The immersive view the header button and shortcuts open. */
   viewMode: PlaylistViewMode;
+  /** Whether the page was last left in an immersive view; the next page then opens straight into it. */
+  immersive: boolean;
   setFollowCurrent: (value: boolean) => void;
   setLightsOff: (value: boolean) => void;
   setViewMode: (value: PlaylistViewMode) => void;
+  setImmersive: (value: boolean) => void;
 }
 
 /** Opens or closes the immersive view of the playlist page that is currently mounted. */

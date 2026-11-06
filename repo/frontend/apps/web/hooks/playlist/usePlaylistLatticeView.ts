@@ -25,6 +25,7 @@ export function usePlaylistLatticeView() {
     const preferences = useLatticePreferences.getState();
     const next = requested ?? preferences.viewMode;
     if (requested) preferences.setViewMode(requested);
+    preferences.setImmersive(true);
     setMode(next);
     const host = contentRef.current?.closest<HTMLElement>("[data-dashboard-main]");
     if (!host) return;
@@ -35,6 +36,7 @@ export function usePlaylistLatticeView() {
     setContainer(host);
   }, []);
   const close = useCallback(() => {
+    useLatticePreferences.getState().setImmersive(false);
     setContainer(null);
     requestAnimationFrame(() => {
       if (triggerRef.current?.isConnected) triggerRef.current.focus({ preventScroll: true });
@@ -42,5 +44,9 @@ export function usePlaylistLatticeView() {
   }, []);
   // Lets the global header and shortcut commands switch this page's view mode.
   useEffect(() => useLatticeView.getState().register({ open, close }), [open, close]);
+  // A page opens straight into the immersive view the last page was left in, before it first paints.
+  useLayoutEffect(() => {
+    if (useLatticePreferences.getState().immersive) open();
+  }, [open]);
   return { contentRef, container, mode, open, close };
 }

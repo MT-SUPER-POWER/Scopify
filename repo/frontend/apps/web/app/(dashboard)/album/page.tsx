@@ -1,6 +1,7 @@
 "use client";
 
 import { PlaylistLatticeView } from "@/components/Playlist/lattice/PlaylistLatticeView";
+import { PlaylistViewLoading } from "@/components/Playlist/lattice/PlaylistViewLoading";
 import PlaylistLoading from "@/components/Playlist/PlaylistLoading";
 import TracklistTable from "@/components/Playlist/TrackTable";
 import { NetworkRetryState } from "@/components/shared/NetworkRetryState";
@@ -42,6 +43,7 @@ export default function AlbumPage() {
     return (
       <div className="pt-8 pb-24">
         <PlaylistLoading />
+        <PlaylistViewLoading />
       </div>
     );
 

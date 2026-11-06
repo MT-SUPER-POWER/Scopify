@@ -16,6 +16,8 @@ export interface PlaylistLatticeViewProps extends Omit<
   PlaylistLatticeProps,
   "onClose" | "onModeChange"
 > {
+  /** The page's songs are still loading: an immersive view that is open shows its skeleton meanwhile. */
+  loading?: boolean;
   children: (open: (mode?: PlaylistViewMode) => void) => ReactNode;
 }
 
