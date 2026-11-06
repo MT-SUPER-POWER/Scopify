@@ -5,6 +5,7 @@
  * 提交时不做类型检查，保持 commit 轻快；推送前业务基本定型，集中一次修完类型问题。
  * 读取 git 传入的推送范围（stdin：<local ref> <local sha> <remote ref> <remote sha>），
  * 新分支以 origin 默认分支的 merge-base 为起点。根目录 tsconfig 或锁文件变化时检查全部工作区。
+ * 推送 tag 代表发布或版本归档，不具备分支的 merge-base 差异语境，必须全量检查全部工作区。
  */
 
 import { existsSync, readFileSync } from "node:fs";
@@ -33,8 +34,12 @@ function resolveBase(localSha: string, remoteSha: string) {
 export function collectPushedFiles(input: string) {
   const files = new Set<string>();
   for (const line of input.split("\n")) {
-    const [, localSha, , remoteSha] = line.trim().split(/\s+/);
+    const [localRef, localSha, remoteRef, remoteSha] = line.trim().split(/\s+/);
     if (!localSha || !remoteSha || ZERO_SHA.test(localSha)) continue;
+    // 推送 tag 代表发布或版本归档，不具备分支的 merge-base 差异语境，必须全量检查
+    if (localRef?.startsWith("refs/tags/") || remoteRef?.startsWith("refs/tags/")) {
+      return null;
+    }
     const base = resolveBase(localSha, remoteSha);
     const diff = base ? git("diff", "--name-only", base, localSha) : null;
     // 找不到比较起点时无法缩小范围，按全量检查处理。

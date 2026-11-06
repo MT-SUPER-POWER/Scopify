@@ -11,7 +11,7 @@ Scopify 是 **Next.js App Router + Electron** 的网易云音乐客户端。根�
 本地在提交时运行暂存文件检查与轻量架构检查，在 push 前对本次推送改动的工作区运行类型检查。全仓 lint 由开发者按需执行，并由 CI 兜底。不要把“提交前检查”理解为 Agent 必须额外执行一轮检查。
 
 - **正常提交即可**：只暂存本次任务文件，通过 `git commit` 触发 `.husky/pre-commit`，由 Turbo 的根任务 `lint:staged` 依赖 `lint:architecture` 后执行 `lint-staged`。暂存文件交给 Prettier 和所在工作区的 ESLint；工作区依据自身 `package.json` 的 `lint` 声明自动识别。无需手动重复钩子检查。
-- **推送前集中修类型**：`.husky/pre-push` 运行 `scripts/pre-push-typecheck.ts`，按推送范围找出改动到的工作区，经 Turbo 对它们及依赖它们的工作区运行增量 `typecheck`；根 `tsconfig.json`、`package.json` 或锁文件变化时检查全部工作区。提交时不做类型检查，类型问题在推送前一次修完。push 时不执行 lint 或 build；CI 独立执行全仓质量检查。
+- **推送前集中修类型**：`.husky/pre-push` 运行 `scripts/pre-push-typecheck.ts`，按推送范围找出改动到的工作区，经 Turbo 对它们及依赖它们的工作区运行增量 `typecheck`；根 `tsconfig.json`、`package.json`、锁文件变化或推送 tag 时检查全部工作区。提交时不做类型检查，类型问题在推送前一次修完。push 时不执行 lint 或 build；CI 独立执行全仓质量检查。
 - **统一编排**：`pnpm run lint` 仅调用 Turbo，工作区 `lint` 通过 `^lint` 声明上游关系，架构检查与共享包脚本覆盖检查均由 `turbo.json` 组合。Desktop 的虚拟 lint 节点只依赖前端契约包，避免引入独立后端的 lint；不因此新增 Desktop ESLint 或放宽既有规则。
 - **钩子失败时再处理**：读取实际错误，修复本次改动引起的问题后重新提交。不得跳过或禁用钩子（包括 `--no-verify`），也不得为了通过而擅自修改无关文件或放宽规则；既有问题应说明情况并交给用户决定。
 - **禁止主动追加重复检查**：无论阶段完成还是准备提交，都不要自行运行全仓或包级的 lint、TypeScript/typecheck、Prettier 检查、build，也不要手动重复提交钩子已覆盖的检查。用户明确要求某项检查时，才按指定范围执行。
