@@ -25,11 +25,7 @@ export function useLatticeCamera({
   centered = false,
   minScale = 0.2,
   maxScale = 2,
-  origin,
-  clamp,
   onFrame,
-  onZoom,
-  dragSign,
 }: LatticeCameraOptions = {}) {
   const fieldRef = useRef<HTMLDivElement>(null);
   const worldRef = useRef<HTMLDivElement>(null);
@@ -42,19 +38,12 @@ export function useLatticeCamera({
   const reducedMotion = useReducedMotion();
   const onFrameRef = useRef(onFrame);
   onFrameRef.current = onFrame;
-  const onZoomRef = useRef(onZoom);
-  onZoomRef.current = onZoom;
-  const clampRef = useRef(clamp);
-  clampRef.current = clamp;
-  const originRef = useRef(origin);
-  originRef.current = origin;
   const stop = useCallback(() => {
     animationRef.current?.stop();
     animationRef.current = null;
   }, []);
   const crispTimer = useRef<number | undefined>(undefined);
-  const apply = useCallback((requested: LatticeCamera, force = false) => {
-    const next = clampRef.current?.(requested, viewportRef.current) ?? requested;
+  const apply = useCallback((next: LatticeCamera, force = false) => {
     cameraRef.current = next;
     const world = worldRef.current;
     if (world) {
@@ -99,11 +88,7 @@ export function useLatticeCamera({
               y: camera.y + (next.height - previous.height) / 2,
             }
           : centered
-            ? {
-                x: next.width / 2 - (originRef.current?.x ?? 0),
-                y: next.height / 2 - (originRef.current?.y ?? 0),
-                scale: 1,
-              }
+            ? { x: next.width / 2, y: next.height / 2, scale: 1 }
             : { ...camera, scale: Math.min(0.65, Math.max(0.35, next.width / 1750)) },
         true,
       );
@@ -157,10 +142,6 @@ export function useLatticeCamera({
   );
   const zoom = useCallback(
     (factor: number, clientX?: number, clientY?: number) => {
-      if (onZoomRef.current) {
-        onZoomRef.current(factor);
-        return;
-      }
       const field = fieldRef.current;
       if (!field) return;
       const rect = field.getBoundingClientRect();
@@ -178,10 +159,6 @@ export function useLatticeCamera({
   /** Button and key zoom: eases towards the target instead of jumping. */
   const zoomBy = useCallback(
     (factor: number) => {
-      if (onZoomRef.current) {
-        onZoomRef.current(factor);
-        return;
-      }
       stop();
       const from = cameraRef.current;
       const scale = Math.min(maxScale, Math.max(minScale, from.scale * factor));
@@ -221,7 +198,6 @@ export function useLatticeCamera({
     stop,
     reducedMotion,
     zoom,
-    dragSign,
   });
   return {
     fieldRef,

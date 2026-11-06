@@ -72,7 +72,7 @@ export function PlaylistViewTools({
             transition={{ duration: 0.16, ease: [0.22, 1, 0.36, 1] }}
             className="w-[min(296px,calc(100vw-48px))] origin-bottom-right rounded-2xl border border-white/10 bg-[#151515]/85 p-1.5 shadow-[0_24px_64px_#000a] backdrop-blur-xl"
           >
-            <div className="grid grid-cols-4 gap-1 p-0.5">
+            <div className="grid grid-cols-3 gap-1 p-0.5">
               <button
                 type="button"
                 className={CELL}

@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import { PLAYLIST_VIEW_MODES } from "@/constants/playlistViews";
 import type { LatticePreferences, LatticeViewState } from "@/types/playlist/lattice";
 
 export const useLatticePreferences = create<LatticePreferences>()(
@@ -16,6 +17,14 @@ export const useLatticePreferences = create<LatticePreferences>()(
     }),
     {
       name: "scopify-lattice-preferences",
+      version: 1,
+      // Version 0 could remember the Bravais view, which no longer exists.
+      migrate: (persisted, version) => {
+        const state = persisted as Partial<LatticePreferences>;
+        return version === 0 && !PLAYLIST_VIEW_MODES.some(({ mode }) => mode === state.viewMode)
+          ? ({ ...state, viewMode: "lattice" } as LatticePreferences)
+          : (state as LatticePreferences);
+      },
       partialize: (state) => ({
         followCurrent: state.followCurrent,
         lightsOff: state.lightsOff,
