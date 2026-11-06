@@ -26,15 +26,6 @@ export const BravaisTile = memo(function BravaisTile({
     width: instance.width,
     height: instance.height,
   };
-  if (!track)
-    return (
-      <div
-        aria-hidden
-        data-side={seat.side}
-        className="absolute rounded-md bg-content/4 data-[side=left]:[translate:var(--seam-l,0px)_0] data-[side=right]:[translate:var(--seam-r,0px)_0]"
-        style={style}
-      />
-    );
   const artist = track.ar.map((item) => item.name).join(" / ");
   const cover = track.al.picUrl || track.al.coverUrl;
   const roomy = instance.width >= 190 && instance.height >= 120;
@@ -55,7 +46,7 @@ export const BravaisTile = memo(function BravaisTile({
         dimmed && "opacity-15",
       )}
       style={style}
-      onClick={() => onSelect(seat.trackIndex)}
+      onClick={() => onSelect(instance)}
       onDoubleClick={() => onPlay(track)}
     >
       <Disc3 className="absolute top-[24%] left-[24%] size-[52%] opacity-12" aria-hidden="true" />

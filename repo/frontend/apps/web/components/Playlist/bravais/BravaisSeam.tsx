@@ -49,8 +49,8 @@ export function BravaisSeam({
     <div
       className="absolute inset-y-0 overflow-hidden"
       style={{
-        left: "calc(var(--seam-c, 0px) - var(--seam, 0px) / 2)",
-        width: "var(--seam, 0px)",
+        left: "calc(var(--seam-screen, 0px) / -2)",
+        width: "var(--seam-screen, 0px)",
       }}
     >
       <div

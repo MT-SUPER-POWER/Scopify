@@ -5,14 +5,15 @@ import { animate, useReducedMotion } from "framer-motion";
 import { useLatticeCamera } from "@/hooks/playlist/useLatticeCamera";
 import { BRAVAIS_SEAM_MAX_WIDTH, BRAVAIS_SEAM_MIN_WIDTH } from "@/constants/playlistBravais";
 import {
-  buildBravaisWall,
-  clampBravaisCamera,
-  cullBravaisSeats,
+  bravaisSeatsIn,
+  bravaisSideOf,
+  createBravaisWall,
+  nearestBravaisInstance,
   nearestSeamColumn,
-  seamShift,
   unshiftWallX,
 } from "@/lib/playlist/bravais/wall";
-import type { LatticeCamera } from "@/types/playlist/lattice";
+import type { BravaisSelection } from "@/types/playlist/bravaisComponents";
+import type { LatticeCamera, QueueInstance } from "@/types/playlist/lattice";
 
 const OVERSCAN = 420;
 // How long the camera must rest before the seam moves to where the user is looking.
@@ -24,10 +25,13 @@ const SEAM_EDGE_MARGIN = 14;
 const nextFrame = () => new Promise<void>((resolve) => requestAnimationFrame(() => resolve()));
 
 /**
- * Finite poster wall that splits open along a block boundary. Tiles on either side of the seam are
- * shifted apart by `--seam`; the seam panel rides the world horizontally and spans the pane vertically.
+ * Endless poster wall that splits open along a block boundary. Tiles on either side of the seam are
+ * shifted apart; the seam panel rides the world horizontally and spans the pane vertically.
  * When the camera comes to rest away from the seam, the wall closes it and splits open at the block
  * boundary nearest the middle of the pane, so the seam is always where the user is looking.
+ *
+ * The opening is tracked in screen pixels (the panel does not zoom) and written to CSS variables in
+ * world pixels for the tiles: `--seam-screen`, `--seam-l` and `--seam-r`.
  */
 export function useBravaisWall(trackCount: number) {
   const reducedMotion = useReducedMotion();
@@ -35,13 +39,14 @@ export function useBravaisWall(trackCount: number) {
   reducedMotionRef.current = reducedMotion;
   const [anchorColumn, setAnchorColumn] = useState<number | undefined>(undefined);
   const wall = useMemo(
-    () => buildBravaisWall(trackCount, anchorColumn),
+    () => createBravaisWall(trackCount, anchorColumn),
     [trackCount, anchorColumn],
   );
   const wallRef = useRef(wall);
   wallRef.current = wall;
   const seamWidthRef = useRef(BRAVAIS_SEAM_MAX_WIDTH);
   const seamValueRef = useRef(0);
+  const seamScale = useRef(1);
   const seamAnimation = useRef<{ stop: () => void } | null>(null);
   const reanchoring = useRef(false);
   const lastFit = useRef(0);
@@ -51,36 +56,39 @@ export function useBravaisWall(trackCount: number) {
   const frameRef = useRef<(camera: LatticeCamera) => void>(() => undefined);
   const camera = useLatticeCamera({
     centered: true,
-    origin: { x: wall.boundaryX, y: wall.height / 2 },
-    clamp: (next, viewport) =>
-      clampBravaisCamera(next, viewport, wallRef.current, seamWidthRef.current),
+    minScale: 0.3,
+    maxScale: 1.5,
+    origin: { x: wall.boundaryX, y: wall.geometry.cellHeight / 2 },
     onFrame: (next) => frameRef.current(next),
   });
   const { bounds, viewport, viewportRef, center, cameraRef, fieldRef } = camera;
-  const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
-  const selectedRef = useRef(selectedIndex);
-  selectedRef.current = selectedIndex;
-  const panTo = useCallback(
-    (index: number) => {
-      const seat = wallRef.current.seats[index];
-      if (!seat || seat.trackIndex < 0) return;
-      const opening = seamShift(wallRef.current, seamWidthRef.current);
-      const shift = seat.side === "left" ? opening.left : opening.right;
-      const { instance } = seat;
-      center(
-        { x: instance.x + shift, y: instance.y, width: instance.width, height: instance.height },
-        false,
-      );
-    },
-    [center],
-  );
+  const [selected, setSelected] = useState<BravaisSelection | null>(null);
+  const selectedRef = useRef(selected);
+  selectedRef.current = selected;
   const seamWidth = Math.round(
     Math.min(BRAVAIS_SEAM_MAX_WIDTH, Math.max(BRAVAIS_SEAM_MIN_WIDTH, viewport.width * 0.32)),
   );
   seamWidthRef.current = seamWidth;
+
+  const writeSeam = useCallback(
+    (value: number) => {
+      const field = fieldRef.current;
+      if (!field) return;
+      seamValueRef.current = value;
+      seamScale.current = cameraRef.current.scale;
+      // The halves give way in world pixels, so the gap on screen stays `value` at any zoom.
+      const world = value / cameraRef.current.scale;
+      field.style.setProperty("--seam-screen", `${value}px`);
+      field.style.setProperty("--seam-l", `${-world / 2}px`);
+      field.style.setProperty("--seam-r", `${world / 2}px`);
+    },
+    [cameraRef, fieldRef],
+  );
   frameRef.current = (next) => {
     const panel = panelRef.current;
-    if (panel) panel.style.transform = `translate3d(${next.x + wallRef.current.boundaryX}px, 0, 0)`;
+    if (panel)
+      panel.style.transform = `translate3d(${next.x + wallRef.current.boundaryX * next.scale}px, 0, 0)`;
+    if (next.scale !== seamScale.current) writeSeam(seamValueRef.current);
     window.clearTimeout(settleTimer.current);
     settleTimer.current = window.setTimeout(() => settleRef.current(), SETTLE_DELAY);
   };
@@ -89,35 +97,25 @@ export function useBravaisWall(trackCount: number) {
   }, [cameraRef, wall]);
   useEffect(() => () => window.clearTimeout(settleTimer.current), []);
 
-  /** Tweens the seam opening, in pixels; resolves false if something else took over meanwhile. */
+  /** Tweens the seam opening, in screen pixels; resolves false if something else took over meanwhile. */
   const moveSeam = useCallback(
     (to: number, duration: number) =>
       new Promise<boolean>((resolve) => {
-        const field = fieldRef.current;
         seamAnimation.current?.stop();
-        if (!field) return resolve(false);
-        const write = (value: number) => {
-          seamValueRef.current = value;
-          const shift = seamShift(wallRef.current, value);
-          field.style.setProperty("--seam", `${value}px`);
-          field.style.setProperty("--seam-l", `${shift.left}px`);
-          field.style.setProperty("--seam-r", `${shift.right}px`);
-          field.style.setProperty("--seam-c", `${shift.center}px`);
-        };
+        if (!fieldRef.current) return resolve(false);
         if (reducedMotionRef.current || duration === 0) {
-          write(to);
+          writeSeam(to);
           return resolve(true);
         }
-        const controls = animate(seamValueRef.current, to, {
+        seamAnimation.current = animate(seamValueRef.current, to, {
           duration,
           ease: EASE,
-          onUpdate: write,
+          onUpdate: writeSeam,
           onComplete: () => resolve(true),
           onStop: () => resolve(false),
         });
-        seamAnimation.current = controls;
       }),
-    [fieldRef],
+    [fieldRef, writeSeam],
   );
   // The wall opens once the pane has a size, and follows the pane when it is resized.
   useEffect(() => {
@@ -126,34 +124,57 @@ export function useBravaisWall(trackCount: number) {
   }, [moveSeam, seamWidth, viewport.width]);
   useEffect(() => () => seamAnimation.current?.stop(), []);
 
+  // World pixels the halves are pushed apart by when the seam is fully open at the current zoom.
+  const openWorld = () => seamWidthRef.current / cameraRef.current.scale;
+  const shiftFor = (instance: QueueInstance) =>
+    (bravaisSideOf(wallRef.current, instance) === "left" ? -1 : 1) * (openWorld() / 2);
+  const shiftForRef = useRef(shiftFor);
+  shiftForRef.current = shiftFor;
+
+  const panTo = useCallback(
+    (instance: QueueInstance) => {
+      center(
+        {
+          x: instance.x + shiftForRef.current(instance),
+          y: instance.y,
+          width: instance.width,
+          height: instance.height,
+        },
+        false,
+      );
+    },
+    [center],
+  );
   /**
    * Moves the camera the least it takes for the whole seam to be on screen. With `prefer`, the camera
-   * first goes to that song, so the seam only pulls it off-centre as far as the pane forces.
+   * first goes to that tile, so the seam only pulls it off-centre as far as the pane forces.
    */
   const fitToSeam = useCallback(
-    (prefer: number | null) => {
+    (prefer: QueueInstance | null) => {
       const view = viewportRef.current;
       const current = wallRef.current;
-      const opening = seamShift(current, seamWidthRef.current);
+      const { scale } = cameraRef.current;
       let { x, y } = cameraRef.current;
-      const seat = prefer === null ? undefined : current.seats[prefer];
-      if (seat && seat.trackIndex >= 0) {
-        const shift = seat.side === "left" ? opening.left : opening.right;
-        x = view.width / 2 - (seat.instance.x + seat.instance.width / 2 + shift);
-        y = view.height / 2 - (seat.instance.y + seat.instance.height / 2);
+      if (prefer) {
+        x = view.width / 2 - (prefer.x + prefer.width / 2 + shiftForRef.current(prefer)) * scale;
+        y = view.height / 2 - (prefer.y + prefer.height / 2) * scale;
       }
       const half = seamWidthRef.current / 2 + SEAM_EDGE_MARGIN;
-      const seamCentre = x + current.boundaryX + opening.center;
+      const seamCentre = x + current.boundaryX * scale;
       if (seamCentre - half < 0) x -= seamCentre - half;
       else if (seamCentre + half > view.width) x -= seamCentre + half - view.width;
       if (Math.abs(x - cameraRef.current.x) < 1 && Math.abs(y - cameraRef.current.y) < 1) return;
-      // The wall's edge limits may stop the camera short; do not chase it in circles.
+      // Do not chase a target the camera cannot reach in circles.
       if (performance.now() - lastFit.current < 1200) return;
       lastFit.current = performance.now();
-      center({ x: view.width / 2 - x, y: view.height / 2 - y, width: 0, height: 0 }, false);
+      center(
+        { x: (view.width / 2 - x) / scale, y: (view.height / 2 - y) / scale, width: 0, height: 0 },
+        false,
+      );
     },
     [cameraRef, center, viewportRef],
   );
+
   settleRef.current = async () => {
     const field = fieldRef.current;
     if (!field || reanchoring.current) return;
@@ -162,21 +183,21 @@ export function useBravaisWall(trackCount: number) {
       return;
     }
     const current = wallRef.current;
+    const view = viewportRef.current;
+    const { scale } = cameraRef.current;
     const middle = unshiftWallX(
       current,
-      seamWidthRef.current,
-      viewportRef.current.width / 2 - cameraRef.current.x,
+      openWorld(),
+      (view.width / 2 - cameraRef.current.x) / scale,
     );
     const target = nearestSeamColumn(current, middle);
     // Leave a seam that is still near the middle where it is, so small moves do not make it hop.
-    const near = Math.min(current.blockWidth * 0.35, viewportRef.current.width * 0.3);
+    const near = Math.min(current.geometry.blockWidth * 0.35, (view.width / scale) * 0.3);
     if (target === current.anchorColumn || Math.abs(middle - current.boundaryX) < near) {
       // The seam stays; just make sure it is still on screen.
-      const opening = seamShift(current, seamWidthRef.current);
-      const seamCentre = cameraRef.current.x + current.boundaryX + opening.center;
+      const seamCentre = cameraRef.current.x + current.boundaryX * scale;
       const half = seamWidthRef.current / 2 + SEAM_EDGE_MARGIN;
-      if (seamCentre - half < -1 || seamCentre + half > viewportRef.current.width + 1)
-        fitToSeam(null);
+      if (seamCentre - half < -1 || seamCentre + half > view.width + 1) fitToSeam(null);
       return;
     }
     reanchoring.current = true;
@@ -186,8 +207,8 @@ export function useBravaisWall(trackCount: number) {
       setAnchorColumn(target);
       await nextFrame();
       await nextFrame();
-      // The halves give way differently at the new boundary; keep the selected song where the eye is.
-      fitToSeam(selectedRef.current);
+      // The halves give way differently at the new boundary; keep the selected tile where the eye is.
+      fitToSeam(selectedRef.current?.instance ?? null);
       completed = await moveSeam(seamWidthRef.current, 0.55);
     } finally {
       reanchoring.current = false;
@@ -197,15 +218,35 @@ export function useBravaisWall(trackCount: number) {
   };
 
   const visible = useMemo(
-    () => (viewport.width && viewport.height ? cullBravaisSeats(wall, bounds, OVERSCAN) : []),
-    [wall, bounds, viewport],
+    () =>
+      viewport.width && viewport.height && trackCount > 0
+        ? bravaisSeatsIn(wall, bounds, OVERSCAN)
+        : [],
+    [wall, bounds, viewport, trackCount],
   );
-  const select = useCallback(
-    (index: number | null, pan = true) => {
-      setSelectedIndex(index);
-      if (index !== null && pan) panTo(index);
+  const selectInstance = useCallback(
+    (instance: QueueInstance) => {
+      setSelected({ index: instance.queueIndex, instance });
+      panTo(instance);
     },
     [panTo],
   );
-  return { ...camera, wall, visible, panelRef, seamWidth, selectedIndex, select, panTo };
+  /** Selects the copy of a song nearest to where the pane is looking. */
+  const select = useCallback(
+    (index: number | null) => {
+      if (index === null) {
+        setSelected(null);
+        return;
+      }
+      const view = viewportRef.current;
+      const { x, y, scale } = cameraRef.current;
+      const instance = nearestBravaisInstance(wallRef.current, index, {
+        x: (view.width / 2 - x) / scale,
+        y: (view.height / 2 - y) / scale,
+      });
+      if (instance) selectInstance(instance);
+    },
+    [cameraRef, selectInstance, viewportRef],
+  );
+  return { ...camera, wall, visible, panelRef, seamWidth, selected, select, selectInstance };
 }

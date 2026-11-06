@@ -4,6 +4,7 @@ import { useCallback, useEffect, useId, useMemo, useRef, useState } from "react"
 import { useBravaisWall } from "@/hooks/playlist/useBravaisWall";
 import { usePlaylistViewPlayback } from "@/hooks/playlist/usePlaylistViewPlayback";
 import { matchesTrackFilter } from "@/lib/playlist/bravais/wall";
+import { ZOOM_STEP, zoomKeyDirection } from "@/lib/playlist/zoomKeys";
 import { useLatticePreferences } from "@/store/module/lattice";
 import { useTranslation } from "react-i18next";
 
@@ -24,7 +25,8 @@ export default function PlaylistBravais({
   const hintId = useId();
   const sectionRef = useRef<HTMLElement>(null);
   const wall = useBravaisWall(tracks.length);
-  const { fieldRef, select, selectedIndex } = wall;
+  const { fieldRef, select, selectInstance, selected, zoomBy } = wall;
+  const selectedIndex = selected?.index ?? null;
   const followCurrent = useLatticePreferences((state) => state.followCurrent);
   const lightsOff = useLatticePreferences((state) => state.lightsOff);
   const { currentIndex, isPlaying, play } = usePlaylistViewPlayback({
@@ -68,6 +70,13 @@ export default function PlaylistBravais({
       event.target.closest('button, input, [role="button"], [role="menu"]')
     )
       return;
+    const zoomDirection = zoomKeyDirection(event);
+    if (zoomDirection) {
+      event.preventDefault();
+      event.stopPropagation();
+      zoomBy(zoomDirection > 0 ? ZOOM_STEP : 1 / ZOOM_STEP);
+      return;
+    }
     if (event.key === "Enter" && selectedIndex !== null) {
       event.preventDefault();
       const track = tracks[selectedIndex];
@@ -107,6 +116,7 @@ export default function PlaylistBravais({
         mode="bravais"
         onModeChange={onModeChange}
         hint={t("playlist.bravais.hint")}
+        onZoom={zoomBy}
       />
       <div
         ref={fieldRef}
@@ -117,21 +127,22 @@ export default function PlaylistBravais({
       >
         <div ref={wall.worldRef} className="absolute inset-0 origin-top-left will-change-transform">
           {wall.visible.map((seat) => {
-            const track = seat.trackIndex >= 0 ? tracks[seat.trackIndex] : undefined;
-            const current = track !== undefined && seat.trackIndex === currentIndex;
+            const track = tracks[seat.trackIndex];
+            if (!track) return null;
+            const current = seat.trackIndex === currentIndex;
             return (
               <BravaisTile
                 key={seat.instance.instanceId}
                 seat={seat}
                 track={track}
-                selected={seat.trackIndex === selectedIndex}
+                selected={seat.instance.instanceId === selected?.instance.instanceId}
                 current={current}
                 playing={current && isPlaying}
                 dimmed={
                   (filtering && !matchSet.has(seat.trackIndex)) ||
                   (lightsOff && currentIndex >= 0 && !current)
                 }
-                onSelect={selectTrack}
+                onSelect={selectInstance}
                 onPlay={play}
               />
             );
