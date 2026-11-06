@@ -2,13 +2,12 @@
 
 import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { Crosshair, List, ListMusic, Settings2, X, ZoomIn, ZoomOut } from "lucide-react";
+import { Crosshair, List, Settings2, X, ZoomIn, ZoomOut } from "lucide-react";
 import { Switch } from "@scopify/ui/shadcn/components/switch";
 import { PLAYLIST_VIEW_MODES } from "@/constants/playlistViews";
 import { ZOOM_STEP } from "@/lib/playlist/zoomKeys";
 import { cn } from "@/lib/utils";
 import { useLatticePreferences } from "@/store/module/lattice";
-import { useUiStore } from "@/store/module/ui";
 import { useTranslation } from "react-i18next";
 
 import type { PlaylistViewToolsProps } from "@/types/playlist/latticeComponents";
@@ -73,7 +72,7 @@ export function PlaylistViewTools({
             transition={{ duration: 0.16, ease: [0.22, 1, 0.36, 1] }}
             className="w-[min(296px,calc(100vw-48px))] origin-bottom-right rounded-2xl border border-white/10 bg-[#151515]/85 p-1.5 shadow-[0_24px_64px_#000a] backdrop-blur-xl"
           >
-            <div className="grid grid-cols-5 gap-1 p-0.5">
+            <div className="grid grid-cols-4 gap-1 p-0.5">
               <button
                 type="button"
                 className={CELL}
@@ -96,15 +95,6 @@ export function PlaylistViewTools({
                   <Icon />
                 </button>
               ))}
-              <button
-                type="button"
-                className={CELL}
-                onClick={() => useUiStore.getState().setIsQueueOpen(true)}
-                aria-label={t("queue.title")}
-                title={t("queue.title")}
-              >
-                <ListMusic />
-              </button>
             </div>
             <div className="mt-1 flex h-[38px] items-center justify-between rounded-xl px-2.5 text-[13px]">
               <span>{t("playlist.view.zoom")}</span>
