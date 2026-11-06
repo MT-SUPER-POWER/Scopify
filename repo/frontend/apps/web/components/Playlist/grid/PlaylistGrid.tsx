@@ -8,7 +8,7 @@ import { useTranslation } from "react-i18next";
 
 import type { GridCell } from "@/types/playlist/grid";
 import type { PlaylistLatticeProps } from "@/types/playlist/latticeComponents";
-import { LatticeToolbar } from "../lattice/LatticeToolbar";
+import { PlaylistViewTools } from "../lattice/PlaylistViewTools";
 import { GridCard } from "./GridCard";
 
 export default function PlaylistGrid({
@@ -67,7 +67,7 @@ export default function PlaylistGrid({
       aria-describedby={hintId}
       onKeyDown={(event) => wall.onKeyDown(event, onClose, activate)}
     >
-      <LatticeToolbar
+      <PlaylistViewTools
         title={title}
         count={tracks.length}
         canLocate={currentIndex >= 0}

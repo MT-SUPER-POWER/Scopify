@@ -55,6 +55,8 @@
   "view.open": "Playlist view",
   "view.lattice": "Lattice collage",
   "view.grid": "Grid wall",
+  "view.tools": "View tools",
+  "view.zoom": "Zoom",
   "view.zoomIn": "Zoom in",
   "view.zoomOut": "Zoom out",
   "grid.select": "Focus {{name}}",

@@ -1787,6 +1787,8 @@ export default interface Resources {
     "view.grid": "Grid 卡片墙";
     "view.lattice": "Lattice 拼贴";
     "view.open": "歌单视图";
+    "view.tools": "视图工具";
+    "view.zoom": "缩放";
     "view.zoomIn": "放大";
     "view.zoomOut": "缩小";
   };

@@ -36,7 +36,7 @@ export interface LatticePosterProps {
   onPlay: (track: SongDetail) => void;
 }
 
-export interface LatticeToolbarProps {
+export interface PlaylistViewToolsProps {
   title: string;
   count: number;
   mode: PlaylistViewMode;

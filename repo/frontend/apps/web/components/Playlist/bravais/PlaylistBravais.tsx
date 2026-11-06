@@ -9,7 +9,7 @@ import { useLatticePreferences } from "@/store/module/lattice";
 import { useTranslation } from "react-i18next";
 
 import type { PlaylistLatticeProps } from "@/types/playlist/latticeComponents";
-import { LatticeToolbar } from "../lattice/LatticeToolbar";
+import { PlaylistViewTools } from "../lattice/PlaylistViewTools";
 import { BravaisSeam } from "./BravaisSeam";
 import { BravaisTile } from "./BravaisTile";
 
@@ -107,7 +107,7 @@ export default function PlaylistBravais({
       aria-describedby={hintId}
       onKeyDown={onKeyDown}
     >
-      <LatticeToolbar
+      <PlaylistViewTools
         title={title}
         count={tracks.length}
         canLocate={currentIndex >= 0}

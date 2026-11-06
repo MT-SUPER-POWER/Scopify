@@ -7,7 +7,7 @@ import { useLatticePreferences } from "@/store/module/lattice";
 import { useTranslation } from "react-i18next";
 
 import type { PlaylistLatticeProps } from "@/types/playlist/latticeComponents";
-import { LatticeToolbar } from "./LatticeToolbar";
+import { PlaylistViewTools } from "./PlaylistViewTools";
 import { LatticePoster } from "./LatticePoster";
 
 export default function PlaylistLattice({
@@ -42,7 +42,7 @@ export default function PlaylistLattice({
       aria-describedby={hintId}
       onKeyDown={(event) => wall.onKeyDown(event, onClose)}
     >
-      <LatticeToolbar
+      <PlaylistViewTools
         title={title}
         count={tracks.length}
         canLocate={currentIndex >= 0}

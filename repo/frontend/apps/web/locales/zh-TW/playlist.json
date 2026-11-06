@@ -55,6 +55,8 @@
   "view.open": "歌單視圖",
   "view.lattice": "Lattice 拼貼",
   "view.grid": "Grid 卡片牆",
+  "view.tools": "視圖工具",
+  "view.zoom": "縮放",
   "view.zoomIn": "放大",
   "view.zoomOut": "縮小",
   "grid.select": "定位 {{name}}",
