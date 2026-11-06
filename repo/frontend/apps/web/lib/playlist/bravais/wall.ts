@@ -48,7 +48,7 @@ export function nearestBravaisInstance(
 /**
  * Where the camera has to be for a tile to be seen beside the pinned panel. A tile already in full
  * view stays put; otherwise it goes to whichever side of the panel is the shorter trip, centred in
- * that side, or against the panel if it is wider than the side.
+ * that side. A tile wider than the side shows its left part, which holds its number and title.
  */
 export function revealBravaisTile(
   tile: QueueInstance,
@@ -69,7 +69,7 @@ export function revealBravaisTile(
   let nextX = x;
   if (!fitsAcross) {
     const spare = side - width;
-    const toLeft = (spare >= 0 ? spare / 2 : spare) - left;
+    const toLeft = Math.max(0, spare / 2) - left;
     const toRight = sideRight + Math.max(0, spare / 2) - left;
     nextX = x + (Math.abs(toLeft) <= Math.abs(toRight) ? toLeft : toRight);
   }

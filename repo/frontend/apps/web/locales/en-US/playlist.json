@@ -61,7 +61,7 @@
   "view.zoomOut": "Zoom out",
   "grid.select": "Focus {{name}}",
   "grid.hint": "Drag or scroll to explore · Ctrl + wheel or + / - zooms · Click a card to centre it, click again to play · Arrows move · Enter plays · Esc returns",
-  "view.bravais": "Bravais split wall",
+  "view.bravais": "Bravais list wall",
   "bravais.select": "Select {{name}}",
   "bravais.summary": "{{count}} songs · {{minutes}} min",
   "bravais.hint": "Drag or scroll across the wall · Ctrl + wheel or + / - zooms · Click a poster or row to select, double-click to play · Arrows switch · Enter plays · Esc deselects, then returns",

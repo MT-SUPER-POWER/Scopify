@@ -7,4 +7,4 @@ export const BRAVAIS_PANEL_MIN_WIDTH = 320;
 export const BRAVAIS_PANEL_MAX_WIDTH = 420;
 /** Clear space a revealed tile keeps from the panel. */
 export const BRAVAIS_PANEL_INSET = 12;
-export const BRAVAIS_PANEL_ROW_HEIGHT = 44;
+export const BRAVAIS_PANEL_ROW_HEIGHT = 56;

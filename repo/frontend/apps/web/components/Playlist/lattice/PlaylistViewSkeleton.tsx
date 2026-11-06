@@ -4,10 +4,13 @@ import {
   BLOCK_ROWS,
   getBlockTemplate,
 } from "@/constants/playlistLattice/blockTemplates";
+import { BRAVAIS_PANEL_MAX_WIDTH, BRAVAIS_PANEL_MIN_WIDTH } from "@/constants/playlistBravais";
 import type { PlaylistViewMode } from "@/types/playlist/lattice";
 
 // Cards per row; the shorter middle row sits half a card in, like the real hex wall.
 const CARD_ROWS = [5, 4, 5];
+// More rows than any pane is tall; the panel clips the rest.
+const PANEL_ROWS = 16;
 
 /** One block of the Lattice layout stretched over the pane; the real wall is built from the same templates. */
 function WallSkeleton() {
@@ -59,6 +62,32 @@ function CardsSkeleton() {
   );
 }
 
+/** The floating panel of the Bravais view: same place and size, so nothing jumps when it arrives. */
+function PanelSkeleton() {
+  return (
+    <div
+      className="absolute inset-y-3 left-1/2 flex -translate-x-1/2 flex-col gap-2 overflow-hidden rounded-2xl border border-border bg-card p-5"
+      style={{ width: `clamp(${BRAVAIS_PANEL_MIN_WIDTH}px, 32%, ${BRAVAIS_PANEL_MAX_WIDTH}px)` }}
+    >
+      <Skeleton className="h-7 w-4/5 shrink-0 bg-skeleton" />
+      <Skeleton className="h-3.5 w-1/3 shrink-0 bg-skeleton" />
+      <div className="my-3 flex shrink-0 items-center gap-2">
+        <Skeleton className="size-10 shrink-0 rounded-full bg-skeleton" />
+        <Skeleton className="h-10 flex-1 rounded-full bg-skeleton" />
+      </div>
+      {Array.from({ length: PANEL_ROWS }, (_, index) => (
+        <div key={index} className="flex h-12 shrink-0 items-center gap-3">
+          <Skeleton className="size-10 shrink-0 rounded-md bg-skeleton" />
+          <div className="flex min-w-0 flex-1 flex-col gap-1.5">
+            <Skeleton className="h-3.5 w-3/5 bg-skeleton" />
+            <Skeleton className="h-3 w-2/5 bg-skeleton" />
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 /** Shown while the page's songs load and the last-used immersive view is about to open. */
 export function PlaylistViewSkeleton({ mode }: { mode: PlaylistViewMode }) {
   return (
@@ -68,6 +97,7 @@ export function PlaylistViewSkeleton({ mode }: { mode: PlaylistViewMode }) {
       className="absolute inset-0 isolate z-15 overflow-hidden bg-card"
     >
       {mode === "grid" ? <CardsSkeleton /> : <WallSkeleton />}
+      {mode === "bravais" && <PanelSkeleton />}
     </section>
   );
 }
