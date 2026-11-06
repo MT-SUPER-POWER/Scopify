@@ -9,7 +9,7 @@ import { useTranslation } from "react-i18next";
 import type { BravaisTileProps } from "@/types/playlist/bravaisComponents";
 
 export const BravaisTile = memo(function BravaisTile({
-  instance,
+  seat,
   track,
   selected,
   current,
@@ -19,6 +19,7 @@ export const BravaisTile = memo(function BravaisTile({
   onPlay,
 }: BravaisTileProps) {
   const { t } = useTranslation();
+  const { instance } = seat;
   const style = {
     left: instance.x,
     top: instance.y,
@@ -27,9 +28,9 @@ export const BravaisTile = memo(function BravaisTile({
   };
   const artist = track.ar.map((item) => item.name).join(" / ");
   const cover = track.al.picUrl || track.al.coverUrl;
-  // Titles scale with the poster, as Lattice sets them: big and tight on large tiles, small on narrow ones.
-  const roomy = instance.width >= 120 && instance.height >= 80;
-  const titleSize = Math.max(13, Math.min(30, instance.width * 0.1));
+  // Only the big poster of a block carries a title; the small ones stay plain album art.
+  const roomy = instance.width >= 180;
+  const titleSize = Math.max(16, Math.min(30, instance.width * 0.1));
   return (
     <div
       role="button"
@@ -47,7 +48,7 @@ export const BravaisTile = memo(function BravaisTile({
         dimmed && "opacity-15",
       )}
       style={style}
-      onClick={() => onSelect(instance)}
+      onClick={() => onSelect(seat)}
       onDoubleClick={() => onPlay(track)}
     >
       <Disc3 className="absolute top-[24%] left-[24%] size-[52%] opacity-12" aria-hidden="true" />

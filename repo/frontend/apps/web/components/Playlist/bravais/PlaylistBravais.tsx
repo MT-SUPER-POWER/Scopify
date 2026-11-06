@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
+import { BRAVAIS_GAP } from "@/constants/playlistBravais";
 import { useBravaisWall } from "@/hooks/playlist/useBravaisWall";
 import { usePlaylistViewPlayback } from "@/hooks/playlist/usePlaylistViewPlayback";
 import { matchesTrackFilter } from "@/lib/playlist/bravais/wall";
@@ -8,6 +9,7 @@ import { ZOOM_STEP, zoomKeyDirection } from "@/lib/playlist/zoomKeys";
 import { useLatticePreferences } from "@/store/module/lattice";
 import { useTranslation } from "react-i18next";
 
+import type { BravaisSide } from "@/types/playlist/bravais";
 import type { PlaylistLatticeProps } from "@/types/playlist/latticeComponents";
 import { PlaylistViewTools } from "../lattice/PlaylistViewTools";
 import { BravaisPanel } from "./BravaisPanel";
@@ -25,7 +27,7 @@ export default function PlaylistBravais({
   const hintId = useId();
   const sectionRef = useRef<HTMLElement>(null);
   const wall = useBravaisWall(tracks.length);
-  const { fieldRef, select, selectInstance, selected, zoomBy } = wall;
+  const { fieldRef, select, selectSeat, selected, zoomBy } = wall;
   const selectedIndex = selected?.index ?? null;
   const followCurrent = useLatticePreferences((state) => state.followCurrent);
   const lightsOff = useLatticePreferences((state) => state.lightsOff);
@@ -56,6 +58,31 @@ export default function PlaylistBravais({
   useEffect(() => {
     if (followCurrent && currentIndex >= 0) select(currentIndex);
   }, [followCurrent, currentIndex, select]);
+  const renderSide = (side: BravaisSide) =>
+    wall.visible
+      .filter((seat) => seat.side === side)
+      .map((seat) => {
+        const { instance } = seat;
+        const track = tracks[instance.queueIndex];
+        if (!track) return null;
+        const current = instance.queueIndex === currentIndex;
+        return (
+          <BravaisTile
+            key={instance.instanceId}
+            seat={seat}
+            track={track}
+            selected={instance.instanceId === selected?.seat.instance.instanceId}
+            current={current}
+            playing={current && isPlaying}
+            dimmed={
+              (filtering && !matchSet.has(instance.queueIndex)) ||
+              (lightsOff && currentIndex >= 0 && !current)
+            }
+            onSelect={selectSeat}
+            onPlay={play}
+          />
+        );
+      });
   const onKeyDown = (event: React.KeyboardEvent<HTMLElement>) => {
     if (event.defaultPrevented) return;
     if (event.key === "Escape") {
@@ -125,28 +152,19 @@ export default function PlaylistBravais({
         tabIndex={0}
         {...wall.pointerHandlers}
       >
-        <div ref={wall.worldRef} className="absolute inset-0 origin-top-left will-change-transform">
-          {wall.visible.map((instance) => {
-            const track = tracks[instance.queueIndex];
-            if (!track) return null;
-            const current = instance.queueIndex === currentIndex;
-            return (
-              <BravaisTile
-                key={instance.instanceId}
-                instance={instance}
-                track={track}
-                selected={instance.instanceId === selected?.instance.instanceId}
-                current={current}
-                playing={current && isPlaying}
-                dimmed={
-                  (filtering && !matchSet.has(instance.queueIndex)) ||
-                  (lightsOff && currentIndex >= 0 && !current)
-                }
-                onSelect={selectInstance}
-                onPlay={play}
-              />
-            );
-          })}
+        <div
+          ref={wall.worldRef}
+          className="absolute top-0 origin-top-left"
+          style={{ left: BRAVAIS_GAP, width: wall.wall.sideWidth }}
+        >
+          {renderSide("left")}
+        </div>
+        <div
+          ref={wall.rightRef}
+          className="absolute top-0 will-change-transform"
+          style={{ right: BRAVAIS_GAP, width: wall.wall.sideWidth }}
+        >
+          {renderSide("right")}
         </div>
       </div>
       {/* Outside the field, so neither a drag nor the wheel over the panel moves the wall. */}

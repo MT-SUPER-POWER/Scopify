@@ -1,85 +1,124 @@
 "use client";
 
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useLatticeCamera } from "@/hooks/playlist/useLatticeCamera";
-import { BRAVAIS_PANEL_MAX_WIDTH, BRAVAIS_PANEL_MIN_WIDTH } from "@/constants/playlistBravais";
 import {
-  bravaisTilesIn,
+  BRAVAIS_COLUMN_TARGET_WIDTH,
+  BRAVAIS_GAP,
+  BRAVAIS_MAX_COLUMNS,
+  BRAVAIS_MIN_BLOCK_SIZE,
+  BRAVAIS_MIN_SIDE_WIDTH,
+  BRAVAIS_PANEL_MAX_WIDTH,
+  BRAVAIS_PANEL_MIN_WIDTH,
+} from "@/constants/playlistBravais";
+import {
+  bravaisSeatsIn,
   createBravaisWall,
-  nearestBravaisInstance,
-  revealBravaisTile,
+  nearestBravaisSeat,
+  revealBravaisSeat,
 } from "@/lib/playlist/bravais/wall";
+import type { BravaisSeat } from "@/types/playlist/bravais";
 import type { BravaisSelection } from "@/types/playlist/bravaisComponents";
-import type { QueueInstance } from "@/types/playlist/lattice";
 
 const OVERSCAN = 420;
+// Pinch gestures arrive as many small factors; this much of them makes one zoom step.
+const ZOOM_THRESHOLD = Math.log(1.2);
+
+const pinToAxis = ({ y }: { y: number }) => ({ x: 0, y, scale: 1 });
+// The halve under the pointer follows it; the other one rolls the opposite way.
+const signAt = (x: number, width: number): 1 | -1 => (x > width / 2 ? -1 : 1);
 
 /**
- * Endless poster wall that slides behind a panel pinned to the middle of the pane. The panel never
- * moves with the camera, so the list is always there however far the wall has been dragged; a
- * selected tile is brought out beside the panel instead of under it.
+ * Two halves of a poster wall either side of a fixed song list. They only move vertically and roll
+ * against each other, the left with the camera and the right against it. Their sizes come from the
+ * pane rather than a zoomed world, so tiles always end exactly at the list and the pane's edge, and
+ * zooming changes how many blocks fit across instead of scaling anything.
  */
 export function useBravaisWall(trackCount: number) {
-  const wall = useMemo(() => createBravaisWall(trackCount), [trackCount]);
-  const wallRef = useRef(wall);
-  wallRef.current = wall;
+  const rightRef = useRef<HTMLDivElement>(null);
+  const zoomStep = useRef<(factor: number) => void>(() => undefined);
   const camera = useLatticeCamera({
     centered: true,
-    minScale: 0.3,
-    maxScale: 1.5,
-    origin: { x: wall.originX, y: wall.geometry.cellHeight / 2 },
+    clamp: pinToAxis,
+    dragSign: signAt,
+    onZoom: (factor) => zoomStep.current(factor),
+    onFrame: ({ y }) => {
+      if (rightRef.current) rightRef.current.style.transform = `translate3d(0, ${-y}px, 0)`;
+    },
   });
   const { bounds, viewport, viewportRef, center, cameraRef } = camera;
-  const [selected, setSelected] = useState<BravaisSelection | null>(null);
-  const panelWidth = Math.round(
+  const preferredPanel = Math.round(
     Math.min(BRAVAIS_PANEL_MAX_WIDTH, Math.max(BRAVAIS_PANEL_MIN_WIDTH, viewport.width * 0.32)),
   );
-  const panelWidthRef = useRef(panelWidth);
-  panelWidthRef.current = panelWidth;
+  const roomy = (viewport.width - preferredPanel) / 2 >= BRAVAIS_MIN_SIDE_WIDTH;
+  const panelWidth = roomy ? preferredPanel : viewport.width;
+  const sideSpace = Math.max(0, (viewport.width - panelWidth) / 2 - BRAVAIS_GAP * 2);
+  const maxColumns = Math.max(
+    1,
+    Math.min(BRAVAIS_MAX_COLUMNS, Math.floor(sideSpace / BRAVAIS_MIN_BLOCK_SIZE)),
+  );
+  const autoColumns = Math.round(sideSpace / BRAVAIS_COLUMN_TARGET_WIDTH);
+  const [chosenColumns, setChosenColumns] = useState<number | null>(null);
+  const columns = Math.max(1, Math.min(maxColumns, chosenColumns ?? autoColumns));
+  const columnsRef = useRef(columns);
+  columnsRef.current = columns;
+  const zoomTotal = useRef(0);
+  zoomStep.current = (factor) => {
+    zoomTotal.current += Math.log(factor);
+    if (Math.abs(zoomTotal.current) < ZOOM_THRESHOLD) return;
+    setChosenColumns(columnsRef.current + (zoomTotal.current > 0 ? -1 : 1));
+    zoomTotal.current = 0;
+  };
+  const wall = useMemo(
+    () => createBravaisWall(trackCount, viewport.width, panelWidth, columns),
+    [trackCount, viewport.width, panelWidth, columns],
+  );
+  const wallRef = useRef(wall);
+  wallRef.current = wall;
+  const [selected, setSelected] = useState<BravaisSelection | null>(null);
+  const selectedRef = useRef(selected);
+  selectedRef.current = selected;
 
   const visible = useMemo(
     () =>
-      viewport.width && viewport.height && trackCount > 0
-        ? bravaisTilesIn(wall, bounds, OVERSCAN)
+      viewport.width && viewport.height && roomy
+        ? // `bounds` is the camera the tiles were last culled at, which only changes in big steps.
+          bravaisSeatsIn(wall, -bounds.top, viewport.height, OVERSCAN)
         : [],
-    [wall, bounds, viewport, trackCount],
+    [wall, bounds.top, viewport.width, viewport.height, roomy],
   );
-  const selectInstance = useCallback(
-    (instance: QueueInstance) => {
-      setSelected({ index: instance.queueIndex, instance });
+  const selectSeat = useCallback(
+    (seat: BravaisSeat) => {
+      setSelected({ index: seat.instance.queueIndex, seat });
       const view = viewportRef.current;
       const from = cameraRef.current;
-      const { x, y } = revealBravaisTile(instance, from, view, panelWidthRef.current);
-      if (x === from.x && y === from.y) return;
-      // `center` puts a rect in the middle of the pane; a point there leaves the camera at x, y.
-      center(
-        {
-          x: (view.width / 2 - x) / from.scale,
-          y: (view.height / 2 - y) / from.scale,
-          width: 0,
-          height: 0,
-        },
-        false,
-      );
+      const y = revealBravaisSeat(seat, from.y, view.height);
+      if (y === from.y) return;
+      // `center` puts a rect in the middle of the pane; a point there leaves the camera at y.
+      center({ x: 0, y: view.height / 2 - y, width: 0, height: 0 }, false);
     },
     [cameraRef, center, viewportRef],
   );
-  /** Selects the copy of a song nearest to where the pane is looking. */
+  /** Selects the copy of a song nearest the middle of the pane. */
   const select = useCallback(
     (index: number | null) => {
       if (index === null) {
         setSelected(null);
         return;
       }
-      const view = viewportRef.current;
-      const { x, y, scale } = cameraRef.current;
-      const instance = nearestBravaisInstance(wallRef.current, index, {
-        x: (view.width / 2 - x) / scale,
-        y: (view.height / 2 - y) / scale,
-      });
-      if (instance) selectInstance(instance);
+      const seat = nearestBravaisSeat(
+        wallRef.current,
+        index,
+        cameraRef.current.y,
+        viewportRef.current.height,
+      );
+      if (seat) selectSeat(seat);
     },
-    [cameraRef, selectInstance, viewportRef],
+    [cameraRef, selectSeat, viewportRef],
   );
-  return { ...camera, wall, visible, panelWidth, selected, select, selectInstance };
+  // Zooming or resizing rebuilds the wall; keep the selected song in view on the new one.
+  useEffect(() => {
+    if (selectedRef.current) select(selectedRef.current.index);
+  }, [select, wall]);
+  return { ...camera, wall, visible, rightRef, panelWidth, selected, select, selectSeat };
 }

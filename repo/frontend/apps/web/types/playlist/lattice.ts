@@ -19,6 +19,10 @@ export interface LatticeCameraOptions {
   clamp?: (camera: LatticeCamera, viewport: LatticeViewport) => LatticeCamera;
   /** Called with every camera the wall applies, including drag and inertia frames. */
   onFrame?: (camera: LatticeCamera) => void;
+  /** Takes over zooming from the camera, for a wall that has its own idea of what zoom means. */
+  onZoom?: (factor: number) => void;
+  /** Which way vertical drags and wheel move the camera at this pane x; defaults to 1. */
+  dragSign?: (x: number, width: number) => 1 | -1;
 }
 export interface LatticeViewport {
   width: number;
@@ -34,6 +38,8 @@ export interface LatticeDrag {
   time: number;
   vx: number;
   vy: number;
+  /** Multiplies vertical movement; set when the drag starts. */
+  sign: 1 | -1;
 }
 
 export type WallMetrics = { cellSize: number; gap: number };
@@ -91,6 +97,7 @@ export interface LatticePointerOptions {
   reducedMotion: boolean | null;
   /** Ctrl/Cmd + wheel (and trackpad pinch) zoom about the pointer. */
   zoom: (factor: number, clientX: number, clientY: number) => void;
+  dragSign?: (x: number, width: number) => 1 | -1;
 }
 
 export type WallDirection = "up" | "down" | "left" | "right";

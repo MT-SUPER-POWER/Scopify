@@ -11,9 +11,9 @@ import { useTranslation } from "react-i18next";
 import type { BravaisPanelProps } from "@/types/playlist/bravaisComponents";
 
 /**
- * The page's information and song list, floating in the middle of the pane as a sheet of frosted
- * glass, so the wall's colours carry through as it slides behind. Selecting on the wall brings the
- * song's row into view here.
+ * The page's information and song list, fixed in the split between the wall's two halves. It has no
+ * surface of its own: the list sits straight on the dark the wall stands on, and only the posters on
+ * either side give it its edges. Selecting on the wall brings the song's row into view here.
  */
 export function BravaisPanel({
   title,
@@ -53,7 +53,7 @@ export function BravaisPanel({
   const targetLabel = target && `${t(targetPlaying ? "ui.pause" : "ui.play")} ${target.name}`;
   return (
     <div
-      className="absolute inset-y-3 left-1/2 z-20 flex -translate-x-1/2 flex-col overflow-hidden rounded-2xl border border-foreground/10 bg-card/75 text-foreground shadow-[0_24px_64px_rgb(0_0_0/45%)] backdrop-blur-xl backdrop-saturate-150"
+      className="absolute inset-y-0 left-1/2 z-20 flex -translate-x-1/2 flex-col overflow-hidden bg-card text-foreground"
       style={{ width }}
     >
       <header className="shrink-0 px-5 pt-5 pb-2">

@@ -14,9 +14,17 @@ export function useLatticePointer({
   stop,
   reducedMotion,
   zoom,
+  dragSign,
 }: LatticePointerOptions) {
   const drag = useRef<LatticeDrag | null>(null);
   const didDrag = useRef(false);
+  const signAt = useCallback(
+    (clientX: number) => {
+      const rect = fieldRef.current?.getBoundingClientRect();
+      return rect ? (dragSign?.(clientX - rect.left, rect.width) ?? 1) : 1;
+    },
+    [dragSign, fieldRef],
+  );
   const cancel = useCallback(() => {
     const pointer = drag.current;
     drag.current = null;
@@ -47,9 +55,10 @@ export function useLatticePointer({
         time: event.timeStamp,
         vx: 0,
         vy: 0,
+        sign: signAt(event.clientX),
       };
     },
-    [cameraRef, stop],
+    [cameraRef, signAt, stop],
   );
   const onPointerMove = useCallback(
     (event: PointerEvent<HTMLDivElement>) => {
@@ -71,7 +80,11 @@ export function useLatticePointer({
       pointer.lastY = event.clientY;
       pointer.time = event.timeStamp;
       if (didDrag.current)
-        apply({ ...pointer.camera, x: pointer.camera.x + dx, y: pointer.camera.y + dy });
+        apply({
+          ...pointer.camera,
+          x: pointer.camera.x + dx,
+          y: pointer.camera.y + dy * pointer.sign,
+        });
     },
     [apply],
   );
@@ -97,7 +110,7 @@ export function useLatticePointer({
           apply({
             ...from,
             x: from.x + (distance * pointer.vx) / speed,
-            y: from.y + (distance * pointer.vy) / speed,
+            y: from.y + ((distance * pointer.vy) / speed) * pointer.sign,
           }),
       });
     },
@@ -133,7 +146,7 @@ export function useLatticePointer({
       const dx = (event.shiftKey && !event.deltaX ? event.deltaY : event.deltaX) * unit;
       const dy = (event.shiftKey && !event.deltaX ? 0 : event.deltaY) * unit;
       const from = cameraRef.current;
-      apply({ ...from, x: from.x - dx, y: from.y - dy });
+      apply({ ...from, x: from.x - dx, y: from.y - dy * signAt(event.clientX) });
     };
     const outside = (event: globalThis.PointerEvent) => {
       if (drag.current?.pointerId === event.pointerId) cancel();
@@ -151,7 +164,7 @@ export function useLatticePointer({
       window.removeEventListener("pointercancel", outside);
       cancel();
     };
-  }, [apply, cameraRef, cancel, fieldRef, stop, viewportRef, zoom]);
+  }, [apply, cameraRef, cancel, fieldRef, signAt, stop, viewportRef, zoom]);
   return {
     onPointerDown,
     onPointerMove,

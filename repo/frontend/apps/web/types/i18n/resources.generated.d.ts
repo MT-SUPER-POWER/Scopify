@@ -1783,7 +1783,7 @@ export default interface Resources {
     "table.searchNoResults": "没有找到与“{{query}}”相关的歌曲";
     "track.likedAdded": "已添加到喜欢的歌曲";
     "track.likedRemoved": "已从喜欢的歌曲中移除";
-    "view.bravais": "Bravais 列表墙";
+    "view.bravais": "Bravais 裂缝墙";
     "view.grid": "Grid 卡片墙";
     "view.lattice": "Lattice 拼贴";
     "view.open": "歌单视图";

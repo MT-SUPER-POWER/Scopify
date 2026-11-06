@@ -1,85 +1,130 @@
-import { BRAVAIS_METRICS, BRAVAIS_PANEL_INSET } from "@/constants/playlistBravais";
 import {
-  getLatticeGeometry,
-  layoutLattice,
-  locateNearestInstance,
-} from "@/lib/playlist/lattice/layout";
-import type { BravaisWall } from "@/types/playlist/bravais";
-import type {
-  Bounds,
-  LatticeCamera,
-  LatticeViewport,
-  QueueInstance,
-} from "@/types/playlist/lattice";
+  BRAVAIS_BLOCK_UNITS,
+  BRAVAIS_GAP,
+  BRAVAIS_SLOTS_PER_BLOCK,
+  BRAVAIS_TEMPLATES,
+} from "@/constants/playlistBravais";
+import type { BravaisSeat, BravaisSide, BravaisWall } from "@/types/playlist/bravais";
 import type { SongDetail } from "@/types/song/api";
 
-/**
- * The endless wall is the Lattice block layout: one pass over the songs fills a cell, and the cell
- * repeats in every direction. It starts with a block boundary behind the panel, so the panel hides
- * the join between two blocks rather than the middle of one.
- */
-export function createBravaisWall(trackCount: number): BravaisWall {
-  const geometry = getLatticeGeometry(Math.max(trackCount, 1), BRAVAIS_METRICS);
+/** Which way a halve moves with the camera: the right one rolls against the left. */
+export const bravaisSideSign = (side: BravaisSide) => (side === "left" ? 1 : -1);
+
+/** Sizes the wall to the space beside the list; one pass over the songs flows down both halves. */
+export function createBravaisWall(
+  trackCount: number,
+  paneWidth: number,
+  panelWidth: number,
+  columns: number,
+): BravaisWall {
+  const sideWidth = Math.max(0, (paneWidth - panelWidth) / 2 - BRAVAIS_GAP * 2);
+  const unit = (sideWidth + BRAVAIS_GAP) / (columns * BRAVAIS_BLOCK_UNITS);
+  const blockSize = unit * BRAVAIS_BLOCK_UNITS;
+  const blocks = Math.max(1, Math.ceil(trackCount / BRAVAIS_SLOTS_PER_BLOCK));
+  const blockRows = Math.ceil(blocks / (columns * 2));
   return {
-    geometry,
     trackCount,
-    originX: Math.floor(geometry.blocksPerRow / 2) * geometry.blockWidth - BRAVAIS_METRICS.gap / 2,
+    columns,
+    sideWidth,
+    unit,
+    blockSize,
+    blockRows,
+    cellHeight: blockRows * blockSize,
+    cellSlots: columns * 2 * blockRows * BRAVAIS_SLOTS_PER_BLOCK,
   };
 }
 
-/** Tiles that can touch the pane; `overscan` is world pixels on every side. */
-export function bravaisTilesIn(
+/** `column` counts across both halves; `row` is unbounded, since the wall repeats downwards. */
+const buildSeat = (
   wall: BravaisWall,
-  bounds: Bounds,
+  column: number,
+  row: number,
+  slotIndex: number,
+): BravaisSeat => {
+  const repeatY = Math.floor(row / wall.blockRows);
+  const localRow = row - repeatY * wall.blockRows;
+  const cellSlot = (localRow * wall.columns * 2 + column) * BRAVAIS_SLOTS_PER_BLOCK + slotIndex;
+  const template = BRAVAIS_TEMPLATES[(column + localRow * 2) % BRAVAIS_TEMPLATES.length];
+  const slot = template[slotIndex];
+  const side: BravaisSide = column < wall.columns ? "left" : "right";
+  const sideColumn = side === "left" ? column : column - wall.columns;
+  return {
+    side,
+    instance: {
+      instanceId: `${cellSlot}:${repeatY}`,
+      queueIndex: cellSlot % wall.trackCount,
+      cellSlot,
+      repeatX: 0,
+      repeatY,
+      x: sideColumn * wall.blockSize + slot.x * wall.unit,
+      y: row * wall.blockSize + slot.y * wall.unit,
+      width: slot.cols * wall.unit - BRAVAIS_GAP,
+      height: slot.rows * wall.unit - BRAVAIS_GAP,
+    },
+  };
+};
+
+/** The tiles of both halves that can touch a pane of `height` with the camera at `cameraY`. */
+export function bravaisSeatsIn(
+  wall: BravaisWall,
+  cameraY: number,
+  height: number,
   overscan: number,
-): QueueInstance[] {
-  return layoutLattice(wall.geometry, wall.trackCount, bounds, overscan, BRAVAIS_METRICS);
+): BravaisSeat[] {
+  if (wall.trackCount <= 0 || wall.blockSize <= 0) return [];
+  const seats: BravaisSeat[] = [];
+  for (let column = 0; column < wall.columns * 2; column += 1) {
+    const top = -bravaisSideSign(column < wall.columns ? "left" : "right") * cameraY;
+    const fromRow = Math.floor((top - overscan) / wall.blockSize);
+    const toRow = Math.floor((top + height + overscan) / wall.blockSize);
+    for (let row = fromRow; row <= toRow; row += 1) {
+      for (let slotIndex = 0; slotIndex < BRAVAIS_SLOTS_PER_BLOCK; slotIndex += 1) {
+        seats.push(buildSeat(wall, column, row, slotIndex));
+      }
+    }
+  }
+  return seats;
 }
 
-/** The copy of a song closest to a world point; the wall repeats, so there are many. */
-export function nearestBravaisInstance(
+/** The copy of a song nearest the middle of the pane; the wall repeats, so there are many. */
+export function nearestBravaisSeat(
   wall: BravaisWall,
   index: number,
-  point: { x: number; y: number },
-): QueueInstance | null {
-  return locateNearestInstance(wall.geometry, wall.trackCount, index, point, BRAVAIS_METRICS);
-}
-
-/**
- * Where the camera has to be for a tile to be seen beside the pinned panel. A tile already in full
- * view stays put; otherwise it goes to whichever side of the panel is the shorter trip, centred in
- * that side. A tile wider than the side shows its left part, which holds its number and title.
- */
-export function revealBravaisTile(
-  tile: QueueInstance,
-  camera: LatticeCamera,
-  view: LatticeViewport,
-  panelWidth: number,
-): { x: number; y: number } {
-  const { x, y, scale } = camera;
-  const left = x + tile.x * scale;
-  const top = y + tile.y * scale;
-  const width = tile.width * scale;
-  const height = tile.height * scale;
-  const side = (view.width - panelWidth) / 2 - BRAVAIS_PANEL_INSET;
-  const sideRight = view.width - side;
-  const fitsAcross =
-    (left >= 0 && left + width <= side) || (left >= sideRight && left + width <= view.width);
-  const fitsDown = top >= 0 && top + height <= view.height;
-  let nextX = x;
-  if (!fitsAcross) {
-    const spare = side - width;
-    const toLeft = Math.max(0, spare / 2) - left;
-    const toRight = sideRight + Math.max(0, spare / 2) - left;
-    nextX = x + (Math.abs(toLeft) <= Math.abs(toRight) ? toLeft : toRight);
+  cameraY: number,
+  height: number,
+): BravaisSeat | null {
+  if (index < 0 || index >= wall.trackCount || wall.blockSize <= 0) return null;
+  let best: BravaisSeat | null = null;
+  let bestDistance = Number.POSITIVE_INFINITY;
+  for (let cellSlot = index; cellSlot < wall.cellSlots; cellSlot += wall.trackCount) {
+    const block = Math.floor(cellSlot / BRAVAIS_SLOTS_PER_BLOCK);
+    const column = block % (wall.columns * 2);
+    const localRow = Math.floor(block / (wall.columns * 2));
+    const slotIndex = cellSlot % BRAVAIS_SLOTS_PER_BLOCK;
+    const base = buildSeat(wall, column, localRow, slotIndex);
+    const shift = bravaisSideSign(base.side) * cameraY;
+    const offset = height / 2 - base.instance.height / 2 - base.instance.y - shift;
+    const repeat = Math.round(offset / wall.cellHeight);
+    const seat = buildSeat(wall, column, localRow + repeat * wall.blockRows, slotIndex);
+    const distance = Math.abs(offset - repeat * wall.cellHeight);
+    if (distance < bestDistance) {
+      bestDistance = distance;
+      best = seat;
+    }
   }
-  return {
-    x: nextX,
-    y: fitsDown ? y : (view.height - height) / 2 - tile.y * scale,
-  };
+  return best;
 }
 
-/** Whether a track matches the panel's filter box (name, artist or album). */
+/** Camera y that shows a tile: one already in full view stays put, another comes to the middle. */
+export function revealBravaisSeat(seat: BravaisSeat, cameraY: number, height: number): number {
+  const sign = bravaisSideSign(seat.side);
+  const { y, height: tileHeight } = seat.instance;
+  const top = sign * cameraY + y;
+  if (top >= 0 && top + tileHeight <= height) return cameraY;
+  return sign * ((height - tileHeight) / 2 - y);
+}
+
+/** Whether a track matches the list's filter box (name, artist or album). */
 export function matchesTrackFilter(track: SongDetail, query: string) {
   if (!query) return true;
   const needle = query.toLowerCase();

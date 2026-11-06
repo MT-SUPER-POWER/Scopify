@@ -1,21 +1,21 @@
-import type { QueueInstance } from "@/types/playlist/lattice";
+import type { BravaisSeat } from "@/types/playlist/bravais";
 import type { SongDetail } from "@/types/song/api";
 
 /** The selected song, and the copy of it on the wall the camera went to. */
 export interface BravaisSelection {
   index: number;
-  instance: QueueInstance;
+  seat: BravaisSeat;
 }
 
 export interface BravaisTileProps {
-  instance: QueueInstance;
+  seat: BravaisSeat;
   track: SongDetail;
   selected: boolean;
   current: boolean;
   playing: boolean;
   /** Filtered out by the panel's filter box. */
   dimmed: boolean;
-  onSelect: (instance: QueueInstance) => void;
+  onSelect: (seat: BravaisSeat) => void;
   onPlay: (track: SongDetail) => void;
 }
 
