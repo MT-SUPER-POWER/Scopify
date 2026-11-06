@@ -3,9 +3,10 @@
 import { useCallback, useEffect, useMemo, useRef } from "react";
 import type { KeyboardEvent } from "react";
 import { useLatticeCamera } from "@/hooks/playlist/useLatticeCamera";
-import { computeCardFrame } from "@/lib/playlist/grid/falloff";
-import { adjacentHexCell, cullHexWall, layoutHexWall } from "@/lib/playlist/grid/hex";
 import { GRID_METRICS } from "@/constants/playlistGrid";
+import { computeCardFrame } from "@/lib/playlist/grid/falloff";
+import { adjacentHexCell, locateHexCell, visibleHexCells } from "@/lib/playlist/grid/hex";
+import { ZOOM_STEP, zoomKeyDirection } from "@/lib/playlist/zoomKeys";
 import type { GridCell, GridDirection } from "@/types/playlist/grid";
 import type { LatticeCamera } from "@/types/playlist/lattice";
 
@@ -16,14 +17,14 @@ const writeFrame = (
   element: HTMLElement,
   cell: GridCell,
   camera: LatticeCamera,
-  width: number,
-  height: number,
+  view: { width: number; height: number },
 ) => {
+  // The falloff is measured in world pixels, so zooming magnifies the same picture.
   const frame = computeCardFrame(
-    cell.x + camera.x - width / 2,
-    cell.y + camera.y - height / 2,
-    width,
-    height,
+    cell.x + (camera.x - view.width / 2) / camera.scale,
+    cell.y + (camera.y - view.height / 2) / camera.scale,
+    view.width / camera.scale,
+    view.height / camera.scale,
     GRID_METRICS,
   );
   const { style, dataset } = element;
@@ -37,50 +38,60 @@ const writeFrame = (
   return frame;
 };
 
-/** Hex card wall: the shared lattice camera plus a per-frame distance falloff written straight to the DOM. */
+/** Endless hex card wall: the shared lattice camera plus a per-frame distance falloff written straight to the DOM. */
 export function useGridWall(trackCount: number) {
-  const cells = useMemo(() => layoutHexWall(trackCount, GRID_METRICS), [trackCount]);
-  const cellsRef = useRef(cells);
-  cellsRef.current = cells;
-  const cards = useRef(new Map<number, HTMLElement>());
-  const centerIndex = useRef(0);
+  // Cells are cached per track count so a card keeps its identity while the wall scrolls.
+  const cache = useMemo(() => new Map<string, GridCell>(), [trackCount]); // eslint-disable-line react-hooks/exhaustive-deps
+  const countRef = useRef(trackCount);
+  countRef.current = trackCount;
+  const cacheRef = useRef(cache);
+  cacheRef.current = cache;
+  const cards = useRef(new Map<string, { element: HTMLElement; cell: GridCell }>());
+  const centerCell = useRef<GridCell | null>(null);
   const frameRef = useRef<(camera: LatticeCamera) => void>(() => undefined);
   const camera = useLatticeCamera({
     centered: true,
+    minScale: 0.3,
+    maxScale: 1.6,
     onFrame: (next) => frameRef.current(next),
   });
-  const { bounds, viewport, viewportRef, cameraRef, center } = camera;
+  const { bounds, viewport, viewportRef, cameraRef, center, zoomBy } = camera;
   frameRef.current = (next) => {
-    const { width, height } = viewportRef.current;
-    if (!width) return;
+    const view = viewportRef.current;
+    if (!view.width) return;
     let nearest = Infinity;
-    for (const [index, element] of cards.current) {
-      const cell = cellsRef.current[index];
-      if (!cell) continue;
-      const frame = writeFrame(element, cell, next, width, height);
+    for (const { element, cell } of cards.current.values()) {
+      const frame = writeFrame(element, cell, next, view);
       if (!frame) continue;
-      const distance = (cell.x + next.x - width / 2) ** 2 + (cell.y + next.y - height / 2) ** 2;
+      const distance =
+        (cell.x + (next.x - view.width / 2) / next.scale) ** 2 +
+        (cell.y + (next.y - view.height / 2) / next.scale) ** 2;
       if (distance < nearest) {
         nearest = distance;
-        centerIndex.current = index;
+        centerCell.current = cell;
       }
     }
   };
   const visible = useMemo(
     () =>
-      viewport.width && viewport.height ? cullHexWall(cells, bounds, GRID_METRICS, OVERSCAN) : [],
-    [cells, bounds, viewport],
+      viewport.width && viewport.height
+        ? visibleHexCells(bounds, trackCount, GRID_METRICS, OVERSCAN, cache)
+        : [],
+    [bounds, cache, trackCount, viewport],
   );
+  // Drops cells nobody is looking at any more, so a long session cannot grow the cache without bound.
+  useEffect(() => {
+    if (cache.size > 4000) cache.clear();
+  }, [cache, visible]);
   const register = useCallback(
-    (index: number, element: HTMLElement | null) => {
+    (cell: GridCell, element: HTMLElement | null) => {
       if (!element) {
-        cards.current.delete(index);
+        cards.current.delete(cell.key);
         return;
       }
-      cards.current.set(index, element);
-      const cell = cellsRef.current[index];
-      const { width, height } = viewportRef.current;
-      if (cell && width) writeFrame(element, cell, cameraRef.current, width, height);
+      cards.current.set(cell.key, { element, cell });
+      const view = viewportRef.current;
+      if (view.width) writeFrame(element, cell, cameraRef.current, view);
     },
     [cameraRef, viewportRef],
   );
@@ -88,12 +99,30 @@ export function useGridWall(trackCount: number) {
   useEffect(() => {
     frameRef.current(cameraRef.current);
   }, [cameraRef, visible]);
+  const panToCell = useCallback(
+    (cell: GridCell) => center({ x: cell.x, y: cell.y, width: 0, height: 0 }, false),
+    [center],
+  );
+  /** Pans to the copy of a song nearest to where the pane is looking. */
   const panTo = useCallback(
     (index: number) => {
-      const cell = cellsRef.current[index];
-      if (cell) center({ x: cell.x, y: cell.y, width: 0, height: 0 }, false);
+      const count = countRef.current;
+      const view = viewportRef.current;
+      const current = cameraRef.current;
+      if (count <= 0 || index < 0 || index >= count) return;
+      const cell = locateHexCell(
+        index,
+        count,
+        {
+          x: (view.width / 2 - current.x) / current.scale,
+          y: (view.height / 2 - current.y) / current.scale,
+        },
+        GRID_METRICS,
+        cacheRef.current,
+      );
+      panToCell(cell);
     },
-    [center],
+    [cameraRef, panToCell, viewportRef],
   );
   const onKeyDown = (
     event: KeyboardEvent<HTMLElement>,
@@ -112,9 +141,16 @@ export function useGridWall(trackCount: number) {
       event.target.closest('button, input, [role="slider"], [role="menu"]')
     )
       return;
+    const zoomDirection = zoomKeyDirection(event);
+    if (zoomDirection) {
+      event.preventDefault();
+      event.stopPropagation();
+      zoomBy(zoomDirection > 0 ? ZOOM_STEP : 1 / ZOOM_STEP);
+      return;
+    }
     if (event.key === "Enter") {
       event.preventDefault();
-      onActivate(centerIndex.current);
+      if (centerCell.current) onActivate(centerCell.current.index);
       return;
     }
     const direction: GridDirection | undefined =
@@ -127,12 +163,11 @@ export function useGridWall(trackCount: number) {
             : event.key === "ArrowDown"
               ? "down"
               : undefined;
-    const from = cellsRef.current[centerIndex.current];
+    const from = centerCell.current;
     if (!direction || !from) return;
     event.preventDefault();
     event.stopPropagation();
-    const next = adjacentHexCell(cellsRef.current, from, direction, GRID_METRICS);
-    if (next) panTo(next.index);
+    panToCell(adjacentHexCell(from, direction, countRef.current, GRID_METRICS, cacheRef.current));
   };
-  return { ...camera, visible, register, panTo, onKeyDown, centerIndex };
+  return { ...camera, visible, register, panTo, panToCell, onKeyDown };
 }

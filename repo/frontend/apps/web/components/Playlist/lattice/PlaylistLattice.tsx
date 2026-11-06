@@ -51,6 +51,7 @@ export default function PlaylistLattice({
         mode="lattice"
         onModeChange={onModeChange}
         hint={t("playlist.lattice.hint")}
+        onZoom={wall.zoomBy}
       />
       <div
         ref={wall.fieldRef}

@@ -1715,7 +1715,7 @@ export default interface Resources {
     "actions.subscribeSuccess": "已收藏歌单";
     "actions.unsubscribe": "取消收藏";
     "actions.unsubscribeSuccess": "已取消收藏";
-    "bravais.hint": "拖动或滚轮浏览海报墙 · 点击海报或列表选中，双击播放 · 方向键切换 · Enter 播放 · Esc 取消选中，再按返回";
+    "bravais.hint": "拖动或滚轮浏览海报墙 · Ctrl + 滚轮或 + / - 缩放 · 点击海报或列表选中，双击播放 · 方向键切换 · Enter 播放 · Esc 取消选中，再按返回";
     "bravais.select": "选中 {{name}}";
     "bravais.summary": "{{count}} 首 · {{minutes}} 分钟";
     "drop.adding": "正在添加到歌单…";
@@ -1737,11 +1737,11 @@ export default interface Resources {
     "form.replaceImage": "替换封面";
     "form.tagsLabel": "歌单标签";
     "form.tagsRetry": "重新加载标签";
-    "grid.hint": "拖动或滚轮浏览 · 点击卡片居中，再点播放 · 方向键移动 · Enter 播放 · Esc 返回";
+    "grid.hint": "拖动或滚轮浏览 · Ctrl + 滚轮或 + / - 缩放 · 点击卡片居中，再点播放 · 方向键移动 · Enter 播放 · Esc 返回";
     "grid.select": "定位 {{name}}";
     "lattice.back": "返回列表";
     "lattice.follow": "自动跟随当前歌曲";
-    "lattice.hint": "拖动或滚轮浏览 · Shift 横向滚动 · 方向键选图 · Enter 展开 / 播放 · Esc 收起，再按返回";
+    "lattice.hint": "拖动或滚轮浏览 · Shift 横向滚动 · Ctrl + 滚轮或 + / - 缩放 · 方向键选图 · Enter 展开 / 播放 · Esc 收起，再按返回";
     "lattice.lightsOff": "暗场";
     "lattice.locate": "定位当前歌曲";
     "lattice.options": "浏览选项";
@@ -1787,6 +1787,8 @@ export default interface Resources {
     "view.grid": "Grid 卡片墙";
     "view.lattice": "Lattice 拼贴";
     "view.open": "歌单视图";
+    "view.zoomIn": "放大";
+    "view.zoomOut": "缩小";
   };
   privateMessages: {
     album: "专辑";

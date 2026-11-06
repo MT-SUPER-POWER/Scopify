@@ -1,6 +1,6 @@
 "use client";
 
-import { Crosshair, List, SlidersHorizontal, ListMusic } from "lucide-react";
+import { Crosshair, List, ListMusic, SlidersHorizontal, ZoomIn, ZoomOut } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -15,6 +15,7 @@ import {
 import { useTranslation } from "react-i18next";
 
 import { PLAYLIST_VIEW_MODES } from "@/constants/playlistViews";
+import { ZOOM_STEP } from "@/lib/playlist/zoomKeys";
 import { useUiStore } from "@/store/module/ui";
 import { useLatticePreferences } from "@/store/module/lattice";
 import type { PlaylistViewMode } from "@/types/playlist/lattice";
@@ -29,6 +30,7 @@ export function LatticeToolbar({
   mode,
   onModeChange,
   hint,
+  onZoom,
   canLocate,
   onLocate,
   onClose,
@@ -49,6 +51,24 @@ export function LatticeToolbar({
           title={`${t("playlist.lattice.back")} · Esc`}
         >
           <List size={17} />
+        </button>
+        <button
+          type="button"
+          className={toolButtonClass}
+          onClick={() => onZoom(1 / ZOOM_STEP)}
+          aria-label={t("playlist.view.zoomOut")}
+          title={`${t("playlist.view.zoomOut")} · -`}
+        >
+          <ZoomOut size={17} />
+        </button>
+        <button
+          type="button"
+          className={toolButtonClass}
+          onClick={() => onZoom(ZOOM_STEP)}
+          aria-label={t("playlist.view.zoomIn")}
+          title={`${t("playlist.view.zoomIn")} · +`}
+        >
+          <ZoomIn size={17} />
         </button>
         {canLocate && (
           <button

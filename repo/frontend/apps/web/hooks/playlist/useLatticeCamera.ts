@@ -23,6 +23,8 @@ const getBounds = (camera: LatticeCamera, viewport: LatticeViewport): Bounds => 
 
 export function useLatticeCamera({
   centered = false,
+  minScale = 0.2,
+  maxScale = 2,
   origin,
   clamp,
   onFrame,
@@ -137,6 +139,55 @@ export function useLatticeCamera({
     },
     [apply, centered, reducedMotion, stop],
   );
+  const zoom = useCallback(
+    (factor: number, clientX?: number, clientY?: number) => {
+      const field = fieldRef.current;
+      if (!field) return;
+      const rect = field.getBoundingClientRect();
+      const from = cameraRef.current;
+      const scale = Math.min(maxScale, Math.max(minScale, from.scale * factor));
+      if (scale === from.scale) return;
+      // Keep the world point under the pointer (or the pane centre) where it is.
+      const px = (clientX ?? rect.left + rect.width / 2) - rect.left;
+      const py = (clientY ?? rect.top + rect.height / 2) - rect.top;
+      const ratio = scale / from.scale;
+      apply({ x: px - (px - from.x) * ratio, y: py - (py - from.y) * ratio, scale });
+    },
+    [apply, fieldRef, maxScale, minScale],
+  );
+  /** Button and key zoom: eases towards the target instead of jumping. */
+  const zoomBy = useCallback(
+    (factor: number) => {
+      stop();
+      const from = cameraRef.current;
+      const scale = Math.min(maxScale, Math.max(minScale, from.scale * factor));
+      const field = fieldRef.current;
+      if (!field || scale === from.scale) return;
+      const view = viewportRef.current;
+      const ratio = scale / from.scale;
+      const next = {
+        x: view.width / 2 - (view.width / 2 - from.x) * ratio,
+        y: view.height / 2 - (view.height / 2 - from.y) * ratio,
+        scale,
+      };
+      if (reducedMotion) {
+        apply(next, true);
+        return;
+      }
+      animationRef.current = animate(0, 1, {
+        duration: 0.25,
+        ease: [0.22, 1, 0.36, 1],
+        onUpdate: (progress) =>
+          apply({
+            x: from.x + (next.x - from.x) * progress,
+            y: from.y + (next.y - from.y) * progress,
+            scale: from.scale + (next.scale - from.scale) * progress,
+          }),
+        onComplete: () => apply(next, true),
+      });
+    },
+    [apply, fieldRef, maxScale, minScale, reducedMotion, stop, viewportRef, cameraRef],
+  );
   const pointerHandlers = useLatticePointer({
     fieldRef,
     cameraRef,
@@ -145,6 +196,17 @@ export function useLatticeCamera({
     apply,
     stop,
     reducedMotion,
+    zoom,
   });
-  return { fieldRef, worldRef, cameraRef, viewport, viewportRef, bounds, center, pointerHandlers };
+  return {
+    fieldRef,
+    worldRef,
+    cameraRef,
+    viewport,
+    viewportRef,
+    bounds,
+    center,
+    zoomBy,
+    pointerHandlers,
+  };
 }

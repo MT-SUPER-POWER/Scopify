@@ -43,6 +43,8 @@ export interface LatticeToolbarProps {
   onModeChange: (mode: PlaylistViewMode) => void;
   /** Usage hint for the current view, shown at the bottom of the options menu. */
   hint: string;
+  /** Multiplies the zoom by a factor. */
+  onZoom: (factor: number) => void;
   canLocate: boolean;
   onLocate: () => void;
   onClose: () => void;

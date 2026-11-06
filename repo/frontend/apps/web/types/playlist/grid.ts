@@ -4,15 +4,19 @@ export interface GridMetrics {
   /** Horizontal distance between two cards of one row; odd rows are shifted by half of it. */
   spacingX: number;
   spacingY: number;
-  /** Distance from the pane centre at which a card has fully shrunk and faded. */
+  /** Distance from the pane centre (in world pixels) at which a card has fully shrunk and faded. */
   maxDistance: number;
 }
 
-/** Where one track's card sits on the hex wall, relative to the first track at the origin. */
+/** One seat on the endless hex wall; a song owns many seats because the wall repeats the playlist. */
 export interface GridCell {
-  index: number;
+  key: string;
+  col: number;
+  row: number;
   x: number;
   y: number;
+  /** Index into the page's tracks. */
+  index: number;
 }
 
 export interface GridCardFrame {

@@ -11,7 +11,7 @@ import type { GridCardProps } from "@/types/playlist/gridComponents";
 
 export const GridCard = memo(function GridCard({
   track,
-  index,
+  cell,
   current,
   playing,
   register,
@@ -21,9 +21,9 @@ export const GridCard = memo(function GridCard({
   const { t } = useTranslation();
   const ref = useRef<HTMLDivElement>(null);
   useLayoutEffect(() => {
-    register(index, ref.current);
-    return () => register(index, null);
-  }, [index, register]);
+    register(cell, ref.current);
+    return () => register(cell, null);
+  }, [cell, register]);
   const artist = track.ar.map((item) => item.name).join(" / ");
   const cover = track.al.picUrl || track.al.coverUrl;
   return (
@@ -45,7 +45,7 @@ export const GridCard = memo(function GridCard({
       }}
       onClick={(event) => {
         if (event.target instanceof Element && event.target.closest("button")) return;
-        onSelect(index, event.currentTarget.dataset.centered === "true");
+        onSelect(cell, event.currentTarget.dataset.centered === "true");
       }}
     >
       <div className="flex size-full flex-col rounded-xl border border-border bg-card p-2.5 shadow-lg transition-shadow duration-300 group-hover/card:shadow-2xl group-data-[current=true]/card:ring-2 group-data-[current=true]/card:ring-primary group-data-[lights-off=true]/grid:not-group-data-[current=true]/card:brightness-50">
@@ -90,7 +90,7 @@ export const GridCard = memo(function GridCard({
           </small>
           <span className="mt-auto flex items-center justify-between font-mono text-[10px] tabular-nums opacity-55">
             <span className="flex items-center gap-1.5">
-              {String(index + 1).padStart(2, "0")}
+              {String(cell.index + 1).padStart(2, "0")}
               {current && <span className="size-1.5 rounded-full bg-primary" />}
             </span>
             {formatDuration(track.dt)}

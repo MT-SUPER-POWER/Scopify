@@ -13,6 +13,7 @@ export function useLatticePointer({
   apply,
   stop,
   reducedMotion,
+  zoom,
 }: LatticePointerOptions) {
   const drag = useRef<LatticeDrag | null>(null);
   const didDrag = useRef(false);
@@ -118,10 +119,15 @@ export function useLatticePointer({
     const field = fieldRef.current;
     if (!field) return;
     const wheel = (event: WheelEvent) => {
-      if (event.ctrlKey || event.metaKey) return;
       event.preventDefault();
       if (drag.current) return;
       stop();
+      if (event.ctrlKey || event.metaKey) {
+        // Pinch gestures arrive as small ctrl+wheel deltas; a mouse wheel notch is about 100.
+        const unit = event.deltaMode === 1 ? 16 : 1;
+        zoom(Math.exp((-event.deltaY * unit) / 300), event.clientX, event.clientY);
+        return;
+      }
       const unit =
         event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? viewportRef.current.height : 1;
       const dx = (event.shiftKey && !event.deltaX ? event.deltaY : event.deltaX) * unit;
@@ -145,7 +151,7 @@ export function useLatticePointer({
       window.removeEventListener("pointercancel", outside);
       cancel();
     };
-  }, [apply, cameraRef, cancel, fieldRef, stop, viewportRef]);
+  }, [apply, cameraRef, cancel, fieldRef, stop, viewportRef, zoom]);
   return {
     onPointerDown,
     onPointerMove,

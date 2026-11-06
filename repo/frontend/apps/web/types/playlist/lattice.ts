@@ -10,6 +10,9 @@ export interface LatticeCamera {
 export interface LatticeCameraOptions {
   /** Starts at scale 1 with the world origin in the middle of the pane, and centres without the header inset. */
   centered?: boolean;
+  /** Scale limits for zooming; defaults to 0.2 - 2. */
+  minScale?: number;
+  maxScale?: number;
   /** With `centered`: the world point shown in the middle of the pane at first layout. */
   origin?: { x: number; y: number };
   /** Constrains every camera the wall applies, so a finite wall cannot be dragged out of reach. */
@@ -86,6 +89,8 @@ export interface LatticePointerOptions {
   apply: (camera: LatticeCamera, force?: boolean) => void;
   stop: () => void;
   reducedMotion: boolean | null;
+  /** Ctrl/Cmd + wheel (and trackpad pinch) zoom about the pointer. */
+  zoom: (factor: number, clientX: number, clientY: number) => void;
 }
 
 export type WallDirection = "up" | "down" | "left" | "right";

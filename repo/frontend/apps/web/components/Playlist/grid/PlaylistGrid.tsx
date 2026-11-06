@@ -6,6 +6,7 @@ import { usePlaylistViewPlayback } from "@/hooks/playlist/usePlaylistViewPlaybac
 import { useLatticePreferences } from "@/store/module/lattice";
 import { useTranslation } from "react-i18next";
 
+import type { GridCell } from "@/types/playlist/grid";
 import type { PlaylistLatticeProps } from "@/types/playlist/latticeComponents";
 import { LatticeToolbar } from "../lattice/LatticeToolbar";
 import { GridCard } from "./GridCard";
@@ -21,7 +22,7 @@ export default function PlaylistGrid({
   const { t } = useTranslation();
   const hintId = useId();
   const wall = useGridWall(tracks.length);
-  const { panTo, fieldRef } = wall;
+  const { panTo, panToCell, fieldRef } = wall;
   const followCurrent = useLatticePreferences((state) => state.followCurrent);
   const lightsOff = useLatticePreferences((state) => state.lightsOff);
   const { currentIndex, isPlaying, play } = usePlaylistViewPlayback({
@@ -30,13 +31,13 @@ export default function PlaylistGrid({
     onTrackPlay,
   });
   const select = useCallback(
-    (index: number, centered: boolean) => {
-      const track = tracks[index];
+    (cell: GridCell, centered: boolean) => {
+      const track = tracks[cell.index];
       if (!track) return;
       if (centered) play(track);
-      else panTo(index);
+      else panToCell(cell);
     },
-    [panTo, play, tracks],
+    [panToCell, play, tracks],
   );
   const activate = useCallback(
     (index: number) => {
@@ -75,6 +76,7 @@ export default function PlaylistGrid({
         mode="grid"
         onModeChange={onModeChange}
         hint={t("playlist.grid.hint")}
+        onZoom={wall.zoomBy}
       />
       <div
         ref={fieldRef}
@@ -89,9 +91,9 @@ export default function PlaylistGrid({
             if (!track) return null;
             return (
               <GridCard
-                key={`${cell.index}:${track.id}`}
+                key={cell.key}
                 track={track}
-                index={cell.index}
+                cell={cell}
                 current={cell.index === currentIndex}
                 playing={cell.index === currentIndex && isPlaying}
                 register={wall.register}

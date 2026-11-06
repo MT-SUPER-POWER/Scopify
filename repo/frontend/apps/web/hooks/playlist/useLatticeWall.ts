@@ -12,6 +12,7 @@ import {
   locateNearestInstance,
 } from "@/lib/playlist/lattice/layout";
 import { findAdjacentInstance, findNearestInstance } from "@/lib/playlist/lattice/wallNavigation";
+import { ZOOM_STEP, zoomKeyDirection } from "@/lib/playlist/zoomKeys";
 import type { QueueInstance, WallDirection } from "@/types/playlist/lattice";
 
 const metrics = { cellSize: 128, gap: 8 };
@@ -108,6 +109,13 @@ export function useLatticeWall(trackCount: number) {
       event.target.closest('button, input, [role="slider"], [role="menu"]')
     )
       return;
+    const zoomDirection = zoomKeyDirection(event);
+    if (zoomDirection) {
+      event.preventDefault();
+      event.stopPropagation();
+      camera.zoomBy(zoomDirection > 0 ? ZOOM_STEP : 1 / ZOOM_STEP);
+      return;
+    }
     const direction: WallDirection | undefined =
       event.key === "ArrowLeft"
         ? "left"
