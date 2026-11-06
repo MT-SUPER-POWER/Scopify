@@ -11,7 +11,7 @@ import type { GridCell, GridDirection } from "@/types/playlist/grid";
 import type { LatticeCamera } from "@/types/playlist/lattice";
 
 // Mounted beyond the pane edge so a drag reveals cards that are already painted.
-const OVERSCAN = 160;
+const OVERSCAN = 420;
 
 const writeFrame = (
   element: HTMLElement,
@@ -32,11 +32,10 @@ const writeFrame = (
   const { style, dataset } = element;
   style.display = frame.visible ? "" : "none";
   if (!frame.visible) return null;
-  const curve = computeCardCurve(dx, dy, camera.scale, view.width, frame.progress);
+  const curve = computeCardCurve(dx, camera.scale, view.width);
   style.transform =
-    `translate3d(${cell.x}px, ${cell.y}px, ${curve.z.toFixed(1)}px) ` +
-    `rotateY(${curve.rotateY.toFixed(2)}deg) rotateX(${curve.rotateX.toFixed(2)}deg) ` +
-    `scale(${frame.scale.toFixed(4)})`;
+    `translate3d(${(cell.x + curve.x).toFixed(1)}px, ${cell.y}px, ${curve.z.toFixed(1)}px) ` +
+    `rotateY(${curve.rotateY.toFixed(2)}deg) scale(${frame.scale.toFixed(4)})`;
   style.opacity = frame.opacity.toFixed(3);
   style.zIndex = String(frame.zIndex);
   const centered = String(frame.centered);
