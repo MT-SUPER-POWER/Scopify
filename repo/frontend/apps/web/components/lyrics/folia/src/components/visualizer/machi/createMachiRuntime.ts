@@ -279,6 +279,8 @@ export class MachiRuntime {
   private themeSignature: string;
   private pixelRatio: number;
   private wantsFrame = true;
+  /** 正在 frame() 里画这一帧：这时的 wake() 不是循环停过后重新开始。 */
+  private inFrame = false;
   private readonly frameTimes: number[] = [];
   private lastFrameAt = 0;
   private lastCalls = 0;
@@ -750,7 +752,9 @@ export class MachiRuntime {
 
   private wake() {
     if (this.disposed || this.raf || this.holding || this.fadePhase === "building") return;
-    this.clock.resync();
+    // 镜头在动时 OrbitControls 的 change 事件就在这一帧里叫醒（raf 此时是 0）。循环并没有停过，这里 resync
+    // 会让下一帧的时间差归零，拖动期间氛围时钟一直不走，雨、雪、车流和招牌都定住。
+    if (!this.inFrame) this.clock.resync();
     this.raf = requestAnimationFrame(this.frame);
   }
 
@@ -762,7 +766,12 @@ export class MachiRuntime {
   private readonly frame = (now: number) => {
     this.raf = 0;
     if (this.disposed || this.holding || this.fadePhase === "building") return;
-    this.renderFrame(now);
+    this.inFrame = true;
+    try {
+      this.renderFrame(now);
+    } finally {
+      this.inFrame = false;
+    }
     // 这一帧里可能已经有人 wake() 排过下一帧（镜头摆位、换场景都会叫醒）：再排一次就多出一条并行的渲染链，
     // 每个刷新周期画两遍，而且会越滚越多。
     if (this.raf) return;
@@ -1178,6 +1187,7 @@ export class MachiRuntime {
           textures: this.renderer.info.memory.textures,
           programs: this.renderer.info.programs?.length ?? 0,
           frameMs: Math.round(average * 100) / 100,
+          ambientSeconds: this.clock.elapsed,
           pixelRatio: this.pixelRatio,
           antialias: this.renderQuality.antialias,
           samples: this.renderQuality.samples,
