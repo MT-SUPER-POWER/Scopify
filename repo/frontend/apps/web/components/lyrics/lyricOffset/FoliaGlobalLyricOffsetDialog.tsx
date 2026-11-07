@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 import { useFoliaModalFocus } from "@/hooks/lyrics/useFoliaModalFocus";
 import { createPortal } from "react-dom";
 
-import { FoliaGlobalLyricOffsetRuler } from "@/components/lyrics/FoliaGlobalLyricOffsetRuler";
+import { FoliaGlobalLyricOffsetRuler } from "@/components/lyrics/lyricOffset/FoliaGlobalLyricOffsetRuler";
 import { useFoliaPlaybackBridge } from "@/hooks/player/useFoliaPlaybackBridge";
 import { useLyricStageStore } from "@/store/module/lyrics";
 import { useTranslation } from "react-i18next";

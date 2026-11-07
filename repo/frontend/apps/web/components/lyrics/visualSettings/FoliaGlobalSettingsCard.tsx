@@ -7,7 +7,7 @@ import {
   FoliaSettingsRow,
   FoliaSettingsToggle,
 } from "@scopify/ui/scopify/components/folia-studio/settings";
-import { FoliaGlobalLyricOffsetDialog } from "@/components/lyrics/FoliaGlobalLyricOffsetDialog";
+import { FoliaGlobalLyricOffsetDialog } from "@/components/lyrics/lyricOffset/FoliaGlobalLyricOffsetDialog";
 import { FoliaVideoExportDialog } from "@/components/lyrics/visualSettings/FoliaVideoExportDialog";
 import { useTranslation } from "react-i18next";
 
