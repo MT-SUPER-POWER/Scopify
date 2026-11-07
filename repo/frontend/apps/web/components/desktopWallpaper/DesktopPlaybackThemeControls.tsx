@@ -2,7 +2,7 @@
 
 import { Moon, Sun } from "lucide-react";
 
-import { FoliaThemeRecord } from "@/components/lyrics/FoliaThemeRecord";
+import { FoliaThemeRecord } from "@/components/lyrics/theme/FoliaThemeRecord";
 import { getFoliaStageTheme } from "@scopify/ui/folia";
 import { useTranslation } from "react-i18next";
 

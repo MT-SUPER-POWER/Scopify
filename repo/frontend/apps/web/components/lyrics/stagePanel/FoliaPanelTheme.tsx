@@ -8,7 +8,7 @@ import {
 
 import { useFoliaThemeCarousel } from "@/hooks/lyrics/useFoliaThemeCarousel";
 import type { FoliaPanelThemeProps } from "@/types/lyrics/components";
-import { FoliaThemeRecord } from "@/components/lyrics/FoliaThemeRecord";
+import { FoliaThemeRecord } from "@/components/lyrics/theme/FoliaThemeRecord";
 import { useTranslation } from "react-i18next";
 
 import { useLyricStageStore } from "@/store/module/lyrics";

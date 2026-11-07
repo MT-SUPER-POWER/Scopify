@@ -1,6 +1,6 @@
 "use client";
 
-import { FoliaThemeRecord } from "@/components/lyrics/FoliaThemeRecord";
+import { FoliaThemeRecord } from "@/components/lyrics/theme/FoliaThemeRecord";
 import { useTranslation } from "react-i18next";
 
 import type { FoliaThemeLibraryItemProps } from "@/types/lyrics/components";

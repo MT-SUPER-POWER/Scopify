@@ -3,9 +3,9 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@scopify/ui/shadcn/components/tabs";
 import { useState } from "react";
 
-import { FoliaThemeColorEditor } from "@/components/lyrics/FoliaThemeColorEditor";
-import { FoliaThemeIdentityControls } from "@/components/lyrics/FoliaThemeIdentityControls";
-import { FoliaThemeJsonTransfer } from "@/components/lyrics/FoliaThemeJsonTransfer";
+import { FoliaThemeColorEditor } from "@/components/lyrics/theme/editor/FoliaThemeColorEditor";
+import { FoliaThemeIdentityControls } from "@/components/lyrics/theme/editor/FoliaThemeIdentityControls";
+import { FoliaThemeJsonTransfer } from "@/components/lyrics/theme/transfer/FoliaThemeJsonTransfer";
 import { useLyricStageStore } from "@/store/module/lyrics";
 import { useTranslation } from "react-i18next";
 

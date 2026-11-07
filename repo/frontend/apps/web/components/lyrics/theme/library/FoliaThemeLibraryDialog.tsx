@@ -6,9 +6,9 @@ import { useFoliaSettingsStore } from "@/store/module/foliaSettings";
 import { useLyricStageStore } from "@/store/module/lyrics";
 import { AnimatePresence } from "framer-motion";
 
-import { FoliaThemeUnsavedDialog } from "@/components/lyrics/FoliaThemeUnsavedDialog";
-import { FoliaThemeWorkbenchHeader } from "@/components/lyrics/FoliaThemeWorkbenchHeader";
-import { FoliaThemeWorkbenchLayout } from "@/components/lyrics/FoliaThemeWorkbenchLayout";
+import { FoliaThemeUnsavedDialog } from "@/components/lyrics/theme/library/FoliaThemeUnsavedDialog";
+import { FoliaThemeWorkbenchHeader } from "@/components/lyrics/theme/library/FoliaThemeWorkbenchHeader";
+import { FoliaThemeWorkbenchLayout } from "@/components/lyrics/theme/library/FoliaThemeWorkbenchLayout";
 import { useFoliaThemeWorkbench } from "@/hooks/lyrics/useFoliaThemeWorkbench";
 import { useTranslation } from "react-i18next";
 

@@ -4,7 +4,7 @@ import { Moon, Palette, Sun } from "lucide-react";
 import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
-import { FoliaThemeRecord } from "@/components/lyrics/FoliaThemeRecord";
+import { FoliaThemeRecord } from "@/components/lyrics/theme/FoliaThemeRecord";
 import { useLyricStageStore } from "@/store/module/lyrics";
 import type { FoliaThemeQuickPickerProps } from "@/types/lyrics/components";
 

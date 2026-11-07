@@ -3,7 +3,7 @@
 import { PanelLeftClose, PanelLeftOpen, Plus, RotateCcw } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
-import { FoliaThemeLibraryItem } from "@/components/lyrics/FoliaThemeLibraryItem";
+import { FoliaThemeLibraryItem } from "@/components/lyrics/theme/library/FoliaThemeLibraryItem";
 import { createFoliaStageTheme } from "@scopify/ui/folia";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useLyricStageStore } from "@/store/module/lyrics";

@@ -4,7 +4,7 @@ import { FileInput, Upload } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 import { colorWithAlpha } from "@/components/lyrics/folia/src/components/visualizer/colorMix";
-import { FoliaThemeJsonImportPreview } from "@/components/lyrics/FoliaThemeJsonImportPreview";
+import { FoliaThemeJsonImportPreview } from "@/components/lyrics/theme/transfer/FoliaThemeJsonImportPreview";
 import type { FoliaThemeJsonImportProps } from "@/types/lyrics/components";
 
 export function FoliaThemeJsonImport({

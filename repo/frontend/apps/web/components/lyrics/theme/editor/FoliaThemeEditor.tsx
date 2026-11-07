@@ -3,7 +3,7 @@
 import { useMemo } from "react";
 
 import { FoliaSettingsPreview } from "@/components/lyrics/visualSettings/FoliaSettingsPreview";
-import { FoliaThemeEditorPanel } from "@/components/lyrics/FoliaThemeEditorPanel";
+import { FoliaThemeEditorPanel } from "@/components/lyrics/theme/editor/FoliaThemeEditorPanel";
 import type { Theme } from "@/components/lyrics/folia/src/types";
 import { useMediaQuery } from "@/hooks/ui/useMediaQuery";
 import { useLyricStageStore } from "@/store/module/lyrics";

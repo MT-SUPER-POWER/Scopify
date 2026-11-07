@@ -4,7 +4,7 @@ import { Pause, Play } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 
-import { FoliaThemePreviewToolbar } from "@/components/lyrics/FoliaThemePreviewToolbar";
+import { FoliaThemePreviewToolbar } from "@/components/lyrics/theme/editor/FoliaThemePreviewToolbar";
 
 import VisPlaygroundPreviewHotspots from "@/components/lyrics/folia/src/components/visualizer/VisPlaygroundPreviewHotspots";
 import VisualizerRenderer from "@/components/lyrics/folia/src/components/visualizer/VisualizerRenderer";

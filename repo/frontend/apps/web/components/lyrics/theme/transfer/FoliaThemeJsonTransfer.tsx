@@ -3,8 +3,8 @@
 import { useCallback, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 
-import { FoliaThemeJsonExport } from "@/components/lyrics/FoliaThemeJsonExport";
-import { FoliaThemeJsonImport } from "@/components/lyrics/FoliaThemeJsonImport";
+import { FoliaThemeJsonExport } from "@/components/lyrics/theme/transfer/FoliaThemeJsonExport";
+import { FoliaThemeJsonImport } from "@/components/lyrics/theme/transfer/FoliaThemeJsonImport";
 import { parseFoliaStageThemeJson } from "@scopify/ui/folia";
 import { useLyricStageStore } from "@/store/module/lyrics";
 import type {

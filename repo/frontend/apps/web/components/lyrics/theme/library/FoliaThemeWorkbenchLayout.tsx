@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 
-import { FoliaThemeEditor } from "@/components/lyrics/FoliaThemeEditor";
-import { FoliaThemeLibraryList } from "@/components/lyrics/FoliaThemeLibraryList";
+import { FoliaThemeEditor } from "@/components/lyrics/theme/editor/FoliaThemeEditor";
+import { FoliaThemeLibraryList } from "@/components/lyrics/theme/library/FoliaThemeLibraryList";
 import { useMediaQuery } from "@/hooks/ui/useMediaQuery";
 import type {
   FoliaThemeLibraryPanelHandle,
