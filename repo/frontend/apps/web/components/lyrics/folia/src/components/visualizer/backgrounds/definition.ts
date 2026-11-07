@@ -1,4 +1,5 @@
 import React from "react";
+import type { LyricChorusRange } from "@/types/lyrics/model";
 import type { FacetBackgroundTuning } from "@/types/lyrics/facet/background";
 import type { RhineBackgroundTuning } from "@/types/lyrics/rhine/background";
 import type { MotionValue } from "framer-motion";
@@ -117,6 +118,8 @@ export interface VisualizerBackgroundRenderProps {
     lines: Line[];
     currentLineIndex: number;
     currentTime: MotionValue<number>;
+    /** The song's chorus, or undefined while unknown; the host fetches it so backgrounds stay free of requests. */
+    chorusRanges?: readonly LyricChorusRange[];
   };
 }
 

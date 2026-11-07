@@ -6,6 +6,7 @@ import { buildAppStyle } from "@/components/lyrics/folia/src/components/app/pres
 import VisualizerBackgroundRenderer from "@/components/lyrics/folia/src/components/visualizer/backgrounds/VisualizerBackgroundRenderer";
 import VisualizerRenderer from "@/components/lyrics/folia/src/components/visualizer/VisualizerRenderer";
 import VisualizerShell from "@/components/lyrics/folia/src/components/visualizer/VisualizerShell";
+import { useSongChorus } from "@/hooks/lyrics/useSongChorus";
 import { VISUALIZER_REGISTRY } from "@/components/lyrics/folia/src/components/visualizer/registry";
 import {
   pickRandomVisualizerMode,
@@ -24,6 +25,7 @@ export function FoliaPresentationSurface({
   staticMode = false,
   track,
 }: FoliaPresentationSurfaceProps) {
+  const chorusRanges = useSongChorus(track?.id ?? null).data;
   const observedTrackIdRef = useRef<string | null>(null);
   const wasRandomEnabledRef = useRef(appearance.settings.randomVisualizerMode);
 
@@ -130,6 +132,7 @@ export function FoliaPresentationSurface({
               lines: bridge.lines,
               currentLineIndex: bridge.currentLineIndex,
               currentTime: bridge.lyricCurrentTime,
+              chorusRanges,
             }}
           />
         </div>

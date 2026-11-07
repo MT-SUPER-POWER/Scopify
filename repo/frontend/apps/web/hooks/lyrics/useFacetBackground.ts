@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
-import { useSongChorus } from "@/hooks/lyrics/useSongChorus";
 import { extractRepresentativeColors } from "@/components/lyrics/folia/src/utils/colorExtractor";
 import { DEFAULT_FACET_BACKGROUND_TUNING } from "@/constants/facetBackground";
 import { loadFacetCover } from "@/lib/lyrics/facet/cover";
@@ -76,7 +75,7 @@ function lyricSample(
 export function useFacetBackground(props: FacetBackgroundProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [coverColors, setCoverColors] = useState<string[]>([]);
-  const chorusRanges = useSongChorus(props.seed ?? null).data;
+  const chorusRanges = props.lyric?.chorusRanges;
   const latest = useRef({ props, coverColors, chorusRanges });
   const cover = useRef<ImageBitmap | null>(null);
   const showCover = useRef<((bitmap: ImageBitmap | null) => void) | null>(null);
