@@ -1,4 +1,4 @@
-import { FoliaPersonalFmModeMatrix } from "@/components/lyrics/FoliaPersonalFmModeMatrix";
+import { FoliaPersonalFmModeMatrix } from "@/components/lyrics/stagePanel/FoliaPersonalFmModeMatrix";
 import type { Theme } from "@/components/lyrics/folia/src/types";
 
 interface FoliaPersonalFmControlsTabProps {

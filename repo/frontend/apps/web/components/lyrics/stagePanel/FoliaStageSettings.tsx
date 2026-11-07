@@ -21,7 +21,7 @@ import {
   type FoliaSongLike,
 } from "@scopify/ui/scopify/components/folia-panel/panel-shell";
 
-import { FoliaAudioEqualizerDialog } from "@/components/lyrics/FoliaAudioEqualizerDialog";
+import { FoliaAudioEqualizerDialog } from "@/components/lyrics/stagePanel/FoliaAudioEqualizerDialog";
 import { FoliaLyricMatchDialog } from "@/components/lyrics/FoliaLyricMatchDialog";
 import { ShortcutHint } from "@/components/shortcuts/ShortcutHint";
 import {
@@ -30,11 +30,11 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@scopify/ui/shadcn/components/tooltip";
-import { FoliaLyricsControls } from "@/components/lyrics/FoliaLyricsControls";
-import { FoliaPanelControls } from "@/components/lyrics/FoliaPanelControls";
-import { FoliaPanelQuality } from "@/components/lyrics/FoliaPanelQuality";
-import { FoliaPanelQueue } from "@/components/lyrics/FoliaPanelQueue";
-import { FoliaPersonalFmControlsTab } from "@/components/lyrics/FoliaPersonalFmControlsTab";
+import { FoliaLyricsControls } from "@/components/lyrics/stagePanel/FoliaLyricsControls";
+import { FoliaPanelControls } from "@/components/lyrics/stagePanel/FoliaPanelControls";
+import { FoliaPanelQuality } from "@/components/lyrics/stagePanel/FoliaPanelQuality";
+import { FoliaPanelQueue } from "@/components/lyrics/stagePanel/FoliaPanelQueue";
+import { FoliaPersonalFmControlsTab } from "@/components/lyrics/stagePanel/FoliaPersonalFmControlsTab";
 import { isPersonalFmPlaybackSource } from "@/constants/personalFm";
 import { useFoliaPanelControls } from "@/hooks/player/useFoliaPanelControls";
 import { useFoliaSettingsStore } from "@/store/module/foliaSettings";

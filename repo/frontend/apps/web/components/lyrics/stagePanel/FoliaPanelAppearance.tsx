@@ -7,7 +7,7 @@ import {
   getSteppedMode,
 } from "@scopify/ui/scopify/components/folia-panel/mode-stepper-row";
 
-import { FoliaBackgroundQuickControl } from "@/components/lyrics/FoliaBackgroundQuickControl";
+import { FoliaBackgroundQuickControl } from "@/components/lyrics/stagePanel/FoliaBackgroundQuickControl";
 
 import {
   getVisualizerBackgroundModeLabel,
@@ -41,9 +41,9 @@ import {
   drawStylePicture,
   drawBackgroundGlyph,
   drawBackgroundPicture,
-} from "@/components/lyrics/FoliaPanelModePictures";
-import { FoliaRandomPoolPopover } from "@/components/lyrics/FoliaRandomPoolPopover";
-import { FoliaVisualizerQuickControl } from "@/components/lyrics/FoliaVisualizerQuickControl";
+} from "@/components/lyrics/stagePanel/FoliaPanelModePictures";
+import { FoliaRandomPoolPopover } from "@/components/lyrics/stagePanel/FoliaRandomPoolPopover";
+import { FoliaVisualizerQuickControl } from "@/components/lyrics/stagePanel/FoliaVisualizerQuickControl";
 
 const RANDOM_CHOICE = "__random__";
 

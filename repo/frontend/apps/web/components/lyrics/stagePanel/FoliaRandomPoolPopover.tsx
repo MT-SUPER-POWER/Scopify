@@ -3,7 +3,7 @@
 import { FoliaPopover } from "@scopify/ui/scopify/components/folia-panel/popover";
 import { FoliaPictureChecks } from "@scopify/ui/scopify/components/folia-panel/picture-grid";
 import { FoliaPickerMoreButton } from "@scopify/ui/scopify/components/folia-panel/mode-stepper-row";
-import { drawPoolPicture } from "@/components/lyrics/FoliaPanelModePictures";
+import { drawPoolPicture } from "@/components/lyrics/stagePanel/FoliaPanelModePictures";
 import { useTranslation } from "react-i18next";
 
 import type { FoliaRandomPoolPopoverProps } from "@/types/lyrics/components";

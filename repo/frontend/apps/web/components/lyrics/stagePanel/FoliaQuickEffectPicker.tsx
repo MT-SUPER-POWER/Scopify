@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 
-import { FoliaQuickEffectPickerMenu } from "@/components/lyrics/FoliaQuickEffectPickerMenu";
+import { FoliaQuickEffectPickerMenu } from "@/components/lyrics/stagePanel/FoliaQuickEffectPickerMenu";
 import { getFoliaQuickEffectPickerPosition } from "@/lib/lyrics/foliaQuickEffectPicker";
 import type { FoliaQuickEffectPickerProps } from "@/types/lyrics/components";
 

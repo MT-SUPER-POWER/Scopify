@@ -19,8 +19,8 @@ import {
   FoliaSlider,
 } from "@scopify/ui/scopify/components/folia-panel/controls";
 
-import { FoliaPanelAppearance } from "@/components/lyrics/FoliaPanelAppearance";
-import { FoliaPanelTheme } from "@/components/lyrics/FoliaPanelTheme";
+import { FoliaPanelAppearance } from "@/components/lyrics/stagePanel/FoliaPanelAppearance";
+import { FoliaPanelTheme } from "@/components/lyrics/stagePanel/FoliaPanelTheme";
 import { useFoliaPanelControls } from "@/hooks/player/useFoliaPanelControls";
 import { useAudioEqualizerStore } from "@/store/module/audioEqualizer";
 import { useTranslation } from "react-i18next";

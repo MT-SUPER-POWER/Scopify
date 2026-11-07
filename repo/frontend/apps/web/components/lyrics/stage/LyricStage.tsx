@@ -18,7 +18,7 @@ import { useRuntimeWindowVisibility } from "@/hooks/useRuntimeWindowVisibility";
 import { usePlayerStore } from "@/store/module/player";
 
 import { FoliaPresentationSurface } from "./FoliaPresentationSurface";
-import { FoliaStageSettings } from "../FoliaStageSettings";
+import { FoliaStageSettings } from "../stagePanel/FoliaStageSettings";
 
 /** Scopify host for Folia's pinned playback-stage presentation runtime. */
 export function LyricStage({ hasEntered, onClose }: LyricStageProps) {
