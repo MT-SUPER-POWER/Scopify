@@ -4,6 +4,7 @@
  *
  * 提交时不做类型检查，保持 commit 轻快；推送前业务基本定型，集中一次修完类型问题。
  * 读取 git 传入的推送范围（stdin：<local ref> <local sha> <remote ref> <remote sha>），
+ * docs 经路径别名直接编译 Web 源码，不在包依赖图里，Web 有改动时显式带上 docs。
  * 新分支以 origin 默认分支的 merge-base 为起点。根目录 tsconfig 或锁文件变化时检查全部工作区。
  * 推送 tag 代表发布或版本归档，不具备分支的 merge-base 差异语境，必须全量检查全部工作区。
  */
@@ -15,6 +16,8 @@ const ZERO_SHA = /^0+$/;
 const TYPECHECKABLE = /\.(ts|tsx|mts|cts|json)$/;
 const WORKSPACE = /^(repo\/frontend\/(?:apps|packages)\/[^/]+)\//;
 const GLOBAL_INPUTS = new Set(["tsconfig.json", "pnpm-lock.yaml", "package.json"]);
+/** Workspaces that compile another workspace's source through path aliases, so `...<pkg>` misses them. */
+const SOURCE_CONSUMERS: Record<string, string[]> = { "@scopify/web": ["@scopify/docs"] };
 
 const root = process.cwd();
 
@@ -59,6 +62,9 @@ export function selectTypecheckPackages(files: Iterable<string>) {
     if (!manifestPath || !existsSync(manifestPath)) continue;
     const manifest = JSON.parse(readFileSync(manifestPath, "utf8"));
     if (manifest.scripts?.typecheck) packages.add(manifest.name);
+  }
+  for (const name of [...packages]) {
+    for (const consumer of SOURCE_CONSUMERS[name] ?? []) packages.add(consumer);
   }
   return packages;
 }

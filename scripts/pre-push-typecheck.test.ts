@@ -43,6 +43,11 @@ describe("pre-push-typecheck script", () => {
     expect(pkgs?.has("@scopify/desktop")).toBe(true);
   });
 
+  it("adds docs when web changes, since docs compiles web source", () => {
+    const pkgs = selectTypecheckPackages(["repo/frontend/apps/web/hooks/lyrics/useSongChorus.ts"]);
+    expect(pkgs?.has("@scopify/docs")).toBe(true);
+  });
+
   it("ignores non-typecheckable files", () => {
     const pkgs = selectTypecheckPackages([
       "repo/frontend/apps/web/README.md",
