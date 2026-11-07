@@ -4,8 +4,8 @@ import { FoliaStudioWindow } from "@scopify/ui/scopify/components/folia-studio/w
 import { useFoliaModalFocus } from "@/hooks/lyrics/useFoliaModalFocus";
 import { LoaderCircle, RotateCcw } from "lucide-react";
 
-import { FoliaLyricMatchPreview } from "@/components/lyrics/FoliaLyricMatchPreview";
-import { FoliaLyricMatchSearch } from "@/components/lyrics/FoliaLyricMatchSearch";
+import { FoliaLyricMatchPreview } from "@/components/lyrics/lyricMatch/FoliaLyricMatchPreview";
+import { FoliaLyricMatchSearch } from "@/components/lyrics/lyricMatch/FoliaLyricMatchSearch";
 import { useLyricMatch } from "@/hooks/lyrics/useLyricMatch";
 import { useTranslation } from "react-i18next";
 

@@ -2,7 +2,7 @@
 
 import { LoaderCircle, Search } from "lucide-react";
 
-import { FoliaLyricMatchResults } from "@/components/lyrics/FoliaLyricMatchResults";
+import { FoliaLyricMatchResults } from "@/components/lyrics/lyricMatch/FoliaLyricMatchResults";
 import { useTranslation } from "react-i18next";
 
 import type { FoliaLyricMatchSearchProps } from "@/types/lyrics/components";

@@ -22,7 +22,7 @@ import {
 } from "@scopify/ui/scopify/components/folia-panel/panel-shell";
 
 import { FoliaAudioEqualizerDialog } from "@/components/lyrics/stagePanel/FoliaAudioEqualizerDialog";
-import { FoliaLyricMatchDialog } from "@/components/lyrics/FoliaLyricMatchDialog";
+import { FoliaLyricMatchDialog } from "@/components/lyrics/lyricMatch/FoliaLyricMatchDialog";
 import { ShortcutHint } from "@/components/shortcuts/ShortcutHint";
 import {
   Tooltip,
