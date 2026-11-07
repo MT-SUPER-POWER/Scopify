@@ -16,7 +16,7 @@ import {
   type SettingsGroupDef,
 } from "../../folia/src/components/visualizer/panelRows";
 
-// components/lyrics/prisma/PrismaSettingsPanel.tsx
+// components/lyrics/visuals/prisma/PrismaSettingsPanel.tsx
 // 聚散's settings: how the shards look and fly, how much of a line shows before it is sung, and the music.
 
 const pixels = (value: number) => `${Math.round(value)}px`;

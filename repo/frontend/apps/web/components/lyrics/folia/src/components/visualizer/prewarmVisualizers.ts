@@ -7,7 +7,7 @@ import {
 
 // src/components/visualizer/prewarmVisualizers.ts
 // 让启动慢的歌词样式提前准备（entry 的 `prewarm`，definition.ts；比如雾笺在后台先编着色器）。
-// 由主窗口在页面空闲时调一次（components/lyrics/FoliaVisualizerPrewarm.tsx）：保存的样式先准备，
+// 由主窗口在页面空闲时调一次（components/lyrics/stage/FoliaVisualizerPrewarm.tsx）：保存的样式先准备，
 // 声明了 `prewarmWhenIdle` 的其他样式随后准备，第一次切过去时就不用现编。
 
 const run = (entry: VisualizerRegistryEntry) => {

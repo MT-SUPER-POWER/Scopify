@@ -16,7 +16,7 @@ import type { Line } from "../../folia/src/types";
 import { resolveThemeFontStack, resolveThemeFontWeight } from "../../folia/src/utils/fontStacks";
 import { getLineRenderEndTime } from "../../folia/src/utils/lyrics/renderHints";
 
-// components/lyrics/prisma/VisualizerPrisma.tsx
+// components/lyrics/visuals/prisma/VisualizerPrisma.tsx
 // 聚散's React shell: the shared background and subtitles, and a runtime built once. Song, tuning, theme and
 // pause are pushed into it; time stays out of React state. Without WebGL2 it shows the current line as text.
 

@@ -7,7 +7,7 @@ const PrismaSettingsPanel = lazy(
   () => import("@/components/lyrics/visuals/prisma/PrismaSettingsPanel"),
 );
 
-// Scopify's own style, like archive: registered here, built in components/lyrics/prisma and lib/lyrics/prisma.
+// Scopify's own style, like archive: registered here, built in components/lyrics/visuals/prisma and lib/lyrics/prisma.
 // 聚散: each line bursts into shards that swirl on a current and gather into the next line as it is sung.
 export default defineVisualizer({
   mode: "prisma",

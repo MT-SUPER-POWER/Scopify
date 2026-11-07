@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 
-// components/lyrics/FoliaVisualizerPrewarm.tsx
+// components/lyrics/stage/FoliaVisualizerPrewarm.tsx
 // 主窗口首屏出来、页面空闲后，让启动慢的歌词样式（雾笺的着色器）在后台先准备好。
 // 只挂在主窗口：桌面歌词、灵动岛等辅助窗口不需要，也不该各自多建一个 WebGL 上下文。
 

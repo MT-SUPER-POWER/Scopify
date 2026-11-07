@@ -16,8 +16,8 @@
 
 职责分布：
 
-- `components/lyrics/FoliaPresentationSurface.tsx`：在舞台层持有唯一的莱茵背景，切歌只更新歌曲 ID、主题与播放状态；歌词壳层通过 `renderedByHost` 跳过重复挂载，保持其原有透明模式语义。
-- `components/lyrics/rhine/`：背景容器、错误重试与设置 UI。
+- `components/lyrics/stage/FoliaPresentationSurface.tsx`：在舞台层持有唯一的莱茵背景，切歌只更新歌曲 ID、主题与播放状态；歌词壳层通过 `renderedByHost` 跳过重复挂载，保持其原有透明模式语义。
+- `components/lyrics/visuals/rhine/`：背景容器、错误重试与设置 UI。
 - `hooks/lyrics/useRhineBackground.ts`：加载、帧率、尺寸、可见性及资源生命周期。
 - `lib/lyrics/rhine/scene.ts`：切歌短暂展示、归位、阵列实例和冻结状态。
 - `types/rhineBackground.ts`、`types/rhineRuntime.ts`、`constants/rhineBackground.ts`：数据契约和默认参数。
