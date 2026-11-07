@@ -31,14 +31,6 @@ export type { FoliaStageTheme, FoliaThemeColors, FoliaThemeVariant } from "@scop
 export type FoliaStageEditSection = "background" | "common" | "subtitle" | "visualizer" | "global";
 export type FoliaPanelTab = "controls" | "cover" | "fm" | "lyrics" | "quality" | "queue";
 
-export interface FoliaQuickEffectPickerPosition {
-  left: number;
-  maxHeight: number;
-  opensUpward: boolean;
-  top: number;
-  width: number;
-}
-
 export interface FoliaStageSettings {
   animationIntensity: Theme["animationIntensity"];
   autoHideCursorWithChrome: boolean;

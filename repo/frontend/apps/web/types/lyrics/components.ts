@@ -4,7 +4,6 @@ import type { FoliaStageAssets } from "@/types/lyrics/folia/assets";
 import type { LyricDisplayLine, LyricMatchCandidate } from "@/types/lyrics/model";
 import type { SongDetail } from "@/types/song/api";
 import type {
-  FoliaQuickEffectPickerPosition,
   FoliaStageEditSection,
   FoliaStageTheme,
   FoliaThemeColors,
@@ -23,11 +22,6 @@ export interface FoliaVisualizerPresetGroupProps<T> {
   options: FoliaVisualizerPresetOption<T>[];
   theme: Theme;
   value: T;
-}
-
-export interface FoliaQuickEffectPickerOption<Value extends string> {
-  label: string;
-  value: Value;
 }
 
 export interface FoliaLyricsControlsProps {
@@ -63,13 +57,6 @@ export interface FoliaGlobalLyricOffsetDialogProps {
 
 export interface FoliaGlobalSettingsCardProps {
   controlCardBg: string;
-  theme: Theme;
-}
-
-export interface FoliaSettingsSwitchProps {
-  checked: boolean;
-  label: string;
-  onChange: (checked: boolean) => void;
   theme: Theme;
 }
 
@@ -336,26 +323,6 @@ export interface FoliaThemeJsonImportPreviewProps {
 export interface FoliaThemeQuickPickerProps {
   onOpenThemeLibrary: () => void;
   theme: Theme;
-}
-
-export interface FoliaQuickEffectPickerProps<Value extends string> {
-  ariaLabel: string;
-  isDaylight: boolean;
-  moreActionLabel?: string;
-  onChange: (value: Value) => void;
-  onMoreAction?: () => void;
-  options: FoliaQuickEffectPickerOption<Value>[];
-  primaryColor: string;
-  value: Value;
-}
-
-export interface FoliaQuickEffectPickerMenuProps<
-  Value extends string,
-> extends FoliaQuickEffectPickerProps<Value> {
-  isOpen: boolean;
-  menuPosition: FoliaQuickEffectPickerPosition;
-  menuRef: RefObject<HTMLDivElement | null>;
-  onClose: () => void;
 }
 
 export interface FoliaThemedDialogProps {
