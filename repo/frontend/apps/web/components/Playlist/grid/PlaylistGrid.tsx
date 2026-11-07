@@ -1,8 +1,10 @@
 "use client";
 
 import { useCallback, useEffect, useId } from "react";
+import { useFlipReveal } from "@/hooks/playlist/useFlipReveal";
 import { useGridWall } from "@/hooks/playlist/useGridWall";
 import { usePlaylistViewPlayback } from "@/hooks/playlist/usePlaylistViewPlayback";
+import { computeGridPlacement } from "@/lib/playlist/grid/falloff";
 import { useLatticePreferences } from "@/store/module/lattice";
 import { useTranslation } from "react-i18next";
 
@@ -30,6 +32,18 @@ export default function PlaylistGrid({
     sourceId,
     onTrackPlay,
   });
+  const flip = useFlipReveal(fieldRef, wall.visible, tracks.length > 0, (cell) => {
+    const camera = wall.cameraRef.current;
+    const view = wall.viewportRef.current;
+    const placement = computeGridPlacement(cell, camera, view);
+    if (!placement) return null;
+    return {
+      key: cell.key,
+      distance:
+        Math.hypot(placement.dx, placement.dy) /
+        (Math.hypot(view.width, view.height) / 2 / camera.scale),
+    };
+  });
   const select = useCallback(
     (cell: GridCell, centered: boolean) => {
       const track = tracks[cell.index];
@@ -49,17 +63,19 @@ export default function PlaylistGrid({
   useEffect(() => {
     fieldRef.current?.focus({ preventScroll: true });
   }, [fieldRef]);
-  // Open on the playing track when it belongs to this page, otherwise on the first one.
+  // Open on the playing track when it belongs to this page, otherwise on the first one. A wall that
+  // is flipping into place finishes first, then glides over.
   useEffect(() => {
-    if (currentIndex >= 0) panTo(currentIndex);
+    if (flip.settled && currentIndex >= 0) panTo(currentIndex);
     // Only on open; following is the preference below.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [flip.settled]);
   useEffect(() => {
-    if (followCurrent && currentIndex >= 0) panTo(currentIndex);
-  }, [followCurrent, currentIndex, panTo]);
+    if (flip.settled && followCurrent && currentIndex >= 0) panTo(currentIndex);
+  }, [flip.settled, followCurrent, currentIndex, panTo]);
   return (
     <section
+      data-playlist-view=""
       tabIndex={-1}
       className="group/grid @container absolute inset-0 isolate z-15 overflow-hidden bg-card text-foreground outline-none motion-reduce:**:transition-none"
       data-lights-off={lightsOff}
@@ -68,6 +84,7 @@ export default function PlaylistGrid({
       onKeyDown={(event) => wall.onKeyDown(event, onClose, activate)}
     >
       <PlaylistViewTools
+        revealing={flip.toolsFade}
         title={title}
         count={tracks.length}
         canLocate={currentIndex >= 0}
@@ -102,6 +119,7 @@ export default function PlaylistGrid({
                 register={wall.register}
                 onSelect={select}
                 onPlay={play}
+                flipPlan={flip.plan}
               />
             );
           })}

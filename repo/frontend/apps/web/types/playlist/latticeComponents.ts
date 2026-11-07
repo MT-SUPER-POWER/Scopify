@@ -2,6 +2,13 @@ import type { ReactNode } from "react";
 import type { SongDetail } from "@/types/song/api";
 import type { PlaylistViewMode, QueueInstance, ReflowTile } from "@/types/playlist/lattice";
 
+/** Which cards of a wall flip from skeleton to content, and the gate they all wait on. */
+export interface CardFlipPlan {
+  /** Milliseconds each on-screen card waits after the gate opens, by card key. */
+  delays: Map<string, number>;
+  gate: Promise<void>;
+}
+
 export interface PlaylistLatticeProps {
   tracks: SongDetail[];
   title: string;
@@ -36,9 +43,12 @@ export interface LatticePosterProps {
   onFocus: (instance: QueueInstance) => void;
   onSelect: (instance: QueueInstance) => void;
   onPlay: (track: SongDetail) => void;
+  flipPlan: CardFlipPlan | null;
 }
 
 export interface PlaylistViewToolsProps {
+  /** The wall is flipping into place: the tools fade in with it instead of popping up. */
+  revealing: boolean;
   title: string;
   count: number;
   mode: PlaylistViewMode;
