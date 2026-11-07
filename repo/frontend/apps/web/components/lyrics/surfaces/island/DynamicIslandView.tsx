@@ -2,7 +2,7 @@
 
 import type { CSSProperties } from "react";
 import { Music } from "lucide-react";
-import { CompanionLyricText } from "@/components/lyrics/companion/CompanionLyricText";
+import { CompanionLyricText } from "@/components/lyrics/surfaces/companion/CompanionLyricText";
 import { DEFAULT_DYNAMIC_ISLAND_PREFERENCES } from "@/constants/desktopCompanion";
 import { useCompanionCursorInside } from "@/hooks/desktopCompanion/useCompanionCursorInside";
 import { useCompanionPreferences } from "@/hooks/desktopCompanion/useCompanionPreferences";

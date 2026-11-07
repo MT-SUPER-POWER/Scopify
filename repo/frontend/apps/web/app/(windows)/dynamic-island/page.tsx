@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 
-import { DynamicIslandView } from "@/components/lyrics/island/DynamicIslandView";
+import { DynamicIslandView } from "@/components/lyrics/surfaces/island/DynamicIslandView";
 
 export const metadata: Metadata = {
   title: "Scopify Dynamic Island",

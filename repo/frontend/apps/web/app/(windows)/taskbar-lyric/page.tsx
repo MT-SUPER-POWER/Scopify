@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 
-import { TaskbarLyricView } from "@/components/lyrics/taskbar/TaskbarLyricView";
+import { TaskbarLyricView } from "@/components/lyrics/surfaces/taskbar/TaskbarLyricView";
 
 export const metadata: Metadata = {
   title: "Scopify Taskbar Lyric",

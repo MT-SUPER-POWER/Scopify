@@ -1,6 +1,6 @@
 "use client";
 
-import { SubtitleCapsule } from "@/components/lyrics/subtitle/SubtitleCapsule";
+import { SubtitleCapsule } from "@/components/lyrics/surfaces/subtitle/SubtitleCapsule";
 import { useTranslation } from "react-i18next";
 
 import type { LyricsStylePreviewProps } from "@/types/lyrics/subtitlePreview";

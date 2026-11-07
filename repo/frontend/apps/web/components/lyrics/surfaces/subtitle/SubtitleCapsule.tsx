@@ -5,7 +5,7 @@ import { useSubtitleMarquee } from "@/hooks/lyrics/useSubtitleMarquee";
 import { useSubtitleFill } from "@/hooks/settings/useSubtitleFill";
 import { cn } from "@/lib/utils";
 import { SubtitleFillText } from "./SubtitleFillText";
-import { CompanionSubtitleFillText } from "@/components/lyrics/companion/CompanionSubtitleFillText";
+import { CompanionSubtitleFillText } from "@/components/lyrics/surfaces/companion/CompanionSubtitleFillText";
 import { LYRICS_PREVIEW_FONTS } from "@/constants/appearance";
 import { useSubtitleEntrance } from "@/hooks/settings/useSubtitleEntrance";
 import type { SubtitleCapsuleProps } from "@/types/lyrics/subtitlePreview";

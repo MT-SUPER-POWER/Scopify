@@ -2,8 +2,8 @@
 
 import { useRef, useState, type CSSProperties } from "react";
 import { Music } from "lucide-react";
-import { TaskbarLyricControls } from "@/components/lyrics/taskbar/TaskbarLyricControls";
-import { TaskbarLyricLine } from "@/components/lyrics/taskbar/TaskbarLyricLine";
+import { TaskbarLyricControls } from "@/components/lyrics/surfaces/taskbar/TaskbarLyricControls";
+import { TaskbarLyricLine } from "@/components/lyrics/surfaces/taskbar/TaskbarLyricLine";
 import { DEFAULT_TASKBAR_LYRIC_PREFERENCES } from "@/constants/desktopCompanion";
 import { useCompanionPreferences } from "@/hooks/desktopCompanion/useCompanionPreferences";
 import { useIsClient } from "@/hooks/desktopCompanion/useIsClient";

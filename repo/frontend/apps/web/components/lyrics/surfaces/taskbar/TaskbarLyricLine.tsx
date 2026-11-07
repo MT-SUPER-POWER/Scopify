@@ -1,6 +1,6 @@
 "use client";
 
-import { CompanionLyricText } from "@/components/lyrics/companion/CompanionLyricText";
+import { CompanionLyricText } from "@/components/lyrics/surfaces/companion/CompanionLyricText";
 import { useSubtitleMarquee } from "@/hooks/lyrics/useSubtitleMarquee";
 import { cn } from "@/lib/utils";
 import type { TaskbarLyricLineProps } from "@/types/desktop/taskbarLyric";

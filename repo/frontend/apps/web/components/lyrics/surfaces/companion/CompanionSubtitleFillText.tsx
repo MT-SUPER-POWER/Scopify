@@ -1,6 +1,6 @@
 "use client";
 
-import { SubtitleFillText } from "@/components/lyrics/subtitle/SubtitleFillText";
+import { SubtitleFillText } from "@/components/lyrics/surfaces/subtitle/SubtitleFillText";
 import { useCompanionLyricProgress } from "@/hooks/lyrics/useCompanionLyricProgress";
 import type { CompanionSubtitleFillTextProps } from "@/types/lyrics/subtitlePreview";
 

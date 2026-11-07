@@ -10,7 +10,7 @@ import Header from "@/components/Header";
 import { PlayerBar } from "@/components/PlayBar";
 import { Sidebar } from "@/components/Sidebar";
 import { CommandWorkspaceModal } from "@/components/commandWorkspace/CommandWorkspaceModal";
-import { CenterLyricsView } from "@/components/lyrics/CenterLyricsView";
+import { CenterLyricsView } from "@/components/lyrics/surfaces/CenterLyricsView";
 import { FoliaSettingsMount } from "@/components/lyrics/FoliaSettingsMount";
 import { FoliaVisualizerPrewarm } from "@/components/lyrics/stage/FoliaVisualizerPrewarm";
 import { LyricStageMount } from "@/components/lyrics/stage/LyricStageMount";

@@ -1,4 +1,4 @@
-import { DesktopLyricView } from "@/components/lyrics/DesktopLyricView";
+import { DesktopLyricView } from "@/components/lyrics/surfaces/subtitle/DesktopLyricView";
 
 export default function DesktopLyricsPage() {
   return (

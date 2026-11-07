@@ -1,7 +1,7 @@
 "use client";
 
-import { DesktopLyricHeader } from "@/components/lyrics/subtitle/DesktopLyricHeader";
-import { SubtitleCapsule } from "@/components/lyrics/subtitle/SubtitleCapsule";
+import { DesktopLyricHeader } from "@/components/lyrics/surfaces/subtitle/DesktopLyricHeader";
+import { SubtitleCapsule } from "@/components/lyrics/surfaces/subtitle/SubtitleCapsule";
 import { useCompanionCursorInside } from "@/hooks/desktopCompanion/useCompanionCursorInside";
 import { useCompanionWindowDrag } from "@/hooks/desktopCompanion/useCompanionWindowDrag";
 import { useDesktopLyricInteractiveRegion } from "@/hooks/lyrics/useDesktopLyricInteractiveRegion";
