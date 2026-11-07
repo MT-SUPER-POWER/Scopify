@@ -25,4 +25,4 @@ Any copied or further adapted Folia module must keep the provenance in [`folia/S
 | `surfaces/` | Lyrics outside the stage: the center view, `subtitle/`, `island/`, `taskbar/`, and their shared `companion/` text |
 | `folia/` | The vendored Folia source; `SOURCE.md` tracks every change to it |
 
-`foliaStudio.css` stays at this root because `app/globals.css` imports it. New components go in the directory for their feature, not at this root.
+New components go in the directory for their feature, not at this root.
