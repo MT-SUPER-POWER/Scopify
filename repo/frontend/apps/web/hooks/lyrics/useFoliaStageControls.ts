@@ -11,7 +11,7 @@ import type { DesktopLyricCommand } from "@/types/desktop/lyric";
 
 const keepAutoHideEnabled = () => undefined;
 
-export function useFoliaStageControls({ onClose }: LyricStageProps) {
+export function useFoliaStageControls({ onClose }: Pick<LyricStageProps, "onClose">) {
   const router = useRouter();
   const [isBorderVisible, setIsBorderVisible] = useState(false);
   const [isPlayerChromeHidden, setIsPlayerChromeHidden] = useState(false);
