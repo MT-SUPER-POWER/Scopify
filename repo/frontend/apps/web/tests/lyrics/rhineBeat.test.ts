@@ -129,6 +129,36 @@ describe("RhineBeatDetector", () => {
   });
 });
 
+describe("Rhine motion smoothness", () => {
+  /** The largest change of speed between two frames, in height units per second. */
+  const largestSpeedChange = (series: number[]) => {
+    const speeds = series.slice(1).map((value, index) => (value - series[index]) / DT);
+    return Math.max(...speeds.slice(1).map((speed, index) => Math.abs(speed - speeds[index])));
+  };
+
+  it("eases a column into a sudden hit instead of starting at full speed", () => {
+    const detector = new RhineBeatDetector();
+    for (let frame = 0; frame < 120; frame++) detector.update(new Uint8Array(BINS), DT);
+    const levels: number[] = [];
+    for (let frame = 0; frame < 30; frame++)
+      levels.push(detector.update(new Uint8Array(BINS).fill(200), DT).levels[5]);
+    expect(levels[0]).toBeLessThan(0.02);
+    expect(levels.at(-1)).toBeGreaterThan(0.8);
+    expect(largestSpeedChange(levels)).toBeLessThan(2);
+  });
+
+  it("lets a kick swell through the field from standing still", () => {
+    const field = new RhineBeatField();
+    const origin = { row: 23, lane: 4, key: "4:23", x: 0, z: 0, fieldX: 0.5 };
+    const frames = render(3, { hits: [1, 1.5, 2, 2.5] });
+    const heights = frames.map((spectrum, frame) => {
+      field.update(spectrum, frame * DT, DT, origin);
+      return field.height(23, 3, 0.5, frame * DT);
+    });
+    expect(largestSpeedChange(heights.slice(60))).toBeLessThan(2);
+  });
+});
+
 describe("Rhine rhythm styles", () => {
   const bands = { low: 1, mid: 1, high: 1, activity: 1 };
   const sources = { bands, beat: new RhineBeatField() };

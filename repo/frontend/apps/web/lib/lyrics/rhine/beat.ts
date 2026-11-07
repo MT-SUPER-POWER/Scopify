@@ -1,4 +1,5 @@
 import type { RhineBeatFrame } from "@/types/lyrics/rhine/runtime";
+import { Spring } from "./motion";
 
 // The shared analyser publishes byte decibel magnitudes from 0 Hz to Nyquist.
 // 48 kHz is the usual output rate; at 44.1 kHz every band sits 8% lower.
@@ -22,6 +23,9 @@ const WARM_UP = 0.5;
 // tiny flutter from sweeping the column's whole height.
 const RANGE_MEMORY = 6;
 const MIN_SWING = 0.12;
+// Columns ride critically damped springs: a hit bends the motion instead of restarting it, so the field never jerks.
+const COLUMN_RISE = 11;
+const COLUMN_FALL = 6;
 /** Minimum seconds between two onsets of one band. */
 const REFRACTORY = [0.18, 0.12, 0.09] as const;
 
@@ -46,17 +50,20 @@ export class RhineBeatDetector {
   private warmth = 0;
   private readonly peaks = new Float32Array(RHINE_SPECTRUM_COLUMNS);
   private readonly floors = new Float32Array(RHINE_SPECTRUM_COLUMNS);
+  private readonly targets = new Float32Array(RHINE_SPECTRUM_COLUMNS);
+  private readonly columns = Array.from({ length: RHINE_SPECTRUM_COLUMNS }, () => new Spring());
   private readonly frame: RhineBeatFrame = {
     onsets: [0, 0, 0],
     levels: new Float32Array(RHINE_SPECTRUM_COLUMNS),
   };
 
   update(spectrum: ArrayLike<number> | undefined, dt: number): RhineBeatFrame {
-    const { onsets, levels } = this.frame;
+    const { onsets } = this.frame;
     onsets.fill(0);
     const length = spectrum?.length ?? 0;
     if (!spectrum || length < 8) {
-      levels.fill(0);
+      // Losing the source settles the field; dropping it to zero would snap every file down at once.
+      this.settleColumns(undefined, clamp(dt, 0, 0.1));
       this.previous = new Float32Array(0);
       return this.frame;
     }
@@ -106,11 +113,19 @@ export class RhineBeatDetector {
       this.peaks[column] = peak;
       this.floors[column] = quiet;
       const floor = Math.max(0, Math.min(quiet, peak - MIN_SWING));
-      const target = clamp((value - floor) / Math.max(peak - floor, MIN_SWING));
-      const rate = target > levels[column] ? 18 : 4;
-      levels[column] += (target - levels[column]) * (1 - Math.exp(-dt * rate));
+      this.targets[column] = clamp((value - floor) / Math.max(peak - floor, MIN_SWING));
     }
+    this.settleColumns(this.targets, dt);
     for (let bin = 0; bin < length; bin++) this.previous[bin] = spectrum[bin];
     return this.frame;
+  }
+
+  private settleColumns(targets: Float32Array | undefined, dt: number) {
+    const { levels } = this.frame;
+    this.columns.forEach((spring, column) => {
+      const target = targets?.[column] ?? 0;
+      spring.damp(target, target > spring.value ? COLUMN_RISE : COLUMN_FALL, dt);
+      levels[column] = spring.value;
+    });
   }
 }
