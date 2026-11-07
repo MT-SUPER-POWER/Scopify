@@ -9,6 +9,7 @@ import { resolveFacetPalette } from "@/lib/lyrics/facet/palette";
 import { FacetRenderer, loadFacetShaders } from "@/lib/lyrics/facet/renderer";
 import { FacetScene } from "@/lib/lyrics/facet/scene";
 import { createFrameStats } from "@/lib/lyrics/frameStats";
+import type { Line } from "@/components/lyrics/folia/src/types";
 import type { LyricChorusRange } from "@/types/lyrics/model";
 import type {
   FacetBackgroundProps,
