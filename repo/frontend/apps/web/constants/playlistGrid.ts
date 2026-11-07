@@ -8,3 +8,6 @@ export const GRID_METRICS: GridMetrics = {
   spacingY: 296,
   maxDistance: 760,
 };
+
+/** Cards built beyond the pane edge, in world pixels, so a drag reveals ones that are already painted. */
+export const GRID_OVERSCAN = 420;
