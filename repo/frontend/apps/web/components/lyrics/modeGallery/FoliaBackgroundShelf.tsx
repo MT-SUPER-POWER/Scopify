@@ -5,8 +5,8 @@ import {
   FoliaPictureGrid,
   type FoliaPictureState,
 } from "@scopify/ui/scopify/components/folia-panel/picture-grid";
-import { FoliaBackgroundModeGlyph } from "@/components/lyrics/FoliaModeGlyph";
-import { FoliaBackgroundThumbnail } from "@/components/lyrics/FoliaBackgroundThumbnail";
+import { FoliaBackgroundModeGlyph } from "@/components/lyrics/modeGallery/FoliaModeGlyph";
+import { FoliaBackgroundThumbnail } from "@/components/lyrics/modeGallery/FoliaBackgroundThumbnail";
 import {
   VISUALIZER_BACKGROUND_REGISTRY,
   getVisualizerBackgroundModeLabel,

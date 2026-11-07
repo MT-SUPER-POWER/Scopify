@@ -2,7 +2,7 @@ import { Shuffle } from "lucide-react";
 import {
   FoliaBackgroundModeGlyph,
   FoliaVisualizerModeGlyph,
-} from "@/components/lyrics/FoliaModeGlyph";
+} from "@/components/lyrics/modeGallery/FoliaModeGlyph";
 import type { VisualizerBackgroundMode } from "@/components/lyrics/folia/src/types";
 
 const RANDOM_CHOICE = "__random__";

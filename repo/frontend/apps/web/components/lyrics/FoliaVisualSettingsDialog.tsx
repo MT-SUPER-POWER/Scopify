@@ -11,8 +11,8 @@ import { useLyricStageStore } from "@/store/module/lyrics";
 import { useTranslation } from "react-i18next";
 
 import { FoliaSettingsPreview } from "@/components/lyrics/FoliaSettingsPreview";
-import { FoliaStyleShelf } from "@/components/lyrics/FoliaStyleShelf";
-import { FoliaBackgroundShelf } from "@/components/lyrics/FoliaBackgroundShelf";
+import { FoliaStyleShelf } from "@/components/lyrics/modeGallery/FoliaStyleShelf";
+import { FoliaBackgroundShelf } from "@/components/lyrics/modeGallery/FoliaBackgroundShelf";
 import { FoliaVisualSettingsPanel } from "@/components/lyrics/FoliaVisualSettingsPanel";
 import { useFoliaStageSettingsPanel } from "@/hooks/player/useFoliaStageSettingsPanel";
 import type { FoliaVisualSettingsDialogProps } from "@/types/lyrics/components";

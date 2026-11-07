@@ -3,7 +3,7 @@
 import { Component, type ReactNode } from "react";
 import { useMotionValue } from "framer-motion";
 import VisualizerBackgroundRenderer from "@/components/lyrics/folia/src/components/visualizer/backgrounds/VisualizerBackgroundRenderer";
-import { FoliaBackgroundModeGlyph } from "@/components/lyrics/FoliaModeGlyph";
+import { FoliaBackgroundModeGlyph } from "@/components/lyrics/modeGallery/FoliaModeGlyph";
 import { FOLIA_SETTINGS_PREVIEW_CONTENT } from "@/constants/lyricsPreview";
 import { useLyricStageStore } from "@/store/module/lyrics";
 import type { Theme, VisualizerBackgroundMode } from "@/components/lyrics/folia/src/types";

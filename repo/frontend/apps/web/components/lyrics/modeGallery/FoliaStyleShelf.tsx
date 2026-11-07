@@ -6,8 +6,8 @@ import {
   FoliaPictureGrid,
   type FoliaPictureState,
 } from "@scopify/ui/scopify/components/folia-panel/picture-grid";
-import { FoliaVisualizerModeGlyph } from "@/components/lyrics/FoliaModeGlyph";
-import { FoliaStyleThumbnail } from "@/components/lyrics/FoliaStyleThumbnail";
+import { FoliaVisualizerModeGlyph } from "@/components/lyrics/modeGallery/FoliaModeGlyph";
+import { FoliaStyleThumbnail } from "@/components/lyrics/modeGallery/FoliaStyleThumbnail";
 import {
   VISUALIZER_REGISTRY,
   getVisualizerModeLabel,

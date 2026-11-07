@@ -2,7 +2,7 @@
 
 import { FoliaPictureChecks } from "@scopify/ui/scopify/components/folia-panel/picture-grid";
 import { FoliaSettingsGroup } from "@scopify/ui/scopify/components/folia-studio/settings";
-import { FoliaVisualizerModeGlyph } from "@/components/lyrics/FoliaModeGlyph";
+import { FoliaVisualizerModeGlyph } from "@/components/lyrics/modeGallery/FoliaModeGlyph";
 import { useFoliaRandomPool } from "@/hooks/lyrics/useFoliaRandomPool";
 import { useTranslation } from "react-i18next";
 
