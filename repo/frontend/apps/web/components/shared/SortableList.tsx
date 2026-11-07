@@ -8,7 +8,6 @@ import { SortableListContext } from "@/lib/playlist/sortableListContext";
 import { useTranslation } from "react-i18next";
 
 import type { SortableListProps } from "@/types/tracklist/sortableList";
-import "./trackDrag.css";
 
 export function SortableList(props: SortableListProps) {
   const { t } = useTranslation();
