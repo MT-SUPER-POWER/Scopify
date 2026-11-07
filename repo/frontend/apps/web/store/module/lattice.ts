@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { PLAYLIST_VIEW_MODES } from "@/constants/playlistViews";
+import { LATTICE_PREFERENCES_STORAGE_KEY, PLAYLIST_VIEW_MODES } from "@/constants/playlistViews";
 import type { LatticePreferences, LatticeViewState } from "@/types/playlist/lattice";
 
 export const useLatticePreferences = create<LatticePreferences>()(
@@ -16,7 +16,7 @@ export const useLatticePreferences = create<LatticePreferences>()(
       setImmersive: (immersive) => set({ immersive }),
     }),
     {
-      name: "scopify-lattice-preferences",
+      name: LATTICE_PREFERENCES_STORAGE_KEY,
       version: 1,
       // Version 0 could remember the Bravais view, which no longer exists.
       migrate: (persisted, version) => {

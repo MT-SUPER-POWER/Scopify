@@ -3,6 +3,7 @@
 import { useMemo } from "react";
 import { useSearchParams } from "next/navigation";
 import { PlaylistContent } from "@/components/Playlist/PlaylistContent";
+import { PlaylistViewLoading } from "@/components/Playlist/lattice/PlaylistViewLoading";
 import { PlaylistPageSkeleton } from "@/components/Playlist/PlaylistPageSkeleton";
 import { DailyCategorySelector } from "@/components/Playlist/DailyCategorySelector";
 import { DailyRecommendationSwitch } from "@/components/Playlist/DailyRecommendationSwitch";
@@ -42,7 +43,13 @@ function DailyCategoryPageBody({ accountId }: DailyCategoryPageBodyProps) {
   const date = new Date().toISOString().slice(0, 10);
   const query = useDailyCategorySongs(accountId, date);
   const tracks = useMemo(() => query.data?.dailySongs.map(pruneSongDetail) ?? [], [query.data]);
-  if (!query.data) return <PlaylistPageSkeleton />;
+  if (!query.data)
+    return (
+      <>
+        <PlaylistPageSkeleton />
+        <PlaylistViewLoading />
+      </>
+    );
   const title = locale === "en-US" ? "Style recommendations" : "风格推荐";
   return (
     <PlaylistContent

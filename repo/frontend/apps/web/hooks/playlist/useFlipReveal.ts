@@ -4,6 +4,7 @@ import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import type { RefObject } from "react";
 import { useReducedMotion } from "framer-motion";
 import {
+  clearPageLoadFlip,
   FLIP_DECODE_LIMIT,
   FLIP_SPREAD,
   FLIP_TOTAL,
@@ -29,6 +30,7 @@ export function useFlipReveal<Item>(
   const [revealing] = useState(() => hasContent && !reducedMotion && isFlipRevealArmed());
   const [toolsFade] = useState(() => revealing && !isFlipRevealKeepingTools());
   const [settled, setSettled] = useState(!revealing);
+  useEffect(clearPageLoadFlip, []);
   const planRef = useRef<CardFlipPlan | null>(null);
   const openGate = useRef<() => void>(() => undefined);
   if (revealing && !planRef.current && items.length > 0) {

@@ -4,6 +4,7 @@ import {
   NOW_PLAYING_PANEL_MEDIA_QUERY,
   SIDEBAR_COLLAPSED_WIDTH,
 } from "@/constants/layout";
+import { LATTICE_PREFERENCES_STORAGE_KEY } from "@/constants/playlistViews";
 import { DESKTOP_RUNTIME_PROBE_EXPRESSION } from "@/lib/runtime";
 import { MUSIC_SESSION_STORAGE_KEY } from "@/lib/web/musicSessionCredential";
 
@@ -18,11 +19,13 @@ const UI_STORAGE_KEY = "ui-storage";
  * - `--boot-now-playing-width`：右栏展开时的宽度
  * - `data-boot-session`：是否已登录（决定是否显示歌单骨架）
  * - `data-boot-desktop`：是否运行在桌面端（preload 早于页面脚本注入桥接对象）
+ * - `data-boot-playlist-view`：上次是否停在歌单沉浸视图（决定歌单骨架是否让位给卡片墙）
  */
 export function createLayoutBootScript() {
   const config = JSON.stringify({
     collapsedWidth: SIDEBAR_COLLAPSED_WIDTH,
     ids: DASHBOARD_PANEL_IDS,
+    latticeKey: LATTICE_PREFERENCES_STORAGE_KEY,
     layoutPrefix: `react-resizable-panels:${DASHBOARD_LAYOUT_GROUP_ID}`,
     media: NOW_PLAYING_PANEL_MEDIA_QUERY,
     sessionKey: MUSIC_SESSION_STORAGE_KEY,
@@ -42,5 +45,6 @@ if(np==="panel"&&layout[c.ids.nowPlaying]>0)d.style.setProperty("--boot-now-play
 d.setAttribute("data-boot-now-playing",np);
 if(${DESKTOP_RUNTIME_PROBE_EXPRESSION})d.setAttribute("data-boot-desktop","true");
 if((s.getItem(c.sessionKey)||"").trim())d.setAttribute("data-boot-session","true");
+if(((read(c.latticeKey)||{}).state||{}).immersive)d.setAttribute("data-boot-playlist-view","true");
 }catch(e){}})(${config});`;
 }

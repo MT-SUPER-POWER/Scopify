@@ -71,7 +71,19 @@ export function releaseFlipReveal() {
   disarmFlipReveal();
 }
 
-export const isFlipRevealArmed = () => armed;
+// A reload ends on the first wall it opens, however many skeletons and shells it passes through on
+// the way, so it is remembered apart from the one-task rule above.
+let pageLoad = false;
+
+export function markPageLoadFlip() {
+  pageLoad = true;
+}
+
+export function clearPageLoadFlip() {
+  pageLoad = false;
+}
+
+export const isFlipRevealArmed = () => armed || pageLoad;
 export const isFlipRevealKeepingTools = () => toolsStay;
 
 /** How long the outgoing wall takes to clear before the next layout flips in. */
