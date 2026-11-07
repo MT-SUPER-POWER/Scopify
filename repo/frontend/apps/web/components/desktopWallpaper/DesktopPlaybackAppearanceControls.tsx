@@ -11,7 +11,7 @@ import {
 } from "@scopify/ui/shadcn/components/tooltip";
 import { DesktopPlaybackFoliaModeControls } from "@/components/desktopWallpaper/DesktopPlaybackFoliaModeControls";
 import { DesktopPlaybackThemeControls } from "@/components/desktopWallpaper/DesktopPlaybackThemeControls";
-import { FoliaSonnetPerformanceWarningDialog } from "@/components/lyrics/FoliaSonnetPerformanceWarningDialog";
+import { FoliaSonnetPerformanceWarningDialog } from "@/components/lyrics/visualSettings/FoliaSonnetPerformanceWarningDialog";
 import { useTranslation } from "react-i18next";
 
 import { useLyricStageStore } from "@/store/module/lyrics";

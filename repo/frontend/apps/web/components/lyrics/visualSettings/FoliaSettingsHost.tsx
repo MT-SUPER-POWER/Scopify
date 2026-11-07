@@ -2,10 +2,10 @@
 
 import { buildAppStyle } from "@/components/lyrics/folia/src/components/app/presentation/buildAppStyle";
 import { createPortal } from "react-dom";
-import { FoliaFontPicker } from "@/components/lyrics/FoliaFontPicker";
-import { FoliaSonnetPerformanceWarningDialog } from "@/components/lyrics/FoliaSonnetPerformanceWarningDialog";
+import { FoliaFontPicker } from "@/components/lyrics/visualSettings/FoliaFontPicker";
+import { FoliaSonnetPerformanceWarningDialog } from "@/components/lyrics/visualSettings/FoliaSonnetPerformanceWarningDialog";
 import { FoliaThemeLibraryDialog } from "@/components/lyrics/FoliaThemeLibraryDialog";
-import { FoliaVisualSettingsDialog } from "@/components/lyrics/FoliaVisualSettingsDialog";
+import { FoliaVisualSettingsDialog } from "@/components/lyrics/visualSettings/FoliaVisualSettingsDialog";
 import { useFoliaPresentationAppearance } from "@/hooks/player/useFoliaPresentationAppearance";
 import { useFoliaSettingsStore } from "@/store/module/foliaSettings";
 

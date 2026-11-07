@@ -6,7 +6,7 @@ import {
   FoliaSettingsRow,
   FoliaSettingsToggle,
 } from "@scopify/ui/scopify/components/folia-studio/settings";
-import { FoliaHarmonySettingsCard } from "@/components/lyrics/FoliaHarmonySettingsCard";
+import { FoliaHarmonySettingsCard } from "@/components/lyrics/visualSettings/FoliaHarmonySettingsCard";
 import type { FoliaVisualSettingsSectionProps } from "@/types/lyrics/folia/visualSettings";
 
 export function FoliaSubtitleSettingsSection({ model: m }: FoliaVisualSettingsSectionProps) {

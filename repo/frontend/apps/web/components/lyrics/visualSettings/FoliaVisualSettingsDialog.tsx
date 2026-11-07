@@ -10,10 +10,10 @@ import { useFoliaSettingsStore } from "@/store/module/foliaSettings";
 import { useLyricStageStore } from "@/store/module/lyrics";
 import { useTranslation } from "react-i18next";
 
-import { FoliaSettingsPreview } from "@/components/lyrics/FoliaSettingsPreview";
+import { FoliaSettingsPreview } from "@/components/lyrics/visualSettings/FoliaSettingsPreview";
 import { FoliaStyleShelf } from "@/components/lyrics/modeGallery/FoliaStyleShelf";
 import { FoliaBackgroundShelf } from "@/components/lyrics/modeGallery/FoliaBackgroundShelf";
-import { FoliaVisualSettingsPanel } from "@/components/lyrics/FoliaVisualSettingsPanel";
+import { FoliaVisualSettingsPanel } from "@/components/lyrics/visualSettings/FoliaVisualSettingsPanel";
 import { useFoliaStageSettingsPanel } from "@/hooks/player/useFoliaStageSettingsPanel";
 import type { FoliaVisualSettingsDialogProps } from "@/types/lyrics/components";
 

@@ -1,8 +1,8 @@
 "use client";
 
 import type { FoliaVisualSettingsSectionProps } from "@/types/lyrics/folia/visualSettings";
-import { FoliaPartitaSettingsSection } from "@/components/lyrics/FoliaPartitaSettingsSection";
-import { FoliaRandomSettingsSection } from "@/components/lyrics/FoliaRandomSettingsSection";
+import { FoliaPartitaSettingsSection } from "@/components/lyrics/visualSettings/FoliaPartitaSettingsSection";
+import { FoliaRandomSettingsSection } from "@/components/lyrics/visualSettings/FoliaRandomSettingsSection";
 import { useLyricStageStore } from "@/store/module/lyrics";
 
 export function FoliaVisualizerSettingsSection({ model: m }: FoliaVisualSettingsSectionProps) {

@@ -2,7 +2,7 @@
 
 import { useMemo } from "react";
 
-import { FoliaSettingsPreview } from "@/components/lyrics/FoliaSettingsPreview";
+import { FoliaSettingsPreview } from "@/components/lyrics/visualSettings/FoliaSettingsPreview";
 import { FoliaThemeEditorPanel } from "@/components/lyrics/FoliaThemeEditorPanel";
 import type { Theme } from "@/components/lyrics/folia/src/types";
 import { useMediaQuery } from "@/hooks/ui/useMediaQuery";

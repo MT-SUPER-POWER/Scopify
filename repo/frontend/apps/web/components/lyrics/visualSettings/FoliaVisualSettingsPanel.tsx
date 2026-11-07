@@ -1,11 +1,11 @@
 "use client";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@scopify/ui/shadcn/components/tabs";
-import { FoliaFontSettingsSection } from "@/components/lyrics/FoliaFontSettingsSection";
-import { FoliaSubtitleSettingsSection } from "@/components/lyrics/FoliaSubtitleSettingsSection";
-import { FoliaBackgroundSettingsSection } from "@/components/lyrics/FoliaBackgroundSettingsSection";
-import { FoliaVisualizerSettingsSection } from "@/components/lyrics/FoliaVisualizerSettingsSection";
-import { FoliaGlobalSettingsCard } from "@/components/lyrics/FoliaGlobalSettingsCard";
+import { FoliaFontSettingsSection } from "@/components/lyrics/visualSettings/FoliaFontSettingsSection";
+import { FoliaSubtitleSettingsSection } from "@/components/lyrics/visualSettings/FoliaSubtitleSettingsSection";
+import { FoliaBackgroundSettingsSection } from "@/components/lyrics/visualSettings/FoliaBackgroundSettingsSection";
+import { FoliaVisualizerSettingsSection } from "@/components/lyrics/visualSettings/FoliaVisualizerSettingsSection";
+import { FoliaGlobalSettingsCard } from "@/components/lyrics/visualSettings/FoliaGlobalSettingsCard";
 import type { FoliaStageEditSection } from "@/types/lyrics/folia/stage";
 import type { FoliaVisualSettingsPanelProps } from "@/types/lyrics/folia/visualSettings";
 import {
