@@ -81,6 +81,9 @@ export function LyricStage({ hasEntered, onClose }: LyricStageProps) {
       } ${isBorderVisible ? "border border-white/30" : ""}`}
       style={stageStyle}
     >
+      {/* The page header is the window's drag region, but it stops being laid out under this stage. */}
+      <div aria-hidden className="absolute inset-x-0 top-0 h-14 [-webkit-app-region:drag]" />
+
       {isWindowVisible ? (
         // Only the visual layer hides the pointer; controls and settings stay outside this scope.
         <div
