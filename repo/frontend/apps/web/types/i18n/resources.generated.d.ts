@@ -414,7 +414,7 @@ export default interface Resources {
     "cappella.emojiAlt": "表情";
     "common.reset": "重置";
     "facet.credit": "改编自 igneus 的 Hex Glitch（CC BY-NC-SA 3.0，仅限非商业使用）。";
-    "facet.description": "六边形随每句歌词翻面，涟漪随音量和鼓点流动，配色取自主题和封面。";
+    "facet.description": "唱一个字亮一片切面，副歌时切面铺满全屏；画面来自封面的折射，鼓点是一圈走过的光。";
     "facet.frameRate": "帧率";
     "facet.loadError": "棱面背景暂时无法加载";
     "facet.musicEnabled": "音乐律动";

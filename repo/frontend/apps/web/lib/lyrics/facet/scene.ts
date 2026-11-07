@@ -156,6 +156,11 @@ export class FacetScene {
     this.paint();
   }
 
+  setCover(cover: ImageBitmap | null) {
+    this.renderer.setCover(cover);
+    if (this.input.frozen) this.paint();
+  }
+
   takeStats() {
     return this.motion.takeStats();
   }

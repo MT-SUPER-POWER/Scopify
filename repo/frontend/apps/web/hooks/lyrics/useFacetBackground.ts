@@ -1,12 +1,15 @@
 "use client";
 
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useSongChorus } from "@/hooks/lyrics/useSongChorus";
 import { extractRepresentativeColors } from "@/components/lyrics/folia/src/utils/colorExtractor";
 import { DEFAULT_FACET_BACKGROUND_TUNING } from "@/constants/facetBackground";
+import { loadFacetCover } from "@/lib/lyrics/facet/cover";
 import { resolveFacetPalette } from "@/lib/lyrics/facet/palette";
 import { FacetRenderer, loadFacetShaders } from "@/lib/lyrics/facet/renderer";
 import { FacetScene } from "@/lib/lyrics/facet/scene";
 import { createFrameStats } from "@/lib/lyrics/frameStats";
+import type { LyricChorusRange } from "@/types/lyrics/model";
 import type {
   FacetBackgroundProps,
   FacetLoadState,
@@ -16,6 +19,7 @@ import type {
 
 const COVER_COLORS = 2;
 const FRAME_REPORT_MS = 30_000;
+const ESTIMATED_WORDS_MAX = 16;
 
 function sceneInput(props: FacetBackgroundProps, coverColors: readonly string[]): FacetSceneInput {
   // Themes can come from outside (AI themes), so an unknown value just means normal.
@@ -31,31 +35,57 @@ function sceneInput(props: FacetBackgroundProps, coverColors: readonly string[])
   };
 }
 
-/** Where the singing is right now; null when this stage has no lyrics to follow. */
-function lyricSample({ lyric }: FacetBackgroundProps): FacetLyricSample | null {
-  if (!lyric || lyric.lines.length === 0) return null;
+/** How many words of a line have started. A line timed only as a whole gets one facet per estimated word. */
+function wordsStarted(line: Line, time: number, progress: number) {
+  if (line.words.length > 1) {
+    let started = 0;
+    for (const word of line.words) if (word.startTime <= time) started += 1;
+    return started;
+  }
+  const estimated = Math.min(Array.from(line.fullText).length, ESTIMATED_WORDS_MAX);
+  return Math.ceil(Math.min(1, Math.max(0, progress)) * estimated);
+}
+
+/** Where the singing is right now; null when this stage has no lyric clock to follow. */
+function lyricSample(
+  { lyric }: FacetBackgroundProps,
+  chorusRanges: readonly LyricChorusRange[] | undefined,
+): FacetLyricSample | null {
+  if (!lyric) return null;
+  const time = lyric.currentTime.get();
+  const chorus = chorusRanges?.length
+    ? chorusRanges.some((range) => {
+        const ms = time * 1000;
+        return ms >= range.startTimeMs && ms < range.endTimeMs;
+      })
+    : null;
   const line = lyric.lines[lyric.currentLineIndex];
-  if (!line) return { lineIndex: -1, progress: 0, singing: false };
+  if (!line) return { lineIndex: -1, progress: 0, singing: false, wordsSung: 0, chorus };
   const length = Math.max(line.endTime - line.startTime, 0.001);
-  const progress = (lyric.currentTime.get() - line.startTime) / length;
+  const progress = (time - line.startTime) / length;
   return {
     lineIndex: lyric.currentLineIndex,
     progress: Math.min(1, Math.max(0, progress)),
     singing: progress < 1,
+    wordsSung: wordsStarted(line, time, progress),
+    chorus,
   };
 }
 
 export function useFacetBackground(props: FacetBackgroundProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [coverColors, setCoverColors] = useState<string[]>([]);
-  const latest = useRef({ props, coverColors });
+  const chorusRanges = useSongChorus(props.seed ?? null).data;
+  const latest = useRef({ props, coverColors, chorusRanges });
+  const cover = useRef<ImageBitmap | null>(null);
+  const showCover = useRef<((bitmap: ImageBitmap | null) => void) | null>(null);
   const synchronize = useRef<(() => void) | null>(null);
   const [status, setStatus] = useState<FacetLoadState>("loading");
   const [attempt, setAttempt] = useState(0);
   const { coverUrl } = props;
 
   useLayoutEffect(() => {
-    latest.current = { props, coverColors };
+    latest.current = { props, coverColors, chorusRanges };
     synchronize.current?.();
   });
 
@@ -64,6 +94,15 @@ export function useFacetBackground(props: FacetBackgroundProps) {
     if (coverUrl) {
       void extractRepresentativeColors(coverUrl, COVER_COLORS).then((colors) => {
         if (active) setCoverColors(colors);
+      });
+      void loadFacetCover(coverUrl).then((bitmap) => {
+        if (!active) {
+          bitmap?.close();
+          return;
+        }
+        cover.current?.close();
+        cover.current = bitmap;
+        showCover.current?.(bitmap);
       });
     } else {
       setCoverColors([]);
@@ -97,7 +136,8 @@ export function useFacetBackground(props: FacetBackgroundProps) {
         console.info(
           `[FacetBackground] ${size.width}x${size.height} on ${renderer.adapter}, GPU ` +
             `${gpuMs === null ? "timer unavailable" : `${gpuMs.toFixed(1)} ms per frame`}; ` +
-            `${song?.kicks ?? 0} kicks, ${song?.turns ?? 0} turns, ${song?.tears ?? 0} tears, ` +
+            `${song?.kicks ?? 0} kicks, ${song?.words ?? 0} words, ${song?.lines ?? 0} lines, ` +
+            `${song?.turns ?? 0} turns, ${song?.tears ?? 0} tears, ` +
             `energy ${(song?.energy ?? 0).toFixed(2)}`,
         );
       },
@@ -138,7 +178,7 @@ export function useFacetBackground(props: FacetBackgroundProps) {
         return;
       }
       frameStats.sample(now);
-      const { props: current } = latest.current;
+      const { props: current, chorusRanges: ranges } = latest.current;
       const { audioBands, config } = current;
       const frameRate =
         config?.facet?.tuning?.frameRate ?? DEFAULT_FACET_BACKGROUND_TUNING.frameRate;
@@ -156,7 +196,7 @@ export function useFacetBackground(props: FacetBackgroundProps) {
               high: audioBands.treble.get() / 255,
               spectrum: audioBands.spectrum?.get(),
             },
-            lyricSample(current),
+            lyricSample(current, ranges),
           );
         } catch (error) {
           fail(error);
@@ -214,6 +254,8 @@ export function useFacetBackground(props: FacetBackgroundProps) {
         controller.signal.throwIfAborted();
         scene = new FacetScene(renderer, currentInput());
         scene.resize(width, height);
+        showCover.current = (bitmap) => scene?.setCover(bitmap);
+        showCover.current(cover.current);
         setStatus("ready");
         sync();
         console.info(
@@ -228,6 +270,7 @@ export function useFacetBackground(props: FacetBackgroundProps) {
       controller.abort();
       stop();
       synchronize.current = null;
+      showCover.current = null;
       document.removeEventListener("visibilitychange", sync);
       canvas.removeEventListener("webglcontextlost", contextLost);
       resize.disconnect();

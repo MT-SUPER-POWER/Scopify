@@ -3,10 +3,16 @@ import { FacetMotion } from "@/lib/lyrics/facet/motion";
 import type { FacetLyricSample } from "@/types/lyrics/facet/background";
 
 const FRAME = 1 / 30;
-const line = (lineIndex: number, progress = 0.5): FacetLyricSample => ({
+const line = (
+  lineIndex: number,
+  wordsSung = 0,
+  chorus: boolean | null = null,
+): FacetLyricSample => ({
   lineIndex,
-  progress,
+  progress: 0.5,
   singing: true,
+  wordsSung,
+  chorus,
 });
 /** Loud or quiet audio with no spectrum, so no onsets fire. */
 const audio = (level: number) => ({ low: level, mid: level, high: level });
@@ -97,8 +103,63 @@ describe("FacetMotion", () => {
     const motion = new FacetMotion("song");
     run(motion, 90, 0.8, line(0));
     const singing = motion.frame(1).presence;
-    run(motion, 300, 0, { lineIndex: 0, progress: 1, singing: false });
+    run(motion, 300, 0, { lineIndex: 0, progress: 1, singing: false, wordsSung: 0, chorus: null });
     expect(motion.frame(1).presence).toBeLessThan(singing);
+  });
+
+  test("each sung word lights the next facet of the spiral, which then settles", () => {
+    const motion = new FacetMotion("song");
+    run(motion, 1, 0.5, line(0, 1));
+    expect(motion.frame(1).lights[0]).toBeGreaterThan(200);
+    expect(motion.frame(1).lights[1]).toBe(0);
+    run(motion, 1, 0.5, line(0, 2));
+    expect(motion.frame(1).lights[1]).toBeGreaterThan(200);
+    run(motion, 300, 0.5, line(0, 2));
+    expect(motion.frame(1).lights[0]).toBeGreaterThan(60);
+    expect(motion.frame(1).lights[0]).toBeLessThan(120);
+  });
+
+  test("a new line lets the last line's facets fade and sends out a ring", () => {
+    const motion = new FacetMotion("song");
+    run(motion, 300, 0.5, line(0, 2));
+    run(motion, 1, 0.5, line(1));
+    const rings = Array.from(motion.frame(1).rings);
+    expect(Math.max(...rings.filter((_, index) => index % 2 === 1))).toBeGreaterThan(0.9);
+    run(motion, 300, 0.5, line(1));
+    expect(motion.frame(1).lights[0]).toBe(0);
+    expect(motion.takeStats().lines).toBe(2);
+  });
+
+  test("words beyond what the window shows wrap to facets that can be seen", () => {
+    const motion = new FacetMotion("song");
+    run(motion, 1, 0.5, line(0, 60));
+    const { lights } = motion.frame(1);
+    expect(lights[0]).toBeGreaterThan(0);
+    expect(lights[100]).toBe(0);
+  });
+
+  test("the chorus opens the window across the screen and closes after it", () => {
+    const motion = new FacetMotion("song");
+    run(motion, 60, 0.5, line(0, 0, false));
+    const verse = motion.frame(1).open;
+    run(motion, 300, 0.5, line(0, 0, true));
+    expect(motion.frame(1).open).toBeGreaterThan(0.95);
+    expect(motion.takeStats().turns).toBe(1);
+    run(motion, 600, 0.5, line(0, 0, false));
+    expect(motion.frame(1).open).toBeLessThan(verse + 0.15);
+  });
+
+  test("a chorus entry slips the picture faintly at normal intensity and not at all when calm", () => {
+    const enter = (intensity: "calm" | "normal") => {
+      const motion = new FacetMotion("song");
+      motion.intensity = intensity;
+      run(motion, 30, 0.5, line(0, 0, false));
+      run(motion, 1, 0.5, line(0, 0, true));
+      return motion.frame(1);
+    };
+    expect(enter("calm").tear).toBeNull();
+    expect(enter("normal").burst).toBeLessThan(0.5);
+    expect(enter("normal").tear).not.toBeNull();
   });
 
   test("only the highest intensity tears the picture", () => {

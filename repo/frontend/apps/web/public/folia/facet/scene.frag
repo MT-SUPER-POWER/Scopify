@@ -11,6 +11,7 @@ uniform vec2 uResolution;
 uniform float uFlow;
 uniform float uBlend;
 uniform float uScale;
+uniform float uOpen;
 uniform float uPresence;
 uniform int uTick;
 uniform int uFrame;
@@ -18,6 +19,7 @@ uniform int uSamples;
 uniform int uTurns;
 uniform int uRipples;
 uniform vec2 uCentres[7];
+uniform vec2 uRings[4];
 uniform vec3 uPaper;
 uniform vec3 uInk;
 uniform vec3 uAccent;
@@ -29,11 +31,18 @@ uniform vec4 uTear;
 uniform float uBurst;
 uniform float uHistoryWeight;
 uniform float uMaxDelta;
+uniform float uCoverStrength;
 uniform sampler2D uHistory;
+uniform sampler2D uCover;
+uniform sampler2D uLights;
 
 const float TWO_PI = 6.28318530718;
 const float SHUTTER = 0.025;
-const float SHUTTER_DISPLACED = 0.25;
+/** Facets across one unit of the view, where the screen is two units tall. */
+const float FACETS_PER_UNIT = 4.0;
+const float WINDOW_CLOSED = 0.62;
+const float WINDOW_OPEN = 2.1;
+const int LIGHT_SLOTS = 128;
 const float BAYER[16] = float[16](0., 8., 2., 10., 12., 4., 14., 6., 3., 11., 1., 9., 15., 7., 13., 5.);
 
 uint pcg(uint value) {
@@ -45,24 +54,39 @@ uint hash2(uint a, uint b) { return pcg(a ^ (pcg(b) + 0x9e3779b9u)); }
 uint hash3(uint a, uint b, uint c) { return hash2(hash2(a, b), c); }
 float unit(uint value) { return float(value) / 4294967295.0; }
 float sin01(float value) { return 0.5 + 0.5 * sin(value); }
-float cos01(float value) { return 0.5 + 0.5 * cos(value); }
 float square(float value) { return value * value; }
 
 // A pointy-top hexagonal lattice with flat sides one unit apart. `axes` are the three signed distances from the
-// cell centre, reaching 1 at the cell's edge; `cell` is the lattice index, (0, 0) for the hexagon at the origin.
-void hexCell(vec2 point, out vec3 axes, out ivec2 cell) {
+// cell centre, reaching 1 at the cell's edge; `centre` is where the cell is, with a cell at the origin.
+void hexCell(vec2 point, out vec3 axes, out vec2 centre) {
   const vec2 size = vec2(1.0, 1.7320508);
   vec4 centres = floor(vec4(point, point - vec2(0.5, 0.8660254)) / size.xyxy) + 0.5;
   vec2 first = point - centres.xy * size;
   vec2 second = point - (centres.zw + 0.5) * size;
   bool useFirst = dot(first, first) < dot(second, second);
   vec2 local = useFirst ? first : second;
-  vec2 index = useFirst ? centres.xy : centres.zw + 0.5;
-  cell = ivec2(floor(index * 2.0 + 0.5));
+  centre = point - local;
   axes = vec3(local.x, dot(local, vec2(-0.5, 0.8660254)), dot(local, vec2(-0.5, -0.8660254))) * 2.0;
 }
 
 float widest(vec3 value) { return max(max(abs(value.x), abs(value.y)), abs(value.z)); }
+/** How far out a point is, measured so that a pointy-top hexagon around the origin has a single value on its edge. */
+float hexDistance(vec2 point) { return max(abs(point.x), 0.5 * abs(point.x) + 0.8660254 * abs(point.y)); }
+
+// Numbers the lattice in a spiral from the centre, so that the host can light facets outward in the order they're sung.
+int spiralRank(int q, int r) {
+  int s = -q - r;
+  int n = max(max(abs(q), abs(r)), abs(s));
+  if (n == 0) return 0;
+  int index;
+  if (r == -n && q >= 0 && q < n) index = q;
+  else if (q == n && r < 0) index = n + r + n;
+  else if (s == -n && r >= 0 && q > 0) index = 2 * n + r;
+  else if (r == n && q > -n) index = 3 * n - q;
+  else if (q == -n && r > 0) index = 4 * n + n - r;
+  else index = 5 * n - r;
+  return 3 * n * (n - 1) + 1 + index;
+}
 
 float rippleField(vec2 point, float warped, float exponent) {
   float sum = 0.0;
@@ -80,65 +104,65 @@ float rippleField(vec2 point, float warped, float exponent) {
   return abs(total) < 1e-3 ? 0.0 : sum / total;
 }
 
-// One sample of the scene. `xiTime` spreads the sample over the shutter, which also separates the colour fringes.
+// One sample of the scene. `xiTime` spreads the sample over the shutter, which dissolves the ripple edges into grain.
 vec3 shade(vec2 xy, float xiTime, float xiAb, bool displaced) {
-  // The original runs this on a fixed timer. Here the host moves the flow with the music and turns the hexagon on
-  // each lyric line, so only the row offset and the shutter are decided per pixel.
-  float rowUv = clamp(xy.y / uResolution.y, 0.0, 1.0);
-  float warped = uFlow + xiTime * (displaced ? SHUTTER_DISPLACED : SHUTTER) - 0.2 * sqrt(rowUv) - 0.1;
-  float phase = fract(warped);
-  float morph = 1.0 - smoothstep(0.0, 0.6, sin01(TWO_PI * phase));
-
   float angle = uBlend * TWO_PI + uSeed * 0.5;
   mat2 rotation = mat2(cos(angle), -sin(angle), sin(angle), cos(angle));
   vec2 view = (xy - 0.5 * uResolution) / uResolution.y * 2.0;
   view /= 1.0 + 0.05 * length(view) * xiAb;
   view = rotation * view / max(uScale, 0.1);
 
-  vec2 warp = view;
-  float squash = square(1.0 - morph) * xiTime * clamp(square(0.5 * (1.0 + view.y)), 0.0, 1.0);
-  warp.y *= mix(1.0, 0.1, squash);
-  float expMorph = pow(morph, 0.3);
-  float scale = mix(2.6, 1.1, expMorph);
-  float thickness = mix(0.5, 0.4, morph) + uThickness;
-  float exponent = mix(0.05, 0.55, morph);
-  int invert = 0;
-  bool inside = displaced;
-  for (int pass = 0; pass < 2; ++pass) {
-    vec3 axes;
-    ivec2 cell;
-    hexCell(warp, axes, cell);
-    if (!displaced && cell != ivec2(0)) break;
-    if (pass == 0) inside = true;
+  vec3 axes;
+  vec2 centre;
+  hexCell(view * FACETS_PER_UNIT, axes, centre);
+  vec2 local = view * FACETS_PER_UNIT - centre;
+  float edge = smoothstep(0.86, 0.98, widest(axes));
+  float reach = hexDistance(centre / FACETS_PER_UNIT);
 
-    // The original re-rolls these cells several times per cycle and shatters them on its kick; a steady pattern
-    // that slides keeps the structure without the strobing.
-    float slide = TWO_PI * cos01(TWO_PI * phase) * 2.0;
-    vec2 shifted = warp * 1.1 - 0.8660254 * vec2(sin(slide), cos(slide)) * sin01(TWO_PI * phase) * 0.5;
-    hexCell(shifted, axes, cell);
-    uint cellHash = hash2(uint(cell.x + 4096), uint(cell.y + 4096));
-    if (cellHash % 2u == 0u) {
-      float hashSum = axes[int(cellHash % 3u)] + axes[int((cellHash + 1u) % 3u)];
-      if (widest(axes) > 0.98) invert ^= 1;
-      else if (fract(20.0 * hashSum) < 0.5) invert ^= 1;
-      if (pass == 0) break;
-    }
+  // The window opens a facet at a time: each one fades in as the edge reaches it.
+  float radius = mix(WINDOW_CLOSED, WINDOW_OPEN, uOpen);
+  float inWindow = displaced ? 1.0 : 1.0 - smoothstep(radius - 0.14, radius + 0.14, reach);
+  // Outside the window only the structure remains, as faint lines on the page.
+  vec3 color = uPaper;
+  vec3 pale = mix(uPaper, uInk, 0.09 * uPresence);
+  color = mix(color, pale, edge);
+  if (inWindow <= 0.003) return color;
 
-    invert ^= int(rippleField(warp, warped, exponent) > thickness);
+  int r = int(round(centre.y / 0.8660254));
+  int q = int(round(centre.x - 0.5 * float(r)));
+  int rank = spiralRank(q, r);
+  float light = rank < LIGHT_SLOTS ? texelFetch(uLights, ivec2(rank, 0), 0).r : 0.0;
+  uint facetHash = hash2(uint(q + 4096), uint(r + 4096));
 
-    float drift = TWO_PI * cos01(-TWO_PI * phase) * 5.0;
-    warp += vec2(cos(drift), sin(drift)) * 0.5;
-    warp *= scale;
+  // Light travels outward a facet at a time, so a beat never moves the geometry.
+  float wave = 0.0;
+  for (int index = 0; index < 4; ++index) {
+    wave += uRings[index].y * exp(-square((reach - uRings[index].x) / 0.2));
   }
-  // The original flips the whole screen here; keeping the page colour outside leaves the lyrics readable.
-  if (!inside) return uPaper;
 
-  // Two tones of ink rather than ink and page: the original's black and white inversion is what flashed.
-  float coverage = invert != 0 ? 1.0 : 0.45;
-  // Equal parts of both colours cancel out, so flat areas stay ink and only moving edges fringe.
-  vec3 fringe = (mix(uAccent, uSecondary, xiTime) - 0.5 * (uAccent + uSecondary)) * 0.5;
-  vec3 ink = mix(uInk, uAccent, 0.25) + fringe;
-  return mix(uPaper, clamp(ink, 0.0, 1.0), coverage * uPresence);
+  float rowUv = clamp(xy.y / uResolution.y, 0.0, 1.0);
+  float warped = uFlow + xiTime * SHUTTER - 0.2 * sqrt(rowUv) - 0.1;
+  float phase = fract(warped);
+  float morph = 1.0 - smoothstep(0.0, 0.6, sin01(TWO_PI * phase));
+  float field = rippleField(view * 1.4, warped, mix(0.05, 0.55, morph));
+  float threshold = 0.45 + uThickness;
+  float tone = smoothstep(threshold - 0.012, threshold + 0.012, field);
+
+  // Each facet looks at the blurred cover through its own slightly different angle.
+  vec2 tilt = (vec2(unit(facetHash), unit(pcg(facetHash))) - 0.5) * 0.2;
+  vec2 coverUv = 0.5 + view * 0.34 + tilt + local * 0.09;
+  vec3 pane = mix(uAccent, uSecondary, unit(facetHash));
+  if (uCoverStrength > 0.0) pane = mix(pane, textureLod(uCover, coverUv, 2.4).rgb, uCoverStrength);
+  // Mixing in the theme's ink keeps a pale cover visible on a pale page.
+  pane = mix(pane, uInk, 0.28);
+  // Equal parts of both colours cancel out, so flat areas stay clean and only the ripple's edges fringe.
+  pane += (mix(uAccent, uSecondary, xiTime) - 0.5 * (uAccent + uSecondary)) * 0.14;
+  // A little shading across each facet, so they read as tilted glass.
+  pane *= 1.0 + dot(local, vec2(0.5, 0.8660254)) * 0.16;
+
+  float opacity = (0.16 + 0.2 * tone) * uPresence + 0.46 * light + 0.13 * wave;
+  opacity = clamp(opacity, 0.0, 0.88) * inWindow * (1.0 - edge * 0.55);
+  return mix(color, clamp(pane, 0.0, 1.0), opacity);
 }
 
 void main() {
@@ -146,13 +170,12 @@ void main() {
   uint frame = uint(uFrame);
   uint tick = uint(uTick);
 
-  // Rows slip sideways like analogue interference; a burst makes more of them slip, further.
+  // A burst makes rows slip sideways like analogue interference. Only tears cause one.
   vec2 moved = xy;
   uint rowHash = hash2(uint(xy.y * 720.0 / uResolution.y / 2.0), tick);
-  float slipChance = uBurst * 0.5;
-  if (unit(rowHash) < slipChance) {
+  if (unit(rowHash) < uBurst * 0.5) {
     float magnitude = mix(-1.0, 1.0, unit(pcg(rowHash)));
-    moved.x -= uResolution.x * mix(0.01, 0.02, uBurst) * sign(magnitude) * square(magnitude);
+    moved.x -= uResolution.x * 0.02 * sign(magnitude) * square(magnitude);
   }
 
   // A tear shows the whole lattice in one band of the screen.

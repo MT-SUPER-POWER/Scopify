@@ -39,10 +39,16 @@ export interface FacetLyricSample {
   progress: number;
   /** Whether the current line is still being sung, as opposed to the gap after it. */
   singing: boolean;
+  /** How many words of the line have started; estimated from its progress when it has no word timing. */
+  wordsSung: number;
+  /** Whether this is the song's chorus, or null when the song has no chorus data. */
+  chorus: boolean | null;
 }
 /** What the song did to the motion since the last report. */
 export interface FacetMotionStats {
   kicks: number;
+  words: number;
+  lines: number;
   turns: number;
   tears: number;
   energy: number;
@@ -61,11 +67,17 @@ export interface FacetMotionFrame {
   /** The hexagon's rotation as a share of a full circle. It rests on sixths, where a hexagon looks the same. */
   blend: number;
   scale: number;
+  /** How far the window of facets has opened, from the verse's small hexagon (0) to the whole screen (1). */
+  open: number;
   presence: number;
   thickness: number;
   grain: number;
   burst: number;
   tear: FacetTear | null;
+  /** Each facet's light, 0 to 255, in spiral order from the centre. */
+  lights: Uint8Array;
+  /** Rings of light travelling out from the centre, as radius and strength pairs. */
+  rings: Float32Array;
 }
 export interface FacetSceneInput {
   seed: string;

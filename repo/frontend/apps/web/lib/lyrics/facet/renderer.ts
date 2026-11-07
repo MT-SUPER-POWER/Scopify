@@ -22,6 +22,8 @@ const VIGNETTE = 0.35;
 const LYRIC_BAND = 0.55;
 const MAX_TURNS = 7;
 const MAX_PIXEL_RATIO = 2;
+const COVER_UNIT = 1;
+const LIGHTS_UNIT = 2;
 
 interface Program {
   handle: WebGLProgram;
@@ -62,6 +64,9 @@ export class FacetRenderer {
   private timerSum = 0;
   private timerCount = 0;
   private readonly centres = new Float32Array(MAX_TURNS * 2);
+  private readonly coverTexture: WebGLTexture;
+  private hasCover = false;
+  private readonly lightsTexture: WebGLTexture;
 
   constructor(private readonly canvas: HTMLCanvasElement) {
     const gl = canvas.getContext("webgl2", {
@@ -82,6 +87,13 @@ export class FacetRenderer {
     gl.disable(gl.DEPTH_TEST);
     gl.disable(gl.BLEND);
     this.timerExtension = gl.getExtension("EXT_disjoint_timer_query_webgl2");
+    this.coverTexture = gl.createTexture();
+    this.lightsTexture = gl.createTexture();
+    gl.bindTexture(gl.TEXTURE_2D, this.lightsTexture);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
   }
 
   /** Links the programs without blocking the main thread where the driver allows it. */
@@ -119,6 +131,20 @@ export class FacetRenderer {
       return { handle, uniforms: new Map() } satisfies Program;
     };
     this.programs = { scene: finish(scene), bloom: finish(bloom), composite: finish(composite) };
+  }
+
+  /** Replaces the cover the facets refract. The brightness limit in the scene turns the swap into a fade. */
+  setCover(cover: ImageBitmap | null) {
+    const { gl } = this;
+    this.hasCover = cover !== null;
+    if (!cover) return;
+    gl.bindTexture(gl.TEXTURE_2D, this.coverTexture);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA8, gl.RGBA, gl.UNSIGNED_BYTE, cover);
+    gl.generateMipmap(gl.TEXTURE_2D);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.MIRRORED_REPEAT);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.MIRRORED_REPEAT);
   }
 
   private shader(type: number, source: string) {
@@ -229,7 +255,9 @@ export class FacetRenderer {
     gl.uniform1f(at("uFlow"), motion.flow);
     gl.uniform1f(at("uBlend"), motion.blend);
     gl.uniform1f(at("uScale"), motion.scale);
+    gl.uniform1f(at("uOpen"), motion.open);
     gl.uniform1f(at("uPresence"), motion.presence);
+    gl.uniform2fv(at("uRings"), motion.rings);
     gl.uniform1i(at("uTick"), motion.tick);
     gl.uniform1i(at("uFrame"), this.frame);
     gl.uniform1i(at("uSamples"), samples);
@@ -259,7 +287,23 @@ export class FacetRenderer {
     );
     gl.uniform1f(at("uHistoryWeight"), historyWeight);
     gl.uniform1f(at("uMaxDelta"), maxDelta);
+    gl.uniform1f(at("uCoverStrength"), this.hasCover ? 1 : 0);
     gl.uniform1i(at("uHistory"), 0);
+    gl.uniform1i(at("uCover"), COVER_UNIT);
+    gl.uniform1i(at("uLights"), LIGHTS_UNIT);
+    this.bindTexture(COVER_UNIT, this.coverTexture);
+    this.bindTexture(LIGHTS_UNIT, this.lightsTexture);
+    gl.texImage2D(
+      gl.TEXTURE_2D,
+      0,
+      gl.R8,
+      motion.lights.length,
+      1,
+      0,
+      gl.RED,
+      gl.UNSIGNED_BYTE,
+      motion.lights,
+    );
     this.bindTexture(0, previous.texture);
     this.draw(current);
 
@@ -325,6 +369,8 @@ export class FacetRenderer {
       gl.deleteProgram(programs.composite.handle);
     }
     this.deleteTargets();
+    gl.deleteTexture(this.coverTexture);
+    gl.deleteTexture(this.lightsTexture);
     if (this.timerQuery) gl.deleteQuery(this.timerQuery);
     gl.deleteVertexArray(this.vao);
     gl.getExtension("WEBGL_lose_context")?.loseContext();
