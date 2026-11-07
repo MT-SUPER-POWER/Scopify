@@ -8,12 +8,15 @@ export const DEFAULT_RHINE_BACKGROUND_TUNING: RhineBackgroundTuning = {
   colorMode: "auto",
   quality: "original",
   rhythmStyle: "legacy",
-  musicEnabled: true,
-  breathingEnabled: true,
   strength: 1,
   overlayOpacity: 0.12,
   frameRate: "30",
 };
+
+/** Every style is a complete motion of its own; exactly one runs. */
+export const RHINE_RHYTHM_STYLES = ["still", "breath", "legacy", "wave", "lift", "beat"] as const;
+// RhineBackground's landscape lyric fade is still 64% opaque here, so anything placed further left goes unseen.
+export const RHINE_READING_FADE_END = 0.42;
 
 export const RHINE_MODEL_URL = "/folia/rhine/archive-cassette.glb";
 export const RHINE_ROWS = 48;

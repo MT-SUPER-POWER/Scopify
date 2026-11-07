@@ -1,5 +1,10 @@
 import { describe, expect, it } from "bun:test";
-import { RhineBeatDetector } from "@/lib/lyrics/rhine/beat";
+import { RHINE_SPECTRUM_COLUMNS, RhineBeatDetector } from "@/lib/lyrics/rhine/beat";
+import { RhineBeatField } from "@/lib/lyrics/rhine/beatField";
+import { idleWave } from "@/lib/lyrics/rhine/motion";
+import { RhythmMotion, rhythmHeight } from "@/lib/lyrics/rhine/rhythm";
+import { normalizeFoliaStageSettings } from "@/lib/lyrics/foliaStageSettings";
+import type { RhineRhythmStyle } from "@/types/lyrics/rhine/background";
 
 const DT = 1 / 60;
 const BINS = 1024;
@@ -103,12 +108,57 @@ describe("RhineBeatDetector", () => {
     expect(detector.update(new Uint8Array(256).fill(250), DT).onsets).toEqual([0, 0, 0]);
   });
 
-  it("levels the spectrum from bass to treble", () => {
+  it("gives quiet treble the same height as loud bass, and silence none", () => {
     const detector = new RhineBeatDetector();
-    const spectrum = new Uint8Array(BINS).map((_, bin) => (bin < 20 ? 230 : 60));
+    // Bass near the top of the scale, treble far below it, nothing above 7 kHz.
+    const spectrum = new Uint8Array(BINS).map((_, bin) => (bin < 20 ? 230 : bin < 290 ? 70 : 0));
     let levels: Float32Array = new Float32Array(0);
     for (let frame = 0; frame < 30; frame++) levels = detector.update(spectrum, DT).levels;
     expect(levels[0]).toBeGreaterThan(0.8);
-    expect(levels[levels.length - 1]).toBe(0);
+    expect(levels[RHINE_SPECTRUM_COLUMNS - 3]).toBeGreaterThan(0.8);
+    expect(levels[RHINE_SPECTRUM_COLUMNS - 1]).toBe(0);
+  });
+
+  it("falls when a column drops below its recent peak", () => {
+    const detector = new RhineBeatDetector();
+    for (let frame = 0; frame < 30; frame++) detector.update(new Uint8Array(BINS).fill(120), DT);
+    let levels: Float32Array = new Float32Array(0);
+    for (let frame = 0; frame < 60; frame++)
+      levels = detector.update(new Uint8Array(BINS).fill(60), DT).levels;
+    expect(levels[5]).toBeLessThan(0.1);
+  });
+});
+
+describe("Rhine rhythm styles", () => {
+  const bands = { low: 1, mid: 1, high: 1, activity: 1 };
+  const sources = { bands, beat: new RhineBeatField() };
+  const heights = (style: RhineRhythmStyle) => {
+    const frame = new RhythmMotion(style).update(0, style);
+    return [0, 3, 7].map((row) => rhythmHeight(row, 4, 0.5, 1.3, sources, 1, frame));
+  };
+
+  it("runs only the chosen rule", () => {
+    expect(heights("still")).toEqual([0, 0, 0]);
+    expect(heights("breath")).toEqual([0, 3, 7].map((row) => idleWave(row, 4, 1.3)));
+    expect(heights("lift")).not.toEqual(heights("legacy"));
+  });
+
+  it("lets go of the previous style once the change is over", () => {
+    const motion = new RhythmMotion("legacy");
+    let frame = motion.update(0.05, "still");
+    for (let step = 0; step < 60; step++) frame = motion.update(0.05, "still");
+    expect(rhythmHeight(3, 4, 0.5, 1.3, sources, 1, frame)).toBeCloseTo(0, 3);
+  });
+});
+
+describe("Rhine settings migration", () => {
+  const migrate = (tuning: Record<string, unknown>) =>
+    normalizeFoliaStageSettings({ background: { rhine: { tuning } } }).background.rhine?.tuning;
+
+  it("turns the old switches into a style", () => {
+    expect(migrate({ rhythmStyle: "wave", musicEnabled: true })?.rhythmStyle).toBe("wave");
+    expect(migrate({ rhythmStyle: "wave", musicEnabled: false })?.rhythmStyle).toBe("breath");
+    expect(migrate({ musicEnabled: false, breathingEnabled: false })?.rhythmStyle).toBe("still");
+    expect(migrate({ musicEnabled: false })).not.toHaveProperty("musicEnabled");
   });
 });

@@ -1,13 +1,11 @@
 import type { VisualizerBackgroundRenderProps } from "@/components/lyrics/folia/src/components/visualizer/backgrounds/definition";
 
-export type RhineRhythmStyle = "legacy" | "wave" | "lift" | "beat";
+export type RhineRhythmStyle = "still" | "breath" | "legacy" | "wave" | "lift" | "beat";
 export type RhineQuality = "performance" | "original" | "high";
 export interface RhineBackgroundTuning {
   colorMode: "auto" | "light" | "dark";
   quality: RhineQuality;
   rhythmStyle: RhineRhythmStyle;
-  musicEnabled: boolean;
-  breathingEnabled: boolean;
   strength: number;
   overlayOpacity: number;
   frameRate: "30" | "60";

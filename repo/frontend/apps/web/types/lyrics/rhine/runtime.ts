@@ -31,7 +31,8 @@ export interface RhineCell extends RhineThemeCell {
   key: string;
   x: number;
   z: number;
-  screenX: number;
+  /** Place across the part of the screen the lyric fade leaves visible, left=0, right=1. */
+  fieldX: number;
 }
 export type RhineShowcasePhase = "rising" | "holding" | "returning";
 export interface RhineShowcaseCard {

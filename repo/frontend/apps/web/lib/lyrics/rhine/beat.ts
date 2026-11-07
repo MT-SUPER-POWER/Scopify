@@ -17,6 +17,11 @@ const SPREAD = 1.6;
 const FLOOR = 0.012;
 /** Seconds of history the threshold needs before it can be trusted. */
 const WARM_UP = 0.5;
+// Each spectrum column is read between its own recent quietest and loudest: music has far less energy in the treble
+// than in the bass, and a shared scale leaves the upper columns flat. MIN_SWING keeps a steady note up, and keeps
+// tiny flutter from sweeping the column's whole height.
+const RANGE_MEMORY = 6;
+const MIN_SWING = 0.12;
 /** Minimum seconds between two onsets of one band. */
 const REFRACTORY = [0.18, 0.12, 0.09] as const;
 
@@ -39,6 +44,8 @@ export class RhineBeatDetector {
   private readonly since = [Infinity, Infinity, Infinity];
   private readonly armed = [true, true, true];
   private warmth = 0;
+  private readonly peaks = new Float32Array(RHINE_SPECTRUM_COLUMNS);
+  private readonly floors = new Float32Array(RHINE_SPECTRUM_COLUMNS);
   private readonly frame: RhineBeatFrame = {
     onsets: [0, 0, 0],
     levels: new Float32Array(RHINE_SPECTRUM_COLUMNS),
@@ -59,6 +66,8 @@ export class RhineBeatDetector {
     if (fresh) {
       this.previous = new Float32Array(length);
       this.warmth = 0;
+      this.peaks.fill(0);
+      this.floors.fill(1);
     }
     this.warmth += dt;
     const alpha = 1 - Math.exp(-dt / MEMORY);
@@ -90,9 +99,14 @@ export class RhineBeatDetector {
       const [start, end] = binRange(from, to, length);
       let sum = 0;
       for (let bin = start; bin < end; bin++) sum += spectrum[bin];
-      // Music falls off towards the treble; lift the upper columns to a comparable height.
-      const tilt = 0.14 * (column / (RHINE_SPECTRUM_COLUMNS - 1));
-      const target = clamp((sum / ((end - start) * 255) + tilt - 0.4) / 0.45);
+      const value = sum / ((end - start) * 255);
+      const relax = 1 - Math.exp(-dt / RANGE_MEMORY);
+      const peak = Math.max(value, this.peaks[column] - (this.peaks[column] - value) * relax);
+      const quiet = Math.min(value, this.floors[column] + (value - this.floors[column]) * relax);
+      this.peaks[column] = peak;
+      this.floors[column] = quiet;
+      const floor = Math.max(0, Math.min(quiet, peak - MIN_SWING));
+      const target = clamp((value - floor) / Math.max(peak - floor, MIN_SWING));
       const rate = target > levels[column] ? 18 : 4;
       levels[column] += (target - levels[column]) * (1 - Math.exp(-dt * rate));
     }

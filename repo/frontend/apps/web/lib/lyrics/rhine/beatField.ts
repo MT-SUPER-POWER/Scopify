@@ -5,7 +5,7 @@ import type { RhineBeatFrame, RhineFieldPulse, RhineThemeCell } from "@/types/ly
 const KICK_LIFE = 1.6;
 const LIFT_LIFE = 1.5;
 // Snare lifts step around the archive lane instead of hitting the same column twice.
-const LIFT_LANES = [-1, 1, -2, 2, 0, -3, 3];
+const LIFT_LANES = [-1, 1, -2, 2, 0, -3];
 
 const bell = (value: number, width: number) => Math.exp(-0.5 * (value / width) ** 2);
 
@@ -58,13 +58,17 @@ export class RhineBeatField {
     while (this.lifts.length && time - this.lifts[0].time > LIFT_LIFE) this.lifts.shift();
   }
 
-  /** x is the cell's projected horizontal position: bass on the left, treble on the right. */
-  height(row: number, lane: number, x: number, time: number) {
+  /** The spectrum at x, the cell's place across the visible field: bass on the left, treble on the right. */
+  level(x: number) {
     const position = Math.min(1, Math.max(0, x)) * (RHINE_SPECTRUM_COLUMNS - 1);
     const column = Math.min(RHINE_SPECTRUM_COLUMNS - 2, Math.floor(position));
-    const level =
-      this.levels[column] + (this.levels[column + 1] - this.levels[column]) * (position - column);
-    let value = level * 0.55 * (0.7 + 0.3 * Math.sin(row * 0.3 - time * 1.6));
+    return (
+      this.levels[column] + (this.levels[column + 1] - this.levels[column]) * (position - column)
+    );
+  }
+
+  height(row: number, lane: number, x: number, time: number) {
+    let value = this.level(x) * 0.55 * (0.7 + 0.3 * Math.sin(row * 0.3 - time * 1.6));
     let ring = 0;
     for (const kick of this.kicks)
       ring += kick.strength * kickRing(row - kick.row, lane - kick.lane, time - kick.time);
