@@ -40,8 +40,8 @@ pnpm run dev:full       # Web + Electron + 后端联调
   - `feat`（新增）、`fix`（修复）、`perf`（优化）的 subject 会原样展示给用户，用中文写用户能感知的结果，如 `fix(player): 切歌后音量不再被重置`。
   - 其他类型，或 scope 为 `ci` / `deps` / `release` 的提交不展示。工程细节写在 body 里。
 - **一个提交只做一件事**，批量改动拆成可以单独审阅的小提交。
-- **正常 `git commit`、`git push`**：提交时钩子会对暂存文件跑 Prettier、ESLint 和轻量架构检查；push 不跑检查。全仓 lint、类型检查、测试由 CI 兜底，需要时自己运行 `pnpm run lint` 或 `pnpm run typecheck`。
-- **不要跳过钩子**（不要用 `--no-verify`）。钩子失败时读报错、修本次改动引起的问题再提交。
+- **正常 `git commit`、`git push`**：提交时钩子会对暂存文件跑 Prettier、ESLint 和轻量架构检查；push 前钩子对改动到的工作区及其下游跑一次增量类型检查。全仓 lint、全仓类型检查、测试由 CI 兜底，需要时自己运行 `pnpm run lint` 或 `pnpm run typecheck`。
+- **不要跳过钩子**（不要用 `--no-verify`）。钩子失败时读报错、把问题修掉再提交或推送，挡路的既有问题也一并修。
 - 发版只需推一个 tag：`git tag v2.0.4 && git push origin v2.0.4`，其余由 CI 完成。
 
 ## 其他规范

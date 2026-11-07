@@ -85,8 +85,8 @@ Before completing a UI package change:
 - State whether it is a native shadcn refresh, Scopify extension, or Web business UI, and why the lower layer is insufficient when creating an extension.
 - Confirm the import uses a public `@scopify/ui/...` export path.
 - Keep the package dependency declaration as `"@scopify/ui": "workspace:*"`.
-- Run the relevant UI package tests/typecheck and the consuming application's typecheck or build.
-- Update `docs/CHANGELOG.md` under the applicable category.
+- When the task is done, typecheck the UI package and the consuming workspaces once, as the root `AGENTS.md` check rules describe; do not run builds or extra checks along the way.
+- Do not edit `docs/CHANGELOG.md`; release notes are generated from commits.
 
 ## Examples
 
