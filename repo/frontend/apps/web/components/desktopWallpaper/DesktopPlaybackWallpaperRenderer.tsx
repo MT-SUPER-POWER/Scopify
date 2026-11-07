@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 
-import { FoliaPresentationSurface } from "@/components/lyrics/FoliaPresentationSurface";
+import { FoliaPresentationSurface } from "@/components/lyrics/stage/FoliaPresentationSurface";
 import { useFoliaPlaybackBridge } from "@/hooks/player/useFoliaPlaybackBridge";
 import { useFoliaPresentationAppearance } from "@/hooks/player/useFoliaPresentationAppearance";
 import { usePlaybackProjection } from "@/hooks/player/usePlaybackProjection";

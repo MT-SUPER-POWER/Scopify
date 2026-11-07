@@ -6,7 +6,7 @@ import { useSongChorus } from "@/hooks/lyrics/useSongChorus";
 import { getChorusProgressRanges } from "@/lib/player/chorusMarkers";
 import { useTranslation } from "react-i18next";
 
-import { FoliaTrackTitleNavigator } from "@/components/lyrics/FoliaTrackTitleNavigator";
+import { FoliaTrackTitleNavigator } from "@/components/lyrics/stage/FoliaTrackTitleNavigator";
 import { usePlayerStore } from "@/store/module/player";
 import type { ProgressRangeMarker } from "@/types/shared/sliderComponents";
 import ProgressBar from "./ProgressBar";

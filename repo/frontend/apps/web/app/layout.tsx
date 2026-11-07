@@ -6,7 +6,7 @@ import type { Metadata } from "next";
 import { I18nProvider } from "@/components/providers/i18n-provider";
 import { BackendStatusNotifier } from "@/components/backend/BackendStatusNotifier";
 import { DesktopPlaybackControllerCommandHandler } from "@/components/desktopWallpaper/DesktopPlaybackControllerCommandHandler";
-import { FoliaStageStoreSync } from "@/components/lyrics/FoliaStageStoreSync";
+import { FoliaStageStoreSync } from "@/components/lyrics/stage/FoliaStageStoreSync";
 import { QueryProvider } from "@/components/shared/QueryProvider";
 import { CompanionPlaybackProjectionProvider } from "@/components/player/CompanionPlaybackProjectionProvider";
 import { Toaster } from "@/components/ui/sonner";

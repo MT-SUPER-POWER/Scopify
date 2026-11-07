@@ -16,7 +16,7 @@ export function FoliaVisualizerPrewarm() {
     let cancelled = false;
     let idleHandle: number | undefined;
     const start = () => {
-      import("./folia/src/components/visualizer/prewarmVisualizers")
+      import("../folia/src/components/visualizer/prewarmVisualizers")
         .then((module) => {
           if (!cancelled) module.prewarmVisualizers();
         })
