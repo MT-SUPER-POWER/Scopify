@@ -3,15 +3,12 @@
 import { useCallback, useEffect, useMemo, useRef } from "react";
 import type { KeyboardEvent } from "react";
 import { useLatticeCamera } from "@/hooks/playlist/useLatticeCamera";
-import { GRID_METRICS } from "@/constants/playlistGrid";
-import { computeCardCurve, computeCardFrame } from "@/lib/playlist/grid/falloff";
+import { GRID_METRICS, GRID_OVERSCAN } from "@/constants/playlistGrid";
+import { computeGridPlacement } from "@/lib/playlist/grid/falloff";
 import { adjacentHexCell, locateHexCell, visibleHexCells } from "@/lib/playlist/grid/hex";
 import { ZOOM_STEP, zoomKeyDirection } from "@/lib/playlist/zoomKeys";
 import type { GridCell, GridDirection } from "@/types/playlist/grid";
 import type { LatticeCamera } from "@/types/playlist/lattice";
-
-// Mounted beyond the pane edge so a drag reveals cards that are already painted.
-const OVERSCAN = 420;
 
 const writeFrame = (
   element: HTMLElement,
@@ -19,23 +16,12 @@ const writeFrame = (
   camera: LatticeCamera,
   view: { width: number; height: number },
 ) => {
-  // The falloff is measured in world pixels, so zooming magnifies the same picture.
-  const dx = cell.x + (camera.x - view.width / 2) / camera.scale;
-  const dy = cell.y + (camera.y - view.height / 2) / camera.scale;
-  const frame = computeCardFrame(
-    dx,
-    dy,
-    view.width / camera.scale,
-    view.height / camera.scale,
-    GRID_METRICS,
-  );
+  const placement = computeGridPlacement(cell, camera, view);
   const { style, dataset } = element;
-  style.display = frame.visible ? "" : "none";
-  if (!frame.visible) return null;
-  const curve = computeCardCurve(dx, camera.scale, view.width);
-  style.transform =
-    `translate3d(${(cell.x + curve.x).toFixed(1)}px, ${cell.y}px, ${curve.z.toFixed(1)}px) ` +
-    `rotateY(${curve.rotateY.toFixed(2)}deg) scale(${frame.scale.toFixed(4)})`;
+  style.display = placement ? "" : "none";
+  if (!placement) return null;
+  const { frame } = placement;
+  style.transform = placement.transform;
   style.opacity = frame.opacity.toFixed(3);
   style.zIndex = String(frame.zIndex);
   const centered = String(frame.centered);
@@ -80,7 +66,7 @@ export function useGridWall(trackCount: number) {
   const visible = useMemo(
     () =>
       viewport.width && viewport.height
-        ? visibleHexCells(bounds, trackCount, GRID_METRICS, OVERSCAN, cache)
+        ? visibleHexCells(bounds, trackCount, GRID_METRICS, GRID_OVERSCAN, cache)
         : [],
     [bounds, cache, trackCount, viewport],
   );

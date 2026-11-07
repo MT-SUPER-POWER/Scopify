@@ -1,6 +1,7 @@
 import type { CSSProperties } from "react";
 
-import { DEFAULT_RHINE_BACKGROUND_TUNING } from "@/constants/rhineBackground";
+import { DEFAULT_RHINE_BACKGROUND_TUNING, RHINE_RHYTHM_STYLES } from "@/constants/rhineBackground";
+import { RHINE_RHYTHM_LABELS } from "@/components/lyrics/visuals/rhine/RhineBackgroundQuickControls";
 import { colorWithAlpha } from "@/components/lyrics/folia/src/components/visualizer/colorMix";
 import type { VisualizerBackgroundSettingsProps } from "@/components/lyrics/folia/src/components/visualizer/backgrounds/definition";
 
@@ -67,50 +68,21 @@ export default function RhineBackgroundSettingsCard({
         </select>
       </label>
       <label className="flex items-center justify-between gap-3 text-sm">
-        <span>{t("folia.rhine.musicEnabled")}</span>
-        <input
-          type="checkbox"
-          checked={tuning.musicEnabled}
-          onChange={(event) => change?.({ musicEnabled: event.target.checked })}
-        />
-      </label>
-      <label className="flex items-center justify-between gap-3 text-sm">
-        <span>{t("folia.rhine.breathingEnabled")}</span>
-        <input
-          type="checkbox"
-          checked={tuning.breathingEnabled}
-          onChange={(event) => change?.({ breathingEnabled: event.target.checked })}
-        />
-      </label>
-      <label className="flex items-center justify-between gap-3 text-sm">
         <span>{t("folia.rhine.rhythmStyle")}</span>
         <select
           className={selectClass}
           style={selectStyle}
           value={tuning.rhythmStyle}
           onChange={(event) => {
-            const rhythmStyle = event.target.value;
-            if (
-              rhythmStyle === "legacy" ||
-              rhythmStyle === "wave" ||
-              rhythmStyle === "lift" ||
-              rhythmStyle === "beat"
-            )
-              change?.({ rhythmStyle });
+            const rhythmStyle = RHINE_RHYTHM_STYLES.find((style) => style === event.target.value);
+            if (rhythmStyle) change?.({ rhythmStyle });
           }}
         >
-          <option style={optionStyle} value="legacy">
-            {t("folia.rhine.rhythmLegacy")}
-          </option>
-          <option style={optionStyle} value="wave">
-            {t("folia.rhine.rhythmWave")}
-          </option>
-          <option style={optionStyle} value="lift">
-            {t("folia.rhine.rhythmLift")}
-          </option>
-          <option style={optionStyle} value="beat">
-            {t("folia.rhine.rhythmBeat")}
-          </option>
+          {RHINE_RHYTHM_STYLES.map((style) => (
+            <option key={style} style={optionStyle} value={style}>
+              {t(RHINE_RHYTHM_LABELS[style].label)}
+            </option>
+          ))}
         </select>
       </label>
       <label className="block space-y-2 text-sm">

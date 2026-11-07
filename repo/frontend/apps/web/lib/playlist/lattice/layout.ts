@@ -38,6 +38,9 @@ const FIELD_ASPECT = 2.2;
 // Ceiling on posters built for one viewport, so an extreme zoom-out cannot stall a frame.
 const MAX_RENDERED_INSTANCES = 400;
 
+/** Cell size and gap of the poster wall, in world pixels. */
+export const LATTICE_METRICS: WallMetrics = { cellSize: 128, gap: 8 };
+
 const getPitch = (metrics: WallMetrics) => metrics.cellSize + metrics.gap;
 
 export const getLatticeGeometry = (totalEntries: number, metrics: WallMetrics): LatticeGeometry => {
@@ -64,8 +67,8 @@ export const getLatticeGeometry = (totalEntries: number, metrics: WallMetrics): 
 
 /**
  * Builds the poster sitting in one slot of one block, addressed by unbounded block coordinates.
- * The template is chosen from the block's position **inside** its cell, which is what makes the
- * lattice periodic; the cell index only contributes a translation.
+ * The songs repeat with the cell, but the template follows the block's absolute position, so the
+ * tiles never depend on how many songs there are: the skeleton can draw them before that is known.
  */
 const buildInstance = (
   geometry: LatticeGeometry,
@@ -80,7 +83,7 @@ const buildInstance = (
   const localColumn = absoluteColumn - repeatX * geometry.blocksPerRow;
   const localRow = absoluteRow - repeatY * geometry.blockRows;
   const cellSlot = (localRow * geometry.blocksPerRow + localColumn) * SLOTS_PER_BLOCK + slotIndex;
-  const slot: BlockSlot = getBlockTemplate(localColumn, localRow)[slotIndex];
+  const slot: BlockSlot = getBlockTemplate(absoluteColumn, absoluteRow)[slotIndex];
   const pitch = getPitch(metrics);
 
   return {
@@ -218,7 +221,7 @@ export const layoutExpandedBlock = (
   const block = getInstanceBlock(geometry, active);
   const localColumn = block.column - active.repeatX * geometry.blocksPerRow;
   const localRow = block.row - active.repeatY * geometry.blockRows;
-  const reflow = getBlockReflow(localColumn, localRow, block.slotIndex);
+  const reflow = getBlockReflow(block.column, block.row, block.slotIndex);
   if (!reflow) return result;
 
   const pitch = getPitch(metrics);

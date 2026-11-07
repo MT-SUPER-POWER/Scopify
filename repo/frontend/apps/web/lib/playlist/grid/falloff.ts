@@ -1,4 +1,6 @@
-import type { GridCardFrame, GridMetrics } from "@/types/playlist/grid";
+import { GRID_METRICS } from "@/constants/playlistGrid";
+import type { GridCardFrame, GridCell, GridMetrics } from "@/types/playlist/grid";
+import type { LatticeCamera, LatticeViewport } from "@/types/playlist/lattice";
 
 // Depth comes from the curve itself, so size barely changes with distance; the sides fall off in light.
 const CENTER_SCALE = 1.04;
@@ -56,5 +58,29 @@ export function computeCardCurve(dx: number, scale: number, viewportWidth: numbe
     x: (radius * Math.sin(turn)) / scale - dx,
     z: (radius * (1 - Math.cos(turn))) / scale,
     rotateY: (-turn * 180) / Math.PI,
+  };
+}
+
+/** How a card's seat looks under one camera, or null when it is off screen. */
+export function computeGridPlacement(cell: GridCell, camera: LatticeCamera, view: LatticeViewport) {
+  // The falloff is measured in world pixels, so zooming magnifies the same picture.
+  const dx = cell.x + (camera.x - view.width / 2) / camera.scale;
+  const dy = cell.y + (camera.y - view.height / 2) / camera.scale;
+  const frame = computeCardFrame(
+    dx,
+    dy,
+    view.width / camera.scale,
+    view.height / camera.scale,
+    GRID_METRICS,
+  );
+  if (!frame.visible) return null;
+  const curve = computeCardCurve(dx, camera.scale, view.width);
+  return {
+    dx,
+    dy,
+    frame,
+    transform:
+      `translate3d(${(cell.x + curve.x).toFixed(1)}px, ${cell.y}px, ${curve.z.toFixed(1)}px) ` +
+      `rotateY(${curve.rotateY.toFixed(2)}deg) scale(${frame.scale.toFixed(4)})`,
   };
 }

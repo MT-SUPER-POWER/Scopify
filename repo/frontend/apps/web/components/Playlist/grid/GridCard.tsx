@@ -5,9 +5,11 @@ import { Disc3, Pause, Play } from "lucide-react";
 import { getSizedImageUrl } from "@/lib/music/imageUrl";
 import { formatDuration } from "@/lib/utils";
 import { GRID_METRICS } from "@/constants/playlistGrid";
+import { useCardFlip } from "@/hooks/playlist/useFlipReveal";
 import { useTranslation } from "react-i18next";
 
 import type { GridCardProps } from "@/types/playlist/gridComponents";
+import { GridCardFace } from "../lattice/PlaylistViewSkeleton";
 
 export const GridCard = memo(function GridCard({
   track,
@@ -17,9 +19,11 @@ export const GridCard = memo(function GridCard({
   register,
   onSelect,
   onPlay,
+  flipPlan,
 }: GridCardProps) {
   const { t } = useTranslation();
   const ref = useRef<HTMLDivElement>(null);
+  const { flipping, frontRef, backRef } = useCardFlip(flipPlan, cell.key);
   useLayoutEffect(() => {
     register(cell, ref.current);
     return () => register(cell, null);
@@ -34,8 +38,9 @@ export const GridCard = memo(function GridCard({
       data-grid-card=""
       data-centered="false"
       data-current={current}
+      data-flipping={flipping}
       aria-label={t("playlist.grid.select", { name: track.name })}
-      className="group/card absolute cursor-pointer text-foreground [contain:layout_paint] focus-visible:outline-none"
+      className="group/card absolute cursor-pointer text-foreground [contain:layout_paint] focus-visible:outline-none data-[flipping=true]:[contain:layout]"
       style={{
         left: -GRID_METRICS.cardWidth / 2,
         top: -GRID_METRICS.cardHeight / 2,
@@ -48,7 +53,11 @@ export const GridCard = memo(function GridCard({
         onSelect(cell, event.currentTarget.dataset.centered === "true");
       }}
     >
-      <div className="flex size-full flex-col rounded-xl border border-border bg-card p-2.5 shadow-lg transition-shadow duration-300 group-hover/card:shadow-2xl group-data-[current=true]/card:ring-2 group-data-[current=true]/card:ring-primary group-data-[lights-off=true]/grid:not-group-data-[current=true]/card:brightness-50">
+      <div
+        ref={backRef}
+        style={flipping ? { transform: "rotateY(180deg)" } : undefined}
+        className="flex size-full flex-col rounded-xl border border-border bg-card p-2.5 shadow-lg transition-shadow duration-300 backface-hidden group-hover/card:shadow-2xl group-data-[current=true]/card:ring-2 group-data-[current=true]/card:ring-primary group-data-[lights-off=true]/grid:not-group-data-[current=true]/card:brightness-50"
+      >
         <div className="relative aspect-square shrink-0 overflow-hidden rounded-lg bg-secondary">
           <Disc3
             className="absolute top-[24%] left-[24%] size-[52%] opacity-12"
@@ -97,6 +106,11 @@ export const GridCard = memo(function GridCard({
           </span>
         </div>
       </div>
+      {flipping && (
+        <div ref={frontRef} aria-hidden className="absolute inset-0 backface-hidden">
+          <GridCardFace />
+        </div>
+      )}
     </div>
   );
 });

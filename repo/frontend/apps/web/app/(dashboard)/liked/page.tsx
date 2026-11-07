@@ -4,6 +4,7 @@ import { Heart } from "lucide-react";
 import { LibraryErrorPage } from "@/components/library/LibraryErrorPage";
 import { LibraryStatePage } from "@/components/library/LibraryStatePage";
 import { PlaylistContent } from "@/components/Playlist/PlaylistContent";
+import { PlaylistViewLoading } from "@/components/Playlist/lattice/PlaylistViewLoading";
 import { PlaylistPageSkeleton } from "@/components/Playlist/PlaylistPageSkeleton";
 import { QuietState } from "@/components/shared/QuietState";
 import { useLikedPlaylistQuery } from "@/hooks/library/useLibraryQueries";
@@ -26,7 +27,13 @@ export default function LikedSongsPage() {
     );
   }
 
-  if (likedPlaylistQuery.isLoading) return <PlaylistPageSkeleton />;
+  if (likedPlaylistQuery.isLoading)
+    return (
+      <>
+        <PlaylistPageSkeleton />
+        <PlaylistViewLoading />
+      </>
+    );
 
   if (likedPlaylistQuery.isError) {
     return (

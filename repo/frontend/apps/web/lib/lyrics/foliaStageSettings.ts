@@ -147,7 +147,7 @@ const STRING_ENUMS = {
   "background.mode": ["common", "monet", "nomand", "latent", "url", "sora", "rhine", "facet"],
   "background.rhine.tuning.colorMode": ["auto", "light", "dark"],
   "background.rhine.tuning.quality": ["performance", "original", "high"],
-  "background.rhine.tuning.rhythmStyle": ["legacy", "wave", "lift", "beat"],
+  "background.rhine.tuning.rhythmStyle": ["still", "breath", "legacy", "wave", "lift", "beat"],
   "background.rhine.tuning.frameRate": ["30", "60"],
   "background.facet.tuning.quality": ["performance", "balanced", "high"],
   "background.facet.tuning.frameRate": ["30", "60"],
@@ -268,7 +268,7 @@ export function normalizeFoliaStageSettings(
   const defaults = createDefaultFoliaStageSettings();
   const normalizedFallback = fallback ? normalizeAgainstSchema(fallback, defaults, "") : defaults;
   const normalized = normalizeAgainstSchema(
-    withThemeLibraryMigration(withLegacyAliases(candidate)),
+    withRhineRhythmMigration(withThemeLibraryMigration(withLegacyAliases(candidate))),
     normalizedFallback,
     "",
   );
@@ -462,6 +462,28 @@ function withLegacyAliases(candidate: unknown): unknown {
   return {
     ...normalized,
     subtitleContentMode: normalized.showSubtitleTranslation ? "translation" : "none",
+  };
+}
+
+/** Rhine's music and breathing switches became styles of their own; the switches decided what was running. */
+function withRhineRhythmMigration(candidate: unknown): unknown {
+  if (!isRecord(candidate) || !isRecord(candidate.background)) return candidate;
+  const rhine = candidate.background.rhine;
+  if (!isRecord(rhine) || !isRecord(rhine.tuning) || rhine.tuning.musicEnabled !== false) {
+    return candidate;
+  }
+  return {
+    ...candidate,
+    background: {
+      ...candidate.background,
+      rhine: {
+        ...rhine,
+        tuning: {
+          ...rhine.tuning,
+          rhythmStyle: rhine.tuning.breathingEnabled === false ? "still" : "breath",
+        },
+      },
+    },
   };
 }
 

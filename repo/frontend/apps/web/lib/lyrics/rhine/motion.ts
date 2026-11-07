@@ -54,15 +54,21 @@ export class Spring {
 
 export class RhineEnvelope {
   readonly bands: RhineAudioSample = { low: 0, mid: 0, high: 0, activity: 0 };
+  // Springs, not one-pole followers: a one-pole starts at full speed on every kick, which reads as a shove.
+  private readonly springs = { low: new Spring(), mid: new Spring(), high: new Spring() };
 
   update(sample: RhineAudioSample, enabled: boolean, dt: number) {
-    for (const key of ["low", "mid", "high", "activity"] as const) {
-      const value = sample[key];
-      const target = enabled && Number.isFinite(value) ? Math.min(1, Math.max(0, value)) : 0;
-      const rising = target > this.bands[key];
-      const rate = key === "activity" ? (rising ? 3 : 1.5) : rising ? 16 : 3.2;
-      this.bands[key] += (target - this.bands[key]) * (1 - Math.exp(-dt * rate));
+    const target = (value: number) =>
+      enabled && Number.isFinite(value) ? Math.min(1, Math.max(0, value)) : 0;
+    for (const key of ["low", "mid", "high"] as const) {
+      const spring = this.springs[key];
+      const goal = target(sample[key]);
+      spring.damp(goal, goal > spring.value ? 10 : 5, dt);
+      this.bands[key] = Math.max(0, spring.value);
     }
+    const activity = target(sample.activity);
+    const rate = activity > this.bands.activity ? 3 : 1.5;
+    this.bands.activity += (activity - this.bands.activity) * (1 - Math.exp(-dt * rate));
     return this.bands;
   }
 }

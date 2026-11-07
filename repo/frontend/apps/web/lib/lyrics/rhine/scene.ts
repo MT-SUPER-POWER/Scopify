@@ -3,6 +3,7 @@ import {
   RHINE_GLOW,
   RHINE_LANES,
   RHINE_LIFT,
+  RHINE_READING_FADE_END,
   RHINE_RIDGE_GAIN,
   RHINE_ROWS,
   RHINE_SHOWCASE_TIMING,
@@ -13,7 +14,6 @@ import { RhineBeatField } from "./beatField";
 import { InstanceUpdates } from "./instanceUpdates";
 import { RhineModel } from "./model";
 import {
-  idleWave,
   laneFocus,
   RhineEnvelope,
   RIPPLE_LIFE,
@@ -24,14 +24,14 @@ import {
 } from "./motion";
 import { yieldToMain } from "./programWarmup";
 import { RhineRenderer } from "./renderer";
-import { RhythmMotion, rhythmDisplacement } from "./rhythm";
+import { RhythmMotion, rhythmHearsMusic, rhythmHeight } from "./rhythm";
 import { ThemeWave } from "./themeWave";
 
 export class RhineScene {
   private readonly cells: RhineCell[] = [];
   private readonly cards = new Map<string, RhineShowcaseCard>();
   private readonly envelope = new RhineEnvelope();
-  private readonly rhythm = new RhythmMotion();
+  private readonly rhythm: RhythmMotion;
   private readonly beat = new RhineBeatField();
   private beatWeight = 0;
   private readonly matrixUpdates: InstanceUpdates;
@@ -64,6 +64,7 @@ export class RhineScene {
     input: RhineSceneInput,
   ) {
     this.input = input;
+    this.rhythm = new RhythmMotion(input.tuning.rhythmStyle);
     this.seed = input.seed;
     this.themeWave = new ThemeWave(input.dark);
     this.matrixUpdates = new InstanceUpdates(model.matrix);
@@ -76,7 +77,7 @@ export class RhineScene {
           key: `${lane}:${row}`,
           x: (lane - 4) * 5.2,
           z: (row - 23.5) * 0.62,
-          screenX: 0.5,
+          fieldX: 0.5,
         });
       }
     }
@@ -222,11 +223,13 @@ export class RhineScene {
       this.view.camera.matrixWorldInverse,
     );
     this.frustum.setFromProjectionMatrix(this.projection);
+    // The landscape lyric fade hides the left of the screen; a portrait one runs top to bottom and hides no side.
+    const hidden = this.view.camera.aspect >= 1 ? RHINE_READING_FADE_END : 0;
     this.visible = this.cells.filter((cell) => {
       this.bounds.min.set(cell.x - 2.8, -4.9, cell.z - 1.2);
       this.bounds.max.set(cell.x + 2.8, 5.2, cell.z + 1.2);
       const screen = new THREE.Vector3(cell.x, -0.9, cell.z).project(this.view.camera);
-      cell.screenX = screen.x * 0.5 + 0.5;
+      cell.fieldX = (screen.x * 0.5 + 0.5 - hidden) / (1 - hidden);
       return this.frustum.intersectsBox(this.bounds);
     });
   }
@@ -259,13 +262,9 @@ export class RhineScene {
     }
     if (Number(this.input.dark) !== this.themeWave.target)
       this.themeWave.set(this.input.dark, this.time, this.active);
-    this.envelope.update(audio, this.input.tuning.musicEnabled, dt);
-    this.beat.update(
-      this.input.tuning.musicEnabled ? audio.spectrum : undefined,
-      this.time,
-      dt,
-      this.active,
-    );
+    const hearing = rhythmHearsMusic(this.input.tuning.rhythmStyle);
+    this.envelope.update(audio, hearing, dt);
+    this.beat.update(hearing ? audio.spectrum : undefined, this.time, dt, this.active);
     this.updateShowcases(dt);
     this.updateRidge(dt);
     this.updateField(dt);
@@ -274,22 +273,19 @@ export class RhineScene {
 
   private updateField(dt: number) {
     const tuning = this.input.tuning;
-    const frame = this.rhythm.update(this.envelope.bands, this.time, dt, tuning.rhythmStyle);
+    const frame = this.rhythm.update(dt, tuning.rhythmStyle);
     this.beatWeight = frame.style.beat;
-    const beat = frame.style.beat * Math.min(2, Math.max(0, tuning.strength));
+    const sources = { bands: this.envelope.bands, beat: this.beat };
     const height = (cell: RhineCell, row: number) => {
-      let value =
-        (tuning.breathingEnabled ? idleWave(row, cell.lane, this.time) : 0) +
-        rhythmDisplacement(
-          row,
-          cell.lane,
-          this.time,
-          this.envelope.bands,
-          tuning.strength,
-          frame,
-          cell.screenX,
-        );
-      if (beat > 0.001) value += beat * this.beat.height(row, cell.lane, cell.screenX, this.time);
+      let value = rhythmHeight(
+        row,
+        cell.lane,
+        cell.fieldX,
+        this.time,
+        sources,
+        tuning.strength,
+        frame,
+      );
       if (this.ridgeAmount > 0)
         value +=
           this.ridgeAmount *

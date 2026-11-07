@@ -3,8 +3,8 @@
 import { useCallback, useLayoutEffect, useRef, useState } from "react";
 import { animate, useReducedMotion } from "framer-motion";
 import { useLatticePointer } from "@/hooks/playlist/useLatticePointer";
+import { getCameraBounds as getBounds, getInitialCamera } from "@/lib/playlist/lattice/camera";
 import type {
-  Bounds,
   LatticeCamera,
   LatticeCameraOptions,
   LatticeViewport,
@@ -13,13 +13,6 @@ import type {
 
 // The wall fills the pane; keep focused posters below the overlaid h-16 Header.
 const HEADER_INSET = 64;
-
-const getBounds = (camera: LatticeCamera, viewport: LatticeViewport): Bounds => ({
-  left: -camera.x / camera.scale,
-  top: -camera.y / camera.scale,
-  right: (viewport.width - camera.x) / camera.scale,
-  bottom: (viewport.height - camera.y) / camera.scale,
-});
 
 export function useLatticeCamera({
   centered = false,
@@ -87,9 +80,7 @@ export function useLatticeCamera({
               x: camera.x + (next.width - previous.width) / 2,
               y: camera.y + (next.height - previous.height) / 2,
             }
-          : centered
-            ? { x: next.width / 2, y: next.height / 2, scale: 1 }
-            : { ...camera, scale: Math.min(0.65, Math.max(0.35, next.width / 1750)) },
+          : getInitialCamera(next, centered),
         true,
       );
       setViewport(next);

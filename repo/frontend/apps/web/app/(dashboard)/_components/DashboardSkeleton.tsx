@@ -25,7 +25,10 @@ export function DashboardSkeleton({ content }: { content?: ReactNode }) {
       <LoadingHeaderSkeleton />
       <div className="flex min-h-0 flex-1 gap-2">
         <LoadingSidebarSkeleton />
-        <section className="relative min-w-0 flex-1 overflow-hidden rounded-lg bg-surface-raised">
+        <section
+          data-dashboard-main
+          className="relative min-w-0 flex-1 overflow-hidden rounded-lg bg-surface-raised"
+        >
           {content ? (
             // Some desktop scroll enhancers annotate this scrollable shell before React hydrates.
             <div suppressHydrationWarning className="size-full overflow-hidden">

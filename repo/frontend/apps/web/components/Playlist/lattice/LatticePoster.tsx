@@ -3,12 +3,14 @@
 import { lazy, memo, Suspense, useEffect, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { cn } from "@/lib/utils";
+import { useCardFlip } from "@/hooks/playlist/useFlipReveal";
 import { useLatticeExpansionSettled } from "@/hooks/playlist/useLatticeExpansionSettled";
 import { useTranslation } from "react-i18next";
 
 import type { LatticePosterProps } from "@/types/playlist/latticeComponents";
 import { LatticePosterArtwork } from "./LatticePosterArtwork";
 import { LatticePlaybackControls } from "./LatticePlaybackControls";
+import { LatticeTileFace } from "./PlaylistViewSkeleton";
 import { posterCopyClass, posterSubtitleClass, posterTitleClass } from "./latticePosterCopy";
 
 const LatticeLyrics = lazy(() => import("./LatticeLyrics"));
@@ -16,7 +18,7 @@ const LatticeLyrics = lazy(() => import("./LatticeLyrics"));
 // Hover/focus lifts a tile above the expanded one (z-1); lights-off dims every tile except the
 // current or expanded one. Plain :hover keeps the original touch behaviour.
 const posterClass =
-  "group/poster absolute top-0 left-0 overflow-hidden bg-secondary text-white transition-[filter] duration-300 ease-[ease] [contain:layout_paint] focus-visible:outline-4 focus-visible:-outline-offset-6 focus-visible:outline-white data-[expanded=true]:shadow-[0_24px_64px_#0006] data-[expanded=true]:[&:not(:hover,:focus-within)]:z-1 [&:hover,&:focus-within]:z-2 group-data-[lights-off=true]/lattice:not-data-[current=true]:not-data-[expanded=true]:brightness-28";
+  "group/poster absolute top-0 left-0 overflow-hidden bg-secondary text-white transition-[filter] duration-300 ease-[ease] [contain:layout_paint] focus-visible:outline-4 focus-visible:-outline-offset-6 focus-visible:outline-white data-[expanded=true]:shadow-[0_24px_64px_#0006] data-[expanded=true]:[&:not(:hover,:focus-within)]:z-1 [&:hover,&:focus-within]:z-2 data-[flipping=true]:z-1 data-[flipping=true]:overflow-visible data-[flipping=true]:bg-transparent data-[flipping=true]:[contain:none] data-[flipping=true]:after:hidden group-data-[lights-off=true]/lattice:not-data-[current=true]:not-data-[expanded=true]:brightness-28";
 
 // Current-track frame drawn above the artwork and lyrics.
 const currentFrameClass =
@@ -33,9 +35,11 @@ export const LatticePoster = memo(
     onFocus,
     onSelect,
     onPlay,
+    flipPlan,
   }: LatticePosterProps) {
     const { t } = useTranslation();
     const reducedMotion = useReducedMotion();
+    const { flipping, frontRef, backRef } = useCardFlip(flipPlan, instance.instanceId);
     const [settled, onExpansionComplete] = useLatticeExpansionSettled(expanded, reducedMotion);
     const [revealed, setRevealed] = useState(false);
     const [focusWithin, setFocusWithin] = useState(false);
@@ -91,6 +95,7 @@ export const LatticePoster = memo(
         onAnimationComplete={onExpansionComplete}
         data-expanded={expanded}
         data-current={current}
+        data-flipping={flipping}
         data-compact={!expanded && rect.width < 300}
         initial={false}
         animate={{
@@ -103,26 +108,37 @@ export const LatticePoster = memo(
         }}
         transition={{ duration: reducedMotion ? 0 : 0.42, ease: [0.22, 1, 0.36, 1] }}
       >
-        <LatticePosterArtwork
-          track={track}
-          instance={instance}
-          current={current}
-          expanded={expanded}
-        />
-        {expanded && current && settled ? (
-          <Suspense fallback={copy}>
-            <LatticeLyrics track={track} />
-          </Suspense>
-        ) : (
-          copy
-        )}
-        {expanded && (
-          <LatticePlaybackControls
+        <div
+          ref={backRef}
+          className="absolute inset-0 overflow-hidden bg-secondary backface-hidden"
+          style={flipping ? { transform: "rotateY(180deg)" } : undefined}
+        >
+          <LatticePosterArtwork
             track={track}
+            instance={instance}
             current={current}
-            revealed={revealed || hovered || focusWithin}
-            onPlay={onPlay}
+            expanded={expanded}
           />
+          {expanded && current && settled ? (
+            <Suspense fallback={copy}>
+              <LatticeLyrics track={track} />
+            </Suspense>
+          ) : (
+            copy
+          )}
+          {expanded && (
+            <LatticePlaybackControls
+              track={track}
+              current={current}
+              revealed={revealed || hovered || focusWithin}
+              onPlay={onPlay}
+            />
+          )}
+        </div>
+        {flipping && (
+          <div ref={frontRef} aria-hidden className="absolute inset-0 backface-hidden">
+            <LatticeTileFace />
+          </div>
         )}
       </motion.article>
     );
@@ -139,5 +155,6 @@ export const LatticePoster = memo(
     a.focused === b.focused &&
     a.onFocus === b.onFocus &&
     a.onSelect === b.onSelect &&
-    a.onPlay === b.onPlay,
+    a.onPlay === b.onPlay &&
+    a.flipPlan === b.flipPlan,
 );

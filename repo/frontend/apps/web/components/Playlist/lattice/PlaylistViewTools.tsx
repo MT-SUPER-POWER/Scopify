@@ -23,6 +23,7 @@ const CELL =
  * pane, clear of the player bar.
  */
 export function PlaylistViewTools({
+  revealing,
   title,
   count,
   mode,
@@ -46,8 +47,11 @@ export function PlaylistViewTools({
     return () => document.removeEventListener("pointerdown", away);
   }, [open]);
   return (
-    <div
+    <motion.div
       ref={rootRef}
+      initial={revealing ? { opacity: 0 } : false}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.4, delay: 0.5 }}
       data-playlist-view-tools=""
       className="absolute right-6 bottom-6 z-30 flex flex-col items-end gap-2 text-white"
       onKeyDown={(event) => {
@@ -151,6 +155,6 @@ export function PlaylistViewTools({
       >
         {open ? <X /> : <Settings2 />}
       </button>
-    </div>
+    </motion.div>
   );
 }

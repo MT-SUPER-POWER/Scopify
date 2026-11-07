@@ -8,14 +8,13 @@ import {
   getInstanceBlock,
   locateInstanceAt,
   layoutExpandedBlock,
+  LATTICE_METRICS as metrics,
   layoutLattice,
   locateNearestInstance,
 } from "@/lib/playlist/lattice/layout";
 import { findAdjacentInstance, findNearestInstance } from "@/lib/playlist/lattice/wallNavigation";
 import { ZOOM_STEP, zoomKeyDirection } from "@/lib/playlist/zoomKeys";
 import type { QueueInstance, WallDirection } from "@/types/playlist/lattice";
-
-const metrics = { cellSize: 128, gap: 8 };
 
 export function useLatticeWall(trackCount: number) {
   const camera = useLatticeCamera();
