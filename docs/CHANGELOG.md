@@ -2,6 +2,37 @@
 
 > 根据 commit 自动生成，请勿手动编辑；推送版本 tag 后由 CI 更新。v2.0.3 及更早版本见[历史更新记录](archive/CHANGELOG-legacy.md)。
 
+## v3.4.1 — 2026-11-07
+
+### 新增
+
+- 停在卡片墙时刷新不再闪出列表骨架，刷新后卡片同样翻面 ([fbb14211](https://github.com/MT-SUPER-POWER/Scopify/commit/fbb142114d79a418b6e5bf9b58eb5cc267e6cca1))
+- 歌单卡片墙加载完或切换布局时，卡片翻面亮出内容 ([0397f7fa](https://github.com/MT-SUPER-POWER/Scopify/commit/0397f7fac9be509df0b4c56419683c12cb3b6ddf))
+- 莱茵背景律动改为六选一，频谱铺满看得见的区域 ([670873b1](https://github.com/MT-SUPER-POWER/Scopify/commit/670873b1a898030b03382961c3c4da88f1940c5f))
+- 棱面背景跟着歌词走，唱一个字亮一片切面 ([b72a60e2](https://github.com/MT-SUPER-POWER/Scopify/commit/b72a60e2fc703c5326c0d3fcd45421bd72115989))
+- 新增棱面背景：六边形随每句歌词翻面，涟漪跟着音量和鼓点流动 ([c2c675ab](https://github.com/MT-SUPER-POWER/Scopify/commit/c2c675ab0174e0db4a1523a838c219f5dc931a36))
+- 聚散支持平静、标准、混乱三档动画强度 ([e15d91f0](https://github.com/MT-SUPER-POWER/Scopify/commit/e15d91f0c3b17cb9b7cb0ea99d3ce52f3ed0940a))
+- 聚散的字唱到时会弹动，长音逐渐填色，唱完也轻轻起伏 ([81e0176d](https://github.com/MT-SUPER-POWER/Scopify/commit/81e0176d0a5226d2ec6d0a4f812bc4bb444eac16))
+- 移除歌单的 Bravais 裂缝墙视图，上次停在它的会改用 Lattice ([945f716c](https://github.com/MT-SUPER-POWER/Scopify/commit/945f716cbf797e645b2ef6a054415ff511fd58f3))
+- 新增聚散歌词样式：每句碎成粒子飞散，唱到时聚成下一句，副歌进入时还会像烟花一样炸开 ([006c445c](https://github.com/MT-SUPER-POWER/Scopify/commit/006c445cc611ac864f5f6a424c25d33a702ddd72))
+- Bravais 改成左右两半反向滚动的裂缝墙，中间固定歌曲列表，封面不再裁切 ([b829ca1b](https://github.com/MT-SUPER-POWER/Scopify/commit/b829ca1bc60be2fb1cd7c906d6b22f8d8537346f))
+- Bravais 中间面板改成悬浮毛玻璃，歌曲带封面，选中海报时列表跟着定位 ([6c2a6793](https://github.com/MT-SUPER-POWER/Scopify/commit/6c2a67939ce6e095ac925c4af871912358e27641))
+- 进入新歌单时自动停在上次用的视图，加载时有对应的骨架屏 ([17be689c](https://github.com/MT-SUPER-POWER/Scopify/commit/17be689ca52e403c44e1746070b91b9b9c388569))
+
+### 修复
+
+- 补充棱面背景缺失的歌词行类型导入 ([4b288dbe](https://github.com/MT-SUPER-POWER/Scopify/commit/4b288dbed7693382c16001358e7aa39e8e5a3603))
+- 棱面背景不再强烈闪烁，故障效果只在混乱动画强度下出现 ([63b095d8](https://github.com/MT-SUPER-POWER/Scopify/commit/63b095d82aef964a3229eeabaadb456d99811a0b))
+- Bravais 中间的歌曲列表固定在屏幕中央，不会再被拖出视野 ([4a06958c](https://github.com/MT-SUPER-POWER/Scopify/commit/4a06958c51101d704769c061cbb3c55d88a2b70a))
+- 町景转动镜头时，天气和车流不再定住 ([cf2ffa20](https://github.com/MT-SUPER-POWER/Scopify/commit/cf2ffa2038f61615e8860a1ab96ee4300073e643))
+- Windows 双显卡电脑改用独显渲染，莱茵背景不再严重卡顿 ([8efed505](https://github.com/MT-SUPER-POWER/Scopify/commit/8efed505eb2ecd260f1e5181f915182189c520c6))
+
+### 优化
+
+- 莱茵背景律动更丝滑，不再一顿一顿地往上顶 ([96f252aa](https://github.com/MT-SUPER-POWER/Scopify/commit/96f252aaa5d2146e3b7f70c507a4e80715e5e1b0))
+- 歌词舞台的控制条收起后不再占用绘制 ([49424f3a](https://github.com/MT-SUPER-POWER/Scopify/commit/49424f3ab06d91b2b28202e98ca7a18b268591b9))
+- 打开歌词舞台时不再绘制被盖住的页面，播放更顺滑 ([c4bf4588](https://github.com/MT-SUPER-POWER/Scopify/commit/c4bf4588b354d4aa465c3f9edc869b3a9f11057e))
+
 ## v3.4.0 — 2026-11-06
 
 ### 新增
