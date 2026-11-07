@@ -7,6 +7,7 @@ import {
   FACET_HISTORY_WEIGHT,
   FACET_LATE_FRAME_RATIO,
   FACET_QUALITY,
+  FACET_SLEW_PER_SECOND,
   FACET_STILL_SAMPLES,
 } from "@/constants/facetBackground";
 import { FACET_STILL_FRAME, FacetMotion, hashSeed } from "@/lib/lyrics/facet/motion";
@@ -49,6 +50,7 @@ export class FacetScene {
   private late = 0;
   /** Set when the buffers have nothing usable in them, so the next frame must not blend with its history. */
   private historyStale = true;
+  private lastDt = 0;
 
   constructor(
     private readonly renderer: FacetRenderer,
@@ -56,6 +58,7 @@ export class FacetScene {
   ) {
     this.input = input;
     this.motion = new FacetMotion(input.seed);
+    this.motion.intensity = input.intensity;
     this.palette = clonePalette(input.palette);
     this.seedShown = this.seedTarget = seedAngle(input.seed);
   }
@@ -82,6 +85,7 @@ export class FacetScene {
   setInput(input: FacetSceneInput) {
     const previous = this.input;
     this.input = input;
+    this.motion.intensity = input.intensity;
     const seedChanged = previous.seed !== input.seed;
     if (seedChanged) {
       this.seedTarget = seedAngle(input.seed);
@@ -133,6 +137,7 @@ export class FacetScene {
 
   advance(elapsedMs: number, audio: FacetAudioSample | null, lyric: FacetLyricSample | null) {
     const dt = Math.min(elapsedMs / 1000, 0.1);
+    this.lastDt = dt;
     const { tuning, palette: target } = this.input;
     this.motion.advance(
       dt,
@@ -157,7 +162,7 @@ export class FacetScene {
 
   paint() {
     if (this.width <= 0 || this.height <= 0) return;
-    const { still, frozen, tuning, vignette } = this.input;
+    const { still, frozen, tuning, vignette, intensity } = this.input;
     const quality = FACET_QUALITY[tuning.quality];
     this.renderer.render({
       motion: still ? FACET_STILL_FRAME : this.motion.frame(tuning.strength),
@@ -166,6 +171,7 @@ export class FacetScene {
       seed: this.seedShown,
       // A stopped repaint has only itself to show, so it cannot lean on the frames before it.
       historyWeight: this.historyStale || frozen ? 0 : FACET_HISTORY_WEIGHT,
+      maxDelta: FACET_SLEW_PER_SECOND[intensity] * this.lastDt,
       samples: frozen ? FACET_STILL_SAMPLES : quality.samples,
       vignette,
     });

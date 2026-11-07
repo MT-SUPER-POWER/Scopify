@@ -10,8 +10,6 @@ out vec4 fragColor;
 uniform vec2 uResolution;
 uniform float uFlow;
 uniform float uBlend;
-uniform float uTurn;
-uniform float uTurning;
 uniform float uScale;
 uniform float uPresence;
 uniform int uTick;
@@ -30,6 +28,7 @@ uniform float uGrain;
 uniform vec4 uTear;
 uniform float uBurst;
 uniform float uHistoryWeight;
+uniform float uMaxDelta;
 uniform sampler2D uHistory;
 
 const float TWO_PI = 6.28318530718;
@@ -88,11 +87,9 @@ vec3 shade(vec2 xy, float xiTime, float xiAb, bool displaced) {
   float rowUv = clamp(xy.y / uResolution.y, 0.0, 1.0);
   float warped = uFlow + xiTime * (displaced ? SHUTTER_DISPLACED : SHUTTER) - 0.2 * sqrt(rowUv) - 0.1;
   float phase = fract(warped);
-  float morph = max(1.0 - smoothstep(0.0, 0.6, sin01(TWO_PI * phase)), uTurning);
-  float blend = uBlend;
-  float beta = abs(2.0 * max(0.0, blend) - 1.0);
+  float morph = 1.0 - smoothstep(0.0, 0.6, sin01(TWO_PI * phase));
 
-  float angle = blend * TWO_PI + uSeed * 0.5;
+  float angle = uBlend * TWO_PI + uSeed * 0.5;
   mat2 rotation = mat2(cos(angle), -sin(angle), sin(angle), cos(angle));
   vec2 view = (xy - 0.5 * uResolution) / uResolution.y * 2.0;
   view /= 1.0 + 0.05 * length(view) * xiAb;
@@ -101,10 +98,6 @@ vec3 shade(vec2 xy, float xiTime, float xiAb, bool displaced) {
   vec2 warp = view;
   float squash = square(1.0 - morph) * xiTime * clamp(square(0.5 * (1.0 + view.y)), 0.0, 1.0);
   warp.y *= mix(1.0, 0.1, squash);
-  float tilt = TWO_PI / 12.0 * beta;
-  mat2 tiltMatrix = mat2(cos(tilt), -sin(tilt), sin(tilt), cos(tilt));
-  warp = tiltMatrix * warp;
-
   float expMorph = pow(morph, 0.3);
   float scale = mix(2.6, 1.1, expMorph);
   float thickness = mix(0.5, 0.4, morph) + uThickness;
@@ -118,36 +111,33 @@ vec3 shade(vec2 xy, float xiTime, float xiAb, bool displaced) {
     if (!displaced && cell != ivec2(0)) break;
     if (pass == 0) inside = true;
 
-    // The lattice shatters at the middle of a turn, so it lands with the new line.
-    int subdiv = 1 + int(exp(-square(10.0 * (2.0 * uTurn - 1.0))) * 100.0);
-    float slide = TWO_PI * (floor(cos01(TWO_PI * phase) * 12.0) / 6.0);
-    vec2 shifted = warp * (0.1 + float(subdiv)) -
-      0.8660254 * vec2(sin(slide), cos(slide)) * floor(0.5 + sin01(TWO_PI * phase) * 2.0) / 2.0;
+    // The original re-rolls these cells several times per cycle and shatters them on its kick; a steady pattern
+    // that slides keeps the structure without the strobing.
+    float slide = TWO_PI * cos01(TWO_PI * phase) * 2.0;
+    vec2 shifted = warp * 1.1 - 0.8660254 * vec2(sin(slide), cos(slide)) * sin01(TWO_PI * phase) * 0.5;
     hexCell(shifted, axes, cell);
-    uint cellHash = hash3(uint(phase * 6.0), uint(subdiv), hash2(uint(cell.x + 4096), uint(cell.y + 4096)));
+    uint cellHash = hash2(uint(cell.x + 4096), uint(cell.y + 4096));
     if (cellHash % 2u == 0u) {
-      float alpha = smoothstep(0.2, 0.75, sin01(phase * 20.0));
-      float dist = mix(widest(axes), length(view) * 2.5, 1.0 - alpha);
       float hashSum = axes[int(cellHash % 3u)] + axes[int((cellHash + 1u) % 3u)];
-      if (dist > 1.0 - 0.02 * float(subdiv)) invert ^= 1;
-      else if (fract(20.0 / float(subdiv) * hashSum) < 0.5) invert ^= 1;
+      if (widest(axes) > 0.98) invert ^= 1;
+      else if (fract(20.0 * hashSum) < 0.5) invert ^= 1;
       if (pass == 0) break;
     }
 
     invert ^= int(rippleField(warp, warped, exponent) > thickness);
 
-    float drift = TWO_PI * (floor(cos01(-TWO_PI * phase) * 30.0) / 6.0);
-    warp = tiltMatrix * (warp + vec2(cos(drift), sin(drift)) * 0.5);
+    float drift = TWO_PI * cos01(-TWO_PI * phase) * 5.0;
+    warp += vec2(cos(drift), sin(drift)) * 0.5;
     warp *= scale;
   }
   // The original flips the whole screen here; keeping the page colour outside leaves the lyrics readable.
   if (!inside) return uPaper;
 
-  float on = float(invert != 0);
-  float coverage = mix(1.0 - on, on, beta);
+  // Two tones of ink rather than ink and page: the original's black and white inversion is what flashed.
+  float coverage = invert != 0 ? 1.0 : 0.45;
   // Equal parts of both colours cancel out, so flat areas stay ink and only moving edges fringe.
-  vec3 fringe = (mix(uAccent, uSecondary, xiTime) - 0.5 * (uAccent + uSecondary)) * 2.0 * beta * beta;
-  vec3 ink = mix(uInk, uAccent, 0.35 * sin(blend * TWO_PI * 0.5)) + fringe;
+  vec3 fringe = (mix(uAccent, uSecondary, xiTime) - 0.5 * (uAccent + uSecondary)) * 0.5;
+  vec3 ink = mix(uInk, uAccent, 0.25) + fringe;
   return mix(uPaper, clamp(ink, 0.0, 1.0), coverage * uPresence);
 }
 
@@ -159,7 +149,7 @@ void main() {
   // Rows slip sideways like analogue interference; a burst makes more of them slip, further.
   vec2 moved = xy;
   uint rowHash = hash2(uint(xy.y * 720.0 / uResolution.y / 2.0), tick);
-  float slipChance = mix(0.01, 0.5, uBurst) + uGrain * 0.02;
+  float slipChance = uBurst * 0.5;
   if (unit(rowHash) < slipChance) {
     float magnitude = mix(-1.0, 1.0, unit(pcg(rowHash)));
     moved.x -= uResolution.x * mix(0.01, 0.02, uBurst) * sign(magnitude) * square(magnitude);
@@ -194,9 +184,12 @@ void main() {
   }
 
   // Grain sits on the difference from the page colour, so an empty page stays clean.
-  float grain = (unit(pixel) - 0.5) * (0.03 + uGrain * 0.1);
+  float grain = (unit(pixel) - 0.5) * (0.025 + uGrain * 0.02);
   color += grain * smoothstep(0.0, 0.2, distance(color, uPaper));
 
   vec3 history = texture(uHistory, vUv).rgb;
-  fragColor = vec4(mix(color, history, displaced ? 0.0 : uHistoryWeight), 1.0);
+  vec3 blended = mix(color, history, displaced ? 0.0 : uHistoryWeight);
+  // No pixel may change faster than this, however the picture above moves: the limit is what rules out flashing.
+  if (uHistoryWeight > 0.0) blended = clamp(blended, history - uMaxDelta, history + uMaxDelta);
+  fragColor = vec4(blended, 1.0);
 }

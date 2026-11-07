@@ -1,6 +1,7 @@
 import { RhineBeatDetector } from "@/lib/lyrics/rhine/beat";
 import type {
   FacetAudioSample,
+  FacetIntensity,
   FacetLyricSample,
   FacetMotionFrame,
   FacetMotionStats,
@@ -8,11 +9,11 @@ import type {
 } from "@/types/lyrics/facet/background";
 
 // lib/lyrics/facet/motion.ts
-// How the song moves the Facet background. Nothing here runs on its own schedule:
-// - each new lyric line turns the hexagon over, so the big gesture lands where the singing does;
-// - the ripples flow as fast as the music is loud, and every kick pushes them forward;
-// - the hexagon grows and darkens with loudness, relative to this song's own recent range, and fades in the gaps;
-// - tears are saved for loud passages.
+// How the song moves the Facet background. Nothing here runs on its own schedule, and nothing here flashes:
+// - the ripples flow as fast as the music is loud, and every kick nudges them forward;
+// - the hexagon grows and deepens slowly with loudness, relative to this song's own recent range;
+// - when the song changes section it rotates a sixth of a turn, which ends looking the same as it started;
+// - tears only exist at the highest animation intensity.
 // The flow only ever accumulates frame time: input, song changes and settings cannot restart it, and pausing simply
 // stops adding to it.
 
@@ -23,15 +24,18 @@ const FLOW_QUIET = 0.03;
 const FLOW_LOUD = 0.34;
 const FLOW_UNREACTIVE = 0.09;
 /** Flow added by a kick, per second, and how quickly that push dies away. */
-const KICK_PUSH = 0.7;
+const KICK_PUSH = 0.12;
 const KICK_PUSH_DECAY = 6;
-const TURN_SECONDS = 0.7;
-/** Fewest seconds between turns: quick lines share one rather than spinning the hexagon constantly. */
-const TURN_SPACING = 1.5;
-/** Without a sung line for this long, a kick may turn the hexagon instead. */
-const INSTRUMENTAL_TURN_AFTER = 6;
+const TURN_SECONDS = 2.4;
+/** Fewest seconds between section turns. */
+const TURN_SPACING = 8;
 /** With no audio or lyrics at all, the hexagon still turns now and then. */
-const IDLE_TURN_AFTER = 12;
+const IDLE_TURN_AFTER = 20;
+/** How far up the song's recent range counts as the loud section, for how many seconds before it is believed. */
+const SECTION_LOUD = 0.75;
+const SECTION_LOUD_SECONDS = 2;
+const SECTION_QUIET = 0.45;
+const SECTION_QUIET_SECONDS = 3;
 const TEAR_REFRACTORY = 6;
 const TEAR_SECONDS = 0.2;
 /** How far up the song's recent range the music must be for a tear. */
@@ -70,12 +74,13 @@ export class FacetMotion {
   private peak = 0;
   private floor = 1;
   private energy = 0;
-  private swell = 0;
+  /** Loudness and singing, slow enough that the hexagon's size never reads as a pulse. */
+  private reach = 0;
   private burst = 0;
   private singing = 0;
-  private lineProgress = 0;
-  private lineIndex = -1;
-  /** 0 and 1 are the two faces the hexagon rests on; a turn goes from one to the other. */
+  private loudSection = false;
+  private sectionTimer = 0;
+  /** How many sixths of a turn the hexagon has settled on; a turn adds one. */
   private face = 0;
   private turn = -1;
   private sinceTurn = Infinity;
@@ -85,6 +90,7 @@ export class FacetMotion {
   private random: number;
   private stats: FacetMotionStats = { kicks: 0, turns: 0, tears: 0, energy: 0, samples: 0 };
   private readonly beats = new RhineBeatDetector();
+  intensity: FacetIntensity = "normal";
 
   constructor(seed: string) {
     this.random = hashSeed(seed);
@@ -99,7 +105,7 @@ export class FacetMotion {
 
   /** Starts a tear now unless one started too recently; `strength` scales how far it shifts. */
   triggerTear(strength: number) {
-    if (this.sinceTear < TEAR_REFRACTORY || strength <= 0) return;
+    if (this.intensity !== "chaotic" || this.sinceTear < TEAR_REFRACTORY || strength <= 0) return;
     this.sinceTear = 0;
     this.tearLeft = TEAR_SECONDS;
     this.burst = 1;
@@ -115,13 +121,23 @@ export class FacetMotion {
     };
   }
 
-  /** Starts turning the hexagon over unless a turn is running or has just finished. */
+  /** Starts a section's turn unless one is running or has just finished. */
   private startTurn() {
-    if (this.turn >= 0 || this.sinceTurn < TURN_SPACING) return false;
+    if (this.turn >= 0 || this.sinceTurn < TURN_SPACING) return;
     this.turn = 0;
     this.sinceTurn = 0;
     this.stats.turns += 1;
-    return true;
+  }
+
+  /** Believes a change of section only once the level has stayed there a while, so one loud bar does not count. */
+  private followSection(dt: number) {
+    const crossing = this.loudSection ? this.energy < SECTION_QUIET : this.energy > SECTION_LOUD;
+    this.sectionTimer = crossing ? this.sectionTimer + dt : 0;
+    const needed = this.loudSection ? SECTION_QUIET_SECONDS : SECTION_LOUD_SECONDS;
+    if (this.sectionTimer < needed) return;
+    this.loudSection = !this.loudSection;
+    this.sectionTimer = 0;
+    this.startTurn();
   }
 
   advance(
@@ -134,10 +150,9 @@ export class FacetMotion {
     this.sinceTear += dt;
     this.sinceTurn += dt;
     this.low = follow(this.low, audio?.low ?? 0, 10, dt);
-    this.mid = follow(this.mid, audio?.mid ?? 0, 8, dt);
-    this.high = follow(this.high, audio?.high ?? 0, 14, dt);
+    this.mid = follow(this.mid, audio?.mid ?? 0, 2, dt);
+    this.high = follow(this.high, audio?.high ?? 0, 3, dt);
     this.burst *= Math.exp(-BURST_DECAY * dt);
-    this.swell = follow(this.swell, 0, 7, dt);
     this.push *= Math.exp(-KICK_PUSH_DECAY * dt);
     if (this.tearLeft > 0) {
       this.tearLeft -= dt;
@@ -154,37 +169,27 @@ export class FacetMotion {
     this.stats.energy += this.energy;
     this.stats.samples += 1;
 
-    let kicked = false;
     if (audio) {
       const { onsets } = this.beats.update(audio.spectrum, dt);
       if (onsets[0]) {
-        kicked = true;
         this.stats.kicks += 1;
-        this.swell = Math.max(this.swell, clamp01(onsets[0]));
         this.push = KICK_PUSH;
       }
       if (onsets[1] && this.energy > TEAR_ENERGY) this.triggerTear(strength);
+      this.followSection(dt);
+    } else if (this.sinceTurn > IDLE_TURN_AFTER && !lyric?.singing) {
+      this.startTurn();
     }
 
     const sung = lyric?.singing ?? false;
-    this.singing = follow(this.singing, sung ? 1 : 0, 4, dt);
-    this.lineProgress = sung ? (lyric?.progress ?? 0) : follow(this.lineProgress, 0, 3, dt);
-    const lineIndex = lyric?.lineIndex ?? -1;
-    if (lineIndex !== this.lineIndex) {
-      const started = lineIndex >= 0 && this.startTurn();
-      this.lineIndex = lineIndex;
-      if (started && this.energy > TEAR_ENERGY) this.triggerTear(strength);
-    } else if (!sung && kicked && this.sinceTurn > INSTRUMENTAL_TURN_AFTER) {
-      this.startTurn();
-    } else if (!audio && !sung && this.sinceTurn > IDLE_TURN_AFTER) {
-      this.startTurn();
-    }
+    this.singing = follow(this.singing, sung ? 1 : 0, 2, dt);
+    this.reach = follow(this.reach, Math.max(this.energy, this.singing * 0.6), 1.2, dt);
 
     if (this.turn >= 0) {
       this.turn += dt / TURN_SECONDS;
       if (this.turn >= 1) {
         this.turn = -1;
-        this.face = 1 - this.face;
+        this.face = (this.face + 1) % 6;
       }
     }
 
@@ -195,23 +200,14 @@ export class FacetMotion {
   }
 
   frame(strength: number): FacetMotionFrame {
-    const turning = this.turn >= 0;
-    const progress = turning ? this.turn : 0;
-    // A small wind-up against the direction of the turn, then the swing, as in the original's kick.
-    const swing = -0.1 * smooth(0, 0.25, progress) + 1.1 * smooth(0.2, 0.8, progress);
-    const reach = Math.max(this.energy, this.singing * 0.6);
+    const eased = this.turn >= 0 ? smooth(0, 1, this.turn) : 0;
     return {
       flow: this.flow,
       tick: Math.floor(this.realTime * TICKS_PER_SECOND),
-      blend: (swing + this.face) * 0.5,
-      turn: progress,
-      turning: turning ? 1 : 0,
-      scale:
-        0.74 +
-        (0.34 * reach + 0.14 * this.swell + 0.05 * this.lineProgress * this.singing) *
-          Math.min(strength, 1.5),
-      presence: 0.3 + 0.7 * clamp01(reach * Math.max(strength, 0.5)),
-      thickness: (this.mid - 0.5) * 0.14 * strength,
+      blend: (this.face + eased) / 6,
+      scale: 0.78 + 0.26 * this.reach * Math.min(strength, 1.5),
+      presence: 0.3 + 0.5 * clamp01(this.reach * Math.max(strength, 0.5)),
+      thickness: (this.mid - 0.5) * 0.08 * strength,
       grain: clamp01(this.high * strength),
       burst: this.burst,
       tear: this.tear,
@@ -231,10 +227,8 @@ export const FACET_STILL_FRAME: FacetMotionFrame = {
   flow: 0.3,
   tick: 0,
   blend: 0,
-  turn: 0,
-  turning: 0,
   scale: 1,
-  presence: 1,
+  presence: 0.8,
   thickness: 0,
   grain: 0,
   burst: 0,

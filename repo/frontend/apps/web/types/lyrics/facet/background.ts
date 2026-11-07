@@ -8,6 +8,7 @@ export interface FacetBackgroundTuning {
   overlayOpacity: number;
   frameRate: "30" | "60";
 }
+export type FacetIntensity = "calm" | "normal" | "chaotic";
 export type FacetBackgroundProps = VisualizerBackgroundRenderProps;
 export type FacetLoadState = "loading" | "ready" | "error";
 export interface FacetQualitySettings {
@@ -57,11 +58,8 @@ export interface FacetTear {
 export interface FacetMotionFrame {
   flow: number;
   tick: number;
-  /** The hexagon's turn: 0 and 0.5 are its two faces, and the rotation is this times a full circle. */
+  /** The hexagon's rotation as a share of a full circle. It rests on sixths, where a hexagon looks the same. */
   blend: number;
-  /** Progress through the current turn, 0 when none is running. */
-  turn: number;
-  turning: number;
   scale: number;
   presence: number;
   thickness: number;
@@ -73,6 +71,7 @@ export interface FacetSceneInput {
   seed: string;
   palette: FacetPalette;
   tuning: FacetBackgroundTuning;
+  intensity: FacetIntensity;
   frozen: boolean;
   still: boolean;
   vignette: boolean;
@@ -88,6 +87,8 @@ export interface FacetRenderOptions {
   quality: FacetQualitySettings;
   seed: number;
   historyWeight: number;
+  /** The most any pixel may change this frame. */
+  maxDelta: number;
   samples: number;
   vignette: boolean;
 }

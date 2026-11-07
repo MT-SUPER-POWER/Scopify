@@ -40,29 +40,32 @@ describe("FacetMotion", () => {
     expect(motion.frame(1)).toEqual(motion.frame(1));
   });
 
-  test("a new lyric line turns the hexagon, and the turn ends on the other face", () => {
+  test("a lyric line changing does not move the hexagon", () => {
     const motion = new FacetMotion("song");
-    run(motion, 1, 0.5, line(0));
-    expect(motion.frame(1).turning).toBe(1);
-    run(motion, 60, 0.5, line(0));
-    expect(motion.frame(1).turning).toBe(0);
-    expect(motion.frame(1).blend).toBeCloseTo(0.5);
-    run(motion, 60, 0.5, line(1));
-    expect(motion.frame(1).blend).toBeCloseTo(0);
-  });
-
-  test("a line that stays current does not turn again", () => {
-    const motion = new FacetMotion("song");
-    run(motion, 60, 0.5, line(0));
-    expect(motion.takeStats().turns).toBe(1);
-    run(motion, 300, 0.5, line(0));
+    for (let index = 0; index < 10; index += 1) run(motion, 30, null, line(index));
     expect(motion.takeStats().turns).toBe(0);
   });
 
-  test("quick lines share a turn instead of spinning constantly", () => {
+  test("a change of section turns the hexagon a sixth of a circle, only once it has lasted", () => {
     const motion = new FacetMotion("song");
-    for (let index = 0; index < 6; index += 1) run(motion, 6, 0.5, line(index));
+    run(motion, 300, 0.9, line(0));
+    run(motion, 300, 0.2, line(0));
+    motion.takeStats();
+    const before = motion.frame(1).blend;
+    run(motion, 30, 0.9, line(0));
+    expect(motion.takeStats().turns).toBe(0);
+    run(motion, 150, 0.9, line(0));
     expect(motion.takeStats().turns).toBe(1);
+    run(motion, 90, 0.9, line(0));
+    expect(motion.frame(1).blend - before).toBeCloseTo(1 / 6);
+  });
+
+  test("the hexagon's size moves slowly, so it cannot pulse with the beat", () => {
+    const motion = new FacetMotion("song");
+    run(motion, 300, 0.2, line(0));
+    const before = motion.frame(1).scale;
+    run(motion, 1, 0.9, line(0));
+    expect(Math.abs(motion.frame(1).scale - before)).toBeLessThan(0.02);
   });
 
   test("loud music flows faster and fills more of the screen than quiet music", () => {
@@ -98,8 +101,19 @@ describe("FacetMotion", () => {
     expect(motion.frame(1).presence).toBeLessThan(singing);
   });
 
+  test("only the highest intensity tears the picture", () => {
+    for (const intensity of ["calm", "normal"] as const) {
+      const motion = new FacetMotion("song");
+      motion.intensity = intensity;
+      motion.triggerTear(1);
+      expect(motion.frame(1).tear).toBeNull();
+      expect(motion.frame(1).burst).toBe(0);
+    }
+  });
+
   test("tears cannot repeat inside the refractory window", () => {
     const motion = new FacetMotion("song");
+    motion.intensity = "chaotic";
     motion.triggerTear(1);
     const first = motion.frame(1).tear;
     expect(first).not.toBeNull();

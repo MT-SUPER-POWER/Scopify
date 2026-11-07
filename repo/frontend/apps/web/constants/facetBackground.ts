@@ -1,5 +1,6 @@
 import type {
   FacetBackgroundTuning,
+  FacetIntensity,
   FacetQuality,
   FacetQualitySettings,
 } from "@/types/lyrics/facet/background";
@@ -36,5 +37,14 @@ export const FACET_ADAPTIVE_IGNORE_MS = 500;
 export const FACET_FADE_SECONDS = 0.6;
 /** How much of the previous frame each frame keeps: stands in for the samples the original takes per pixel. */
 export const FACET_HISTORY_WEIGHT = 0.6;
+/**
+ * The most a pixel's brightness may change per second, on a 0 to 1 scale. Even the highest setting takes over half a
+ * second for a full swing, which stays under three flashes per second (WCAG 2.3.1).
+ */
+export const FACET_SLEW_PER_SECOND: Record<FacetIntensity, number> = {
+  calm: 0.7,
+  normal: 0.9,
+  chaotic: 1.6,
+};
 /** A stopped frame has no history to lean on, and only renders once. */
 export const FACET_STILL_SAMPLES = 8;

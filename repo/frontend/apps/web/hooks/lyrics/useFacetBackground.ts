@@ -18,7 +18,10 @@ const COVER_COLORS = 2;
 const FRAME_REPORT_MS = 30_000;
 
 function sceneInput(props: FacetBackgroundProps, coverColors: readonly string[]): FacetSceneInput {
+  // Themes can come from outside (AI themes), so an unknown value just means normal.
+  const intensity = props.theme.animationIntensity;
   return {
+    intensity: intensity === "calm" || intensity === "chaotic" ? intensity : "normal",
     seed: String(props.seed ?? "facet"),
     palette: resolveFacetPalette(props.theme, coverColors),
     tuning: { ...DEFAULT_FACET_BACKGROUND_TUNING, ...props.config?.facet?.tuning },

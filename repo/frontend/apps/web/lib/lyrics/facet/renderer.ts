@@ -19,6 +19,7 @@ const BLOOM_DOWNSAMPLE = 4;
 const BLOOM_RADIUS = 0.02;
 const BLOOM_GAIN = 0.6;
 const VIGNETTE = 0.35;
+const LYRIC_BAND = 0.55;
 const MAX_TURNS = 7;
 const MAX_PIXEL_RATIO = 2;
 
@@ -200,7 +201,16 @@ export class FacetRenderer {
     this.gl.bindTexture(this.gl.TEXTURE_2D, texture);
   }
 
-  render({ motion, palette, quality, seed, historyWeight, samples, vignette }: FacetRenderOptions) {
+  render({
+    motion,
+    palette,
+    quality,
+    seed,
+    historyWeight,
+    maxDelta,
+    samples,
+    vignette,
+  }: FacetRenderOptions) {
     const { gl, programs, history, bloom, timerExtension } = this;
     if (!programs || !history || !bloom) return;
     this.readTimer();
@@ -218,8 +228,6 @@ export class FacetRenderer {
     gl.uniform2f(at("uResolution"), current.width, current.height);
     gl.uniform1f(at("uFlow"), motion.flow);
     gl.uniform1f(at("uBlend"), motion.blend);
-    gl.uniform1f(at("uTurn"), motion.turn);
-    gl.uniform1f(at("uTurning"), motion.turning);
     gl.uniform1f(at("uScale"), motion.scale);
     gl.uniform1f(at("uPresence"), motion.presence);
     gl.uniform1i(at("uTick"), motion.tick);
@@ -250,6 +258,7 @@ export class FacetRenderer {
       tear?.shiftY ?? 0,
     );
     gl.uniform1f(at("uHistoryWeight"), historyWeight);
+    gl.uniform1f(at("uMaxDelta"), maxDelta);
     gl.uniform1i(at("uHistory"), 0);
     this.bindTexture(0, previous.texture);
     this.draw(current);
@@ -274,6 +283,7 @@ export class FacetRenderer {
     gl.uniform1f(this.location(composite, "uBloomGain"), quality.bloom ? BLOOM_GAIN : 0);
     gl.uniform1f(this.location(composite, "uVignette"), vignette ? VIGNETTE : 0);
     gl.uniform1f(this.location(composite, "uAspect"), current.width / current.height);
+    gl.uniform1f(this.location(composite, "uLyricBand"), LYRIC_BAND);
     this.bindTexture(0, current.texture);
     this.bindTexture(1, bloom.texture);
     this.draw(null);
