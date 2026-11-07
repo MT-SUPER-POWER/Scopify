@@ -5,7 +5,7 @@ import {
   PRISMA_LIMITS,
   type PrismaNumberKey,
 } from "@/types/lyrics/prisma/model";
-import type { VisualizerSettingsPanelProps } from "../folia/src/components/visualizer/definition";
+import type { VisualizerSettingsPanelProps } from "../../folia/src/components/visualizer/definition";
 import {
   Group,
   PanelFrame,
@@ -14,7 +14,7 @@ import {
   times,
   ToggleRow,
   type SettingsGroupDef,
-} from "../folia/src/components/visualizer/panelRows";
+} from "../../folia/src/components/visualizer/panelRows";
 
 // components/lyrics/prisma/PrismaSettingsPanel.tsx
 // 聚散's settings: how the shards look and fly, how much of a line shows before it is sung, and the music.

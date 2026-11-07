@@ -2,8 +2,10 @@ import { lazy } from "react";
 import { DEFAULT_PRISMA_TUNING } from "@/types/lyrics/prisma/model";
 import { defineVisualizer } from "../definition";
 
-const VisualizerPrisma = lazy(() => import("@/components/lyrics/prisma/VisualizerPrisma"));
-const PrismaSettingsPanel = lazy(() => import("@/components/lyrics/prisma/PrismaSettingsPanel"));
+const VisualizerPrisma = lazy(() => import("@/components/lyrics/visuals/prisma/VisualizerPrisma"));
+const PrismaSettingsPanel = lazy(
+  () => import("@/components/lyrics/visuals/prisma/PrismaSettingsPanel"),
+);
 
 // Scopify's own style, like archive: registered here, built in components/lyrics/prisma and lib/lyrics/prisma.
 // 聚散: each line bursts into shards that swirl on a current and gather into the next line as it is sung.

@@ -1,9 +1,9 @@
 import { lazy } from "react";
 import { defineVisualizerBackground } from "../definition";
-import FacetBackgroundSettingsCard from "@/components/lyrics/facet/FacetBackgroundSettingsCard";
-import { FacetBackgroundQuickControls } from "@/components/lyrics/facet/FacetBackgroundQuickControls";
+import FacetBackgroundSettingsCard from "@/components/lyrics/visuals/facet/FacetBackgroundSettingsCard";
+import { FacetBackgroundQuickControls } from "@/components/lyrics/visuals/facet/FacetBackgroundQuickControls";
 
-const FacetBackground = lazy(() => import("@/components/lyrics/facet/FacetBackground"));
+const FacetBackground = lazy(() => import("@/components/lyrics/visuals/facet/FacetBackground"));
 
 export default defineVisualizerBackground({
   mode: "facet",

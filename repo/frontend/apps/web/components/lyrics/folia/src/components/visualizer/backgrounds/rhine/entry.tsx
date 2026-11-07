@@ -1,9 +1,9 @@
 import { lazy } from "react";
 import { defineVisualizerBackground } from "../definition";
-import RhineBackgroundSettingsCard from "@/components/lyrics/rhine/RhineBackgroundSettingsCard";
-import { RhineBackgroundQuickControls } from "@/components/lyrics/rhine/RhineBackgroundQuickControls";
+import RhineBackgroundSettingsCard from "@/components/lyrics/visuals/rhine/RhineBackgroundSettingsCard";
+import { RhineBackgroundQuickControls } from "@/components/lyrics/visuals/rhine/RhineBackgroundQuickControls";
 
-const RhineBackground = lazy(() => import("@/components/lyrics/rhine/RhineBackground"));
+const RhineBackground = lazy(() => import("@/components/lyrics/visuals/rhine/RhineBackground"));
 
 export default defineVisualizerBackground({
   mode: "rhine",

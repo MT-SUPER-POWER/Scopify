@@ -6,15 +6,15 @@ import { useTranslation } from "react-i18next";
 import { useVisualizerSongCommit } from "@/hooks/lyrics/useVisualizerSongCommit";
 import { PrismaRuntime } from "@/lib/lyrics/prisma/runtime";
 import { DEFAULT_PRISMA_TUNING, type PrismaTuning } from "@/types/lyrics/prisma/model";
-import type { VisualizerSharedProps } from "../folia/src/components/visualizer/definition";
-import { useVisualizerRuntime } from "../folia/src/components/visualizer/runtime";
-import { useFirstFrameDrawn } from "../folia/src/components/visualizer/styleTransition/firstFrame";
-import { resolveSubtitleFontSizes } from "../folia/src/components/visualizer/subtitleFontSizes";
-import VisualizerShell from "../folia/src/components/visualizer/VisualizerShell";
-import VisualizerSubtitleOverlay from "../folia/src/components/visualizer/VisualizerSubtitleOverlay";
-import type { Line } from "../folia/src/types";
-import { resolveThemeFontStack, resolveThemeFontWeight } from "../folia/src/utils/fontStacks";
-import { getLineRenderEndTime } from "../folia/src/utils/lyrics/renderHints";
+import type { VisualizerSharedProps } from "../../folia/src/components/visualizer/definition";
+import { useVisualizerRuntime } from "../../folia/src/components/visualizer/runtime";
+import { useFirstFrameDrawn } from "../../folia/src/components/visualizer/styleTransition/firstFrame";
+import { resolveSubtitleFontSizes } from "../../folia/src/components/visualizer/subtitleFontSizes";
+import VisualizerShell from "../../folia/src/components/visualizer/VisualizerShell";
+import VisualizerSubtitleOverlay from "../../folia/src/components/visualizer/VisualizerSubtitleOverlay";
+import type { Line } from "../../folia/src/types";
+import { resolveThemeFontStack, resolveThemeFontWeight } from "../../folia/src/utils/fontStacks";
+import { getLineRenderEndTime } from "../../folia/src/utils/lyrics/renderHints";
 
 // components/lyrics/prisma/VisualizerPrisma.tsx
 // 聚散's React shell: the shared background and subtitles, and a runtime built once. Song, tuning, theme and

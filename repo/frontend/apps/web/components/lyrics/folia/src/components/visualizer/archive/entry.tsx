@@ -1,7 +1,7 @@
 import { lazy } from "react";
 import { defineVisualizer } from "../definition";
 
-const VisualizerArchive = lazy(() => import("@/components/lyrics/rhine/VisualizerArchive"));
+const VisualizerArchive = lazy(() => import("@/components/lyrics/visuals/rhine/VisualizerArchive"));
 
 export default defineVisualizer({
   mode: "archive",
