@@ -26,8 +26,8 @@ function migrated(storage: ReturnType<typeof memoryStorage>) {
   return JSON.parse(storage.getItem(WEB_REQUEST_SETTINGS_KEY) ?? "null") as unknown;
 }
 
-const neteaseAddress = { host: "music.example.com", port: 8443, protocol: "https" };
-const qqAddress = { host: "10.0.0.2", port: 3300, protocol: "http" };
+const neteaseAddress = { host: "music.example.com", port: 8443, protocol: "https" } as const;
+const qqAddress = { host: "10.0.0.2", port: 3300, protocol: "http" } as const;
 
 test("maps the legacy flat keys into the per-platform shape and drops them", () => {
   const storage = memoryStorage({
