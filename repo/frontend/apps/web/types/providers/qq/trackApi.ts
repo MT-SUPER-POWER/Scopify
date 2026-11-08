@@ -7,3 +7,15 @@ export interface QqTrackDto {
   singer: { id: number; mid: string; name: string }[];
   album: { id: number; mid: string; name: string };
 }
+
+/** One entry of POST /song/batch, in request order; failed entries carry their own code. */
+export type QqSongBatchEntry =
+  | { index: number; code: 200; song: QqTrackDto; info: Record<string, unknown> }
+  | { index: number; code: number; kind?: string; message?: string };
+
+/** POST /song/batch response; at most 20 songs per request. */
+export interface QqSongBatchDto {
+  code: 200;
+  results: QqSongBatchEntry[];
+  partial: boolean;
+}

@@ -8,9 +8,11 @@
     "src"
   ],
   "exports": {
+    "./capability": "./src/capability.ts",
     "./identity": "./src/identity.ts",
-    "./track": "./src/track.ts",
-    "./library": "./src/library.ts"
+    "./library": "./src/library.ts",
+    "./provider": "./src/provider.ts",
+    "./track": "./src/track.ts"
   },
   "scripts": {
     "lint": "eslint . --max-warnings 0 --no-warn-ignored",
