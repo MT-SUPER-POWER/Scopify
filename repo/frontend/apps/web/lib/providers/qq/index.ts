@@ -5,7 +5,10 @@ import { qqPlaybackSource } from "@/lib/providers/qq/playback";
 import { qqTrackSource } from "@/lib/providers/qq/track";
 
 /** Grows as each area is migrated; a capability is declared once its pages work on QQ. */
-const QQ_CAPABILITIES: ReadonlySet<MusicCapability> = new Set<MusicCapability>(["track.read"]);
+const QQ_CAPABILITIES: ReadonlySet<MusicCapability> = new Set<MusicCapability>([
+  "track.read",
+  "track.play",
+]);
 
 /** Composed from one module per area (`./<area>.ts`), so areas can change independently. */
 export const qqProvider: MusicProviderClient = {
