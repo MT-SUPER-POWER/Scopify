@@ -2,12 +2,14 @@ import type { MusicCapability } from "@scopify/music-domain/capability";
 import type { MusicProviderClient } from "@scopify/music-domain/provider";
 
 import { qqPlaybackSource } from "@/lib/providers/qq/playback";
+import { qqPlaylistSource } from "@/lib/providers/qq/playlist";
 import { qqTrackSource } from "@/lib/providers/qq/track";
 
 /** Grows as each area is migrated; a capability is declared once its pages work on QQ. */
 const QQ_CAPABILITIES: ReadonlySet<MusicCapability> = new Set<MusicCapability>([
   "track.read",
   "track.play",
+  "playlist.read",
 ]);
 
 /** Composed from one module per area (`./<area>.ts`), so areas can change independently. */
@@ -16,4 +18,5 @@ export const qqProvider: MusicProviderClient = {
   capabilities: QQ_CAPABILITIES,
   ...qqTrackSource,
   ...qqPlaybackSource,
+  ...qqPlaylistSource,
 };

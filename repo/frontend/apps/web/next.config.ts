@@ -69,6 +69,8 @@ export const WEB_IMAGE_REMOTE_PATTERNS = [
   { protocol: "https", hostname: "**.qlogo.cn" },
   { protocol: "https", hostname: "**.gtimg.cn" },
   { protocol: "https", hostname: "**.qpic.cn" },
+  // QQ Music playlist covers.
+  { protocol: "https", hostname: "**.y.qq.com" },
   { protocol: "https", hostname: "api.qrserver.com" },
   { protocol: "https", hostname: "avatars.githubusercontent.com" },
   { protocol: "https", hostname: "cdn.jsdelivr.net" },
