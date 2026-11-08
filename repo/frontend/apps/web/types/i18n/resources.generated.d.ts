@@ -1790,6 +1790,7 @@ export default interface Resources {
     "meta.dailyTitle": "每日推荐";
     "meta.historicalDailyTitle": "{{date}} 每日推荐";
     "meta.madeForYou": "为你推荐";
+    "meta.playCount": "{{count}} 次播放";
     "meta.private": "私密歌单";
     "meta.public": "公开歌单";
     "meta.recommendationTag": "推荐";

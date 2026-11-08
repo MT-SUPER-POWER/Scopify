@@ -15,14 +15,17 @@ import { musicQueryKeys } from "@/lib/query/queryKeys";
 import { useUserStore } from "@/store";
 import { useTranslation } from "react-i18next";
 
-import { prunePlaylist, type PlaylistContent } from "@/types/playlist/api";
+import { prunePlaylist } from "@/types/playlist/api";
+import type { PlaylistContent } from "@/types/playlist/model";
 import type { InlineOrderMove } from "@/types/playlist/order";
 
 export function usePlaylistOrderMutation() {
   const queryClient = useQueryClient();
   const userId = useUserStore((state) => state.user?.userId);
   const { t } = useTranslation();
-  const contentKey = (playlistId: string) => ["playlist", "content", "playlist", playlistId];
+  // Reordering is NetEase's; the tracks are NetEase tracks.
+  const contentKey = (playlistId: string) =>
+    musicQueryKeys.playlist.contentOf("netease", playlistId);
   return useMutation({
     retry: false,
     onMutate: (move: InlineOrderMove) =>
@@ -105,8 +108,9 @@ export function usePlaylistOrderMutation() {
           content
             ? {
                 ...content,
-                rawDetail: { ...content.rawDetail, trackIds: orderedIds.map((id) => ({ id })) },
-                tracks: [...content.tracks].sort((a, b) => rank(a.id) - rank(b.id)),
+                tracks: [...content.tracks].sort(
+                  (a, b) => rank(Number(a.ref.id)) - rank(Number(b.ref.id)),
+                ),
               }
             : content,
         );

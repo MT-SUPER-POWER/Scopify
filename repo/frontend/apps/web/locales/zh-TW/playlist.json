@@ -77,6 +77,7 @@
   "meta.unknownPrivacy": "未知權限",
   "meta.unknown": "未知",
   "meta.unknownDate": "未知日期",
+  "meta.playCount": "{{count}} 次播放",
   "page.invalidUrl": "無效的歌單網址",
   "actions.subscribe": "收藏歌單",
   "actions.more": "更多操作",
