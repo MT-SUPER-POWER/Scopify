@@ -7,50 +7,26 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@scopify/ui/shadcn/components/select";
+import { Button } from "@scopify/ui/shadcn/components/button";
+import { ChevronRight } from "lucide-react";
+import Link from "next/link";
 
 import type { DesktopProxyMode } from "@scopify/desktop-contract";
 import type { NetworkSettingsTabProps } from "@/types/settings/components";
-import type { BackendPlatform } from "@/types/settings/config";
 import { useTranslation } from "react-i18next";
 
-import { BackendSourceCard } from "./BackendSourceCard";
 import { SettingInput, SettingRow, SettingSection } from "./SettingsUI";
 
-const PLATFORMS: readonly BackendPlatform[] = ["netease", "qq"];
-
 export function NetworkSettingsTab({
-  backendPingResults,
-  backendStatuses,
   config,
-  onBackendAddressChange,
-  onBackendHostBlur,
   onDesktopChange,
-  onPingBackend,
   onWebChange,
-  pingingBackends,
 }: NetworkSettingsTabProps) {
   const { t } = useTranslation();
   const isCustomProxy = config.desktop?.network.proxyMode === "custom";
 
   return (
     <div className="grid grid-cols-1 items-start gap-x-16 gap-y-10 lg:grid-cols-2">
-      {PLATFORMS.map((platform) => (
-        <BackendSourceCard
-          key={platform}
-          platform={platform}
-          desktopConfig={config.desktop}
-          backendStatus={backendStatuses[platform]}
-          onDesktopChange={onDesktopChange}
-          custom={{
-            address: config.web.backend[platform],
-            pingResult: backendPingResults[platform],
-            isPinging: pingingBackends[platform],
-            onChange: (key, value) => onBackendAddressChange(platform, key, value),
-            onPing: () => onPingBackend(platform),
-            onHostBlur: () => onBackendHostBlur(platform),
-          }}
-        />
-      ))}
       <SettingSection title={t("settings.section.network")}>
         <SettingRow
           label={t("settings.timeout.label")}
@@ -64,23 +40,15 @@ export function NetworkSettingsTab({
           }
         />
         <SettingRow
-          label={t("settings.randomCNIP.label")}
-          sublabel={t("settings.randomCNIP.sublabel")}
+          label={t("settings.backendSettings.title")}
+          sublabel={t("settings.backendSettings.entrySublabel")}
           control={
-            <Select
-              value={config.web.netease.randomCNIP}
-              onValueChange={(value) =>
-                onWebChange("netease", "randomCNIP", value === "true" ? "true" : "false")
-              }
-            >
-              <SelectTrigger aria-label={t("settings.randomCNIP.label")} className="min-w-30">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent position="popper">
-                <SelectItem value="false">{t("settings.randomCNIP.disabled")}</SelectItem>
-                <SelectItem value="true">{t("settings.randomCNIP.enabled")}</SelectItem>
-              </SelectContent>
-            </Select>
+            <Button variant="outline" size="sm" asChild>
+              <Link href="/setting/backend">
+                {t("settings.backendSettings.manage")}
+                <ChevronRight />
+              </Link>
+            </Button>
           }
         />
         {config.desktop ? (

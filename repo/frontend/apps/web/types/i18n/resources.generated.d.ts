@@ -1953,6 +1953,9 @@ export default interface Resources {
     "backendPort.sublabel": "后端 API 监听的端口。修改后保存即生效，无需重启应用。";
     "backendProtocol.label": "传输协议";
     "backendProtocol.sublabel": "连接后端 API 时使用的传输协议（HTTP 或 HTTPS）。";
+    "backendSettings.entrySublabel": "网易云音乐与 QQ 音乐的后端来源、地址，以及仅对单个平台生效的请求选项。";
+    "backendSettings.manage": "管理";
+    "backendSettings.title": "后端服务";
     "backendSource.builtin": "内置";
     "backendSource.builtinPortSublabel": "仅监听本机 127.0.0.1；端口被占用时自动换一个空闲端口，若占用者是同类后端则直接复用。";
     "backendSource.builtinSublabel": "由 Scopify 在本机启动并管理，随应用启动。";

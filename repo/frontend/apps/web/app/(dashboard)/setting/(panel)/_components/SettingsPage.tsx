@@ -75,15 +75,9 @@ const SettingsPage = () => {
           {/*网络*/}
           <TabsContent value="network">
             <NetworkSettingsTab
-              backendPingResults={settings.backendPingResults}
-              backendStatuses={settings.backendStatuses}
               config={settings.config}
-              pingingBackends={settings.pingingBackends}
-              onBackendAddressChange={settings.handleBackendAddressChange}
-              onBackendHostBlur={settings.handleBackendHostBlur}
-              onDesktopChange={settings.handleDesktopChange}
-              onPingBackend={settings.handlePingBackend}
               onWebChange={settings.handleWebChange}
+              onDesktopChange={settings.handleDesktopChange}
             />
           </TabsContent>
           {/*存储*/}

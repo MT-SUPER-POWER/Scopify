@@ -76,19 +76,8 @@ export interface SettingPortInputProps {
 }
 
 export interface NetworkSettingsTabProps {
-  /** Desktop-hosted API per platform; `null` outside Desktop. */
-  backendStatuses: Record<BackendPlatform, DesktopBackendStatus | null>;
-  backendPingResults: Record<BackendPlatform, BackendPingResult | null>;
-  pingingBackends: Record<BackendPlatform, boolean>;
   config: SettingsConfig;
-  onBackendAddressChange: <K extends keyof BackendAddress>(
-    platform: BackendPlatform,
-    key: K,
-    value: BackendAddress[K],
-  ) => void;
-  onBackendHostBlur: (platform: BackendPlatform) => void;
   onDesktopChange: DesktopSettingsChangeHandler;
-  onPingBackend: (platform: BackendPlatform) => Promise<void>;
   onWebChange: WebSettingsChangeHandler;
 }
 
@@ -133,6 +122,8 @@ export interface BackendSourceCardProps {
   onDesktopChange: DesktopSettingsChangeHandler;
   /** Omitted for a platform that can only run built-in; the alternative is then "off". */
   custom?: BackendCustomAddressProps;
+  /** Platform-only request options, shown below the address whichever source is chosen. */
+  children?: ReactNode;
 }
 
 export interface SaveConfirmModalProps {

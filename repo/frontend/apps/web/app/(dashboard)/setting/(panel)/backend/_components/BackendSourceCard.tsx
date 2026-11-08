@@ -24,7 +24,12 @@ import type {
   BuiltinBackendRowsProps,
 } from "@/types/settings/components";
 import { BackendStatusIndicator } from "./BackendStatusIndicator";
-import { SettingInput, SettingPortInput, SettingRow, SettingSection } from "./SettingsUI";
+import {
+  SettingInput,
+  SettingPortInput,
+  SettingRow,
+  SettingSection,
+} from "@/components/settings/SettingsUI";
 
 const PLATFORM_TEXT = {
   netease: {
@@ -47,6 +52,7 @@ const PLATFORM_TEXT = {
  */
 export function BackendSourceCard({
   backendStatus,
+  children,
   custom,
   desktopConfig,
   onDesktopChange,
@@ -154,6 +160,7 @@ export function BackendSourceCard({
       ) : custom ? (
         <CustomAddressRows {...custom} />
       ) : null}
+      {children}
     </SettingSection>
   );
 }
