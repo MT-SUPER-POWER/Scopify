@@ -60,7 +60,24 @@ export function AudioDeviceSettingsSection() {
   };
 
   return (
-    <SettingSection title={t("audioSettings.devicesTitle")}>
+    <SettingSection
+      title={t("audioSettings.devicesTitle")}
+      actions={
+        <button
+          aria-label={`${t("audioSettings.devicesRefresh")}：${t("audioSettings.outputRefresh")}`}
+          className="shrink-0 cursor-pointer rounded border border-input p-2 text-foreground transition-colors hover:border-content hover:bg-accent disabled:cursor-wait disabled:opacity-50"
+          disabled={isLoading}
+          onClick={() => void refresh()}
+          title={t("audioSettings.devicesRefreshDescription")}
+          type="button"
+        >
+          <RefreshCw
+            aria-hidden="true"
+            className={`size-4 ${isLoading ? "animate-spin motion-reduce:animate-none" : ""}`}
+          />
+        </button>
+      }
+    >
       <SettingRow
         isColumn
         label={t("audioSettings.outputTitle")}
@@ -132,22 +149,6 @@ export function AudioDeviceSettingsSection() {
           >
             <ShieldCheck className={inputVerified ? "size-4 text-success" : "size-4"} />
             {isTestingInput ? t("audioSettings.inputTesting") : t("audioSettings.inputTest")}
-          </button>
-        }
-      />
-      <SettingRow
-        label={t("audioSettings.devicesRefresh")}
-        sublabel={t("audioSettings.devicesRefreshDescription")}
-        control={
-          <button
-            aria-label={t("audioSettings.outputRefresh")}
-            className="shrink-0 cursor-pointer rounded border border-input p-2 text-foreground transition-colors hover:border-content hover:bg-accent disabled:cursor-wait disabled:opacity-50"
-            disabled={isLoading}
-            onClick={() => void refresh()}
-            title={t("audioSettings.outputRefresh")}
-            type="button"
-          >
-            <RefreshCw className={`size-4 ${isLoading ? "animate-spin" : ""}`} />
           </button>
         }
       />

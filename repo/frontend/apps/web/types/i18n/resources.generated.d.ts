@@ -2143,11 +2143,17 @@ export default interface Resources {
     "mcp.test.success": "连接可用 · {{latency}} ms · {{tools}} 个工具";
     "mcp.test.successToast": "MCP 连接测试通过";
     "mcp.test.testing": "测试中...";
-    "progressRefreshRate.30": "30 帧（省电）";
+    "progressRefreshRate.30": "30 帧";
     "progressRefreshRate.60": "60 帧";
+    "progressRefreshRate.currentHz": "{{hz}} Hz";
     "progressRefreshRate.display": "跟随屏幕刷新率";
+    "progressRefreshRate.estimatedHz": "约 {{hz}} Hz";
+    "progressRefreshRate.highPerformance": "高性能";
     "progressRefreshRate.label": "播放进度刷新率";
+    "progressRefreshRate.powerSaving": "省电";
+    "progressRefreshRate.recommended": "推荐";
     "progressRefreshRate.sublabel": "进度条与灵动岛、任务栏歌词的刷新频率。跟随屏幕刷新率最流畅，但在高刷新率屏幕上 CPU 占用更高。";
+    "progressRefreshRate.unavailableHz": "暂未读取";
     "proxyMode.custom": "自定义代理";
     "proxyMode.direct": "不使用代理";
     "proxyMode.label": "Electron 代理模式";
@@ -2185,6 +2191,8 @@ export default interface Resources {
     "timeout.label": "超时时间 (ms)";
     "timeout.sublabel": "请求超时时间，单位毫秒。";
     title: "设置";
+    "updater.allowPrerelease.label": "接收 Beta 更新";
+    "updater.allowPrerelease.sublabel": "提前体验最新功能，可能存在不稳定情况。保存设置后点击检查更新；关闭后等待后续稳定版，不会自动降级。";
     "updater.autoDownload.label": "自动下载更新";
     "updater.autoDownload.sublabel": "发现新版本后自动开始下载，下载完成后在下次退出时自动安装。";
     "updater.check": "检查更新";

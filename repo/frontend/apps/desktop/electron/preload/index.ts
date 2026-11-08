@@ -232,6 +232,7 @@ const electronAPI: DesktopBridge = {
     ipcRenderer.invoke("video-export:write-file", filePath, data),
   getHostConfig: () => ipcRenderer.invoke("config:get-host"),
   getHostname: () => ipcRenderer.invoke("app:get-hostname"),
+  getDisplayRefreshRate: () => ipcRenderer.invoke("window:get-display-refresh-rate"),
   getLogDirectory: () => ipcRenderer.invoke("logger:get-directory"),
   getMcpStatus: (): Promise<McpStatus> => ipcRenderer.invoke("mcp:get-status"),
   openCurrentLog: () => ipcRenderer.invoke("logger:open-current"),

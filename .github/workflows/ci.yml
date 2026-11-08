@@ -11,6 +11,7 @@ on:
     branches:
       - main
       - master
+      - beta
 
 permissions:
   contents: read

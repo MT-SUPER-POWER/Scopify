@@ -228,6 +228,8 @@ export interface RuntimeUpdates {
 }
 
 export interface RuntimeWindowControls {
+  /** System-reported refresh rate of the current desktop display; null in a browser. */
+  getDisplayRefreshRate(): Promise<number | null>;
   /** 隐藏到系统托盘。 */
   minimize(): void;
   /** 缩到任务栏。 */

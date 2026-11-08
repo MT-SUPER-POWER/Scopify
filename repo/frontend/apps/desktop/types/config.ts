@@ -57,6 +57,7 @@ export const DEFAULT_DESKTOP_HOST_CONFIG = {
     applicationId: "1536959813114658836",
   },
   updater: {
+    allowPrerelease: false,
     checkOnStartup: true,
     autoDownload: false,
   },
@@ -250,6 +251,7 @@ export const desktopHostConfigSchema = z.preprocess(
       updater: z.preprocess(
         toRecord,
         z.object({
+          allowPrerelease: normalizedBoolean(DEFAULT_DESKTOP_HOST_CONFIG.updater.allowPrerelease),
           checkOnStartup: normalizedBoolean(DEFAULT_DESKTOP_HOST_CONFIG.updater.checkOnStartup),
           autoDownload: normalizedBoolean(DEFAULT_DESKTOP_HOST_CONFIG.updater.autoDownload),
         }),

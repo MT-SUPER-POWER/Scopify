@@ -7,6 +7,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@scopify/ui/shadcn/components/select";
+import { Badge } from "@scopify/ui/shadcn/components/badge";
 
 import {
   PLAYBACK_PROGRESS_REFRESH_RATE_LABEL_KEYS,
@@ -16,6 +17,7 @@ import { languageLabelKeys } from "@/lib/i18n";
 import { useTranslation } from "react-i18next";
 
 import { usePerformanceStore } from "@/store/module/performance";
+import { useDisplayRefreshRate } from "@/hooks/settings/useDisplayRefreshRate";
 import { APP_LOCALES, type AppLocale } from "@/types/settings/config";
 import type { GeneralSettingsTabProps } from "@/types/settings/components";
 import type { PlaybackProgressRefreshRate } from "@/types/core/performance";
@@ -30,6 +32,7 @@ export function GeneralSettingsTab({
   const { t } = useTranslation();
   const progressRefreshRate = usePerformanceStore((state) => state.progressRefreshRate);
   const setProgressRefreshRate = usePerformanceStore((state) => state.setProgressRefreshRate);
+  const displayRefreshRate = useDisplayRefreshRate();
 
   return (
     <div className="grid grid-cols-1 items-start gap-x-16 gap-y-10 lg:grid-cols-2">
@@ -70,12 +73,52 @@ export function GeneralSettingsTab({
                   aria-label={t("settings.progressRefreshRate.label")}
                   className="min-w-30"
                 >
-                  <SelectValue />
+                  <SelectValue>
+                    {t(PLAYBACK_PROGRESS_REFRESH_RATE_LABEL_KEYS[progressRefreshRate])}
+                  </SelectValue>
                 </SelectTrigger>
-                <SelectContent position="popper">
+                <SelectContent position="popper" align="end" className="min-w-56">
                   {PLAYBACK_PROGRESS_REFRESH_RATES.map((rate) => (
-                    <SelectItem key={rate} value={rate}>
-                      {t(PLAYBACK_PROGRESS_REFRESH_RATE_LABEL_KEYS[rate])}
+                    <SelectItem
+                      key={rate}
+                      value={rate}
+                      textValue={t(PLAYBACK_PROGRESS_REFRESH_RATE_LABEL_KEYS[rate])}
+                    >
+                      <span className="inline-flex items-center gap-2">
+                        <span>
+                          {t(PLAYBACK_PROGRESS_REFRESH_RATE_LABEL_KEYS[rate])}
+                          {rate === "display" ? (
+                            <span className="ml-1 text-muted-foreground">
+                              （
+                              {displayRefreshRate
+                                ? t(
+                                    displayRefreshRate.estimated
+                                      ? "settings.progressRefreshRate.estimatedHz"
+                                      : "settings.progressRefreshRate.currentHz",
+                                    { hz: displayRefreshRate.hz },
+                                  )
+                                : t("settings.progressRefreshRate.unavailableHz")}
+                              ）
+                            </span>
+                          ) : null}
+                        </span>
+                        <Badge
+                          variant="outline"
+                          className={
+                            rate === "60"
+                              ? "rounded border-success/40 bg-success/10 px-1.5 text-[10px] text-success"
+                              : rate === "30"
+                                ? "rounded border-warning/40 bg-warning/10 px-1.5 text-[10px] text-warning"
+                                : "rounded border-info/40 bg-info/10 px-1.5 text-[10px] text-info"
+                          }
+                        >
+                          {rate === "60"
+                            ? t("settings.progressRefreshRate.recommended")
+                            : rate === "30"
+                              ? t("settings.progressRefreshRate.powerSaving")
+                              : t("settings.progressRefreshRate.highPerformance")}
+                        </Badge>
+                      </span>
                     </SelectItem>
                   ))}
                 </SelectContent>

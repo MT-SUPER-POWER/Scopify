@@ -16,7 +16,7 @@
   <a href="https://vdoonnridu.apifox.cn/">后端 API</a>
 </p>
 
-[![Stars](https://img.shields.io/github/stars/MT-SUPER-POWER/Scopify?style=flat)](https://github.com/MT-SUPER-POWER/Scopify/stargazers) [![Version](https://img.shields.io/github/v/release/MT-SUPER-POWER/Scopify)](https://github.com/MT-SUPER-POWER/Scopify/releases) [![License](https://img.shields.io/github/license/MT-SUPER-POWER/Scopify)](https://github.com/MT-SUPER-POWER/Scopify/blob/master/license) [![Ask DeepWiki](https://img.shields.io/badge/Ask-DeepWiki-blue)](https://deepwiki.com/MT-SUPER-POWER/Scopify) [![CI](https://github.com/MT-SUPER-POWER/Scopify/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/MT-SUPER-POWER/Scopify/actions/workflows/ci.yml) [![Latest completed release build](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fapi.github.com%2Frepos%2FMT-SUPER-POWER%2FScopify%2Factions%2Fworkflows%2Frelease.yml%2Fruns%3Fstatus%3Dcompleted%26per_page%3D1&query=%24.workflow_runs%5B0%5D.conclusion&label=Build%20and%20Release&logo=github&cacheSeconds=300)](https://github.com/MT-SUPER-POWER/Scopify/actions/workflows/release.yml)
+[![Stars](https://img.shields.io/github/stars/MT-SUPER-POWER/Scopify?style=flat)](https://github.com/MT-SUPER-POWER/Scopify/stargazers) [![Version](https://img.shields.io/github/v/release/MT-SUPER-POWER/Scopify)](https://github.com/MT-SUPER-POWER/Scopify/releases) [![License](https://img.shields.io/github/license/MT-SUPER-POWER/Scopify)](https://github.com/MT-SUPER-POWER/Scopify/blob/master/license) [![Ask DeepWiki](https://img.shields.io/badge/Ask-DeepWiki-blue)](https://deepwiki.com/MT-SUPER-POWER/Scopify) [![CI](https://github.com/MT-SUPER-POWER/Scopify/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/MT-SUPER-POWER/Scopify/actions/workflows/ci.yml) [![Latest completed release build](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fapi.github.com%2Frepos%2FMT-SUPER-POWER%2FScopify%2Factions%2Fworkflows%2Fpublish.yml%2Fruns%3Fstatus%3Dcompleted%26per_page%3D1&query=%24.workflow_runs%5B0%5D.conclusion&label=Build%20and%20Release&logo=github&cacheSeconds=300)](https://github.com/MT-SUPER-POWER/Scopify/actions/workflows/publish.yml)
 
 </div>
 
@@ -227,7 +227,7 @@ mindmap
 
 ## 版本号规则
 
-> 版本号的发布规则 `x.y.z`
+> 版本号的发布规则 `x.y.z`；Beta 使用 `x.y.z-beta.N`，发布入口与操作见 [Desktop 发布管理](docs/publishing.md)。
 
 - `x`: 重大更新，可能包含不兼容的 API 修改
 - `y`: 次要更新，添加了新功能，但保持向后兼容

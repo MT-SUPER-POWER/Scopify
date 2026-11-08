@@ -489,6 +489,7 @@ export function createBrowserRuntime(
       writeFile: async () => false,
     },
     window: {
+      getDisplayRefreshRate: async () => null,
       minimize: NOOP,
       minimizeToTaskbar: NOOP,
       reload: () => environment.location?.reload(),

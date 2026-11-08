@@ -1,16 +1,30 @@
 name: Build and Release
 
 on:
-  push:
-    tags:
-      - "v*"
+  workflow_call:
+    inputs:
+      tag:
+        description: Validated immutable release tag
+        required: true
+        type: string
+      revision:
+        description: Commit pinned by the publishing workflow
+        required: true
+        type: string
+      prerelease:
+        description: Publish without updating the stable release channel
+        required: true
+        type: boolean
 
 permissions:
   contents: read
 
 concurrency:
-  group: desktop-release-${{ github.ref }}
+  group: desktop-build-${{ inputs.tag }}
   cancel-in-progress: false
+
+env:
+  RELEASE_TAG: ${{ inputs.tag }}
 
 jobs:
   renderer:
@@ -24,6 +38,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           submodules: false
+          ref: ${{ inputs.revision }}
           fetch-depth: 0
 
       - name: Checkout backend API submodule only
@@ -46,44 +61,46 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Apply tag version and generate CHANGELOG
-        run: bun .github/scripts/apply-release.ts ${{ github.ref_name }} --changelog
+        run: bun .github/scripts/apply-release.ts "${RELEASE_TAG}" --changelog
 
       - name: Generate release notes from commits
         run: |
           pnpm exec git-cliff --latest --strip all --output release_notes.md
-          bun .github/scripts/format-release-notes.ts ${{ github.ref_name }} release_notes.md
+          bun .github/scripts/format-release-notes.ts "${RELEASE_TAG}" release_notes.md
 
       - name: Upload release notes
         uses: actions/upload-artifact@v4
         with:
-          name: release-notes-${{ github.sha }}
+          name: release-notes-${{ inputs.revision }}
           path: release_notes.md
           if-no-files-found: error
 
       - name: Build and sync Desktop Renderer once
         env:
-          GITHUB_SHA: ${{ github.sha }}
+          GITHUB_SHA: ${{ inputs.revision }}
           SCOPIFY_RELEASE_NOTES_STRICT: "1"
         run: pnpm run sync:renderer
 
       - name: Verify Renderer manifest and content
-        run: bun repo/frontend/apps/desktop/scripts/build/verify-renderer.ts --source-revision=${{ github.sha }}
+        run: bun repo/frontend/apps/desktop/scripts/build/verify-renderer.ts --source-revision=${{ inputs.revision }}
 
       - name: Pack Renderer and write checksum
         shell: bash
+        env:
+          RELEASE_REVISION: ${{ inputs.revision }}
         run: |
-          tar -czf "renderer-${GITHUB_SHA}.tar.gz" -C repo/frontend/apps/desktop/build/desktop/app/renderer .
-          sha256sum "renderer-${GITHUB_SHA}.tar.gz" > "renderer-${GITHUB_SHA}.tar.gz.sha256"
+          tar -czf "renderer-${RELEASE_REVISION}.tar.gz" -C repo/frontend/apps/desktop/build/desktop/app/renderer .
+          sha256sum "renderer-${RELEASE_REVISION}.tar.gz" > "renderer-${RELEASE_REVISION}.tar.gz.sha256"
 
       - name: Upload immutable Renderer artifact
         id: upload
         uses: actions/upload-artifact@v4
         with:
-          name: renderer-${{ github.sha }}
+          name: renderer-${{ inputs.revision }}
           compression-level: 0
           path: |
-            renderer-${{ github.sha }}.tar.gz
-            renderer-${{ github.sha }}.tar.gz.sha256
+            renderer-${{ inputs.revision }}.tar.gz
+            renderer-${{ inputs.revision }}.tar.gz.sha256
           if-no-files-found: error
           retention-days: 14
 
@@ -126,6 +143,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           submodules: false
+          ref: ${{ inputs.revision }}
 
       - name: Checkout backend API submodule only
         run: git submodule update --init --depth 1 repo/backend/api-enhanced
@@ -155,23 +173,24 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Apply tag version
-        run: bun .github/scripts/apply-release.ts ${{ github.ref_name }}
+        shell: bash
+        run: bun .github/scripts/apply-release.ts "${RELEASE_TAG}"
 
       - name: Download locked Renderer artifact
         uses: actions/download-artifact@v5
         with:
-          name: renderer-${{ github.sha }}
+          name: renderer-${{ inputs.revision }}
           path: .artifacts/renderer
 
       - name: Verify archive checksum and unpack Renderer
         run: >-
           bun .github/scripts/unpack-renderer-artifact.ts
-          .artifacts/renderer/renderer-${{ github.sha }}.tar.gz
-          .artifacts/renderer/renderer-${{ github.sha }}.tar.gz.sha256
+          .artifacts/renderer/renderer-${{ inputs.revision }}.tar.gz
+          .artifacts/renderer/renderer-${{ inputs.revision }}.tar.gz.sha256
           repo/frontend/apps/desktop/build/desktop/app/renderer
 
       - name: Verify Renderer manifest and content again
-        run: bun repo/frontend/apps/desktop/scripts/build/verify-renderer.ts --source-revision=${{ github.sha }}
+        run: bun repo/frontend/apps/desktop/scripts/build/verify-renderer.ts --source-revision=${{ inputs.revision }}
 
       - name: Setup native build cache
         uses: ./.github/actions/setup-native-build
@@ -198,7 +217,7 @@ jobs:
       - name: Upload platform release files
         uses: actions/upload-artifact@v4
         with:
-          name: desktop-${{ matrix.platform }}-${{ github.sha }}
+          name: desktop-${{ matrix.platform }}-${{ inputs.revision }}
           compression-level: 0
           path: ${{ matrix.artifact-path }}
           if-no-files-found: error
@@ -216,11 +235,13 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.revision }}
 
       - name: Download platform release files
         uses: actions/download-artifact@v5
         with:
-          pattern: desktop-*-${{ github.sha }}
+          pattern: desktop-*-${{ inputs.revision }}
           path: release
           merge-multiple: true
 
@@ -237,33 +258,44 @@ jobs:
       - name: Download user-facing release notes
         uses: actions/download-artifact@v5
         with:
-          name: release-notes-${{ github.sha }}
+          name: release-notes-${{ inputs.revision }}
           path: .
 
       - name: Create release
         env:
           GH_TOKEN: ${{ github.token }}
+          RELEASE_PRERELEASE: ${{ inputs.prerelease }}
+          RELEASE_REVISION: ${{ inputs.revision }}
         shell: bash
         run: |
+          set -euo pipefail
+          # Both annotated and lightweight tags are verified against the locked commit.
+          git fetch origin "refs/tags/${RELEASE_TAG}:refs/tags/${RELEASE_TAG}"
+          if [[ "$(git rev-parse "refs/tags/${RELEASE_TAG}^{commit}")" != "${RELEASE_REVISION}" ]]; then
+            echo "::error::Release tag changed during the build."
+            exit 1
+          fi
           release_flags=()
-          if [[ "${GITHUB_REF_NAME}" == *-* ]]; then
+          if [[ "${RELEASE_PRERELEASE}" == true ]]; then
             release_flags+=(--prerelease --latest=false)
           fi
 
-          gh release create "${GITHUB_REF_NAME}" release/* \
+          gh release create "${RELEASE_TAG}" release/* \
             --verify-tag \
-            --title "${GITHUB_REF_NAME}" \
+            --title "${RELEASE_TAG}" \
             --notes-file release_notes.md \
             "${release_flags[@]}"
 
   writeback:
     name: Write CHANGELOG and versions back to master
+    if: ${{ !inputs.prerelease }}
     needs: release
     runs-on: ubuntu-latest
     permissions:
       contents: write
     env:
       HUSKY: "0"
+      RELEASE_REVISION: ${{ inputs.revision }}
 
     steps:
       - name: Checkout master
@@ -280,10 +312,10 @@ jobs:
         id: on-master
         shell: bash
         run: |
-          if git merge-base --is-ancestor "${GITHUB_SHA}" HEAD; then
+          if git merge-base --is-ancestor "${RELEASE_REVISION}" HEAD; then
             echo "apply=true" >> "${GITHUB_OUTPUT}"
           else
-            echo "::notice::${GITHUB_REF_NAME} is not on master; skipping write-back."
+            echo "::notice::${RELEASE_TAG} is not on master; skipping write-back."
           fi
 
       - name: Setup Node.js
@@ -311,7 +343,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          bun .github/scripts/apply-release.ts "${GITHUB_REF_NAME}" --changelog
+          bun .github/scripts/apply-release.ts "${RELEASE_TAG}" --changelog
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add docs/CHANGELOG.md package.json repo/frontend/apps/*/package.json
@@ -319,5 +351,5 @@ jobs:
             echo "Nothing to write back."
             exit 0
           fi
-          git commit -m "chore(release): ${GITHUB_REF_NAME} [skip ci]"
+          git commit -m "chore(release): ${RELEASE_TAG} [skip ci]"
           git push origin HEAD:master

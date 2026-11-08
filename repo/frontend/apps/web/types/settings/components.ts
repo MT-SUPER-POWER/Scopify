@@ -31,6 +31,19 @@ export interface SettingSectionProps {
   children: ReactNode;
 }
 
+export interface SettingRowProps {
+  label: ReactNode;
+  sublabel?: string;
+  control: ReactNode;
+  isColumn?: boolean;
+  requiresRestart?: boolean;
+  isDebug?: boolean;
+  /** Marks a setting as a Beta feature independently of the installed release channel. */
+  isBeta?: boolean;
+  badge?: ReactNode;
+  className?: string;
+}
+
 export interface SettingButtonProps {
   children: ReactNode;
   onClick?: () => void;

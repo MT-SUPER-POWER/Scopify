@@ -1,7 +1,6 @@
 "use client";
 
 import { RotateCcw } from "lucide-react";
-import type React from "react";
 import {
   AlertDialog,
   AlertDialogContent,
@@ -17,6 +16,7 @@ import { useTranslation } from "react-i18next";
 import type {
   SaveConfirmModalProps,
   SettingButtonProps,
+  SettingRowProps,
   SettingSectionProps,
 } from "@/types/settings/components";
 
@@ -90,18 +90,10 @@ export function SettingRow({
   isColumn = false,
   requiresRestart = false,
   isDebug = false,
+  isBeta = false,
   badge,
   className,
-}: {
-  label: React.ReactNode;
-  sublabel?: string;
-  control: React.ReactNode;
-  isColumn?: boolean;
-  requiresRestart?: boolean;
-  isDebug?: boolean;
-  badge?: React.ReactNode;
-  className?: string;
-}) {
+}: SettingRowProps) {
   const { t } = useTranslation();
 
   return (
@@ -120,8 +112,13 @@ export function SettingRow({
               DEBUG
             </span>
           ) : null}
+          {isBeta ? (
+            <span className="inline-flex items-center rounded border border-info/40 bg-info/10 px-1.5 py-0.5 text-[10px] font-semibold tracking-wider text-info uppercase">
+              BETA
+            </span>
+          ) : null}
           {requiresRestart ? (
-            <span className="inline-flex items-center gap-1 rounded border border-warning/40 bg-warning/10 px-1.5 py-0.5 text-xs font-medium text-warning">
+            <span className="inline-flex items-center gap-1 rounded border border-violet-500/40 bg-violet-500/10 px-1.5 py-0.5 text-xs font-medium text-violet-600 dark:text-violet-400">
               <RotateCcw className="size-2.5" />
               {t("settings.restartRequired")}
             </span>
@@ -142,7 +139,7 @@ export function SettingRow({
 export function SettingSection({ title, actions, children }: SettingSectionProps) {
   return (
     <section>
-      <div className="mb-6 flex items-center justify-between gap-3 border-b border-border pb-2">
+      <div className="mb-6 flex min-h-11 items-center justify-between gap-3 border-b border-border pb-2">
         <h3 className="text-xs font-bold tracking-widest text-foreground uppercase">{title}</h3>
         {actions}
       </div>

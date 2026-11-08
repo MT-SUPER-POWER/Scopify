@@ -59,6 +59,7 @@ export interface DesktopHostConfig {
     proxyUrl: string;
   };
   updater: {
+    allowPrerelease: boolean;
     autoDownload: boolean;
     checkOnStartup: boolean;
   };

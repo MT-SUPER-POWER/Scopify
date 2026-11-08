@@ -39,5 +39,6 @@ discord:
   enabled: true
   applicationId: "1536959813114658836"
 updater:
+  allowPrerelease: false
   checkOnStartup: true
   autoDownload: false

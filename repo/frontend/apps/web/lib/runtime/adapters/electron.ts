@@ -196,6 +196,7 @@ export function createElectronRuntime(bridge: ScopifyDesktopBridge): WebRuntime 
       writeFile: (filePath, data) => bridge.writeVideoExportFile(filePath, data),
     },
     window: {
+      getDisplayRefreshRate: () => bridge.getDisplayRefreshRate(),
       minimize: () => bridge.minimizeApp(),
       minimizeToTaskbar: () => bridge.minimizeMainWindow(),
       reload: () => bridge.reloadMainWindow(),

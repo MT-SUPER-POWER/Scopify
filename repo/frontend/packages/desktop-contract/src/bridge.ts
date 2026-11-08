@@ -144,6 +144,7 @@ export interface DesktopBridge<TLyrics = unknown> {
   getDiscordPresenceStatus(): Promise<DiscordPresenceStatus>;
   getHostConfig(): Promise<DesktopHostConfig>;
   getHostname(): Promise<string>;
+  getDisplayRefreshRate(): Promise<number | null>;
   getBridgeInfo(): Promise<DesktopBridgeInfo>;
   getLogDirectory(): Promise<string>;
   getMcpClientConfiguration(): Promise<McpClientConfiguration>;

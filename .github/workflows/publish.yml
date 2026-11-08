@@ -1,0 +1,132 @@
+name: Publish Desktop
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Release tag: vX.Y.Z on master, vX.Y.Z-beta.N on beta"
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: desktop-publish-${{ inputs.tag || github.ref_name }}
+  cancel-in-progress: false
+
+jobs:
+  prepare:
+    name: Validate release and lock source revision
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    outputs:
+      tag: ${{ steps.release.outputs.tag }}
+      revision: ${{ steps.release.outputs.revision }}
+      prerelease: ${{ steps.release.outputs.prerelease }}
+
+    steps:
+      - name: Checkout publishing revision
+        uses: actions/checkout@v4
+        with:
+          submodules: false
+          fetch-depth: 0
+
+      - name: Validate version, branch and existing release
+        id: release
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REQUESTED_TAG: ${{ inputs.tag || github.ref_name }}
+        run: |
+          set -euo pipefail
+          tag="${REQUESTED_TAG}"
+          number='(0|[1-9][0-9]*)'
+          version="${number}\\.${number}\\.${number}"
+          if [[ "${tag}" =~ ^v${version}$ ]]; then
+            branch=master
+            prerelease=false
+          elif [[ "${tag}" =~ ^v${version}-beta[.]${number}$ ]]; then
+            branch=beta
+            prerelease=true
+          else
+            echo "::error::Use vX.Y.Z or vX.Y.Z-beta.N with no leading zeroes."
+            exit 1
+          fi
+
+          if [[ "${GITHUB_EVENT_NAME}" == workflow_dispatch && "${GITHUB_REF}" != "refs/heads/${branch}" ]]; then
+            echo "::error::Select the ${branch} branch to publish ${tag}."
+            exit 1
+          fi
+
+          revision=$(git rev-parse 'HEAD^{commit}')
+          git fetch origin "refs/heads/${branch}:refs/remotes/origin/${branch}"
+          if ! git merge-base --is-ancestor "${revision}" "refs/remotes/origin/${branch}"; then
+            echo "::error::Release revision must belong to ${branch}."
+            exit 1
+          fi
+
+          if git show-ref --verify --quiet "refs/tags/${tag}"; then
+            tagged_revision=$(git rev-parse "refs/tags/${tag}^{commit}")
+            if [[ "${tagged_revision}" != "${revision}" ]]; then
+              echo "::error::Existing tag points to another revision; tags are never moved."
+              exit 1
+            fi
+          elif [[ "${GITHUB_EVENT_NAME}" == push ]]; then
+            echo "::error::Pushed tag is missing."
+            exit 1
+          fi
+
+          # Fail closed on API errors; a missing release is the only accepted failure.
+          release_status=$(gh api --include "repos/${GITHUB_REPOSITORY}/releases/tags/${tag}" 2>/dev/null | head -n 1) || true
+          if [[ ! "${release_status}" =~ ^HTTP/[^[:space:]]+[[:space:]]404 ]]; then
+            echo "::error::Release already exists, or its absence could not be verified."
+            exit 1
+          fi
+
+          echo "tag=${tag}" >> "${GITHUB_OUTPUT}"
+          echo "revision=${revision}" >> "${GITHUB_OUTPUT}"
+          echo "prerelease=${prerelease}" >> "${GITHUB_OUTPUT}"
+
+      - name: Create immutable tag for a manual release
+        if: github.event_name == 'workflow_dispatch'
+        shell: bash
+        env:
+          RELEASE_TAG: ${{ steps.release.outputs.tag }}
+          RELEASE_REVISION: ${{ steps.release.outputs.revision }}
+        run: |
+          set -euo pipefail
+          if ! git show-ref --verify --quiet "refs/tags/${RELEASE_TAG}"; then
+            git tag "${RELEASE_TAG}" "${RELEASE_REVISION}"
+            git push origin "refs/tags/${RELEASE_TAG}"
+          fi
+
+      - name: Summarize publishing plan
+        env:
+          RELEASE_TAG: ${{ steps.release.outputs.tag }}
+          RELEASE_REVISION: ${{ steps.release.outputs.revision }}
+          RELEASE_PRERELEASE: ${{ steps.release.outputs.prerelease }}
+        run: |
+          {
+            echo "### Desktop publication"
+            echo "- Tag: ${RELEASE_TAG}"
+            echo "- Source revision: ${RELEASE_REVISION}"
+            echo "- Prerelease: ${RELEASE_PRERELEASE}"
+          } >> "${GITHUB_STEP_SUMMARY}"
+
+  release:
+    name: Build and publish locked release
+    needs: prepare
+    permissions:
+      attestations: write
+      contents: write
+      id-token: write
+    uses: ./.github/workflows/release.yml
+    with:
+      tag: ${{ needs.prepare.outputs.tag }}
+      revision: ${{ needs.prepare.outputs.revision }}
+      prerelease: ${{ needs.prepare.outputs.prerelease == 'true' }}

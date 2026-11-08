@@ -1,10 +1,16 @@
-import { ipcMain, nativeTheme, type BrowserWindow } from "electron";
+import { ipcMain, nativeTheme, screen, type BrowserWindow } from "electron";
 import { ipcLog } from "@main/utils/logger";
 import { loginWindow } from "@main/window/login";
 import { MAIN_WINDOW_TITLE_BAR_HEIGHT } from "@main/window/mainWindow";
+import { isMainRenderer } from "./sender";
 
 /** 注册主窗口导航、外观和登录完成后的窗口协调命令。 */
 export function registerWindowIpc(mainWindow: BrowserWindow | null) {
+  ipcMain.handle("window:get-display-refresh-rate", (event) => {
+    if (!isMainRenderer(event, mainWindow) || !mainWindow) return null;
+    const hz = screen.getDisplayMatching(mainWindow.getBounds()).displayFrequency;
+    return Number.isFinite(hz) && hz > 0 ? hz : null;
+  });
   ipcMain.on("login-success", () => {
     ipcLog.info("[IPC] login success");
     loginWindow?.close();

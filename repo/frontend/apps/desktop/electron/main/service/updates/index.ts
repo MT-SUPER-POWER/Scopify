@@ -1,5 +1,5 @@
 import { app, type BrowserWindow } from "electron";
-import electronUpdater from "electron-updater";
+import electronUpdater, { CancellationToken } from "electron-updater";
 import type {
   AppUpdateState,
   AppUpdateStatePatch,
@@ -13,9 +13,14 @@ const { autoUpdater } = electronUpdater;
 let mainWindow: BrowserWindow | null = null;
 let initialized = false;
 let updaterConfig: DesktopHostConfig["updater"] = {
+  allowPrerelease: false,
   checkOnStartup: true,
   autoDownload: false,
 };
+let policyRevision = 0;
+let checkRevision: number | null = null;
+let downloadRevision: number | null = null;
+let downloadCancellation: CancellationToken | null = null;
 let state: AppUpdateState = {
   status: "idle",
   supported: false,
@@ -59,13 +64,45 @@ export function getUpdateState(): AppUpdateState {
 }
 
 export function configureUpdater(config: DesktopHostConfig["updater"]) {
+  const channelChanged = updaterConfig.allowPrerelease !== config.allowPrerelease;
   updaterConfig = { ...config };
+  autoUpdater.channel = config.allowPrerelease ? "beta" : "latest";
+  autoUpdater.allowPrerelease = config.allowPrerelease;
+  // Setting channel enables downgrades in electron-updater; opting out of Beta must not do so.
+  autoUpdater.allowDowngrade = false;
+
+  if (channelChanged) {
+    policyRevision += 1;
+    autoUpdater.autoInstallOnAppQuit = false;
+    downloadCancellation?.cancel();
+    setState({
+      status: checkRevision !== null || downloadRevision !== null ? "checking" : "idle",
+      version: undefined,
+      percent: undefined,
+      message: undefined,
+      lastCheckedAt: undefined,
+    });
+  }
 
   if (process.platform !== "darwin" && updaterConfig.autoDownload && state.status === "available") {
     void downloadUpdate().catch((error) => {
       updaterLog.warn("[updater] automatic download failed:", error);
     });
   }
+}
+
+function isStaleUpdateOperation() {
+  return (
+    (checkRevision !== null && checkRevision !== policyRevision) ||
+    (downloadRevision !== null && downloadRevision !== policyRevision)
+  );
+}
+
+function isAllowedUpdateVersion(version: string) {
+  return (
+    !version.includes("-") ||
+    (updaterConfig.allowPrerelease && /^\d+\.\d+\.\d+-beta\.\d+$/.test(version))
+  );
 }
 
 export function initializeUpdater(window: BrowserWindow, config: DesktopHostConfig["updater"]) {
@@ -77,15 +114,17 @@ export function initializeUpdater(window: BrowserWindow, config: DesktopHostConf
   autoUpdater.autoDownload = false;
   autoUpdater.autoInstallOnAppQuit = false;
 
-  autoUpdater.on("checking-for-update", () =>
+  autoUpdater.on("checking-for-update", () => {
+    if (isStaleUpdateOperation()) return;
     setState({
       status: "checking",
       version: undefined,
       percent: undefined,
       message: undefined,
-    }),
-  );
+    });
+  });
   autoUpdater.on("update-available", (info) => {
+    if (isStaleUpdateOperation() || !isAllowedUpdateVersion(info.version)) return;
     setState({
       status: "available",
       version: info.version,
@@ -100,23 +139,26 @@ export function initializeUpdater(window: BrowserWindow, config: DesktopHostConf
       });
     }
   });
-  autoUpdater.on("update-not-available", () =>
+  autoUpdater.on("update-not-available", () => {
+    if (isStaleUpdateOperation()) return;
     setState({
       status: "not-available",
       version: undefined,
       percent: undefined,
       message: undefined,
       lastCheckedAt: Date.now(),
-    }),
-  );
-  autoUpdater.on("download-progress", (progress) =>
+    });
+  });
+  autoUpdater.on("download-progress", (progress) => {
+    if (isStaleUpdateOperation()) return;
     setState({
       status: "downloading",
       percent: progress.percent,
       message: undefined,
-    }),
-  );
+    });
+  });
   autoUpdater.on("update-downloaded", (info) => {
+    if (isStaleUpdateOperation() || !isAllowedUpdateVersion(info.version)) return;
     // 下载完成后，用户正常退出应用时静默安装，不必非得回到设置页点「重启并安装」。
     autoUpdater.autoInstallOnAppQuit = process.platform !== "darwin";
     setState({
@@ -127,6 +169,7 @@ export function initializeUpdater(window: BrowserWindow, config: DesktopHostConf
     });
   });
   autoUpdater.on("error", (error) => {
+    if (isStaleUpdateOperation()) return;
     const message = error instanceof Error ? error.message : String(error);
     updaterLog.warn("[updater] update error:", message);
     setState({
@@ -144,10 +187,12 @@ export async function checkForUpdates(): Promise<AppUpdateState> {
     return getUpdateState();
   }
 
-  if (state.status === "checking" || state.status === "downloading") {
+  if (checkRevision !== null || downloadRevision !== null) {
     return getUpdateState();
   }
 
+  const revision = policyRevision;
+  checkRevision = revision;
   try {
     setState({
       status: "checking",
@@ -157,14 +202,19 @@ export async function checkForUpdates(): Promise<AppUpdateState> {
     });
     await autoUpdater.checkForUpdates();
   } catch (error) {
-    const message = error instanceof Error ? error.message : String(error);
-    updaterLog.warn("[updater] check failed:", message);
-    setState({
-      status: "error",
-      percent: undefined,
-      message,
-      lastCheckedAt: Date.now(),
-    });
+    if (revision === policyRevision) {
+      const message = error instanceof Error ? error.message : String(error);
+      updaterLog.warn("[updater] check failed:", message);
+      setState({
+        status: "error",
+        percent: undefined,
+        message,
+        lastCheckedAt: Date.now(),
+      });
+    }
+  } finally {
+    checkRevision = null;
+    if (revision !== policyRevision) await checkForUpdates();
   }
 
   return getUpdateState();
@@ -176,7 +226,7 @@ export async function downloadUpdate(): Promise<AppUpdateState> {
     return getUpdateState();
   }
 
-  if (state.status === "downloading" || state.status === "downloaded") {
+  if (downloadRevision !== null || state.status === "downloaded") {
     return getUpdateState();
   }
 
@@ -184,21 +234,31 @@ export async function downloadUpdate(): Promise<AppUpdateState> {
     return getUpdateState();
   }
 
+  const revision = policyRevision;
+  const cancellation = new CancellationToken();
+  downloadRevision = revision;
+  downloadCancellation = cancellation;
   try {
     if (process.platform === "darwin") {
-      if (!state.version) return getUpdateState();
-      await openExternalLink(
-        `https://github.com/MT-SUPER-POWER/Scopify/releases/tag/${encodeURIComponent(`v${state.version}`)}`,
-      );
-      return getUpdateState();
+      if (state.version) {
+        await openExternalLink(
+          `https://github.com/MT-SUPER-POWER/Scopify/releases/tag/${encodeURIComponent(`v${state.version}`)}`,
+        );
+      }
+    } else {
+      setState({ status: "downloading", percent: 0, message: undefined });
+      await autoUpdater.downloadUpdate(cancellation);
     }
-
-    setState({ status: "downloading", percent: 0, message: undefined });
-    await autoUpdater.downloadUpdate();
   } catch (error) {
-    const message = error instanceof Error ? error.message : String(error);
-    updaterLog.warn("[updater] download failed:", message);
-    setState({ status: "error", percent: undefined, message });
+    if (revision === policyRevision && !cancellation.cancelled) {
+      const message = error instanceof Error ? error.message : String(error);
+      updaterLog.warn("[updater] download failed:", message);
+      setState({ status: "error", percent: undefined, message });
+    }
+  } finally {
+    downloadRevision = null;
+    downloadCancellation = null;
+    if (revision !== policyRevision) await checkForUpdates();
   }
 
   return getUpdateState();
