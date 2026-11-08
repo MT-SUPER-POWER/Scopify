@@ -21,6 +21,8 @@ Web 与 Desktop Renderer 共用的 TypeScript 类型。**先按业务领域找�
 
 ### 内容与实体
 
+多平台试点：`providers/<平台>/trackApi.ts` 保存端点原生类型，跨平台曲目与账号资源身份放在 `@scopify/music-domain`；界面 Props 仍留在应用中。现有 `song/api.ts` 暂不迁移，详见领域包 README。
+
 | 目录 | 内容 |
 | --- | --- |
 | `album/` | 专辑 |

@@ -48,6 +48,7 @@
     "@scopify/desktop-contract": "workspace:*",
     "@scopify/notification-core": "workspace:*",
     "@scopify/playback-core": "workspace:*",
+    "@scopify/music-domain": "workspace:*",
     "@scopify/ui": "workspace:*",
     "@tanstack/react-query": "^5.101.4",
     "@tanstack/react-query-persist-client": "^5.101.4",

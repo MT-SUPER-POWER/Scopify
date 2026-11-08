@@ -490,6 +490,9 @@ importers:
       '@react-three/fiber':
         specifier: ^9.6.1
         version: 9.8.2(@types/react@19.3.0)(immer@11.1.21)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(three@0.185.1)
+      '@scopify/music-domain':
+        specifier: workspace:*
+        version: link:../../packages/music-domain
       '@scopify/ui':
         specifier: workspace:*
         version: link:../../packages/ui
@@ -620,6 +623,9 @@ importers:
       '@scopify/desktop-contract':
         specifier: workspace:*
         version: link:../../packages/desktop-contract
+      '@scopify/music-domain':
+        specifier: workspace:*
+        version: link:../../packages/music-domain
       '@scopify/notification-core':
         specifier: workspace:*
         version: link:../../packages/notification-core
@@ -866,6 +872,12 @@ importers:
         version: 1.1.0(typescript@5.9.3)(zustand@5.0.15(@types/react@19.3.0)(immer@11.1.21)(react@19.2.3)(use-sync-external-store@1.7.0(react@19.2.3)))
 
   repo/frontend/packages/desktop-contract:
+    devDependencies:
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+
+  repo/frontend/packages/music-domain:
     devDependencies:
       typescript:
         specifier: ^5.9.3
