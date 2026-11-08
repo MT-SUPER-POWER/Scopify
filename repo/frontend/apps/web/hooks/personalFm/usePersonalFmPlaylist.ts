@@ -21,6 +21,7 @@ import { usePersonalFmStore } from "@/store/module/personalFm";
 import { usePlayerStore } from "@/store/module/player";
 import type { SongDetail } from "@/types/song/api";
 import type { PlaylistInfo } from "@/types/playlist/model";
+import { getNeteaseTrackId, toNeteasePlayerTrack } from "@/lib/providers/netease/adapters/track";
 
 export function usePersonalFmPlaylist() {
   const { t } = useTranslation();
@@ -29,14 +30,13 @@ export function usePersonalFmPlaylist() {
   const pathname = usePathname();
   const selection = usePersonalFmStore((state) => state.selection);
   const status = usePersonalFmStore((state) => state.status);
-  const currentSong = usePlayerStore((state) => state.currentSongDetail);
+  const currentSong = usePlayerStore((state) => state.currentTrack);
   const playlistId = usePlayerStore((state) => state.playlistId);
-  const queue = usePlayerStore((state) => state.queue);
-  const savedTracks = usePersonalFmStore((state) => state.tracks);
+  // Mirrors the FM queue while FM plays, and keeps the last FM list afterwards.
+  const tracks = usePersonalFmStore((state) => state.tracks);
   const { dislike: onDislikeTrack } = usePersonalFmDislike();
 
   const isCurrentSource = isPersonalFmPlaybackSource(playlistId);
-  const tracks = isCurrentSource ? queue : savedTracks;
 
   const start = useCallback(() => {
     void requireLogin(async () => {
@@ -62,7 +62,7 @@ export function usePersonalFmPlaylist() {
 
   const handlePlayToggle = useCallback(() => {
     const player = usePlayerStore.getState();
-    if (isPersonalFmPlaybackSource(player.playlistId) && player.currentSongDetail) {
+    if (isPersonalFmPlaybackSource(player.playlistId) && player.currentTrack) {
       player.setIsPlaying(!player.isPlaying);
       return;
     }
@@ -71,7 +71,8 @@ export function usePersonalFmPlaylist() {
       void requireLogin(async () => {
         player.setShuffle(false);
         player.setRepeatMode("off");
-        await player.playFromSong(tracks[0], tracks, PERSONAL_FM_PLAYBACK_SOURCE_ID);
+        const queueTracks = tracks.map(toNeteasePlayerTrack);
+        await player.playFromSong(queueTracks[0], queueTracks, PERSONAL_FM_PLAYBACK_SOURCE_ID);
       });
     } else start();
   }, [requireLogin, start, tracks]);
@@ -80,7 +81,8 @@ export function usePersonalFmPlaylist() {
     (track: SongDetail) => {
       const player = usePlayerStore.getState();
       const isCurrentTrack =
-        isPersonalFmPlaybackSource(player.playlistId) && player.currentSongDetail?.id === track.id;
+        isPersonalFmPlaybackSource(player.playlistId) &&
+        getNeteaseTrackId(player.currentTrack) === track.id;
       if (isCurrentTrack) {
         player.setIsPlaying(!player.isPlaying);
         return;
@@ -88,13 +90,17 @@ export function usePersonalFmPlaylist() {
 
       player.setShuffle(false);
       player.setRepeatMode("off");
-      void player.playFromSong(track, tracks, PERSONAL_FM_PLAYBACK_SOURCE_ID);
+      void player.playFromSong(
+        toNeteasePlayerTrack(track),
+        tracks.map(toNeteasePlayerTrack),
+        PERSONAL_FM_PLAYBACK_SOURCE_ID,
+      );
     },
     [tracks],
   );
 
   const cover =
-    (isCurrentSource ? currentSong?.al.picUrl : undefined) ||
+    (isCurrentSource ? currentSong?.album?.coverUrl : undefined) ||
     tracks[0]?.al.picUrl ||
     "/personal-fm-cover.svg";
   const themeColor = useCoverThemeColor(cover);

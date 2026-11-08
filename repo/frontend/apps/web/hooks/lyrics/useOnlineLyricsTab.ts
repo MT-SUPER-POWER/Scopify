@@ -29,6 +29,7 @@ import type {
   LyricSourceSelection,
 } from "@/types/lyrics/model";
 import type { NeteaseLyric } from "@/types/song/api";
+import { useCurrentNeteaseSong } from "@/hooks/player/useCurrentNeteaseSong";
 
 /** 读本地保存的导入歌词与歌词来源；来源选了「导入」但文件已不在时按「在线」算。 */
 async function readLyricSource(songId: number) {
@@ -52,7 +53,7 @@ async function readLyricSource(songId: number) {
 export function useOnlineLyricsTab() {
   const { t } = useTranslation();
   const queryClient = useQueryClient();
-  const song = usePlayerStore((state) => state.currentSongDetail);
+  const song = useCurrentNeteaseSong();
   const lyric = usePlayerStore((state) => state.lyric);
   const lyricOffsetMs = useLyricStageStore((state) => state.lyricOffsetMs);
   const [isUpdating, setIsUpdating] = useState(false);

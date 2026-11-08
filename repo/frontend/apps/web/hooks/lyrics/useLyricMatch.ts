@@ -25,6 +25,7 @@ import { useTranslation } from "react-i18next";
 
 import { usePlayerStore } from "@/store/module/player";
 import type { LyricMatchOverride } from "@/types/lyrics/model";
+import { useCurrentNeteaseSong } from "@/hooks/player/useCurrentNeteaseSong";
 
 const CANDIDATE_LIMIT = 15;
 
@@ -36,7 +37,7 @@ const CANDIDATE_LIMIT = 15;
 export function useLyricMatch(isOpen: boolean) {
   const { t } = useTranslation();
   const queryClient = useQueryClient();
-  const song = usePlayerStore((state) => state.currentSongDetail);
+  const song = useCurrentNeteaseSong();
   const [openedFor, setOpenedFor] = useState<number | null>(null);
   const [query, setQuery] = useState("");
   const [keyword, setKeyword] = useState("");

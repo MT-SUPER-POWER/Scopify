@@ -1,6 +1,8 @@
 import { beforeEach, describe, expect, it, mock } from "bun:test";
 import { create } from "zustand";
-import { pruneSongDetail, type SongDetail } from "@/types/song/api";
+import { adaptNeteaseTrack } from "@/lib/providers/netease/adapters/track";
+import type { PlayerTrack } from "@/types/player/model";
+import { pruneSongDetail } from "@/types/song/api";
 
 const song = (id: number) => pruneSongDetail({ id, name: `Song ${id}` });
 let requests = 0;
@@ -9,18 +11,18 @@ let fetchSongs = async () => ({ data: { code: 200, data: nextSongs } });
 let plays = 0;
 const player = create(() => ({
   playlistId: null as string | null,
-  queue: [] as SongDetail[],
+  queue: [] as PlayerTrack[],
   queueIndex: 0,
   historyIndex: 0,
   historyStack: [] as number[],
   playbackSessionRevision: 0,
   setShuffle() {},
   setRepeatMode() {},
-  async playFromSong(_song: SongDetail, tracks: SongDetail[], source: string) {
+  async playFromSong(_song: PlayerTrack, tracks: PlayerTrack[], source: string) {
     plays++;
     player.setState({ playlistId: source, queue: tracks, queueIndex: 0 });
   },
-  appendQueueItems(tracks: SongDetail[]) {
+  appendQueueItems(tracks: PlayerTrack[]) {
     player.setState((state) => ({ queue: [...state.queue, ...tracks] }));
   },
 }));
@@ -85,7 +87,7 @@ describe("personal FM page session", () => {
   it("preserves FM songs after playback switches to a different playlist without restarting radio", async () => {
     await fm.getState().ensureReady();
     const tracks = fm.getState().tracks;
-    player.setState({ playlistId: "another-playlist", queue: [song(99)] });
+    player.setState({ playlistId: "another-playlist", queue: [adaptNeteaseTrack(song(99))] });
     expect(await fm.getState().ensureReady()).toBe(true);
     expect(fm.getState().tracks).toBe(tracks);
     expect(player.getState().playlistId).toBe("another-playlist");
@@ -95,9 +97,9 @@ describe("personal FM page session", () => {
 
   it("keeps automatic refills and queue removals in the saved FM playlist", async () => {
     await fm.getState().ensureReady();
-    player.getState().appendQueueItems([song(4)]);
-    player.setState((state) => ({ queue: state.queue.filter((track) => track.id !== 2) }));
-    player.setState({ playlistId: "other", queue: [song(99)] });
+    player.getState().appendQueueItems([adaptNeteaseTrack(song(4))]);
+    player.setState((state) => ({ queue: state.queue.filter((track) => track.ref.id !== "2") }));
+    player.setState({ playlistId: "other", queue: [adaptNeteaseTrack(song(99))] });
     expect(fm.getState().tracks.map((track) => track.id)).toEqual([1, 3, 4]);
   });
 
