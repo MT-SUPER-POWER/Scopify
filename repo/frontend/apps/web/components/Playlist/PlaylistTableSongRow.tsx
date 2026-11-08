@@ -1,10 +1,11 @@
 "use client";
 
-import { memo, useCallback, useState } from "react";
+import { memo, useCallback, useMemo, useState } from "react";
 import dynamic from "next/dynamic";
 import { CloudSongContextMenu } from "@/components/library/CloudSongContextMenu";
 import { SongContextMenu } from "@/components/shared/SongContextMenu";
 import { SortableTrackRow } from "@/components/Playlist/SortableTrackRow";
+import { toNeteaseSongDetail } from "@/lib/providers/netease/adapters/track";
 import type { PlaylistTableSongRowProps } from "@/types/playlist/components";
 
 const SimilarSongsDialog = dynamic(
@@ -25,19 +26,22 @@ export const PlaylistTableSongRow = memo(function PlaylistTableSongRow({
   ...row
 }: PlaylistTableSongRowProps) {
   const { track, onPlay, onRequestDelete, playlistID } = row;
+  // The song menus act on NetEase songs; another platform's rows have no menu yet.
+  const song = useMemo(() => toNeteaseSongDetail(track), [track]);
   const [similarOpen, setSimilarOpen] = useState(false);
   const select = useCallback<NonNullable<typeof row.onRowClick>>(
-    (event) => onSelectTrack(track.id, event),
-    [onSelectTrack, track.id],
+    (event) => onSelectTrack(track.ref.id, event),
+    [onSelectTrack, track.ref.id],
   );
   const rowContent = <SortableTrackRow {...row} onRowClick={select} />;
+  if (!song) return rowContent;
   if (cloudActions) {
     return (
       <CloudSongContextMenu
-        song={track}
+        song={song}
         selectedSongs={selectedSongs}
         cloudActions={cloudActions}
-        onOpenContextMenu={() => onContextTrack(track.id)}
+        onOpenContextMenu={() => onContextTrack(track.ref.id)}
         isActive={row.isActive}
         isPlaying={row.isPlaying}
         onPlay={() => onPlay(track)}
@@ -49,30 +53,28 @@ export const PlaylistTableSongRow = memo(function PlaylistTableSongRow({
   return (
     <>
       <SongContextMenu
-        song={track}
+        song={song}
         selectedSongs={selectedSongs}
-        onOpenContextMenu={() => onContextTrack(track.id)}
+        onOpenContextMenu={() => onContextTrack(track.ref.id)}
         isActive={row.isActive}
         isPlaying={row.isPlaying}
         onPlay={() => onPlay(track)}
-        onSimilarSongs={track.voiceId === undefined ? () => setSimilarOpen(true) : undefined}
+        onSimilarSongs={song.voiceId === undefined ? () => setSimilarOpen(true) : undefined}
         playlistID={playlistID}
         isDailyRecommend={isDailyRecommend}
         readonly={readonly}
         onRemoveFromPlaylist={
-          canRemoveFromPlaylist
-            ? () => onRequestDelete(playlistID ?? undefined, track.id)
-            : undefined
+          canRemoveFromPlaylist ? () => onRequestDelete(playlistID ?? undefined, track) : undefined
         }
         onDislikeDailyRecommend={
-          isDailyRecommend ? () => void onDislikeDailyRecommend(track.id) : undefined
+          isDailyRecommend ? () => void onDislikeDailyRecommend(song.id) : undefined
         }
-        onDislikePersonalFm={onDislikePersonalFm ? () => onDislikePersonalFm(track) : undefined}
+        onDislikePersonalFm={onDislikePersonalFm ? () => onDislikePersonalFm(song) : undefined}
       >
         {rowContent}
       </SongContextMenu>
       {similarOpen && (
-        <SimilarSongsDialog song={track} open={similarOpen} onOpenChange={setSimilarOpen} />
+        <SimilarSongsDialog song={song} open={similarOpen} onOpenChange={setSimilarOpen} />
       )}
     </>
   );

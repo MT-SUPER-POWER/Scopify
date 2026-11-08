@@ -5,7 +5,7 @@ import { usePlaybackCommands } from "@/hooks/player/usePlaybackCommands";
 import { usePlaybackProjection } from "@/hooks/player/usePlaybackProjection";
 import { usePlayerStore } from "@/store";
 import type { SongDetail } from "@/types/song/api";
-import { adaptNeteaseTrack } from "@/lib/providers/netease/adapters/track";
+import { toNeteasePlayerTrack } from "@/lib/providers/netease/adapters/track";
 
 interface PlaylistViewPlaybackOptions {
   tracks: SongDetail[];
@@ -29,7 +29,9 @@ export function usePlaylistViewPlayback({
     (track: SongDetail) => {
       if (queueSource === sourceId && track.id === playback.track?.id) void commands.toggle();
       else if (onTrackPlay) onTrackPlay(track);
-      else void playFromSong(adaptNeteaseTrack(track), tracks.map(adaptNeteaseTrack), sourceId);
+      // A page's tracks come back as the queue entries they were listed as.
+      else
+        void playFromSong(toNeteasePlayerTrack(track), tracks.map(toNeteasePlayerTrack), sourceId);
     },
     [commands, onTrackPlay, playback.track?.id, playFromSong, queueSource, sourceId, tracks],
   );

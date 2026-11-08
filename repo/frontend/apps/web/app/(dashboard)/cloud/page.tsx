@@ -9,6 +9,7 @@ import { QuietState } from "@/components/shared/QuietState";
 import { SidebarPlaylistConfirmDialog } from "@/components/Sidebar/SidebarPlaylistConfirmDialog";
 import { CLOUD_SONG_FALLBACK_COVER } from "@/constants/cloud";
 import { useCloudDrive } from "@/hooks/library/useCloudDrive";
+import { toNeteaseTrackList } from "@/lib/providers/netease/adapters/track";
 import { useTranslation } from "react-i18next";
 
 import type { SongDetail } from "@/types/song/api";
@@ -29,6 +30,8 @@ export default function CloudDrivePage() {
   const [matchTarget, setMatchTarget] = useState<SongDetail | null>(null);
   const [isMatching, setIsMatching] = useState(false);
   const tracks = query.data?.tracks ?? EMPTY_TRACKS;
+  // Cloud actions on a row receive the cloud song the row was made from.
+  const tableTracks = useMemo(() => toNeteaseTrackList(tracks), [tracks]);
   const maxSize = query.data?.maxSize ?? 0;
   const usedSize = query.data?.usedSize ?? 0;
   const playlistInfo = useMemo<PlaylistInfo | null>(() => {
@@ -122,7 +125,7 @@ export default function CloudDrivePage() {
         trailingActionSlot={
           <CloudStorageRing maxSize={maxSize} songCount={tracks.length} usedSize={usedSize} />
         }
-        tracks={tracks}
+        tracks={tableTracks}
       />
       <CloudMatchDialog
         busy={isMatching}

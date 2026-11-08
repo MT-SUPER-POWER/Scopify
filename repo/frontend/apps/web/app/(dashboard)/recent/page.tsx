@@ -10,6 +10,7 @@ import { QuietState } from "@/components/shared/QuietState";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@scopify/ui/shadcn/components/tooltip";
 import { useRecentSongsQuery } from "@/hooks/library/useLibraryQueries";
 import { useLoginStatus } from "@/hooks/auth/useLoginStatus";
+import { toNeteaseTrackList } from "@/lib/providers/netease/adapters/track";
 import { useTranslation } from "react-i18next";
 
 import type { PlaylistInfo } from "@/types/playlist/model";
@@ -19,6 +20,7 @@ export default function RecentSongsPage() {
   const isLoggedIn = useLoginStatus();
   const recentSongsQuery = useRecentSongsQuery();
   const tracks = useMemo(() => recentSongsQuery.data ?? [], [recentSongsQuery.data]);
+  const tableTracks = useMemo(() => toNeteaseTrackList(tracks), [tracks]);
   const playlistInfo = useMemo<PlaylistInfo | null>(() => {
     if (recentSongsQuery.isLoading) return null;
 
@@ -80,7 +82,7 @@ export default function RecentSongsPage() {
       playSourceId="library:recent"
       refetchTracks={recentSongsQuery.refetch}
       themeColor="var(--scopify-page-accent-recent)"
-      tracks={tracks}
+      tracks={tableTracks}
     />
   );
 }

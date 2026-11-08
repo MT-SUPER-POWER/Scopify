@@ -74,6 +74,14 @@ export function toNeteaseSongDetail(track: PlayerTrack | null | undefined): Song
   return song;
 }
 
+/** The NetEase songs among tracks, in order, for NetEase-only actions on several of them. */
+export function toNeteaseSongDetails(tracks: readonly PlayerTrack[]): SongDetail[] {
+  return tracks.flatMap((track) => {
+    const song = toNeteaseSongDetail(track);
+    return song ? [song] : [];
+  });
+}
+
 /** The queue entry a song from {@link toNeteaseSongDetail} was made from. */
 export function getPlayerTrackOfNeteaseSong(song: SongDetail): PlayerTrack | undefined {
   return trackBySong.get(song);
@@ -82,6 +90,22 @@ export function getPlayerTrackOfNeteaseSong(song: SongDetail): PlayerTrack | und
 /** A NetEase song as a queue entry, reusing the entry it came from when there is one. */
 export function toNeteasePlayerTrack(song: SongDetail): PlayerTrack {
   return trackBySong.get(song) ?? adaptNeteaseTrack(song);
+}
+
+/**
+ * NetEase songs a page lists as tracks. Each track hands its own song back through
+ * {@link toNeteaseSongDetail}, so NetEase-only actions on a row (cloud files, Personal FM
+ * feedback) receive the song the page loaded with every field intact.
+ */
+export function toNeteaseTrackList(songs: readonly SongDetail[]): PlayerTrack[] {
+  return songs.map((song) => {
+    const known = trackBySong.get(song);
+    if (known) return known;
+    const track = adaptNeteaseTrack(song);
+    songByTrack.set(track, song);
+    trackBySong.set(song, track);
+    return track;
+  });
 }
 
 function buildSongDetail(track: PlayerTrack, id: number): SongDetail {

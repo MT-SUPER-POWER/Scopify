@@ -2,6 +2,7 @@ import { LoaderCircle } from "lucide-react";
 import { useMemo } from "react";
 import TracklistTable from "@/components/Playlist/TrackTable";
 import { useInfiniteScrollTrigger } from "@/hooks/search/useInfiniteScrollTrigger";
+import { toNeteaseTrackList } from "@/lib/providers/netease/adapters/track";
 import type { SongDetail } from "@/types/song/api";
 import type { SongsViewProps } from "@/types/search/components";
 import type { Song } from "@/types/search/model";
@@ -28,12 +29,12 @@ export function SongsView({ hasNextPage, isFetchingNextPage, onLoadMore, songs }
     onIntersect: onLoadMore,
   });
 
-  const songDetails = useMemo(() => songs.map(songToSongDetail), [songs]);
+  const tracks = useMemo(() => toNeteaseTrackList(songs.map(songToSongDetail)), [songs]);
 
   return (
     <div className="pb-10">
       <SearchCategoryHeader category="Songs" />
-      <TracklistTable disableVirtualization hideDateColumn tracks={songDetails} />
+      <TracklistTable disableVirtualization hideDateColumn tracks={tracks} />
       <div ref={loadMoreRef} aria-hidden className="h-px" />
       {isFetchingNextPage ? (
         <div className="flex justify-center py-6 text-content-muted" aria-live="polite">

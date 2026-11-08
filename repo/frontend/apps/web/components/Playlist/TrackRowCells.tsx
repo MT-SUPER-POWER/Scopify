@@ -7,6 +7,8 @@ import { TrackIndexCell } from "@/components/shared/TrackIndexCell";
 import { TableCell } from "@/components/ui/table";
 import { LikeButton } from "@/components/ui/LikeButton";
 import { useSmartRouter } from "@/hooks/core/useSmartRouter";
+import { useProviderCapability } from "@/hooks/provider/useActiveProvider";
+import { getNeteaseTrackId } from "@/lib/providers/netease/adapters/track";
 import { formatDate, formatDuration } from "@/lib/utils";
 import type { TrackRowCellsProps } from "@/types/playlist/components";
 
@@ -26,11 +28,17 @@ export const TrackRowCells = memo(function TrackRowCells({
 }: TrackRowCellsProps) {
   const songLikeMutation = useSongLikeMutation();
   const smartRouter = useSmartRouter();
+  const canOpenAlbum = useProviderCapability("album.read");
+  // Liking goes through NetEase's like list; other platforms' rows have no like button yet.
+  const neteaseId = getNeteaseTrackId(track);
+  const album = track.album;
+  const albumTitle = album?.title ?? "";
+  const publishTime = track.netease?.publishTime ?? 0;
   const handleLike = useCallback(
     (nextLiked: boolean) => {
-      songLikeMutation.mutate({ like: nextLiked, songId: track.id });
+      if (neteaseId !== null) songLikeMutation.mutate({ like: nextLiked, songId: neteaseId });
     },
-    [songLikeMutation, track.id],
+    [neteaseId, songLikeMutation],
   );
   return (
     <>
@@ -49,17 +57,17 @@ export const TrackRowCells = memo(function TrackRowCells({
       {!hideAlbumColumn && (
         <TableCell className="max-w-0">
           {/* 云盘未匹配文件等没有专辑实体（id 为 0），只展示名称。 */}
-          {track.al.id === 0 ? (
-            <span title={track.al.name} className="block truncate text-content-muted">
-              {track.al.name || "-"}
+          {!album || album.ref.id === "0" || !canOpenAlbum ? (
+            <span title={albumTitle} className="block truncate text-content-muted">
+              {albumTitle || "-"}
             </span>
           ) : (
             <button
               type="button"
-              title={track.al.name}
+              title={albumTitle}
               onClick={(e) => {
                 e.stopPropagation();
-                smartRouter.push(`/album?id=${track.al.id}`);
+                smartRouter.push(`/album?id=${album.ref.id}`);
               }}
               className="group/album flex max-w-full min-w-0 items-center gap-1.5 text-left text-content-muted transition-colors hover:text-content hover:underline"
             >
@@ -67,7 +75,7 @@ export const TrackRowCells = memo(function TrackRowCells({
                 className="size-3.5 shrink-0 text-content-subtle transition-colors group-hover/album:text-content"
                 aria-hidden="true"
               />
-              <span className="truncate">{track.al.name}</span>
+              <span className="truncate">{albumTitle}</span>
             </button>
           )}
         </TableCell>
@@ -75,28 +83,30 @@ export const TrackRowCells = memo(function TrackRowCells({
 
       {!hideDateColumn && (
         <TableCell className="truncate">
-          <span title={formatDate(track.publishTime)}>{formatDate(track.publishTime)}</span>
+          <span title={formatDate(publishTime)}>{formatDate(publishTime)}</span>
         </TableCell>
       )}
 
       {!hideLikeColumn && (
         <TableCell className="truncate">
-          <div className="flex size-full justify-center">
-            <LikeButton
-              liked={isLiked}
-              disabled={isScrolling}
-              onLike={() => {
-                void handleLike(!isLiked);
-              }}
-              iconClassName="w-4.5 h-4.5"
-            />
-          </div>
+          {neteaseId !== null && (
+            <div className="flex size-full justify-center">
+              <LikeButton
+                liked={isLiked}
+                disabled={isScrolling}
+                onLike={() => {
+                  void handleLike(!isLiked);
+                }}
+                iconClassName="w-4.5 h-4.5"
+              />
+            </div>
+          )}
         </TableCell>
       )}
 
       <TableCell className="rounded-r-md pr-4 text-right align-middle">
         <div className="flex items-center justify-end">
-          <span title={formatDuration(track.dt)}>{formatDuration(track.dt)}</span>
+          <span title={formatDuration(track.durationMs)}>{formatDuration(track.durationMs)}</span>
         </div>
       </TableCell>
     </>

@@ -1,5 +1,6 @@
 "use client";
 
+import { useMemo } from "react";
 import { PlaylistLatticeView } from "@/components/Playlist/lattice/PlaylistLatticeView";
 import { PlaylistViewLoading } from "@/components/Playlist/lattice/PlaylistViewLoading";
 import PlaylistLoading from "@/components/Playlist/PlaylistLoading";
@@ -7,6 +8,7 @@ import TracklistTable from "@/components/Playlist/TrackTable";
 import { NetworkRetryState } from "@/components/shared/NetworkRetryState";
 import { useAlbumData } from "@/hooks/album/useAlbumData";
 import { useSmartRouter } from "@/hooks/core/useSmartRouter";
+import { toNeteaseTrackList } from "@/lib/providers/netease/adapters/track";
 import { useTranslation } from "react-i18next";
 
 import { AlbumActions } from "./_components/AlbumActions";
@@ -31,6 +33,7 @@ export default function AlbumPage() {
     togglePlay,
     tracks,
   } = useAlbumData();
+  const tableTracks = useMemo(() => toNeteaseTrackList(tracks), [tracks]);
 
   if (!albumId)
     return (
@@ -105,7 +108,7 @@ export default function AlbumPage() {
                 hideDateColumn
                 hideLikeColumn
                 readonly
-                tracks={tracks}
+                tracks={tableTracks}
               />
             </div>
           </div>
