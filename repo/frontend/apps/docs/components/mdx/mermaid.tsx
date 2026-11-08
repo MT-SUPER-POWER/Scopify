@@ -6,6 +6,7 @@ import {
   useCallback,
   useEffect,
   useId,
+  useRef,
   useState,
 } from "react";
 import {
@@ -15,6 +16,7 @@ import {
   Maximize2,
   Minimize2,
   RotateCcw,
+  Scan,
   ZoomIn,
   ZoomOut,
 } from "lucide-react";
@@ -25,12 +27,43 @@ export interface MermaidProps {
   src?: string | { default?: string };
 }
 
+interface SvgDimensions {
+  width: number;
+  height: number;
+}
+
+function extractSvgDimensions(svgString: string): SvgDimensions | null {
+  const vbMatch = svgString.match(
+    /viewBox=["']\s*([-\d.]+)\s+([-\d.]+)\s+([-\d.]+)\s+([-\d.]+)\s*["']/i,
+  );
+  if (vbMatch) {
+    const width = parseFloat(vbMatch[3]);
+    const height = parseFloat(vbMatch[4]);
+    if (!Number.isNaN(width) && !Number.isNaN(height) && width > 0 && height > 0) {
+      return { width, height };
+    }
+  }
+
+  const wMatch = svgString.match(/width=["']\s*([-\d.]+)(px)?\s*["']/i);
+  const hMatch = svgString.match(/height=["']\s*([-\d.]+)(px)?\s*["']/i);
+  if (wMatch && hMatch) {
+    const width = parseFloat(wMatch[1]);
+    const height = parseFloat(hMatch[2]);
+    if (!Number.isNaN(width) && !Number.isNaN(height) && width > 0 && height > 0) {
+      return { width, height };
+    }
+  }
+
+  return null;
+}
+
 export function Mermaid({ chart, src }: MermaidProps) {
   const id = useId();
   const safeId = `mermaid_${id.replace(/[^a-zA-Z0-9_-]/g, "_")}`;
   const { resolvedTheme } = useTheme();
 
   const [svg, setSvg] = useState<string>("");
+  const [dimensions, setDimensions] = useState<SvgDimensions | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -40,6 +73,8 @@ export function Mermaid({ chart, src }: MermaidProps) {
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
   const [copied, setCopied] = useState(false);
+
+  const canvasRef = useRef<HTMLDivElement>(null);
 
   const raw =
     typeof chart === "string"
@@ -63,13 +98,35 @@ export function Mermaid({ chart, src }: MermaidProps) {
           startOnLoad: false,
           securityLevel: "loose",
           fontFamily: "inherit",
-          themeCSS: "margin: 1rem auto 0; font-family: inherit;",
           theme: resolvedTheme === "dark" ? "dark" : "default",
+          flowchart: { useMaxWidth: false, htmlLabels: true, curve: "basis", padding: 16 },
+          sequence: { useMaxWidth: false },
+          gantt: { useMaxWidth: false },
+          journey: { useMaxWidth: false },
+          class: { useMaxWidth: false },
+          state: { useMaxWidth: false },
+          er: { useMaxWidth: false },
+          pie: { useMaxWidth: false },
+          quadrantChart: { useMaxWidth: false },
+          xyChart: { useMaxWidth: false },
+          requirement: { useMaxWidth: false },
+          mindmap: { useMaxWidth: false },
+          timeline: { useMaxWidth: false },
+          gitGraph: { useMaxWidth: false },
+          c4: { useMaxWidth: false },
+          sankey: { useMaxWidth: false },
+          block: { useMaxWidth: false },
+          architecture: { useMaxWidth: false },
+          themeVariables: {
+            fontFamily: "inherit",
+            fontSize: "14px",
+          },
         });
 
         const res = await mermaid.render(safeId, cleanChart);
         if (!cancelled) {
           setSvg(res.svg);
+          setDimensions(extractSvgDimensions(res.svg));
           setError(null);
           setLoading(false);
         }
@@ -103,15 +160,44 @@ export function Mermaid({ chart, src }: MermaidProps) {
     [cleanChart],
   );
 
+  const getFitScale = useCallback(
+    (dims?: SvgDimensions | null) => {
+      const targetDims = dims ?? dimensions;
+      if (!targetDims || typeof window === "undefined") return 1;
+
+      const availW = Math.max(window.innerWidth - 80, 240);
+      const availH = Math.max(window.innerHeight - 150, 240);
+
+      const scaleX = availW / targetDims.width;
+      const scaleY = availH / targetDims.height;
+      const fit = Math.min(scaleX, scaleY);
+
+      // Clamp fit scale so tiny charts don't over-expand, and large charts fit screen
+      return Math.min(Math.max(fit, 0.25), 2.0);
+    },
+    [dimensions],
+  );
+
   const handleOpenFullscreen = useCallback(() => {
     if (error || loading) return;
-    setScale(1.2);
+    const initialScale = getFitScale(dimensions);
+    setScale(initialScale);
     setPosition({ x: 0, y: 0 });
     setIsFullscreen(true);
-  }, [error, loading]);
+  }, [error, loading, getFitScale, dimensions]);
 
   const handleCloseFullscreen = useCallback(() => {
     setIsFullscreen(false);
+    setScale(1);
+    setPosition({ x: 0, y: 0 });
+  }, []);
+
+  const handleResetToFit = useCallback(() => {
+    setScale(getFitScale(dimensions));
+    setPosition({ x: 0, y: 0 });
+  }, [getFitScale, dimensions]);
+
+  const handleResetToActualSize = useCallback(() => {
     setScale(1);
     setPosition({ x: 0, y: 0 });
   }, []);
@@ -138,20 +224,27 @@ export function Mermaid({ chart, src }: MermaidProps) {
     };
   }, [isFullscreen]);
 
-  const handleZoomIn = () => setScale((prev) => Math.min(prev + 0.25, 4));
-  const handleZoomOut = () => setScale((prev) => Math.max(prev - 0.25, 0.4));
-  const handleResetZoom = () => {
-    setScale(1);
-    setPosition({ x: 0, y: 0 });
-  };
+  const handleZoomIn = () => setScale((prev) => Math.min(prev * 1.25, 6.0));
+  const handleZoomOut = () => setScale((prev) => Math.max(prev / 1.25, 0.2));
 
+  // Pointer-centered wheel zooming
   const handleWheel = (e: ReactWheelEvent) => {
     e.preventDefault();
-    if (e.deltaY < 0) {
-      setScale((prev) => Math.min(prev + 0.15, 4));
-    } else {
-      setScale((prev) => Math.max(prev - 0.15, 0.4));
-    }
+    const zoomFactor = e.deltaY < 0 ? 1.15 : 0.87;
+    setScale((prevScale) => {
+      const nextScale = Math.min(Math.max(prevScale * zoomFactor, 0.2), 6.0);
+      if (canvasRef.current) {
+        const rect = canvasRef.current.getBoundingClientRect();
+        const pointerX = e.clientX - rect.left - rect.width / 2;
+        const pointerY = e.clientY - rect.top - rect.height / 2;
+        const ratio = nextScale / prevScale;
+        setPosition((prevPos) => ({
+          x: pointerX - (pointerX - prevPos.x) * ratio,
+          y: pointerY - (pointerY - prevPos.y) * ratio,
+        }));
+      }
+      return nextScale;
+    });
   };
 
   const handleMouseDown = (e: ReactMouseEvent) => {
@@ -234,9 +327,17 @@ export function Mermaid({ chart, src }: MermaidProps) {
           onKeyDown={(e) => {
             if (e.key === "Enter" || e.key === " ") handleOpenFullscreen();
           }}
-          className="flex min-h-[140px] cursor-zoom-in items-center justify-center overflow-x-auto p-6 transition-transform [&_svg]:max-w-none [&_svg]:min-w-[500px]"
-          dangerouslySetInnerHTML={{ __html: svg }}
-        />
+          className="flex min-h-[140px] cursor-zoom-in items-center justify-center overflow-x-auto p-6 transition-all"
+        >
+          <div
+            style={{
+              width: dimensions ? `${dimensions.width}px` : "100%",
+              maxWidth: "100%",
+            }}
+            className="flex items-center justify-center [&_svg]:h-auto [&_svg]:w-full [&_svg]:max-w-full"
+            dangerouslySetInnerHTML={{ __html: svg }}
+          />
+        </div>
 
         {/* Bottom hover hint */}
         <div className="border-fd-border/50 bg-fd-secondary/30 text-fd-muted-foreground border-t px-3 py-1.5 text-center text-[11px] opacity-70 transition-opacity group-hover:opacity-100">
@@ -256,7 +357,7 @@ export function Mermaid({ chart, src }: MermaidProps) {
             <div className="flex items-center gap-2">
               <span className="text-fd-foreground text-sm font-semibold">Mermaid 全屏预览</span>
               <span className="text-fd-muted-foreground text-xs">
-                （支持滚轮缩放与鼠标拖拽平移）
+                （支持滚轮缩放与鼠标拖拽平移，双击重置）
               </span>
             </div>
 
@@ -282,9 +383,27 @@ export function Mermaid({ chart, src }: MermaidProps) {
                 >
                   <ZoomIn className="size-4" />
                 </button>
+                <div className="bg-fd-border mx-0.5 h-4 w-px" />
                 <button
                   type="button"
-                  onClick={handleResetZoom}
+                  onClick={handleResetToFit}
+                  title="自适应窗口大小"
+                  className="text-fd-muted-foreground hover:bg-fd-accent hover:text-fd-foreground flex items-center gap-1 rounded-md px-1.5 py-1 text-xs transition-colors"
+                >
+                  <Scan className="size-3.5" />
+                  <span>自适应</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={handleResetToActualSize}
+                  title="原始比例 (100%)"
+                  className="text-fd-muted-foreground hover:bg-fd-accent hover:text-fd-foreground flex items-center gap-1 rounded-md px-1.5 py-1 text-xs transition-colors"
+                >
+                  <span>1:1</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={handleResetToFit}
                   title="重置缩放与位置"
                   className="text-fd-muted-foreground hover:bg-fd-accent hover:text-fd-foreground flex size-7 items-center justify-center rounded-md transition-colors"
                 >
@@ -318,22 +437,26 @@ export function Mermaid({ chart, src }: MermaidProps) {
 
           {/* Interactive Canvas */}
           <div
+            ref={canvasRef}
             onWheel={handleWheel}
             onMouseDown={handleMouseDown}
             onMouseMove={handleMouseMove}
             onMouseUp={handleMouseUp}
             onMouseLeave={handleMouseUp}
+            onDoubleClick={handleResetToFit}
             className={`relative flex flex-1 items-center justify-center overflow-hidden p-8 select-none ${
               isDragging ? "cursor-grabbing" : "cursor-grab"
             }`}
           >
             <div
               style={{
+                width: dimensions ? `${dimensions.width}px` : "auto",
+                height: dimensions ? `${dimensions.height}px` : "auto",
                 transform: `translate(${position.x}px, ${position.y}px) scale(${scale})`,
                 transformOrigin: "center center",
-                transition: isDragging ? "none" : "transform 0.15s ease-out",
+                transition: isDragging ? "none" : "transform 0.12s ease-out",
               }}
-              className="flex items-center justify-center [&_svg]:max-w-none"
+              className="flex shrink-0 items-center justify-center [&_svg]:h-full [&_svg]:w-full [&_svg]:max-w-none"
               dangerouslySetInnerHTML={{ __html: svg }}
             />
           </div>
