@@ -15,6 +15,7 @@ import { Input } from "@scopify/ui/shadcn/components/input";
 import { createPlaylist } from "@/lib/providers/netease/api/playlist";
 import { updatePlaylistTrack } from "@/lib/providers/netease/api/track";
 import { clearPageCache } from "@/lib/cache/pageCache";
+import { musicQueryKeys } from "@/lib/query/queryKeys";
 import { useUserStore } from "@/store";
 import { useTranslation } from "react-i18next";
 
@@ -60,7 +61,7 @@ export function CreatePlaylistFromTracksDialog({
         await Promise.all([
           queryClient.invalidateQueries({ queryKey: ["library", "playlists"] }),
           queryClient.invalidateQueries({
-            queryKey: ["playlist", "content", "playlist", String(newPlaylist.id)],
+            queryKey: musicQueryKeys.playlist.contentOf("netease", String(newPlaylist.id)),
           }),
         ]);
 

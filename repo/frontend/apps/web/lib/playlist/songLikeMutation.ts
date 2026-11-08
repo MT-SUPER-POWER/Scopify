@@ -87,7 +87,7 @@ export function createSongLikeMutationOptions(
       await Promise.all([
         queryClient.invalidateQueries({ queryKey: likedPlaylistKey, refetchType: "all" }),
         queryClient.invalidateQueries({ queryKey: playlistsKey, refetchType: "all" }),
-        queryClient.invalidateQueries({ queryKey: ["playlist", "content"] }),
+        queryClient.invalidateQueries({ queryKey: musicQueryKeys.playlist.all("netease") }),
       ]);
     },
   };

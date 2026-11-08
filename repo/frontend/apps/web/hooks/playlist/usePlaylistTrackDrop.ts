@@ -8,6 +8,7 @@ import { getPlaylistOrderIds } from "@/lib/playlist/playlistOrder";
 import { isRealUser } from "@/lib/web/auth";
 import { isApiError } from "@/lib/web/apiError";
 import { clearPageCache } from "@/lib/cache/pageCache";
+import { musicQueryKeys } from "@/lib/query/queryKeys";
 import { useUserStore } from "@/store";
 import { useAppDragStore } from "@/store/module/appDrag";
 import { useTranslation } from "react-i18next";
@@ -46,7 +47,7 @@ export function usePlaylistTrackDrop() {
       if (!added.length) {
         toast.info(t("playlist.drop.duplicate"), { id: toastId });
         void queryClient.invalidateQueries({
-          queryKey: ["playlist", "content", "playlist", String(playlistId)],
+          queryKey: musicQueryKeys.playlist.contentOf("netease", String(playlistId)),
         });
         return;
       }
@@ -73,7 +74,7 @@ export function usePlaylistTrackDrop() {
       // A timeout or a concurrent edit can leave the remote result uncertain.
       await clearPageCache().catch(() => undefined);
       void queryClient.invalidateQueries({
-        queryKey: ["playlist", "content", "playlist", String(playlistId)],
+        queryKey: musicQueryKeys.playlist.contentOf("netease", String(playlistId)),
       });
       void queryClient.invalidateQueries({ queryKey: ["library", "playlists"] });
     } finally {

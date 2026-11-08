@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { createPlaylist, delPlaylist } from "@/lib/providers/netease/api/playlist";
 import { clearPageCache } from "@/lib/cache/pageCache";
+import { musicQueryKeys } from "@/lib/query/queryKeys";
 import { useLoginStatus } from "@/hooks/auth/useLoginStatus";
 import { useProviderCapability } from "@/hooks/provider/useActiveProvider";
 import { translate } from "@/lib/i18n";
@@ -86,7 +87,7 @@ function handleDeletePlaylist(
       if (queryClient) {
         void queryClient.invalidateQueries({ queryKey: ["library", "playlists"] });
         void queryClient.invalidateQueries({
-          queryKey: ["playlist", "content", "playlist", String(playlistId)],
+          queryKey: musicQueryKeys.playlist.contentOf("netease", String(playlistId)),
         });
       }
       toast.success(translate(locale, "sidebar.menu.deleteSuccess", { name: playlistName }));

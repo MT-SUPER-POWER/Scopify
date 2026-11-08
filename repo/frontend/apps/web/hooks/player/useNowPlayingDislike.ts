@@ -7,6 +7,7 @@ import { isPersonalFmPlaybackSource } from "@/constants/personalFm";
 import { usePersonalFmDislike } from "@/hooks/personalFm/usePersonalFmDislike";
 import { useDailyRecommendationMutation } from "@/hooks/playlist/useDailyRecommendationMutation";
 import { clearPageCache } from "@/lib/cache/pageCache";
+import { musicQueryKeys } from "@/lib/query/queryKeys";
 import { adaptNeteaseTrack, getNeteaseTrackId } from "@/lib/providers/netease/adapters/track";
 import { reportActionFailure } from "@/lib/web/errorTracking";
 import { usePlayerStore } from "@/store";
@@ -58,7 +59,7 @@ export function useNowPlayingDislike(song: SongDetail | null | undefined) {
           void playerState.playNext();
         }
         void clearPageCache();
-        void queryClient.invalidateQueries({ queryKey: ["playlist", "content", "daily"] });
+        void queryClient.invalidateQueries({ queryKey: musicQueryKeys.playlist.allDaily() });
 
         toast.success(t("playlist.table.dislikeSuccess"));
       } catch (error) {

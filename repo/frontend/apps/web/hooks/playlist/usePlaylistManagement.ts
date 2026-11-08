@@ -15,7 +15,7 @@ import { useUserStore } from "@/store";
 import { useTranslation } from "react-i18next";
 
 import type { PlaylistUpdateInput } from "@/types/playlist/model";
-import type { RawNeteasePlaylist } from "@/types/playlist/api";
+import type { RawNeteasePlaylist } from "@/types/providers/netease/playlistApi";
 
 export function usePlaylistManagement(playlistId: number | string, detail?: RawNeteasePlaylist) {
   const { t } = useTranslation();
@@ -40,7 +40,7 @@ export function usePlaylistManagement(playlistId: number | string, detail?: RawN
     if (userId)
       void queryClient.invalidateQueries({ queryKey: musicQueryKeys.library.playlists(userId) });
     void queryClient.invalidateQueries({
-      queryKey: ["playlist", "content", "playlist", String(playlistId)],
+      queryKey: musicQueryKeys.playlist.contentOf("netease", String(playlistId)),
     });
   };
 

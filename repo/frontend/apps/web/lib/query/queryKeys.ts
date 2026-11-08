@@ -1,6 +1,9 @@
+import type { MusicProvider } from "@scopify/music-domain/identity";
+
 import type { CommentResourceKind } from "@/types/comment/api";
 import type { CommentSortType } from "@/types/comment/model";
 import { mvQueryKeys } from "@/lib/query/mvQueryKeys";
+import { providerQueryKey } from "@/lib/query/providerQueryKey";
 
 export const musicQueryKeys = {
   mv: mvQueryKeys,
@@ -83,9 +86,16 @@ export const musicQueryKeys = {
       [...musicQueryKeys.comment.thread(accountId, kind, resourceId), "replies", rootId] as const,
   },
   playlist: {
-    content: (playlistId: string, isRecommend: boolean) =>
-      ["playlist", "content", "playlist", playlistId, isRecommend] as const,
-    daily: (date: string) => ["playlist", "content", "daily", date] as const,
+    /** Every playlist and daily list of a platform. */
+    all: (provider: MusicProvider) => providerQueryKey(provider, "playlist", "content"),
+    /** One playlist however it was read; the prefix of `content`. */
+    contentOf: (provider: MusicProvider, playlistId: string) =>
+      providerQueryKey(provider, "playlist", "content", "playlist", playlistId),
+    content: (provider: MusicProvider, playlistId: string, isRecommend: boolean) =>
+      [...musicQueryKeys.playlist.contentOf(provider, playlistId), isRecommend] as const,
+    /** Daily recommendations are NetEase's. */
+    allDaily: () => providerQueryKey("netease", "playlist", "content", "daily"),
+    daily: (date: string) => [...musicQueryKeys.playlist.allDaily(), date] as const,
   },
   radio: {
     content: (radioId: string) => ["radio", "content", radioId] as const,
