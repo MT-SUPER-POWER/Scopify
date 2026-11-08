@@ -12,8 +12,8 @@ mock.module("@/lib/providers/qq/api/track", () => ({
 }));
 mock.module("@/lib/providers/netease/client", () => ({ requestData: neteaseRequest }));
 
-const { qqProvider } = await import("@/lib/providers/qq");
-const { neteaseProvider } = await import("@/lib/providers/netease");
+const { qqTrackSource: qqProvider } = await import("@/lib/providers/qq/track");
+const { neteaseTrackSource: neteaseProvider } = await import("@/lib/providers/netease/track");
 
 function qqSong(mid: string): QqTrackDto {
   return {
