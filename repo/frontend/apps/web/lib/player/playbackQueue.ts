@@ -10,11 +10,7 @@ export type PlaybackQueueRepeatMode = "off" | "all" | "one";
 export type PlaybackQueueNextSource = "manual" | "ended" | "personal-fm-dislike";
 export type PlaybackQueuePlaylistId = number | string | null;
 
-export interface PlaybackQueueItem {
-  id: number | string;
-}
-
-export interface PlaybackQueueSnapshot<T extends PlaybackQueueItem> {
+export interface PlaybackQueueSnapshot<T> {
   historyIndex: number;
   historyStack: number[];
   isShuffle: boolean;
@@ -25,18 +21,18 @@ export interface PlaybackQueueSnapshot<T extends PlaybackQueueItem> {
   repeatMode: PlaybackQueueRepeatMode;
 }
 
-export type PlaybackQueueEffect<T extends PlaybackQueueItem> =
+export type PlaybackQueueEffect<T> =
   { type: "none" } | { track: T; type: "play" } | { type: "stop" } | { type: "clear" };
 
-export interface PlaybackQueueTransition<T extends PlaybackQueueItem> {
+export interface PlaybackQueueTransition<T> {
   effect: PlaybackQueueEffect<T>;
   snapshot: PlaybackQueueSnapshot<T>;
 }
 
 /** A dependency so the queue state machine stays deterministic and testable. */
-export type PlaybackQueueShuffle<T extends PlaybackQueueItem> = (tracks: readonly T[]) => T[];
+export type PlaybackQueueShuffle<T> = (tracks: readonly T[]) => T[];
 
-export interface PlaybackQueueRuntimeContext<T extends PlaybackQueueItem> {
+export interface PlaybackQueueRuntimeContext<T> {
   /**
    * The loaded track may be absent from the queue (for example, after a direct
    * `playTrack`). Queue operations that must retain the loaded item receive it
@@ -47,7 +43,7 @@ export interface PlaybackQueueRuntimeContext<T extends PlaybackQueueItem> {
 
 const NO_EFFECT = { type: "none" } as const;
 
-export function createPlaybackQueueSnapshot<T extends PlaybackQueueItem>(
+export function createPlaybackQueueSnapshot<T>(
   snapshot: PlaybackQueueSnapshot<T>,
 ): PlaybackQueueSnapshot<T> {
   return {
@@ -63,7 +59,15 @@ export function createPlaybackQueueSnapshot<T extends PlaybackQueueItem>(
  * production can use a random implementation while tests and recovery flows
  * can stay deterministic.
  */
-export function createPlaybackQueue<T extends PlaybackQueueItem>(shuffle: PlaybackQueueShuffle<T>) {
+/** The identity two queue entries share when they are the same track. */
+export type PlaybackQueueKeyOf<T> = (track: T) => string;
+
+export function createPlaybackQueue<T>(
+  shuffle: PlaybackQueueShuffle<T>,
+  keyOf: PlaybackQueueKeyOf<T>,
+) {
+  const sameItem = (a: T | null | undefined, b: T | null | undefined) =>
+    a != null && b != null && keyOf(a) === keyOf(b);
   const noChange = (snapshot: PlaybackQueueSnapshot<T>): PlaybackQueueTransition<T> => ({
     effect: NO_EFFECT,
     snapshot,
@@ -105,7 +109,9 @@ export function createPlaybackQueue<T extends PlaybackQueueItem>(shuffle: Playba
     if (!snapshot.isShuffle || snapshot.originalQueue.length === 0) return noChange(snapshot);
 
     const { currentTrack } = context;
-    const remainingTracks = snapshot.originalQueue.filter((track) => track.id !== currentTrack?.id);
+    const remainingTracks = snapshot.originalQueue.filter(
+      (track) => !sameItem(track, currentTrack),
+    );
     const queue = currentTrack
       ? [currentTrack, ...shuffle(remainingTracks)]
       : [...shuffle(snapshot.originalQueue)];
@@ -163,7 +169,7 @@ export function createPlaybackQueue<T extends PlaybackQueueItem>(shuffle: Playba
       const currentTrack = context.currentTrack;
       const queueIndex = currentTrack
         ? queue.findIndex(
-            (candidate) => candidate === currentTrack || candidate.id === currentTrack.id,
+            (candidate) => candidate === currentTrack || sameItem(candidate, currentTrack),
           )
         : -1;
 
@@ -197,7 +203,7 @@ export function createPlaybackQueue<T extends PlaybackQueueItem>(shuffle: Playba
       const currentTrack = context.currentTrack;
       const queueIndex = currentTrack
         ? queue.findIndex(
-            (candidate) => candidate === currentTrack || candidate.id === currentTrack.id,
+            (candidate) => candidate === currentTrack || sameItem(candidate, currentTrack),
           )
         : -1;
 
@@ -220,13 +226,13 @@ export function createPlaybackQueue<T extends PlaybackQueueItem>(shuffle: Playba
       allSongs: readonly T[],
       playlistId: PlaybackQueuePlaylistId = null,
     ): PlaybackQueueTransition<T> {
-      const songIndex = allSongs.findIndex((candidate) => candidate.id === song.id);
+      const songIndex = allSongs.findIndex((candidate) => sameItem(candidate, song));
       const originalQueue = [...allSongs];
 
       if (snapshot.isShuffle) {
         // Keep the selected object, but filter every equal id just as the
-        // legacy store did. This makes duplicate-id handling explicit.
-        const remainingTracks = allSongs.filter((candidate) => candidate.id !== song.id);
+        // legacy store did. This makes duplicate-key handling explicit.
+        const remainingTracks = allSongs.filter((candidate) => !sameItem(candidate, song));
         return {
           effect: { track: song, type: "play" },
           snapshot: {
@@ -356,7 +362,7 @@ export function createPlaybackQueue<T extends PlaybackQueueItem>(shuffle: Playba
       }
 
       const removedCurrent =
-        index === snapshot.queueIndex || snapshot.queue[index]?.id === context.currentTrack?.id;
+        index === snapshot.queueIndex || sameItem(snapshot.queue[index], context.currentTrack);
       const queueIndex = removedCurrent
         ? Math.min(index, queue.length - 1)
         : index < snapshot.queueIndex
@@ -418,7 +424,7 @@ export function createPlaybackQueue<T extends PlaybackQueueItem>(shuffle: Playba
       if (isShuffle) {
         const currentTrack = snapshot.queue[snapshot.queueIndex];
         const remainingTracks = snapshot.originalQueue.filter(
-          (track) => track.id !== currentTrack?.id,
+          (track) => !sameItem(track, currentTrack),
         );
         const queue = currentTrack
           ? [currentTrack, ...shuffle(remainingTracks)]
@@ -438,7 +444,7 @@ export function createPlaybackQueue<T extends PlaybackQueueItem>(shuffle: Playba
 
       const currentTrack = snapshot.queue[snapshot.queueIndex];
       const originalIndex = currentTrack
-        ? snapshot.originalQueue.findIndex((track) => track.id === currentTrack.id)
+        ? snapshot.originalQueue.findIndex((track) => sameItem(track, currentTrack))
         : 0;
       const queueIndex = Math.max(0, originalIndex);
       return {
