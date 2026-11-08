@@ -5,6 +5,7 @@ import { PlayerQueueItemCover } from "@/components/player/PlayerQueueItemCover";
 import { ArtistInlineLinks } from "@/components/shared/ArtistInlineLinks";
 import { SongContextMenu } from "@/components/shared/SongContextMenu";
 import { SongVipBadge } from "@/components/shared/SongVipBadge";
+import { useNowPlayingDislike } from "@/hooks/player/useNowPlayingDislike";
 import { cn, formatDuration } from "@/lib/utils";
 import type { QueueItemProps } from "@/types/player/components";
 
@@ -16,6 +17,8 @@ export const PlayerQueueItem = memo(function PlayerQueueItem({
   onPlay,
   onRemove,
 }: QueueItemProps) {
+  const { dislike, isDailyRecommend, isPersonalFm } = useNowPlayingDislike(song);
+
   const content = (
     <div
       onClick={() => onPlay(index)}
@@ -52,6 +55,9 @@ export const PlayerQueueItem = memo(function PlayerQueueItem({
       isPlaying={isPlaying}
       onPlay={() => onPlay(index)}
       onRemoveFromQueue={() => onRemove(index)}
+      isDailyRecommend={isDailyRecommend}
+      onDislikeDailyRecommend={isDailyRecommend ? () => void dislike() : undefined}
+      onDislikePersonalFm={isPersonalFm ? () => void dislike() : undefined}
     >
       {content}
     </SongContextMenu>

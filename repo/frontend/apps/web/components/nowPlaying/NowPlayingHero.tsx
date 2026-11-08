@@ -2,11 +2,12 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { ImageIcon, MessageCircle, MonitorPlay } from "lucide-react";
+import { Ban, ImageIcon, MessageCircle, MonitorPlay } from "lucide-react";
 import { PiHeartBold, PiHeartFill } from "react-icons/pi";
 import { NowPlayingDynamicCover } from "./NowPlayingDynamicCover";
 import { NowPlayingMvPlayer } from "./NowPlayingMvPlayer";
 import { SongVipBadge } from "@/components/shared/SongVipBadge";
+import { useNowPlayingDislike } from "@/hooks/player/useNowPlayingDislike";
 import { usePlaybackCommands } from "@/hooks/player/usePlaybackCommands";
 import { usePlaybackProjection } from "@/hooks/player/usePlaybackProjection";
 import { useSongMvId } from "@/hooks/song/useSongMvId";
@@ -36,6 +37,7 @@ export function NowPlayingHero({ song }: NowPlayingSectionProps) {
   const artworkUrl = resolveCoverUrl(song.al?.picUrl, song.al?.coverUrl);
   const isLiked = playback.liked;
   const likeLabel = isLiked ? t("common.action.unlike") : t("common.action.like");
+  const { canDislike, dislike, isDisliking } = useNowPlayingDislike(song);
 
   return (
     <section className="relative -mx-4">
@@ -120,6 +122,21 @@ export function NowPlayingHero({ song }: NowPlayingSectionProps) {
         >
           <MessageCircle className="size-5" />
         </Link>
+        {canDislike && (
+          <button
+            type="button"
+            onClick={() => void dislike()}
+            disabled={isDisliking}
+            aria-label={t("contextMenu.recommendLess")}
+            title={t("contextMenu.recommendLess")}
+            className={cn(
+              ACTION_BTN,
+              "text-content-muted hover:text-destructive active:scale-95 disabled:opacity-40",
+            )}
+          >
+            <Ban className="size-5" />
+          </button>
+        )}
         <button
           type="button"
           onClick={() => void commands.toggleLike()}

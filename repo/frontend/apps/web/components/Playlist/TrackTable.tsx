@@ -445,7 +445,25 @@ export default function TracklistTable({
         const nextTracks = tracks.map((track) => (track.id === trackId ? replaceSong : track));
 
         updateVisibleTracks(nextTracks);
-        void usePlayerStore.getState().playNext();
+
+        const playerState = usePlayerStore.getState();
+        const isCurrentPlaying = playerState.currentSongDetail?.id === trackId;
+
+        // 如果该歌曲已在播放队列中，静默将队列和原始队列中的对应曲目替换为新推荐歌曲
+        const inQueue = playerState.queue.some((s) => s.id === trackId);
+        if (inQueue) {
+          usePlayerStore.setState({
+            queue: playerState.queue.map((s) => (s.id === trackId ? replaceSong : s)),
+            originalQueue: playerState.originalQueue.map((s) =>
+              s.id === trackId ? replaceSong : s,
+            ),
+          });
+        }
+
+        // 只有当前被标记为不感兴趣的歌曲正在播放时，才执行切歌
+        if (isCurrentPlaying) {
+          void playerState.playNext();
+        }
         void clearPageCache();
 
         toast.success(t("playlist.table.dislikeSuccess"));
