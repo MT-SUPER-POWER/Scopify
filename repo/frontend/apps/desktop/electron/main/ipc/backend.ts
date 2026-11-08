@@ -7,16 +7,26 @@ import { isMainRenderer } from "./sender";
 export function registerBackendIpc(
   mainWindow: BrowserWindow | null,
   backendController: DesktopBackendController,
+  qqBackendController: DesktopBackendController,
 ) {
   ipcMain.handle("backend:get-status", () => backendController.getStatus());
   ipcMain.handle("backend:restart", (event) => {
     if (!isMainRenderer(event, mainWindow)) throw new Error("Unauthorized backend restart.");
-    return backendController.restart(loadDesktopHostConfig().backend);
+    return backendController.restart(loadDesktopHostConfig().backend.netease);
   });
-  const unsubscribe = backendController.onStatusChanged((status) => {
-    if (mainWindow && !mainWindow.isDestroyed()) {
-      mainWindow.webContents.send("backend:status-changed", status);
-    }
+  ipcMain.handle("qq-backend:get-status", () => qqBackendController.getStatus());
+  ipcMain.handle("qq-backend:restart", (event) => {
+    if (!isMainRenderer(event, mainWindow)) throw new Error("Unauthorized backend restart.");
+    return qqBackendController.restart(loadDesktopHostConfig().backend.qq);
   });
-  mainWindow?.once("closed", unsubscribe);
+
+  const forward = (channel: string) => (status: unknown) => {
+    if (mainWindow && !mainWindow.isDestroyed()) mainWindow.webContents.send(channel, status);
+  };
+  const unsubscribe = backendController.onStatusChanged(forward("backend:status-changed"));
+  const unsubscribeQq = qqBackendController.onStatusChanged(forward("qq-backend:status-changed"));
+  mainWindow?.once("closed", () => {
+    unsubscribe();
+    unsubscribeQq();
+  });
 }

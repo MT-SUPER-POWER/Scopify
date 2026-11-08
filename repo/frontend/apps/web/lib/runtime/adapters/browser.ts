@@ -77,14 +77,14 @@ function unsupportedUpdateState(): AppUpdateState {
   return { currentVersion: "", status: "unsupported", supported: false };
 }
 
-function unsupportedBackendStatus(): DesktopBackendStatus {
+function unsupportedBackendStatus(port: number): DesktopBackendStatus {
   return {
     error: null,
     host: "127.0.0.1",
     managed: false,
-    origin: "http://127.0.0.1:3838",
+    origin: `http://127.0.0.1:${port}`,
     pid: null,
-    port: 3838,
+    port,
     source: null,
     state: "disabled",
   };
@@ -341,9 +341,14 @@ export function createBrowserRuntime(
     },
     notifications: createBrowserNotifications(),
     backend: {
-      getStatus: async () => unsupportedBackendStatus(),
+      getStatus: async () => unsupportedBackendStatus(3838),
       onStatusChanged: () => NOOP,
-      restart: async () => unsupportedBackendStatus(),
+      restart: async () => unsupportedBackendStatus(3838),
+    },
+    qqBackend: {
+      getStatus: async () => unsupportedBackendStatus(3200),
+      onStatusChanged: () => NOOP,
+      restart: async () => unsupportedBackendStatus(3200),
     },
     audioFeature: {
       connect: () => NOOP,

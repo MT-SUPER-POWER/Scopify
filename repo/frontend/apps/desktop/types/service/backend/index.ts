@@ -1,4 +1,4 @@
-import type { DesktopBackendStatus, DesktopHostConfig } from "@scopify/desktop-contract";
+import type { DesktopBackendConfig, DesktopBackendStatus } from "@scopify/desktop-contract";
 export interface BackendProbeResult {
   occupied: boolean;
   reachable: boolean;
@@ -16,6 +16,6 @@ export interface DesktopBackendController {
   dispose(): Promise<void>;
   getStatus(): DesktopBackendStatus;
   onStatusChanged(callback: (status: DesktopBackendStatus) => void): () => void;
-  reconcile(config: DesktopHostConfig["backend"]): Promise<DesktopBackendStatus>;
-  restart(config: DesktopHostConfig["backend"]): Promise<DesktopBackendStatus>;
+  reconcile(config: DesktopBackendConfig): Promise<DesktopBackendStatus>;
+  restart(config: DesktopBackendConfig): Promise<DesktopBackendStatus>;
 }

@@ -423,6 +423,9 @@ importers:
       '@neteasecloudmusicapienhanced/api':
         specifier: workspace:*
         version: link:../../../backend/api-enhanced
+      '@yakult-green-tea/qq-music-api':
+        specifier: workspace:*
+        version: link:../../../backend/qq-music-api
     devDependencies:
       '@modelcontextprotocol/sdk':
         specifier: ^1.30.0

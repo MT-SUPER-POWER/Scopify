@@ -7,5 +7,6 @@ export interface WindowServiceHostOptions {
   backendController: DesktopBackendController;
   discordPresence: ReturnType<typeof createDiscordPresenceController>;
   getMainWindow(): BrowserWindow | null;
+  qqBackendController: DesktopBackendController;
   rendererBaseUrl: string;
 }

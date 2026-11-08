@@ -40,7 +40,8 @@
     "package:mac:prebuilt": "electron-builder --config electron-builder.config.ts --mac --publish never"
   },
   "dependencies": {
-    "@neteasecloudmusicapienhanced/api": "workspace:*"
+    "@neteasecloudmusicapienhanced/api": "workspace:*",
+    "@yakult-green-tea/qq-music-api": "workspace:*"
   },
   "devDependencies": {
     "@modelcontextprotocol/sdk": "^1.30.0",

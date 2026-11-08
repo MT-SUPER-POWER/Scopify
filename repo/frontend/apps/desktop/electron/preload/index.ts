@@ -80,6 +80,7 @@ const electronAPI: DesktopBridge = {
     return () => ipcRenderer.removeListener("notifications:changed", listener);
   },
   getBackendStatus: () => ipcRenderer.invoke("backend:get-status"),
+  getQqBackendStatus: () => ipcRenderer.invoke("qq-backend:get-status"),
   connectAudioFeatureTransport: (
     role: AudioFeatureTransportRole,
     connectionId: string,
@@ -160,6 +161,7 @@ const electronAPI: DesktopBridge = {
   reloadMainWindow: () => ipcRenderer.send("main-window-reload"),
   restartMcp: (): Promise<McpStatus> => ipcRenderer.invoke("mcp:restart"),
   restartBackend: (): Promise<DesktopBackendStatus> => ipcRenderer.invoke("backend:restart"),
+  restartQqBackend: (): Promise<DesktopBackendStatus> => ipcRenderer.invoke("qq-backend:restart"),
   getMcpClientConfiguration: (): Promise<McpClientConfiguration> =>
     ipcRenderer.invoke("mcp:get-client-configuration"),
   rotateMcpCredential: (): Promise<McpClientConfiguration> =>
@@ -289,6 +291,13 @@ const electronAPI: DesktopBridge = {
     };
     ipcRenderer.on("backend:status-changed", listener);
     return () => ipcRenderer.removeListener("backend:status-changed", listener);
+  },
+  onQqBackendStatusChanged: (callback) => {
+    const listener = (_event: Electron.IpcRendererEvent, status: DesktopBackendStatus) => {
+      callback(status);
+    };
+    ipcRenderer.on("qq-backend:status-changed", listener);
+    return () => ipcRenderer.removeListener("qq-backend:status-changed", listener);
   },
   closeDesktopLyric: () => ipcRenderer.invoke("desktop-lyric:close"),
   openDesktopLyric: () => ipcRenderer.invoke("desktop-lyric:open"),

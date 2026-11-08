@@ -106,6 +106,7 @@ export interface DesktopBridge<TLyrics = unknown> {
   testDesktopNotification(): Promise<boolean>;
   onNotificationsChanged(callback: (snapshot: NotificationSnapshot) => void): Unsubscribe;
   getBackendStatus(): Promise<DesktopBackendStatus>;
+  getQqBackendStatus(): Promise<DesktopBackendStatus>;
   checkForUpdates(): Promise<AppUpdateState>;
   clearCache(request: ClearDesktopCacheRequest): Promise<DesktopCacheStats>;
   clearPageCache(): Promise<PageCacheStats>;
@@ -195,6 +196,7 @@ export interface DesktopBridge<TLyrics = unknown> {
   onNavigate(callback: (path: string) => void): Unsubscribe;
   onUpdateStatusChanged(callback: (status: AppUpdateState) => void): Unsubscribe;
   onBackendStatusChanged(callback: (status: DesktopBackendStatus) => void): Unsubscribe;
+  onQqBackendStatusChanged(callback: (status: DesktopBackendStatus) => void): Unsubscribe;
   openLoginWindow(): void;
   publishAudioFeatureFrame(frame: AudioFeatureFrameV1): boolean;
   publishDiscordPresenceSnapshot(snapshot: DiscordPresenceSnapshot): Promise<DiscordPresenceStatus>;
@@ -205,6 +207,7 @@ export interface DesktopBridge<TLyrics = unknown> {
   reloadMainWindow(): void;
   restartMcp(): Promise<McpStatus>;
   restartBackend(): Promise<DesktopBackendStatus>;
+  restartQqBackend(): Promise<DesktopBackendStatus>;
   rotateMcpCredential(): Promise<McpClientConfiguration>;
   testMcpConnection(): Promise<McpConnectionTestResult>;
   retryDesktopPlaybackWallpaper(): Promise<DesktopPlaybackWallpaperModel>;
