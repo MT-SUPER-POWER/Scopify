@@ -13,6 +13,7 @@ import { useEffect, useState } from "react";
 import { pageTtlMs } from "@/lib/cache/pageCache";
 import { QueryDevtools } from "@/components/shared/QueryDevtools";
 import { useRendererErrorReporting } from "@/hooks/core/useRendererErrorReporting";
+import { useProviderSwitchRequests } from "@/hooks/provider/useProviderSwitchRequests";
 import { queryPersister } from "@/lib/query/persister";
 import { clearQqSessionToken } from "@/lib/providers/qq/session";
 import { MUSIC_SESSION_EXPIRED_EVENT, QQ_SESSION_EXPIRED_EVENT } from "@/lib/query/session";
@@ -32,6 +33,7 @@ export function QueryProvider({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const [queryClient] = useState(createQueryClient);
   useRendererErrorReporting();
+  const handleCacheRestored = useProviderSwitchRequests(queryClient);
 
   useEffect(() => {
     const credential = getMusicSessionCredential();
@@ -78,6 +80,8 @@ export function QueryProvider({ children }: { children: React.ReactNode }) {
   return (
     <PersistQueryClientProvider
       client={queryClient}
+      onSuccess={handleCacheRestored}
+      onError={handleCacheRestored}
       persistOptions={{
         buster: QUERY_CACHE_BUSTER,
         dehydrateOptions: {
