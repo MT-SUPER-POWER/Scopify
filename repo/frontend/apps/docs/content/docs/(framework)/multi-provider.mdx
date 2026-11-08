@@ -1,0 +1,174 @@
+---
+title: 多平台接入方案
+description: 网易云与 QQ 音乐一刀切接入：切账号整体换源，两套 DTO 经转换层汇成一套界面类型。
+---
+
+本期只有一个激活平台。切账号就整体换源，网易云和 QQ 音乐的数据不合并、不互补；当前平台没有的能力，对应 UI 直接不渲染。以后要做统一 Provider（跨源队列、歌曲匹配、混合歌单），在转换层之上再加一层即可，页面不用回头改。
+
+类型拆分的小样本见 [多平台类型拆分试点](./multi-provider-demo)。
+
+## 范围
+
+| 本期做 | 本期不做 |
+| --- | --- |
+| 网易云 DTO、QQ 音乐 DTO 两套原生类型 | 两个平台同时登录、同时出数据 |
+| 一层转换：DTO → 界面类型 | 跨平台歌曲匹配、去重、换源播放 |
+| 一套界面类型，页面与组件只消费它 | 队列里混放两个平台的歌 |
+| 切账号整体换平台，清理旧平台队列与缓存 | 一次性迁走全部 `SongDetail` 引用 |
+| 平台能力声明，缺失能力不显示入口 | Web 端部署 QQ 后端（记为技术债） |
+
+## 分层
+
+```text
+网易云 API ─→ 网易云 DTO ─→ adaptNetease*() ─┐
+                                            ├─ activeProvider 二选一 ─→ 界面类型 ─→ hooks / 组件 / 页面
+QQ 音乐 API ─→ QQ 音乐 DTO ─→ adaptQq*() ─────┘
+```
+
+| 层 | 位置 | 放什么 | 谁可以导入 |
+| --- | --- | --- | --- |
+| 网易云 DTO | `apps/web/types/providers/netease/<主题>Api.ts` | 网易云接口原生字段 | 网易云请求与转换 |
+| QQ 音乐 DTO | `apps/web/types/providers/qq/<主题>Api.ts` | QQ 接口原生字段（`mid`、`interval` 等） | QQ 请求与转换 |
+| 平台请求 | `apps/web/lib/providers/<平台>/` | 调接口，返回 DTO | 转换层 |
+| 转换层 | `apps/web/lib/music/providers/<平台>/` | `adapt<主题>()`、平台对象、能力声明 | hooks |
+| 界面类型 | `packages/music-domain/src/` | `MusicTrack`、`MusicPlaylist`、`MusicUser`、统一接口、能力枚举 | 所有层 |
+| 页面与组件 | `hooks/`、`components/`、`app/` | 只拿界面类型 | — |
+
+试点里「领域类型」和「界面类型」是两层，这里合并为一层：`@scopify/music-domain` 就是界面类型。
+
+约束：
+
+- 页面、组件、hooks 不导入 `types/providers/*`，由 `lint:architecture` 检查。
+- 网易云 DTO 初期不搬家，用 `Pick` 或别名指向现有 `types/song/api` 等文件；某个业务区域迁完后再挪进 `types/providers/netease/`。
+- 一个主题一个转换函数，两个平台输出同一个界面类型。缺的字段给 `null`，不编造。
+- 组件 Props 仍放 `types/<领域>/components.ts`，Props 里的数据字段用界面类型。
+
+统一接口放 `music-domain/src/provider.ts`，不是每个平台都有的方法设为可选：
+
+```ts
+export interface MusicProviderClient {
+  provider: MusicProvider;
+  capabilities: ReadonlySet<MusicCapability>;
+  getTracks(ids: string[]): Promise<MusicTrack[]>;
+  getPlaylist(id: string): Promise<MusicPlaylistDetail>;
+  search(query: MusicSearchQuery): Promise<MusicSearchResult>;
+  getComments?(ref: MusicResourceRef, page: MusicPage): Promise<MusicCommentPage>;
+  getPersonalFm?(): Promise<MusicTrack[]>;
+}
+```
+
+## 账号切换
+
+`store/module/user.ts` 增加持久化字段 `activeProvider: "netease" | "qq"`，未登录时默认网易云。hooks 通过 `useActiveProvider()` 拿到当前平台对象，不自己判断平台。
+
+切换时按顺序：
+
+1. 停止播放，清空队列。队列里的歌属于旧平台，新平台取不到播放链接。
+2. 清理旧平台的 Query 缓存。query key 统一以 `[provider, accountId, ...]` 开头。
+3. 路由回到首页。路由里的 ID 属于旧平台。
+4. 切换请求通道。两个后端各有 baseURL 和会话凭据；凭据按平台分开存，另一个平台的登录状态保留，切回来不用重新扫码。
+
+桌面端的 Discord 状态、MCP 播放工具、桌面歌词等暂时只认网易云 ID。QQ 模式下它们只显示标题和歌手，依赖网易云 ID 的动作不提供。
+
+### 路由与页面缓存
+
+URL 不带平台前缀，`/playlist/123` 的 ID 按当前激活平台解释。
+
+桌面端页面缓存（`apps/web/lib/cache/pageCache.ts`）落盘保存，默认 6 小时，重启后仍在。现在的键形如 `playlist:123`，不带平台，切到 QQ 后会读到网易云的同 ID 缓存。骨架阶段把平台放在命名空间之后：`playlist:qq:123`。命名空间仍在第一段，分类与 TTL 逻辑不变，两个平台的缓存互不干扰，切回来还能继续用。
+
+### 分享链接
+
+分享出去的是平台官方网页链接，不是 Scopify 内部路由，对方用哪个客户端都能打开：
+
+| 平台 | 分享格式 |
+| --- | --- |
+| 网易云 | `https://music.163.com/playlist?id=<id>`、`/song?id=<id>` |
+| QQ 音乐 | `https://y.qq.com/n/ryqq/playlist/<id>`、`/songDetail/<mid>` |
+
+QQ 客户端自己分享出来的是短链，例如 `https://c6.y.qq.com/base/fcgi-bin/u?__=...`，需要跟随跳转才知道目标。以后做「粘贴链接打开」时，再识别两种格式并按链接所属平台切换。上表的路径格式落地前要用真实资源核对。
+
+## 能力声明
+
+每个平台对象带一份 `capabilities`，UI 只问「有没有」，代码里不出现 `provider === "qq"`。能力名按「领域.动作」细分，例如 `comments.read`、`comments.write`，只缺一半的功能可以只藏按钮。
+
+下表依据 `qq-music-api` 路由清单初步判断，接口尚未逐个调通。
+
+| 能力 | 网易云 | QQ 音乐 | QQ 依据 |
+| --- | --- | --- | --- |
+| 搜索、歌单详情、歌手、专辑 | ✓ | ✓ | `/search`、`/getSongListDetail`、`/singer/*` |
+| 播放链接、歌词 | ✓ | ✓ | `/getMusicPlay`、`/getLyric` |
+| 喜欢歌曲、我的歌单增删改 | ✓ | ✓ | `/user/song/like`、`/user/playlist/*` |
+| 每日推荐、私人 FM | ✓ | ✓ | `/user/daily-songs`、`/user/personal-fm` |
+| MV | ✓ | ✓ | `/mv/*` |
+| 评论：读 | ✓ | ✓ | `/comment/list`、`/comment/hot` |
+| 评论：发表、点赞 | ✓ | — | 无对应路由 |
+| 云盘 | ✓ | 待核对 | `/user/cloud`，只看到读取 |
+| 歌单内排序 | ✓ | 待核对 | 未见排序路由 |
+| 播客、声音 | ✓ | — | QQ 的 `/radio` 是音乐电台 |
+| 私信、通知、关注动态 | ✓ | — | 无对应路由 |
+| VIP 签到、粉丝团、听歌报告 | ✓ | — | 网易云特有 |
+
+隐藏分三处：
+
+- 入口：侧栏、菜单、右键菜单的配置项带 `requires: MusicCapability`，渲染时过滤。
+- 区块：评论区、FM 卡片等用 `useProviderCapability()` 或 `<CapabilityGate>` 包住，没有能力就不渲染，也不发请求。
+- 路由：直接打开不支持的路由时显示「当前平台不支持」，不当作请求错误进入错误边界。
+
+## QQ 封面
+
+QQ 的歌曲数据只给专辑 `mid`，没有封面地址。优先用接口返回的封面字段；没有时在 `adaptQq*()` 里按固定规则用专辑 `mid` 拼地址；`mid` 为空给 `null`，图片加载失败显示占位图。拼接规则落地前先用真实 `mid` 验证，规则只写在 QQ 转换层一处。
+
+## 后端
+
+两个后端都是 `repo/backend/` 下的 submodule，互相独立：
+
+|  | 网易云 | QQ 音乐 |
+| --- | --- | --- |
+| 目录 | `repo/backend/api-enhanced` | `repo/backend/qq-music-api` |
+| 默认端口 | 3838 | 3200 |
+| 开发脚本 | `pnpm run dev:backend` | `pnpm run dev:backend:qq` |
+| 桌面端托管 | 主进程内嵌，默认开启 | 独立子进程，默认开启 |
+| 健康检查 | `/inner/version` | `/login/channels` |
+
+`pnpm run dev:backend:all` 同时启动两个后端，`pnpm run dev:full` 启动客户端和两个后端。
+
+### 桌面端托管
+
+桌面端配置里 `backend` 是总配置，每个平台一个子配置：
+
+```yaml
+backend:
+  netease:
+    autoStart: true
+    port: 3838
+  qq:
+    autoStart: true
+    port: 3200
+```
+
+v3.4 及更早的配置里 `backend` 直接写 `autoStart` / `port`，读取时自动当作 `backend.netease`，下次保存写成新结构。
+
+QQ 后端的包在加载时就开始监听端口，同一进程不能重复加载，所以不能像网易云那样内嵌主进程。桌面端用 Electron `utilityProcess` 单独起一个子进程，重启就是结束旧进程、再起一个新的：
+
+- 设置 → 网络里每个平台一张卡片，「后端来源」二选一：「内置」对应 `autoStart: true`，显示端口、当前地址、重启和运行状态；网易云的另一项是「自定义地址」，填协议、主机、端口并可 Ping；QQ 暂时只有「不启动」，自定义地址等请求层按平台拆分后再加。同一平台任何时候只有一个地址生效。浏览器里没有内置后端，只显示网易云的自定义地址，QQ 卡片不显示。
+- QQ 后端的包本身监听所有网卡；子进程入口 `public/backend/qq-music-host.cjs` 先把监听地址固定为 `127.0.0.1`，再加载它。
+- 端口被其他健康的 QQ 后端占用时直接复用（例如另开了 `dev:backend:qq`），状态显示「外部」，不能从设置里重启。
+- 设备身份写到 `userData/qq-music-api/qq-device.json`，避免每次启动都注册新设备而触发 QQ 的设备数上限（`20279`）。
+- 子进程优先运行构建产物 `dist/src/app.js`；开发环境没有构建产物时，用 `ts-node` 直接跑源码。
+
+### 已知欠账
+
+- **Web 端部署**：暂不提供 QQ 后端，Web 端不开放 QQ 登录入口。
+- **安装包**：安装包目前不打入 QQ 后端。找不到 QQ 后端时，设置里显示「未启用」并说明原因，不算启动失败。要随安装包分发，需要先把 QQ 后端打成单文件，再放进 `extraResources`。
+- **会话持久化**：QQ 登录会话目前只在内存，重启应用后要重新扫码。持久化需要 `QQ_SESSION_SECRET`，密钥应由主进程用 `safeStorage` 保管。
+
+## 迁移步骤
+
+1. **后端**：QQ 后端的开发脚本、桌面端托管与设置项。（已完成）
+2. **骨架**：`music-domain` 补齐界面类型、统一接口与能力枚举；`activeProvider` 进 store；会话凭据按平台分开存；query key 与页面缓存键加平台；`lint:architecture` 禁止导入 `types/providers/*`。
+3. **网易云接入转换层**：网易云平台对象包住现有 `lib/api/*`，页面暂用旧类型，行为不变。
+4. **QQ 登录与切换**：扫码登录、切换入口，以及切换时清队列、清缓存、回首页。未迁移的页面先按「不支持」处理。
+5. **按区域迁移**，每块一个提交：播放器与队列 → 歌单详情 → 搜索 → 我的歌单与喜欢 → 每日推荐与 FM → 歌手与专辑 → 歌词 → 评论与 MV。每块改用界面类型、补 QQ 转换、打开对应能力、删掉被替代的旧类型引用。
+6. **收尾**：网易云旧类型挪进 `types/providers/netease/`，桌面端 IPC 契约里的歌曲 ID 改成 `MusicResourceRef`。
+
+播放器排第一：几乎每个页面都往队列里塞歌，队列的元素类型不先换，后面每块都要写临时转换。
