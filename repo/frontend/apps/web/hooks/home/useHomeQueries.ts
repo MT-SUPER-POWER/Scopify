@@ -15,13 +15,13 @@ import {
   getPlaylistAllTracks,
   getRecommendedPlaylists,
 } from "@/lib/providers/netease/api/playlist";
+import { pruneNeteasePlaylistTracks } from "@/lib/providers/netease/adapters/playlist";
 import { getToplistDetail } from "@/lib/providers/netease/api/toplist";
 import { getRecentPlaylists, getUserDetail } from "@/lib/providers/netease/api/user";
 import { getRecommendedVoiceLists } from "@/lib/providers/netease/api/voicelist";
 import { musicQueryKeys } from "@/lib/query/queryKeys";
 import { useUserStore } from "@/store";
 import type { NeteaseAlbum } from "@/types/album/api";
-import { prunePlaylistTracks } from "@/types/playlist/api";
 
 const personalizedPlaylistsOptions = (limit: number) =>
   queryOptions({
@@ -123,7 +123,7 @@ export function useToplistTracksQuery(id: number) {
     meta: { persist: true, scope: "public" },
     queryFn: async () => {
       const res = await getPlaylistAllTracks({ id, limit: 3, offset: 0 });
-      return prunePlaylistTracks(res.data);
+      return pruneNeteasePlaylistTracks(res.data);
     },
     queryKey: musicQueryKeys.home.toplistTracks(id),
     staleTime: 1000 * 60 * 30,

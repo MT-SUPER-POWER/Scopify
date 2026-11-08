@@ -1,9 +1,7 @@
-import {
-  pruneSongDetail,
-  type RawSongDetail,
-  type SongDetail,
-  type SongPlaybackPrivilege,
-} from "@/types/song/api";
+import type { MusicResourceRef } from "@scopify/music-domain/identity";
+
+import type { RawNeteasePlaylist } from "@/types/providers/netease/playlistApi";
+import type { RawSongDetail } from "@/types/song/api";
 
 export interface NeteasePlaylist {
   specialType?: number;
@@ -22,37 +20,6 @@ export interface NeteasePlaylist {
     userId?: number;
     nickname: string;
     avatarUrl: string;
-  };
-}
-
-export interface RawNeteasePlaylist {
-  coverImgUrl?: string;
-  creator?: {
-    avatarUrl?: string;
-    nickname?: string;
-    userId?: number;
-  };
-  createTime?: number;
-  description?: null | string;
-  id?: number;
-  name?: string;
-  picUrl?: string;
-  playCount?: number;
-  privacy?: number;
-  subscribed?: boolean | null;
-  subscribedCount?: number;
-  specialType?: number;
-  songCount?: number;
-  tags?: string[];
-  trackCount?: number;
-  trackIds?: unknown[];
-  trackNumber?: number;
-  tracks?: RawSongDetail[];
-  lastSong?: {
-    al?: { id?: number; name?: string; picUrl?: string };
-    ar?: Array<{ id?: number; name?: string }>;
-    id?: number;
-    name?: string;
   };
 }
 
@@ -171,57 +138,6 @@ export interface RecommendedPlaylistsResponse {
   recommend?: RawRecommendPlaylist[];
 }
 
-export interface PlaylistTracksResponse {
-  code: number;
-  privileges?: SongPlaybackPrivilege[];
-  songs?: RawSongDetail[];
-}
-
-export interface PlaylistAllTracksParams {
-  id: number | string;
-  limit?: number;
-  offset?: number;
-  requiresMusicSession?: boolean;
-}
-
-export interface PlaylistDetailParams {
-  id: number | string;
-  requiresMusicSession?: boolean;
-}
-
-export interface PlaylistDetailResponse {
-  code: number;
-  playlist?: RawNeteasePlaylist;
-}
-
-/** The detail and tracks rendered by a playlist route. */
-export interface PlaylistContent {
-  rawDetail: RawNeteasePlaylist;
-  tracks: SongDetail[];
-}
-
-export interface PlaylistContentRequest {
-  /** Stable cache identity for today's recommendations, separate from a selected history date. */
-  dailyCacheDate: string;
-  dailyDate: null | string;
-  isDailyRecommendation: boolean;
-  isRecommend: boolean;
-  playlistId: null | string;
-}
-
-export function prunePlaylistTracks(response: PlaylistTracksResponse): SongDetail[] {
-  const privilegesBySongId = new Map(
-    (response.privileges ?? []).map((privilege) => [privilege.id, privilege]),
-  );
-
-  return (response.songs ?? []).map((song) =>
-    pruneSongDetail({
-      ...song,
-      privilege: privilegesBySongId.get(song.id) ?? song.privilege,
-    }),
-  );
-}
-
 export type PlaylistTrackOperation = "add" | "del";
 
 /** Successful payload from `GET /playlist/tracks`. */
@@ -249,6 +165,12 @@ export interface PlaylistTrackMutationVariables {
   operation: PlaylistTrackOperation;
   playlistId: number | string;
   trackId: number | string;
+}
+
+/** One track to take out of a playlist, on the playlist's platform. */
+export interface PlaylistTrackRemovalVariables {
+  playlist: MusicResourceRef<"playlist">;
+  track: MusicResourceRef<"track">;
 }
 
 export interface SongLikeMutationVariables {

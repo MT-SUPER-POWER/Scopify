@@ -1,5 +1,5 @@
 import type { RawSongDetail } from "@/types/song/api";
-import type { RawNeteasePlaylist } from "@/types/playlist/api";
+import type { RawNeteasePlaylist } from "@/types/providers/netease/playlistApi";
 
 export interface RecentSongHistoryEntry {
   data?: RawSongDetail;

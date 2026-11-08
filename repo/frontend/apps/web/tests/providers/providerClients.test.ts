@@ -10,7 +10,11 @@ mock.module("@/lib/providers/qq/api/track", () => ({
   QQ_SONG_BATCH_LIMIT: 20,
   getQqSongBatch: qqBatch,
 }));
-mock.module("@/lib/providers/netease/client", () => ({ requestData: neteaseRequest }));
+mock.module("@/lib/providers/netease/client", () => ({
+  default: {},
+  requestConfig: (config: unknown) => config,
+  requestData: neteaseRequest,
+}));
 
 const { qqTrackSource: qqProvider } = await import("@/lib/providers/qq/track");
 const { neteaseTrackSource: neteaseProvider } = await import("@/lib/providers/netease/track");

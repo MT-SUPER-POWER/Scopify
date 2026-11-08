@@ -17,7 +17,8 @@ import { useLoginStatus } from "@/hooks/auth/useLoginStatus";
 import { musicQueryKeys } from "@/lib/query/queryKeys";
 import { throwQueryErrorWithoutData } from "@/lib/query/errorPolicy";
 import { useUserStore } from "@/store";
-import { prunePlaylist, type NeteasePlaylist, type RawNeteasePlaylist } from "@/types/playlist/api";
+import { prunePlaylist, type NeteasePlaylist } from "@/types/playlist/api";
+import type { RawNeteasePlaylist } from "@/types/providers/netease/playlistApi";
 import { pruneSongDetail, type SongDetail } from "@/types/song/api";
 import type {
   CreatedVoiceList,

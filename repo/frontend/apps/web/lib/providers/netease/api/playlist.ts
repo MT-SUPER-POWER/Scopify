@@ -11,17 +11,19 @@ import type {
   HistoricalDailyRecommendationDetailResponse,
   HistoricalDailyRecommendationsResponse,
   LikeListResponse,
-  PlaylistAllTracksParams,
-  PlaylistDetailParams,
-  PlaylistDetailResponse,
   PersonalizedPlaylistsResponse,
-  PlaylistTracksResponse,
   RecommendedPlaylistsResponse,
   UserPlaylistResponse,
   PlaylistOrderUpdateParams,
   SongOrderUpdateParams,
   PlaylistTrackUpdateResponse,
 } from "@/types/playlist/api";
+import type {
+  NeteasePlaylistDetailDto,
+  NeteasePlaylistDetailParams,
+  NeteasePlaylistTracksDto,
+  NeteasePlaylistTracksParams,
+} from "@/types/providers/netease/playlistApi";
 import request, { requestConfig } from "@/lib/providers/netease/client";
 import { measureImageDimensions } from "@/lib/image/measureImage";
 
@@ -75,8 +77,8 @@ export function getPlaylistAllTracks({
   limit,
   offset,
   requiresMusicSession,
-}: PlaylistAllTracksParams) {
-  return request.get<PlaylistTracksResponse>(
+}: NeteasePlaylistTracksParams) {
+  return request.get<NeteasePlaylistTracksDto>(
     "/playlist/track/all",
     requestConfig({ params: { id, limit, offset }, requiresMusicSession }),
   );
@@ -217,8 +219,8 @@ export function getPersonalizePlaylists(limit = 100) {
   return request.get<PersonalizedPlaylistsResponse>("/personalized", { params: { limit } });
 }
 
-export function getPlaylsitDetail({ id, requiresMusicSession }: PlaylistDetailParams) {
-  return request.get<PlaylistDetailResponse>(
+export function getPlaylsitDetail({ id, requiresMusicSession }: NeteasePlaylistDetailParams) {
+  return request.get<NeteasePlaylistDetailDto>(
     "/playlist/detail",
     requestConfig({ params: { id }, requiresMusicSession }),
   );
