@@ -3,16 +3,16 @@
 import { useQuery } from "@tanstack/react-query";
 import { useEffect } from "react";
 import { fetchUserPlaylists } from "@/hooks/library/fetchUserPlaylists";
-import { getUserAlbumSublist } from "@/lib/api/album";
-import { getFollowedArtists } from "@/lib/api/artist";
+import { getUserAlbumSublist } from "@/lib/providers/netease/api/album";
+import { getFollowedArtists } from "@/lib/providers/netease/api/artist";
 import {
   getCreatedVoiceLists,
   getLikedVoices,
   getRecommendedPodcasts,
   getSubscribedVoiceLists,
-} from "@/lib/api/voicelist";
-import { getUserLikeLists, getUserPlaylist } from "@/lib/api/playlist";
-import { getRecentSongs } from "@/lib/api/user";
+} from "@/lib/providers/netease/api/voicelist";
+import { getUserLikeLists, getUserPlaylist } from "@/lib/providers/netease/api/playlist";
+import { getRecentSongs } from "@/lib/providers/netease/api/user";
 import { useLoginStatus } from "@/hooks/auth/useLoginStatus";
 import { musicQueryKeys } from "@/lib/query/queryKeys";
 import { throwQueryErrorWithoutData } from "@/lib/query/errorPolicy";

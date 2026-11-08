@@ -8,7 +8,7 @@ import {
   PERSONAL_FM_PLAYBACK_SOURCE_ID,
   PERSONAL_FM_REFILL_THRESHOLD,
 } from "@/constants/personalFm";
-import { getPersonalFm, getPersonalFmByMode } from "@/lib/api/personalFm";
+import { getPersonalFm, getPersonalFmByMode } from "@/lib/providers/netease/api/personalFm";
 import { translate } from "@/lib/i18n";
 import { getPersonalFmRemainingCount, selectNewPersonalFmQueueItems } from "@/lib/personalFm/queue";
 import { useI18nStore } from "@/store/module/i18n";

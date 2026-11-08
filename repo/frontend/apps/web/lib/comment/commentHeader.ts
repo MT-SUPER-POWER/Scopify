@@ -1,10 +1,10 @@
-import { getAritstDetail } from "@/lib/api/artist";
-import { getAlbumDetail } from "@/lib/api/album";
-import { getMVDetail } from "@/lib/api/mv";
-import { getPlaylsitDetail } from "@/lib/api/playlist";
-import { getRadioDetail, getRadioProgramDetail } from "@/lib/api/radio";
-import { getSongDetail } from "@/lib/api/track";
-import { getVoiceDetail } from "@/lib/api/voicelist";
+import { getAritstDetail } from "@/lib/providers/netease/api/artist";
+import { getAlbumDetail } from "@/lib/providers/netease/api/album";
+import { getMVDetail } from "@/lib/providers/netease/api/mv";
+import { getPlaylsitDetail } from "@/lib/providers/netease/api/playlist";
+import { getRadioDetail, getRadioProgramDetail } from "@/lib/providers/netease/api/radio";
+import { getSongDetail } from "@/lib/providers/netease/api/track";
+import { getVoiceDetail } from "@/lib/providers/netease/api/voicelist";
 import { getMvCover } from "@/lib/music/mvCover";
 import type { CommentResourceKind } from "@/types/comment/api";
 import type { CommentResourceHeaderData } from "@/types/comment/model";

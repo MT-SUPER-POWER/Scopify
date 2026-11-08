@@ -6,7 +6,7 @@ import {
   subscribePlaylist,
   updatePlaylist,
   updatePlaylistCover,
-} from "@/lib/api/playlist";
+} from "@/lib/providers/netease/api/playlist";
 import { clearPageCache } from "@/lib/cache/pageCache";
 import { isRealUser } from "@/lib/web/auth";
 import { getPlaylistManagementPermissions } from "@/lib/playlist/playlistManagementPermissions";

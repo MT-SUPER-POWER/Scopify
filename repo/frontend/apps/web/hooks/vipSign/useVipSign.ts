@@ -3,7 +3,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useCallback, useMemo } from "react";
 import { toast } from "sonner";
-import { vipSign, vipSignDetail, vipSignHistory } from "@/lib/api/user";
+import { vipSign, vipSignDetail, vipSignHistory } from "@/lib/providers/netease/api/user";
 import { useLoginStatus } from "@/hooks/auth/useLoginStatus";
 import { getVipSignTodayRecord, hasVipSignedToday } from "@/lib/vipSign";
 import { useUserStore } from "@/store";

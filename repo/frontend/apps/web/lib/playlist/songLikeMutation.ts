@@ -1,7 +1,7 @@
 import type { QueryClient, UseMutationOptions } from "@tanstack/react-query";
 import { toast } from "sonner";
 
-import { likeSong } from "@/lib/api/playlist";
+import { likeSong } from "@/lib/providers/netease/api/playlist";
 import { clearPageCache } from "@/lib/cache/pageCache";
 import { musicQueryKeys } from "@/lib/query/queryKeys";
 import { reportActionFailure } from "@/lib/web/errorTracking";

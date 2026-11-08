@@ -1,7 +1,7 @@
-import { getMusicComments, getVoiceComments } from "@/lib/api/comment";
-import { getRadioProgramDetail } from "@/lib/api/radio";
-import { getSongRedCount } from "@/lib/api/track";
-import { getVoiceDetail } from "@/lib/api/voicelist";
+import { getMusicComments, getVoiceComments } from "@/lib/providers/netease/api/comment";
+import { getRadioProgramDetail } from "@/lib/providers/netease/api/radio";
+import { getSongRedCount } from "@/lib/providers/netease/api/track";
+import { getVoiceDetail } from "@/lib/providers/netease/api/voicelist";
 import { usePlayerStore, useUserStore } from "@/store";
 import type { SongDetail, SongStats } from "@/types/song/api";
 import { reportFailure } from "@/lib/web/errorTracking";

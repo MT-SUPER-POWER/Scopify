@@ -12,8 +12,8 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from "@scopify/ui/shadcn/components/button";
 import { Input } from "@scopify/ui/shadcn/components/input";
-import { createPlaylist } from "@/lib/api/playlist";
-import { updatePlaylistTrack } from "@/lib/api/track";
+import { createPlaylist } from "@/lib/providers/netease/api/playlist";
+import { updatePlaylistTrack } from "@/lib/providers/netease/api/track";
 import { clearPageCache } from "@/lib/cache/pageCache";
 import { useUserStore } from "@/store";
 import { useTranslation } from "react-i18next";

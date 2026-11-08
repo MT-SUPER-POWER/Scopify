@@ -1,7 +1,7 @@
 import { afterEach, expect, test } from "bun:test";
 import request from "@/lib/providers/netease/client";
 import { getYidunErrorMessage } from "@/lib/auth/yidunError";
-import { loginWithYidun, sendYidunCaptcha } from "@/lib/api/yidun";
+import { loginWithYidun, sendYidunCaptcha } from "@/lib/providers/netease/api/yidun";
 import type { NeteaseRequestConfig } from "@/types/providers/netease/request";
 
 const originalAdapter = request.defaults.adapter;

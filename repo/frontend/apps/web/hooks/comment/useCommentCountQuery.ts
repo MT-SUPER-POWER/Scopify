@@ -9,7 +9,7 @@ import {
   getNewComments,
   getPlaylistComments,
   getVoiceComments,
-} from "@/lib/api/comment";
+} from "@/lib/providers/netease/api/comment";
 import { musicQueryKeys } from "@/lib/query/queryKeys";
 import { COMMENT_RESOURCE_TYPE, type CommentResourceKind } from "@/types/comment/api";
 

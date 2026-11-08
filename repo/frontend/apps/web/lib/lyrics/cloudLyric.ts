@@ -1,5 +1,5 @@
-import { getCloudLyric } from "@/lib/api/cloud";
-import { getLyric } from "@/lib/api/music";
+import { getCloudLyric } from "@/lib/providers/netease/api/cloud";
+import { getLyric } from "@/lib/providers/netease/api/music";
 import { useUserStore } from "@/store/module/user";
 import { getCloudLyricText, getCloudSongId } from "@/types/library/cloudApi";
 import type { NeteaseLyric, SongDetail } from "@/types/song/api";

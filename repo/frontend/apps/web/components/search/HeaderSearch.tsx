@@ -3,7 +3,7 @@
 import { Clock, Search, X } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { searchDefault, searchSuggest } from "@/lib/api/search";
+import { searchDefault, searchSuggest } from "@/lib/providers/netease/api/search";
 import { getCommandWorkspaceSearchFilterForCategory } from "@/lib/commandWorkspace/search";
 import { useSmartRouter } from "@/hooks/core/useSmartRouter";
 import { buildSearchUrl } from "@/lib/search/searchCategory";

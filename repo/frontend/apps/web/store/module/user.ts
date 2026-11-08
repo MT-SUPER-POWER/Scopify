@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
-import { logout } from "@/lib/api/login";
+import { logout } from "@/lib/providers/netease/api/login";
 import { runtime } from "@/lib/runtime";
 import { clearLoginStatus } from "@/lib/web/auth";
 import { getNeteaseBaseUrl } from "@/lib/providers/netease/client";

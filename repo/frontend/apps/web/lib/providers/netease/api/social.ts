@@ -1,5 +1,5 @@
 import { requestData } from "@/lib/providers/netease/client";
-import { ApiError } from "../web/apiError";
+import { ApiError } from "@/lib/web/apiError";
 import * as n from "@/lib/social/normalize";
 import type { SocialRawResponse, SocialRequestParams } from "@/types/social/api";
 import type {

@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 
-import { scrobbleV1 } from "@/lib/api/scrobble";
+import { scrobbleV1 } from "@/lib/providers/netease/api/scrobble";
 import {
   createListeningScrobbleRequest,
   getTrackedListeningDelta,

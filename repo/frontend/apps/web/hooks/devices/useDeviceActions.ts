@@ -1,6 +1,10 @@
 "use client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { kickoffDevice, sendDeviceSecurityCaptcha, uploadDeviceName } from "@/lib/api/devices";
+import {
+  kickoffDevice,
+  sendDeviceSecurityCaptcha,
+  uploadDeviceName,
+} from "@/lib/providers/netease/api/devices";
 import { rememberDeviceName } from "@/lib/devices/clientIdentity";
 import { runtime } from "@/lib/runtime";
 import { getNeteaseBaseUrl } from "@/lib/providers/netease/client";

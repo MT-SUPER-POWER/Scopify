@@ -1,4 +1,4 @@
-import { getUserPlaylist } from "@/lib/api/playlist";
+import { getUserPlaylist } from "@/lib/providers/netease/api/playlist";
 import type { RawNeteasePlaylist } from "@/types/playlist/api";
 
 /** Fetch every page before presenting a library order for editing. */

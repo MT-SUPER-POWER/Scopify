@@ -7,8 +7,8 @@ import {
   getHistoricalDailyRecommendationDetail,
   getPlaylistAllTracks,
   getPlaylsitDetail,
-} from "@/lib/api/playlist";
-import { getRecommendedSongs } from "@/lib/api/track";
+} from "@/lib/providers/netease/api/playlist";
+import { getRecommendedSongs } from "@/lib/providers/netease/api/track";
 import { musicQueryKeys } from "@/lib/query/queryKeys";
 import { pruneSongDetail, type RawSongDetail, type SongDetail } from "@/types/song/api";
 import {

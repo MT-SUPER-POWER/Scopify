@@ -4,7 +4,7 @@ import { useCallback, useMemo, useState } from "react";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 import { useArtistFollowCountQuery } from "@/hooks/artist/useArtistQueries";
-import { subscribeArtist } from "@/lib/api/artist";
+import { subscribeArtist } from "@/lib/providers/netease/api/artist";
 import { useLoginStatus } from "@/hooks/auth/useLoginStatus";
 import { musicQueryKeys } from "@/lib/query/queryKeys";
 import { useUserStore } from "@/store";

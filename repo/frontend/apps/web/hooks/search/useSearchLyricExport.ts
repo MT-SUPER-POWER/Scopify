@@ -2,7 +2,7 @@
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { getLyric } from "@/lib/api/music";
+import { getLyric } from "@/lib/providers/netease/api/music";
 import { buildLyricExport, downloadLyricExport } from "@/lib/lyrics/export";
 import { useTranslation } from "react-i18next";
 

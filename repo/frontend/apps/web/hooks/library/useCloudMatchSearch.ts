@@ -2,7 +2,7 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
-import { searchSongs } from "@/lib/api/search";
+import { searchSongs } from "@/lib/providers/netease/api/search";
 import { sortLyricMatchCandidates, toLyricMatchCandidates } from "@/lib/lyrics/match";
 import { musicQueryKeys } from "@/lib/query/queryKeys";
 import type { SongDetail } from "@/types/song/api";

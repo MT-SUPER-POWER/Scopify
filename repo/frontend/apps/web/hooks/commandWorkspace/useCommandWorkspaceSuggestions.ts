@@ -2,7 +2,7 @@
 
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { useDebouncedValue } from "@/hooks/ui/useDebouncedValue";
-import { searchSuggest } from "@/lib/api/search";
+import { searchSuggest } from "@/lib/providers/netease/api/search";
 import { musicQueryKeys } from "@/lib/query/queryKeys";
 import type { CommandWorkspaceSearchSuggestion } from "@/types/commandWorkspace/model";
 

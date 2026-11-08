@@ -2,7 +2,7 @@
 
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { useMemo } from "react";
-import { getFloorComments } from "@/lib/api/comment";
+import { getFloorComments } from "@/lib/providers/netease/api/comment";
 import { dedupeComments, normalizeFloorComments } from "@/lib/comment/commentResource";
 import { musicQueryKeys } from "@/lib/query/queryKeys";
 import { useUserStore } from "@/store/module/user";

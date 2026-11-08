@@ -2,7 +2,12 @@
 
 import { useQuery } from "@tanstack/react-query";
 
-import { getAritstDetail, getArtistAlbums, getArtistTopSongs, getFansCnt } from "@/lib/api/artist";
+import {
+  getAritstDetail,
+  getArtistAlbums,
+  getArtistTopSongs,
+  getFansCnt,
+} from "@/lib/providers/netease/api/artist";
 import { musicQueryKeys } from "@/lib/query/queryKeys";
 
 function isEnabled(artistId: null | string) {

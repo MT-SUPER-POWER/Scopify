@@ -3,7 +3,7 @@
 import { useCallback, useState } from "react";
 import { toast } from "sonner";
 
-import { getRadioDetail, getRadioPrograms } from "@/lib/api/radio";
+import { getRadioDetail, getRadioPrograms } from "@/lib/providers/netease/api/radio";
 import { usePlayerStore } from "@/store";
 import { useTranslation } from "react-i18next";
 

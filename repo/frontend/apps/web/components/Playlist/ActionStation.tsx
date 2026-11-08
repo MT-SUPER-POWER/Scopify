@@ -33,7 +33,7 @@ import { TrackPreviewButton } from "@/components/trackPreview/TrackPreviewButton
 import { useCommentCountQuery } from "@/hooks/comment/useCommentCountQuery";
 import { useHistoricalDailyRecommendations } from "@/hooks/playlist/useHistoricalDailyRecommendations";
 import { usePlaylistSearchShortcut } from "@/hooks/playlist/usePlaylistSearchShortcut";
-import { subscribePlaylist } from "@/lib/api/playlist";
+import { subscribePlaylist } from "@/lib/providers/netease/api/playlist";
 import { useRequireLoginAction } from "@/hooks/auth/useRequireLoginAction";
 import { useSmartRouter } from "@/hooks/core/useSmartRouter";
 import { getCommentHref } from "@/lib/comment/commentResource";

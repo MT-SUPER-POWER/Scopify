@@ -1,7 +1,11 @@
 "use client";
 
 import { useQueries, useQuery } from "@tanstack/react-query";
-import { getSheetPreview, getSongSheets, getSongWiki } from "@/lib/api/songResources";
+import {
+  getSheetPreview,
+  getSongSheets,
+  getSongWiki,
+} from "@/lib/providers/netease/api/songResources";
 import {
   normalizeSheetPreview,
   normalizeSongSheets,

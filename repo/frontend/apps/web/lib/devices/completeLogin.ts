@@ -1,5 +1,5 @@
-import { getUserAccount, getUserDetail } from "@/lib/api/user";
-import { uploadDeviceName } from "@/lib/api/devices";
+import { getUserAccount, getUserDetail } from "@/lib/providers/netease/api/user";
+import { uploadDeviceName } from "@/lib/providers/netease/api/devices";
 import { bindFreshLoginCookie, rememberDeviceName } from "@/lib/devices/clientIdentity";
 import { runtime } from "@/lib/runtime";
 import {

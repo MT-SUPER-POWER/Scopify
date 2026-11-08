@@ -6,7 +6,7 @@ import {
   getListeningReport,
   getListeningSongPlayRank,
   getTodayListeningSongs,
-} from "@/lib/api/listeningReport";
+} from "@/lib/providers/netease/api/listeningReport";
 import { getListeningReportSummary } from "@/lib/listeningReport/reportSummary";
 import { musicQueryKeys } from "@/lib/query/queryKeys";
 import { useLoginStatus } from "@/hooks/auth/useLoginStatus";

@@ -4,7 +4,7 @@ import { useCallback, useRef, useState } from "react";
 import { toast } from "sonner";
 
 import { isPersonalFmPlaybackSource } from "@/constants/personalFm";
-import { trashPersonalFmSong } from "@/lib/api/personalFm";
+import { trashPersonalFmSong } from "@/lib/providers/netease/api/personalFm";
 import { dislikePersonalFmTrack } from "@/lib/personalFm/dislike";
 import { useTranslation } from "react-i18next";
 

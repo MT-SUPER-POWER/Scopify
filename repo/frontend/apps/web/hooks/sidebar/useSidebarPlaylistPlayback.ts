@@ -1,5 +1,5 @@
 import { toast } from "sonner";
-import { getPlaylistAllTracks, getUserLikeLists } from "@/lib/api/playlist";
+import { getPlaylistAllTracks, getUserLikeLists } from "@/lib/providers/netease/api/playlist";
 import { useRequireLoginAction } from "@/hooks/auth/useRequireLoginAction";
 import { useSmartRouter } from "@/hooks/core/useSmartRouter";
 import { usePlayerStore, useUserStore } from "@/store";

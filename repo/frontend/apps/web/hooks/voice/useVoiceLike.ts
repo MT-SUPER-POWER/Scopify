@@ -5,7 +5,7 @@ import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 
 import { useLikedVoicesQuery } from "@/hooks/library/useLibraryQueries";
-import { toggleVoiceLike } from "@/lib/api/voicelist";
+import { toggleVoiceLike } from "@/lib/providers/netease/api/voicelist";
 import { useRequireLoginAction } from "@/hooks/auth/useRequireLoginAction";
 import { musicQueryKeys } from "@/lib/query/queryKeys";
 import { useUserStore } from "@/store";

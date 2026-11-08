@@ -2,9 +2,9 @@
 
 import { useCallback, useState } from "react";
 import { toast } from "sonner";
-import { getAlbumDetailData } from "@/lib/api/album";
-import { getArtistTopSongs } from "@/lib/api/artist";
-import { getPlaylistAllTracks } from "@/lib/api/playlist";
+import { getAlbumDetailData } from "@/lib/providers/netease/api/album";
+import { getArtistTopSongs } from "@/lib/providers/netease/api/artist";
+import { getPlaylistAllTracks } from "@/lib/providers/netease/api/playlist";
 import { usePlayerStore } from "@/store";
 import { useTranslation } from "react-i18next";
 

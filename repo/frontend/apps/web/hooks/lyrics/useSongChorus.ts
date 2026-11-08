@@ -2,7 +2,7 @@
 
 import { useQuery } from "@tanstack/react-query";
 
-import { getSongChorus } from "@/lib/api/music";
+import { getSongChorus } from "@/lib/providers/netease/api/music";
 import { normalizeSongChorusRanges } from "@/lib/lyrics/chorusRanges";
 import { musicQueryKeys } from "@/lib/query/queryKeys";
 

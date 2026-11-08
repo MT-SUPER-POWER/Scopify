@@ -2,7 +2,7 @@
 
 import { useQuery } from "@tanstack/react-query";
 
-import { getAlbumDetailData } from "@/lib/api/album";
+import { getAlbumDetailData } from "@/lib/providers/netease/api/album";
 import { musicQueryKeys } from "@/lib/query/queryKeys";
 
 export function useAlbumQuery(albumId: null | string) {

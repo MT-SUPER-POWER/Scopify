@@ -29,7 +29,7 @@ mock.module("@/store/module/player", () => ({ usePlayerStore: player }));
 mock.module("@/store/module/i18n", () => ({
   useI18nStore: { getState: () => ({ locale: "zh-CN" }) },
 }));
-mock.module("@/lib/api/personalFm", () => ({
+mock.module("@/lib/providers/netease/api/personalFm", () => ({
   getPersonalFm: () => {
     requests++;
     return fetchSongs();

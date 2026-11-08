@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
-import { checkQR, createQR, getQRKey } from "@/lib/api/login";
+import { checkQR, createQR, getQRKey } from "@/lib/providers/netease/api/login";
 import { useSmartRouter } from "@/hooks/core/useSmartRouter";
 import { runtime } from "@/lib/runtime";
 import { createFreshLoginDevice } from "@/lib/devices/clientIdentity";

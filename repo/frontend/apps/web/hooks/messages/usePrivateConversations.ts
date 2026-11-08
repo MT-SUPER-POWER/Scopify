@@ -1,7 +1,7 @@
 "use client";
 
 import { useInfiniteQuery } from "@tanstack/react-query";
-import { getPrivateConversations } from "@/lib/api/privateMessages";
+import { getPrivateConversations } from "@/lib/providers/netease/api/privateMessages";
 import { normalizeConversation } from "@/lib/messages/normalize";
 import { getNeteaseBaseUrl } from "@/lib/providers/netease/client";
 import type { PrivateConversation } from "@/types/messages/model";

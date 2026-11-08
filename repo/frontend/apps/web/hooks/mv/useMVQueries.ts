@@ -3,8 +3,8 @@
 import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/hooks/auth/useAuth";
 import { throwQueryErrorWithoutData } from "@/lib/query/errorPolicy";
-import { getArtistMVs } from "@/lib/api/artist";
-import { getMVDetail, getMVDetailInfo, getMVUrl } from "@/lib/api/mv";
+import { getArtistMVs } from "@/lib/providers/netease/api/artist";
+import { getMVDetail, getMVDetailInfo, getMVUrl } from "@/lib/providers/netease/api/mv";
 import { musicQueryKeys } from "@/lib/query/queryKeys";
 import type { MvPaginationParams } from "@/types/mv/api";
 import type { MvQueryId, MvQueryOptions } from "@/types/mv/model";

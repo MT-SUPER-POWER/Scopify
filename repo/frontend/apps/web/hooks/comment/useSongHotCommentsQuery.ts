@@ -1,7 +1,7 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { getMusicComments } from "@/lib/api/comment";
+import { getMusicComments } from "@/lib/providers/netease/api/comment";
 import { useAuth } from "@/hooks/auth/useAuth";
 import { musicQueryKeys } from "@/lib/query/queryKeys";
 

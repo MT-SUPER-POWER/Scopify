@@ -4,7 +4,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useCallback, useState } from "react";
 import { toast } from "sonner";
 
-import { getLyric } from "@/lib/api/music";
+import { getLyric } from "@/lib/providers/netease/api/music";
 import {
   clearImportedLyricOverride,
   clearLyricMatchOverride,

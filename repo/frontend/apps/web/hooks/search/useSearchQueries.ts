@@ -13,8 +13,8 @@ import {
   searchPlaylists,
   searchSongs,
   searchVoices,
-} from "@/lib/api/search";
-import { searchVoiceLists } from "@/lib/api/voicelist";
+} from "@/lib/providers/netease/api/search";
+import { searchVoiceLists } from "@/lib/providers/netease/api/voicelist";
 import { getVoiceListSearchItems } from "@/lib/search/voiceListSearchAdapter";
 import { getVoiceSearchItems, hasMoreVoiceSearchResults } from "@/lib/search/voiceSearchAdapter";
 import { musicQueryKeys } from "@/lib/query/queryKeys";

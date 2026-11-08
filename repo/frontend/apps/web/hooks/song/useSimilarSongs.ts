@@ -1,6 +1,10 @@
 "use client";
 import { useQuery } from "@tanstack/react-query";
-import { getSimilarSongDetails, getSimilarSongList, getSimilarSongs } from "@/lib/api/similarSongs";
+import {
+  getSimilarSongDetails,
+  getSimilarSongList,
+  getSimilarSongs,
+} from "@/lib/providers/netease/api/similarSongs";
 import { musicQueryKeys } from "@/lib/query/queryKeys";
 import { getSimilarSongIds } from "@/lib/song/similarSongs";
 import { useUserStore } from "@/store";

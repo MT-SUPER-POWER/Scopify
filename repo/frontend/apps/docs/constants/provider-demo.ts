@@ -1,8 +1,8 @@
 import type { DemoIdentityRegistry } from "@/types/provider-demo";
 import type { NeteaseTrackDto } from "@/types/providers/netease/trackApi";
 import type { QqTrackDto } from "@/types/providers/qq/trackApi";
-import { adaptNeteaseTrack } from "@/lib/music/providers/neteaseTrackAdapter";
-import { adaptQqTrack } from "@/lib/music/providers/qqTrackAdapter";
+import { adaptNeteaseTrack } from "@/lib/providers/netease/adapters/track";
+import { adaptQqTrack } from "@/lib/providers/qq/adapters/track";
 
 /** Synthetic fixtures, not real accounts, assets or playable music. */
 export const DEMO_IDENTITIES: DemoIdentityRegistry = {

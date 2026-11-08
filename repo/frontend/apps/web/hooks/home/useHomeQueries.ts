@@ -3,17 +3,21 @@
 import { queryOptions, useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import { throwQueryErrorWithoutData } from "@/lib/query/errorPolicy";
 
-import { getArtistAlbums, getFollowedArtists, getHotArtists } from "@/lib/api/artist";
-import { getNewestAlbums, getUserAlbumSublist } from "@/lib/api/album";
-import { getPersonalizedNewSongs } from "@/lib/api/music";
+import {
+  getArtistAlbums,
+  getFollowedArtists,
+  getHotArtists,
+} from "@/lib/providers/netease/api/artist";
+import { getNewestAlbums, getUserAlbumSublist } from "@/lib/providers/netease/api/album";
+import { getPersonalizedNewSongs } from "@/lib/providers/netease/api/music";
 import {
   getPersonalizePlaylists,
   getPlaylistAllTracks,
   getRecommendedPlaylists,
-} from "@/lib/api/playlist";
-import { getToplistDetail } from "@/lib/api/toplist";
-import { getRecentPlaylists, getUserDetail } from "@/lib/api/user";
-import { getRecommendedVoiceLists } from "@/lib/api/voicelist";
+} from "@/lib/providers/netease/api/playlist";
+import { getToplistDetail } from "@/lib/providers/netease/api/toplist";
+import { getRecentPlaylists, getUserDetail } from "@/lib/providers/netease/api/user";
+import { getRecommendedVoiceLists } from "@/lib/providers/netease/api/voicelist";
 import { musicQueryKeys } from "@/lib/query/queryKeys";
 import { useUserStore } from "@/store";
 import type { NeteaseAlbum } from "@/types/album/api";

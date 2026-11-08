@@ -2,7 +2,7 @@
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
-import { updatePlaylistTrack } from "@/lib/api/track";
+import { updatePlaylistTrack } from "@/lib/providers/netease/api/track";
 import { clearPageCache } from "@/lib/cache/pageCache";
 import { reportActionFailure } from "@/lib/web/errorTracking";
 import type { PlaylistTrackMutationVariables } from "@/types/playlist/api";

@@ -3,7 +3,7 @@
 import { useCallback, useRef, useState } from "react";
 import { toast } from "sonner";
 
-import { getSongDetail } from "@/lib/api/track";
+import { getSongDetail } from "@/lib/providers/netease/api/track";
 import { usePlayerStore } from "@/store";
 import { useTranslation } from "react-i18next";
 

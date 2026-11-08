@@ -1,7 +1,7 @@
-import { getAlbumDetail } from "@/lib/api/album";
-import { getArtistTopSongs } from "@/lib/api/artist";
-import { getPlaylistAllTracks } from "@/lib/api/playlist";
-import { getRadioPrograms } from "@/lib/api/radio";
+import { getAlbumDetail } from "@/lib/providers/netease/api/album";
+import { getArtistTopSongs } from "@/lib/providers/netease/api/artist";
+import { getPlaylistAllTracks } from "@/lib/providers/netease/api/playlist";
+import { getRadioPrograms } from "@/lib/providers/netease/api/radio";
 import { toVoiceSongDetail } from "@/lib/search/voiceSong";
 import { pruneSongDetail, type SongDetail } from "@/types/song/api";
 import type {

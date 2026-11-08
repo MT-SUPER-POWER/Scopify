@@ -4,7 +4,11 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { arrayMove } from "@dnd-kit/sortable";
 import { toast } from "sonner";
 import { fetchUserPlaylists } from "@/hooks/library/fetchUserPlaylists";
-import { getPlaylsitDetail, updatePlaylistOrder, updateSongOrder } from "@/lib/api/playlist";
+import {
+  getPlaylsitDetail,
+  updatePlaylistOrder,
+  updateSongOrder,
+} from "@/lib/providers/netease/api/playlist";
 import { getPlaylistOrderIds } from "@/lib/playlist/playlistOrder";
 import { clearPageCache } from "@/lib/cache/pageCache";
 import { musicQueryKeys } from "@/lib/query/queryKeys";

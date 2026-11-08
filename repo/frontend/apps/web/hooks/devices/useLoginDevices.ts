@@ -1,6 +1,6 @@
 "use client";
 import { useQuery } from "@tanstack/react-query";
-import { getLoginDevices } from "@/lib/api/devices";
+import { getLoginDevices } from "@/lib/providers/netease/api/devices";
 import { normalizeLoginDevices } from "@/lib/devices/normalize";
 import { useI18nStore } from "@/store/module/i18n";
 import { useDeviceSession } from "./useDeviceSession";

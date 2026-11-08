@@ -1,7 +1,7 @@
 import { useCallback, useState } from "react";
 import { toast } from "sonner";
-import { getAlbumDetail } from "@/lib/api/album";
-import { getPlaylistAllTracks } from "@/lib/api/playlist";
+import { getAlbumDetail } from "@/lib/providers/netease/api/album";
+import { getPlaylistAllTracks } from "@/lib/providers/netease/api/playlist";
 import { translate } from "@/lib/i18n";
 import { usePlayerStore } from "@/store";
 import { useI18nStore } from "@/store/module/i18n";

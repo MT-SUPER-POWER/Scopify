@@ -1,4 +1,4 @@
-import { loginWithYidun, sendYidunCaptcha } from "@/lib/api/yidun";
+import { loginWithYidun, sendYidunCaptcha } from "@/lib/providers/netease/api/yidun";
 import { getNeteaseBaseUrl } from "@/lib/providers/netease/client";
 import type {
   YidunClientOptions,

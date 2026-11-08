@@ -9,7 +9,7 @@ import {
   getNewComments,
   replyComments,
   toggleLikeComments,
-} from "@/lib/api/comment";
+} from "@/lib/providers/netease/api/comment";
 import {
   dedupeComments,
   getReplyCount,

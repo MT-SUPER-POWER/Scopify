@@ -18,7 +18,7 @@ import {
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { createPlaylist, delPlaylist } from "@/lib/api/playlist";
+import { createPlaylist, delPlaylist } from "@/lib/providers/netease/api/playlist";
 import { clearPageCache } from "@/lib/cache/pageCache";
 import { useLoginStatus } from "@/hooks/auth/useLoginStatus";
 import { translate } from "@/lib/i18n";

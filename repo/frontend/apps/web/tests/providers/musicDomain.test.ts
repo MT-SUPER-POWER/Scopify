@@ -1,8 +1,8 @@
 import { expect, test } from "bun:test";
 import { musicAccountKey, musicResourceKey } from "@scopify/music-domain/identity";
 import { accountTrackStateKey } from "@scopify/music-domain/library";
-import { adaptNeteaseTrack } from "../../lib/music/providers/neteaseTrackAdapter";
-import { adaptQqTrack } from "../../lib/music/providers/qqTrackAdapter";
+import { adaptNeteaseTrack } from "@/lib/providers/netease/adapters/track";
+import { adaptQqTrack } from "@/lib/providers/qq/adapters/track";
 import type { NeteaseTrackDto } from "../../types/providers/netease/trackApi";
 import type { QqTrackDto } from "../../types/providers/qq/trackApi";
 

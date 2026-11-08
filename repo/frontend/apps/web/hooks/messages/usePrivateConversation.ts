@@ -7,7 +7,7 @@ import {
   useMutation,
   useQueryClient,
 } from "@tanstack/react-query";
-import { getPrivateHistory, sendPrivateText } from "@/lib/api/privateMessages";
+import { getPrivateHistory, sendPrivateText } from "@/lib/providers/netease/api/privateMessages";
 import { clearConversationsUnreadInCache } from "@/lib/messages/cache";
 import { normalizeMessage, privateNotificationPeer } from "@/lib/messages/normalize";
 import { performNotificationAction } from "@/lib/notifications/actions";

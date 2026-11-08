@@ -2,7 +2,7 @@
 
 import { useQuery } from "@tanstack/react-query";
 
-import { getHistoricalDailyRecommendations } from "@/lib/api/playlist";
+import { getHistoricalDailyRecommendations } from "@/lib/providers/netease/api/playlist";
 
 const HISTORY_DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
 
