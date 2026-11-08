@@ -16,6 +16,7 @@ import type {
   WebSettingsChangeHandler,
 } from "@/types/settings/model";
 import type { BackendPingResult } from "@/types/network/model";
+import type { WebConfig } from "@/types/settings/config";
 import type { CacheStats } from "@/types/cache/model";
 import type { CachePreferences } from "@/types/cache/model";
 
@@ -56,6 +57,10 @@ export interface SettingButtonProps {
 
 export interface NetworkSettingsTabProps {
   backendPingResult: BackendPingResult | null;
+  /** Desktop-hosted NetEase API; `null` outside Desktop. */
+  backendStatus: DesktopBackendStatus | null;
+  /** Desktop-hosted QQ Music API; `null` outside Desktop. */
+  qqBackendStatus: DesktopBackendStatus | null;
   config: SettingsConfig;
   isPingingBackend: boolean;
   onDesktopChange: DesktopSettingsChangeHandler;
@@ -68,10 +73,34 @@ export interface BackendStatusIndicatorProps {
   status: DesktopBackendStatus | null;
 }
 
-export interface LocalBackendSettingsSectionProps {
+/** A custom backend address the card offers instead of the built-in API. */
+export interface BackendCustomAddressProps {
+  address: WebConfig["backend"];
+  pingResult: BackendPingResult | null;
+  isPinging: boolean;
+  onWebChange: WebSettingsChangeHandler;
+  onPing: () => Promise<void>;
+  onHostBlur?: () => void;
+}
+
+export interface BuiltinBackendRowsProps {
   backendStatus: DesktopBackendStatus | null;
-  config: DesktopHostConfig;
-  onChange: DesktopSettingsChangeHandler;
+  canRestart: boolean;
+  isRestarting: boolean;
+  onPortChange: (port: number) => void;
+  onRestart: () => void;
+  port: number;
+}
+
+/** One platform's backend card: built-in Desktop API, or a custom address when one is offered. */
+export interface BackendSourceCardProps {
+  platform: keyof DesktopHostConfig["backend"];
+  /** `null` outside Desktop, where only the custom address exists. */
+  desktopConfig: DesktopHostConfig | null;
+  backendStatus: DesktopBackendStatus | null;
+  onDesktopChange: DesktopSettingsChangeHandler;
+  /** Omitted for platforms that only run built-in (QQ Music until requests split by platform). */
+  custom?: BackendCustomAddressProps;
 }
 
 export interface SaveConfirmModalProps {
@@ -97,7 +126,6 @@ export interface CacheAdvancedScopeControlsProps<Preferences> {
 }
 
 export interface DesktopSettingsTabProps {
-  backendStatus: DesktopBackendStatus | null;
   config: DesktopHostConfig;
   discordStatus: DiscordPresenceStatus | null;
   isTestingDiscord: boolean;

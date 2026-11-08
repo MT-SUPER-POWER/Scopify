@@ -78,6 +78,8 @@ const SettingsPage = () => {
               backendPingResult={settings.backendPingResult}
               config={settings.config}
               isPingingBackend={settings.isPingingBackend}
+              backendStatus={settings.backendStatus}
+              qqBackendStatus={settings.qqBackendStatus}
               onWebChange={settings.handleWebChange}
               onDesktopChange={settings.handleDesktopChange}
               onPingBackend={settings.handlePingBackend}
@@ -98,7 +100,6 @@ const SettingsPage = () => {
           {settings.config.desktop ? (
             <TabsContent value="desktop">
               <DesktopSettingsTab
-                backendStatus={settings.backendStatus}
                 config={settings.config.desktop}
                 discordStatus={settings.discordStatus}
                 isTestingDiscord={settings.isTestingDiscord}

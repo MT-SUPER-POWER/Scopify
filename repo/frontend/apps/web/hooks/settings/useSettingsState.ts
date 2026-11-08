@@ -1,17 +1,14 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import type {
-  DesktopBackendStatus,
-  DesktopHostConfig,
-  DiscordPresenceStatus,
-} from "@scopify/desktop-contract";
+import type { DesktopHostConfig, DiscordPresenceStatus } from "@scopify/desktop-contract";
 import { toast } from "sonner";
 import {
   getCachePreferences,
   getCacheStats,
   saveCachePreferences,
 } from "@/lib/cache/cacheManagement";
+import { useDesktopBackendStatus } from "@/hooks/backend/useDesktopBackendStatus";
 import { translate } from "@/lib/i18n";
 import { runtime } from "@/lib/runtime";
 import { buildSavedSettingsConfig } from "@/lib/settings/buildSavedSettingsConfig";
@@ -134,7 +131,8 @@ export function useSettingsState() {
   const [isTestingDiscord, setIsTestingDiscord] = useState(false);
   const [discordStatus, setDiscordStatus] = useState<DiscordPresenceStatus | null>(null);
   const [mcpStatusRefreshKey, setMcpStatusRefreshKey] = useState(0);
-  const [backendStatus, setBackendStatus] = useState<DesktopBackendStatus | null>(null);
+  const backendStatus = useDesktopBackendStatus(runtime.backend);
+  const qqBackendStatus = useDesktopBackendStatus(runtime.qqBackend);
   const [cacheStats, setCacheStats] = useState<Awaited<ReturnType<typeof getCacheStats>> | null>(
     null,
   );
@@ -167,26 +165,6 @@ export function useSettingsState() {
 
     return () => {
       isMounted = false;
-    };
-  }, []);
-
-  useEffect(() => {
-    if (!runtime.isDesktop) return;
-
-    let isMounted = true;
-    void runtime.backend
-      .getStatus()
-      .then((status) => {
-        if (isMounted) setBackendStatus(status);
-      })
-      .catch(() => {});
-
-    const unsubscribe = runtime.backend.onStatusChanged((status) => {
-      if (isMounted) setBackendStatus(status);
-    });
-    return () => {
-      isMounted = false;
-      unsubscribe();
     };
   }, []);
 
@@ -549,6 +527,7 @@ export function useSettingsState() {
     backendPingResult,
     isPingingBackend,
     backendStatus,
+    qqBackendStatus,
     handlePingBackend,
     handleBackendHostBlur,
     discordStatus,
