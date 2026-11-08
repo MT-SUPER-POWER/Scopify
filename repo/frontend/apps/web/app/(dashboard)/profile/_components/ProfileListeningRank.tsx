@@ -21,6 +21,7 @@ import {
   socialSegmentedButtonClass,
   socialSegmentedClass,
 } from "@/components/social/socialClasses";
+import { adaptNeteaseTrack } from "@/lib/providers/netease/adapters/track";
 
 const PERIODS: ListeningRankPeriod[] = ["week", "all"];
 
@@ -34,7 +35,7 @@ export function ProfileListeningRank({ uid, isSelf }: ProfileListeningRankProps)
   async function play(index: number) {
     try {
       const player = usePlayerStore.getState();
-      player.setQueue(songs, index);
+      player.setQueue(songs.map(adaptNeteaseTrack), index);
       await player.playQueueIndex(index);
     } catch {
       toast.error(t("social.actionFailed"));

@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import { getSongDetail } from "@/lib/providers/netease/api/track";
 import { usePlayerStore } from "@/store";
 import { useTranslation } from "react-i18next";
+import { adaptNeteaseTrack } from "@/lib/providers/netease/adapters/track";
 
 export function useReportSongPlayback() {
   const { t } = useTranslation();
@@ -26,7 +27,7 @@ export function useReportSongPlayback() {
           return;
         }
 
-        usePlayerStore.getState().playFromSong(song, [song]);
+        usePlayerStore.getState().playFromSong(adaptNeteaseTrack(song), [adaptNeteaseTrack(song)]);
         toast.success(`${t("library.listeningReport.playAction")}: ${song.name}`);
       } catch {
         if (requestId === requestSequence.current) toast.error("播放歌曲失败");

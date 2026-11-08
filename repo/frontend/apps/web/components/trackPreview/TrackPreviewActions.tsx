@@ -15,6 +15,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@scopify/ui/shadcn/components/tooltip";
+import { adaptNeteaseTrack, getNeteaseTrackId } from "@/lib/providers/netease/adapters/track";
 
 const ACTION_BTN =
   "flex size-11 items-center justify-center rounded-full text-content/85 transition-all hover:scale-110 hover:bg-content/10 hover:text-content";
@@ -37,7 +38,9 @@ export function TrackPreviewActions({
       icon: <Play className="size-5 fill-current" />,
       label: t("trackPreview.playSong"),
       onClick: () => {
-        void usePlayerStore.getState().playFromSong(song, songs, playlistId);
+        void usePlayerStore
+          .getState()
+          .playFromSong(adaptNeteaseTrack(song), songs.map(adaptNeteaseTrack), playlistId);
         onClose();
       },
     },
@@ -47,11 +50,11 @@ export function TrackPreviewActions({
       label: t("contextMenu.addToQueue"),
       onClick: () => {
         const player = usePlayerStore.getState();
-        if (player.queue.some((item) => item.id === song.id)) {
+        if (player.queue.some((item) => getNeteaseTrackId(item) === song.id)) {
           toast.info(t("trackPreview.queueExists"));
           return;
         }
-        player.appendQueueItems([song]);
+        player.appendQueueItems([adaptNeteaseTrack(song)]);
         toast.success(t("trackPreview.queueAdded"));
       },
     },

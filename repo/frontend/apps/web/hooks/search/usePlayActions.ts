@@ -7,6 +7,7 @@ import { usePlayerStore } from "@/store";
 import { useI18nStore } from "@/store/module/i18n";
 import { pruneSongDetail, type RawSongDetail, type SongDetail } from "@/types/song/api";
 import type { Album, Playlist, Song } from "@/types/search/model";
+import { adaptNeteaseTrack, getNeteaseTrackId } from "@/lib/providers/netease/adapters/track";
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ UTILS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -26,22 +27,22 @@ function songToSongDetail(song: Song): SongDetail {
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ HOOK ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 export function usePlayActions() {
-  const { currentSongDetail, isPlaying, setIsPlaying, setQueue, playTrack, playQueueIndex } =
+  const { currentTrack, isPlaying, setIsPlaying, setQueue, playTrack, playQueueIndex } =
     usePlayerStore();
   const [loadingPlayId, setLoadingPlayId] = useState<string | null>(null);
 
-  const isSongPlaying = (id: number) => currentSongDetail?.id === id && isPlaying;
+  const isSongPlaying = (id: number) => getNeteaseTrackId(currentTrack) === id && isPlaying;
 
   const handlePlaySong = useCallback(
     (song: Song, index: number, songList: Song[]) => {
-      if (currentSongDetail?.id === song.id) {
+      if (getNeteaseTrackId(currentTrack) === song.id) {
         setIsPlaying(!isPlaying);
         return;
       }
-      setQueue(songList.map(songToSongDetail), index);
-      void playTrack(songToSongDetail(song));
+      setQueue(songList.map(songToSongDetail).map(adaptNeteaseTrack), index);
+      void playTrack(adaptNeteaseTrack(songToSongDetail(song)));
     },
-    [currentSongDetail, isPlaying, setIsPlaying, setQueue, playTrack],
+    [currentTrack, isPlaying, setIsPlaying, setQueue, playTrack],
   );
 
   const handlePlayPlaylist = useCallback(
@@ -57,7 +58,7 @@ export function usePlayActions() {
           toast.error(translate(useI18nStore.getState().locale, "sidebar.lib.noTracks"));
           return;
         }
-        setQueue(tracks, 0);
+        setQueue(tracks.map(adaptNeteaseTrack), 0);
         await playQueueIndex(0);
       } catch {
         toast.error(translate(useI18nStore.getState().locale, "sidebar.lib.fetchTracksFailed"));
@@ -91,7 +92,7 @@ export function usePlayActions() {
           toast.error(translate(useI18nStore.getState().locale, "artist.toast.albumEmpty"));
           return;
         }
-        setQueue(tracks, 0);
+        setQueue(tracks.map(adaptNeteaseTrack), 0);
         await playQueueIndex(0);
       } catch {
         toast.error(translate(useI18nStore.getState().locale, "artist.toast.loadAlbumFailed"));

@@ -9,6 +9,7 @@ import { SongVipBadge } from "@/components/shared/SongVipBadge";
 import { cn, formatDuration } from "@/lib/utils";
 import { usePlayerStore } from "@/store";
 import type { SongDetail } from "@/types/song/api";
+import { getNeteaseTrackId } from "@/lib/providers/netease/adapters/track";
 
 interface NewSongItemProps {
   index: number;
@@ -17,11 +18,11 @@ interface NewSongItemProps {
 }
 
 export const NewSongItem = memo(function NewSongItem({ index, onPlay, song }: NewSongItemProps) {
-  const currentSongDetail = usePlayerStore((s) => s.currentSongDetail);
+  const currentTrack = usePlayerStore((s) => s.currentTrack);
   const isPlaying = usePlayerStore((s) => s.isPlaying);
   const setIsPlaying = usePlayerStore((s) => s.setIsPlaying);
 
-  const isActive = currentSongDetail?.id === song.id;
+  const isActive = getNeteaseTrackId(currentTrack) === song.id;
 
   const handleClick = useCallback(() => {
     if (isActive) {

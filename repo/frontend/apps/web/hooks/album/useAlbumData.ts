@@ -17,6 +17,7 @@ import { pruneSongDetail } from "@/types/song/api";
 
 import { useAlbumQuery } from "./useAlbumQuery";
 import { useAlbumCollectionQuery } from "./useAlbumCollectionQuery";
+import { adaptNeteaseTrack } from "@/lib/providers/netease/adapters/track";
 
 const colorCache = new Map<string, string>();
 const COLOR_CACHE_LIMIT = 10;
@@ -110,7 +111,7 @@ export function useAlbumData() {
     const isCurrentQueue = player.playlistId === albumId;
     if (isCurrentQueue) player.setIsPlaying(!player.isPlaying);
     else {
-      player.setQueue(tracks, 0, albumId);
+      player.setQueue(tracks.map(adaptNeteaseTrack), 0, albumId);
       void player.playQueueIndex(0);
     }
   }, [albumId, tracks]);

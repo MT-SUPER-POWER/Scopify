@@ -6,6 +6,7 @@ import { usePlayerStore, useUserStore } from "@/store";
 import { useTranslation } from "react-i18next";
 
 import { pruneSongDetail } from "@/types/song/api";
+import { adaptNeteaseTrack } from "@/lib/providers/netease/adapters/track";
 
 export function useSidebarPlaylistPlayback(playlistID: number | string) {
   const { t } = useTranslation();
@@ -34,7 +35,7 @@ export function useSidebarPlaylistPlayback(playlistID: number | string) {
           }
 
           // 2. 设置播放队列并播放第一首
-          playerStore.setQueue(tracks.map(pruneSongDetail), 0);
+          playerStore.setQueue(tracks.map(pruneSongDetail).map(adaptNeteaseTrack), 0);
           await playerStore.playQueueIndex(0);
 
           // 3. 跳转播放页面

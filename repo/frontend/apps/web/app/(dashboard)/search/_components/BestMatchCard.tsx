@@ -10,6 +10,7 @@ import { useTranslation } from "react-i18next";
 
 import type { SongDetail } from "@/types/song/api";
 import type { SearchBestMatch, Song } from "@/types/search/model";
+import { adaptNeteaseTrack, getNeteaseTrackId } from "@/lib/providers/netease/adapters/track";
 
 interface Props {
   bestMatch: SearchBestMatch | null;
@@ -35,14 +36,14 @@ function toDetail(song: Song): SongDetail {
 
 export function BestMatchCard({ bestMatch, onNavigate, songs }: Props) {
   const { t } = useTranslation();
-  const currentSongDetail = usePlayerStore((s) => s.currentSongDetail);
+  const currentTrack = usePlayerStore((s) => s.currentTrack);
   const isPlaying = usePlayerStore((s) => s.isPlaying);
   const setIsPlaying = usePlayerStore((s) => s.setIsPlaying);
   const setQueue = usePlayerStore((s) => s.setQueue);
   const playTrack = usePlayerStore((s) => s.playTrack);
 
   const song = bestMatch?.kind === "song" ? bestMatch.song : null;
-  const isActive = !!song && currentSongDetail?.id === song.id;
+  const isActive = !!song && getNeteaseTrackId(currentTrack) === song.id;
   const imageSrc =
     bestMatch?.kind === "album"
       ? bestMatch.album.picUrl || bestMatch.album.blurPicUrl || FALLBACK_IMG
@@ -78,8 +79,8 @@ export function BestMatchCard({ bestMatch, onNavigate, songs }: Props) {
       }
 
       const queue = [bestMatch.song, ...songs.filter((item) => item.id !== bestMatch.song.id)];
-      setQueue(queue.map(toDetail), 0);
-      playTrack(toDetail(bestMatch.song));
+      setQueue(queue.map(toDetail).map(adaptNeteaseTrack), 0);
+      playTrack(adaptNeteaseTrack(toDetail(bestMatch.song)));
       return;
     }
 

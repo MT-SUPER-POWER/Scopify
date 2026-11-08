@@ -10,6 +10,7 @@ import { useTranslation } from "react-i18next";
 
 import { pruneSongDetail, type SongDetail } from "@/types/song/api";
 import type { HomePlaybackActions } from "@/types/home/model";
+import { adaptNeteaseTrack } from "@/lib/providers/netease/adapters/track";
 
 /** 首页各栏目共用播放动作；读取 Query 的状态不参与此 hook。 */
 export function useHomePlaybackActions(): HomePlaybackActions {
@@ -30,7 +31,7 @@ export function useHomePlaybackActions(): HomePlaybackActions {
           toast.error(t("home.toast.playlistEmpty"));
           return;
         }
-        setQueue(tracks, 0);
+        setQueue(tracks.map(adaptNeteaseTrack), 0);
         await playQueueIndex(0);
       } catch {
         toast.error(t("home.toast.loadPlaylistFailed"));
@@ -57,8 +58,8 @@ export function useHomePlaybackActions(): HomePlaybackActions {
       ),
     playSongs: async (songs, index) => {
       if (!songs[index]) return;
-      setQueue(songs, index);
-      await playTrack(songs[index]);
+      setQueue(songs.map(adaptNeteaseTrack), index);
+      await playTrack(adaptNeteaseTrack(songs[index]));
     },
   };
 }

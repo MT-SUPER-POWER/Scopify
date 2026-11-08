@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { getSongDetail } from "@/lib/providers/netease/api/track";
 import { usePlayerStore } from "@/store";
 import { useTranslation } from "react-i18next";
+import { adaptNeteaseTrack } from "@/lib/providers/netease/adapters/track";
 
 export function useTicketPlayback(songId: number | undefined, onClose: () => void) {
   const { t } = useTranslation();
@@ -26,7 +27,7 @@ export function useTicketPlayback(songId: number | undefined, onClose: () => voi
       if (!active.current) return;
       const song = response?.data?.songs?.[0];
       if (!song) throw new Error("Missing song");
-      usePlayerStore.getState().playFromSong(song, [song]);
+      usePlayerStore.getState().playFromSong(adaptNeteaseTrack(song), [adaptNeteaseTrack(song)]);
       onClose();
     } catch {
       if (active.current) toast.error(t("vipSign.playFailed"));

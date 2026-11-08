@@ -42,6 +42,7 @@ import { usePlayerStore, useUserStore } from "@/store";
 import { useTranslation } from "react-i18next";
 import { useI18nStore } from "@/store/module/i18n";
 import { useQueryClient } from "@tanstack/react-query";
+import { adaptNeteaseTrack } from "@/lib/providers/netease/adapters/track";
 
 function formatDateKey(date: Date) {
   const year = date.getFullYear();
@@ -145,7 +146,7 @@ export default function PlaylistActions(props: PlaylistActionsProps) {
   const calendarLocale = locale === "zh-CN" ? zhCN : locale === "zh-TW" ? zhTW : enUS;
   const isShuffle = usePlayerStore((s) => s.isShuffle);
   const toggleShuffle = usePlayerStore((s) => s.toggleShuffle);
-  const currentSongDetail = usePlayerStore((s) => s.currentSongDetail);
+  const currentTrack = usePlayerStore((s) => s.currentTrack);
   const { data: commentCount } = useCommentCountQuery(
     commentResourceKind,
     commentResourceId ?? null,
@@ -187,7 +188,7 @@ export default function PlaylistActions(props: PlaylistActionsProps) {
       state.setIsPlaying(!state.isPlaying); // 如果已经是当前歌单，直接切换 播放/暂停 状态
     } else {
       // 否则，用当前页面的歌单替换播放队列，并从头播放 (复用 currentPageId)
-      state.setQueue(tracks, 0, currentPageId);
+      state.setQueue(tracks.map(adaptNeteaseTrack), 0, currentPageId);
       state.playQueueIndex(0);
     }
   };
@@ -235,7 +236,7 @@ export default function PlaylistActions(props: PlaylistActionsProps) {
                 type="button"
                 aria-label={playbackActionLabel}
                 onClick={onPlayToggle ?? handlePlayToggle}
-                disabled={!onPlayToggle && !currentSongDetail && !tracks.length}
+                disabled={!onPlayToggle && !currentTrack && !tracks.length}
                 className={cn(
                   "flex size-14 items-center justify-center rounded-full bg-brand text-brand-foreground shadow-brand transition-all hover:scale-105 hover:bg-brand-hover disabled:cursor-not-allowed disabled:opacity-50",
                   isSticky && "size-12",

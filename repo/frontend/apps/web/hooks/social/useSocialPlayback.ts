@@ -11,6 +11,7 @@ import { useTranslation } from "react-i18next";
 import { pruneSongDetail } from "@/types/song/api";
 import type { RawSongDetail } from "@/types/song/api";
 import type { SocialResource } from "@/types/social/model";
+import { adaptNeteaseTrack, getNeteaseTrackId } from "@/lib/providers/netease/adapters/track";
 
 export function useSocialPlayback(resource: SocialResource) {
   const [pending, setPending] = useState(false);
@@ -30,14 +31,17 @@ export function useSocialPlayback(resource: SocialResource) {
       if (!songs.length) throw new Error("No playable tracks");
       const player = usePlayerStore.getState();
       if (queueOnly) {
-        const existing = new Set(player.queue.map((song) => song.id));
+        const existing = new Set(player.queue.map((song) => getNeteaseTrackId(song)));
         player.setQueue(
-          [...player.queue, ...songs.filter((song) => !existing.has(song.id))],
+          [
+            ...player.queue,
+            ...songs.filter((song) => !existing.has(song.id)).map(adaptNeteaseTrack),
+          ],
           player.queueIndex,
         );
         toast.success(t("social.queued"));
       } else {
-        player.setQueue(songs, 0);
+        player.setQueue(songs.map(adaptNeteaseTrack), 0);
         await player.playQueueIndex(0);
       }
     } catch {

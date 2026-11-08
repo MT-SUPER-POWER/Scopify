@@ -5,6 +5,7 @@ import { usePlaybackCommands } from "@/hooks/player/usePlaybackCommands";
 import { usePlaybackProjection } from "@/hooks/player/usePlaybackProjection";
 import { usePlayerStore } from "@/store";
 import type { SongDetail } from "@/types/song/api";
+import { adaptNeteaseTrack } from "@/lib/providers/netease/adapters/track";
 
 interface PlaylistViewPlaybackOptions {
   tracks: SongDetail[];
@@ -28,7 +29,7 @@ export function usePlaylistViewPlayback({
     (track: SongDetail) => {
       if (queueSource === sourceId && track.id === playback.track?.id) void commands.toggle();
       else if (onTrackPlay) onTrackPlay(track);
-      else void playFromSong(track, tracks, sourceId);
+      else void playFromSong(adaptNeteaseTrack(track), tracks.map(adaptNeteaseTrack), sourceId);
     },
     [commands, onTrackPlay, playback.track?.id, playFromSong, queueSource, sourceId, tracks],
   );

@@ -9,6 +9,7 @@ import { useTranslation } from "react-i18next";
 
 import { pruneSongDetail, type SongDetail } from "@/types/song/api";
 import type { RadioDetail, RadioDetailResponse, RadioProgram } from "@/types/radio/api";
+import { adaptNeteaseTrack } from "@/lib/providers/netease/adapters/track";
 
 function toRadioTrack(program: RadioProgram, radio: RadioDetail): SongDetail {
   const track = pruneSongDetail(program.mainSong);
@@ -85,7 +86,7 @@ export function usePodcastPlay() {
         }
 
         const tracks = programs.map((program) => toRadioTrack(program, radio));
-        setQueue(tracks, 0, `radio:${id}`);
+        setQueue(tracks.map(adaptNeteaseTrack), 0, `radio:${id}`);
         await playQueueIndex(0);
       } catch (error) {
         console.error("Failed to play podcast:", error);

@@ -50,6 +50,7 @@ import { pruneSongDetail, type SongDetail } from "@/types/song/api";
 import type { NavigationScrollRestorationAdapter } from "@/types/core/navigationScroll";
 
 import { ConfirmDialogShandCN } from "./TableConfirmDialog";
+import { adaptNeteaseTrack, getNeteaseTrackId } from "@/lib/providers/netease/adapters/track";
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ COL RESIZE ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -132,7 +133,7 @@ export default function TracklistTable({
 
   const setIsPlaying = usePlayerStore((s) => s.setIsPlaying);
   const playFromSong = usePlayerStore((s) => s.playFromSong);
-  const currentSongId = usePlayerStore((s) => s.currentSongDetail?.id);
+  const currentSongId = usePlayerStore((s) => getNeteaseTrackId(s.currentTrack));
   const onPlayTrackRef = useRef(onPlayTrack);
   onPlayTrackRef.current = onPlayTrack;
   const isPlaying = usePlayerStore((s) => s.isPlaying);
@@ -373,7 +374,7 @@ export default function TracklistTable({
       else {
         const sourceId =
           playSourceId ?? (isDailyRecommendationPage ? dailyQueueId : (playlistID ?? null));
-        void playFromSong(track, tracks, sourceId);
+        void playFromSong(adaptNeteaseTrack(track), tracks.map(adaptNeteaseTrack), sourceId);
       }
     },
     [
@@ -447,15 +448,17 @@ export default function TracklistTable({
         updateVisibleTracks(nextTracks);
 
         const playerState = usePlayerStore.getState();
-        const isCurrentPlaying = playerState.currentSongDetail?.id === trackId;
+        const isCurrentPlaying = getNeteaseTrackId(playerState.currentTrack) === trackId;
 
         // 如果该歌曲已在播放队列中，静默将队列和原始队列中的对应曲目替换为新推荐歌曲
-        const inQueue = playerState.queue.some((s) => s.id === trackId);
+        const inQueue = playerState.queue.some((s) => getNeteaseTrackId(s) === trackId);
         if (inQueue) {
           usePlayerStore.setState({
-            queue: playerState.queue.map((s) => (s.id === trackId ? replaceSong : s)),
+            queue: playerState.queue.map((s) =>
+              getNeteaseTrackId(s) === trackId ? adaptNeteaseTrack(replaceSong) : s,
+            ),
             originalQueue: playerState.originalQueue.map((s) =>
-              s.id === trackId ? replaceSong : s,
+              getNeteaseTrackId(s) === trackId ? adaptNeteaseTrack(replaceSong) : s,
             ),
           });
         }

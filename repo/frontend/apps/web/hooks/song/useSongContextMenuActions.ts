@@ -12,6 +12,7 @@ import { useTranslation } from "react-i18next";
 
 import type { NeteasePlaylist } from "@/types/playlist/api";
 import type { SongContextMenuActionsProps } from "@/types/song/contextMenuComponents";
+import { adaptNeteaseTrack, getNeteaseTrackId } from "@/lib/providers/netease/adapters/track";
 
 export function useSongContextMenuActions({
   isContextMenuOpen,
@@ -86,22 +87,22 @@ export function useSongContextMenuActions({
   const handleAddToQueue = useCallback(() => {
     const state = usePlayerStore.getState();
     if (isMulti) {
-      const existingQueueIds = new Set(state.queue.map((t) => t.id));
+      const existingQueueIds = new Set(state.queue.map((t) => getNeteaseTrackId(t)));
       const newItems = targetSongs.filter((t) => !existingQueueIds.has(t.id));
       if (newItems.length === 0) {
         toast.info(t("playlist.table.queueExists"));
         return;
       }
-      state.appendQueueItems(newItems);
+      state.appendQueueItems(newItems.map(adaptNeteaseTrack));
       toast.success(`已将 ${newItems.length} 首歌曲添加到播放队列`);
       return;
     }
-    const alreadyInQueue = state.queue.some((t) => t.id === song.id);
+    const alreadyInQueue = state.queue.some((t) => getNeteaseTrackId(t) === song.id);
     if (alreadyInQueue) {
       toast.info(t("playlist.table.queueExists"));
       return;
     }
-    state.appendQueueItems([song]);
+    state.appendQueueItems([adaptNeteaseTrack(song)]);
     toast.success(t("playlist.table.queueAdded"));
   }, [isMulti, targetSongs, song, t]);
 
@@ -119,7 +120,9 @@ export function useSongContextMenuActions({
     if (isMulti) {
       if (targetSongs.length === 0) return;
       const startSong = targetSongs.find((s) => s.id === song.id) ?? targetSongs[0];
-      void usePlayerStore.getState().playFromSong(startSong, targetSongs, null);
+      void usePlayerStore
+        .getState()
+        .playFromSong(adaptNeteaseTrack(startSong), targetSongs.map(adaptNeteaseTrack), null);
       toast.success(`已开始播放所选歌曲 (${targetSongs.length} 首)`);
       return;
     }

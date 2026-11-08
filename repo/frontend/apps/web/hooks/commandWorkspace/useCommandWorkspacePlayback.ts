@@ -6,6 +6,7 @@ import { toVoiceSongDetail } from "@/lib/search/voiceSong";
 import { usePlayerStore } from "@/store";
 import type { SongDetail } from "@/types/song/api";
 import type { Song, Voice } from "@/types/search/model";
+import { adaptNeteaseTrack } from "@/lib/providers/netease/adapters/track";
 
 export function useCommandWorkspacePlayback() {
   const appendQueueItems = usePlayerStore((state) => state.appendQueueItems);
@@ -16,7 +17,7 @@ export function useCommandWorkspacePlayback() {
   const playTracks = useCallback(
     async (tracks: SongDetail[], index = 0) => {
       if (tracks.length === 0) return;
-      setQueue(tracks, index);
+      setQueue(tracks.map(adaptNeteaseTrack), index);
       await playQueueIndex(index);
     },
     [playQueueIndex, setQueue],
@@ -25,7 +26,7 @@ export function useCommandWorkspacePlayback() {
   const appendTracks = useCallback(
     (tracks: SongDetail[]) => {
       if (tracks.length === 0) return;
-      appendQueueItems(tracks);
+      appendQueueItems(tracks.map(adaptNeteaseTrack));
     },
     [appendQueueItems],
   );
@@ -34,7 +35,7 @@ export function useCommandWorkspacePlayback() {
     (tracks: SongDetail[]) => {
       if (tracks.length === 0) return;
       const previousLength = usePlayerStore.getState().queue.length;
-      appendQueueItems(tracks);
+      appendQueueItems(tracks.map(adaptNeteaseTrack));
       for (let index = tracks.length - 1; index >= 0; index -= 1) {
         moveQueueItemToNext(previousLength + index);
       }

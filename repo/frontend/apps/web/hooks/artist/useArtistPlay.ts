@@ -6,39 +6,43 @@ import { usePlayerStore } from "@/store";
 import { useI18nStore } from "@/store/module/i18n";
 import { pruneSongDetail, type SongDetail } from "@/types/song/api";
 import type { Album, Track } from "@/types/artist/model";
+import { adaptNeteaseTrack, getNeteaseTrackId } from "@/lib/providers/netease/adapters/track";
 
 export function useArtistPlay(hotTracksQueue: SongDetail[]) {
-  const { currentSongDetail, isPlaying, setIsPlaying, setQueue, playTrack, playQueueIndex } =
+  const { currentTrack, isPlaying, setIsPlaying, setQueue, playTrack, playQueueIndex } =
     usePlayerStore();
   const [loadingAlbumId, setLoadingAlbumId] = useState<string | number | null>(null);
 
   const isPlayingArtist =
-    hotTracksQueue.length > 0 && currentSongDetail?.id === hotTracksQueue[0]?.id && isPlaying;
+    hotTracksQueue.length > 0 &&
+    getNeteaseTrackId(currentTrack) === hotTracksQueue[0]?.id &&
+    isPlaying;
 
-  const isTrackPlaying = (id: string | number) => currentSongDetail?.id === id && isPlaying;
+  const isTrackPlaying = (id: string | number) =>
+    getNeteaseTrackId(currentTrack) === id && isPlaying;
 
   const handlePlayArtist = useCallback(() => {
     if (hotTracksQueue.length === 0) return;
-    if (hotTracksQueue[0]?.id === currentSongDetail?.id) {
+    if (hotTracksQueue[0]?.id === getNeteaseTrackId(currentTrack)) {
       setIsPlaying(!isPlaying);
       return;
     }
-    setQueue(hotTracksQueue, 0);
+    setQueue(hotTracksQueue.map(adaptNeteaseTrack), 0);
     void playQueueIndex(0);
-  }, [hotTracksQueue, currentSongDetail, isPlaying, setIsPlaying, setQueue, playQueueIndex]);
+  }, [hotTracksQueue, currentTrack, isPlaying, setIsPlaying, setQueue, playQueueIndex]);
 
   const handlePlayTrack = useCallback(
     (track: Track, index: number) => {
-      if (currentSongDetail?.id === track.id) {
+      if (getNeteaseTrackId(currentTrack) === track.id) {
         setIsPlaying(!isPlaying);
         return;
       }
-      if (hotTracksQueue.length > 0) setQueue(hotTracksQueue, index);
+      if (hotTracksQueue.length > 0) setQueue(hotTracksQueue.map(adaptNeteaseTrack), index);
       const song = hotTracksQueue[index] ?? (track.raw ? pruneSongDetail(track.raw) : null);
       if (!song) return;
-      void playTrack(song);
+      void playTrack(adaptNeteaseTrack(song));
     },
-    [currentSongDetail, isPlaying, setIsPlaying, hotTracksQueue, setQueue, playTrack],
+    [currentTrack, isPlaying, setIsPlaying, hotTracksQueue, setQueue, playTrack],
   );
 
   const handlePlayAlbum = useCallback(
@@ -53,7 +57,7 @@ export function useArtistPlay(hotTracksQueue: SongDetail[]) {
           toast.error(translate(useI18nStore.getState().locale, "artist.toast.albumEmpty"));
           return;
         }
-        setQueue(tracks, 0);
+        setQueue(tracks.map(adaptNeteaseTrack), 0);
         await playQueueIndex(0);
       } catch {
         toast.error(translate(useI18nStore.getState().locale, "artist.toast.loadAlbumFailed"));

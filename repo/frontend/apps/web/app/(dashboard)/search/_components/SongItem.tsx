@@ -34,6 +34,7 @@ import { useTranslation } from "react-i18next";
 import type { SongDetail } from "@/types/song/api";
 import type { Song } from "@/types/search/model";
 import { getSizedImageUrl } from "@/lib/music/imageUrl";
+import { adaptNeteaseTrack, getNeteaseTrackId } from "@/lib/providers/netease/adapters/track";
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ UTILS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -124,7 +125,7 @@ export const SongItem = memo(
     const songLikeMutation = useSongLikeMutation();
     const { mutateAsync: updatePlaylistTrack } = usePlaylistTrackMutation();
     // ── store ──
-    const currentSongDetail = usePlayerStore((s) => s.currentSongDetail);
+    const currentTrack = usePlayerStore((s) => s.currentTrack);
     const isPlaying = usePlayerStore((s) => s.isPlaying);
     const setIsPlaying = usePlayerStore((s) => s.setIsPlaying);
     const setQueue = usePlayerStore((s) => s.setQueue);
@@ -133,7 +134,7 @@ export const SongItem = memo(
     const playlists = useUserStore((s) => s.playlist);
 
     // ── derived ──
-    const isActive = currentSongDetail?.id === song.id;
+    const isActive = getNeteaseTrackId(currentTrack) === song.id;
     const isLogin = useLoginStatus();
     const isLiked = useMemo(
       () => Array.isArray(likeListIDs) && likeListIDs.includes(song.id),
@@ -147,8 +148,8 @@ export const SongItem = memo(
         return;
       }
       const queue = songs.map(songToSongDetail);
-      setQueue(queue, index);
-      playTrack(songToSongDetail(song));
+      setQueue(queue.map(adaptNeteaseTrack), index);
+      playTrack(adaptNeteaseTrack(songToSongDetail(song)));
     }, [isActive, songs, index, song, setIsPlaying, setQueue, playTrack]);
 
     const handlePause = useCallback(() => setIsPlaying(false), [setIsPlaying]);
@@ -170,11 +171,11 @@ export const SongItem = memo(
 
     const handleAddToQueue = useCallback(() => {
       const state = usePlayerStore.getState();
-      if (state.queue.some((t) => t.id === song.id)) {
+      if (state.queue.some((t) => getNeteaseTrackId(t) === song.id)) {
         toast.info(t("playlist.table.queueExists"));
         return;
       }
-      state.setQueue([...state.queue, songToSongDetail(song)], state.queueIndex);
+      state.setQueue([...state.queue, adaptNeteaseTrack(songToSongDetail(song))], state.queueIndex);
       toast.success(t("playlist.table.queueAdded"));
     }, [song, t]);
 
