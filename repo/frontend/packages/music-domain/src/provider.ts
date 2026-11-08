@@ -1,5 +1,6 @@
 import type { MusicCapability } from "./capability";
 import type { MusicProvider } from "./identity";
+import type { MusicPlaybackSource } from "./playback";
 import type { MusicTrack } from "./track";
 
 /** Track lookup, implemented by every platform. */
@@ -14,7 +15,7 @@ export interface MusicTrackSource {
  * its types and lists it here; a method only some platforms have is optional and guarded by a
  * capability. Work only one platform has stays out and is reached behind a capability check.
  */
-export interface MusicProviderClient extends MusicTrackSource {
+export interface MusicProviderClient extends MusicTrackSource, MusicPlaybackSource {
   readonly provider: MusicProvider;
   readonly capabilities: ReadonlySet<MusicCapability>;
 }

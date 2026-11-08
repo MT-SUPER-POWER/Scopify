@@ -1,6 +1,7 @@
 import type { MusicCapability } from "@scopify/music-domain/capability";
 import type { MusicProviderClient } from "@scopify/music-domain/provider";
 
+import { neteasePlaybackSource } from "@/lib/providers/netease/playback";
 import { neteaseTrackSource } from "@/lib/providers/netease/track";
 
 /** Every existing page is built on NetEase, so it declares every capability. */
@@ -33,4 +34,5 @@ export const neteaseProvider: MusicProviderClient = {
   provider: "netease",
   capabilities: NETEASE_CAPABILITIES,
   ...neteaseTrackSource,
+  ...neteasePlaybackSource,
 };
