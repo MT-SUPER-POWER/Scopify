@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import { UserVipBadge } from "@/components/shared/UserVipBadge";
+import { useActiveAccount } from "@/hooks/auth/useProviderAccounts";
 import { useUserStore } from "@/store";
 import { useTranslation } from "react-i18next";
 
@@ -12,8 +13,36 @@ import { getSizedImageUrl } from "@/lib/music/imageUrl";
 export function ProfileMenuIdentity({ isLoggedIn, onLogin }: ProfileMenuIdentityProps) {
   const { t } = useTranslation();
   const user = useUserStore((state) => state.user);
+  const activeAccount = useActiveAccount();
   const className =
     "group flex cursor-pointer items-center gap-5 rounded-none px-6 py-6 focus:bg-content/5";
+
+  // Other platforms have no profile page here yet: show who is signed in, without a link.
+  if (isLoggedIn && activeAccount.provider !== "netease") {
+    const profile = activeAccount.profile;
+    return (
+      <div className="flex items-center gap-5 p-6">
+        <div className="relative size-18 shrink-0 overflow-hidden rounded-full ring-1 ring-content/10">
+          {profile?.avatarUrl ? (
+            <Image
+              src={profile.avatarUrl}
+              alt={profile.nickname}
+              fill
+              sizes="72px"
+              className="object-cover"
+            />
+          ) : (
+            <div className="flex size-full items-center justify-center bg-brand text-2xl font-semibold text-brand-foreground">
+              {profile?.nickname?.[0]?.toUpperCase() ?? <User className="size-7" />}
+            </div>
+          )}
+        </div>
+        <span className="min-w-0 truncate text-base font-semibold text-content">
+          {profile?.nickname || t("profile.accounts.signedIn")}
+        </span>
+      </div>
+    );
+  }
 
   if (!isLoggedIn || !user || user.userId <= 0) {
     return (

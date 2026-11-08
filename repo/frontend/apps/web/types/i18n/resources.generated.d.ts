@@ -1855,6 +1855,10 @@ export default interface Resources {
     unsupported: "暂不支持展示此消息";
   };
   profile: {
+    "accounts.active": "当前平台";
+    "accounts.login": "点击登录";
+    "accounts.signedIn": "已登录";
+    "accounts.title": "账号与平台";
     "edit.gender": "性别";
     "edit.genderFemale": "女";
     "edit.genderMale": "男";

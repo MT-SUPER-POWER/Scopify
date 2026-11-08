@@ -15,6 +15,7 @@ import { QueryDevtools } from "@/components/shared/QueryDevtools";
 import { useRendererErrorReporting } from "@/hooks/core/useRendererErrorReporting";
 import { useProviderSwitchRequests } from "@/hooks/provider/useProviderSwitchRequests";
 import { queryPersister } from "@/lib/query/persister";
+import { openLoginForPlatform } from "@/lib/auth/loginPlatform";
 import { clearQqSessionToken } from "@/lib/providers/qq/session";
 import { MUSIC_SESSION_EXPIRED_EVENT, QQ_SESSION_EXPIRED_EVENT } from "@/lib/query/session";
 import { runtime } from "@/lib/runtime";
@@ -71,11 +72,14 @@ export function QueryProvider({ children }: { children: React.ReactNode }) {
         queryKey: ["qq"],
         predicate: (query) => query.meta?.scope === "account",
       });
+      // Like NetEase: QQ stays the active platform and its login opens.
+      if (useActiveProviderStore.getState().activeProvider !== "qq") return;
+      openLoginForPlatform("qq", (url) => router.replace(url));
     };
 
     window.addEventListener(QQ_SESSION_EXPIRED_EVENT, handleExpiredQqSession);
     return () => window.removeEventListener(QQ_SESSION_EXPIRED_EVENT, handleExpiredQqSession);
-  }, [queryClient]);
+  }, [queryClient, router]);
 
   return (
     <PersistQueryClientProvider

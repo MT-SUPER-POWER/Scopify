@@ -18,5 +18,9 @@
   "edit.gender": "性別",
   "edit.genderPrivate": "保密",
   "edit.genderMale": "男",
-  "edit.genderFemale": "女"
+  "edit.genderFemale": "女",
+  "accounts.title": "帳號與平台",
+  "accounts.signedIn": "已登入",
+  "accounts.login": "點擊登入",
+  "accounts.active": "目前平台"
 }

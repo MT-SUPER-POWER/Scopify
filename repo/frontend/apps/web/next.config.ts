@@ -64,6 +64,11 @@ export function shouldUseUnoptimizedImages(
 export const WEB_IMAGE_REMOTE_PATTERNS = [
   { protocol: "http", hostname: "**.music.126.net" },
   { protocol: "https", hostname: "**.music.126.net" },
+  // QQ Music account avatars.
+  { protocol: "http", hostname: "**.qlogo.cn" },
+  { protocol: "https", hostname: "**.qlogo.cn" },
+  { protocol: "https", hostname: "**.gtimg.cn" },
+  { protocol: "https", hostname: "**.qpic.cn" },
   { protocol: "https", hostname: "api.qrserver.com" },
   { protocol: "https", hostname: "avatars.githubusercontent.com" },
   { protocol: "https", hostname: "cdn.jsdelivr.net" },
