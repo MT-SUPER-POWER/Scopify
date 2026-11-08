@@ -12,6 +12,7 @@
     "./identity": "./src/identity.ts",
     "./library": "./src/library.ts",
     "./playback": "./src/playback.ts",
+    "./playlist": "./src/playlist.ts",
     "./provider": "./src/provider.ts",
     "./track": "./src/track.ts"
   },
