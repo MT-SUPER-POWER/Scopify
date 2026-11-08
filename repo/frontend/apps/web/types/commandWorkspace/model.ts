@@ -1,4 +1,5 @@
 import type { FoliaCommandEntry, FoliaCommandGroup } from "@/types/lyrics/folia/commands";
+import type { PlayerTrack } from "@/types/player/model";
 import type { SongDetail } from "@/types/song/api";
 import type { Album, Artist, Category, Playlist, Podcast, Song, Voice } from "@/types/search/model";
 import type { DragEvent, KeyboardEvent, RefObject } from "react";
@@ -179,28 +180,28 @@ export interface CommandWorkspaceQueueItemProps {
   onDragOver(event: DragEvent<HTMLDivElement>, index: number): void;
   onDragStart(event: DragEvent<HTMLDivElement>, index: number): void;
   onDrop(event: DragEvent<HTMLDivElement>, index: number): void;
-  onNavigateAlbum(albumId: number): void;
-  onNavigateArtist(artistId: number): void;
+  onNavigateAlbum(albumId: string): void;
+  onNavigateArtist(artistId: string): void;
   onPlay(index: number): void;
   onRemove(index: number): void;
-  track: SongDetail;
+  track: PlayerTrack;
 }
 
 export interface CommandWorkspaceQueueItemMenuProps {
   index: number;
-  onNavigateAlbum(albumId: number): void;
-  onNavigateArtist(artistId: number): void;
+  onNavigateAlbum(albumId: string): void;
+  onNavigateArtist(artistId: string): void;
   onRemove(index: number): void;
-  track: SongDetail;
+  track: PlayerTrack;
 }
 
 export interface CommandWorkspaceQueueItemMetadataProps {
   index: number;
   isCurrent: boolean;
-  onNavigateAlbum(albumId: number): void;
-  onNavigateArtist(artistId: number): void;
+  onNavigateAlbum(albumId: string): void;
+  onNavigateArtist(artistId: string): void;
   onPlay(index: number): void;
-  track: SongDetail;
+  track: PlayerTrack;
 }
 
 export interface CommandWorkspaceSearchProps {
