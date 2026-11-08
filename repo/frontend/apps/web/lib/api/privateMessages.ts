@@ -1,4 +1,4 @@
-import { requestData } from "@/lib/web/request";
+import { requestData } from "@/lib/providers/netease/client";
 import type {
   PrivateConversationResponse,
   PrivateHistoryResponse,

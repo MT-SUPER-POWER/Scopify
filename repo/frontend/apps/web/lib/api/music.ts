@@ -10,7 +10,7 @@ import type {
   PersonalizedNewSongResponse,
   SongUrlOptions,
 } from "@/types/song/api";
-import request, { requestConfig } from "../web/request";
+import request, { requestConfig } from "@/lib/providers/netease/client";
 
 export async function greySongUrlMatch(
   id: number | string,

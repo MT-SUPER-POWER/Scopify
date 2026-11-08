@@ -18,21 +18,19 @@ import {
   normalizeBackendConfig,
 } from "@/lib/web/backendUrl";
 import { webConfig } from "@/lib/web/env";
+import {
+  loadStoredBackendAddress,
+  loadStoredNetworkConfig,
+  WEB_BACKEND_SETTINGS_KEY,
+  WEB_NETWORK_SETTINGS_KEY,
+  WEB_QQ_BACKEND_SETTINGS_KEY,
+} from "@/lib/web/http/storedSettings";
 import { pingBackend, probeBackend, probeQqBackend } from "@/lib/web/waitForBackend";
 import { useI18nStore } from "@/store/module/i18n";
 import type { BackendAddressKey, WebConfig } from "@/types/settings/config";
 import type { BackendPingResult } from "@/types/network/model";
 import type { SettingsConfig } from "@/types/settings/model";
 import type { CachePreferences } from "@/types/cache/model";
-
-export const WEB_NETWORK_SETTINGS_KEY = "momo-web-network-settings";
-export const WEB_BACKEND_SETTINGS_KEY = "momo-web-backend-settings";
-export const WEB_QQ_BACKEND_SETTINGS_KEY = "momo-web-qq-backend-settings";
-
-const BACKEND_STORAGE_KEYS: Record<BackendAddressKey, string> = {
-  backend: WEB_BACKEND_SETTINGS_KEY,
-  qqBackend: WEB_QQ_BACKEND_SETTINGS_KEY,
-};
 
 function checkRequiresRestart(current: DesktopHostConfig, original: DesktopHostConfig): boolean {
   return (
@@ -42,60 +40,20 @@ function checkRequiresRestart(current: DesktopHostConfig, original: DesktopHostC
   );
 }
 
-function loadWebNetworkOverride(): Partial<WebConfig["network"]> | null {
-  if (typeof window === "undefined") return null;
-
-  try {
-    const stored = localStorage.getItem(WEB_NETWORK_SETTINGS_KEY);
-    return stored ? JSON.parse(stored) : null;
-  } catch {
-    return null;
-  }
-}
-
-function loadWebBackendOverride(target: BackendAddressKey): WebConfig["backend"] | null {
-  if (typeof window === "undefined") return null;
-  const defaults = webConfig[target];
-
-  try {
-    const stored = localStorage.getItem(BACKEND_STORAGE_KEYS[target]);
-    if (!stored) return null;
-    const parsed = JSON.parse(stored) as Partial<WebConfig["backend"]>;
-    const parsedPort =
-      typeof parsed.port === "number" || typeof parsed.port === "string"
-        ? Number(parsed.port)
-        : Number.NaN;
-    if (typeof parsed.host !== "string" || !Number.isFinite(parsedPort)) return null;
-    const protocol =
-      parsed.protocol === "https" || parsed.protocol === "http"
-        ? parsed.protocol
-        : defaults.protocol;
-    const resolved = normalizeBackendConfig({
-      ...defaults,
-      host: parsed.host,
-      port: parsedPort,
-      protocol,
-    });
-    return resolved.ok ? resolved.backend : null;
-  } catch {
-    return null;
-  }
-}
-
 function buildWebConfig(): WebConfig {
   return {
     app: { locale: useI18nStore.getState().locale },
     backend: {
       ...webConfig.backend,
-      ...(loadWebBackendOverride("backend") ?? {}),
+      ...(loadStoredBackendAddress("backend") ?? {}),
     },
     qqBackend: {
       ...webConfig.qqBackend,
-      ...(loadWebBackendOverride("qqBackend") ?? {}),
+      ...(loadStoredBackendAddress("qqBackend") ?? {}),
     },
     network: {
       ...webConfig.network,
-      ...(loadWebNetworkOverride() ?? {}),
+      ...loadStoredNetworkConfig(),
     },
   };
 }

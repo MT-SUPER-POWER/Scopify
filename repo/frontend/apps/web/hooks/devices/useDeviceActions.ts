@@ -3,7 +3,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { kickoffDevice, sendDeviceSecurityCaptcha, uploadDeviceName } from "@/lib/api/devices";
 import { rememberDeviceName } from "@/lib/devices/clientIdentity";
 import { runtime } from "@/lib/runtime";
-import { getBackendBaseUrl } from "@/lib/web/request";
+import { getNeteaseBaseUrl } from "@/lib/providers/netease/client";
 import { useUserStore } from "@/store/module/user";
 import { usePlayerStore } from "@/store";
 import { useTranslation } from "react-i18next";
@@ -24,7 +24,7 @@ export function useDeviceActions(scope: string) {
       ensureSession();
       const trimmed = name.trim();
       if (!trimmed || trimmed.length > 80) throw new Error(t("devices.nameValidation"));
-      const backend = getBackendBaseUrl();
+      const backend = getNeteaseBaseUrl();
       const response = await uploadDeviceName(trimmed);
       ensureSession();
       if (response.data.code !== 200) throw new Error(t("devices.actionFailed"));
@@ -37,7 +37,7 @@ export function useDeviceActions(scope: string) {
     mutationFn: async ({ device, captcha }: DeviceKickoffInput) => {
       ensureSession();
       if (!device.deviceKey) throw new Error(t("devices.invalidResponse"));
-      const backend = getBackendBaseUrl();
+      const backend = getNeteaseBaseUrl();
       const response = await kickoffDevice({
         deviceKey: device.deviceKey,
         captcha: captcha.trim() || undefined,

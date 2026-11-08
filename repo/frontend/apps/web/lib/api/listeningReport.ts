@@ -5,7 +5,7 @@ import type {
   SongPlayRankResponse,
   TodayListeningSongsResponse,
 } from "@/types/listeningReport/api";
-import request, { requestConfig } from "../web/request";
+import request, { requestConfig } from "@/lib/providers/netease/client";
 
 /** 获取累计听歌时长。 */
 export function getTotalListeningDuration() {

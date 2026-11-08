@@ -1,6 +1,6 @@
 import type { ScrobbleV1Request, ScrobbleV1Response } from "@/types/listeningReport/scrobbleApi";
 
-import request, { requestConfig } from "../web/request";
+import request, { requestConfig } from "@/lib/providers/netease/client";
 
 /** Uploads one completed listening session using the desktop-compatible NCBL protocol. */
 export function scrobbleV1(params: ScrobbleV1Request) {

@@ -3,7 +3,7 @@ import type {
   CloudLyricResponse,
   UserCloudResponse,
 } from "@/types/library/cloudApi";
-import request, { requestConfig } from "../web/request";
+import request, { requestConfig } from "@/lib/providers/netease/client";
 
 /** 大文件上传不受用户网络超时设置限制。 */
 const CLOUD_UPLOAD_TIMEOUT = 10 * 60 * 1000;

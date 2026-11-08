@@ -6,7 +6,7 @@ const send = mock(async (_params: unknown, _signal?: AbortSignal) => ({
   data: { code: 200 } as YidunResponse,
 }));
 mock.module("@/lib/api/yidun", () => ({ loginWithYidun: send, sendYidunCaptcha: send }));
-mock.module("@/lib/web/request", () => ({ getBackendBaseUrl: () => backend }));
+mock.module("@/lib/providers/netease/client", () => ({ getNeteaseBaseUrl: () => backend }));
 const { createYidunClient, nextYidunStep } = await import("@/lib/auth/yidunClient");
 const params = { sid: "session", phone: "51234567", countrycode: "852" };
 

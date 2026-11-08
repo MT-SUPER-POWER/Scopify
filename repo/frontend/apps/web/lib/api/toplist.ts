@@ -1,5 +1,5 @@
 import type { ToplistDetailResponse } from "@/types/home/toplistApi";
-import request, { requestConfig } from "@/lib/web/request";
+import request, { requestConfig } from "@/lib/providers/netease/client";
 
 /**
  * 获取所有榜单内容摘要（包含 Top 3 歌曲信息）

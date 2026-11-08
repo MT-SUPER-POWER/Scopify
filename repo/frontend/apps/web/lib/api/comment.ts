@@ -7,7 +7,7 @@ import type {
   NewCommentResponse,
 } from "@/types/comment/api";
 import type { SongComment } from "@/types/song/api";
-import request, { requestConfig } from "../web/request";
+import request, { requestConfig } from "@/lib/providers/netease/client";
 
 export async function getMusicComments(params: MusicCommentParams) {
   return request.get<SongComment>("/comment/music", {

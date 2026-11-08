@@ -20,7 +20,7 @@ import { openLoginWindowOrFallback } from "@/lib/runtime/login";
 import { reportFailure } from "@/lib/web/errorTracking";
 import { getMusicSessionCredential } from "@/lib/web/musicSessionCredential";
 import { syncUserSessionFromCookie } from "@/lib/web/sessionHydration";
-import { getBackendBaseUrl } from "@/lib/web/request";
+import { getNeteaseBaseUrl } from "@/lib/providers/netease/client";
 import { usePlayerStore, useUserStore } from "@/store";
 
 const QUERY_CACHE_BUSTER = "scopify-query-v1";
@@ -36,7 +36,7 @@ export function QueryProvider({ children }: { children: React.ReactNode }) {
     if (credential) {
       if (runtime.isDesktop) {
         void runtime.auth
-          .importMusicSession(credential, getBackendBaseUrl())
+          .importMusicSession(credential, getNeteaseBaseUrl())
           .catch(() => undefined);
       }
       void syncUserSessionFromCookie();

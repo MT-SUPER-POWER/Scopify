@@ -11,7 +11,7 @@ import { getPrivateHistory, sendPrivateText } from "@/lib/api/privateMessages";
 import { clearConversationsUnreadInCache } from "@/lib/messages/cache";
 import { normalizeMessage, privateNotificationPeer } from "@/lib/messages/normalize";
 import { performNotificationAction } from "@/lib/notifications/actions";
-import { getBackendBaseUrl } from "@/lib/web/request";
+import { getNeteaseBaseUrl } from "@/lib/providers/netease/client";
 import { runtime } from "@/lib/runtime";
 import { useFriendsStore } from "@/store/module/friends";
 import { useNotificationStore } from "@/store/module/notifications";
@@ -25,7 +25,7 @@ export function usePrivateConversation(accountId: string, peer: MessagePeer) {
   const sendLock = useRef(false);
   const snapshot = useNotificationStore((state) => state.snapshot);
   const pending = useNotificationStore((state) => state.pending);
-  const queryKey = ["privateHistory", accountId, getBackendBaseUrl(), peer.id];
+  const queryKey = ["privateHistory", accountId, getNeteaseBaseUrl(), peer.id];
   const mutationKey = ["privateSend", accountId, peer.id];
   const sending = useIsMutating({ mutationKey }) > 0;
   const history = useInfiniteQuery({

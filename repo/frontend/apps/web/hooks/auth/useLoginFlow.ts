@@ -14,7 +14,7 @@ import { verifyYidunSlider } from "@/lib/auth/yidunSlider";
 import { createFreshLoginDevice, resolveLocalDeviceName } from "@/lib/devices/clientIdentity";
 import { completeFreshLogin } from "@/lib/devices/completeLogin";
 import { runtime } from "@/lib/runtime";
-import { getBackendBaseUrl } from "@/lib/web/request";
+import { getNeteaseBaseUrl } from "@/lib/providers/netease/client";
 import type {
   YidunLoginParams,
   YidunResponse,
@@ -97,7 +97,7 @@ export function useLoginFlow() {
       !session.current ||
       session.current.phone !== phone ||
       session.current.countrycode !== countrycode ||
-      session.current.device.backend !== getBackendBaseUrl()
+      session.current.device.backend !== getNeteaseBaseUrl()
     ) {
       session.current = {
         sid: crypto.randomUUID(),

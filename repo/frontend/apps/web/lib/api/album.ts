@@ -6,7 +6,7 @@ import type {
   NewestAlbumsResponse,
 } from "@/types/album/api";
 
-import request, { requestConfig, requestData } from "@/lib/web/request";
+import request, { requestConfig, requestData } from "@/lib/providers/netease/client";
 
 // 获取已收藏专辑列表
 export const getUserAlbumSublist = (params?: AlbumSublistParams) => {

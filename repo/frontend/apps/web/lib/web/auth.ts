@@ -1,4 +1,4 @@
-import request from "@/lib/web/request";
+import request from "@/lib/providers/netease/client";
 import { clearMusicSessionCredential } from "@/lib/web/musicSessionCredential";
 import type { NeteaseUser } from "@/types/user/api";
 

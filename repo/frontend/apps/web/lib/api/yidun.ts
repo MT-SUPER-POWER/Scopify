@@ -1,4 +1,4 @@
-import request, { requestConfig } from "@/lib/web/request";
+import request, { requestConfig } from "@/lib/providers/netease/client";
 import type { YidunLoginParams, YidunResponse, YidunSendParams } from "@/types/auth/yidun";
 
 // Risk challenges can arrive with an HTTP error status. Preserve their business

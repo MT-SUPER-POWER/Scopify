@@ -1,4 +1,4 @@
-import request from "@/lib/web/request";
+import request from "@/lib/providers/netease/client";
 import type {
   RadioDetailResponse,
   RadioProgramsParams,

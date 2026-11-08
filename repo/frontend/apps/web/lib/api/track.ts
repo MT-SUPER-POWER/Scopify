@@ -6,7 +6,7 @@ import type {
   PlaylistTrackResponsePayload,
 } from "@/types/playlist/api";
 
-import request, { requestConfig, requestData } from "../web/request";
+import request, { requestConfig, requestData } from "@/lib/providers/netease/client";
 import { ApiError } from "../web/apiError";
 
 export async function getSongDetail(ids: number | string) {

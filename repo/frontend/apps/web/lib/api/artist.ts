@@ -7,7 +7,7 @@ import type {
   HotArtistsResponse,
 } from "@/types/artist/api";
 import type { ArtistMvsResponse } from "@/types/mv/api";
-import request from "../web/request";
+import request from "@/lib/providers/netease/client";
 
 /**
  * 获取歌手详情

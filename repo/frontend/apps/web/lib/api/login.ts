@@ -9,7 +9,7 @@ import type {
   QrKeyResponse,
 } from "@/types/auth/loginApi";
 
-import request, { requestConfig } from "../web/request";
+import request, { requestConfig } from "@/lib/providers/netease/client";
 
 /**
  * 手机号登录

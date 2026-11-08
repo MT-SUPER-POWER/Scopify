@@ -22,7 +22,7 @@ import type {
   SongOrderUpdateParams,
   PlaylistTrackUpdateResponse,
 } from "@/types/playlist/api";
-import request, { requestConfig } from "../web/request";
+import request, { requestConfig } from "@/lib/providers/netease/client";
 import { measureImageDimensions } from "@/lib/image/measureImage";
 
 export function updatePlaylistOrder({ ids }: PlaylistOrderUpdateParams) {

@@ -1,5 +1,5 @@
 import { loginWithYidun, sendYidunCaptcha } from "@/lib/api/yidun";
-import { getBackendBaseUrl } from "@/lib/web/request";
+import { getNeteaseBaseUrl } from "@/lib/providers/netease/client";
 import type {
   YidunClientOptions,
   YidunLoginParams,
@@ -11,7 +11,7 @@ import type {
 export function createYidunClient({ signal, backend, verifySlider, onRetry }: YidunClientOptions) {
   const assertActive = () => {
     signal.throwIfAborted();
-    if (backend !== getBackendBaseUrl()) throw new Error("Login backend changed");
+    if (backend !== getNeteaseBaseUrl()) throw new Error("Login backend changed");
   };
   const submit = async (send: (sca?: string) => Promise<{ data: YidunResponse }>) => {
     assertActive();

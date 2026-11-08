@@ -11,7 +11,7 @@ import type {
   UserFollowsResponse,
   UserRecordResponse,
 } from "@/types/user/api";
-import request, { requestConfig } from "../web/request";
+import request, { requestConfig } from "@/lib/providers/netease/client";
 
 // /user/detail
 export function getUserDetail(uid: number | string) {

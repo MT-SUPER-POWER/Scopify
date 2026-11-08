@@ -8,7 +8,7 @@ import type {
   SongSearchResponse,
   VoiceSearchResponse,
 } from "@/types/search/api";
-import request from "../web/request";
+import request from "@/lib/providers/netease/client";
 
 /**
  * 搜索建议

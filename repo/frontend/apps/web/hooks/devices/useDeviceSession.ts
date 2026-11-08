@@ -1,7 +1,7 @@
 "use client";
 import { useSyncExternalStore } from "react";
 import { runtime } from "@/lib/runtime";
-import { getBackendBaseUrl } from "@/lib/web/request";
+import { getNeteaseBaseUrl } from "@/lib/providers/netease/client";
 import {
   getMusicSessionCredential,
   MUSIC_SESSION_CHANGED_EVENT,
@@ -14,7 +14,7 @@ let revision = 0;
 // Credentials stay in this closure, never in query keys or persisted query data.
 export function getDeviceSessionScope() {
   const { user, loginType } = useUserStore.getState();
-  const identity = `${getBackendBaseUrl()}|${user?.userId ?? 0}|${loginType}|${getMusicSessionCredential() ?? ""}`;
+  const identity = `${getNeteaseBaseUrl()}|${user?.userId ?? 0}|${loginType}|${getMusicSessionCredential() ?? ""}`;
   if (identity !== previousIdentity) {
     previousIdentity = identity;
     revision += 1;
