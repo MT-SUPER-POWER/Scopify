@@ -23,6 +23,8 @@ export interface ApiClientOptions<C extends ApiRequestConfig> {
   platform: BackendPlatform;
   /** The Desktop-managed API; its origin wins while it runs. */
   desktopBackend?: RuntimeBackend;
+  /** Whether browser cookies go along with cross-origin requests; defaults to true. */
+  withCredentials?: boolean;
   /** Platform-specific request preparation, such as session and default parameters. */
   prepareRequest?: (config: InternalAxiosRequestConfig & C, settings: RequestSettings) => void;
   /** True when a 2xx body still reports failure under the platform's own convention. */
@@ -153,7 +155,7 @@ export function createApiClient<C extends ApiRequestConfig>(
   const instance = axios.create({
     baseURL: getBaseUrl(),
     timeout: getRequestSettings().network.timeout,
-    withCredentials: true,
+    withCredentials: options.withCredentials ?? true,
   });
 
   // Static export loads this module in every worker; skip the banner during the build.
