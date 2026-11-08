@@ -7,6 +7,7 @@ import {
   getMusicSessionCredential,
 } from "@/lib/web/musicSessionCredential";
 import { getNeteaseBaseUrl } from "@/lib/providers/netease/client";
+import { requestProviderSwitch } from "@/lib/providers/switchProvider";
 import { useUserStore } from "@/store/module/user";
 import type { NeteaseUserSource } from "@/types/user/api";
 import type { FreshLoginDevice } from "@/types/devices/model";
@@ -36,6 +37,8 @@ export async function completeFreshLogin(
   }
   if (!profile || !isCurrent()) throw new Error("Unable to confirm login profile");
 
+  // Logging into NetEase makes it the active platform, as a QQ login does for QQ.
+  requestProviderSwitch("netease");
   useUserStore.getState().setLoginType(type);
   useUserStore.getState().setUser(profile);
   useUserStore.getState().setUserId(userId);

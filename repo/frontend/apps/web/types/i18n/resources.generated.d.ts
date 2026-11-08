@@ -1395,6 +1395,16 @@ export default interface Resources {
     "page.sendCaptchaFailed": "发送验证码失败";
     "page.sliderVerificationDescription": "向右拖动滑块完成拼图";
     "page.tagline": "发现属于你的旋律";
+    "platform.label": "登录平台";
+    "platform.netease": "网易云音乐";
+    "platform.qq": "QQ 音乐";
+    "qq.channel.qq": "QQ";
+    "qq.channel.qqmusic": "QQ 音乐";
+    "qq.channel.wechat": "微信";
+    "qq.loginFailed": "QQ 音乐登录失败，请重试";
+    "qq.scanHint.qq": "使用 QQ 扫码登录 QQ 音乐";
+    "qq.scanHint.qqmusic": "使用 QQ 音乐 App 扫码";
+    "qq.scanHint.wechat": "使用 微信 扫码登录 QQ 音乐";
     "qr.alt": "登录二维码";
     "qr.confirmOnPhone": "请在手机上确认";
     "qr.expired": "二维码已过期";

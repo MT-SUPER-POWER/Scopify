@@ -46,5 +46,15 @@
   "page.securitySubmitting": "验证已通过，正在继续提交…",
   "page.securityRetryHint": "请返回登录后重试安全验证。",
   "page.securityBackToLogin": "返回登录",
-  "page.secondaryVerificationTitle": "短信二次验证"
+  "page.secondaryVerificationTitle": "短信二次验证",
+  "platform.label": "登录平台",
+  "platform.netease": "网易云音乐",
+  "platform.qq": "QQ 音乐",
+  "qq.channel.qq": "QQ",
+  "qq.channel.wechat": "微信",
+  "qq.channel.qqmusic": "QQ 音乐",
+  "qq.scanHint.qq": "使用 QQ 扫码登录 QQ 音乐",
+  "qq.scanHint.wechat": "使用 微信 扫码登录 QQ 音乐",
+  "qq.scanHint.qqmusic": "使用 QQ 音乐 App 扫码",
+  "qq.loginFailed": "QQ 音乐登录失败，请重试"
 }

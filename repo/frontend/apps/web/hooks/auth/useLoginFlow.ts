@@ -51,7 +51,11 @@ function rememberLoginMode(mode: LoginMode) {
   }
 }
 
-export function useLoginFlow() {
+/**
+ * NetEase login on the login page. `isNeteaseChosen` is false while the page logs into another
+ * platform, so an existing NetEase session does not send the page away.
+ */
+export function useLoginFlow(isNeteaseChosen = true) {
   const smartRouter = useSmartRouter();
   const searchParams = useSearchParams();
   const { t, i18n } = useTranslation();
@@ -261,8 +265,8 @@ export function useLoginFlow() {
   };
 
   useEffect(() => {
-    if (isLoggedIn) finishLogin();
-  }, [finishLogin, isLoggedIn]);
+    if (isLoggedIn && isNeteaseChosen) finishLogin();
+  }, [finishLogin, isLoggedIn, isNeteaseChosen]);
 
   useEffect(() => {
     setIsMounted(true);
@@ -292,7 +296,7 @@ export function useLoginFlow() {
     },
     isLoading,
     deviceName,
-    isLoggedIn,
+    isLoggedIn: isLoggedIn && isNeteaseChosen,
     isMounted,
     finishLogin,
     handleSubmit,

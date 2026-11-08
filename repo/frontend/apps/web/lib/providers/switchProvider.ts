@@ -75,13 +75,15 @@ function isMusicProvider(value: unknown): value is MusicProvider {
 }
 
 /**
- * Asks the app window to switch to the platform that was just logged into. The request is
+ * Asks the app window to switch to the platform that was just logged into, unless it is already
+ * active (a re-login keeps the queue and the page the login returns to). The request is
  * stored, because on Desktop the login runs in its own window and finishing it reloads the
  * main window, which takes the request once its query cache is restored; the login window
  * itself must not switch, or it would rewrite the main window's persisted queue. In the
  * browser the login page is part of the app, so the request is handled right away.
  */
 export function requestProviderSwitch(provider: MusicProvider) {
+  if (useActiveProviderStore.getState().activeProvider === provider) return;
   getStorage()?.setItem(PENDING_SWITCH_STORAGE_KEY, provider);
   if (typeof window !== "undefined" && !runtime.isDesktop) {
     window.dispatchEvent(new Event(PROVIDER_SWITCH_REQUESTED_EVENT));

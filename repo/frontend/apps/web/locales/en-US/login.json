@@ -46,5 +46,15 @@
   "page.securitySubmitting": "Verification passed. Continuing your request…",
   "page.securityRetryHint": "Return to login and try security verification again.",
   "page.securityBackToLogin": "Back to login",
-  "page.secondaryVerificationTitle": "SMS verification"
+  "page.secondaryVerificationTitle": "SMS verification",
+  "platform.label": "Sign-in platform",
+  "platform.netease": "NetEase Cloud Music",
+  "platform.qq": "QQ Music",
+  "qq.channel.qq": "QQ",
+  "qq.channel.wechat": "WeChat",
+  "qq.channel.qqmusic": "QQ Music",
+  "qq.scanHint.qq": "Scan with QQ to sign in to QQ Music",
+  "qq.scanHint.wechat": "Scan with WeChat to sign in to QQ Music",
+  "qq.scanHint.qqmusic": "Scan with the QQ Music app",
+  "qq.loginFailed": "QQ Music sign-in failed. Please try again"
 }
