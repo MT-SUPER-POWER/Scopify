@@ -15,6 +15,7 @@ export const webConfig: WebConfig = {
         ? "https"
         : DEFAULT_WEB_CONFIG.backend.protocol,
   },
+  qqBackend: { ...DEFAULT_WEB_CONFIG.qqBackend },
   network: {
     timeout: Number(process.env.APP_CFG_NET_TIMEOUT || DEFAULT_WEB_CONFIG.network.timeout),
     randomCNIP: process.env.APP_CFG_NET_RANDOM_CNIP === "true" ? "true" : "false",

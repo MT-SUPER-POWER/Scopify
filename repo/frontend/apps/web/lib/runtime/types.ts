@@ -107,6 +107,8 @@ export interface RuntimeBackend {
   getStatus(): Promise<DesktopBackendStatus>;
   onStatusChanged(callback: (status: DesktopBackendStatus) => void): RuntimeUnsubscribe;
   restart(): Promise<DesktopBackendStatus>;
+  /** Stops the built-in API until the next restart or app launch; config is unchanged. */
+  stop(): Promise<DesktopBackendStatus>;
 }
 
 export interface RuntimeDesktopLyrics {

@@ -8,20 +8,23 @@ import {
   SelectValue,
 } from "@scopify/ui/shadcn/components/select";
 import { ToggleGroup, ToggleGroupItem } from "@scopify/ui/shadcn/components/toggle-group";
-import { CircleCheck, CircleX, LoaderCircle, Radio, RotateCw } from "lucide-react";
+import { CircleCheck, CircleX, LoaderCircle, Play, Radio, RotateCw, Square } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import { SETTINGS_ACTION_BUTTON_CLASS_NAME } from "@/constants/settings";
 import { runtime } from "@/lib/runtime";
 import { isBackendHostInputValid } from "@/lib/web/backendUrl";
+import { probeBackend, probeQqBackend } from "@/lib/web/waitForBackend";
+import type { BackendPingResult } from "@/types/network/model";
 import type {
   BackendCustomAddressProps,
+  BackendPingBadgeProps,
   BackendSourceCardProps,
   BuiltinBackendRowsProps,
 } from "@/types/settings/components";
 import { BackendStatusIndicator } from "./BackendStatusIndicator";
-import { SettingInput, SettingRow, SettingSection } from "./SettingsUI";
+import { SettingInput, SettingPortInput, SettingRow, SettingSection } from "./SettingsUI";
 
 const PLATFORM_TEXT = {
   netease: {
@@ -51,6 +54,7 @@ export function BackendSourceCard({
 }: BackendSourceCardProps) {
   const { t } = useTranslation();
   const [isRestarting, setIsRestarting] = useState(false);
+  const [isStopping, setIsStopping] = useState(false);
   const text = PLATFORM_TEXT[platform];
   const builtinConfig = desktopConfig?.backend[platform] ?? null;
   const isBuiltin = Boolean(builtinConfig?.autoStart);
@@ -76,6 +80,19 @@ export function BackendSourceCard({
       toast.error(t(text.restartFailed));
     } finally {
       setIsRestarting(false);
+    }
+  };
+
+  const canStop = isBuiltin && backendStatus?.managed === true && backendStatus.state === "running";
+
+  const handleStop = async () => {
+    setIsStopping(true);
+    try {
+      await runtimeBackend.stop();
+    } catch {
+      toast.error(t("settings.backendSource.stopFailed"));
+    } finally {
+      setIsStopping(false);
     }
   };
 
@@ -122,9 +139,14 @@ export function BackendSourceCard({
       ) : null}
       {builtinConfig && isBuiltin ? (
         <BuiltinBackendRows
+          platform={platform}
           backendStatus={backendStatus}
           canRestart={canRestart}
+          canStop={canStop}
+          isRunning={backendStatus?.state === "running"}
           isRestarting={isRestarting}
+          isStopping={isStopping}
+          onStop={() => void handleStop()}
           onPortChange={(port) => updateBuiltin({ port })}
           onRestart={() => void handleRestart()}
           port={builtinConfig.port}
@@ -136,57 +158,101 @@ export function BackendSourceCard({
   );
 }
 
+/** Health check per platform: NetEase answers `/inner/version`, QQ Music `/login/channels`. */
+const PROBES = { netease: probeBackend, qq: probeQqBackend } as const;
+
 function BuiltinBackendRows({
   backendStatus,
   canRestart,
+  canStop,
   isRestarting,
+  isRunning,
+  isStopping,
   onPortChange,
   onRestart,
+  onStop,
+  platform,
   port,
 }: BuiltinBackendRowsProps) {
   const { t } = useTranslation();
+  const [isTesting, setIsTesting] = useState(false);
+  const [testResult, setTestResult] = useState<BackendPingResult | null>(null);
+  const origin = backendStatus?.state === "running" ? backendStatus.origin : null;
+
+  const handleTest = async () => {
+    if (!origin) return;
+    setIsTesting(true);
+    try {
+      setTestResult(await PROBES[platform](origin));
+    } finally {
+      setIsTesting(false);
+    }
+  };
+
   return (
     <>
       <SettingRow
         label={t("settings.localBackend.port.label")}
         sublabel={t("settings.backendSource.builtinPortSublabel")}
-        control={
-          <SettingInput
-            type="number"
-            value={port}
-            onChange={(value) => onPortChange(Number(value) || 0)}
-            className="w-28"
-          />
-        }
+        control={<SettingPortInput value={port} onChange={onPortChange} className="w-28" />}
       />
       <SettingRow
         label={t("settings.backendSource.currentAddress")}
-        sublabel={backendStatus?.error ?? t("settings.backendSource.currentAddressSublabel")}
-        control={
-          <span className="font-mono text-sm text-muted-foreground">
-            {backendStatus?.state === "running" ? backendStatus.origin : "—"}
-          </span>
-        }
-      />
-      <SettingRow
-        label={t("settings.localBackend.restart.label")}
-        sublabel={t("settings.backendSource.restartSublabel")}
+        isDebug
+        badge={testResult ? <BackendPingBadge result={testResult} /> : null}
+        sublabel={origin ?? backendStatus?.error ?? "—"}
         control={
           <button
             type="button"
-            disabled={!canRestart || isRestarting}
-            onClick={onRestart}
+            onClick={() => void handleTest()}
+            disabled={!origin || isTesting}
             className={`${SETTINGS_ACTION_BUTTON_CLASS_NAME} disabled:cursor-not-allowed disabled:opacity-50`}
           >
-            {isRestarting ? (
+            {isTesting ? (
               <LoaderCircle className="size-4 animate-spin" />
             ) : (
-              <RotateCw className="size-4" />
+              <Radio className="size-4" />
             )}
-            {isRestarting
-              ? t("settings.localBackend.restart.restarting")
-              : t("settings.localBackend.restart.button")}
+            {isTesting ? t("settings.backendPing.checking") : t("settings.backendPing.button")}
           </button>
+        }
+      />
+      <SettingRow
+        label={t("settings.backendSource.processLabel")}
+        sublabel={t("settings.backendSource.restartSublabel")}
+        control={
+          <div className="flex items-center gap-2">
+            {isRunning ? (
+              <button
+                type="button"
+                disabled={!canStop || isStopping}
+                onClick={onStop}
+                className={`${SETTINGS_ACTION_BUTTON_CLASS_NAME} disabled:cursor-not-allowed disabled:opacity-50`}
+              >
+                {isStopping ? (
+                  <LoaderCircle className="size-4 animate-spin" />
+                ) : (
+                  <Square className="size-4" />
+                )}
+                {t("settings.backendSource.stop")}
+              </button>
+            ) : null}
+            <button
+              type="button"
+              disabled={!canRestart || isRestarting}
+              onClick={onRestart}
+              className={`${SETTINGS_ACTION_BUTTON_CLASS_NAME} disabled:cursor-not-allowed disabled:opacity-50`}
+            >
+              {isRestarting ? (
+                <LoaderCircle className="size-4 animate-spin" />
+              ) : isRunning ? (
+                <RotateCw className="size-4" />
+              ) : (
+                <Play className="size-4" />
+              )}
+              {t(isRunning ? "settings.backendSource.restart" : "settings.backendSource.start")}
+            </button>
+          </div>
         }
       />
     </>
@@ -195,6 +261,7 @@ function BuiltinBackendRows({
 
 function CustomAddressRows({
   address,
+  addressKey,
   isPinging,
   onHostBlur,
   onPing,
@@ -205,38 +272,7 @@ function CustomAddressRows({
   const hostTrimmed = address.host.trim();
   const isHostInvalid = hostTrimmed !== "" && !isBackendHostInputValid(hostTrimmed);
 
-  const pingBadge = pingResult ? (
-    <span
-      aria-live="polite"
-      className={
-        pingResult.reachable
-          ? "flex items-center gap-1 text-xs font-medium text-success"
-          : "flex items-center gap-1 text-xs font-medium text-danger"
-      }
-    >
-      {pingResult.reachable ? (
-        <CircleCheck className="size-3.5" />
-      ) : (
-        <CircleX className="size-3.5" />
-      )}
-      {pingResult.reachable
-        ? pingResult.version
-          ? t("settings.backendPing.successWithVersion", {
-              latency: pingResult.latencyMs,
-              version: pingResult.version.startsWith("v")
-                ? pingResult.version
-                : `v${pingResult.version}`,
-            })
-          : t("settings.backendPing.success", { latency: pingResult.latencyMs })
-        : pingResult.reason === "timeout"
-          ? t("settings.backendPing.timeout")
-          : pingResult.reason === "invalid-response"
-            ? t("settings.backendPing.invalidResponse")
-            : pingResult.reason === "server"
-              ? t("settings.backendPing.serverError", { status: pingResult.status ?? 0 })
-              : t("settings.backendPing.networkError")}
-    </span>
-  ) : null;
+  const pingBadge = pingResult ? <BackendPingBadge result={pingResult} /> : null;
 
   return (
     <>
@@ -246,7 +282,9 @@ function CustomAddressRows({
         control={
           <Select
             value={address.protocol}
-            onValueChange={(value) => onWebChange("backend", "protocol", value as "http" | "https")}
+            onValueChange={(value) =>
+              onWebChange(addressKey, "protocol", value as "http" | "https")
+            }
           >
             <SelectTrigger aria-label={t("settings.backendProtocol.label")} className="w-28">
               <SelectValue />
@@ -265,7 +303,7 @@ function CustomAddressRows({
           <div className="flex flex-col items-end gap-1">
             <SettingInput
               value={address.host}
-              onChange={(value) => onWebChange("backend", "host", value)}
+              onChange={(value) => onWebChange(addressKey, "host", value)}
               onBlur={onHostBlur}
               className="w-42 sm:w-50"
               placeholder={t("settings.backendHost.placeholder")}
@@ -284,10 +322,9 @@ function CustomAddressRows({
         label={t("settings.backendPort.label")}
         sublabel={t("settings.backendPort.sublabel")}
         control={
-          <SettingInput
-            type="number"
+          <SettingPortInput
             value={address.port}
-            onChange={(value) => onWebChange("backend", "port", Number(value) || 0)}
+            onChange={(port) => onWebChange(addressKey, "port", port)}
             className="w-28"
           />
         }
@@ -314,5 +351,35 @@ function CustomAddressRows({
         }
       />
     </>
+  );
+}
+
+function BackendPingBadge({ result }: BackendPingBadgeProps) {
+  const { t } = useTranslation();
+  return (
+    <span
+      aria-live="polite"
+      className={
+        result.reachable
+          ? "flex items-center gap-1 text-xs font-medium text-success"
+          : "flex items-center gap-1 text-xs font-medium text-danger"
+      }
+    >
+      {result.reachable ? <CircleCheck className="size-3.5" /> : <CircleX className="size-3.5" />}
+      {result.reachable
+        ? result.version
+          ? t("settings.backendPing.successWithVersion", {
+              latency: result.latencyMs,
+              version: result.version.startsWith("v") ? result.version : `v${result.version}`,
+            })
+          : t("settings.backendPing.success", { latency: result.latencyMs })
+        : result.reason === "timeout"
+          ? t("settings.backendPing.timeout")
+          : result.reason === "invalid-response"
+            ? t("settings.backendPing.invalidResponse")
+            : result.reason === "server"
+              ? t("settings.backendPing.serverError", { status: result.status ?? 0 })
+              : t("settings.backendPing.networkError")}
+    </span>
   );
 }

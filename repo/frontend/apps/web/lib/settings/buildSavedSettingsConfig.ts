@@ -8,12 +8,14 @@ import type { SettingsConfig } from "@/types/settings/model";
 export function buildSavedSettingsConfig(
   config: SettingsConfig,
   backend: WebConfig["backend"],
+  qqBackend: WebConfig["qqBackend"],
 ): SettingsConfig {
   return {
     desktop: config.desktop,
     web: {
       ...config.web,
       backend,
+      qqBackend,
     },
   };
 }

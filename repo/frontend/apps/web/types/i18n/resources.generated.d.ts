@@ -1957,7 +1957,6 @@ export default interface Resources {
     "backendSource.builtinPortSublabel": "仅监听本机 127.0.0.1；端口被占用时自动换一个空闲端口，若占用者是同类后端则直接复用。";
     "backendSource.builtinSublabel": "由 Scopify 在本机启动并管理，随应用启动。";
     "backendSource.currentAddress": "当前地址";
-    "backendSource.currentAddressSublabel": "内置后端实际使用的地址，未运行时显示为 —。";
     "backendSource.custom": "自定义地址";
     "backendSource.customStatus": "自定义地址";
     "backendSource.customSublabel": "不启动内置后端，连接下方填写的地址。";
@@ -1965,8 +1964,13 @@ export default interface Resources {
     "backendSource.netease": "网易云音乐";
     "backendSource.off": "不启动";
     "backendSource.offSublabel": "不启动内置后端，该平台暂不可用。";
+    "backendSource.processLabel": "运行控制";
     "backendSource.qq": "QQ 音乐";
-    "backendSource.restartSublabel": "停止并重新启动由 Scopify 管理的后端。";
+    "backendSource.restart": "重启";
+    "backendSource.restartSublabel": "停止只对本次运行有效，下次打开应用会自动启动。";
+    "backendSource.start": "启动";
+    "backendSource.stop": "停止";
+    "backendSource.stopFailed": "无法停止内置后端";
     backendUnreachable: "后端服务无法访问（地址 {{url}}），请确认后端已启动或修改为主机和端口后再试";
     "cache.category.album": "专辑页面";
     "cache.category.artist": "歌手页面";
@@ -2040,6 +2044,7 @@ export default interface Resources {
     "desktopLyrics.showSecondaryLyric.sublabel": "在主歌词下方同步显示翻译或注音歌词。";
     "devTools.label": "开发者工具";
     "devTools.sublabel": "开启后，可用 Ctrl+Shift+I（macOS 为 ⌘⇧I）打开开发者工具，Ctrl+R（macOS 为 ⌘R）刷新窗口。";
+    discard: "放弃更改";
     "discord.applicationId.label": "Discord Application ID";
     "discord.applicationId.placeholder": "例如 123456789012345678";
     "discord.applicationId.sublabel": "在 Discord Developer Portal 创建 Scopify 应用后填入其 Application ID；不会上传该值。";
@@ -2072,10 +2077,7 @@ export default interface Resources {
     "language.sublabel": "支持简体中文、繁體中文和英语，默认简体中文。";
     loadFailed: "加载设置失败";
     "localBackend.port.label": "本地后端端口";
-    "localBackend.restart.button": "重启后端";
     "localBackend.restart.failed": "无法重启内置后端";
-    "localBackend.restart.label": "重启内置后端";
-    "localBackend.restart.restarting": "重启中...";
     "localBackend.restart.success": "内置后端已重启";
     "localBackend.status.disabled": "未启用";
     "localBackend.status.error": "启动失败";

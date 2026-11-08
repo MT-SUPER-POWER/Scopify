@@ -16,7 +16,7 @@ import type {
   WebSettingsChangeHandler,
 } from "@/types/settings/model";
 import type { BackendPingResult } from "@/types/network/model";
-import type { WebConfig } from "@/types/settings/config";
+import type { BackendAddressKey, WebConfig } from "@/types/settings/config";
 import type { CacheStats } from "@/types/cache/model";
 import type { CachePreferences } from "@/types/cache/model";
 
@@ -45,6 +45,15 @@ export interface SettingRowProps {
   className?: string;
 }
 
+export interface SaveChangesButtonProps {
+  visible: boolean;
+  onSave?: () => void;
+  onDiscard?: () => void;
+  /** Backward-compatible alias for onSave */
+  onClick?: () => void;
+  isSaving?: boolean;
+}
+
 export interface SettingButtonProps {
   children: ReactNode;
   onClick?: () => void;
@@ -55,18 +64,33 @@ export interface SettingButtonProps {
   "aria-label"?: string;
 }
 
+export interface SettingPortInputProps {
+  value: number;
+  onChange: (port: number) => void;
+  onBlur?: () => void;
+  className?: string;
+  disabled?: boolean;
+  placeholder?: string;
+  align?: "left" | "right";
+  isInvalid?: boolean;
+}
+
 export interface NetworkSettingsTabProps {
   backendPingResult: BackendPingResult | null;
   /** Desktop-hosted NetEase API; `null` outside Desktop. */
   backendStatus: DesktopBackendStatus | null;
   /** Desktop-hosted QQ Music API; `null` outside Desktop. */
   qqBackendStatus: DesktopBackendStatus | null;
+  qqBackendPingResult: BackendPingResult | null;
   config: SettingsConfig;
   isPingingBackend: boolean;
+  isPingingQqBackend: boolean;
   onDesktopChange: DesktopSettingsChangeHandler;
   onPingBackend: () => Promise<void>;
+  onPingQqBackend: () => Promise<void>;
   onWebChange: WebSettingsChangeHandler;
   onBackendHostBlur?: () => void;
+  onQqBackendHostBlur?: () => void;
 }
 
 export interface BackendStatusIndicatorProps {
@@ -75,6 +99,8 @@ export interface BackendStatusIndicatorProps {
 
 /** A custom backend address the card offers instead of the built-in API. */
 export interface BackendCustomAddressProps {
+  /** Web config section that holds this address. */
+  addressKey: BackendAddressKey;
   address: WebConfig["backend"];
   pingResult: BackendPingResult | null;
   isPinging: boolean;
@@ -83,12 +109,21 @@ export interface BackendCustomAddressProps {
   onHostBlur?: () => void;
 }
 
+export interface BackendPingBadgeProps {
+  result: BackendPingResult;
+}
+
 export interface BuiltinBackendRowsProps {
+  platform: keyof DesktopHostConfig["backend"];
   backendStatus: DesktopBackendStatus | null;
   canRestart: boolean;
+  canStop: boolean;
+  isRunning: boolean;
   isRestarting: boolean;
+  isStopping: boolean;
   onPortChange: (port: number) => void;
   onRestart: () => void;
+  onStop: () => void;
   port: number;
 }
 
@@ -99,7 +134,7 @@ export interface BackendSourceCardProps {
   desktopConfig: DesktopHostConfig | null;
   backendStatus: DesktopBackendStatus | null;
   onDesktopChange: DesktopSettingsChangeHandler;
-  /** Omitted for platforms that only run built-in (QQ Music until requests split by platform). */
+  /** Omitted for a platform that can only run built-in; the alternative is then "off". */
   custom?: BackendCustomAddressProps;
 }
 

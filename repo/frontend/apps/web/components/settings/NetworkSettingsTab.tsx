@@ -25,6 +25,10 @@ export function NetworkSettingsTab({
   onWebChange,
   onBackendHostBlur,
   qqBackendStatus,
+  qqBackendPingResult,
+  isPingingQqBackend,
+  onPingQqBackend,
+  onQqBackendHostBlur,
 }: NetworkSettingsTabProps) {
   const { t } = useTranslation();
   const isCustomProxy = config.desktop?.network.proxyMode === "custom";
@@ -37,6 +41,7 @@ export function NetworkSettingsTab({
         backendStatus={backendStatus}
         onDesktopChange={onDesktopChange}
         custom={{
+          addressKey: "backend",
           address: config.web.backend,
           pingResult: backendPingResult,
           isPinging: isPingingBackend,
@@ -45,15 +50,21 @@ export function NetworkSettingsTab({
           onHostBlur: onBackendHostBlur,
         }}
       />
-      {/* QQ Music's API is Desktop-only for now; the web build has no QQ backend to point at. */}
-      {config.desktop ? (
-        <BackendSourceCard
-          platform="qq"
-          desktopConfig={config.desktop}
-          backendStatus={qqBackendStatus}
-          onDesktopChange={onDesktopChange}
-        />
-      ) : null}
+      <BackendSourceCard
+        platform="qq"
+        desktopConfig={config.desktop}
+        backendStatus={qqBackendStatus}
+        onDesktopChange={onDesktopChange}
+        custom={{
+          addressKey: "qqBackend",
+          address: config.web.qqBackend,
+          pingResult: qqBackendPingResult,
+          isPinging: isPingingQqBackend,
+          onWebChange,
+          onPing: onPingQqBackend,
+          onHostBlur: onQqBackendHostBlur,
+        }}
+      />
       <SettingSection title={t("settings.section.network")}>
         <SettingRow
           label={t("settings.timeout.label")}

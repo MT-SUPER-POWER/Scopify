@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { RotateCcw } from "lucide-react";
 import {
   AlertDialog,
@@ -15,7 +16,9 @@ import { useTranslation } from "react-i18next";
 
 import type {
   SaveConfirmModalProps,
+  SaveChangesButtonProps,
   SettingButtonProps,
+  SettingPortInputProps,
   SettingRowProps,
   SettingSectionProps,
 } from "@/types/settings/components";
@@ -45,6 +48,7 @@ export function SettingInput({
   onChange,
   onBlur,
   type = "text",
+  inputMode,
   className = "w-28",
   disabled = false,
   placeholder,
@@ -55,6 +59,7 @@ export function SettingInput({
   onChange: (value: string) => void;
   onBlur?: () => void;
   type?: string;
+  inputMode?: "search" | "text" | "none" | "tel" | "url" | "email" | "numeric" | "decimal";
   className?: string;
   disabled?: boolean;
   placeholder?: string;
@@ -66,6 +71,7 @@ export function SettingInput({
   return (
     <input
       type={type}
+      inputMode={inputMode}
       value={value}
       onChange={(event) => onChange(event.target.value)}
       onBlur={onBlur}
@@ -75,6 +81,83 @@ export function SettingInput({
         "rounded border border-input bg-transparent px-3 py-1.5 text-sm font-medium text-foreground transition-colors outline-none placeholder:text-content-subtle hover:border-content focus:border-ring focus:ring-1 focus:ring-ring",
         textAlign === "right" ? "text-right" : "text-left",
         isInvalid &&
+          "border-danger text-danger hover:border-danger focus:border-danger focus:ring-danger",
+        disabled && "cursor-not-allowed opacity-40",
+        className,
+      )}
+    />
+  );
+}
+
+/**
+ * 端口输入组件：使用 text 类型与数字 inputMode，避免原生 number 类型的微调箭头及清空时强制回填 0 的问题。
+ */
+export function SettingPortInput({
+  value,
+  onChange,
+  onBlur,
+  className = "w-28",
+  disabled = false,
+  placeholder,
+  align = "right",
+  isInvalid = false,
+}: SettingPortInputProps) {
+  const [draft, setDraft] = useState<string>(() => (value ? String(value) : ""));
+  const [isFocused, setIsFocused] = useState(false);
+
+  useEffect(() => {
+    if (!isFocused) {
+      setDraft(value ? String(value) : "");
+    }
+  }, [value, isFocused]);
+
+  const isOutOfRange = draft !== "" && (Number(draft) < 1 || Number(draft) > 65535);
+
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const next = event.target.value.replace(/\D/g, "");
+    if (next.length > 5) return;
+    setDraft(next);
+
+    if (next === "") return;
+
+    const parsed = Number.parseInt(next, 10);
+    if (Number.isFinite(parsed) && parsed >= 1 && parsed <= 65535) {
+      onChange(parsed);
+    }
+  };
+
+  const handleBlur = () => {
+    setIsFocused(false);
+    if (draft === "") {
+      setDraft(value ? String(value) : "");
+    } else {
+      const parsed = Number.parseInt(draft, 10);
+      if (Number.isFinite(parsed) && parsed >= 1 && parsed <= 65535) {
+        if (parsed !== value) {
+          onChange(parsed);
+        }
+      } else {
+        setDraft(value ? String(value) : "");
+      }
+    }
+    onBlur?.();
+  };
+
+  return (
+    <input
+      type="text"
+      inputMode="numeric"
+      pattern="[0-9]*"
+      value={draft}
+      onChange={handleChange}
+      onFocus={() => setIsFocused(true)}
+      onBlur={handleBlur}
+      disabled={disabled}
+      placeholder={placeholder}
+      className={cn(
+        "rounded border border-input bg-transparent px-3 py-1.5 text-sm font-medium text-foreground transition-colors outline-none placeholder:text-content-subtle hover:border-content focus:border-ring focus:ring-1 focus:ring-ring",
+        align === "right" ? "text-right" : "text-left",
+        (isInvalid || isOutOfRange) &&
           "border-danger text-danger hover:border-danger focus:border-danger focus:ring-danger",
         disabled && "cursor-not-allowed opacity-40",
         className,
@@ -261,8 +344,15 @@ export function SettingsLoadingState() {
   );
 }
 
-export function SaveChangesButton({ visible, onClick }: { visible: boolean; onClick: () => void }) {
+export function SaveChangesButton({
+  visible,
+  onClick,
+  onSave,
+  onDiscard,
+  isSaving = false,
+}: SaveChangesButtonProps) {
   const { t } = useTranslation();
+  const handleSave = onSave ?? onClick;
 
   return (
     <div
@@ -271,13 +361,27 @@ export function SaveChangesButton({ visible, onClick }: { visible: boolean; onCl
         visible ? "translate-y-0 opacity-100" : "pointer-events-none translate-y-4 opacity-0",
       )}
     >
-      <button
-        type="button"
-        onClick={onClick}
-        className="flex cursor-pointer items-center gap-2 rounded-full bg-brand px-8 py-3.5 text-base font-bold text-brand-foreground shadow-brand transition-all hover:scale-105 hover:bg-brand-hover active:scale-100"
-      >
-        {t("settings.save")}
-      </button>
+      <div className="flex items-center gap-2 rounded-full border border-border/60 bg-surface/90 p-1.5 shadow-floating backdrop-blur-md">
+        {onDiscard ? (
+          <button
+            type="button"
+            onClick={onDiscard}
+            disabled={isSaving}
+            className="hover:bg-surface-hover flex cursor-pointer items-center gap-1.5 rounded-full px-5 py-2 text-sm font-semibold text-muted-foreground transition-all hover:text-foreground active:scale-95 disabled:pointer-events-none disabled:opacity-50"
+          >
+            <RotateCcw className="size-3.5" />
+            {t("settings.discard")}
+          </button>
+        ) : null}
+        <button
+          type="button"
+          onClick={handleSave}
+          disabled={isSaving}
+          className="flex cursor-pointer items-center gap-2 rounded-full bg-brand px-6 py-2.5 text-sm font-bold text-brand-foreground shadow-brand transition-all hover:scale-105 hover:bg-brand-hover active:scale-100 disabled:pointer-events-none disabled:opacity-50"
+        >
+          {isSaving ? `${t("settings.confirm.confirm")}...` : t("settings.save")}
+        </button>
+      </div>
     </div>
   );
 }

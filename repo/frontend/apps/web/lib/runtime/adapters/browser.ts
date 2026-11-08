@@ -344,11 +344,13 @@ export function createBrowserRuntime(
       getStatus: async () => unsupportedBackendStatus(3838),
       onStatusChanged: () => NOOP,
       restart: async () => unsupportedBackendStatus(3838),
+      stop: async () => unsupportedBackendStatus(3838),
     },
     qqBackend: {
       getStatus: async () => unsupportedBackendStatus(3200),
       onStatusChanged: () => NOOP,
       restart: async () => unsupportedBackendStatus(3200),
+      stop: async () => unsupportedBackendStatus(3200),
     },
     audioFeature: {
       connect: () => NOOP,

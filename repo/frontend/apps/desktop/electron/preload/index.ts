@@ -162,6 +162,8 @@ const electronAPI: DesktopBridge = {
   restartMcp: (): Promise<McpStatus> => ipcRenderer.invoke("mcp:restart"),
   restartBackend: (): Promise<DesktopBackendStatus> => ipcRenderer.invoke("backend:restart"),
   restartQqBackend: (): Promise<DesktopBackendStatus> => ipcRenderer.invoke("qq-backend:restart"),
+  stopBackend: (): Promise<DesktopBackendStatus> => ipcRenderer.invoke("backend:stop"),
+  stopQqBackend: (): Promise<DesktopBackendStatus> => ipcRenderer.invoke("qq-backend:stop"),
   getMcpClientConfiguration: (): Promise<McpClientConfiguration> =>
     ipcRenderer.invoke("mcp:get-client-configuration"),
   rotateMcpCredential: (): Promise<McpClientConfiguration> =>

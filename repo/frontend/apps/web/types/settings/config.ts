@@ -11,6 +11,12 @@ export const DEFAULT_WEB_CONFIG = {
     port: 3838,
     protocol: "http",
   },
+  /** QQ Music API address. Folds into a per-platform `backend` when requests split by platform. */
+  qqBackend: {
+    host: "127.0.0.1",
+    port: 3200,
+    protocol: "http",
+  },
   network: {
     randomCNIP: "false",
     timeout: 10000,
@@ -74,6 +80,14 @@ export const webConfigSchema = z.preprocess(
           protocol: backendProtocolSchema.catch(DEFAULT_WEB_CONFIG.backend.protocol),
         }),
       ),
+      qqBackend: z.preprocess(
+        toRecord,
+        z.object({
+          host: trimmedString(DEFAULT_WEB_CONFIG.qqBackend.host),
+          port: positiveNumber(DEFAULT_WEB_CONFIG.qqBackend.port),
+          protocol: backendProtocolSchema.catch(DEFAULT_WEB_CONFIG.qqBackend.protocol),
+        }),
+      ),
       network: z.preprocess(
         toRecord,
         z.object({
@@ -88,3 +102,6 @@ export const webConfigSchema = z.preprocess(
 export type AppLocale = z.output<typeof appLocaleSchema>;
 export type BackendProtocol = z.output<typeof backendProtocolSchema>;
 export type WebConfig = z.output<typeof webConfigSchema>;
+
+/** Web config sections that hold one backend address each. */
+export type BackendAddressKey = "backend" | "qqBackend";

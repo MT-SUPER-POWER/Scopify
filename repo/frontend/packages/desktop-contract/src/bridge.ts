@@ -208,6 +208,9 @@ export interface DesktopBridge<TLyrics = unknown> {
   restartMcp(): Promise<McpStatus>;
   restartBackend(): Promise<DesktopBackendStatus>;
   restartQqBackend(): Promise<DesktopBackendStatus>;
+  /** Stops the built-in API for this session; the saved config is unchanged. */
+  stopBackend(): Promise<DesktopBackendStatus>;
+  stopQqBackend(): Promise<DesktopBackendStatus>;
   rotateMcpCredential(): Promise<McpClientConfiguration>;
   testMcpConnection(): Promise<McpConnectionTestResult>;
   retryDesktopPlaybackWallpaper(): Promise<DesktopPlaybackWallpaperModel>;

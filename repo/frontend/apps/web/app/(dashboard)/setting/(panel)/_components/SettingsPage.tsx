@@ -84,6 +84,10 @@ const SettingsPage = () => {
               onDesktopChange={settings.handleDesktopChange}
               onPingBackend={settings.handlePingBackend}
               onBackendHostBlur={settings.handleBackendHostBlur}
+              qqBackendPingResult={settings.qqBackendPingResult}
+              isPingingQqBackend={settings.isPingingQqBackend}
+              onPingQqBackend={settings.handlePingQqBackend}
+              onQqBackendHostBlur={settings.handleQqBackendHostBlur}
             />
           </TabsContent>
           {/*存储*/}
@@ -121,7 +125,9 @@ const SettingsPage = () => {
       {activeTab !== "appearance" && activeTab !== "notifications" && (
         <SaveChangesButton
           visible={settings.hasChanges}
-          onClick={() => settings.setIsModalOpen(true)}
+          onSave={() => settings.setIsModalOpen(true)}
+          onDiscard={() => settings.handleDiscardChanges()}
+          isSaving={settings.isSaving}
         />
       )}
       <SaveConfirmModal
