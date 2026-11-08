@@ -32,13 +32,13 @@ const backendHost =
   process.env.APP_CFG_BACKEND_HOST ||
   backendPublicUrl?.host ||
   process.env.BACKEND_PUBLIC_HOST ||
-  DEFAULT_WEB_CONFIG.backend.host;
+  DEFAULT_WEB_CONFIG.backend.netease.host;
 const backendPort = envNumber(
   process.env.APP_CFG_BACKEND_PORT ||
     (backendPublicUrl ? String(backendPublicUrl.port) : undefined) ||
     process.env.BACKEND_PUBLIC_PORT ||
     process.env.BACKEND_PORT,
-  DEFAULT_WEB_CONFIG.backend.port,
+  DEFAULT_WEB_CONFIG.backend.netease.port,
 );
 const configuredBackendProtocol = process.env.APP_CFG_BACKEND_PROTOCOL;
 const backendProtocol =
@@ -47,7 +47,7 @@ const backendProtocol =
     : backendPublicUrl?.protocol ||
       (process.env.BACKEND_PUBLIC_PROTOCOL === "https"
         ? "https"
-        : DEFAULT_WEB_CONFIG.backend.protocol);
+        : DEFAULT_WEB_CONFIG.backend.netease.protocol);
 const frontendDevPort = envNumber(
   process.env.APP_CFG_FRONTEND_DEV_PORT || process.env.FRONTEND_PORT,
   3000,
@@ -106,16 +106,18 @@ const nextConfig: NextConfig = {
   env: {
     NEXT_PUBLIC_UPDATES: JSON.stringify(releaseNotes),
     APP_CFG_APP_LOCALE: process.env.APP_CFG_APP_LOCALE || DEFAULT_WEB_CONFIG.app.locale,
-    APP_CFG_BACKEND_HOST: isDesktopBuild ? DEFAULT_WEB_CONFIG.backend.host : backendHost,
-    APP_CFG_BACKEND_PORT: String(isDesktopBuild ? DEFAULT_WEB_CONFIG.backend.port : backendPort),
+    APP_CFG_BACKEND_HOST: isDesktopBuild ? DEFAULT_WEB_CONFIG.backend.netease.host : backendHost,
+    APP_CFG_BACKEND_PORT: String(
+      isDesktopBuild ? DEFAULT_WEB_CONFIG.backend.netease.port : backendPort,
+    ),
     APP_CFG_BACKEND_PROTOCOL: isDesktopBuild
-      ? DEFAULT_WEB_CONFIG.backend.protocol
+      ? DEFAULT_WEB_CONFIG.backend.netease.protocol
       : backendProtocol,
     APP_CFG_FRONTEND_DEV_PORT: String(frontendDevPort),
     APP_CFG_NET_TIMEOUT:
       process.env.APP_CFG_NET_TIMEOUT || String(DEFAULT_WEB_CONFIG.network.timeout),
     APP_CFG_NET_RANDOM_CNIP:
-      process.env.APP_CFG_NET_RANDOM_CNIP || String(DEFAULT_WEB_CONFIG.network.randomCNIP),
+      process.env.APP_CFG_NET_RANDOM_CNIP || String(DEFAULT_WEB_CONFIG.netease.randomCNIP),
   },
 };
 

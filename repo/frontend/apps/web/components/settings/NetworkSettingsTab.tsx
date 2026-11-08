@@ -10,61 +10,47 @@ import {
 
 import type { DesktopProxyMode } from "@scopify/desktop-contract";
 import type { NetworkSettingsTabProps } from "@/types/settings/components";
+import type { BackendPlatform } from "@/types/settings/config";
 import { useTranslation } from "react-i18next";
 
 import { BackendSourceCard } from "./BackendSourceCard";
 import { SettingInput, SettingRow, SettingSection } from "./SettingsUI";
 
+const PLATFORMS: readonly BackendPlatform[] = ["netease", "qq"];
+
 export function NetworkSettingsTab({
-  backendPingResult,
-  backendStatus,
+  backendPingResults,
+  backendStatuses,
   config,
-  isPingingBackend,
+  onBackendAddressChange,
+  onBackendHostBlur,
   onDesktopChange,
   onPingBackend,
   onWebChange,
-  onBackendHostBlur,
-  qqBackendStatus,
-  qqBackendPingResult,
-  isPingingQqBackend,
-  onPingQqBackend,
-  onQqBackendHostBlur,
+  pingingBackends,
 }: NetworkSettingsTabProps) {
   const { t } = useTranslation();
   const isCustomProxy = config.desktop?.network.proxyMode === "custom";
 
   return (
     <div className="grid grid-cols-1 items-start gap-x-16 gap-y-10 lg:grid-cols-2">
-      <BackendSourceCard
-        platform="netease"
-        desktopConfig={config.desktop}
-        backendStatus={backendStatus}
-        onDesktopChange={onDesktopChange}
-        custom={{
-          addressKey: "backend",
-          address: config.web.backend,
-          pingResult: backendPingResult,
-          isPinging: isPingingBackend,
-          onWebChange,
-          onPing: onPingBackend,
-          onHostBlur: onBackendHostBlur,
-        }}
-      />
-      <BackendSourceCard
-        platform="qq"
-        desktopConfig={config.desktop}
-        backendStatus={qqBackendStatus}
-        onDesktopChange={onDesktopChange}
-        custom={{
-          addressKey: "qqBackend",
-          address: config.web.qqBackend,
-          pingResult: qqBackendPingResult,
-          isPinging: isPingingQqBackend,
-          onWebChange,
-          onPing: onPingQqBackend,
-          onHostBlur: onQqBackendHostBlur,
-        }}
-      />
+      {PLATFORMS.map((platform) => (
+        <BackendSourceCard
+          key={platform}
+          platform={platform}
+          desktopConfig={config.desktop}
+          backendStatus={backendStatuses[platform]}
+          onDesktopChange={onDesktopChange}
+          custom={{
+            address: config.web.backend[platform],
+            pingResult: backendPingResults[platform],
+            isPinging: pingingBackends[platform],
+            onChange: (key, value) => onBackendAddressChange(platform, key, value),
+            onPing: () => onPingBackend(platform),
+            onHostBlur: () => onBackendHostBlur(platform),
+          }}
+        />
+      ))}
       <SettingSection title={t("settings.section.network")}>
         <SettingRow
           label={t("settings.timeout.label")}
@@ -82,9 +68,9 @@ export function NetworkSettingsTab({
           sublabel={t("settings.randomCNIP.sublabel")}
           control={
             <Select
-              value={String(config.web.network.randomCNIP)}
+              value={config.web.netease.randomCNIP}
               onValueChange={(value) =>
-                onWebChange("network", "randomCNIP", value === "true" ? "true" : "false")
+                onWebChange("netease", "randomCNIP", value === "true" ? "true" : "false")
               }
             >
               <SelectTrigger aria-label={t("settings.randomCNIP.label")} className="min-w-30">

@@ -16,7 +16,7 @@ import type {
   WebSettingsChangeHandler,
 } from "@/types/settings/model";
 import type { BackendPingResult } from "@/types/network/model";
-import type { BackendAddressKey, WebConfig } from "@/types/settings/config";
+import type { BackendAddress, BackendPlatform } from "@/types/settings/config";
 import type { CacheStats } from "@/types/cache/model";
 import type { CachePreferences } from "@/types/cache/model";
 
@@ -76,21 +76,20 @@ export interface SettingPortInputProps {
 }
 
 export interface NetworkSettingsTabProps {
-  backendPingResult: BackendPingResult | null;
-  /** Desktop-hosted NetEase API; `null` outside Desktop. */
-  backendStatus: DesktopBackendStatus | null;
-  /** Desktop-hosted QQ Music API; `null` outside Desktop. */
-  qqBackendStatus: DesktopBackendStatus | null;
-  qqBackendPingResult: BackendPingResult | null;
+  /** Desktop-hosted API per platform; `null` outside Desktop. */
+  backendStatuses: Record<BackendPlatform, DesktopBackendStatus | null>;
+  backendPingResults: Record<BackendPlatform, BackendPingResult | null>;
+  pingingBackends: Record<BackendPlatform, boolean>;
   config: SettingsConfig;
-  isPingingBackend: boolean;
-  isPingingQqBackend: boolean;
+  onBackendAddressChange: <K extends keyof BackendAddress>(
+    platform: BackendPlatform,
+    key: K,
+    value: BackendAddress[K],
+  ) => void;
+  onBackendHostBlur: (platform: BackendPlatform) => void;
   onDesktopChange: DesktopSettingsChangeHandler;
-  onPingBackend: () => Promise<void>;
-  onPingQqBackend: () => Promise<void>;
+  onPingBackend: (platform: BackendPlatform) => Promise<void>;
   onWebChange: WebSettingsChangeHandler;
-  onBackendHostBlur?: () => void;
-  onQqBackendHostBlur?: () => void;
 }
 
 export interface BackendStatusIndicatorProps {
@@ -99,12 +98,10 @@ export interface BackendStatusIndicatorProps {
 
 /** A custom backend address the card offers instead of the built-in API. */
 export interface BackendCustomAddressProps {
-  /** Web config section that holds this address. */
-  addressKey: BackendAddressKey;
-  address: WebConfig["backend"];
+  address: BackendAddress;
   pingResult: BackendPingResult | null;
   isPinging: boolean;
-  onWebChange: WebSettingsChangeHandler;
+  onChange: <K extends keyof BackendAddress>(key: K, value: BackendAddress[K]) => void;
   onPing: () => Promise<void>;
   onHostBlur?: () => void;
 }
@@ -114,7 +111,7 @@ export interface BackendPingBadgeProps {
 }
 
 export interface BuiltinBackendRowsProps {
-  platform: keyof DesktopHostConfig["backend"];
+  platform: BackendPlatform;
   backendStatus: DesktopBackendStatus | null;
   canRestart: boolean;
   canStop: boolean;
@@ -129,7 +126,7 @@ export interface BuiltinBackendRowsProps {
 
 /** One platform's backend card: built-in Desktop API, or a custom address when one is offered. */
 export interface BackendSourceCardProps {
-  platform: keyof DesktopHostConfig["backend"];
+  platform: BackendPlatform;
   /** `null` outside Desktop, where only the custom address exists. */
   desktopConfig: DesktopHostConfig | null;
   backendStatus: DesktopBackendStatus | null;

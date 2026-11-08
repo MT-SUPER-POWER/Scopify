@@ -3,23 +3,28 @@ import axios, { type AxiosInstance, type InternalAxiosRequestConfig } from "axio
 import { runtime } from "@/lib/runtime";
 import type { RuntimeBackend } from "@/lib/runtime/types";
 import type { ApiRequestConfig } from "@/types/network/model";
-import type { BackendAddressKey, WebConfig } from "@/types/settings/config";
+import { webConfigSchema, type BackendPlatform, type WebConfig } from "@/types/settings/config";
 
 import { ApiError, toApiError } from "../apiError";
 import { buildBackendBaseUrl, normalizeBackendConfig } from "../backendUrl";
 import { webConfig } from "../env";
 import { reportFailure } from "../errorTracking";
-import { loadStoredBackendAddress, loadStoredNetworkConfig } from "./storedSettings";
+import {
+  loadStoredBackendAddress,
+  loadStoredNeteaseConfig,
+  loadStoredNetworkConfig,
+} from "./storedSettings";
 
 export interface ApiClientOptions<C extends ApiRequestConfig> {
-  /** Platform name added to failure reports, e.g. `netease`. */
-  provider: string;
-  /** Web config section holding the address used when no Desktop-managed API is running. */
-  addressKey: BackendAddressKey;
+  /**
+   * The platform whose `backend.<platform>` address is used when no Desktop-managed API is
+   * running; also the provider name added to failure reports.
+   */
+  platform: BackendPlatform;
   /** The Desktop-managed API; its origin wins while it runs. */
   desktopBackend?: RuntimeBackend;
   /** Platform-specific request preparation, such as session and default parameters. */
-  prepareRequest?: (config: InternalAxiosRequestConfig & C, network: WebConfig["network"]) => void;
+  prepareRequest?: (config: InternalAxiosRequestConfig & C, settings: RequestSettings) => void;
   /** True when a 2xx body still reports failure under the platform's own convention. */
   isBusinessFailure?: (data: unknown, config: C) => boolean;
   /** Platform reaction to a failed request, before it is reported. */
@@ -37,16 +42,36 @@ export interface ApiClient<C extends ApiRequestConfig> {
   requestConfig<D = unknown>(config: C & ApiRequestConfig<D>): C & ApiRequestConfig<D>;
 }
 
-let runtimeNetworkConfig: WebConfig["network"] = { ...webConfig.network };
+/** Request options in effect: the shared network options and each platform's own. */
+export type RequestSettings = Pick<WebConfig, "netease" | "network">;
 
-function getNetworkConfig(): WebConfig["network"] {
-  return { ...runtimeNetworkConfig, ...loadStoredNetworkConfig() };
+/**
+ * The config carried by an `app-config-updated` event. A payload in the flat shape used before
+ * addresses were split by platform is lifted into the current shape.
+ */
+function readWebConfigEvent(event: Event): WebConfig | null {
+  const detail = (event as CustomEvent<unknown>).detail;
+  if (typeof detail !== "object" || detail === null) return null;
+  return webConfigSchema.safeParse(detail).data ?? null;
+}
+
+let runtimeRequestSettings: RequestSettings = {
+  network: { ...webConfig.network },
+  netease: { ...webConfig.netease },
+};
+
+function getRequestSettings(): RequestSettings {
+  return {
+    network: { ...runtimeRequestSettings.network, ...loadStoredNetworkConfig() },
+    netease: { ...runtimeRequestSettings.netease, ...loadStoredNeteaseConfig() },
+  };
 }
 
 if (typeof window !== "undefined") {
   window.addEventListener("app-config-updated", (event) => {
-    const next = (event as CustomEvent<WebConfig>).detail;
-    if (next) runtimeNetworkConfig = { ...next.network };
+    const next = readWebConfigEvent(event);
+    if (next)
+      runtimeRequestSettings = { network: { ...next.network }, netease: { ...next.netease } };
   });
 }
 
@@ -88,13 +113,13 @@ function reportRequestError(provider: string, error: ApiError) {
  * Tracks where one platform's requests go: the configured address, replaced by the
  * Desktop-managed API's origin while that API runs.
  */
-function createBaseUrlSource(addressKey: BackendAddressKey, desktopBackend?: RuntimeBackend) {
-  let configured = loadStoredBackendAddress(addressKey) ?? webConfig[addressKey];
+function createBaseUrlSource(platform: BackendPlatform, desktopBackend?: RuntimeBackend) {
+  let configured = loadStoredBackendAddress(platform) ?? webConfig.backend[platform];
   let desktopOrigin: string | null = null;
 
   if (typeof window !== "undefined") {
     window.addEventListener("app-config-updated", (event) => {
-      const next = (event as CustomEvent<WebConfig>).detail?.[addressKey];
+      const next = readWebConfigEvent(event)?.backend[platform];
       if (!next) return;
       const resolved = normalizeBackendConfig(next);
       configured = resolved.ok ? resolved.backend : { ...next };
@@ -121,31 +146,31 @@ export function createApiClient<C extends ApiRequestConfig>(
   options: ApiClientOptions<C>,
 ): ApiClient<C> {
   const getBaseUrl = createBaseUrlSource(
-    options.addressKey,
+    options.platform,
     runtime.isDesktop ? options.desktopBackend : undefined,
   );
 
   const instance = axios.create({
     baseURL: getBaseUrl(),
-    timeout: getNetworkConfig().timeout,
+    timeout: getRequestSettings().network.timeout,
     withCredentials: true,
   });
 
   // Static export loads this module in every worker; skip the banner during the build.
   if (process.env.NEXT_PHASE !== "phase-production-build") {
-    console.info(`[${options.provider}] request backend URL is`, getBaseUrl());
+    console.info(`[${options.platform}] request backend URL is`, getBaseUrl());
   }
 
   instance.interceptors.request.use((raw) => {
     const config = raw as InternalAxiosRequestConfig & C;
     const baseURL = getBaseUrl();
-    if (!baseURL) throw new Error(`${options.provider} backend URL is not configured.`);
+    if (!baseURL) throw new Error(`${options.platform} backend URL is not configured.`);
 
-    const network = getNetworkConfig();
+    const settings = getRequestSettings();
     config.baseURL = baseURL;
-    config.timeout = config.transferTimeout ?? network.timeout;
+    config.timeout = config.transferTimeout ?? settings.network.timeout;
     config.traceId ??= createRequestTraceId();
-    options.prepareRequest?.(config, network);
+    options.prepareRequest?.(config, settings);
     return config;
   });
 
@@ -176,7 +201,7 @@ export function createApiClient<C extends ApiRequestConfig>(
     if (axios.isCancel(error)) return Promise.reject(error);
     const apiError = toApiError(error);
     options.onError?.(apiError);
-    reportRequestError(options.provider, apiError);
+    reportRequestError(options.platform, apiError);
     return Promise.reject(apiError);
   });
 

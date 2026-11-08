@@ -9,8 +9,7 @@ import type { ApiRequestConfig } from "@/types/network/model";
  * session (the `qqmusic_session` cookie or the auth header) is wired up with QQ login.
  */
 export const qqClient = createApiClient<ApiRequestConfig>({
-  provider: "qq",
-  addressKey: "qqBackend",
+  platform: "qq",
   desktopBackend: runtime.qqBackend,
 });
 

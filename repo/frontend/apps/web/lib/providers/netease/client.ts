@@ -22,10 +22,9 @@ function isNoLoginRequest(config?: NeteaseRequestConfig) {
  * `randomCNIP` defaults and the `code: 250` failure are NetEase conventions and stay here.
  */
 export const neteaseClient = createApiClient<NeteaseRequestConfig>({
-  provider: "netease",
-  addressKey: "backend",
+  platform: "netease",
   desktopBackend: runtime.backend,
-  prepareRequest(config, network) {
+  prepareRequest(config, settings) {
     const credential = getMusicSessionCredential();
     const requestParams = isRecord(config.params) ? config.params : {};
     const sessionParams =
@@ -40,7 +39,7 @@ export const neteaseClient = createApiClient<NeteaseRequestConfig>({
             ...sessionParams,
             timestamp: Date.now(),
             ...(runtime.isDesktop ? { os: "pc" } : { platform: "web" }),
-            randomCNIP: network.randomCNIP,
+            randomCNIP: settings.netease.randomCNIP,
           };
   },
   isBusinessFailure: (data) => isRecord(data) && data.code === 250,

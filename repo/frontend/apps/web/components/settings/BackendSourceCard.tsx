@@ -261,11 +261,10 @@ function BuiltinBackendRows({
 
 function CustomAddressRows({
   address,
-  addressKey,
   isPinging,
+  onChange,
   onHostBlur,
   onPing,
-  onWebChange,
   pingResult,
 }: BackendCustomAddressProps) {
   const { t } = useTranslation();
@@ -282,9 +281,7 @@ function CustomAddressRows({
         control={
           <Select
             value={address.protocol}
-            onValueChange={(value) =>
-              onWebChange(addressKey, "protocol", value as "http" | "https")
-            }
+            onValueChange={(value) => onChange("protocol", value as "http" | "https")}
           >
             <SelectTrigger aria-label={t("settings.backendProtocol.label")} className="w-28">
               <SelectValue />
@@ -303,7 +300,7 @@ function CustomAddressRows({
           <div className="flex flex-col items-end gap-1">
             <SettingInput
               value={address.host}
-              onChange={(value) => onWebChange(addressKey, "host", value)}
+              onChange={(value) => onChange("host", value)}
               onBlur={onHostBlur}
               className="w-42 sm:w-50"
               placeholder={t("settings.backendHost.placeholder")}
@@ -324,7 +321,7 @@ function CustomAddressRows({
         control={
           <SettingPortInput
             value={address.port}
-            onChange={(port) => onWebChange(addressKey, "port", port)}
+            onChange={(port) => onChange("port", port)}
             className="w-28"
           />
         }
