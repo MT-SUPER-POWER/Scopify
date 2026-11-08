@@ -27,6 +27,8 @@ const NETEASE_CAPABILITIES: ReadonlySet<MusicCapability> = new Set<MusicCapabili
   "social",
   "messages",
   "vip",
+  "history",
+  "devices",
 ]);
 
 /** Composed from one module per area (`./<area>.ts`), so areas can change independently. */

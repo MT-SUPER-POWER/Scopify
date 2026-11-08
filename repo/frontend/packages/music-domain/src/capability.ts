@@ -25,6 +25,8 @@ export const MUSIC_CAPABILITIES = [
   "social",
   "messages",
   "vip",
+  "history",
+  "devices",
 ] as const;
 
 export type MusicCapability = (typeof MUSIC_CAPABILITIES)[number];
