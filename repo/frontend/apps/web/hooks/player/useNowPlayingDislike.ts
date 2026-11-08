@@ -7,9 +7,11 @@ import { isPersonalFmPlaybackSource } from "@/constants/personalFm";
 import { usePersonalFmDislike } from "@/hooks/personalFm/usePersonalFmDislike";
 import { useDailyRecommendationMutation } from "@/hooks/playlist/useDailyRecommendationMutation";
 import { clearPageCache } from "@/lib/cache/pageCache";
+import { adaptNeteaseTrack, getNeteaseTrackId } from "@/lib/providers/netease/adapters/track";
 import { reportActionFailure } from "@/lib/web/errorTracking";
 import { usePlayerStore } from "@/store";
 import { useTranslation } from "react-i18next";
+import type { PlayerTrack } from "@/types/player/model";
 import { pruneSongDetail, type SongDetail } from "@/types/song/api";
 
 export function useNowPlayingDislike(song: SongDetail | null | undefined) {
@@ -39,17 +41,16 @@ export function useNowPlayingDislike(song: SongDetail | null | undefined) {
         if (!dislikeResult.data) {
           throw new Error("The daily recommendation endpoint did not provide a replacement track.");
         }
-        const replaceSong = pruneSongDetail(dislikeResult.data);
+        const replaceSong = adaptNeteaseTrack(pruneSongDetail(dislikeResult.data));
         const playerState = usePlayerStore.getState();
-        const isCurrentPlaying = playerState.currentSongDetail?.id === song.id;
+        const isCurrentPlaying = getNeteaseTrackId(playerState.currentTrack) === song.id;
+        const isDisliked = (track: PlayerTrack) => getNeteaseTrackId(track) === song.id;
 
-        const inQueue = playerState.queue.some((s) => s.id === song.id);
+        const inQueue = playerState.queue.some(isDisliked);
         if (inQueue) {
           usePlayerStore.setState({
-            queue: playerState.queue.map((s) => (s.id === song.id ? replaceSong : s)),
-            originalQueue: playerState.originalQueue.map((s) =>
-              s.id === song.id ? replaceSong : s,
-            ),
+            queue: playerState.queue.map((s) => (isDisliked(s) ? replaceSong : s)),
+            originalQueue: playerState.originalQueue.map((s) => (isDisliked(s) ? replaceSong : s)),
           });
         }
 

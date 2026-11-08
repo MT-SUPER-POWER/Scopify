@@ -27,13 +27,13 @@ interface CenterLyricsViewProps {
  */
 export function CenterLyricsView({ onClose }: CenterLyricsViewProps) {
   const { t } = useTranslation();
-  const song = usePlayerStore((s) => s.currentSongDetail);
+  const song = usePlayerStore((s) => s.currentTrack);
   const commands = usePlaybackCommands();
   const { lines, lastStartedIndex } = useCompanionLyricLine();
   const viewportRef = useRef<HTMLDivElement>(null);
   const manualScrollAtRef = useRef(0);
 
-  const artworkUrl = resolveCoverUrl(song?.al?.picUrl, song?.al?.coverUrl);
+  const artworkUrl = resolveCoverUrl(song?.album?.coverUrl);
   const coverColor = useCoverThemeColor(artworkUrl ? getSizedImageUrl(artworkUrl, 100) : null);
 
   useEffect(() => {
@@ -76,11 +76,11 @@ export function CenterLyricsView({ onClose }: CenterLyricsViewProps) {
           {song && (
             <div className="truncate">
               <span className="truncate text-sm font-bold text-white drop-shadow-sm">
-                {song.name}
+                {song.title}
               </span>
-              {song.ar && song.ar.length > 0 && (
+              {song.artists && song.artists.length > 0 && (
                 <span className="ml-2 truncate text-xs text-white/70">
-                  {song.ar.map((a) => a.name).join(", ")}
+                  {song.artists.map((a) => a.name).join(", ")}
                 </span>
               )}
             </div>

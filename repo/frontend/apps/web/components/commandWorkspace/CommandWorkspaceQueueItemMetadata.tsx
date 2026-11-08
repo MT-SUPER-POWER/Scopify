@@ -1,5 +1,6 @@
 "use client";
 
+import { getLinkableAlbumId, toArtistLinks } from "@/lib/player/trackDisplay";
 import { cn } from "@/lib/utils";
 import type { CommandWorkspaceQueueItemMetadataProps } from "@/types/commandWorkspace/model";
 
@@ -11,6 +12,7 @@ export function CommandWorkspaceQueueItemMetadata({
   onPlay,
   track,
 }: CommandWorkspaceQueueItemMetadataProps) {
+  const albumId = getLinkableAlbumId(track);
   return (
     <div className="min-w-0 flex-1">
       <button
@@ -21,18 +23,18 @@ export function CommandWorkspaceQueueItemMetadata({
           isCurrent ? "font-semibold text-brand" : "text-content hover:text-brand",
         )}
       >
-        {track.name}
+        {track.title}
       </button>
       <div className="flex items-center truncate text-xs text-content-muted">
         <span className="truncate">
-          {track.ar?.map((artist, artistIndex) => (
+          {toArtistLinks(track).map((artist, artistIndex) => (
             <span key={`${artist.id || artist.name}-${artistIndex}`}>
               {artist.id ? (
                 <button
                   type="button"
                   onClick={(event) => {
                     event.stopPropagation();
-                    onNavigateArtist(artist.id);
+                    if (artist.id) onNavigateArtist(String(artist.id));
                   }}
                   className="hover:text-content hover:underline focus-visible:text-content"
                 >
@@ -41,27 +43,27 @@ export function CommandWorkspaceQueueItemMetadata({
               ) : (
                 <span>{artist.name}</span>
               )}
-              {artistIndex < (track.ar?.length ?? 0) - 1 ? " / " : ""}
+              {artistIndex < track.artists.length - 1 ? " / " : ""}
             </span>
           ))}
         </span>
-        {track.al?.name ? (
+        {track.album?.title ? (
           <>
             <span className="mx-1 text-content-subtle">·</span>
-            {track.al.id ? (
+            {albumId ? (
               <button
                 type="button"
                 onClick={(event) => {
                   event.stopPropagation();
-                  onNavigateAlbum(track.al.id);
+                  onNavigateAlbum(albumId);
                 }}
-                title={track.al.name}
+                title={track.album.title}
                 className="max-w-35 truncate text-content-muted hover:text-content hover:underline focus-visible:text-content"
               >
-                {track.al.name}
+                {track.album.title}
               </button>
             ) : (
-              <span className="max-w-35 truncate text-content-muted">{track.al.name}</span>
+              <span className="max-w-35 truncate text-content-muted">{track.album.title}</span>
             )}
           </>
         ) : null}

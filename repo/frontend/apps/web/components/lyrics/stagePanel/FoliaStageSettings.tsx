@@ -43,6 +43,7 @@ import { useTranslation } from "react-i18next";
 import { usePlayerStore } from "@/store/module/player";
 import type { FoliaStageSettingsProps } from "@/types/lyrics/components";
 import type { FoliaPanelTab } from "@/types/lyrics/folia/stage";
+import { playerTrackKey } from "@/lib/player/trackIdentity";
 
 // The playback stage's panel (Folia components/UnifiedPanel.tsx): which tabs there are for the
 // playing song and what each one is given. How it looks lives in the shared Folia panel kit
@@ -57,7 +58,7 @@ export function FoliaStageSettings({
 }: FoliaStageSettingsProps) {
   const { t } = useTranslation();
   const model = useFoliaPanelControls();
-  const song = usePlayerStore((state) => state.currentSongDetail);
+  const song = usePlayerStore((state) => state.currentTrack);
   const isPersonalFm = usePlayerStore((state) => isPersonalFmPlaybackSource(state.playlistId));
   const openVisualSettings = useFoliaSettingsStore((state) => state.openVisualSettings);
   const openThemeLibrary = useFoliaSettingsStore((state) => state.openThemeLibrary);
@@ -79,7 +80,7 @@ export function FoliaStageSettings({
       : { icon: ListMusic, id: "queue" as const, label: t("folia.panel.playlist") },
     { icon: AudioLines, id: "quality" as const, label: t("folia.panel.quality") },
   ];
-  const artists = song?.ar?.map((artist) => artist.name).join(" / ") ?? "";
+  const artists = song?.artists?.map((artist) => artist.name).join(" / ") ?? "";
   const like: FoliaSongLike = {
     isLiked: model.isLiked,
     label: t(model.isLiked ? "folia.ui.unlike" : "folia.ui.like"),
@@ -112,25 +113,25 @@ export function FoliaStageSettings({
         header={
           <FoliaSongHeader
             isBig={activeTab === "cover"}
-            songKey={String(song?.id ?? "")}
-            title={song?.name || t("folia.ui.noTrack")}
+            songKey={song ? playerTrackKey(song) : ""}
+            title={song?.title || t("folia.ui.noTrack")}
             artists={artists}
-            coverUrl={song?.al?.picUrl ?? null}
+            coverUrl={song?.album?.coverUrl ?? null}
             like={like}
             onShowCover={() => setActiveTab("cover")}
           >
-            <div key={song?.id ?? ""} className="st-page-in">
+            <div key={song ? playerTrackKey(song) : ""} className="st-page-in">
               <h2 className="line-clamp-2 text-lg leading-[26px] font-semibold">
-                {song?.name || t("folia.ui.noTrack")}
+                {song?.title || t("folia.ui.noTrack")}
               </h2>
               {artists ? (
                 <p className="mt-0.5 truncate text-[13px] leading-5 text-[color:var(--st-t2)]">
                   {artists}
                 </p>
               ) : null}
-              {song?.al?.name ? (
+              {song?.album?.title ? (
                 <p className="truncate text-xs leading-[18px] text-[color:var(--st-t3)]">
-                  {song.al.name}
+                  {song.album?.title}
                 </p>
               ) : null}
             </div>

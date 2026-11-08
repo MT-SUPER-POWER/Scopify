@@ -10,6 +10,7 @@ import {
 import { cn } from "@/lib/utils";
 import { usePlayerStore } from "@/store";
 import type { CommandWorkspaceSearchResultListProps } from "@/types/commandWorkspace/model";
+import { getNeteaseTrackId } from "@/lib/providers/netease/adapters/track";
 
 export function CommandWorkspaceSearchResultList({
   items,
@@ -18,7 +19,7 @@ export function CommandWorkspaceSearchResultList({
   onSelect,
   selectedIndex,
 }: CommandWorkspaceSearchResultListProps) {
-  const currentSong = usePlayerStore((state) => state.currentSongDetail);
+  const currentSong = usePlayerStore((state) => state.currentTrack);
   const isPlaying = usePlayerStore((state) => state.isPlaying);
   const setIsPlaying = usePlayerStore((state) => state.setIsPlaying);
 
@@ -34,8 +35,8 @@ export function CommandWorkspaceSearchResultList({
           (item.kind === "voice" && !!item.entity.mainSong && item.entity.isPlayable !== false);
         const isCurrent =
           !!currentSong &&
-          ((item.kind === "song" && item.entity.id === currentSong.id) ||
-            (item.kind === "voice" && item.entity.mainSong?.id === currentSong.id));
+          ((item.kind === "song" && item.entity.id === getNeteaseTrackId(currentSong)) ||
+            (item.kind === "voice" && item.entity.mainSong?.id === getNeteaseTrackId(currentSong)));
         const isCurrentPlaying = isCurrent && isPlaying;
 
         const handleToggleOrSelect = () => {

@@ -10,6 +10,7 @@ import { SongVipBadge } from "@/components/shared/SongVipBadge";
 import { ShortcutHint } from "@/components/shortcuts/ShortcutHint";
 import { usePlaybackCommands } from "@/hooks/player/usePlaybackCommands";
 import { usePlaybackProjection } from "@/hooks/player/usePlaybackProjection";
+import { useCurrentNeteaseSong } from "@/hooks/player/useCurrentNeteaseSong";
 import { useSongStatsEnrichment } from "@/hooks/player/useSongStatsEnrichment";
 import { getCommentHref } from "@/lib/comment/commentResource";
 import { useSmartRouter } from "@/hooks/core/useSmartRouter";
@@ -48,11 +49,13 @@ export function PlayerBarLeftControls({
   const playback = usePlaybackProjection();
   const commands = usePlaybackCommands();
 
-  const currentSong = usePlayerStore((s) => s.currentSongDetail);
-  const artworkUrl = resolveCoverUrl(currentSong?.al?.picUrl, currentSong?.al?.coverUrl);
+  const currentSong = usePlayerStore((s) => s.currentTrack);
+  // Likes, comments, stats and artist pages are NetEase-only; other platforms show names only.
+  const neteaseSong = useCurrentNeteaseSong();
+  const artworkUrl = resolveCoverUrl(currentSong?.album?.coverUrl ?? undefined);
   const isLiked = playback.liked;
   const isLyricOpen = useUiStore((s) => s.isLyricsOpen);
-  const songStats = useSongStatsEnrichment(currentSong);
+  const songStats = useSongStatsEnrichment(neteaseSong);
   const lyricsActionLabel = t(isLyricsOpen ? "ui.hideLyrics" : "ui.showLyrics");
 
   return (
@@ -84,7 +87,7 @@ export function PlayerBarLeftControls({
             width={56}
             height={56}
             src={getSizedImageUrl(artworkUrl, 160)}
-            alt={currentSong.al.name}
+            alt={currentSong.album?.title ?? currentSong.title}
             className="size-full object-cover"
             onError={(e) => {
               e.currentTarget.style.display = "none";
@@ -152,26 +155,27 @@ export function PlayerBarLeftControls({
               }}
               className="flex min-w-0 items-center gap-1.5 text-sm font-medium text-content"
             >
-              <span className="cursor-pointer truncate hover:underline">{currentSong.name}</span>
-              <SongVipBadge fee={currentSong.fee} />
+              <span className="cursor-pointer truncate hover:underline">{currentSong.title}</span>
+              <SongVipBadge fee={currentSong.netease?.fee} />
             </span>
             <div className="mt-0.5 flex min-w-0 items-center gap-1">
-              <SongQualityBadge qualityLevel={currentSong?.privilege?.maxBrLevel} />
+              <SongQualityBadge qualityLevel={currentSong?.netease?.privilege?.maxBrLevel} />
               <SongMvBadge
-                mvId={currentSong.mv}
+                mvId={currentSong.netease?.mv}
                 onNavigate={isLyricStageBar ? onCloseLyricStage : undefined}
               />
               <span className="min-w-0 cursor-pointer truncate text-[11px] font-normal text-content-muted">
-                {currentSong?.ar?.slice(0, 2).map((a, idx, arr) => (
+                {currentSong?.artists?.slice(0, 2).map((a, idx, arr) => (
                   <span
-                    key={a.id}
+                    key={a.ref.id}
                     onClick={(e) => {
                       e.stopPropagation();
+                      if (!neteaseSong) return;
                       if (useUiStore.getState().isLyricsOpen) onCloseLyricStage?.();
-                      smartRouter.push(`/artist?id=${a.id}`);
+                      smartRouter.push(`/artist?id=${a.ref.id}`);
                     }}
-                    title={`/artist?id=${a.id}`}
-                    className="hover:text-content hover:underline"
+                    title={neteaseSong ? `/artist?id=${a.ref.id}` : undefined}
+                    className={cn(neteaseSong && "hover:text-content hover:underline")}
                     style={{ display: "inline" }}
                   >
                     {a.name}
@@ -190,7 +194,7 @@ export function PlayerBarLeftControls({
       </div>
 
       {/* 点赞和评论 */}
-      {currentSong && (
+      {neteaseSong && (
         <div
           className={cn(
             "hidden shrink-0 items-center gap-4 sm:flex lg:gap-5",
@@ -198,7 +202,7 @@ export function PlayerBarLeftControls({
           )}
         >
           <PlayerBarStatAction
-            count={currentSong.likedCount}
+            count={neteaseSong.likedCount}
             countClassName={isLiked ? "text-brand" : "text-content-muted"}
             onRetry={() => void songStats.retry()}
             retryLabel={t("common.action.retry")}
@@ -215,11 +219,11 @@ export function PlayerBarLeftControls({
           </PlayerBarStatAction>
 
           <PlayerBarStatAction
-            count={currentSong.commentCount}
+            count={neteaseSong.commentCount}
             countClassName="text-content-muted group-hover:text-content transition-colors"
             href={getCommentHref(
-              currentSong.voiceId === undefined ? "song" : "voice",
-              currentSong.voiceId ?? currentSong.id,
+              neteaseSong.voiceId === undefined ? "song" : "voice",
+              neteaseSong.voiceId ?? neteaseSong.id,
             )}
             onRetry={() => void songStats.retry()}
             retryLabel={t("common.action.retry")}

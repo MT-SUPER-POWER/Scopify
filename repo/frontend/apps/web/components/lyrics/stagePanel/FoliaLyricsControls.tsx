@@ -35,11 +35,11 @@ export function FoliaLyricsControls({ onOpenLyricMatch }: FoliaLyricsControlsPro
   const inputRef = useRef<HTMLInputElement>(null);
   const fileButtonRef = useRef<HTMLButtonElement>(null);
   const [isFileMenuOpen, setIsFileMenuOpen] = useState(false);
-  const song = usePlayerStore((state) => state.currentSongDetail);
+  const replayGain = usePlayerStore((state) => state.currentReplayGain);
   const replayGainMode = usePlayerStore((state) => state.replayGainMode);
   const setReplayGainMode = usePlayerStore((state) => state.setReplayGainMode);
-  const trackGain = song?.replayGainTrackGain ?? song?.replayGain;
-  const albumGain = song?.replayGainAlbumGain;
+  const trackGain = replayGain?.trackGainDb;
+  const albumGain = replayGain?.albumGainDb;
   const measuredGain = [
     trackGain == null ? null : `${t("folia.localMusic.replayGainTrack")} ${formatGain(trackGain)}`,
     albumGain == null ? null : `${t("folia.localMusic.replayGainAlbum")} ${formatGain(albumGain)}`,

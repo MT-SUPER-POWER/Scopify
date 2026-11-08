@@ -7,6 +7,7 @@ import { cn, formatDuration } from "@/lib/utils";
 import { usePlayerStore } from "@/store";
 import type { SongDetail } from "@/types/song/api";
 import type { CommandWorkspaceTrackListProps } from "@/types/commandWorkspace/model";
+import { getNeteaseTrackId } from "@/lib/providers/netease/adapters/track";
 
 export function CommandWorkspaceTrackList({
   onAppend,
@@ -14,12 +15,12 @@ export function CommandWorkspaceTrackList({
   onPlay,
   trackList,
 }: CommandWorkspaceTrackListProps) {
-  const currentSong = usePlayerStore((state) => state.currentSongDetail);
+  const currentSong = usePlayerStore((state) => state.currentTrack);
   const isPlaying = usePlayerStore((state) => state.isPlaying);
   const setIsPlaying = usePlayerStore((state) => state.setIsPlaying);
 
   const handleTrackClick = (track: SongDetail, index: number) => {
-    if (currentSong && currentSong.id === track.id) {
+    if (currentSong && getNeteaseTrackId(currentSong) === track.id) {
       setIsPlaying(!isPlaying);
     } else {
       onPlay(index);
@@ -46,7 +47,7 @@ export function CommandWorkspaceTrackList({
           </button>
         </div>
         {trackList.tracks.map((track, index) => {
-          const isCurrent = currentSong && track.id === currentSong.id;
+          const isCurrent = currentSong && track.id === getNeteaseTrackId(currentSong);
           const isCurrentPlaying = isCurrent && isPlaying;
 
           return (

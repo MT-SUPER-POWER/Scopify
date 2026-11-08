@@ -11,7 +11,10 @@ import type { SongDetail } from "@/types/song/api";
 const EMPTY_STATS_STATE = getSongStatsEnrichmentState(null);
 
 /** Keeps a song consumer informed while its interaction statistics are loaded. */
-export function useSongStatsEnrichment(song: SongDetail | null, enabled = true) {
+export function useSongStatsEnrichment(
+  song: Pick<SongDetail, "id" | "likedCount" | "commentCount" | "voiceId"> | null,
+  enabled = true,
+) {
   const songId = song?.id ?? null;
   const likedCount = song?.likedCount;
   const commentCount = song?.commentCount;

@@ -19,7 +19,7 @@ export function NowPlayingNextUp() {
   const nextSong = usePlayerStore((s) =>
     s.queueIndex >= 0 ? (s.queue[s.queueIndex + 1] ?? null) : null,
   );
-  const coverUrl = nextSong ? resolveCoverUrl(nextSong.al?.picUrl, nextSong.al?.coverUrl) : null;
+  const coverUrl = nextSong ? resolveCoverUrl(nextSong.album?.coverUrl) : null;
 
   return (
     <NowPlayingCard
@@ -47,16 +47,18 @@ export function NowPlayingNextUp() {
                 fill
                 sizes="48px"
                 src={getSizedImageUrl(coverUrl, 120)}
-                alt={nextSong.name}
+                alt={nextSong.title}
                 className="object-cover transition-opacity group-hover:opacity-40"
               />
             )}
             <Play className="absolute inset-0 m-auto size-4 fill-current text-content opacity-0 transition-opacity group-hover:opacity-100" />
           </span>
           <span className="min-w-0 flex-1">
-            <span className="block truncate text-sm font-medium text-content">{nextSong.name}</span>
+            <span className="block truncate text-sm font-medium text-content">
+              {nextSong.title}
+            </span>
             <span className="mt-0.5 block truncate text-xs text-content-muted">
-              {nextSong.ar?.map((artist) => artist.name).join(", ")}
+              {nextSong.artists?.map((artist) => artist.name).join(", ")}
             </span>
           </span>
         </button>

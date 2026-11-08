@@ -19,6 +19,8 @@ import { createElectronPlaybackAuthorityTransport } from "@/lib/playbackProjecti
 import { createInProcessPlaybackTransport } from "@/lib/playbackProjection/inProcessTransport";
 import { createPlaybackReplica } from "@/lib/playbackProjection/replica";
 import { buildDiscordPresenceArtist } from "@/lib/player/discordPresence";
+import { isSamePlayerTrack, playbackTrackId, playerTrackKey } from "@/lib/player/trackIdentity";
+import { getNeteaseTrackId } from "@/lib/providers/netease/adapters/track";
 import { runtime } from "@/lib/runtime";
 import { toScrobbleSourceId } from "@/lib/player/listeningScrobble";
 import { usePlayerStore } from "@/store/module/player";
@@ -43,7 +45,7 @@ export function PlaybackAuthorityProvider({
   isMediaSourceLoadingRef,
   mediaSourceLoadRevisionRef,
 }: PlaybackAuthorityProviderProps) {
-  const currentSongDetail = usePlayerStore((state) => state.currentSongDetail);
+  const currentTrack = usePlayerStore((state) => state.currentTrack);
   const currentSongUrl = usePlayerStore((state) => state.currentSongUrl);
   const isPlayingIntent = usePlayerStore((state) => state.isPlaying);
   const rawLyric = usePlayerStore((state) => state.lyric);
@@ -54,74 +56,76 @@ export function PlaybackAuthorityProvider({
   const volume = usePlayerStore((state) => state.volume);
   const likeListIds = useUserStore((state) => state.likeListIDs);
   const songLikeMutation = useSongLikeMutation();
-  const voiceLike = useVoiceLike(currentSongDetail?.voiceId ?? null);
+  const voiceLike = useVoiceLike(currentTrack?.netease?.voiceId ?? null);
+  // Liking and scrobbling are NetEase-only; other platforms show the track without them.
+  const neteaseSongId = getNeteaseTrackId(currentTrack);
 
   const lyrics = useMemo(() => (rawLyric ? adaptNeteaseLyric(rawLyric) : null), [rawLyric]);
   const track = useMemo(
     () =>
-      currentSongDetail
+      currentTrack
         ? {
-            albumTitle: currentSongDetail.al.name,
-            artistNames: currentSongDetail.ar.map((artist) => artist.name),
-            artworkUrl: currentSongDetail.al.picUrl,
-            id: currentSongDetail.id,
-            title: currentSongDetail.name,
+            albumTitle: currentTrack.album?.title,
+            artistNames: currentTrack.artists.map((artist) => artist.name),
+            artworkUrl: currentTrack.album?.coverUrl ?? undefined,
+            id: playbackTrackId(currentTrack),
+            title: currentTrack.title,
           }
         : null,
-    [currentSongDetail],
+    [currentTrack],
   );
   const liked = useMemo(() => {
-    if (!currentSongDetail) return false;
-    if (currentSongDetail.voiceId !== undefined) return voiceLike.isLiked;
+    if (!currentTrack || neteaseSongId === null) return false;
+    if (currentTrack.netease?.voiceId !== undefined) return voiceLike.isLiked;
     if (!Array.isArray(likeListIds)) return false;
-    return likeListIds.some((id) => Number(id) === currentSongDetail.id);
-  }, [currentSongDetail, likeListIds, voiceLike.isLiked]);
+    return likeListIds.some((id) => Number(id) === neteaseSongId);
+  }, [currentTrack, likeListIds, neteaseSongId, voiceLike.isLiked]);
   const discordPresence = useMemo(
     () => ({
-      album: currentSongDetail?.al.name ?? "",
+      album: currentTrack?.album?.title ?? "",
       artist: buildDiscordPresenceArtist({
-        album: currentSongDetail?.al.name ?? "",
-        artistNames: currentSongDetail?.ar.map((artist) => artist.name) ?? [],
-        title: currentSongDetail?.name ?? "",
+        album: currentTrack?.album?.title ?? "",
+        artistNames: currentTrack?.artists.map((artist) => artist.name) ?? [],
+        title: currentTrack?.title ?? "",
       }),
-      coverUrl: currentSongDetail?.al.picUrl ?? null,
-      durationMs: currentSongDetail?.dt ?? 0,
+      coverUrl: currentTrack?.album?.coverUrl ?? null,
+      durationMs: currentTrack?.durationMs ?? 0,
       isPlaying: isPlayingIntent,
       positionMs: 0,
-      title: currentSongDetail?.name ?? "",
+      title: currentTrack?.title ?? "",
     }),
-    [currentSongDetail, isPlayingIntent],
+    [currentTrack, isPlayingIntent],
   );
   useDiscordPresence(discordPresence);
   useMediaSession({
     audioRef,
-    currentSongDetail,
+    currentTrack,
     isPlaying: isPlayingIntent,
   });
   const lyricVersion = useMemo(() => {
-    if (!rawLyric || !currentSongDetail) return null;
+    if (!rawLyric || !currentTrack) return null;
     return [
-      currentSongDetail.id,
+      playerTrackKey(currentTrack),
       rawLyric.yrc?.version ?? "",
       rawLyric.lrc?.version ?? "",
       rawLyric.ytlrc?.version ?? rawLyric.tlyric?.version ?? "",
       rawLyric.yromalrc?.version ?? rawLyric.romalrc?.version ?? "",
     ].join(":");
-  }, [currentSongDetail, rawLyric]);
+  }, [currentTrack, rawLyric]);
   const initialState = useMemo<PlaybackSessionState<LyricData>>(
     () => ({
-      canControl: currentSongDetail !== null,
-      durationMs: currentSongDetail?.dt ?? 0,
+      canControl: currentTrack !== null,
+      durationMs: currentTrack?.durationMs ?? 0,
       liked,
       lyrics,
       lyricsVersion: lyricVersion,
-      phase: currentSongDetail === null ? "idle" : isPlayingIntent ? "loading" : "paused",
+      phase: currentTrack === null ? "idle" : isPlayingIntent ? "loading" : "paused",
       track,
       volume,
     }),
-    [currentSongDetail, isPlayingIntent, liked, lyricVersion, lyrics, track, volume],
+    [currentTrack, isPlayingIntent, liked, lyricVersion, lyrics, track, volume],
   );
-  const trackId = currentSongDetail?.id ?? null;
+  const trackId = currentTrack ? playerTrackKey(currentTrack) : null;
   const sessionKey = `${playbackSessionRevision}:${trackId ?? "none"}`;
   const sessionIdentityRef = useRef<PlaybackAuthoritySessionIdentity | null>(null);
   if (sessionIdentityRef.current?.key !== sessionKey) {
@@ -138,17 +142,17 @@ export function PlaybackAuthorityProvider({
   const resumePositionMs = sessionReason === "resume" ? useTimeStore.getState().currentTime : 0;
   const scrobbleSession = useMemo(
     () =>
-      currentSongDetail
+      currentTrack && neteaseSongId !== null
         ? {
-            artist: currentSongDetail.ar.map((artist) => artist.name).join(" / "),
+            artist: currentTrack.artists.map((artist) => artist.name).join(" / "),
             key: sessionKey,
-            songId: currentSongDetail.id,
+            songId: neteaseSongId,
             sourceId: toScrobbleSourceId(playlistId),
-            title: currentSongDetail.name,
-            totalSeconds: Math.ceil(currentSongDetail.dt / 1_000),
+            title: currentTrack.title,
+            totalSeconds: Math.ceil(currentTrack.durationMs / 1_000),
           }
         : null,
-    [currentSongDetail, playlistId, sessionKey],
+    [currentTrack, neteaseSongId, playlistId, sessionKey],
   );
   useListeningScrobble({ audioRef, session: scrobbleSession });
 
@@ -211,9 +215,8 @@ export function PlaybackAuthorityProvider({
     callbacks: {
       ensureSource: async () => {
         const initialPlayer = usePlayerStore.getState();
-        const activeTrack = initialPlayer.currentSongDetail;
+        const activeTrack = initialPlayer.currentTrack;
         if (!audioEngine || !activeTrack) return false;
-        const activeTrackId = activeTrack.id;
 
         let sourceUrl = initialPlayer.currentSongUrl;
         if (!sourceUrl) {
@@ -228,7 +231,7 @@ export function PlaybackAuthorityProvider({
         return audioEngine.waitForSource(expectedSourceUrl, () => {
           const currentPlayer = usePlayerStore.getState();
           return (
-            currentPlayer.currentSongDetail?.id === activeTrackId &&
+            isSamePlayerTrack(currentPlayer.currentTrack, activeTrack) &&
             currentPlayer.currentSongUrl === expectedSourceUrl &&
             currentPlayer.playbackLoadRevision === expectedLoadRevision
           );
@@ -262,9 +265,10 @@ export function PlaybackAuthorityProvider({
       previous: () => usePlayerStore.getState().playPrev(),
       removeQueueItem: (index) => usePlayerStore.getState().removeQueueItem(index),
       toggleLike: async () => {
-        const currentTrack = usePlayerStore.getState().currentSongDetail;
-        if (!currentTrack) return false;
-        if (currentTrack?.voiceId !== undefined) {
+        const currentTrack = usePlayerStore.getState().currentTrack;
+        const songId = getNeteaseTrackId(currentTrack);
+        if (!currentTrack || songId === null) return false;
+        if (currentTrack.netease?.voiceId !== undefined) {
           const wasLiked = voiceLike.isLiked;
           const didUpdate = await voiceLike.toggleLike();
           return didUpdate ? !wasLiked : wasLiked;
@@ -272,12 +276,12 @@ export function PlaybackAuthorityProvider({
         const currentLikeListIds = useUserStore.getState().likeListIDs;
         const isCurrentlyLiked =
           Array.isArray(currentLikeListIds) &&
-          currentLikeListIds.some((id) => Number(id) === currentTrack.id);
+          currentLikeListIds.some((id) => Number(id) === songId);
         const nextLiked = !isCurrentlyLiked;
         await songLikeMutation.mutateAsync({
           like: nextLiked,
           silentToast: true,
-          songId: currentTrack.id,
+          songId,
         });
         return nextLiked;
       },

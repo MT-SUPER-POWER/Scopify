@@ -6,6 +6,7 @@ import type { HtmlAudioEngineAdapter, HtmlAudioMediaEvent } from "@/types/playba
 import { usePlayerStore } from "@/store/module/player";
 import { useTimeStore } from "@/store/module/time";
 import type { PlaybackMediaEventHandlers, PlaybackMediaSourceState } from "@/types/playback/media";
+import { playerTrackKey } from "@/lib/player/trackIdentity";
 
 /**
  * Projects HtmlAudioEngineAdapter events into existing UI stores while the
@@ -16,28 +17,30 @@ export function usePlaybackMediaEvents(
   source: PlaybackMediaSourceState,
   audioEngine: HtmlAudioEngineAdapter | null,
 ): PlaybackMediaEventHandlers {
-  const currentSongId = usePlayerStore((state) => state.currentSongDetail?.id);
+  const currentTrackKey = usePlayerStore((state) =>
+    state.currentTrack ? playerTrackKey(state.currentTrack) : null,
+  );
   const failedSourceRetrySessionKeyRef = useRef<string | null>(null);
   const lastStoreWriteRef = useRef(0);
   const refreshingFailedSourceSessionKeyRef = useRef<string | null>(null);
 
   useEffect(() => {
     failedSourceRetrySessionKeyRef.current = null;
-  }, [currentSongId]);
+  }, [currentTrackKey]);
 
   useEffect(() => {
     if (!audioEngine) return;
 
     const handleSourceError = (mediaEvent: HtmlAudioMediaEvent) => {
       const player = usePlayerStore.getState();
-      const songId = player.currentSongDetail?.id ?? null;
+      const trackKey = player.currentTrack ? playerTrackKey(player.currentTrack) : null;
       const failureSessionKey =
-        songId !== null ? `${player.playbackSessionRevision}:${songId}` : null;
+        trackKey !== null ? `${player.playbackSessionRevision}:${trackKey}` : null;
       const sourceHost = audioEngine.getSourceHost();
 
       if (!source.isActiveMediaSource()) {
         console.warn("[player] Ignored an error from an obsolete media source", {
-          songId,
+          trackKey,
           sourceHost,
         });
         return;
@@ -48,18 +51,18 @@ export function usePlaybackMediaEvents(
         errorMessage: mediaEvent.errorMessage,
         networkState: mediaEvent.networkState,
         readyState: mediaEvent.readyState,
-        songId,
+        trackKey,
         sourceHost,
       });
 
-      if (!songId) {
+      if (trackKey === null) {
         source.isMediaSourceLoadingRef.current = false;
         return;
       }
 
       if (refreshingFailedSourceSessionKeyRef.current === failureSessionKey) return;
       if (failedSourceRetrySessionKeyRef.current === failureSessionKey) {
-        const failureIdentity = { revision: player.playbackLoadRevision, trackId: songId };
+        const failureIdentity = { revision: player.playbackLoadRevision, trackKey };
         source.isMediaSourceLoadingRef.current = true;
         void player.handlePlaybackFailure("audio", failureIdentity).finally(() => {
           if (source.isPlaybackSessionCurrent(failureSessionKey)) {

@@ -14,6 +14,7 @@ import { usePlaybackProjection } from "@/hooks/player/usePlaybackProjection";
 import { usePersonalFmDislike } from "@/hooks/personalFm/usePersonalFmDislike";
 import { isPersonalFmPlaybackSource } from "@/constants/personalFm";
 import { useLyricStageStore } from "@/store/module/lyrics";
+import { useCurrentNeteaseSong } from "@/hooks/player/useCurrentNeteaseSong";
 import { usePlayerStore } from "@/store/module/player";
 import type { LyricVisualizerMode } from "@/types/lyrics/model";
 
@@ -21,7 +22,7 @@ export function useFoliaPanelControls() {
   const playback = usePlaybackProjection();
   const commands = usePlaybackCommands();
   const animationIntensity = useLyricStageStore((state) => state.animationIntensity);
-  const currentSong = usePlayerStore((state) => state.currentSongDetail);
+  const currentSong = useCurrentNeteaseSong();
   const isShuffle = usePlayerStore((state) => state.isShuffle);
   const repeatMode = usePlayerStore((state) => state.repeatMode);
   const isPersonalFm = usePlayerStore((state) => isPersonalFmPlaybackSource(state.playlistId));

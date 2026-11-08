@@ -6,6 +6,8 @@ import { NowPlayingLyricsView } from "./NowPlayingLyricsView";
 import { NowPlayingOverview } from "./NowPlayingOverview";
 import { NowPlayingPanelTabs } from "./NowPlayingPanelTabs";
 import { NowPlayingQueueView } from "./NowPlayingQueueView";
+import { useCurrentNeteaseSong } from "@/hooks/player/useCurrentNeteaseSong";
+import { formatTrackArtists } from "@/lib/player/trackDisplay";
 import { cn } from "@/lib/utils";
 import { usePlayerStore } from "@/store";
 import { useTranslation } from "react-i18next";
@@ -19,7 +21,9 @@ import type { NowPlayingPanelView } from "@/types/player/nowPlayingComponents";
  */
 export function NowPlayingPanel() {
   const { t } = useTranslation();
-  const song = usePlayerStore((s) => s.currentSongDetail);
+  const track = usePlayerStore((s) => s.currentTrack);
+  // The overview and lyrics views are NetEase-only; other platforms get title and artists.
+  const song = useCurrentNeteaseSong();
   const isQueueOpen = useUiStore((s) => s.isQueueOpen);
   const tab = useUiStore((s) => s.nowPlayingPanelTab);
   const setIsOpen = useUiStore((s) => s.setIsNowPlayingPanelOpen);
@@ -68,6 +72,11 @@ export function NowPlayingPanel() {
         ) : (
           <NowPlayingOverview song={song} onCoverVisibleChange={setIsOverCover} />
         )
+      ) : track ? (
+        <div className="flex min-h-0 flex-1 flex-col items-center justify-center gap-1 px-6 py-8 text-center">
+          <h3 className="text-base font-semibold text-content">{track.title}</h3>
+          <p className="text-sm text-content-muted">{formatTrackArtists(track)}</p>
+        </div>
       ) : (
         <div className="flex min-h-0 flex-1 flex-col items-center justify-center gap-3 px-6 py-8 text-center">
           <span className="mb-2 flex size-16 items-center justify-center rounded-2xl bg-content/5 text-content-muted">

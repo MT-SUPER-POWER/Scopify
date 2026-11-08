@@ -1,11 +1,13 @@
 "use client";
 
-import { memo } from "react";
+import { memo, useMemo } from "react";
 import { PlayerQueueItemCover } from "@/components/player/PlayerQueueItemCover";
 import { ArtistInlineLinks } from "@/components/shared/ArtistInlineLinks";
 import { SongContextMenu } from "@/components/shared/SongContextMenu";
 import { SongVipBadge } from "@/components/shared/SongVipBadge";
 import { useNowPlayingDislike } from "@/hooks/player/useNowPlayingDislike";
+import { toArtistLinks } from "@/lib/player/trackDisplay";
+import { toNeteaseSongDetail } from "@/lib/providers/netease/adapters/track";
 import { cn, formatDuration } from "@/lib/utils";
 import type { QueueItemProps } from "@/types/player/components";
 
@@ -17,7 +19,9 @@ export const PlayerQueueItem = memo(function PlayerQueueItem({
   onPlay,
   onRemove,
 }: QueueItemProps) {
-  const { dislike, isDailyRecommend, isPersonalFm } = useNowPlayingDislike(song);
+  // The context menu and dislike act on NetEase songs; other platforms get the plain row.
+  const neteaseSong = useMemo(() => toNeteaseSongDetail(song), [song]);
+  const { dislike, isDailyRecommend, isPersonalFm } = useNowPlayingDislike(neteaseSong);
 
   const content = (
     <div
@@ -33,24 +37,25 @@ export const PlayerQueueItem = memo(function PlayerQueueItem({
         <div className="flex min-w-0 items-center gap-1.5">
           <span
             className={cn("truncate text-sm font-medium", isActive ? "text-brand" : "text-content")}
-            title={song.name}
+            title={song.title}
           >
-            {song.name}
+            {song.title}
           </span>
-          <SongVipBadge fee={song.fee} />
+          <SongVipBadge fee={song.netease?.fee} />
         </div>
         <div className="mt-0.5 truncate text-xs text-content-muted">
-          <ArtistInlineLinks artists={song.ar} />
+          <ArtistInlineLinks artists={toArtistLinks(song)} />
         </div>
       </div>
       <div className="shrink-0 pr-1 text-xs text-content-muted tabular-nums">
-        {formatDuration(song.dt)}
+        {formatDuration(song.durationMs)}
       </div>
     </div>
   );
+  if (!neteaseSong) return content;
   return (
     <SongContextMenu
-      song={song}
+      song={neteaseSong}
       isActive={isActive}
       isPlaying={isPlaying}
       onPlay={() => onPlay(index)}

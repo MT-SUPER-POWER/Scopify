@@ -9,6 +9,9 @@ import { SortableList } from "@/components/shared/SortableList";
 import { DragThumbnail } from "@/components/shared/DragThumbnail";
 import { SortablePlayerQueueItem } from "@/components/player/SortablePlayerQueueItem";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { formatTrackArtists } from "@/lib/player/trackDisplay";
+import { playerTrackKey } from "@/lib/player/trackIdentity";
+import { toNeteaseSongDetail } from "@/lib/providers/netease/adapters/track";
 import { cn } from "@/lib/utils";
 import { usePlayerStore } from "@/store";
 import { useAppDragStore } from "@/store/module/appDrag";
@@ -29,11 +32,12 @@ export const PlayerQueueList = forwardRef<PlayerQueueListHandle, PlayerQueueList
     const parentRef = useRef<HTMLDivElement>(null);
     const hasScrolledOnOpen = useRef(false);
     const ids = useMemo(() => {
-      const occurrences = new Map<number, number>();
+      const occurrences = new Map<string, number>();
       return queue.map((song) => {
-        const occurrence = occurrences.get(song.id) ?? 0;
-        occurrences.set(song.id, occurrence + 1);
-        return `queue-item-${song.id}-${occurrence}`;
+        const key = playerTrackKey(song);
+        const occurrence = occurrences.get(key) ?? 0;
+        occurrences.set(key, occurrence + 1);
+        return `queue-item-${key}-${occurrence}`;
       });
     }, [queue]);
     const virtualizer = useVirtualizer({
@@ -73,7 +77,8 @@ export const PlayerQueueList = forwardRef<PlayerQueueListHandle, PlayerQueueList
         ids={ids}
         onMove={moveQueueItem}
         onDragStart={(activeId) => {
-          const song = queue[ids.indexOf(String(activeId))];
+          // Dragging into a playlist is NetEase-only.
+          const song = toNeteaseSongDetail(queue[ids.indexOf(String(activeId))]);
           if (song) {
             useAppDragStore.getState().startDrag([song]);
           }
@@ -82,9 +87,9 @@ export const PlayerQueueList = forwardRef<PlayerQueueListHandle, PlayerQueueList
           const song = queue[ids.indexOf(String(id))];
           return song ? (
             <DragThumbnail
-              cover={song.al.picUrl}
-              title={song.name}
-              subtitle={song.ar.map((artist) => artist.name).join(" / ")}
+              cover={song.album?.coverUrl ?? ""}
+              title={song.title}
+              subtitle={formatTrackArtists(song)}
             />
           ) : null;
         }}

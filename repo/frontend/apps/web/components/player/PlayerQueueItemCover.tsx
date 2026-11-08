@@ -29,16 +29,18 @@ export function PlayerQueueItemCover({
         {(index + 1).toString().padStart(2, "0")}
       </span>
       <div className="group/cover relative flex size-10 shrink-0 items-center justify-center overflow-hidden rounded">
-        <Image
-          draggable={false}
-          src={getSizedImageUrl(song.al.picUrl, 120)}
-          alt={song.name}
-          className={cn(
-            "size-full object-cover transition-opacity",
-            isActive ? "opacity-40" : "group-hover/cover:opacity-40",
-          )}
-          fill
-        />
+        {song.album?.coverUrl && (
+          <Image
+            draggable={false}
+            src={getSizedImageUrl(song.album.coverUrl, 120)}
+            alt={song.title}
+            className={cn(
+              "size-full object-cover transition-opacity",
+              isActive ? "opacity-40" : "group-hover/cover:opacity-40",
+            )}
+            fill
+          />
+        )}
         <div className="absolute inset-0 flex items-center justify-center">
           {isActive ? (
             isPlaying ? (

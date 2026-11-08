@@ -18,7 +18,7 @@ import type { SidebarPlaylistLibraryProps } from "@/types/sidebar/components";
 export function PersonalFmPlaylistItem({ isCollapsed }: SidebarPlaylistLibraryProps) {
   const { t } = useTranslation();
   const playlistId = usePlayerStore((state) => state.playlistId);
-  const currentSong = usePlayerStore((state) => state.currentSongDetail);
+  const currentSong = usePlayerStore((state) => state.currentTrack);
   const selection = usePersonalFmStore((state) => state.selection);
   const isLoading = usePersonalFmStore((state) => state.status === "loading");
   const isPersonalFm = isPersonalFmPlaybackSource(playlistId);
@@ -26,9 +26,7 @@ export function PersonalFmPlaylistItem({ isCollapsed }: SidebarPlaylistLibraryPr
 
   return (
     <LibraryItem
-      coverImg={
-        isPersonalFm && currentSong?.al.picUrl ? currentSong.al.picUrl : "/personal-fm-cover.svg"
-      }
+      coverImg={(isPersonalFm && currentSong?.album?.coverUrl) || "/personal-fm-cover.svg"}
       hasContextMenu={false}
       href={PERSONAL_FM_ROUTE}
       id={PERSONAL_FM_PLAYBACK_SOURCE_ID}
