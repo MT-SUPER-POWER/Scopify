@@ -21,6 +21,7 @@ import {
 import { createPlaylist, delPlaylist } from "@/lib/providers/netease/api/playlist";
 import { clearPageCache } from "@/lib/cache/pageCache";
 import { useLoginStatus } from "@/hooks/auth/useLoginStatus";
+import { useProviderCapability } from "@/hooks/provider/useActiveProvider";
 import { translate } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 import { useUiStore, useUserStore } from "@/store";
@@ -153,7 +154,8 @@ function ConfirmDialogShandCN({
 function SidebarMenu({ isCollapsed = false }: SidebarMenuProps) {
   const { t } = useTranslation();
   const queryClient = useQueryClient();
-  const isLoggedIn = useLoginStatus();
+  const canManagePlaylists = useProviderCapability("playlist.manage");
+  const showPlaylistActions = useLoginStatus() && canManagePlaylists;
   const userPlaylists = useUserStore((s) => s.playlist);
   const [confirmOpen, setConfirmOpen] = React.useState(false);
   const [pendingDelete, setPendingDelete] = React.useState<SidebarPendingPlaylist | null>(null);
@@ -218,7 +220,7 @@ function SidebarMenu({ isCollapsed = false }: SidebarMenuProps) {
           </DropdownMenuGroup>
 
           {/* Group -- Playlist Function；未登录时整组不渲染，分隔线随组一起隐藏 */}
-          {isLoggedIn && (
+          {showPlaylistActions && (
             <DropdownMenuGroup className="">
               <DropdownMenuSeparator />
               <DropdownMenuLabel className="dropdown-menu-label-momo mt-1">

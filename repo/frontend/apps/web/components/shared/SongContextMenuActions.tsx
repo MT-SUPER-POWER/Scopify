@@ -10,6 +10,7 @@ import { CreatePlaylistFromTracksDialog } from "@/components/shared/CreatePlayli
 import { SongNavigationMenuItems } from "@/components/shared/SongNavigationMenuItems";
 import { SongPlaylistMenuItems } from "@/components/shared/SongPlaylistMenuItems";
 import { SongRemovalMenuItems } from "@/components/shared/SongRemovalMenuItems";
+import { useActiveProvider } from "@/hooks/provider/useActiveProvider";
 import { useSongContextMenuActions } from "@/hooks/song/useSongContextMenuActions";
 import type { SongContextMenuActionsProps } from "@/types/song/contextMenuComponents";
 
@@ -36,6 +37,9 @@ export function SongContextMenuActions(actions: SongContextMenuActionsProps) {
     onSimilarSongs,
     song,
   } = actions;
+  const { capabilities } = useActiveProvider();
+  const canLike = isLogin && capabilities.has("track.like");
+  const canManagePlaylists = isLogin && capabilities.has("playlist.manage");
   return (
     <>
       {isContextMenuOpen && (
@@ -65,7 +69,7 @@ export function SongContextMenuActions(actions: SongContextMenuActionsProps) {
                 {t("song.similar.action")}
               </ContextMenuItem>
             )}
-            {isLogin && (
+            {canLike && (
               <ContextMenuItem onClick={handleLike}>
                 <Heart className="mr-2 size-4" />
                 {isMulti
@@ -74,9 +78,9 @@ export function SongContextMenuActions(actions: SongContextMenuActionsProps) {
               </ContextMenuItem>
             )}
           </ContextMenuGroup>
-          {(isLogin || !isMulti) && <ContextMenuSeparator />}
+          {(canManagePlaylists || !isMulti) && <ContextMenuSeparator />}
           <ContextMenuGroup>
-            {isLogin && <SongPlaylistMenuItems actions={actions} model={model} />}
+            {canManagePlaylists && <SongPlaylistMenuItems actions={actions} model={model} />}
             {!isMulti && <SongNavigationMenuItems actions={actions} model={model} />}
           </ContextMenuGroup>
           {!isMulti && <SongRemovalMenuItems actions={actions} model={model} />}

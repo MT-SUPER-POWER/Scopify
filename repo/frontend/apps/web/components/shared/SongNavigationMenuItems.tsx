@@ -8,6 +8,7 @@ import {
   ContextMenuSubContent,
   ContextMenuSubTrigger,
 } from "@/components/ui/context-menu";
+import { useActiveProvider } from "@/hooks/provider/useActiveProvider";
 import { getCommentHref } from "@/lib/comment/commentResource";
 import { formatCompactCount } from "@/lib/utils";
 import type { SongContextMenuSectionProps } from "@/types/song/contextMenuComponents";
@@ -15,6 +16,7 @@ import type { SongContextMenuSectionProps } from "@/types/song/contextMenuCompon
 export function SongNavigationMenuItems({ actions, model }: SongContextMenuSectionProps) {
   const { song, onViewTranscript } = actions;
   const { t, commentCount, handleCopyLink } = model;
+  const { capabilities } = useActiveProvider();
   return (
     <>
       {onViewTranscript && (
@@ -24,26 +26,29 @@ export function SongNavigationMenuItems({ actions, model }: SongContextMenuSecti
         </ContextMenuItem>
       )}
 
-      <ContextMenuItem asChild className="w-full">
-        <Link
-          href={
-            song.voiceId !== undefined
-              ? getCommentHref("voice", song.voiceId)
-              : getCommentHref("song", song.id)
-          }
-          className="block size-full"
-        >
-          <FaRegCommentDots className="mr-2 size-4" />
-          {commentCount === undefined
-            ? t("contextMenu.comments")
-            : t("contextMenu.commentsWithCount", {
-                count: commentCount,
-                replace: { count: formatCompactCount(commentCount) },
-              })}
-        </Link>
-      </ContextMenuItem>
+      {capabilities.has("comments.read") && (
+        <ContextMenuItem asChild className="w-full">
+          <Link
+            href={
+              song.voiceId !== undefined
+                ? getCommentHref("voice", song.voiceId)
+                : getCommentHref("song", song.id)
+            }
+            className="block size-full"
+          >
+            <FaRegCommentDots className="mr-2 size-4" />
+            {commentCount === undefined
+              ? t("contextMenu.comments")
+              : t("contextMenu.commentsWithCount", {
+                  count: commentCount,
+                  replace: { count: formatCompactCount(commentCount) },
+                })}
+          </Link>
+        </ContextMenuItem>
+      )}
 
-      {song.ar &&
+      {capabilities.has("artist.read") &&
+        song.ar &&
         song.ar.length > 0 &&
         (song.ar.length === 1 ? (
           <ContextMenuItem asChild className="w-full">

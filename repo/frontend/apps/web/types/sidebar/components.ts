@@ -1,5 +1,7 @@
 import type { MouseEventHandler, ReactNode } from "react";
 import type { LucideIcon } from "lucide-react";
+import type { MusicCapability } from "@scopify/music-domain/capability";
+import type { TranslationKey } from "@/lib/i18n";
 import type { QueryFailureProps } from "@/types/query/boundaryComponents";
 
 export interface SidebarLibraryStateCardProps {
@@ -32,6 +34,17 @@ export interface SidebarConfirmDialogProps {
 
 export interface SidebarPlaylistLibraryProps {
   isCollapsed: boolean;
+}
+
+/** One group of sidebar links; an entry with `requires` shows only on platforms that have it. */
+export interface LibraryNavigationSection {
+  title: TranslationKey;
+  items: readonly {
+    href: string;
+    icon: LucideIcon;
+    labelKey: TranslationKey;
+    requires?: MusicCapability;
+  }[];
 }
 
 export interface LibraryNavigationProps extends SidebarPlaylistLibraryProps {

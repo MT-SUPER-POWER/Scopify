@@ -10,6 +10,8 @@ import {
 } from "@/constants/commandWorkspaceRoot";
 import { searchCommands } from "@/lib/commandWorkspace/commandSearch";
 import { useSmartRouter } from "@/hooks/core/useSmartRouter";
+import { useActiveProvider } from "@/hooks/provider/useActiveProvider";
+import { hrefCapability } from "@/lib/providers/routeCapability";
 import { isShortcutCommandAvailable } from "@/lib/shortcuts/availability";
 import { useShortcutCommands } from "@/hooks/shortcuts/useShortcutCommands";
 import { useShortcutRegistry } from "@/hooks/shortcuts/useShortcutRegistry";
@@ -43,6 +45,7 @@ export function useCommandWorkspaceRoot({
   const incrementUsage = useShortcutStore((state) => state.incrementUsage);
   const latticeActive = useLatticeView((state) => state.active);
   const latticeAvailable = useLatticeView((state) => state.controller !== null);
+  const { capabilities } = useActiveProvider();
 
   /** 所有可搜索的命令；顺序即无查询、无使用记录时的默认顺序。 */
   const catalog = useMemo<CommandWorkspaceRootItem[]>(
@@ -63,7 +66,11 @@ export function useCommandWorkspaceRoot({
         type: "workspace" as const,
         keywords: COMMAND_WORKSPACE_ROOT_PAGE_KEYWORDS[command.page],
       })),
-      ...COMMAND_WORKSPACE_NAVIGATION_TARGETS.map((target) => ({
+      // A page the active platform cannot show is left out, as in the sidebar.
+      ...COMMAND_WORKSPACE_NAVIGATION_TARGETS.filter((target) => {
+        const required = hrefCapability(target.href);
+        return !required || capabilities.has(required);
+      }).map((target) => ({
         id: target.id,
         href: target.href,
         label: "labelKey" in target ? t(target.labelKey) : target.label,
@@ -99,7 +106,7 @@ export function useCommandWorkspaceRoot({
           type: "shortcut" as const,
         })),
     ],
-    [commands, folia.catalog, latticeActive, latticeAvailable, quickSettings, t],
+    [capabilities, commands, folia.catalog, latticeActive, latticeAvailable, quickSettings, t],
   );
 
   const items = useMemo(() => {
