@@ -7,6 +7,7 @@ import { formatDuration } from "@/lib/utils";
 import { GRID_METRICS } from "@/constants/playlistGrid";
 import { useCardFlip } from "@/hooks/playlist/useFlipReveal";
 import { useTranslation } from "react-i18next";
+import { PlayingAnimation } from "@/components/shared/PlayingAnimation";
 
 import type { GridCardProps } from "@/types/playlist/gridComponents";
 import { GridCardFace } from "../lattice/PlaylistViewSkeleton";
@@ -38,6 +39,7 @@ export const GridCard = memo(function GridCard({
       data-grid-card=""
       data-centered="false"
       data-current={current}
+      data-playing={playing}
       data-flipping={flipping}
       aria-label={t("playlist.grid.select", { name: track.name })}
       className="group/card absolute cursor-pointer text-foreground [contain:layout_paint] focus-visible:outline-none data-[flipping=true]:[contain:layout]"
@@ -56,7 +58,7 @@ export const GridCard = memo(function GridCard({
       <div
         ref={backRef}
         style={flipping ? { transform: "rotateY(180deg)" } : undefined}
-        className="flex size-full flex-col rounded-xl border border-border bg-card p-2.5 shadow-lg transition-shadow duration-300 backface-hidden group-hover/card:shadow-2xl group-data-[current=true]/card:ring-2 group-data-[current=true]/card:ring-primary group-data-[lights-off=true]/grid:not-group-data-[current=true]/card:brightness-50"
+        className="flex size-full flex-col rounded-xl border border-border bg-card p-2.5 shadow-lg transition-shadow duration-300 backface-hidden group-hover/card:shadow-2xl group-data-[current=true]/card:border-foreground/20 group-data-[current=true]/card:bg-linear-to-b group-data-[current=true]/card:from-foreground/9 group-data-[current=true]/card:to-foreground/3 group-data-[current=true]/card:shadow-2xl group-data-[current=true]/card:shadow-black/40 group-data-[lights-off=true]/grid:not-group-data-[current=true]/card:brightness-50"
       >
         <div className="relative aspect-square shrink-0 overflow-hidden rounded-lg bg-secondary">
           <Disc3
@@ -79,10 +81,15 @@ export const GridCard = memo(function GridCard({
             type="button"
             aria-label={`${t(playing ? "ui.pause" : "ui.play")} ${track.name}`}
             onClick={() => onPlay(track)}
-            className="pointer-events-none absolute inset-0 m-auto grid size-14 place-items-center rounded-full bg-black/55 text-white opacity-0 backdrop-blur-sm transition-[opacity,transform] duration-200 group-data-[centered=true]/card:pointer-events-auto group-data-[centered=true]/card:opacity-100 group-data-[current=true]/card:pointer-events-auto group-data-[current=true]/card:opacity-100 hover:scale-105 hover:bg-black/70 focus-visible:opacity-100 focus-visible:outline-2 focus-visible:outline-white [&_svg]:size-6"
+            className="pointer-events-none absolute inset-0 m-auto grid size-14 place-items-center rounded-full bg-black/55 text-white opacity-0 backdrop-blur-sm transition-[opacity,transform] duration-200 group-data-[centered=true]/card:pointer-events-auto group-data-[centered=true]/card:opacity-100 group-data-[current=true]/card:pointer-events-auto group-data-[current=true]/card:not-group-data-[playing=true]/card:opacity-100 group-data-[current=true]/card:group-hover/card:opacity-100 hover:scale-105 hover:bg-black/70 focus-visible:opacity-100 focus-visible:outline-2 focus-visible:outline-white [&_svg]:size-6"
           >
             {playing ? <Pause fill="currentColor" /> : <Play fill="currentColor" />}
           </button>
+          {playing && (
+            <span className="pointer-events-none absolute bottom-2 left-2 grid place-items-center rounded-full bg-black/55 p-1.5 backdrop-blur-sm transition-opacity duration-200 group-hover/card:opacity-0 group-data-[centered=true]/card:opacity-0">
+              <PlayingAnimation size={12} className="[&_svg]:text-white" />
+            </span>
+          )}
         </div>
         <div className="mt-2.5 flex min-h-0 min-w-0 flex-1 flex-col text-left">
           <strong
@@ -98,10 +105,7 @@ export const GridCard = memo(function GridCard({
             {artist || track.al.name}
           </small>
           <span className="mt-auto flex items-center justify-between font-mono text-[10px] tabular-nums opacity-55">
-            <span className="flex items-center gap-1.5">
-              {String(cell.index + 1).padStart(2, "0")}
-              {current && <span className="size-1.5 rounded-full bg-primary" />}
-            </span>
+            <span>{String(cell.index + 1).padStart(2, "0")}</span>
             {formatDuration(track.dt)}
           </span>
         </div>
