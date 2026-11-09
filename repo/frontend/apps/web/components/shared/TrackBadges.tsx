@@ -9,7 +9,7 @@ import type { SongQualityBadgeLevel } from "@/types/song/quality";
 const NEUTRAL_QUALITY_LEVELS = {
   lossless: "lossless",
   hires: "hires",
-  spatial: "sky",
+  spatial: "vivid",
   dolby: "dolby",
 } as const satisfies Record<string, SongQualityBadgeLevel>;
 

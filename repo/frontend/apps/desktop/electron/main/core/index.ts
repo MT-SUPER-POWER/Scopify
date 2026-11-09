@@ -15,6 +15,7 @@ import { createQqMusicBackendController } from "@main/service/backend/qqMusic";
 import { createDiscordPresenceController } from "@main/service/discordPresence";
 import { createDesktopRendererHost } from "@main/service/renderer";
 import { registerExternalLinkHandling } from "@main/service/externalLinks";
+import { registerImageSampling } from "@main/service/imageSampling";
 import { loadDesktopHostConfig } from "@main/store";
 import { restoreMusicSessionCookies } from "@main/utils/musicCookieStore";
 import { applyElectronProxy } from "@main/utils/proxy";
@@ -176,6 +177,7 @@ async function prepareApplication() {
   await applyElectronProxy(desktopConfig).catch((error) => {
     proxyLog.error("[proxy] failed to apply startup proxy config", error);
   });
+  registerImageSampling();
   await createApplicationWindow().catch((error) => {
     windowLog.error("[window] failed to create the main window", error);
   });

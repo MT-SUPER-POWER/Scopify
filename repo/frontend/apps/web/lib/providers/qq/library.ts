@@ -1,4 +1,4 @@
-import type { MusicLibrarySource } from "@scopify/music-domain/library";
+import type { MusicLibraryPlaylist, MusicLibrarySource } from "@scopify/music-domain/library";
 
 import {
   adaptQqCloudEntries,
@@ -17,6 +17,7 @@ import {
   renameQqPlaylist,
   subscribeQqPlaylist,
 } from "@/lib/providers/qq/api/library";
+import { qqPlaylistSource } from "@/lib/providers/qq/playlist";
 import { rememberQqLikedPlaylists } from "@/lib/providers/qq/likedPlaylist";
 import {
   changeQqPlaylistTrackList,
@@ -46,6 +47,32 @@ const CLOUD_PAGE_SIZE = 500;
 /** A listing that still reports more after this many rounds is treated as broken. */
 const MAX_ROUNDS = 50;
 
+/**
+ * A playlist the platform gave no cover shows the cover of its first song instead. Only those
+ * playlists cost a request; one whose first song cannot be read stays without a cover.
+ */
+async function withFirstTrackCovers(
+  playlists: MusicLibraryPlaylist[],
+  signal?: AbortSignal,
+): Promise<MusicLibraryPlaylist[]> {
+  return Promise.all(
+    playlists.map(async (item) => {
+      if (item.playlist.coverUrl || item.playlist.trackCount === 0) return item;
+      try {
+        const first = await qqPlaylistSource.getPlaylistTracks(
+          item.playlist.ref,
+          { offset: 0, limit: 1 },
+          { signal },
+        );
+        const coverUrl = first.tracks[0]?.album?.coverUrl ?? null;
+        return coverUrl ? { ...item, playlist: { ...item.playlist, coverUrl } } : item;
+      } catch {
+        return item;
+      }
+    }),
+  );
+}
+
 export const qqLibrarySource: MusicLibrarySource = {
   async getLibraryPlaylists(account, options) {
     const entries: QqLibraryPlaylistEntryDto[] = [];
@@ -59,7 +86,10 @@ export const qqLibrarySource: MusicLibrarySource = {
         entries.push(entry);
       }
       if (!data.more) {
-        const playlists = entries.map((entry) => adaptQqLibraryPlaylist(entry, account));
+        const playlists = await withFirstTrackCovers(
+          entries.map((entry) => adaptQqLibraryPlaylist(entry, account)),
+          options?.signal,
+        );
         rememberQqLikedPlaylists(playlists);
         return playlists;
       }

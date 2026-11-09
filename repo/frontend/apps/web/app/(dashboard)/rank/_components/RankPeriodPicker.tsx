@@ -77,18 +77,20 @@ export function RankPeriodPicker({ range, date, onChange }: RankPeriodPickerProp
             {t("library.rank.yearHint")}
           </p>
         ) : (
-          <Calendar
-            mode="single"
-            selected={date ?? today}
-            defaultMonth={date ?? today}
-            onSelect={(picked) => {
-              if (!picked) return;
-              onChange(range, picked);
-              setOpen(false);
-            }}
-            locale={calendarLocale}
-            disabled={{ after: today }}
-          />
+          <div className="relative">
+            <Calendar
+              mode="single"
+              selected={date ?? today}
+              defaultMonth={date ?? today}
+              onSelect={(picked) => {
+                if (!picked) return;
+                onChange(range, picked);
+                setOpen(false);
+              }}
+              locale={calendarLocale}
+              disabled={{ after: today }}
+            />
+          </div>
         )}
       </PopoverContent>
     </Popover>

@@ -104,6 +104,20 @@ const nextConfig: NextConfig = {
     unoptimized: shouldUseUnoptimizedImages(),
   },
   ...(isDesktopBuild
+    ? {}
+    : {
+        // QQ Music's image hosts send no CORS headers; the page reads their pixels through here.
+        async rewrites() {
+          return [
+            { source: "/__img/gtimg/:path*", destination: "https://y.gtimg.cn/:path*" },
+            {
+              source: "/__img/qqfile/:path*",
+              destination: "https://music-file.y.qq.com/:path*",
+            },
+          ];
+        },
+      }),
+  ...(isDesktopBuild
     ? {
         output: "export",
         distDir: "out",
