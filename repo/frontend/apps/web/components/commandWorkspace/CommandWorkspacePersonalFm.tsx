@@ -52,7 +52,10 @@ export function CommandWorkspacePersonalFm({ onBack, onClose }: CommandWorkspace
             onToggleHelp={model.toggleHelp}
             showHelp={model.showHelp}
           />
-          <ScrollArea className="h-[min(64vh,28rem)]">
+          <ScrollArea
+            className="h-[min(64vh,28rem)]"
+            viewportClassName="[&>div]:!block [&>div]:!min-w-0 [&>div]:!w-full"
+          >
             <div className="space-y-6 px-5 py-7 sm:px-12 sm:py-9">
               <header className="flex items-center gap-3">
                 <PiBroadcast

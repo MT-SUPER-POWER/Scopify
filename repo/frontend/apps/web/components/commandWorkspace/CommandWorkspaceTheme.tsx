@@ -34,7 +34,10 @@ export function CommandWorkspaceTheme(props: CommandWorkspaceThemeProps) {
         />
       </div>
 
-      <ScrollArea className="h-[min(52vh,32rem)]">
+      <ScrollArea
+        className="h-[min(52vh,32rem)]"
+        viewportClassName="[&>div]:!block [&>div]:!min-w-0 [&>div]:!w-full"
+      >
         <div ref={listRef} className="space-y-0.5 px-2.5 py-2">
           {filteredItems.map((item, index) => {
             const isFirstInCategory =

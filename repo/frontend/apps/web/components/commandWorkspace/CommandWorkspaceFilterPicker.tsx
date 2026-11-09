@@ -16,7 +16,10 @@ export function CommandWorkspaceFilterPicker({
         <AtSign className="size-3.5" />
         选择搜索分类
       </div>
-      <ScrollArea style={{ height: filters.length * 36, maxHeight: "50vh" }}>
+      <ScrollArea
+        style={{ height: filters.length * 36, maxHeight: "50vh" }}
+        viewportClassName="[&>div]:!block [&>div]:!min-w-0 [&>div]:!w-full"
+      >
         {filters.map((candidate, index) => (
           <button
             key={candidate.id}

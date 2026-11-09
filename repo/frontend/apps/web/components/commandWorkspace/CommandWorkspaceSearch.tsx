@@ -65,7 +65,10 @@ export function CommandWorkspaceSearch(props: CommandWorkspaceSearchProps) {
         query={query}
       />
       <div className="mx-5 h-px bg-content/8" />
-      <ScrollArea className="h-[min(52vh,32rem)]">
+      <ScrollArea
+        className="h-[min(52vh,32rem)]"
+        viewportClassName="[&>div]:!block [&>div]:!min-w-0 [&>div]:!w-full"
+      >
         {!query.trim() ? (
           <p className="px-5 py-10 text-center text-sm text-content-muted">
             输入关键词，或用 @ 筛选{COMMAND_WORKSPACE_SEARCH_CATEGORY_HINT}。
