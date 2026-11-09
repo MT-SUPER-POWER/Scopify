@@ -8,6 +8,8 @@
     "src"
   ],
   "exports": {
+    "./album": "./src/album.ts",
+    "./artist": "./src/artist.ts",
     "./capability": "./src/capability.ts",
     "./identity": "./src/identity.ts",
     "./library": "./src/library.ts",
