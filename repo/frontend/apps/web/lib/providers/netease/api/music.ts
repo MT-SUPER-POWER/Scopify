@@ -5,7 +5,6 @@ import type {
   SongMusicDetailResponse,
   SongUrlV1Response,
   CheckMusicResponse,
-  NeteaseLyric,
   SongChorusResponse,
   SongUrlOptions,
 } from "@/types/song/api";
@@ -25,10 +24,6 @@ export async function greySongUrlMatch(
     signal,
   });
   return response.data;
-}
-
-export async function getLyric(id: number | string) {
-  return request.get<NeteaseLyric>("/lyric/new", { params: { id } });
 }
 
 export async function getSongChorus(id: number | string, signal?: AbortSignal) {

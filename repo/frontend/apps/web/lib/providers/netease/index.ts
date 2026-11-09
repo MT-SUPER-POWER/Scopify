@@ -2,6 +2,7 @@ import type { MusicCapability } from "@scopify/music-domain/capability";
 import type { MusicProviderClient } from "@scopify/music-domain/provider";
 
 import { neteaseLibrarySource } from "@/lib/providers/netease/library";
+import { neteaseLyricsSource } from "@/lib/providers/netease/lyrics";
 import { neteaseAlbumSource } from "@/lib/providers/netease/album";
 import { neteaseArtistSource } from "@/lib/providers/netease/artist";
 import { neteasePlaybackSource } from "@/lib/providers/netease/playback";
@@ -63,4 +64,5 @@ export const neteaseProvider: MusicProviderClient = {
   ...neteaseAlbumSource,
   ...neteaseRecommendSource,
   ...neteaseLibrarySource,
+  ...neteaseLyricsSource,
 };

@@ -1,5 +1,28 @@
-import type { NeteaseLyric } from "@/types/song/api";
 import type { VisualizerMode } from "@/components/lyrics/folia/src/types";
+
+/** One lyric text of a {@link LyricSource}: LRC for line timing, YRC for word timing. */
+export interface LyricSourceBranch {
+  version: number;
+  lyric: string | null;
+  pureMusic?: boolean;
+}
+
+/**
+ * The lyric texts the renderer turns into display lines, whichever platform they came from.
+ * Persisted with lyric caches, manual matches and imports, so existing fields keep their names.
+ */
+export interface LyricSource {
+  code: number;
+  pureMusic?: boolean;
+  lrc?: LyricSourceBranch; // 原文歌词（LRC 格式）
+  tlyric?: LyricSourceBranch; // 翻译歌词
+  romalrc?: LyricSourceBranch; // 罗马音歌词
+  yrc?: LyricSourceBranch; // 逐字原文歌词（YRC 格式）
+  ytlrc?: LyricSourceBranch; // 逐字翻译歌词
+  yromalrc?: LyricSourceBranch; // 逐字罗马音歌词
+  /** Fields of older caches and imports are kept as they were stored. */
+  [key: string]: unknown;
+}
 
 /** A NetEase song selected as the source for another track's lyrics. */
 export interface LyricMatchCandidate {
@@ -14,7 +37,7 @@ export interface LyricMatchCandidate {
 /** Persisted manual lyric selection for a song. */
 export interface LyricMatchOverride {
   candidate: LyricMatchCandidate;
-  lyric: NeteaseLyric;
+  lyric: LyricSource;
   matchedAt: number;
 }
 
@@ -22,7 +45,7 @@ export interface LyricMatchOverride {
 export interface ImportedLyricOverride {
   fileName: string;
   importedAt: number;
-  lyric: NeteaseLyric;
+  lyric: LyricSource;
 }
 
 export interface AwlrcContainerTracks {
@@ -70,7 +93,7 @@ export interface LyricData {
   isWordByWord: boolean;
   lines: LyricDisplayLine[];
   metadata: LyricMetadata;
-  raw: NeteaseLyric;
+  raw: LyricSource;
   source: LyricTimingSource;
 }
 
