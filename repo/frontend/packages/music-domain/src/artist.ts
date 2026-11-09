@@ -13,6 +13,15 @@ export interface MusicArtistDetail extends MusicArtist {
   description: string;
   /** Followers (fans) the platform reports; null when it does not say. */
   followerCount: number | null;
+  /** The platform marks the artist as verified, which the page shows as a badge. */
+  verified: boolean;
+}
+
+/** What the signed-in account's relation to an artist looks like right now. */
+export interface MusicArtistFollowState {
+  followed: boolean;
+  /** Followers (fans) the platform reports with the state; null when it does not say. */
+  followerCount: number | null;
 }
 
 /** An album on an artist's page: the shared album plus when it came out. */
@@ -52,7 +61,10 @@ export interface MusicArtistSource {
     signal?: AbortSignal,
   ): Promise<MusicArtistAlbumPage>;
   /** Whether the signed-in account follows the artist. */
-  isArtistFollowed?(artist: MusicResourceRef<"artist">, signal?: AbortSignal): Promise<boolean>;
+  getArtistFollowState?(
+    artist: MusicResourceRef<"artist">,
+    signal?: AbortSignal,
+  ): Promise<MusicArtistFollowState>;
   /** Follows or unfollows the artist for the signed-in account. */
   setArtistFollowed?(artist: MusicResourceRef<"artist">, followed: boolean): Promise<void>;
 }

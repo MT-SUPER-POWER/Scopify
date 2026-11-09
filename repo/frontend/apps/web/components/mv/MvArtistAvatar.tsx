@@ -11,8 +11,8 @@ import type { MvArtistAvatarProps } from "@/types/mv/components";
  * 取不到时显示名字首字。
  */
 export function MvArtistAvatar({ artistId, name, className }: MvArtistAvatarProps) {
-  const artist = useArtistDetailQuery(artistId ? String(artistId) : null).data?.data?.artist;
-  const avatar = artist?.avatar || artist?.cover;
+  const artist = useArtistDetailQuery(artistId ? String(artistId) : null).data;
+  const avatar = artist?.avatarUrl || artist?.coverUrl;
 
   return (
     <span

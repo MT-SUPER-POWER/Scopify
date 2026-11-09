@@ -3,11 +3,11 @@
 import { Heart, Link2, ListPlus, Pause, Play, PlusCircle, User } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { memo, useCallback, useMemo, useState } from "react";
+import { memo, useCallback, useState } from "react";
 import { FaRegCommentDots } from "react-icons/fa6";
 import { toast } from "sonner";
 
-import type { ArtistInfo } from "@/types/artist/model";
+import { musicResourceKey } from "@scopify/music-domain/identity";
 
 import {
   ContextMenu,
@@ -21,6 +21,8 @@ import {
   ContextMenuTrigger,
 } from "@/components/ui/context-menu";
 import { LikeButton } from "@/components/ui/LikeButton";
+import { useTrackLikes } from "@/hooks/library/useLikedTracks";
+import { useProviderCapability } from "@/hooks/provider/useActiveProvider";
 import { SongVipBadge } from "@/components/shared/SongVipBadge";
 import { usePlaylistTrackMutation } from "@/hooks/playlist/usePlaylistTrackMutation";
 import { useSongLikeMutation } from "@/hooks/playlist/useSongLikeMutation";
@@ -31,17 +33,16 @@ import SPOTIFYANIME from "@/resources/eq-playing.svg";
 import { usePlayerStore, useUserStore } from "@/store";
 import { useTranslation } from "react-i18next";
 
-import { pruneSongDetail, type SongDetail } from "@/types/song/api";
+import type { PlayerTrack } from "@/types/player/model";
 import { getSizedImageUrl } from "@/lib/music/imageUrl";
-import { adaptNeteaseTrack, getNeteaseTrackId } from "@/lib/providers/netease/adapters/track";
+import { getNeteaseTrackId } from "@/lib/providers/netease/adapters/track";
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ INDEX CELL ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 interface Props {
-  artist: ArtistInfo;
   index: number;
-  queue: SongDetail[];
-  track: SongDetail;
+  queue: readonly PlayerTrack[];
+  track: PlayerTrack;
 }
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ TRACK ITEM ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -107,18 +108,24 @@ export const PopularTrackItem = memo(
     const setIsPlaying = usePlayerStore((s) => s.setIsPlaying);
     const setQueue = usePlayerStore((s) => s.setQueue);
     const playTrack = usePlayerStore((s) => s.playTrack);
-    const likeListIDs = useUserStore((s) => s.likeListIDs);
     const playlists = useUserStore((s) => s.playlist);
+    const { isLiked: isTrackLiked } = useTrackLikes();
     const isLoggedIn = useLoginStatus();
     const { mutateAsync: updatePlaylistTrack } = usePlaylistTrackMutation();
     const songLikeMutation = useSongLikeMutation();
 
+    // ── capabilities ──
+    const canOpenArtist = useProviderCapability("artist.read");
+    const canComment = useProviderCapability("comments.read");
+    const canLike = useProviderCapability("track.like");
+    const canManagePlaylists = useProviderCapability("playlist.manage");
+    // Playlists, comments and the song link are NetEase's: other platforms' rows have no ID for them.
+    const neteaseId = getNeteaseTrackId(track);
+
     // ── derived ──
-    const isActive = getNeteaseTrackId(currentTrack) === track.id;
-    const isLiked = useMemo(
-      () => Array.isArray(likeListIDs) && likeListIDs.includes(track.id),
-      [likeListIDs, track.id],
-    );
+    const trackKey = musicResourceKey(track.ref);
+    const isActive = !!currentTrack && musicResourceKey(currentTrack.ref) === trackKey;
+    const isLiked = isTrackLiked(track.ref);
     const [hovered, setHovered] = useState(false);
 
     // ── handlers ──
@@ -127,9 +134,8 @@ export const PopularTrackItem = memo(
         setIsPlaying(true);
         return;
       }
-      if (queue.length > 0) setQueue(queue.map(adaptNeteaseTrack), index);
-      void playTrack(adaptNeteaseTrack(queue[index] || pruneSongDetail(track)));
-      console.log("Playing track:", track.al.name, "with cover", track.al.picUrl);
+      if (queue.length > 0) setQueue([...queue], index);
+      void playTrack(track);
     }, [isActive, queue, index, track, setIsPlaying, setQueue, playTrack]);
 
     const handlePause = useCallback(() => setIsPlaying(false), [setIsPlaying]);
@@ -144,24 +150,22 @@ export const PopularTrackItem = memo(
 
     const handleLike = useCallback(
       (next: boolean) => {
-        songLikeMutation.mutate({ like: next, songId: track.id });
+        songLikeMutation.mutate({ like: next, track: track.ref });
       },
-      [songLikeMutation, track.id],
+      [songLikeMutation, track.ref],
     );
 
     const handleAddToQueue = useCallback(() => {
       const state = usePlayerStore.getState();
-      console.log("track info", track);
-      const detail = queue[index] || pruneSongDetail(track);
-      if (state.queue.some((t) => getNeteaseTrackId(t) === track.id)) {
+      if (state.queue.some((queued) => musicResourceKey(queued.ref) === trackKey)) {
         toast.info(t("artist.track.queueExists"));
         return;
       }
-      state.setQueue([...state.queue, adaptNeteaseTrack(detail)], state.queueIndex);
+      state.setQueue([...state.queue, track], state.queueIndex);
       toast.success(t("artist.track.queueAdded"));
-    }, [queue, index, track, t]);
+    }, [track, trackKey, t]);
 
-    // console.log("Track Data:", track);
+    const coverUrl = track.album?.coverUrl ?? "";
 
     return (
       <ContextMenu>
@@ -185,39 +189,47 @@ export const PopularTrackItem = memo(
                 onPlay={handlePlay}
                 onPause={handlePause}
               />
-              <Image
-                width={40}
-                height={40}
-                src={getSizedImageUrl(track.al.picUrl || track.al.coverUrl, 120)}
-                alt={track.name}
-                className="size-10 shrink-0 rounded object-cover"
-              />
+              <div className="size-10 shrink-0 overflow-hidden rounded bg-surface-elevated">
+                {coverUrl ? (
+                  <Image
+                    width={40}
+                    height={40}
+                    src={getSizedImageUrl(coverUrl, 120)}
+                    alt={track.title}
+                    className="size-full object-cover"
+                  />
+                ) : null}
+              </div>
               <div className="flex min-w-0 items-center gap-1.5">
                 <span
                   className={cn(
                     "max-w-50 truncate font-medium md:max-w-xs",
                     isActive ? "text-brand" : "text-content",
                   )}
-                  title={track.name}
+                  title={track.title}
                 >
-                  {track.name}
+                  {track.title}
                 </span>
-                <SongVipBadge fee={track.fee} />
+                <SongVipBadge fee={track.netease?.fee} />
               </div>
             </div>
 
             {/* 右侧：Like + 时长 */}
             <div className="flex items-center gap-4 text-sm text-content-muted">
-              <div className={cn("transition-opacity", hovered ? "opacity-100" : "opacity-0")}>
-                <LikeButton
-                  liked={isLiked}
-                  onLike={() => {
-                    void handleLike(!isLiked);
-                  }}
-                  iconClassName="size-4.5"
-                />
-              </div>
-              <span className="w-10 text-right tabular-nums">{formatDuration(track.dt)}</span>
+              {canLike && (
+                <div className={cn("transition-opacity", hovered ? "opacity-100" : "opacity-0")}>
+                  <LikeButton
+                    liked={isLiked}
+                    onLike={() => {
+                      void handleLike(!isLiked);
+                    }}
+                    iconClassName="size-4.5"
+                  />
+                </div>
+              )}
+              <span className="w-10 text-right tabular-nums">
+                {formatDuration(track.durationMs)}
+              </span>
             </div>
           </div>
         </ContextMenuTrigger>
@@ -244,82 +256,91 @@ export const PopularTrackItem = memo(
               {t("contextMenu.addToQueue")}
             </ContextMenuItem>
 
-            <ContextMenuItem onClick={() => void handleLike(!isLiked)}>
-              <Heart className="mr-2 size-4" />
-              {isLiked ? t("contextMenu.removeFromLiked") : t("contextMenu.addToLiked")}
-            </ContextMenuItem>
+            {canLike && (
+              <ContextMenuItem onClick={() => void handleLike(!isLiked)}>
+                <Heart className="mr-2 size-4" />
+                {isLiked ? t("contextMenu.removeFromLiked") : t("contextMenu.addToLiked")}
+              </ContextMenuItem>
+            )}
           </ContextMenuGroup>
 
           <ContextMenuSeparator />
 
           <ContextMenuGroup>
-            <ContextMenuSub>
-              <ContextMenuSubTrigger>
-                <PlusCircle className="mr-4 size-4" />
-                {t("contextMenu.addToPlaylist")}
-              </ContextMenuSubTrigger>
-              <ContextMenuSubContent className="scrollbar-thin max-h-72 max-w-80 overflow-y-auto">
-                {isLoggedIn &&
-                  playlists.map((p) => (
-                    <ContextMenuItem
-                      key={p.id}
-                      onClick={() => {
-                        void (async () => {
-                          try {
-                            await updatePlaylistTrack({
-                              operation: "add",
-                              playlistId: p.id,
-                              trackId: track.id,
-                            });
-                            void clearPageCache();
-                            toast.success(t("artist.track.addToPlaylistSuccess"));
-                          } catch {
-                            toast.error(t("artist.track.addToPlaylistFailed"));
-                          }
-                        })();
-                      }}
-                    >
-                      <Image
-                        width={28}
-                        height={28}
-                        src={getSizedImageUrl(p.coverImgUrl, 80)}
-                        alt={t("playlist.form.coverAlt")}
-                        className="mr-2 size-7 rounded-sm"
-                      />
-                      {p.name}
-                    </ContextMenuItem>
-                  ))}
-              </ContextMenuSubContent>
-            </ContextMenuSub>
+            {canManagePlaylists && neteaseId !== null && (
+              <ContextMenuSub>
+                <ContextMenuSubTrigger>
+                  <PlusCircle className="mr-4 size-4" />
+                  {t("contextMenu.addToPlaylist")}
+                </ContextMenuSubTrigger>
+                <ContextMenuSubContent className="scrollbar-thin max-h-72 max-w-80 overflow-y-auto">
+                  {isLoggedIn &&
+                    playlists.map((p) => (
+                      <ContextMenuItem
+                        key={p.id}
+                        onClick={() => {
+                          void (async () => {
+                            try {
+                              await updatePlaylistTrack({
+                                operation: "add",
+                                playlistId: p.id,
+                                trackId: neteaseId,
+                              });
+                              void clearPageCache();
+                              toast.success(t("artist.track.addToPlaylistSuccess"));
+                            } catch {
+                              toast.error(t("artist.track.addToPlaylistFailed"));
+                            }
+                          })();
+                        }}
+                      >
+                        <Image
+                          width={28}
+                          height={28}
+                          src={getSizedImageUrl(p.coverImgUrl, 80)}
+                          alt={t("playlist.form.coverAlt")}
+                          className="mr-2 size-7 rounded-sm"
+                        />
+                        {p.name}
+                      </ContextMenuItem>
+                    ))}
+                </ContextMenuSubContent>
+              </ContextMenuSub>
+            )}
 
-            <ContextMenuItem asChild>
-              <Link href={`/comment/?songId=${track.id}`} className="block size-full">
-                <FaRegCommentDots className="mr-2 size-4" />
-                {t("contextMenu.comments")}
-              </Link>
-            </ContextMenuItem>
+            {canComment && neteaseId !== null && (
+              <ContextMenuItem asChild>
+                <Link href={`/comment/?songId=${neteaseId}`} className="block size-full">
+                  <FaRegCommentDots className="mr-2 size-4" />
+                  {t("contextMenu.comments")}
+                </Link>
+              </ContextMenuItem>
+            )}
 
-            <ContextMenuItem asChild>
-              <button
-                type="button"
-                onClick={() => {
-                  navigator.clipboard
-                    .writeText(`https://music.163.com/#/song?id=${track.id}`)
-                    .then(() => toast.success(t("artist.track.copySuccess")))
-                    .catch(() => toast.error(t("artist.track.copyFailed")));
-                }}
-                className="block size-full"
-              >
-                <Link2 className="mr-2 size-4" />
-                {t("contextMenu.copyLink")}
-              </button>
-            </ContextMenuItem>
+            {neteaseId !== null && (
+              <ContextMenuItem asChild>
+                <button
+                  type="button"
+                  onClick={() => {
+                    navigator.clipboard
+                      .writeText(`https://music.163.com/#/song?id=${neteaseId}`)
+                      .then(() => toast.success(t("artist.track.copySuccess")))
+                      .catch(() => toast.error(t("artist.track.copyFailed")));
+                  }}
+                  className="block size-full"
+                >
+                  <Link2 className="mr-2 size-4" />
+                  {t("contextMenu.copyLink")}
+                </button>
+              </ContextMenuItem>
+            )}
 
             {/* View Artist */}
-            {track.ar.length > 0 &&
-              (track.ar.length === 1 ? (
+            {canOpenArtist &&
+              track.artists.length > 0 &&
+              (track.artists.length === 1 ? (
                 <ContextMenuItem asChild>
-                  <Link href={`/artist?id=${track.ar[0].id}`} className="block size-full">
+                  <Link href={`/artist?id=${track.artists[0].ref.id}`} className="block size-full">
                     <User className="mr-2 size-4" />
                     {t("contextMenu.goToArtist")}
                   </Link>
@@ -331,9 +352,9 @@ export const PopularTrackItem = memo(
                     {t("contextMenu.goToArtist")}
                   </ContextMenuSubTrigger>
                   <ContextMenuSubContent className="scrollbar-thin max-h-72 max-w-80 overflow-y-auto">
-                    {track.ar.map((artist) => (
-                      <ContextMenuItem key={artist.id} asChild>
-                        <Link href={`/artist?id=${artist.id}`} className="block size-full">
+                    {track.artists.map((artist) => (
+                      <ContextMenuItem key={artist.ref.id} asChild>
+                        <Link href={`/artist?id=${artist.ref.id}`} className="block size-full">
                           {artist.name}
                         </Link>
                       </ContextMenuItem>
@@ -347,5 +368,5 @@ export const PopularTrackItem = memo(
     );
   },
   (prev, next) =>
-    prev.track.id === next.track.id && prev.index === next.index && prev.queue === next.queue,
+    prev.track === next.track && prev.index === next.index && prev.queue === next.queue,
 );

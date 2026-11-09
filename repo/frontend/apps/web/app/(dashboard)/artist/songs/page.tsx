@@ -6,7 +6,6 @@ import { PlaylistContent } from "@/components/Playlist/PlaylistContent";
 import { NetworkRetryState } from "@/components/shared/NetworkRetryState";
 import { useArtistData } from "@/hooks/artist/useArtistData";
 import { useArtistPopularSongsTheme } from "@/hooks/artist/useArtistPopularSongsTheme";
-import { toNeteaseTrackList } from "@/lib/providers/netease/adapters/track";
 import { useTranslation } from "react-i18next";
 
 import type { PlaylistInfo } from "@/types/playlist/model";
@@ -43,7 +42,6 @@ export default function ArtistPopularSongsPage() {
     };
   }, [artist, popularTracks.length, t]);
   const themeColor = useArtistPopularSongsTheme(playlistInfo?.cover);
-  const tracks = useMemo(() => toNeteaseTrackList(popularTracks), [popularTracks]);
 
   if (!artistId) return <ArtistInvalidId />;
 
@@ -75,7 +73,7 @@ export default function ArtistPopularSongsPage() {
         readonly
         refetchTracks={refetch}
         themeColor={themeColor}
-        tracks={tracks}
+        tracks={popularTracks}
       />
     </>
   );

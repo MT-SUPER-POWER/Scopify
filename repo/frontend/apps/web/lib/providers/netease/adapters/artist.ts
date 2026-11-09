@@ -18,6 +18,8 @@ export function adaptNeteaseArtistDetail(
     aliases: raw.alias ?? [],
     description: raw.briefDesc ?? "",
     followerCount,
+    // NetEase has always shown the badge for every artist.
+    verified: true,
   };
 }
 

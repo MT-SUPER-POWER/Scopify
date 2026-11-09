@@ -1,38 +1,27 @@
-import type { RawSongDetail } from "@/types/song/api";
+import type { MusicResourceRef } from "@scopify/music-domain/identity";
 
 export interface ArtistCoverTheme {
   cover: string;
   color: string;
 }
 
-export interface Track {
-  id: string | number;
+/** An album card of the artist page's discography. */
+export interface DiscographyAlbum {
+  ref: MusicResourceRef<"album">;
   title: string;
-  durationMs: number;
-  ar: { id: string | number; name: string }[];
-  al: {
-    blurPicUrl?: string;
-    coverUrl?: string;
-    picUrl: string;
-  };
-  publishTime?: number;
-  dt: number;
-  raw?: RawSongDetail;
-}
-
-export interface Album {
-  id: string | number;
-  title: string;
-  releaseYear: number;
-  type: string;
-  coverUrl: string;
+  coverUrl: string | null;
+  /** Null when the platform does not say when the album came out. */
+  releaseYear: number | null;
+  /** The platform's label for the kind of release; null when it has none. */
+  type: string | null;
 }
 
 export interface ArtistInfo {
-  id: string | number;
+  id: string;
   name: string;
   isVerified: boolean;
-  listeners: number;
+  /** Followers (fans); null when the platform does not report them. */
+  listeners: number | null;
   headerImageUrl: string;
   avatar: string;
   bio: string;

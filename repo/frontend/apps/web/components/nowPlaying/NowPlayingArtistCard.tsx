@@ -21,8 +21,8 @@ export function NowPlayingArtistCard({ song }: NowPlayingSectionProps) {
   // 声音、本地或云盘歌曲可能没有有效的艺人 id
   if (!artistId) return null;
 
-  const artist = detailQuery.data?.data?.artist;
-  const imageUrl = artist?.cover || artist?.avatar;
+  const artist = detailQuery.data;
+  const imageUrl = artist?.coverUrl || artist?.avatarUrl;
   const href = `/artist?id=${artistId}`;
 
   return (
@@ -73,9 +73,9 @@ export function NowPlayingArtistCard({ song }: NowPlayingSectionProps) {
         <NowPlayingFollowButton follow={follow} />
       </div>
 
-      {artist?.briefDesc && (
+      {artist?.description && (
         <p className="mt-3 line-clamp-3 px-4 text-sm leading-6 text-content-muted">
-          {artist.briefDesc}
+          {artist.description}
         </p>
       )}
     </section>

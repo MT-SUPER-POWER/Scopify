@@ -46,9 +46,12 @@ export const neteaseArtistSource: MusicArtistSource = {
     };
   },
 
-  async isArtistFollowed(artist, signal) {
+  async getArtistFollowState(artist, signal) {
     const { data } = await getFansCnt(artist.id, signal);
-    return Boolean(data.data?.isFollow ?? data.data?.follow);
+    return {
+      followed: Boolean(data.data?.isFollow ?? data.data?.follow),
+      followerCount: data.data?.fansCnt ?? null,
+    };
   },
 
   async setArtistFollowed(artist, followed) {

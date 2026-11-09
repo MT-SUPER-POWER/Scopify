@@ -27,6 +27,8 @@ export function adaptQqArtistDetail(
     aliases: raw.foreignName ? [raw.foreignName] : [],
     description: raw.desc ?? "",
     followerCount,
+    // QQ does not report verification.
+    verified: false,
   };
 }
 

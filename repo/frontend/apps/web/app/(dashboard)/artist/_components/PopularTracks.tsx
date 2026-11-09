@@ -1,21 +1,19 @@
+import { musicResourceKey } from "@scopify/music-domain/identity";
 import Link from "next/link";
 import { useTranslation } from "react-i18next";
 
-import type { SongDetail } from "@/types/song/api";
 import type { ArtistInfo } from "@/types/artist/model";
+import type { PlayerTrack } from "@/types/player/model";
 import { PopularTrackItem } from "./PopularTrackItem";
 
 interface Props {
-  tracks: SongDetail[];
-  queue: SongDetail[];
+  tracks: readonly PlayerTrack[];
   artist: ArtistInfo;
 }
 
-export function PopularTracks({ tracks, queue, artist }: Props) {
+export function PopularTracks({ tracks, artist }: Props) {
   const { t } = useTranslation();
   const visibleTracks = tracks.slice(0, 10);
-  // DEBUG: 歌手热门歌曲队列
-  // console.log("Popular Track:", tracks);
 
   return (
     <div className="flex-1">
@@ -24,11 +22,10 @@ export function PopularTracks({ tracks, queue, artist }: Props) {
         <div className="flex flex-col">
           {visibleTracks.map((track, i) => (
             <PopularTrackItem
-              key={track.id}
+              key={musicResourceKey(track.ref)}
               track={track}
               index={i}
-              queue={queue}
-              artist={artist}
+              queue={tracks}
             />
           ))}
           {tracks.length > 10 && (

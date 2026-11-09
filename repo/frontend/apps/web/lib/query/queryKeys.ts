@@ -9,14 +9,22 @@ import { providerQueryKey } from "@/lib/query/providerQueryKey";
 export const musicQueryKeys = {
   mv: mvQueryKeys,
   album: {
-    detail: (albumId: string) => ["album", "detail", albumId] as const,
-    subscriptions: (userId: number) => ["album", "subscriptions", userId] as const,
+    /** An album with its tracks, however the platform serves them. */
+    content: (provider: MusicProvider, albumId: string) =>
+      providerQueryKey(provider, "album", "content", albumId),
   },
   artist: {
-    albums: (artistId: string) => ["artist", "albums", artistId] as const,
-    detail: (artistId: string) => ["artist", "detail", artistId] as const,
-    followCount: (artistId: string) => ["artist", "follow-count", artistId] as const,
-    topSongs: (artistId: string) => ["artist", "top-songs", artistId] as const,
+    albums: (provider: MusicProvider, artistId: string, limit: number) =>
+      providerQueryKey(provider, "artist", "albums", artistId, limit),
+    detail: (provider: MusicProvider, artistId: string) =>
+      providerQueryKey(provider, "artist", "detail", artistId),
+    /** Whether an account follows an artist; every artist and account of a platform. */
+    followStateAll: (provider: MusicProvider) =>
+      providerQueryKey(provider, "artist", "follow-state"),
+    followState: (provider: MusicProvider, accountId: string, artistId: string) =>
+      [...musicQueryKeys.artist.followStateAll(provider), accountId, artistId] as const,
+    topTracks: (provider: MusicProvider, artistId: string) =>
+      providerQueryKey(provider, "artist", "top-tracks", artistId),
     fansGroup: (artistId: string | number) => ["fans-group", "artist", String(artistId)] as const,
   },
   fansGroup: {
