@@ -1,5 +1,9 @@
+import {
+  getNeteaseTrackId,
+  getPlayerTrackOfNeteaseSong,
+} from "@/lib/providers/netease/adapters/track";
 import type { SongDetail } from "@/types/song/api";
-import type { PlaybackNextSource } from "@/types/player/model";
+import type { PlaybackNextSource, PlayerTrack } from "@/types/player/model";
 
 /**
  * The narrow player surface required after NetEase accepts a Personal FM
@@ -8,7 +12,7 @@ import type { PlaybackNextSource } from "@/types/player/model";
  * mutation rules.
  */
 export interface PersonalFmDislikePlayer {
-  queue: readonly SongDetail[];
+  queue: readonly PlayerTrack[];
   queueIndex: number;
   removeQueueItem(index: number): void;
 }
@@ -44,11 +48,15 @@ export async function dislikePersonalFmTrack(
   const player = dependencies.getPlayer();
   // Personal FM may recommend the same song more than once. Object placement
   // is the strongest identity in the legacy queue until stable queueItemId is
-  // persisted, whereas songId alone would confuse two separate rows.
-  const queueIndex = player.queue.findIndex((item) => item === track);
+  // persisted, whereas songId alone would confuse two separate rows. The song shown in the FM
+  // list maps back to the queue entry it was made from.
+  const queuedTrack = getPlayerTrackOfNeteaseSong(track);
+  const queueIndex = queuedTrack ? player.queue.findIndex((item) => item === queuedTrack) : -1;
   const currentQueueItem = player.queue[player.queueIndex];
   const isCurrentTrack =
-    queueIndex >= 0 ? player.queueIndex === queueIndex : currentQueueItem?.id === track.id;
+    queueIndex >= 0
+      ? player.queueIndex === queueIndex
+      : getNeteaseTrackId(currentQueueItem) === track.id;
 
   if (isCurrentTrack) {
     await dependencies.advance("personal-fm-dislike");

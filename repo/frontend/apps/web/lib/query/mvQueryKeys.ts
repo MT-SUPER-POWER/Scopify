@@ -1,8 +1,23 @@
-import type { MusicCommentParams } from "@/types/comment/api";
-import type { MvFirstParams, MvListParams, MvPaginationParams, MvTopParams } from "@/types/mv/api";
+import type { MusicProvider } from "@scopify/music-domain/identity";
+import { providerQueryKey } from "@/lib/query/providerQueryKey";
+import type { MusicCommentParams } from "@/types/providers/netease/commentApi";
+import type {
+  MvFirstParams,
+  MvListParams,
+  MvPaginationParams,
+  MvTopParams,
+} from "@/types/providers/netease/mvApi";
 
 export const mvQueryKeys = {
   all: ["mv"] as const,
+  /** One MV as the platform's interface reports it. */
+  detailOf: (provider: MusicProvider, mvId: string) =>
+    providerQueryKey(provider, "mv", "detail", mvId),
+  /** A playable stream; signed and account-dependent (VIP), so never shared across accounts. */
+  stream: (provider: MusicProvider, mvId: string, maxHeight: number, accountId: string) =>
+    providerQueryKey(provider, "mv", "stream", mvId, maxHeight, accountId),
+  related: (provider: MusicProvider, mvId: string, limit: number) =>
+    providerQueryKey(provider, "mv", "related", mvId, limit),
   list: (params: MvListParams = {}) =>
     [
       "mv",
@@ -27,8 +42,6 @@ export const mvQueryKeys = {
     ["mv", "detail", String(mvid), accountId] as const,
   info: (mvid: number | string, accountId: string) =>
     ["mv", "info", String(mvid), accountId] as const,
-  url: (mvid: number | string, r: number, accountId: string) =>
-    ["mv", "url", String(mvid), r, accountId] as const,
   subscriptions: (accountId: string) => ["mv", "subscriptions", accountId] as const,
   subscribed: (accountId: string, params: MvPaginationParams = {}) =>
     ["mv", "subscriptions", accountId, params.limit ?? 25, params.offset ?? 0] as const,

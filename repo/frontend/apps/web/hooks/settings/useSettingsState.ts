@@ -1,17 +1,14 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import type {
-  DesktopBackendStatus,
-  DesktopHostConfig,
-  DiscordPresenceStatus,
-} from "@scopify/desktop-contract";
+import type { DesktopHostConfig, DiscordPresenceStatus } from "@scopify/desktop-contract";
 import { toast } from "sonner";
 import {
   getCachePreferences,
   getCacheStats,
   saveCachePreferences,
 } from "@/lib/cache/cacheManagement";
+import { useDesktopBackendStatus } from "@/hooks/backend/useDesktopBackendStatus";
 import { translate } from "@/lib/i18n";
 import { runtime } from "@/lib/runtime";
 import { buildSavedSettingsConfig } from "@/lib/settings/buildSavedSettingsConfig";
@@ -21,15 +18,18 @@ import {
   normalizeBackendConfig,
 } from "@/lib/web/backendUrl";
 import { webConfig } from "@/lib/web/env";
-import { pingBackend, probeBackend } from "@/lib/web/waitForBackend";
+import {
+  loadStoredBackendAddress,
+  loadStoredNeteaseConfig,
+  loadStoredNetworkConfig,
+  saveStoredRequestSettings,
+} from "@/lib/web/http/storedSettings";
+import { pingBackend, probeBackend, probeQqBackend } from "@/lib/web/waitForBackend";
 import { useI18nStore } from "@/store/module/i18n";
-import type { WebConfig } from "@/types/settings/config";
+import type { BackendAddress, BackendPlatform, WebConfig } from "@/types/settings/config";
 import type { BackendPingResult } from "@/types/network/model";
 import type { SettingsConfig } from "@/types/settings/model";
 import type { CachePreferences } from "@/types/cache/model";
-
-export const WEB_NETWORK_SETTINGS_KEY = "momo-web-network-settings";
-export const WEB_BACKEND_SETTINGS_KEY = "momo-web-backend-settings";
 
 function checkRequiresRestart(current: DesktopHostConfig, original: DesktopHostConfig): boolean {
   return (
@@ -39,60 +39,31 @@ function checkRequiresRestart(current: DesktopHostConfig, original: DesktopHostC
   );
 }
 
-function loadWebNetworkOverride(): Partial<WebConfig["network"]> | null {
-  if (typeof window === "undefined") return null;
-
-  try {
-    const stored = localStorage.getItem(WEB_NETWORK_SETTINGS_KEY);
-    return stored ? JSON.parse(stored) : null;
-  } catch {
-    return null;
-  }
-}
-
-function loadWebBackendOverride(): WebConfig["backend"] | null {
-  if (typeof window === "undefined") return null;
-
-  try {
-    const stored = localStorage.getItem(WEB_BACKEND_SETTINGS_KEY);
-    if (!stored) return null;
-    const parsed = JSON.parse(stored) as Partial<WebConfig["backend"]>;
-    const parsedPort =
-      typeof parsed.port === "number" || typeof parsed.port === "string"
-        ? Number(parsed.port)
-        : Number.NaN;
-    if (typeof parsed.host !== "string" || !Number.isFinite(parsedPort)) return null;
-    const protocol =
-      parsed.protocol === "https" || parsed.protocol === "http"
-        ? parsed.protocol
-        : webConfig.backend.protocol;
-    const resolved = normalizeBackendConfig({
-      ...webConfig.backend,
-      host: parsed.host,
-      port: parsedPort,
-      protocol,
-    });
-    return resolved.ok ? resolved.backend : null;
-  } catch {
-    return null;
-  }
-}
-
 function buildWebConfig(): WebConfig {
   return {
     app: { locale: useI18nStore.getState().locale },
     backend: {
-      ...webConfig.backend,
-      ...(loadWebBackendOverride() ?? {}),
+      netease: {
+        ...webConfig.backend.netease,
+        ...(loadStoredBackendAddress("netease") ?? {}),
+      },
+      qq: {
+        ...webConfig.backend.qq,
+        ...(loadStoredBackendAddress("qq") ?? {}),
+      },
     },
     network: {
       ...webConfig.network,
-      ...(loadWebNetworkOverride() ?? {}),
+      ...loadStoredNetworkConfig(),
+    },
+    netease: {
+      ...webConfig.netease,
+      ...loadStoredNeteaseConfig(),
     },
   };
 }
 
-function validateBackendConfig(locale: WebConfig["app"]["locale"], backend: WebConfig["backend"]) {
+function validateBackendConfig(locale: WebConfig["app"]["locale"], backend: BackendAddress) {
   if (!backend.host.trim()) {
     toast.error(translate(locale, "settings.backendHost.required"));
     return null;
@@ -129,12 +100,18 @@ export function useSettingsState() {
   const [originalConfig, setOriginalConfig] = useState<SettingsConfig | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
-  const [isPingingBackend, setIsPingingBackend] = useState(false);
-  const [backendPingResult, setBackendPingResult] = useState<BackendPingResult | null>(null);
+  const [pingingBackends, setPingingBackends] = useState<Record<BackendPlatform, boolean>>({
+    netease: false,
+    qq: false,
+  });
+  const [backendPingResults, setBackendPingResults] = useState<
+    Record<BackendPlatform, BackendPingResult | null>
+  >({ netease: null, qq: null });
   const [isTestingDiscord, setIsTestingDiscord] = useState(false);
   const [discordStatus, setDiscordStatus] = useState<DiscordPresenceStatus | null>(null);
   const [mcpStatusRefreshKey, setMcpStatusRefreshKey] = useState(0);
-  const [backendStatus, setBackendStatus] = useState<DesktopBackendStatus | null>(null);
+  const neteaseBackendStatus = useDesktopBackendStatus(runtime.backend);
+  const qqBackendStatus = useDesktopBackendStatus(runtime.qqBackend);
   const [cacheStats, setCacheStats] = useState<Awaited<ReturnType<typeof getCacheStats>> | null>(
     null,
   );
@@ -167,26 +144,6 @@ export function useSettingsState() {
 
     return () => {
       isMounted = false;
-    };
-  }, []);
-
-  useEffect(() => {
-    if (!runtime.isDesktop) return;
-
-    let isMounted = true;
-    void runtime.backend
-      .getStatus()
-      .then((status) => {
-        if (isMounted) setBackendStatus(status);
-      })
-      .catch(() => {});
-
-    const unsubscribe = runtime.backend.onStatusChanged((status) => {
-      if (isMounted) setBackendStatus(status);
-    });
-    return () => {
-      isMounted = false;
-      unsubscribe();
     };
   }, []);
 
@@ -231,44 +188,6 @@ export function useSettingsState() {
     key: K,
     value: WebConfig[S][K],
   ) => {
-    if (section === "backend" && key === "host" && typeof value === "string") {
-      setConfig((current) => {
-        if (!current) return current;
-        return {
-          ...current,
-          web: {
-            ...current.web,
-            backend: {
-              ...current.web.backend,
-              host: value,
-            },
-          },
-        };
-      });
-      return;
-    }
-
-    if (section === "backend" && key === "protocol") {
-      setConfig((current) => {
-        if (!current) return current;
-        let nextPort = current.web.backend.port;
-        if (value === "https" && nextPort === 80) nextPort = 443;
-        if (value === "http" && nextPort === 443) nextPort = 80;
-        return {
-          ...current,
-          web: {
-            ...current.web,
-            backend: {
-              ...current.web.backend,
-              protocol: value as "http" | "https",
-              port: nextPort,
-            },
-          },
-        };
-      });
-      return;
-    }
-
     setConfig((current) =>
       current
         ? {
@@ -282,54 +201,77 @@ export function useSettingsState() {
     );
   };
 
-  const handleBackendHostBlur = () => {
-    setConfig((current) => {
-      if (!current) return current;
-      const rawHost = current.web.backend.host;
-      if (!rawHost.trim()) return current;
-
-      const cleaned = cleanBackendHostInput(rawHost);
-      return {
-        ...current,
-        web: {
-          ...current.web,
-          backend: {
-            ...current.web.backend,
-            host: cleaned.host || rawHost.trim(),
-            ...(cleaned.protocol ? { protocol: cleaned.protocol } : {}),
-            ...(cleaned.port !== undefined ? { port: cleaned.port } : {}),
-          },
-        },
-      };
-    });
-  };
-
-  const handlePingBackend = async () => {
-    if (!config || isPingingBackend) return;
-
-    const validated = validateBackendConfig(config.web.app.locale, config.web.backend);
-    if (!validated) return;
-
+  const updateBackendAddress = (
+    platform: BackendPlatform,
+    update: (address: BackendAddress) => BackendAddress,
+  ) => {
     setConfig((current) =>
       current
         ? {
             ...current,
             web: {
               ...current.web,
-              backend: validated.backend,
+              backend: {
+                ...current.web.backend,
+                [platform]: update(current.web.backend[platform]),
+              },
             },
           }
         : current,
     );
+  };
+
+  const handleBackendAddressChange = <K extends keyof BackendAddress>(
+    platform: BackendPlatform,
+    key: K,
+    value: BackendAddress[K],
+  ) => {
+    updateBackendAddress(platform, (address) => {
+      if (key !== "protocol") return { ...address, [key]: value };
+      // Follow the protocol's default port when the address still uses the other default.
+      let port = address.port;
+      if (value === "https" && port === 80) port = 443;
+      if (value === "http" && port === 443) port = 80;
+      return { ...address, protocol: value as BackendAddress["protocol"], port };
+    });
+  };
+
+  const handleBackendHostBlur = (platform: BackendPlatform) => {
+    updateBackendAddress(platform, (address) => {
+      const rawHost = address.host;
+      if (!rawHost.trim()) return address;
+
+      const cleaned = cleanBackendHostInput(rawHost);
+      return {
+        ...address,
+        host: cleaned.host || rawHost.trim(),
+        ...(cleaned.protocol ? { protocol: cleaned.protocol } : {}),
+        ...(cleaned.port !== undefined ? { port: cleaned.port } : {}),
+      };
+    });
+  };
+
+  const handlePingBackend = async (platform: BackendPlatform) => {
+    if (!config || pingingBackends[platform]) return;
+    const setPinging = (isPinging: boolean) =>
+      setPingingBackends((current) => ({ ...current, [platform]: isPinging }));
+    const setPingResult = (result: BackendPingResult) =>
+      setBackendPingResults((current) => ({ ...current, [platform]: result }));
+
+    const validated = validateBackendConfig(config.web.app.locale, config.web.backend[platform]);
+    if (!validated) return;
+
+    updateBackendAddress(platform, () => validated.backend);
 
     const timeout =
       Number.isFinite(config.web.network.timeout) && config.web.network.timeout > 0
         ? config.web.network.timeout
         : 10000;
-    setIsPingingBackend(true);
+    setPinging(true);
     try {
-      const result = await probeBackend(validated.url, timeout);
-      setBackendPingResult(result);
+      const probe = platform === "qq" ? probeQqBackend : probeBackend;
+      const result = await probe(validated.url, timeout);
+      setPingResult(result);
       if (result.reachable) {
         toast.success(
           translate(
@@ -356,7 +298,7 @@ export function useSettingsState() {
         );
       }
     } catch {
-      setBackendPingResult({
+      setPingResult({
         latencyMs: 0,
         reachable: false,
         reason: "network",
@@ -364,7 +306,7 @@ export function useSettingsState() {
       });
       toast.error(translate(config.web.app.locale, "settings.backendPing.networkError"));
     } finally {
-      setIsPingingBackend(false);
+      setPinging(false);
     }
   };
 
@@ -472,10 +414,18 @@ export function useSettingsState() {
       return;
     }
 
-    const resolvedBackend = validateBackendConfig(config.web.app.locale, config.web.backend);
+    const resolvedBackend = validateBackendConfig(
+      config.web.app.locale,
+      config.web.backend.netease,
+    );
     if (!resolvedBackend) return;
+    const resolvedQqBackend = validateBackendConfig(config.web.app.locale, config.web.backend.qq);
+    if (!resolvedQqBackend) return;
 
-    const nextWebConfig = buildSavedSettingsConfig(config, resolvedBackend.backend).web;
+    const nextWebConfig = buildSavedSettingsConfig(config, {
+      netease: resolvedBackend.backend,
+      qq: resolvedQqBackend.backend,
+    }).web;
 
     setIsSaving(true);
     try {
@@ -484,8 +434,7 @@ export function useSettingsState() {
         : null;
       if (runtime.isDesktop && !savedDesktopConfig) return;
 
-      localStorage.setItem(WEB_NETWORK_SETTINGS_KEY, JSON.stringify(nextWebConfig.network));
-      localStorage.setItem(WEB_BACKEND_SETTINGS_KEY, JSON.stringify(nextWebConfig.backend));
+      saveStoredRequestSettings(nextWebConfig);
       setLocale(nextWebConfig.app.locale);
       emitWebConfigUpdated(nextWebConfig);
 
@@ -522,6 +471,12 @@ export function useSettingsState() {
     }
   };
 
+  const handleDiscardChanges = () => {
+    if (originalConfig) {
+      setConfig(originalConfig);
+    }
+  };
+
   const hasChanges = Boolean(
     config && originalConfig && JSON.stringify(config) !== JSON.stringify(originalConfig),
   );
@@ -541,16 +496,18 @@ export function useSettingsState() {
     handleWebChange,
     handleDesktopChange,
     handleConfirmSave,
+    handleDiscardChanges,
     cacheStats,
     cachePreferences: config?.desktop
       ? { page: config.desktop.cache.page, playback: config.desktop.cache.playback }
       : cachePreferences,
     handleCachePreferencesChange,
-    backendPingResult,
-    isPingingBackend,
-    backendStatus,
-    handlePingBackend,
+    backendStatuses: { netease: neteaseBackendStatus, qq: qqBackendStatus },
+    backendPingResults,
+    pingingBackends,
+    handleBackendAddressChange,
     handleBackendHostBlur,
+    handlePingBackend,
     discordStatus,
     isTestingDiscord,
     handleTestDiscord,

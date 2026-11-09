@@ -4,8 +4,8 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useCallback, useMemo, useState } from "react";
 import { toast } from "sonner";
 
-import { getLyric } from "@/lib/api/music";
-import { searchSongs } from "@/lib/api/search";
+import { getNeteaseLyricSource } from "@/lib/lyrics/musicLyrics";
+import { searchSongs } from "@/lib/providers/netease/api/search";
 import {
   clearLyricMatchOverride,
   getLyricMatchOverride,
@@ -25,6 +25,7 @@ import { useTranslation } from "react-i18next";
 
 import { usePlayerStore } from "@/store/module/player";
 import type { LyricMatchOverride } from "@/types/lyrics/model";
+import { useCurrentNeteaseSong } from "@/hooks/player/useCurrentNeteaseSong";
 
 const CANDIDATE_LIMIT = 15;
 
@@ -36,7 +37,7 @@ const CANDIDATE_LIMIT = 15;
 export function useLyricMatch(isOpen: boolean) {
   const { t } = useTranslation();
   const queryClient = useQueryClient();
-  const song = usePlayerStore((state) => state.currentSongDetail);
+  const song = useCurrentNeteaseSong();
   const [openedFor, setOpenedFor] = useState<number | null>(null);
   const [query, setQuery] = useState("");
   const [keyword, setKeyword] = useState("");
@@ -82,7 +83,7 @@ export function useLyricMatch(isOpen: boolean) {
   const previewId = selectedCandidate?.id ?? 0;
   const previewQuery = useQuery({
     queryKey: musicQueryKeys.lyrics.matchPreview(previewId),
-    queryFn: async () => adaptNeteaseLyric((await getLyric(previewId)).data),
+    queryFn: async () => adaptNeteaseLyric(await getNeteaseLyricSource(previewId)),
     enabled: isOpen && selectedCandidate !== null,
   });
 
@@ -102,22 +103,22 @@ export function useLyricMatch(isOpen: boolean) {
 
     setIsApplying(true);
     try {
-      const response = await getLyric(selectedCandidate.id);
-      if (!hasUsableNeteaseLyric(response.data)) {
+      const lyric = await getNeteaseLyricSource(selectedCandidate.id);
+      if (!hasUsableNeteaseLyric(lyric)) {
         toast.error(t("lyrics.match.noLyrics"));
         return false;
       }
 
       const nextOverride: LyricMatchOverride = {
         candidate: selectedCandidate,
-        lyric: response.data,
+        lyric,
         matchedAt: Date.now(),
       };
       await Promise.all([
         setLyricMatchOverride(song.id, nextOverride),
         setLyricSourceSelection(song.id, "online"),
       ]);
-      usePlayerStore.getState().setLyric(response.data);
+      usePlayerStore.getState().setLyric(lyric);
       setOverride(song.id, nextOverride);
       // 歌词面板的「来源」随之切回在线
       void queryClient.invalidateQueries({ queryKey: musicQueryKeys.lyrics.source(song.id) });
@@ -138,9 +139,9 @@ export function useLyricMatch(isOpen: boolean) {
     setIsApplying(true);
     try {
       await clearLyricMatchOverride(song.id);
-      const response = await getLyric(song.id);
-      await setCachedLyric(song.id, response.data);
-      usePlayerStore.getState().setLyric(response.data);
+      const lyric = await getNeteaseLyricSource(song.id);
+      await setCachedLyric(song.id, lyric);
+      usePlayerStore.getState().setLyric(lyric);
       setOverride(song.id, null);
       toast.success(t("lyrics.match.restored"));
     } catch (error) {

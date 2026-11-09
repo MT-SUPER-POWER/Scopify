@@ -13,9 +13,9 @@ export function HomeDailyRecommendation({ dateInfo }: HomeDailyRecommendationPro
     <div
       data-section-item
       onClick={() => smartRouter.push("/playlist/?isDailyRecommend=true")}
-      className="group relative flex h-16 cursor-pointer items-center overflow-hidden rounded-md bg-content/10 pr-4 transition-colors hover:bg-content/20"
+      className="group relative flex h-18 cursor-pointer items-center overflow-hidden rounded-md bg-content/10 pr-4 transition-colors hover:bg-content/20"
     >
-      <div className="z-10 flex size-16 shrink-0 flex-col overflow-hidden rounded-l-md bg-calendar-surface shadow-calendar select-none">
+      <div className="z-10 flex size-[4.5rem] shrink-0 flex-col overflow-hidden rounded-l-md bg-calendar-surface shadow-calendar select-none">
         <div className="flex h-5.5 items-center justify-center border-b border-calendar-divider bg-linear-to-b from-calendar-accent to-calendar-accent-hover">
           <span className="text-[10px] font-medium tracking-[0.15em] text-calendar-surface">
             {dateInfo.dayOfWeek}

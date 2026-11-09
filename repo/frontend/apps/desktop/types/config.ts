@@ -14,8 +14,14 @@ export const DEFAULT_DESKTOP_HOST_CONFIG = {
     closeAction: 2,
   },
   backend: {
-    autoStart: true,
-    port: 3838,
+    netease: {
+      autoStart: true,
+      port: 3838,
+    },
+    qq: {
+      autoStart: true,
+      port: 3200,
+    },
   },
   frontend: {
     devPort: 3000,
@@ -151,6 +157,26 @@ function normalizeCacheConfig(value: unknown): Record<string, unknown> {
   };
 }
 
+function backendEntry(defaults: { autoStart: boolean; port: number }) {
+  return z.preprocess(
+    toRecord,
+    z.object({
+      autoStart: normalizedBoolean(defaults.autoStart),
+      port: portNumber(defaults.port),
+    }),
+  );
+}
+
+/** Through v3.4 `backend` held the NetEase API's flat `autoStart` / `port`; read them as `netease`. */
+function normalizeBackendConfig(value: unknown): Record<string, unknown> {
+  const backend = toRecord(value);
+  const isLegacy = "autoStart" in backend || "port" in backend;
+  return {
+    netease: isLegacy ? { autoStart: backend.autoStart, port: backend.port } : backend.netease,
+    qq: backend.qq,
+  };
+}
+
 export const desktopHostConfigSchema = z.preprocess(
   toRecord,
   z
@@ -166,10 +192,10 @@ export const desktopHostConfigSchema = z.preprocess(
         }),
       ),
       backend: z.preprocess(
-        toRecord,
+        normalizeBackendConfig,
         z.object({
-          autoStart: normalizedBoolean(DEFAULT_DESKTOP_HOST_CONFIG.backend.autoStart),
-          port: portNumber(DEFAULT_DESKTOP_HOST_CONFIG.backend.port),
+          netease: backendEntry(DEFAULT_DESKTOP_HOST_CONFIG.backend.netease),
+          qq: backendEntry(DEFAULT_DESKTOP_HOST_CONFIG.backend.qq),
         }),
       ),
       frontend: z.preprocess(

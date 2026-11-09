@@ -4,6 +4,7 @@ import { MvCard } from "@/components/mv/MvCard";
 import { PlaylistCard } from "@/components/search/PlaylistCard";
 import { SectionHeader } from "@/components/search/SectionHeader";
 import { VoiceList } from "@/components/search/VoiceList";
+import { useProviderCapability } from "@/hooks/provider/useActiveProvider";
 import { useTranslation } from "react-i18next";
 
 import type { AllViewProps } from "@/types/search/components";
@@ -17,6 +18,7 @@ export function AllView({
   playlists,
   artists,
   bestMatch,
+  hasBestMatch,
   loadingPlayId,
   mvs,
   onPlayAlbum,
@@ -27,15 +29,26 @@ export function AllView({
   voices,
 }: AllViewProps) {
   const { t } = useTranslation();
+  const canOpenArtist = useProviderCapability("artist.read");
+  const canOpenAlbum = useProviderCapability("album.read");
+  const canOpenPlaylist = useProviderCapability("playlist.read");
 
   return (
     <>
-      {/* 顶部两栏：最佳匹配 + 歌曲 */}
+      {/* 顶部两栏：最佳匹配 + 歌曲；平台没有最佳匹配时歌曲占满整行 */}
       <div className="mb-10 grid w-full min-w-0 grid-cols-1 gap-6 xl:grid-cols-12">
-        <div className="flex min-w-0 xl:col-span-5">
-          <BestMatchCard bestMatch={bestMatch} songs={songs} onNavigate={onNavigate} />
-        </div>
-        <div className="flex min-w-0 flex-col xl:col-span-7">
+        {hasBestMatch ? (
+          <div className="flex min-w-0 xl:col-span-5">
+            <BestMatchCard bestMatch={bestMatch} songs={songs} onNavigate={onNavigate} />
+          </div>
+        ) : null}
+        <div
+          className={
+            hasBestMatch
+              ? "flex min-w-0 flex-col xl:col-span-7"
+              : "flex min-w-0 flex-col xl:col-span-12"
+          }
+        >
           <SongsPanel songs={songs} limit={4} onViewAll={() => onSeeAll("Songs")} />
         </div>
       </div>
@@ -47,9 +60,11 @@ export function AllView({
           <div className="grid w-full min-w-0 grid-cols-[repeat(auto-fill,minmax(200px,1fr))] gap-6">
             {artists.slice(0, 6).map((artist) => (
               <ArtistCard
-                key={artist.id}
+                key={artist.ref.id}
                 artist={artist}
-                onClick={() => onNavigate(`/artist?id=${artist.id}`)}
+                onClick={
+                  canOpenArtist ? () => onNavigate(`/artist?id=${artist.ref.id}`) : undefined
+                }
               />
             ))}
           </div>
@@ -90,12 +105,12 @@ export function AllView({
           <div className="grid w-full min-w-0 grid-cols-[repeat(auto-fill,minmax(200px,1fr))] gap-6">
             {albums.slice(0, 6).map((album) => (
               <AlbumCard
-                key={album.id}
+                key={album.ref.id}
                 album={album}
                 isPlaying={false}
-                isLoading={loadingPlayId === `album-${album.id}`}
-                onTogglePlay={(e) => onPlayAlbum(album, e)}
-                onClick={() => onNavigate(`/album?id=${album.id}`)}
+                isLoading={loadingPlayId === `album-${album.ref.id}`}
+                onTogglePlay={canOpenAlbum ? (e) => onPlayAlbum(album, e) : undefined}
+                onClick={canOpenAlbum ? () => onNavigate(`/album?id=${album.ref.id}`) : undefined}
               />
             ))}
           </div>
@@ -112,12 +127,14 @@ export function AllView({
           <div className="grid w-full min-w-0 grid-cols-[repeat(auto-fill,minmax(200px,1fr))] gap-6">
             {playlists.slice(0, 6).map((playlist) => (
               <PlaylistCard
-                key={playlist.id}
+                key={playlist.ref.id}
                 playlist={playlist}
                 isPlaying={false}
-                isLoading={loadingPlayId === `playlist-${playlist.id}`}
+                isLoading={loadingPlayId === `playlist-${playlist.ref.id}`}
                 onTogglePlay={(e) => onPlayPlaylist(playlist, e)}
-                onClick={() => onNavigate(`/playlist?id=${playlist.id}`)}
+                onClick={
+                  canOpenPlaylist ? () => onNavigate(`/playlist?id=${playlist.ref.id}`) : undefined
+                }
               />
             ))}
           </div>

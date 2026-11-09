@@ -1,12 +1,21 @@
 "use client";
 
+import type { MusicTrack } from "@scopify/music-domain/track";
 import { arrayMove } from "@dnd-kit/sortable";
 import { useRef, useState } from "react";
 import { usePlaylistOrderMutation } from "@/hooks/playlist/usePlaylistOrderMutation";
 import { useUserStore } from "@/store";
 import type { InlineOrderDraft } from "@/types/playlist/order";
 
-export function useInlinePlaylistOrder<T extends { id: number }>(items: T[], playlistId?: string) {
+/** Library playlists carry their NetEase ID; playlist tracks carry a reference. */
+type InlineOrderItem = { id: number } | MusicTrack;
+
+/** The ID the NetEase order endpoints take. Only NetEase lists can be reordered. */
+function orderIdOf(item: InlineOrderItem) {
+  return "ref" in item ? Number(item.ref.id) : item.id;
+}
+
+export function useInlinePlaylistOrder<T extends InlineOrderItem>(items: T[], playlistId?: string) {
   const mutation = usePlaylistOrderMutation();
   const userId = useUserStore((state) => state.user?.userId);
   const scope = `${userId}:${playlistId ?? "library"}`;
@@ -19,9 +28,9 @@ export function useInlinePlaylistOrder<T extends { id: number }>(items: T[], pla
     void mutation
       .mutateAsync({
         playlistId,
-        fromId: items[from].id,
-        toId: items[to].id,
-        expectedIds: items.map((item) => item.id),
+        fromId: orderIdOf(items[from]),
+        toId: orderIdOf(items[to]),
+        expectedIds: items.map(orderIdOf),
       })
       .catch(() => undefined)
       .finally(() => {

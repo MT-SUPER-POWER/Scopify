@@ -7,6 +7,7 @@ import TracklistTable from "@/components/Playlist/TrackTable";
 import { NetworkRetryState } from "@/components/shared/NetworkRetryState";
 import { useAlbumData } from "@/hooks/album/useAlbumData";
 import { useSmartRouter } from "@/hooks/core/useSmartRouter";
+import { useProviderCapability } from "@/hooks/provider/useActiveProvider";
 import { useTranslation } from "react-i18next";
 
 import { AlbumActions } from "./_components/AlbumActions";
@@ -31,6 +32,8 @@ export default function AlbumPage() {
     togglePlay,
     tracks,
   } = useAlbumData();
+  const canOpenArtist = useProviderCapability("artist.read");
+  const canOpenLattice = tracks.length > 0;
 
   if (!albumId)
     return (
@@ -72,7 +75,8 @@ export default function AlbumPage() {
           <AlbumHeader
             info={ALBUM_INFO}
             onArtistClick={() => {
-              if (ALBUM_INFO.artistId) void smartRouter.push(`/artist?id=${ALBUM_INFO.artistId}`);
+              if (canOpenArtist && ALBUM_INFO.artistId)
+                void smartRouter.push(`/artist?id=${ALBUM_INFO.artistId}`);
             }}
           />
           {isRefetchError && (
@@ -91,12 +95,12 @@ export default function AlbumPage() {
             <AlbumActions
               albumId={albumId}
               albumTitle={ALBUM_INFO.title}
-              tracks={tracks}
+              previewSongs={tracks}
               isPlaying={isPlaying}
               isAlbumCollected={isAlbumCollected}
               isTogglingAlbumSubscribe={isTogglingAlbumSubscribe}
               onPlay={togglePlay}
-              onOpenLattice={openLattice}
+              onOpenLattice={canOpenLattice ? openLattice : undefined}
               onToggleSubscribe={() => void handleToggleAlbumSubscribe()}
             />
             <div className="min-w-0 flex-1 px-6 pb-10">

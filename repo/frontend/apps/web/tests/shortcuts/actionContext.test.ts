@@ -74,7 +74,7 @@ mock.module("@/store/module/foliaSettings", () => ({
 }));
 mock.module("@/store/module/search", () => ({ useSearchStore: { getState: () => search } }));
 mock.module("@/store/module/player", () => ({
-  usePlayerStore: { getState: () => ({ currentSongDetail: null }) },
+  usePlayerStore: { getState: () => ({ currentTrack: null }) },
 }));
 mock.module("@/store/module/updates", () => ({
   useUpdatesStore: { getState: () => ({ open() {} }) },

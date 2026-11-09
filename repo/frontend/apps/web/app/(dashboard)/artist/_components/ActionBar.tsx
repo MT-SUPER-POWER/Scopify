@@ -1,29 +1,60 @@
-import { Copy, MoreHorizontal, Pause, Play, Users } from "lucide-react";
-import Link from "next/link";
+import { Copy, MoreHorizontal, Pause, Play } from "lucide-react";
 import { useCallback } from "react";
 import { toast } from "sonner";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { CapabilityGate } from "@/components/provider/CapabilityGate";
 import { useArtistFollow } from "@/hooks/artist/useArtistFollow";
-import { useArtistFansGroupStatus } from "@/hooks/fansGroup/useFansGroupQueries";
 import { useTranslation } from "react-i18next";
 
+import { ArtistFansGroupItem } from "./ArtistFansGroupItem";
+
 interface Props {
-  artistId: number | string;
+  artistId: string;
   isPlayingArtist: boolean;
   disabled: boolean;
   onPlayArtist: () => void;
 }
 
-export function ActionBar({ artistId, isPlayingArtist, disabled, onPlayArtist }: Props) {
+function FollowButton({ artistId }: { artistId: string }) {
   const { t } = useTranslation();
   const { isFollowStatusLoading, isFollowing, toggleFollow } = useArtistFollow(artistId);
-  const fansGroupStatus = useArtistFansGroupStatus(artistId);
+
+  return (
+    <button
+      type="button"
+      disabled={isFollowStatusLoading}
+      onClick={() => void toggleFollow()}
+      className={`group w-24 rounded-full border px-4 py-1.5 text-sm font-bold tracking-widest uppercase transition-all hover:scale-105 disabled:opacity-50 ${
+        isFollowing
+          ? "border-content text-content hover:border-danger hover:text-danger"
+          : "border-content-muted text-content hover:border-content"
+      } `}
+    >
+      <span className="group-hover:hidden">
+        {isFollowStatusLoading
+          ? t("common.status.loading")
+          : isFollowing
+            ? t("artist.action.following")
+            : t("artist.action.follow")}
+      </span>
+      <span className="hidden group-hover:inline">
+        {isFollowStatusLoading
+          ? t("common.status.loading")
+          : isFollowing
+            ? t("artist.action.unfollow")
+            : t("artist.action.follow")}
+      </span>
+    </button>
+  );
+}
+
+export function ActionBar({ artistId, isPlayingArtist, disabled, onPlayArtist }: Props) {
+  const { t } = useTranslation();
 
   const handleCopyLink = useCallback(async () => {
     try {
@@ -49,31 +80,9 @@ export function ActionBar({ artistId, isPlayingArtist, disabled, onPlayArtist }:
         )}
       </button>
 
-      <button
-        type="button"
-        disabled={isFollowStatusLoading}
-        onClick={() => void toggleFollow()}
-        className={`group w-24 rounded-full border px-4 py-1.5 text-sm font-bold tracking-widest uppercase transition-all hover:scale-105 disabled:opacity-50 ${
-          isFollowing
-            ? "border-content text-content hover:border-danger hover:text-danger"
-            : "border-content-muted text-content hover:border-content"
-        } `}
-      >
-        <span className="group-hover:hidden">
-          {isFollowStatusLoading
-            ? t("common.status.loading")
-            : isFollowing
-              ? t("artist.action.following")
-              : t("artist.action.follow")}
-        </span>
-        <span className="hidden group-hover:inline">
-          {isFollowStatusLoading
-            ? t("common.status.loading")
-            : isFollowing
-              ? t("artist.action.unfollow")
-              : t("artist.action.follow")}
-        </span>
-      </button>
+      <CapabilityGate requires="artist.follow">
+        <FollowButton artistId={artistId} />
+      </CapabilityGate>
 
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
@@ -86,27 +95,9 @@ export function ActionBar({ artistId, isPlayingArtist, disabled, onPlayArtist }:
           </button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="start" className="w-48">
-          {fansGroupStatus.isJoined && fansGroupStatus.fansGroupId && (
-            <>
-              <DropdownMenuItem asChild>
-                <Link
-                  href={`/social?group=${fansGroupStatus.fansGroupId}`}
-                  className="flex cursor-pointer items-center justify-between"
-                >
-                  <div className="flex items-center gap-2">
-                    <Users className="size-4" />
-                    <span>{t("artist.action.fansGroup")}</span>
-                  </div>
-                  {fansGroupStatus.level && (
-                    <span className="rounded bg-surface-elevated px-1.5 py-0.5 text-[10px] font-semibold text-content-muted">
-                      Lv.{fansGroupStatus.level}
-                    </span>
-                  )}
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-            </>
-          )}
+          <CapabilityGate requires="social">
+            <ArtistFansGroupItem artistId={artistId} />
+          </CapabilityGate>
           <DropdownMenuItem className="cursor-pointer" onSelect={() => void handleCopyLink()}>
             <Copy className="size-4" />
             <span>{t("artist.action.copyLink")}</span>

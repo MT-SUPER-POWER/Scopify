@@ -107,6 +107,8 @@ export interface RuntimeBackend {
   getStatus(): Promise<DesktopBackendStatus>;
   onStatusChanged(callback: (status: DesktopBackendStatus) => void): RuntimeUnsubscribe;
   restart(): Promise<DesktopBackendStatus>;
+  /** Stops the built-in API until the next restart or app launch; config is unchanged. */
+  stop(): Promise<DesktopBackendStatus>;
 }
 
 export interface RuntimeDesktopLyrics {
@@ -261,6 +263,8 @@ export interface WebRuntime {
   readonly audioFeature: RuntimeAudioFeature;
   readonly auth: RuntimeAuthentication;
   readonly backend: RuntimeBackend;
+  /** QQ Music API hosted by Desktop; the browser runtime reports it as disabled. */
+  readonly qqBackend: RuntimeBackend;
   readonly cache: RuntimeCache;
   readonly config: RuntimeConfiguration;
   readonly desktopIcons: RuntimeDesktopIcons;

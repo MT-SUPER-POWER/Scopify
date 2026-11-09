@@ -1,6 +1,5 @@
 import type { MouseEvent, ReactNode } from "react";
 import type { NeteaseBanner } from "@/types/home/bannerApi";
-import type { SongDetail } from "@/types/song/api";
 import type { CarouselDirection, HomeContextValue } from "@/types/home/model";
 import type { TranslationKey } from "@/lib/i18n";
 
@@ -74,8 +73,7 @@ export interface CollapsibleSectionProps {
 export interface ToplistCarouselItem {
   artist: string;
   coverUrl: string;
-  id: number;
+  id: string;
   name: string;
   rank: number;
-  song?: SongDetail;
 }

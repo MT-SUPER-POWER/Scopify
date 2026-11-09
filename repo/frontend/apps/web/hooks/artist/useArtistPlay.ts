@@ -1,54 +1,41 @@
+import { musicResourceKey } from "@scopify/music-domain/identity";
 import { useCallback, useState } from "react";
 import { toast } from "sonner";
-import { getAlbumDetail } from "@/lib/api/album";
+
+import { useActiveProvider } from "@/hooks/provider/useActiveProvider";
 import { translate } from "@/lib/i18n";
 import { usePlayerStore } from "@/store";
 import { useI18nStore } from "@/store/module/i18n";
-import { pruneSongDetail, type SongDetail } from "@/types/song/api";
-import type { Album, Track } from "@/types/artist/model";
+import type { DiscographyAlbum } from "@/types/artist/model";
+import type { PlayerTrack } from "@/types/player/model";
 
-export function useArtistPlay(hotTracksQueue: SongDetail[]) {
-  const { currentSongDetail, isPlaying, setIsPlaying, setQueue, playTrack, playQueueIndex } =
-    usePlayerStore();
-  const [loadingAlbumId, setLoadingAlbumId] = useState<string | number | null>(null);
+export function useArtistPlay(popularTracks: readonly PlayerTrack[]) {
+  const provider = useActiveProvider();
+  const { currentTrack, isPlaying, setIsPlaying, setQueue, playQueueIndex } = usePlayerStore();
+  const [loadingAlbumKey, setLoadingAlbumKey] = useState<string | null>(null);
 
-  const isPlayingArtist =
-    hotTracksQueue.length > 0 && currentSongDetail?.id === hotTracksQueue[0]?.id && isPlaying;
-
-  const isTrackPlaying = (id: string | number) => currentSongDetail?.id === id && isPlaying;
+  const firstKey = popularTracks[0] ? musicResourceKey(popularTracks[0].ref) : null;
+  const currentKey = currentTrack ? musicResourceKey(currentTrack.ref) : null;
+  const isPlayingArtist = firstKey !== null && currentKey === firstKey && isPlaying;
 
   const handlePlayArtist = useCallback(() => {
-    if (hotTracksQueue.length === 0) return;
-    if (hotTracksQueue[0]?.id === currentSongDetail?.id) {
+    if (popularTracks.length === 0) return;
+    if (firstKey === currentKey) {
       setIsPlaying(!isPlaying);
       return;
     }
-    setQueue(hotTracksQueue, 0);
+    setQueue([...popularTracks], 0);
     void playQueueIndex(0);
-  }, [hotTracksQueue, currentSongDetail, isPlaying, setIsPlaying, setQueue, playQueueIndex]);
-
-  const handlePlayTrack = useCallback(
-    (track: Track, index: number) => {
-      if (currentSongDetail?.id === track.id) {
-        setIsPlaying(!isPlaying);
-        return;
-      }
-      if (hotTracksQueue.length > 0) setQueue(hotTracksQueue, index);
-      const song = hotTracksQueue[index] ?? (track.raw ? pruneSongDetail(track.raw) : null);
-      if (!song) return;
-      void playTrack(song);
-    },
-    [currentSongDetail, isPlaying, setIsPlaying, hotTracksQueue, setQueue, playTrack],
-  );
+  }, [popularTracks, firstKey, currentKey, isPlaying, setIsPlaying, setQueue, playQueueIndex]);
 
   const handlePlayAlbum = useCallback(
-    async (album: Album, e: React.MouseEvent) => {
+    async (album: DiscographyAlbum, e: React.MouseEvent) => {
       e.stopPropagation();
-      if (loadingAlbumId === album.id) return;
-      setLoadingAlbumId(album.id);
+      const key = musicResourceKey(album.ref);
+      if (loadingAlbumKey === key) return;
+      setLoadingAlbumKey(key);
       try {
-        const res = await getAlbumDetail(album.id);
-        const tracks: SongDetail[] = (res.data?.songs ?? []).map(pruneSongDetail);
+        const { tracks } = await provider.getAlbum(album.ref);
         if (!tracks.length) {
           toast.error(translate(useI18nStore.getState().locale, "artist.toast.albumEmpty"));
           return;
@@ -58,18 +45,16 @@ export function useArtistPlay(hotTracksQueue: SongDetail[]) {
       } catch {
         toast.error(translate(useI18nStore.getState().locale, "artist.toast.loadAlbumFailed"));
       } finally {
-        setLoadingAlbumId(null);
+        setLoadingAlbumKey(null);
       }
     },
-    [loadingAlbumId, setQueue, playQueueIndex],
+    [loadingAlbumKey, provider, setQueue, playQueueIndex],
   );
 
   return {
     isPlayingArtist,
-    isTrackPlaying,
-    loadingAlbumId,
+    loadingAlbumKey,
     handlePlayArtist,
-    handlePlayTrack,
     handlePlayAlbum,
   };
 }

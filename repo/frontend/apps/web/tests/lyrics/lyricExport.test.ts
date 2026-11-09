@@ -1,6 +1,7 @@
 import { describe, expect, it } from "bun:test";
 import { buildLyricExport } from "@/lib/lyrics/export";
-import type { NeteaseLyric, SongDetail } from "@/types/song/api";
+import type { LyricSource } from "@/types/lyrics/model";
+import type { SongDetail } from "@/types/song/api";
 
 const song = {
   name: "青花瓷: Live",
@@ -9,7 +10,7 @@ const song = {
 
 const lrc = "[00:01.230]天青色等烟雨\n[00:03.450]而我在等你";
 const yrc = "[1230,2220](1230,400,0)天(1630,400,0)青";
-const lyric: NeteaseLyric = {
+const lyric: LyricSource = {
   code: 200,
   lrc: { lyric: lrc, version: 1 },
   yrc: { lyric: yrc, version: 1 },

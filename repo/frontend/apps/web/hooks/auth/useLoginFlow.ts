@@ -14,7 +14,7 @@ import { verifyYidunSlider } from "@/lib/auth/yidunSlider";
 import { createFreshLoginDevice, resolveLocalDeviceName } from "@/lib/devices/clientIdentity";
 import { completeFreshLogin } from "@/lib/devices/completeLogin";
 import { runtime } from "@/lib/runtime";
-import { getBackendBaseUrl } from "@/lib/web/request";
+import { getNeteaseBaseUrl } from "@/lib/providers/netease/client";
 import type {
   YidunLoginParams,
   YidunResponse,
@@ -51,7 +51,11 @@ function rememberLoginMode(mode: LoginMode) {
   }
 }
 
-export function useLoginFlow() {
+/**
+ * NetEase login on the login page. `isNeteaseChosen` is false while the page logs into another
+ * platform, so an existing NetEase session does not send the page away.
+ */
+export function useLoginFlow(isNeteaseChosen = true) {
   const smartRouter = useSmartRouter();
   const searchParams = useSearchParams();
   const { t, i18n } = useTranslation();
@@ -97,7 +101,7 @@ export function useLoginFlow() {
       !session.current ||
       session.current.phone !== phone ||
       session.current.countrycode !== countrycode ||
-      session.current.device.backend !== getBackendBaseUrl()
+      session.current.device.backend !== getNeteaseBaseUrl()
     ) {
       session.current = {
         sid: crypto.randomUUID(),
@@ -261,8 +265,8 @@ export function useLoginFlow() {
   };
 
   useEffect(() => {
-    if (isLoggedIn) finishLogin();
-  }, [finishLogin, isLoggedIn]);
+    if (isLoggedIn && isNeteaseChosen) finishLogin();
+  }, [finishLogin, isLoggedIn, isNeteaseChosen]);
 
   useEffect(() => {
     setIsMounted(true);
@@ -292,7 +296,7 @@ export function useLoginFlow() {
     },
     isLoading,
     deviceName,
-    isLoggedIn,
+    isLoggedIn: isLoggedIn && isNeteaseChosen,
     isMounted,
     finishLogin,
     handleSubmit,

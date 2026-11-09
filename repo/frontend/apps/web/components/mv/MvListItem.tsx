@@ -4,7 +4,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { Play } from "lucide-react";
 import { getSizedImageUrl } from "@/lib/music/imageUrl";
-import { getMvArtistNames, getMvCover } from "@/lib/music/mvCover";
 import { cn, formatDuration, formatPlayCount } from "@/lib/utils";
 import { useTranslation } from "react-i18next";
 
@@ -23,8 +22,8 @@ export function MvListItem({
   size = "sm",
 }: MvListItemProps) {
   const { t } = useTranslation();
-  const cover = getMvCover(mv);
-  const artistNames = getMvArtistNames(mv);
+  const cover = mv.coverUrl;
+  const artistNames = mv.artists.map((artist) => artist.name).join(" / ");
 
   const content = (
     <>
@@ -52,9 +51,9 @@ export function MvListItem({
         {size === "sm" && (
           <Play className="absolute inset-0 m-auto size-5 fill-white text-white opacity-0 drop-shadow transition-opacity group-hover:opacity-100" />
         )}
-        {mv.duration ? (
+        {mv.durationMs ? (
           <span className="absolute right-1 bottom-1 rounded bg-black/70 px-1 text-[10px] leading-4 text-white tabular-nums">
-            {formatDuration(mv.duration)}
+            {formatDuration(mv.durationMs)}
           </span>
         ) : null}
       </span>
@@ -65,7 +64,7 @@ export function MvListItem({
             isActive ? "text-brand" : "text-content",
           )}
         >
-          {mv.name}
+          {mv.title}
         </span>
         {size !== "sm" ? (
           // YouTube 侧栏：艺人与观看次数分两行
@@ -105,7 +104,7 @@ export function MvListItem({
   return (
     <button
       type="button"
-      onClick={() => onSelect?.(mv.id)}
+      onClick={() => onSelect?.(mv.ref.id)}
       aria-current={isActive || undefined}
       className={ROW_CLASS}
     >

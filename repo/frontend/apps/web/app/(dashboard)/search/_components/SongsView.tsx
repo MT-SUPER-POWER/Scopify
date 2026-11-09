@@ -1,26 +1,8 @@
 import { LoaderCircle } from "lucide-react";
-import { useMemo } from "react";
 import TracklistTable from "@/components/Playlist/TrackTable";
 import { useInfiniteScrollTrigger } from "@/hooks/search/useInfiniteScrollTrigger";
-import type { SongDetail } from "@/types/song/api";
 import type { SongsViewProps } from "@/types/search/components";
-import type { Song } from "@/types/search/model";
 import { SearchCategoryHeader } from "./SearchCategoryHeader";
-
-function songToSongDetail(song: Song): SongDetail {
-  const picUrl = song.album?.picUrl || song.artists?.[0]?.picUrl || "";
-  return {
-    id: song.id,
-    name: song.name,
-    dt: song.duration,
-    fee: song.fee ?? 0,
-    ar: (song.artists || []).map((a) => ({ id: a.id, name: a.name })),
-    al: { id: song.album?.id ?? 0, name: song.album?.name ?? "", picUrl },
-    alia: song.alias,
-    ...(song.mvid ? { mv: song.mvid } : {}),
-    publishTime: song.album?.publishTime || 0,
-  };
-}
 
 export function SongsView({ hasNextPage, isFetchingNextPage, onLoadMore, songs }: SongsViewProps) {
   const loadMoreRef = useInfiniteScrollTrigger({
@@ -28,12 +10,10 @@ export function SongsView({ hasNextPage, isFetchingNextPage, onLoadMore, songs }
     onIntersect: onLoadMore,
   });
 
-  const songDetails = useMemo(() => songs.map(songToSongDetail), [songs]);
-
   return (
     <div className="pb-10">
       <SearchCategoryHeader category="Songs" />
-      <TracklistTable disableVirtualization hideDateColumn tracks={songDetails} />
+      <TracklistTable disableVirtualization hideDateColumn tracks={songs} />
       <div ref={loadMoreRef} aria-hidden className="h-px" />
       {isFetchingNextPage ? (
         <div className="flex justify-center py-6 text-content-muted" aria-live="polite">

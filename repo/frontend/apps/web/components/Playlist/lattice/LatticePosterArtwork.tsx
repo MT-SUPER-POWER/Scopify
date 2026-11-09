@@ -10,7 +10,7 @@ export function LatticePosterArtwork({
   current,
   expanded,
 }: LatticePosterArtworkProps) {
-  const cover = track.al.picUrl || track.al.coverUrl;
+  const cover = track.album?.coverUrl;
   const size = expanded ? 800 : 500;
   return (
     <div className="absolute inset-0 size-full cursor-pointer border-0 p-0 text-left text-inherit">

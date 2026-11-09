@@ -19,6 +19,7 @@ import { usePlayerStore } from "@/store/module/player";
 
 import { FoliaPresentationSurface } from "./FoliaPresentationSurface";
 import { FoliaStageSettings } from "../stagePanel/FoliaStageSettings";
+import { playbackTrackId } from "@/lib/player/trackIdentity";
 
 /** Scopify host for Folia's pinned playback-stage presentation runtime. */
 export function LyricStage({ hasEntered, onClose }: LyricStageProps) {
@@ -40,7 +41,7 @@ export function LyricStage({ hasEntered, onClose }: LyricStageProps) {
   const bridge = useFoliaPlaybackBridge(isMainSurfaceActive);
   const playback = usePlaybackProjection();
   const commands = usePlaybackCommands();
-  const currentSong = usePlayerStore((state) => state.currentSongDetail);
+  const currentSong = usePlayerStore((state) => state.currentTrack);
   const currentSongUrl = usePlayerStore((state) => state.currentSongUrl);
   const repeatMode = usePlayerStore((state) => state.repeatMode);
   usePlaybackWakeLock(bridge.isPlaying && isWindowVisible);
@@ -101,12 +102,12 @@ export function LyricStage({ hasEntered, onClose }: LyricStageProps) {
             track={
               currentSong
                 ? {
-                    albumTitle: currentSong.al.name,
-                    artistNames: currentSong.ar.map((artist) => artist.name),
-                    artworkUrl: currentSong.al.picUrl,
+                    albumTitle: currentSong.album?.title,
+                    artistNames: currentSong.artists.map((artist) => artist.name),
+                    artworkUrl: currentSong.album?.coverUrl ?? undefined,
                     durationMs: playback.durationMs,
-                    id: currentSong.id,
-                    title: currentSong.name,
+                    id: playbackTrackId(currentSong),
+                    title: currentSong.title,
                   }
                 : null
             }
@@ -116,7 +117,7 @@ export function LyricStage({ hasEntered, onClose }: LyricStageProps) {
 
       {isWindowVisible ? (
         <FloatingPlayerControls
-          currentSong={currentSong ? { name: currentSong.name } : null}
+          currentSong={currentSong ? { name: currentSong.title } : null}
           playerState={playerState}
           currentTime={bridge.currentTime}
           lyricCurrentTime={bridge.lyricCurrentTime}

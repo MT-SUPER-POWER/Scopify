@@ -9,16 +9,15 @@ import { HomeSectionPending } from "../../_components/HomeSectionPending";
 import { SectionPagination } from "../../_components/SectionPagination";
 import { GridCard } from "@/components/home/GridCard";
 import {
-  usePersonalizedPlaylistsQuery,
+  useFeaturedPlaylistsQuery,
   useRecommendedPlaylistsQuery,
 } from "@/hooks/home/useHomeQueries";
-import { useLoginStatus } from "@/hooks/auth/useLoginStatus";
+import { useActiveAccount } from "@/hooks/auth/useProviderAccounts";
 import { useSmartRouter } from "@/hooks/core/useSmartRouter";
 import { selectFallbackSource, toFallbackSource } from "@/lib/query/fallbackSource";
+import { getSizedImageUrl } from "@/lib/music/imageUrl";
 import { formatPlayCount } from "@/lib/utils";
 import { useTranslation } from "react-i18next";
-
-import { pruneRecommendPlaylist } from "@/types/playlist/api";
 
 const PAGE_SIZE = 10;
 
@@ -26,18 +25,18 @@ export function PersonalizedPlaylists() {
   const { t } = useTranslation();
   const { actions } = useHome();
   const smartRouter = useSmartRouter();
-  const isLogin = useLoginStatus();
+  const isLogin = useActiveAccount().isLoggedIn;
   // 个性化与公共推荐是同一栏目的明确备用来源；任一可用时保留该栏目。
-  const personalized = usePersonalizedPlaylistsQuery(100, false);
+  const personalized = useFeaturedPlaylistsQuery(100, false);
   const recommended = useRecommendedPlaylistsQuery(isLogin, false);
   const result = selectFallbackSource(
     [
-      ...(isLogin ? [toFallbackSource(recommended, recommended.data?.recommend)] : []),
-      toFallbackSource(personalized, personalized.data?.result),
+      ...(isLogin ? [toFallbackSource(recommended, recommended.data)] : []),
+      toFallbackSource(personalized, personalized.data),
     ],
     (items) => items.length > 0,
   );
-  const playlists = (result.data ?? []).map(pruneRecommendPlaylist);
+  const playlists = result.data ?? [];
   const [isOpen, setIsOpen] = useState(false);
   const [page, setPage] = useState(0);
   const [direction, setDirection] = useState<1 | -1>(1);
@@ -81,7 +80,7 @@ export function PersonalizedPlaylists() {
           ) : null
         }
         collapsedRows={1}
-        collapsedHeight="280px"
+        collapsedHeight="310px"
       >
         <div className="relative overflow-hidden">
           <AnimatePresence mode="wait" initial={false}>
@@ -91,23 +90,27 @@ export function PersonalizedPlaylists() {
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -direction * 16 }}
               transition={{ duration: 0.22, ease: "easeOut" }}
-              className="grid w-full min-w-0 grid-cols-[repeat(auto-fill,minmax(min(100%,176px),1fr))] gap-x-2 gap-y-4"
+              className="grid w-full min-w-0 grid-cols-[repeat(auto-fill,minmax(min(100%,200px),1fr))] gap-x-2 gap-y-4"
             >
               {visiblePlaylists.map((playlist) => (
                 <GridCard
-                  key={playlist.id}
+                  key={playlist.ref.id}
                   appearance="home"
-                  id={playlist.id}
-                  name={playlist.name}
-                  coverUrl={`${playlist.picUrl}?param=300y300`}
+                  id={playlist.ref.id}
+                  name={playlist.title}
+                  coverUrl={getSizedImageUrl(playlist.coverUrl, 300)}
                   subtitle={t("home.playlistSummary", {
-                    plays: formatPlayCount(playlist.playCount),
+                    plays: formatPlayCount(playlist.playCount ?? 0),
                     count: playlist.trackCount,
                   })}
-                  playCount={playlist.playCount}
-                  isLoading={actions.loadingPlayId === `playlist-${playlist.id}`}
-                  onPlay={(event) => actions.handlePlayPlaylist(playlist.id, event)}
-                  onClick={() => smartRouter.push(`/playlist/?id=${playlist.id}&isRecommend=true`)}
+                  playCount={playlist.playCount ?? undefined}
+                  isLoading={actions.loadingPlayId === `playlist-${playlist.ref.id}`}
+                  onPlay={(event) => actions.handlePlayPlaylist(playlist.ref.id, event)}
+                  onClick={() =>
+                    smartRouter.push(
+                      `/playlist/?id=${encodeURIComponent(playlist.ref.id)}&isRecommend=true`,
+                    )
+                  }
                 />
               ))}
             </motion.div>

@@ -1,9 +1,9 @@
 import { isAxiosError } from "axios";
 
-import type { ApiErrorKind, ApiErrorOptions, ScopifyRequestConfig } from "@/types/network/model";
+import type { ApiErrorKind, ApiErrorOptions, ApiRequestConfig } from "@/types/network/model";
 
 export class ApiError extends Error {
-  readonly config?: ScopifyRequestConfig;
+  readonly config?: ApiRequestConfig;
   readonly data?: unknown;
   readonly kind: ApiErrorKind;
   readonly status?: number;
@@ -29,7 +29,7 @@ export function toApiError(error: unknown): ApiError {
     const status = error.response?.status;
     const data = error.response?.data as unknown;
     const message = getErrorMessage(data) ?? error.message;
-    const config = error.config as ScopifyRequestConfig | undefined;
+    const config = error.config as ApiRequestConfig | undefined;
 
     if (status === 301) {
       return new ApiError({ config, data, kind: "unauthenticated", message, status });

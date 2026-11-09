@@ -1,4 +1,7 @@
+import type { MusicCapability } from "@scopify/music-domain/capability";
+import { musicResourceKey } from "@scopify/music-domain/identity";
 import { COMMAND_WORKSPACE_SEARCH_FILTERS } from "@/constants/commandWorkspace";
+import { isSearchCategoryAvailable } from "@/lib/search/searchCategory";
 import { buildSearchUrl } from "@/lib/search/searchCategory";
 import type {
   CommandWorkspaceSearchFilter,
@@ -48,7 +51,29 @@ export function getCommandWorkspaceSearchItems(
 }
 
 export function getCommandWorkspaceSearchItemKey(item: CommandWorkspaceSearchItem) {
-  return `${item.kind}-${item.entity.id}`;
+  return `${item.kind}-${"ref" in item.entity ? musicResourceKey(item.entity.ref) : item.entity.id}`;
+}
+
+/** The constraints (`@lyric`, `@mv`, ...) whose content the platform can search. */
+export function getAvailableCommandWorkspaceSearchFilters(
+  capabilities: ReadonlySet<MusicCapability>,
+) {
+  return COMMAND_WORKSPACE_SEARCH_FILTERS.filter((filter) =>
+    isSearchCategoryAvailable(capabilities, filter.category),
+  );
+}
+
+/**
+ * Whether a result can be opened here. Artists and albums open as track lists read from their
+ * own pages, which only platforms with those pages can do.
+ */
+export function canOpenCommandWorkspaceSearchItem(
+  item: CommandWorkspaceSearchItem,
+  capabilities: ReadonlySet<MusicCapability>,
+) {
+  if (item.kind === "artist") return capabilities.has("artist.read");
+  if (item.kind === "album") return capabilities.has("album.read");
+  return true;
 }
 
 export function resolveCommandWorkspaceSearchEntry(

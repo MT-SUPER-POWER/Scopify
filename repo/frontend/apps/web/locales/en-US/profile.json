@@ -18,5 +18,9 @@
   "edit.gender": "Gender",
   "edit.genderPrivate": "Private",
   "edit.genderMale": "Male",
-  "edit.genderFemale": "Female"
+  "edit.genderFemale": "Female",
+  "accounts.title": "Accounts and platforms",
+  "accounts.signedIn": "Signed in",
+  "accounts.notLoggedIn": "Not signed in",
+  "accounts.active": "Current platform"
 }

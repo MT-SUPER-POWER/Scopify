@@ -3,7 +3,7 @@ import type { LogMetadata } from "@/types/core/logging";
 
 export type ApiErrorKind = "unauthenticated" | NetworkErrorKind;
 export interface ApiErrorOptions {
-  config?: ScopifyRequestConfig;
+  config?: ApiRequestConfig;
   data?: unknown;
   kind: ApiErrorKind;
   message: string;
@@ -31,17 +31,12 @@ export interface BackendPingFailure {
 
 export type BackendPingResult = BackendPingFailure | BackendPingSuccess;
 
-export interface ScopifyRequestConfig<D = unknown> extends AxiosRequestConfig<D> {
-  /** Do not attach an existing music session or expire it on authentication errors. */
-  noLogin?: boolean;
-  /** False keeps caller-supplied parameters without platform, timestamp or IP defaults. */
-  includeDefaultParams?: boolean;
+/** Request options every platform client understands. */
+export interface ApiRequestConfig<D = unknown> extends AxiosRequestConfig<D> {
   /** Operation context appended to the final transport failure event. */
   errorContext?: LogMetadata;
   /** Expected top-level business codes for endpoints that reply with HTTP 200 on failure. */
   expectedBusinessCodes?: readonly number[];
-  /** The operation requires an authenticated music session and should expire account state on 401. */
-  requiresMusicSession?: boolean;
   /** Correlates retries, transport failures, Query failures and action failures. */
   traceId?: string;
   /** Replaces the user network timeout for long transfers such as file uploads. */

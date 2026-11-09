@@ -1,6 +1,6 @@
 import { describe, expect, test } from "bun:test";
 import axios from "axios";
-import request from "@/lib/web/request";
+import request from "@/lib/providers/netease/client";
 
 describe("request cancellation", () => {
   test("preserves cancellation rather than reporting a network error", async () => {

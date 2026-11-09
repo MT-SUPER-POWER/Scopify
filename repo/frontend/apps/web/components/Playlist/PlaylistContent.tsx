@@ -60,6 +60,8 @@ export function PlaylistContent({
     refetchTracks,
   });
   const sourceId = playSourceId ?? playlistId ?? (dailyDate ? `daily:${dailyDate}` : "daily");
+  // The immersive views read NetEase songs (lyrics, song fields), so only NetEase lists open them.
+  const canOpenLattice = tracks.length > 0;
   return (
     <PlaylistLatticeView
       key={sourceId}
@@ -91,7 +93,7 @@ export function PlaylistContent({
                   isDaily={isDailyRecommend}
                   dailyDate={dailyDate}
                   onPlayToggle={onPlayToggle}
-                  onOpenLattice={openLattice}
+                  onOpenLattice={canOpenLattice ? openLattice : undefined}
                   searchOpen={searchOpen}
                   searchQuery={searchQuery}
                   showShuffle={showShuffle}

@@ -8,6 +8,7 @@ import { isPersonalFmPlaybackSource } from "@/constants/personalFm";
 import { useTranslation } from "react-i18next";
 
 import { usePlayerStore } from "@/store/module/player";
+import { isSamePlayerTrack, playerTrackKey } from "@/lib/player/trackIdentity";
 
 // The queue tab (Folia panelTab/QueueTab.tsx): a line with the number of songs and the queue's own
 // button, then the queue as a list that scrolls inside itself. The list is as tall as its rows,
@@ -22,13 +23,13 @@ const FADE = "linear-gradient(#000 calc(100% - 32px), transparent)";
 
 export function FoliaPanelQueue() {
   const { t } = useTranslation();
-  const currentSong = usePlayerStore((state) => state.currentSongDetail);
+  const currentSong = usePlayerStore((state) => state.currentTrack);
   const queue = usePlayerStore((state) => state.queue);
   const playbackSourceId = usePlayerStore((state) => state.playlistId);
   const isPersonalFm = isPersonalFmPlaybackSource(playbackSourceId);
   const listRef = useRef<HTMLDivElement>(null);
   const [more, setMore] = useState(false);
-  const currentIndex = queue.findIndex((song) => song.id === currentSong?.id);
+  const currentIndex = queue.findIndex((song) => isSamePlayerTrack(song, currentSong));
 
   // Opens on the playing song, two rows below the top.
   useLayoutEffect(() => {
@@ -81,7 +82,7 @@ export function FoliaPanelQueue() {
             const isActive = index === currentIndex;
             return (
               <div
-                key={`${song.id}-${index}`}
+                key={`${playerTrackKey(song)}-${index}`}
                 role="listitem"
                 onClick={() => void usePlayerStore.getState().playQueueIndex(index)}
                 className={`st-t-fast group relative flex cursor-pointer items-center rounded-lg pr-1.5 pl-3 transition-colors ${isActive ? "bg-[var(--st-fill)]" : "focus-within:bg-[var(--st-fill)] hover:bg-[var(--st-fill)]"}`}
@@ -97,10 +98,10 @@ export function FoliaPanelQueue() {
                   <div
                     className={`truncate text-[13px] leading-[19px] ${isActive ? "font-semibold" : ""}`}
                   >
-                    {song.name}
+                    {song.title}
                   </div>
                   <div className="truncate text-xs leading-[17px] text-[color:var(--st-t3)]">
-                    {song.ar?.map((artist) => artist.name).join(", ")}
+                    {song.artists?.map((artist) => artist.name).join(", ")}
                   </div>
                 </div>
                 {!isPersonalFm ? (

@@ -2,7 +2,7 @@
 
 import { useIsMutating, useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { changeComment, likeComment } from "@/lib/api/social";
+import { changeComment, likeComment } from "@/lib/providers/netease/api/social";
 import { patchEvent, socialKey } from "@/lib/social/cache";
 import { useSocialAccount } from "./useSocialQueries";
 import { useTranslation } from "react-i18next";

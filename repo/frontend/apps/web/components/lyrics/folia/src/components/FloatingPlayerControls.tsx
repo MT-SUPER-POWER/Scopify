@@ -12,6 +12,7 @@ import type { ProgressRangeMarker } from "@/types/shared/sliderComponents";
 import ProgressBar from "./ProgressBar";
 import { PlayerState, LyricData, Theme } from "../types";
 import LyricsTimelineModal from "./modal/LyricsTimelineModal";
+import { getNeteaseTrackId } from "@/lib/providers/netease/adapters/track";
 
 const CONTROL_LAYOUT_SPRING = {
   type: "spring" as const,
@@ -73,7 +74,7 @@ const FloatingPlayerControls: React.FC<FloatingPlayerControlsProps> = ({
   controlsDisabled = false,
 }) => {
   const { t } = useTranslation();
-  const currentSongId = usePlayerStore((state) => state.currentSongDetail?.id ?? null);
+  const currentSongId = usePlayerStore((state) => getNeteaseTrackId(state.currentTrack) ?? null);
   const chorusQuery = useSongChorus(currentSongId);
   const chorusRanges = useMemo(
     () => getChorusProgressRanges(chorusQuery.data ?? [], duration * 1000),

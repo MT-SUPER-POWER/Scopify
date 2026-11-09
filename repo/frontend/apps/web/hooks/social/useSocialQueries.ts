@@ -1,7 +1,7 @@
 "use client";
 
 import { useInfiniteQuery, useQuery, useQueryClient } from "@tanstack/react-query";
-import * as api from "@/lib/api/social";
+import * as api from "@/lib/providers/netease/api/social";
 import { findEvent, socialKey } from "@/lib/social/cache";
 import { useUserStore } from "@/store/module/user";
 import type { SocialEventTarget, SocialPeopleMode } from "@/types/social/model";

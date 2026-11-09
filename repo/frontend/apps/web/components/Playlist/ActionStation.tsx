@@ -27,13 +27,15 @@ import {
 } from "@scopify/ui/shadcn/components/tooltip";
 import { PlaylistViewButton } from "@/components/Playlist/lattice/PlaylistViewButton";
 import { PlaylistMoreMenu } from "@/components/Playlist/PlaylistMoreMenu";
+import { ProviderPlaylistSaveButton } from "@/components/Playlist/ProviderPlaylistSaveButton";
 import { CollectionToggleButton } from "@/components/shared/CollectionToggleButton";
 import { ShortcutHint } from "@/components/shortcuts/ShortcutHint";
 import { TrackPreviewButton } from "@/components/trackPreview/TrackPreviewButton";
 import { useCommentCountQuery } from "@/hooks/comment/useCommentCountQuery";
+import { useCommentKindSupported } from "@/hooks/comment/useCommentTarget";
 import { useHistoricalDailyRecommendations } from "@/hooks/playlist/useHistoricalDailyRecommendations";
 import { usePlaylistSearchShortcut } from "@/hooks/playlist/usePlaylistSearchShortcut";
-import { subscribePlaylist } from "@/lib/api/playlist";
+import { subscribePlaylist } from "@/lib/providers/netease/api/playlist";
 import { useRequireLoginAction } from "@/hooks/auth/useRequireLoginAction";
 import { useSmartRouter } from "@/hooks/core/useSmartRouter";
 import { getCommentHref } from "@/lib/comment/commentResource";
@@ -42,6 +44,7 @@ import { usePlayerStore, useUserStore } from "@/store";
 import { useTranslation } from "react-i18next";
 import { useI18nStore } from "@/store/module/i18n";
 import { useQueryClient } from "@tanstack/react-query";
+import { musicQueryKeys } from "@/lib/query/queryKeys";
 
 function formatDateKey(date: Date) {
   const year = date.getFullYear();
@@ -92,8 +95,14 @@ export default function PlaylistActions(props: PlaylistActionsProps) {
     playlistInfo?.creatorID &&
     String(currentUserId) === String(playlistInfo.creatorID),
   );
+  // The quick collect button is NetEase's; the more menu adapts to the platform.
+  const isNeteasePlaylist = playlistInfo?.ref?.provider === "netease";
   const canSubscribe =
-    !isDaily && !playlistInfo?.isSpecial && !isOwnPlaylist && Boolean(playlistId);
+    isNeteasePlaylist &&
+    !isDaily &&
+    !playlistInfo?.isSpecial &&
+    !isOwnPlaylist &&
+    Boolean(playlistId);
   const [isSubscribed, setIsSubscribed] = useState(Boolean(playlistInfo?.subscribed));
   const [isTogglingSubscribe, setIsTogglingSubscribe] = useState(false);
 
@@ -115,7 +124,9 @@ export default function PlaylistActions(props: PlaylistActionsProps) {
             : t("playlist.actions.unsubscribeSuccess"),
         );
         void Promise.all([
-          queryClient.invalidateQueries({ queryKey: ["library", "playlists"] }),
+          queryClient.invalidateQueries({
+            queryKey: musicQueryKeys.library.playlistsAll("netease"),
+          }),
           queryClient.invalidateQueries({ queryKey: ["playlist", playlistId] }),
         ]);
       } catch {
@@ -145,11 +156,12 @@ export default function PlaylistActions(props: PlaylistActionsProps) {
   const calendarLocale = locale === "zh-CN" ? zhCN : locale === "zh-TW" ? zhTW : enUS;
   const isShuffle = usePlayerStore((s) => s.isShuffle);
   const toggleShuffle = usePlayerStore((s) => s.toggleShuffle);
-  const currentSongDetail = usePlayerStore((s) => s.currentSongDetail);
+  const currentTrack = usePlayerStore((s) => s.currentTrack);
   const { data: commentCount } = useCommentCountQuery(
     commentResourceKind,
     commentResourceId ?? null,
   );
+  const commentsSupported = useCommentKindSupported(commentResourceKind);
   const storePlaylistId = usePlayerStore((s) => s.playlistId);
   const currentPageId =
     playSourceId ?? playlistId ?? (isDaily ? (dailyDate ? `daily:${dailyDate}` : "daily") : null);
@@ -235,7 +247,7 @@ export default function PlaylistActions(props: PlaylistActionsProps) {
                 type="button"
                 aria-label={playbackActionLabel}
                 onClick={onPlayToggle ?? handlePlayToggle}
-                disabled={!onPlayToggle && !currentSongDetail && !tracks.length}
+                disabled={!onPlayToggle && !currentTrack && !tracks.length}
                 className={cn(
                   "flex size-14 items-center justify-center rounded-full bg-brand text-brand-foreground shadow-brand transition-all hover:scale-105 hover:bg-brand-hover disabled:cursor-not-allowed disabled:opacity-50",
                   isSticky && "size-12",
@@ -274,6 +286,12 @@ export default function PlaylistActions(props: PlaylistActionsProps) {
             />
           )}
 
+          {!isNeteasePlaylist &&
+            !isDaily &&
+            playlistId &&
+            playlistInfo &&
+            !playlistInfo.isSpecial && <ProviderPlaylistSaveButton playlistId={playlistId} />}
+
           {showShuffle && (
             <Tooltip>
               <TooltipTrigger asChild>
@@ -301,7 +319,7 @@ export default function PlaylistActions(props: PlaylistActionsProps) {
             </Tooltip>
           )}
 
-          {commentResourceKind && commentResourceId && (
+          {commentsSupported && commentResourceKind && commentResourceId && (
             <Tooltip>
               <TooltipTrigger asChild>
                 <button

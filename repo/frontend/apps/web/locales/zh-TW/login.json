@@ -5,7 +5,6 @@
   "page.sendCaptchaFailed": "發送驗證碼失敗",
   "mode.qr": "掃碼",
   "mode.password": "密碼",
-  "mode.sms": "簡訊",
   "form.phoneLabel": "手機號碼",
   "form.phonePlaceholder": "請輸入手機號碼",
   "form.passwordLabel": "密碼",
@@ -46,5 +45,15 @@
   "page.securitySubmitting": "驗證已通過，正在繼續提交…",
   "page.securityRetryHint": "請返回登入後重試安全驗證。",
   "page.securityBackToLogin": "返回登入",
-  "page.secondaryVerificationTitle": "簡訊二次驗證"
+  "page.secondaryVerificationTitle": "簡訊二次驗證",
+  "platform.label": "登入平台",
+  "platform.netease": "網易雲音樂",
+  "platform.qq": "QQ 音樂",
+  "qq.channel.qq": "QQ",
+  "qq.channel.wechat": "微信",
+  "qq.channel.qqmusic": "QQ 音樂",
+  "qq.scanHint.qq": "使用 QQ 掃碼登入 QQ 音樂",
+  "qq.scanHint.wechat": "使用 微信 掃碼登入 QQ 音樂",
+  "qq.scanHint.qqmusic": "使用 QQ 音樂 App 掃碼",
+  "qq.loginFailed": "QQ 音樂登入失敗，請重試"
 }

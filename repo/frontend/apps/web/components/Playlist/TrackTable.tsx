@@ -36,20 +36,31 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useDailyRecommendationMutation } from "@/hooks/playlist/useDailyRecommendationMutation";
-import { usePlaylistTrackMutation } from "@/hooks/playlist/usePlaylistTrackMutation";
+import { usePlaylistTrackRemoval } from "@/hooks/playlist/usePlaylistTrackRemoval";
 import { useTracklistColumnLayout } from "@/hooks/playlist/useTracklistColumnLayout";
 import { useTrackSelection } from "@/hooks/playlist/useTrackSelection";
+import { useProviderCapability } from "@/hooks/provider/useActiveProvider";
 import { useMediaQuery } from "@/hooks/ui/useMediaQuery";
 import { clearPageCache } from "@/lib/cache/pageCache";
 import { cn } from "@/lib/utils";
 import { reportActionFailure } from "@/lib/web/errorTracking";
-import { usePlayerStore, useUserStore } from "@/store";
+import { usePlayerStore } from "@/store";
+import { useTrackLikes } from "@/hooks/library/useLikedTracks";
 import { useTranslation } from "react-i18next";
 
-import { pruneSongDetail, type SongDetail } from "@/types/song/api";
+import { musicResourceKey } from "@scopify/music-domain/identity";
+import type { PlayerTrack } from "@/types/player/model";
+import { pruneSongDetail } from "@/types/song/api";
 import type { NavigationScrollRestorationAdapter } from "@/types/core/navigationScroll";
 
 import { ConfirmDialogShandCN } from "./TableConfirmDialog";
+import {
+  adaptNeteaseTrack,
+  getNeteaseTrackId,
+  toNeteaseSongDetails,
+} from "@/lib/providers/netease/adapters/track";
+
+const NO_TRACKS: PlayerTrack[] = [];
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ COL RESIZE ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -57,7 +68,7 @@ function waitForAnimationFrame() {
   return new Promise<void>((resolve) => requestAnimationFrame(() => resolve()));
 }
 
-function getRequiredTracklistColumn(table: TanstackTable<SongDetail>, columnId: string) {
+function getRequiredTracklistColumn(table: TanstackTable<PlayerTrack>, columnId: string) {
   const column = table.getColumn(columnId);
   if (!column) throw new Error(`Missing required Tracklist column: ${columnId}`);
   return column;
@@ -85,13 +96,16 @@ export default function TracklistTable({
   selection: selectionProp,
   stickyHeaderClassName,
   stickyHeaderTop,
-  tracks: externalTracks,
+  tracks = NO_TRACKS,
 }: TracklistTableProps) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const showAlbumColumn = useMediaQuery("(min-width: 640px)") && !hideAlbumColumn;
   const showExtendedColumns = useMediaQuery("(min-width: 1024px)");
-  const showDateColumn = showExtendedColumns && !hideDateColumn;
-  const showLikeColumn = showExtendedColumns && !hideLikeColumn;
+  // Release dates and the like button are NetEase song fields.
+  const hasReleaseDates = tracks.some((track) => track.netease?.publishTime !== undefined);
+  const canLike = useProviderCapability("track.like");
+  const showDateColumn = showExtendedColumns && !hideDateColumn && hasReleaseDates;
+  const showLikeColumn = showExtendedColumns && !hideLikeColumn && canLike;
   const columnLayout = useTracklistColumnLayout({
     showAlbumColumn,
     showDateColumn,
@@ -100,7 +114,7 @@ export default function TracklistTable({
 
   const { t } = useTranslation();
   const { mutateAsync: dislikeDailyRecommend } = useDailyRecommendationMutation();
-  const { mutateAsync: updatePlaylistTrack } = usePlaylistTrackMutation();
+  const { mutateAsync: removePlaylistTrack } = usePlaylistTrackRemoval();
   const searchParams = useSearchParams();
   const playlistID = searchParams.get("id");
   const isDailyRecommendationPage = searchParams.get("isDailyRecommend") === "true";
@@ -126,46 +140,40 @@ export default function TracklistTable({
   }, [currentPageId, storePlaylistId]);
   const [pendingDelete, setPendingDelete] = useState<PlaylistTrackDeleteRequest | null>(null);
 
-  const storeTracks = useUserStore((state) => state.albumList);
-  const tracks = externalTracks ?? storeTracks;
-  const likelist = useUserStore((s) => s.likeListIDs);
+  const { isLiked } = useTrackLikes();
 
   const setIsPlaying = usePlayerStore((s) => s.setIsPlaying);
   const playFromSong = usePlayerStore((s) => s.playFromSong);
-  const currentSongId = usePlayerStore((s) => s.currentSongDetail?.id);
+  const currentTrackKey = usePlayerStore((s) =>
+    s.currentTrack ? musicResourceKey(s.currentTrack.ref) : null,
+  );
   const onPlayTrackRef = useRef(onPlayTrack);
   onPlayTrackRef.current = onPlayTrack;
   const isPlaying = usePlayerStore((s) => s.isPlaying);
-
-  const likeSet = useMemo(() => {
-    if (Array.isArray(likelist)) return new Set(likelist);
-    return new Set<number>();
-  }, [likelist]);
 
   const filteredTracks = useMemo(() => {
     if (!searchQuery?.trim()) return tracks;
     const q = searchQuery.toLowerCase();
     return tracks.filter(
       (track) =>
-        (track.name?.toLowerCase?.() || "").includes(q) ||
-        (Array.isArray(track.ar) &&
-          track.ar.some((a) => (a?.name?.toLowerCase?.() || "").includes(q))) ||
-        (track.al?.name?.toLowerCase?.() || "").includes(q),
+        track.title.toLowerCase().includes(q) ||
+        track.artists.some((artist) => artist.name.toLowerCase().includes(q)) ||
+        (track.album?.title.toLowerCase() ?? "").includes(q),
     );
   }, [tracks, searchQuery]);
   const hasSearchQuery = Boolean(searchQuery?.trim());
 
-  const columns = useMemo<ColumnDef<SongDetail>[]>(
+  const columns = useMemo<ColumnDef<PlayerTrack>[]>(
     () => [
       {
         id: "index",
         enableSorting: false,
       },
-      { accessorFn: (track) => track.name, id: "title" },
-      { accessorFn: (track) => track.al?.name ?? "", id: "album" },
-      { accessorFn: (track) => track.publishTime ?? 0, id: "date" },
+      { accessorFn: (track) => track.title, id: "title" },
+      { accessorFn: (track) => track.album?.title ?? "", id: "album" },
+      { accessorFn: (track) => track.netease?.publishTime ?? 0, id: "date" },
       {
-        accessorFn: (track) => Number(likeSet.has(track.id)),
+        accessorFn: (track) => Number(isLiked(track.ref)),
         id: "like",
       },
       {
@@ -173,7 +181,7 @@ export default function TracklistTable({
         enableSorting: false,
       },
     ],
-    [likeSet],
+    [isLiked],
   );
   const table = useReactTable({
     columns,
@@ -196,6 +204,10 @@ export default function TracklistTable({
     disableVirtualization || sortedTracks.length <= PLAYLIST_VIRTUALIZATION_THRESHOLD;
   const internalSelection = useTrackSelection(sortedTracks);
   const selection = selectionProp ?? internalSelection;
+  const selectedSongs = useMemo(
+    () => toNeteaseSongDetails(selection.selectedTracks),
+    [selection.selectedTracks],
+  );
   const titleColumn = getRequiredTracklistColumn(table, "title");
   const albumColumn = getRequiredTracklistColumn(table, "album");
   const dateColumn = getRequiredTracklistColumn(table, "date");
@@ -213,7 +225,7 @@ export default function TracklistTable({
     else virtualRowElementsRef.current.delete(index);
   }, []);
   const getTrackKey = useCallback(
-    (index: number) => sortedTracks[index]?.id ?? index,
+    (index: number) => sortedTracks[index]?.ref.id ?? index,
     [sortedTracks],
   );
 
@@ -308,7 +320,7 @@ export default function TracklistTable({
         if (!anchor || !track || !row) return null;
 
         return {
-          anchorKey: String(track.id),
+          anchorKey: track.ref.id,
           anchorOffset: row.getBoundingClientRect().top - viewport.top,
           fallbackTop: surface.scrollTop,
           kind: "virtual-collection",
@@ -319,7 +331,7 @@ export default function TracklistTable({
         if (primaryScrollSurfaceRef.current !== surface) return "waiting";
 
         const tracks = sortedTracksRef.current;
-        const targetIndex = tracks.findIndex((track) => String(track.id) === snapshot.anchorKey);
+        const targetIndex = tracks.findIndex((track) => track.ref.id === snapshot.anchorKey);
         if (targetIndex < 0) return "unavailable";
 
         const virtualizer = virtualizerRef.current;
@@ -331,7 +343,7 @@ export default function TracklistTable({
       },
       async restore({ signal, snapshot, surface }) {
         const tracks = sortedTracksRef.current;
-        const targetIndex = tracks.findIndex((track) => String(track.id) === snapshot.anchorKey);
+        const targetIndex = tracks.findIndex((track) => track.ref.id === snapshot.anchorKey);
         if (targetIndex < 0 || signal.aborted) return;
 
         const virtualizer = virtualizerRef.current;
@@ -362,13 +374,13 @@ export default function TracklistTable({
     : 0;
 
   const handlePlay = useCallback(
-    (track: SongDetail) => {
+    (track: PlayerTrack) => {
       if (onPlayTrackRef.current) {
         onPlayTrackRef.current(track);
         return;
       }
 
-      const isCurrent = currentSongId === track.id && isCurrentQueue;
+      const isCurrent = currentTrackKey === musicResourceKey(track.ref) && isCurrentQueue;
       if (isCurrent) setIsPlaying(!isPlaying);
       else {
         const sourceId =
@@ -378,7 +390,7 @@ export default function TracklistTable({
     },
     [
       tracks,
-      currentSongId,
+      currentTrackKey,
       isPlaying,
       setIsPlaying,
       playFromSong,
@@ -391,71 +403,72 @@ export default function TracklistTable({
   );
 
   const handleRequestDelete = useCallback(
-    (playlistId: number | string | undefined, trackId: number) => {
-      setPendingDelete({ playlistId, trackId });
+    (playlistId: number | string | undefined, track: PlayerTrack) => {
+      setPendingDelete({ playlistId, track });
     },
     [],
   );
 
-  const setAlbumList = useUserStore((s) => s.setAlbumList);
-
   const updateVisibleTracks = useCallback(
-    (nextTracks: SongDetail[]) => {
-      if (onTracksChange) {
-        onTracksChange(nextTracks);
-        return;
-      }
-      setAlbumList(nextTracks);
-    },
-    [onTracksChange, setAlbumList],
+    (nextTracks: PlayerTrack[]) => onTracksChange?.(nextTracks),
+    [onTracksChange],
   );
 
   const handleConfirmDelete = useCallback(async () => {
     if (pendingDelete?.playlistId === undefined) return;
+    const { track } = pendingDelete;
     try {
-      await updatePlaylistTrack({
-        operation: "del",
-        playlistId: pendingDelete.playlistId,
-        trackId: pendingDelete.trackId,
+      await removePlaylistTrack({
+        playlist: {
+          provider: track.ref.provider,
+          kind: "playlist",
+          id: String(pendingDelete.playlistId),
+        },
+        track: track.ref,
       });
 
       // 1. 乐观更新：立刻从视图移出
-      updateVisibleTracks(tracks.filter((track) => track.id !== pendingDelete.trackId));
+      updateVisibleTracks(tracks.filter((item) => item.ref.id !== track.ref.id));
       toast.success(t("playlist.table.removeSuccess"));
     } catch {
       toast.error(t("playlist.table.removeFailed"));
     } finally {
       setPendingDelete(null);
     }
-  }, [pendingDelete, t, tracks, updatePlaylistTrack, updateVisibleTracks]);
+  }, [pendingDelete, removePlaylistTrack, t, tracks, updateVisibleTracks]);
 
   const handleCancelDelete = useCallback(() => {
     setPendingDelete(null);
   }, []);
 
   const handleDislikeDailyRecommend = useCallback(
-    async (trackId: number | string) => {
+    async (trackId: number) => {
       try {
         const dislikeResult = await dislikeDailyRecommend(trackId);
         if (!dislikeResult.data) {
           throw new Error("The daily recommendation endpoint did not provide a replacement track.");
         }
         const replaceSong = pruneSongDetail(dislikeResult.data);
+        const replaceTrack = adaptNeteaseTrack(replaceSong);
 
-        const nextTracks = tracks.map((track) => (track.id === trackId ? replaceSong : track));
+        const nextTracks = tracks.map((track) =>
+          getNeteaseTrackId(track) === trackId ? replaceTrack : track,
+        );
 
         updateVisibleTracks(nextTracks);
 
         const playerState = usePlayerStore.getState();
-        const isCurrentPlaying = playerState.currentSongDetail?.id === trackId;
+        const isCurrentPlaying = getNeteaseTrackId(playerState.currentTrack) === trackId;
 
         // 如果该歌曲已在播放队列中，静默将队列和原始队列中的对应曲目替换为新推荐歌曲
-        const inQueue = playerState.queue.some((s) => s.id === trackId);
+        const inQueue = playerState.queue.some((s) => getNeteaseTrackId(s) === trackId);
         if (inQueue) {
           usePlayerStore.setState({
-            queue: playerState.queue.map((s) => (s.id === trackId ? replaceSong : s)),
+            queue: playerState.queue.map((s) =>
+              getNeteaseTrackId(s) === trackId ? replaceTrack : s,
+            ),
             originalQueue: playerState.originalQueue.map((s) =>
-              s.id === trackId ? replaceSong : s,
+              getNeteaseTrackId(s) === trackId ? replaceTrack : s,
             ),
           });
         }
@@ -646,7 +659,7 @@ export default function TracklistTable({
                     </tr>
                   )}
                   {(virtualizationDisabled
-                    ? sortedTracks.map((track, index) => ({ key: track.id, index }))
+                    ? sortedTracks.map((track, index) => ({ key: track.ref.id, index }))
                     : virtualItems
                   ).map(({ key, index }) => {
                     const track = sortedTracks[index];
@@ -658,11 +671,11 @@ export default function TracklistTable({
                         track={track}
                         index={index}
                         allowReorder={!hasSearchQuery && sorting.length === 0}
-                        isActive={currentSongId === track.id && isCurrentQueue}
+                        isActive={currentTrackKey === musicResourceKey(track.ref) && isCurrentQueue}
                         isPlaying={isPlaying}
-                        isLiked={likeSet.has(track.id)}
-                        isSelected={selection.isSelected(track.id)}
-                        selectedSongs={selection.selectedTracks}
+                        isLiked={isLiked(track.ref)}
+                        isSelected={selection.isSelected(track.ref.id)}
+                        selectedSongs={selectedSongs}
                         onSelectTrack={selection.handleRowClick}
                         onContextTrack={selection.handleRowContextMenu}
                         playlistID={playlistID}

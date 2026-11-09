@@ -1,21 +1,21 @@
 import Image from "next/image";
 import { User } from "lucide-react";
-import { useLoginStatus } from "@/hooks/auth/useLoginStatus";
-import { useUserStore } from "@/store";
+import { ProviderLogo } from "@/components/provider/ProviderLogo";
+import { useActiveAccount } from "@/hooks/auth/useProviderAccounts";
 
 /**
- * MockAvatar: 顶部栏头像与登录状态展示组件
+ * MockAvatar: 顶部栏头像与登录状态展示组件，显示当前平台的账号
  */
 const MockAvatar = () => {
-  const isLogged = useLoginStatus();
-  const imgSrc = useUserStore((state) => state.user?.avatarUrl);
-  const nickname = useUserStore((state) => state.user?.nickname);
+  const account = useActiveAccount();
+  const imgSrc = account.profile?.avatarUrl;
+  const nickname = account.profile?.nickname;
 
-  if (!isLogged)
-    // Logged out: match the neighbouring notification/message buttons instead of a brand badge.
+  if (!account.isLoggedIn)
+    // Logged out: the active platform's mark stands in for the avatar.
     return (
-      <div className="flex size-10 items-center justify-center rounded-full bg-surface-sunken/80 text-content-muted transition-colors hover:bg-surface-elevated hover:text-content">
-        <User className="size-4.5" />
+      <div className="flex size-10 items-center justify-center rounded-full bg-surface-sunken/80 transition-transform hover:scale-105">
+        <ProviderLogo provider={account.provider} className="size-8" />
       </div>
     );
 

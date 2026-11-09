@@ -16,14 +16,14 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useCommentThread } from "@/hooks/comment/useCommentThread";
-import { getReplyCount } from "@/lib/comment/commentResource";
-import { useLoginStatus } from "@/hooks/auth/useLoginStatus";
-import { useUserStore } from "@/store";
+import { useActiveAccount } from "@/hooks/auth/useProviderAccounts";
+import { useProviderCapability } from "@/hooks/provider/useActiveProvider";
+
 import { useTranslation } from "react-i18next";
 
 import type { CommentSectionProps } from "@/types/comment/components";
 import type { CommentSortType } from "@/types/comment/model";
-import type { NeteaseComment } from "@/types/song/api";
+import type { MusicComment } from "@scopify/music-domain/comment";
 
 const SORT_LABEL_KEY = {
   hot: "comments.sort.default",
@@ -37,8 +37,11 @@ const SORT_LABEL_KEY = {
  */
 export function CommentSection({ resource }: CommentSectionProps) {
   const { t } = useTranslation();
-  const isLogin = useLoginStatus();
-  const currentUserId = useUserStore((state) => state.user?.userId);
+  const account = useActiveAccount();
+  const isLogin = account.isLoggedIn;
+  const currentUserId = account.profile?.accountId;
+  const canWrite = useProviderCapability("comments.write");
+  const canReplies = useProviderCapability("comments.replies");
   const {
     closeReply,
     comments,
@@ -73,18 +76,19 @@ export function CommentSection({ resource }: CommentSectionProps) {
   }, [hasMore, isLoadMoreError, isLoadingMore, loadMore, isPending]);
 
   const renderRow = (
-    comment: NeteaseComment,
-    options: { rootId?: number; compact?: boolean; children?: ReactNode } = {},
+    comment: MusicComment,
+    options: { rootId?: string; compact?: boolean; children?: ReactNode } = {},
   ) => (
     <CommentRow
-      key={comment.commentId}
+      key={comment.id}
       comment={comment}
       compact={options.compact}
       rootId={options.rootId}
-      hasReplies={!options.compact && getReplyCount(comment) > 0}
-      isOwn={String(comment.user.userId) === String(currentUserId ?? "")}
-      isReplying={replyTarget?.commentId === comment.commentId}
-      canReply={isLogin}
+      hasReplies={canReplies && !options.compact && comment.replyCount > 0}
+      isOwn={comment.author.id !== null && comment.author.id === currentUserId}
+      isReplying={replyTarget?.id === comment.id}
+      canReply={isLogin && canWrite}
+      canWrite={canWrite}
       onLike={() => void like(comment)}
       onDelete={() => void remove(comment, options.rootId)}
       onReplyOpen={() => openReply(comment)}
@@ -131,7 +135,7 @@ export function CommentSection({ resource }: CommentSectionProps) {
       </div>
 
       <div className="mt-6">
-        {isLogin ? (
+        {!canWrite ? null : isLogin ? (
           <CommentComposer
             placeholder={t("mv.comments.addPlaceholder")}
             submitLabel={t("mv.comments.submit")}
@@ -154,13 +158,13 @@ export function CommentSection({ resource }: CommentSectionProps) {
             {comments.map((comment) =>
               renderRow(comment, {
                 children:
-                  getReplyCount(comment) > 0 ? (
+                  canReplies && comment.replyCount > 0 ? (
                     <CommentReplies
                       resource={resource}
-                      parentId={comment.commentId}
-                      replyCount={getReplyCount(comment)}
+                      parentId={comment.id}
+                      replyCount={comment.replyCount}
                       renderReply={(reply) =>
-                        renderRow(reply, { compact: true, rootId: comment.commentId })
+                        renderRow(reply, { compact: true, rootId: comment.id })
                       }
                     />
                   ) : undefined,

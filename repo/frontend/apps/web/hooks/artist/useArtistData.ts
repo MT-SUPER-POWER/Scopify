@@ -5,48 +5,46 @@ import { useCallback, useMemo } from "react";
 import {
   useArtistAlbumsQuery,
   useArtistDetailQuery,
-  useArtistFollowCountQuery,
-  useArtistTopSongsQuery,
+  useArtistTopTracksQuery,
 } from "@/hooks/artist/useArtistQueries";
 import { useTranslation } from "react-i18next";
 
-import { pruneSongDetail } from "@/types/song/api";
+import type { ArtistInfo, DiscographyAlbum } from "@/types/artist/model";
+import type { PlayerTrack } from "@/types/player/model";
+
+const NO_TRACKS: PlayerTrack[] = [];
 
 export function useArtistData(artistId: null | string) {
   const { t } = useTranslation();
   const artistDetailQuery = useArtistDetailQuery(artistId);
-  const followCountQuery = useArtistFollowCountQuery(artistId);
-  const topSongsQuery = useArtistTopSongsQuery(artistId);
+  const topTracksQuery = useArtistTopTracksQuery(artistId);
   const albumsQuery = useArtistAlbumsQuery(artistId);
 
-  const artist = useMemo(() => {
-    const rawArtist = artistDetailQuery.data?.data.artist;
-    if (!rawArtist) return null;
+  const artist = useMemo<ArtistInfo | null>(() => {
+    const detail = artistDetailQuery.data;
+    if (!detail) return null;
 
     return {
-      avatar: rawArtist.avatar,
-      bio: rawArtist.briefDesc || t("artist.about.noBio"),
-      headerImageUrl: rawArtist.cover,
-      id: rawArtist.id,
-      isVerified: true,
-      listeners: followCountQuery.data?.data.fansCnt ?? 0,
-      name: rawArtist.name,
+      avatar: detail.avatarUrl ?? "",
+      bio: detail.description || t("artist.about.noBio"),
+      headerImageUrl: detail.coverUrl ?? detail.avatarUrl ?? "",
+      id: detail.ref.id,
+      isVerified: detail.verified,
+      listeners: detail.followerCount,
+      name: detail.name,
     };
-  }, [artistDetailQuery.data, followCountQuery.data, t]);
+  }, [artistDetailQuery.data, t]);
 
-  const popularTracks = useMemo(
-    () => (topSongsQuery.data?.songs ?? []).map(pruneSongDetail),
-    [topSongsQuery.data],
-  );
+  const popularTracks = topTracksQuery.data ?? NO_TRACKS;
 
-  const discography = useMemo(
+  const discography = useMemo<DiscographyAlbum[]>(
     () =>
-      (albumsQuery.data?.hotAlbums ?? []).slice(0, 10).map((album) => ({
-        coverUrl: `${album.picUrl}?param=300y300`,
-        id: album.id,
-        releaseYear: new Date(album.publishTime).getFullYear(),
-        title: album.name,
-        type: album.type,
+      (albumsQuery.data ?? []).map((album) => ({
+        coverUrl: album.coverUrl,
+        ref: album.ref,
+        releaseYear: album.publishedAt === null ? null : new Date(album.publishedAt).getFullYear(),
+        title: album.title,
+        type: album.releaseType,
       })),
     [albumsQuery.data],
   );
@@ -54,28 +52,19 @@ export function useArtistData(artistId: null | string) {
   const refetch = useCallback(async () => {
     await Promise.all([
       artistDetailQuery.refetch(),
-      followCountQuery.refetch(),
-      topSongsQuery.refetch(),
+      topTracksQuery.refetch(),
       albumsQuery.refetch(),
     ]);
-  }, [albumsQuery, artistDetailQuery, followCountQuery, topSongsQuery]);
+  }, [albumsQuery, artistDetailQuery, topTracksQuery]);
 
   return {
     artist,
     discography,
-    hotTracksQueue: popularTracks,
-    isError:
-      artistDetailQuery.isError ||
-      followCountQuery.isError ||
-      topSongsQuery.isError ||
-      albumsQuery.isError,
+    isError: artistDetailQuery.isError || topTracksQuery.isError || albumsQuery.isError,
     isLoading: artistDetailQuery.isLoading,
-    isPopularTracksLoading: topSongsQuery.isLoading,
+    isPopularTracksLoading: topTracksQuery.isLoading,
     isRefreshing:
-      artistDetailQuery.isFetching ||
-      followCountQuery.isFetching ||
-      topSongsQuery.isFetching ||
-      albumsQuery.isFetching,
+      artistDetailQuery.isFetching || topTracksQuery.isFetching || albumsQuery.isFetching,
     popularTracks,
     refetch,
   };

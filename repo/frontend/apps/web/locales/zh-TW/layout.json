@@ -1,5 +1,7 @@
 {
   "backendUnavailableTitle": "本機後端暫時無法使用",
   "backendUnavailableDescription": "音樂服務暫時無法使用，你仍可進入設定調整或重新啟動本機後端。",
-  "openBackendSettings": "開啟後端設定"
+  "unsupported.title": "目前平台不支援",
+  "unsupported.description": "{{platform}} 暫不支援這個頁面。在帳號選單中切換到其他平台後即可使用。",
+  "unsupported.openSettings": "前往設定"
 }

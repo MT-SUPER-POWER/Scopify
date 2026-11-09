@@ -1,33 +1,28 @@
 "use client";
 
-import { useCallback, useEffect, useMemo } from "react";
+import { useCallback, useEffect } from "react";
 import { LoaderCircle } from "lucide-react";
 import { MvListItem } from "@/components/mv/MvListItem";
 import { MvSimilarSkeleton } from "./MvSimilarSkeleton";
 import { QueryFailure } from "@/components/shared/QueryFailure";
 import { QueryPending } from "@/components/shared/QueryPending";
-import { useInfiniteMvSearchQuery } from "@/hooks/search/useSearchQueries";
+import { useRelatedMvsQuery } from "@/hooks/mv/useMVQueries";
 import { useInfiniteScrollTrigger } from "@/hooks/search/useInfiniteScrollTrigger";
-import { getRelatedMvKeyword, getRelatedMvs } from "@/lib/music/relatedMvs";
 import { useTranslation } from "react-i18next";
 
 import type { MvSimilarContentProps } from "@/types/mv/components";
 
-export function MvSimilarContent({ mvid, detail, isTheater, onNextChange }: MvSimilarContentProps) {
+export function MvSimilarContent({ detail, isTheater, onNextChange }: MvSimilarContentProps) {
   const { t } = useTranslation();
-  const keyword = getRelatedMvKeyword(detail);
-  const query = useInfiniteMvSearchQuery(keyword, 20, true, true);
-  const mvs = useMemo(
-    () => getRelatedMvs(query.data?.pages.flatMap((page) => page.result?.mvs ?? []) ?? [], mvid),
-    [query.data, mvid],
-  );
+  const query = useRelatedMvsQuery(detail, 20, true, true);
+  const { mvs } = query;
   const { fetchNextPage } = query;
   const loadMore = useCallback(() => void fetchNextPage(), [fetchNextPage]);
   const loadMoreRef = useInfiniteScrollTrigger({
     enabled: Boolean(query.hasNextPage) && !query.isFetching && !query.isFetchNextPageError,
     onIntersect: loadMore,
   });
-  const nextId = mvs[0]?.id ?? null;
+  const nextId = mvs[0]?.ref.id ?? null;
   useEffect(() => {
     onNextChange(nextId);
     return () => onNextChange(null);
@@ -44,8 +39,8 @@ export function MvSimilarContent({ mvid, detail, isTheater, onNextChange }: MvSi
       <h2 className="mb-2 text-base font-bold">{t("mv.section.similar")}</h2>
       <ul className="-mx-1 flex flex-col gap-1">
         {mvs.map((item) => (
-          <li key={item.id}>
-            <MvListItem mv={item} href={`/mv?id=${item.id}`} size={isTheater ? "lg" : "md"} />
+          <li key={item.ref.id}>
+            <MvListItem mv={item} href={`/mv?id=${item.ref.id}`} size={isTheater ? "lg" : "md"} />
           </li>
         ))}
       </ul>

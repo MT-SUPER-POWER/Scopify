@@ -1,0 +1,300 @@
+import type {
+  NeteasePersonalizedPlaylistsDto,
+  NeteaseRecommendedPlaylistsDto,
+} from "@/types/providers/netease/recommendApi";
+import type {
+  PlaylistHighQualityTagsResponse,
+  UpdatePlaylistParams,
+} from "@/types/playlist/tagsApi";
+import type {
+  DailyRecommendationDislikeResponse,
+  DailyCategoryConfigsResponse,
+  DailyCategorySongsResponse,
+  DailyCategoryUpdateResponse,
+  DailyCategoryConfigUpdate,
+  HistoricalDailyRecommendationDetailResponse,
+  HistoricalDailyRecommendationsResponse,
+  PlaylistOrderUpdateParams,
+  SongOrderUpdateParams,
+  PlaylistTrackUpdateResponse,
+} from "@/types/playlist/api";
+import type {
+  NeteasePlaylistDetailDto,
+  NeteasePlaylistDetailParams,
+  NeteasePlaylistTracksDto,
+  NeteasePlaylistTracksParams,
+} from "@/types/providers/netease/playlistApi";
+import type {
+  NeteaseCreatePlaylistDto,
+  NeteaseLikeListDto,
+  NeteasePlaylistWriteDto,
+  NeteaseUserPlaylistsDto,
+} from "@/types/providers/netease/libraryApi";
+import request, { requestConfig } from "@/lib/providers/netease/client";
+import { measureImageDimensions } from "@/lib/image/measureImage";
+
+export function updatePlaylistOrder({ ids }: PlaylistOrderUpdateParams) {
+  return request.post<PlaylistTrackUpdateResponse>(
+    "/playlist/order/update",
+    { ids: JSON.stringify(ids) },
+    requestConfig({ requiresMusicSession: true, expectedBusinessCodes: [200] }),
+  );
+}
+
+export function updateSongOrder({ pid, ids }: SongOrderUpdateParams) {
+  return request.post<PlaylistTrackUpdateResponse>(
+    "/song/order/update",
+    { pid, ids: JSON.stringify(ids) },
+    requestConfig({ requiresMusicSession: true, expectedBusinessCodes: [200] }),
+  );
+}
+
+/**
+ * 登录后调用此接口 , 传入用户 id, 可以获取用户歌单
+ * @param uid 用户 id
+ * @param limit 返回数量 , 默认为 30
+ * @param offset 偏移数量，用于分页 , 如 :( 页数 -1)*30, 其中 30 为 limit 的值 , 默认为 0
+ * @returns
+ */
+export function getUserPlaylist(uid: number, limit = 30, offset = 0) {
+  return request.get<NeteaseUserPlaylistsDto>("/user/playlist", { params: { uid, limit, offset } });
+}
+
+/**
+ * 传入用户 id, 可以获取用户创建的歌单
+ * @param uid 用户 id
+ * @param limit 返回数量 , 默认为 30
+ * @param offset 偏移数量，用于分页 , 如 :( 页数 -1)*30, 其中 30 为 limit 的值 , 默认为 0
+ * @returns
+ */
+export function getUserPlaylistByID(uid: number, limit = 30, offset = 0) {
+  return request.get("/user/playlist/create", { params: { uid, limit, offset } });
+}
+
+/**
+ * 获取歌单所有歌曲
+ * @param id 歌单 id
+ * @param limit 限制获取歌曲的数量，默认值为当前歌单的歌曲数量
+ * @param offset 偏移量，默认 0
+ * @returns 歌曲列表数据
+ */
+export function getPlaylistAllTracks({
+  id,
+  limit,
+  offset,
+  requiresMusicSession,
+}: NeteasePlaylistTracksParams) {
+  return request.get<NeteasePlaylistTracksDto>(
+    "/playlist/track/all",
+    requestConfig({ params: { id, limit, offset }, requiresMusicSession }),
+  );
+}
+
+/**
+ * 获取最近播放-歌曲
+ * @param limit 返回数量，默认为 10
+ * @returns 最近播放的歌曲列表数据
+ */
+export function getRecentSongs(limit = 10) {
+  return request.get("/record/recent/song", { params: { limit } });
+}
+
+/**
+ * 获取用户喜欢的歌曲列表
+ */
+export function getUserLikeLists(uid: number | string) {
+  return request.get<NeteaseLikeListDto>("/likelist", { params: { uid } });
+}
+
+/**
+ * 喜欢和取消喜欢
+ */
+export function likeSong(id: number | string, like: boolean) {
+  return request.get(
+    "/like",
+    requestConfig({
+      params: { id, like },
+      requiresMusicSession: true,
+      expectedBusinessCodes: [200],
+    }),
+  );
+}
+
+/**
+ *
+ * @param name
+ * @param privacy 默认为为公开 10 为私密 0 为普通歌单
+ * @returns
+ */
+export function createPlaylist(name: string, privacy = "0") {
+  return request.get<NeteaseCreatePlaylistDto>("/playlist/create", { params: { name, privacy } });
+}
+
+/**
+ *
+ * @param id 被删除的歌单 id
+ * @returns
+ */
+export function delPlaylist(id: number | string) {
+  return request.get<NeteasePlaylistWriteDto>("/playlist/delete", { params: { id } });
+}
+
+// 收藏/取消收藏歌单 (t: 1收藏, 2取消)
+export function subscribePlaylist(t: 1 | 2, id: number | string) {
+  return request.get<NeteasePlaylistWriteDto>(`/playlist/subscribe`, {
+    params: { t, id },
+  });
+}
+
+/**
+ * 更新歌单封面
+ * @param id 歌单 id
+ * @param imgFile 图片文件对象
+ * @param imgSize 图片尺寸, 默认为 300
+ */
+export function updatePlaylist(
+  idOrParams: number | string | UpdatePlaylistParams,
+  name?: string,
+  desc?: string,
+  tags?: string[],
+) {
+  const params =
+    typeof idOrParams === "object"
+      ? idOrParams
+      : {
+          id: idOrParams,
+          name: name ?? "",
+          desc,
+          tags,
+        };
+
+  return request.get("/playlist/update", {
+    params: { ...params, tags: params.tags?.join(";") },
+  });
+}
+
+/** Renames a playlist and leaves its description and tags as they are. */
+export function renamePlaylist(id: number | string, name: string) {
+  return request.get<NeteasePlaylistWriteDto>("/playlist/name/update", {
+    params: { id, name },
+  });
+}
+
+export function getPlaylistHighQualityTags() {
+  return request.get<PlaylistHighQualityTagsResponse>("/playlist/highquality/tags");
+}
+
+export function updatePlaylistTags(id: number | string, tags: string[]) {
+  return request.get("/playlist/tags/update", {
+    params: { id, tags: tags.join(";") },
+  });
+}
+
+/**
+ * 更新歌单封面
+ * 参考后端案例 public/playlist_cover_update.html 自动计算天然尺寸与坐标
+ * @param id 歌单 id
+ * @param imgFile 图片文件对象
+ * @param options 可选尺寸配置
+ */
+export async function updatePlaylistCover(
+  id: number | string,
+  imgFile: File,
+  options?: { imgSize?: number; imgX?: number; imgY?: number } | number,
+) {
+  let size = typeof options === "number" ? options : options?.imgSize;
+  const x = typeof options === "object" ? (options?.imgX ?? 0) : 0;
+  const y = typeof options === "object" ? (options?.imgY ?? 0) : 0;
+
+  if (!size) {
+    try {
+      const dimensions = await measureImageDimensions(imgFile);
+      size = dimensions.width;
+    } catch {
+      size = 300;
+    }
+  }
+
+  const formData = new FormData();
+  formData.append("imgFile", imgFile);
+  return request.post(
+    `/playlist/cover/update?id=${id}&imgSize=${size}&imgX=${x}&imgY=${y}&timestamp=${Date.now()}`,
+    formData,
+    {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    },
+  );
+}
+
+export function getPersonalizePlaylists(limit = 100) {
+  return request.get<NeteasePersonalizedPlaylistsDto>("/personalized", { params: { limit } });
+}
+
+export function getPlaylsitDetail({ id, requiresMusicSession }: NeteasePlaylistDetailParams) {
+  return request.get<NeteasePlaylistDetailDto>(
+    "/playlist/detail",
+    requestConfig({ params: { id }, requiresMusicSession }),
+  );
+}
+
+// 获取每日推荐歌单
+export function getRecommendedPlaylists() {
+  return request.get<NeteaseRecommendedPlaylistsDto>(
+    "/recommend/resource",
+    requestConfig({ requiresMusicSession: true }),
+  );
+}
+
+// 不喜欢某一首每日推荐
+export function dislikeDailyRecommend(id: number | string) {
+  return request.get<DailyRecommendationDislikeResponse>(
+    "/recommend/songs/dislike",
+    requestConfig({ params: { id }, requiresMusicSession: true }),
+  );
+}
+
+/** 获取当前账号可查看的历史日推日期。 */
+export function getHistoricalDailyRecommendations() {
+  return request.get<HistoricalDailyRecommendationsResponse>(
+    "/history/recommend/songs",
+    requestConfig({ requiresMusicSession: true }),
+  );
+}
+
+/** 获取指定日期的历史日推歌曲。 */
+export function getHistoricalDailyRecommendationDetail(date: string) {
+  return request.get<HistoricalDailyRecommendationDetailResponse>(
+    "/history/recommend/songs/detail",
+    requestConfig({ params: { date }, requiresMusicSession: true }),
+  );
+}
+
+/** 获取当前账号的每日风格推荐歌曲。 */
+export function getDailyCategorySongs() {
+  return request.get<DailyCategorySongsResponse>(
+    "/recommend/category/songs",
+    requestConfig({ requiresMusicSession: true, expectedBusinessCodes: [200] }),
+  );
+}
+
+/** 获取每日风格推荐的分类与标签配置。 */
+export function getDailyCategoryConfigs() {
+  return request.get<DailyCategoryConfigsResponse>(
+    "/recommend/category/configs",
+    requestConfig({ requiresMusicSession: true, expectedBusinessCodes: [200] }),
+  );
+}
+
+/** 保存同一分类下的风格标签。 */
+export function setDailyCategoryConfig({ category, tags }: DailyCategoryConfigUpdate) {
+  return request.get<DailyCategoryUpdateResponse>(
+    "/recommend/category/set",
+    requestConfig({
+      params: { category, tags: tags.join(",") },
+      requiresMusicSession: true,
+      expectedBusinessCodes: [200],
+    }),
+  );
+}

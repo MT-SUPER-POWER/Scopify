@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 
-import { getRadioDetail, getRadioPrograms } from "@/lib/api/radio";
+import { getRadioDetail, getRadioPrograms } from "@/lib/providers/netease/api/radio";
 import { musicQueryKeys } from "@/lib/query/queryKeys";
 import { formatDate } from "@/lib/utils";
 import { getMainColorFromImage } from "@/lib/web/imageColor";

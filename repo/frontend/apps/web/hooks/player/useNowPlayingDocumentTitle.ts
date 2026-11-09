@@ -9,13 +9,13 @@ import { usePlayerStore } from "@/store";
  */
 export function useNowPlayingDocumentTitle() {
   const nowPlaying = usePlayerStore((state) => {
-    const song = state.currentSongDetail;
-    if (!song?.name) return null;
-    const artists = song.ar
+    const song = state.currentTrack;
+    if (!song?.title) return null;
+    const artists = song.artists
       ?.map((artist) => artist.name)
       .filter(Boolean)
       .join(" / ");
-    return artists ? `${song.name} - ${artists}` : song.name;
+    return artists ? `${song.title} - ${artists}` : song.title;
   });
 
   useEffect(() => {

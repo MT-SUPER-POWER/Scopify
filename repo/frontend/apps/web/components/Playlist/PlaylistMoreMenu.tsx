@@ -10,13 +10,16 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { UpdatePlaylistDialog } from "@/components/Playlist/PlaylistForm";
+import { ProviderPlaylistMoreMenu } from "@/components/Playlist/ProviderPlaylistMoreMenu";
+import { useActiveProvider } from "@/hooks/provider/useActiveProvider";
 import { usePlaylistManagement } from "@/hooks/playlist/usePlaylistManagement";
 import { cn } from "@/lib/utils";
 import { useTranslation } from "react-i18next";
 
 import type { PlaylistMoreMenuProps } from "@/types/playlist/components";
 
-export function PlaylistMoreMenu({ playlistId, playlistInfo, isSticky }: PlaylistMoreMenuProps) {
+/** NetEase's playlist management: full edit with cover, description and tags. */
+function NeteasePlaylistMoreMenu({ playlistId, playlistInfo, isSticky }: PlaylistMoreMenuProps) {
   const { t } = useTranslation();
   const [editing, setEditing] = useState(false);
   const management = usePlaylistManagement(playlistId, {
@@ -76,5 +79,15 @@ export function PlaylistMoreMenu({ playlistId, playlistInfo, isSticky }: Playlis
         />
       )}
     </>
+  );
+}
+
+/** Platforms with ordered libraries edit playlists their own way; the others get the basics. */
+export function PlaylistMoreMenu(props: PlaylistMoreMenuProps) {
+  const provider = useActiveProvider();
+  return provider.capabilities.has("playlist.reorder") ? (
+    <NeteasePlaylistMoreMenu {...props} />
+  ) : (
+    <ProviderPlaylistMoreMenu {...props} />
   );
 }

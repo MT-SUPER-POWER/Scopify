@@ -41,7 +41,9 @@ export function usePlaylist(playlistIdOverride?: null | string) {
     isRecommend,
     playlistId,
   });
-  const rawDetail = data?.rawDetail ?? null;
+  const detail = data?.detail ?? null;
+  const trackCount = data?.tracks.length ?? 0;
+  const hasContent = data !== undefined;
 
   useEffect(() => {
     if (!error || reportedError.current === error) return;
@@ -50,7 +52,7 @@ export function usePlaylist(playlistIdOverride?: null | string) {
   }, [error, isDailyRecommend, t]);
 
   const playlistInfo = useMemo<PlaylistInfo | null>(() => {
-    if (!rawDetail) return null;
+    if (!hasContent) return null;
 
     if (isDailyRecommend) {
       return {
@@ -67,34 +69,47 @@ export function usePlaylist(playlistIdOverride?: null | string) {
         creatorID: null,
         creatorAvatar: "",
         likes: "-",
-        totalSongs: rawDetail.trackCount ?? 0,
+        totalSongs: trackCount,
       };
     }
+    if (!detail) return null;
 
+    const neteaseExtras = detail.netease;
     return {
+      ref: detail.ref,
       isSpecial: false,
-      specialType: rawDetail.specialType,
-      description: rawDetail.description ?? "",
+      specialType: neteaseExtras?.specialType,
+      description: detail.description,
       privacy:
-        rawDetail.privacy === 0
+        detail.visibility === "public"
           ? t("playlist.meta.public")
-          : rawDetail.privacy === 10
+          : detail.visibility === "private"
             ? t("playlist.meta.private")
             : t("playlist.meta.unknownPrivacy"),
-      tags: rawDetail.tags ?? [],
-      title: rawDetail.name ?? t("playlist.meta.unknown"),
-      cover: rawDetail.coverImgUrl ?? "https://picsum.photos/400/400?random=123",
-      createTime: rawDetail.createTime
-        ? new Date(rawDetail.createTime).toLocaleDateString()
+      tags: [...detail.tags],
+      title: detail.title || t("playlist.meta.unknown"),
+      cover: detail.coverUrl ?? "https://picsum.photos/400/400?random=123",
+      createTime: detail.createdAt
+        ? new Date(detail.createdAt).toLocaleDateString()
         : t("playlist.meta.unknownDate"),
-      creator: rawDetail.creator?.nickname ?? t("common.meta.unknownUser"),
-      creatorID: rawDetail.creator?.userId ?? null,
-      creatorAvatar: rawDetail.creator?.avatarUrl ?? "",
-      likes: rawDetail.subscribedCount ?? 0,
-      totalSongs: rawDetail.trackCount ?? 0,
-      subscribed: rawDetail.subscribed ?? false,
+      creator: detail.creator?.name || t("common.meta.unknownUser"),
+      // Profiles are NetEase pages; another platform's creator is shown without a link.
+      creatorID:
+        detail.creator?.account?.provider === "netease" ? detail.creator.account.accountId : null,
+      creatorAvatar: detail.creator?.avatarUrl ?? "",
+      likes: neteaseExtras?.subscribedCount ?? detail.playCount ?? 0,
+      likesLabel: neteaseExtras
+        ? undefined
+        : detail.playCount === null
+          ? ""
+          : t("playlist.meta.playCount", {
+              count: detail.playCount,
+              replace: { count: detail.playCount.toLocaleString() },
+            }),
+      totalSongs: detail.trackCount,
+      subscribed: neteaseExtras?.subscribed ?? false,
     };
-  }, [dailyDate, isDailyRecommend, rawDetail, t]);
+  }, [dailyDate, detail, hasContent, isDailyRecommend, t, trackCount]);
 
   const colorCacheKey = isDailyRecommend ? "daily" : playlistInfo?.cover;
   const cachedColor = colorCacheKey ? (colorCache.get(colorCacheKey) ?? null) : null;

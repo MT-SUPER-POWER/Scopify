@@ -1,4 +1,4 @@
-import { getUserAccount, getUserDetail } from "@/lib/api/user";
+import { getUserAccount, getUserDetail } from "@/lib/providers/netease/api/user";
 import { isRealUser } from "@/lib/web/auth";
 import {
   getMusicSessionCredential,

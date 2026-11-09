@@ -11,9 +11,11 @@ import {
   windowLog,
 } from "@main/utils/logger";
 import { createDesktopBackendController } from "@main/service/backend";
+import { createQqMusicBackendController } from "@main/service/backend/qqMusic";
 import { createDiscordPresenceController } from "@main/service/discordPresence";
 import { createDesktopRendererHost } from "@main/service/renderer";
 import { registerExternalLinkHandling } from "@main/service/externalLinks";
+import { registerImageSampling } from "@main/service/imageSampling";
 import { loadDesktopHostConfig } from "@main/store";
 import { restoreMusicSessionCookies } from "@main/utils/musicCookieStore";
 import { applyElectronProxy } from "@main/utils/proxy";
@@ -41,7 +43,8 @@ let notifications: ReturnType<typeof createDesktopNotifications> | null = null;
 
 const renderer = createDesktopRendererHost();
 const splash = createSplashWindowController();
-const backend = createDesktopBackendController({ log: backendLog }, desktopConfig.backend);
+const backend = createDesktopBackendController({ log: backendLog }, desktopConfig.backend.netease);
+const qqBackend = createQqMusicBackendController({ log: backendLog }, desktopConfig.backend.qq);
 backend.onStatusChanged((status) => {
   if (status.state === "running" && status.origin) {
     void restoreMusicSessionCookies(status.origin)
@@ -64,6 +67,7 @@ const services = createWindowServiceHost({
   backendController: backend,
   discordPresence: discord,
   getMainWindow: () => mainWindow,
+  qqBackendController: qqBackend,
   rendererBaseUrl: renderer.baseUrl,
 });
 const shutdown = createApplicationShutdown({
@@ -74,7 +78,12 @@ const shutdown = createApplicationShutdown({
     notifications?.dispose();
     splash.dismiss();
     disposeAppCloseWindow();
-    await Promise.allSettled([services.dispose(), discord.destroy(), backend.dispose()]);
+    await Promise.allSettled([
+      services.dispose(),
+      discord.destroy(),
+      backend.dispose(),
+      qqBackend.dispose(),
+    ]);
   },
   onError: (error) => coreLog.error("[app] shutdown cleanup failed", error),
   onStarted: () => {
@@ -96,13 +105,16 @@ async function createApplicationWindow() {
   splash.begin();
 
   void backend
-    .reconcile(loadDesktopHostConfig().backend)
+    .reconcile(loadDesktopHostConfig().backend.netease)
     .then((status) => {
       if (status.state === "error") {
         backendLog.error("[backend] startup failed; continuing into the app", status.error);
       }
     })
     .catch((error) => backendLog.error("[backend] startup reconciliation failed", error));
+  void qqBackend
+    .reconcile(loadDesktopHostConfig().backend.qq)
+    .catch((error) => backendLog.error("[qq-backend] startup reconciliation failed", error));
 
   try {
     mainWindow = createMainWindow({
@@ -165,6 +177,7 @@ async function prepareApplication() {
   await applyElectronProxy(desktopConfig).catch((error) => {
     proxyLog.error("[proxy] failed to apply startup proxy config", error);
   });
+  registerImageSampling();
   await createApplicationWindow().catch((error) => {
     windowLog.error("[window] failed to create the main window", error);
   });

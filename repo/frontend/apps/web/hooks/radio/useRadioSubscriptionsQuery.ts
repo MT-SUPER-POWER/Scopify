@@ -1,7 +1,7 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { getSubscribedRadios } from "@/lib/api/radio";
+import { getSubscribedRadios } from "@/lib/providers/netease/api/radio";
 import { useLoginStatus } from "@/hooks/auth/useLoginStatus";
 import { musicQueryKeys } from "@/lib/query/queryKeys";
 import { useUserStore } from "@/store";

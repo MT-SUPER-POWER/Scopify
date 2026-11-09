@@ -1,7 +1,8 @@
 import type { HTMLAttributes, ReactNode, RefObject } from "react";
 
+import type { PlayerTrack } from "@/types/player/model";
 import type { SongDetail } from "@/types/song/api";
-import type { CommentResourceKind } from "@/types/comment/api";
+import type { CommentResourceKind } from "@/types/comment/model";
 import type { PlaylistInfo } from "@/types/playlist/model";
 import type { PlaylistViewMode } from "@/types/playlist/lattice";
 import type { CloudTrackActions } from "@/types/library/components";
@@ -49,7 +50,7 @@ export interface PlaylistActionsProps {
   searchOpen: boolean;
   searchQuery: string;
   showShuffle?: boolean;
-  tracks: SongDetail[];
+  tracks: PlayerTrack[];
 }
 
 export type PlaylistSearchShortcutOptions = Pick<
@@ -75,16 +76,16 @@ export interface PlaylistContentProps {
   /** Present only on the cloud drive page; swaps the song menu for cloud file actions. */
   cloudActions?: CloudTrackActions;
   onPlayToggle?: () => void;
-  onTrackPlay?: (track: SongDetail) => void;
+  onTrackPlay?: (track: PlayerTrack) => void;
   playlistId: null | string;
   playlistInfo: PlaylistInfo | null;
   playSourceId?: null | string;
   readonly?: boolean;
   refetchTracks: () => void | Promise<unknown>;
-  setTracks?: (tracks: SongDetail[]) => void;
+  setTracks?: (tracks: PlayerTrack[]) => void;
   showShuffle?: boolean;
   themeColor: null | string;
-  tracks: SongDetail[];
+  tracks: PlayerTrack[];
 }
 
 export interface PlaylistContentSlotProps {
@@ -122,8 +123,8 @@ export interface TracklistTableProps {
   onDislikePersonalFm?: (track: SongDetail) => void;
   /** Present only on the cloud drive page; swaps the song menu for cloud file actions. */
   cloudActions?: CloudTrackActions;
-  onPlayTrack?: (track: SongDetail) => void;
-  onTracksChange?: (tracks: SongDetail[]) => void;
+  onPlayTrack?: (track: PlayerTrack) => void;
+  onTracksChange?: (tracks: PlayerTrack[]) => void;
   onSearchChange?: (v: string) => void;
   onSearchClose?: () => void;
   onSearchOpen?: () => void;
@@ -133,16 +134,19 @@ export interface TracklistTableProps {
   stickyHeaderClassName?: string;
   stickyHeaderTop?: number;
   playSourceId?: null | string;
-  tracks?: SongDetail[];
-  selection?: {
-    selectedIds: Set<number>;
-    selectedTracks: SongDetail[];
-    isSelected: (id: number) => boolean;
-    handleRowClick: (trackId: number, event: React.MouseEvent) => void;
-    handleRowContextMenu: (trackId: number) => void;
-    clearSelection: () => void;
-    selectAll: () => void;
-  };
+  tracks?: PlayerTrack[];
+  selection?: TrackSelection;
+}
+
+/** Row selection, keyed by the tracks' native IDs (one list never mixes platforms). */
+export interface TrackSelection {
+  selectedIds: Set<string>;
+  selectedTracks: PlayerTrack[];
+  isSelected: (id: string) => boolean;
+  handleRowClick: (trackId: string, event: React.MouseEvent) => void;
+  handleRowContextMenu: (trackId: string) => void;
+  clearSelection: () => void;
+  selectAll: () => void;
 }
 
 export interface TrackRowProps extends Omit<HTMLAttributes<HTMLTableRowElement>, "onPlay"> {
@@ -157,12 +161,12 @@ export interface TrackRowProps extends Omit<HTMLAttributes<HTMLTableRowElement>,
   isScrolling?: boolean;
   isSelected?: boolean;
   onLikeToggle?: (trackID: number | string) => void;
-  onPlay: (track: SongDetail) => void;
+  onPlay: (track: PlayerTrack) => void;
   onRowClick?: (event: React.MouseEvent) => void;
-  onRequestDelete: (playlistId: number | string | undefined, trackId: number) => void;
+  onRequestDelete: (playlistId: number | string | undefined, track: PlayerTrack) => void;
   playlistID: null | string;
   setIsPlaying: (v: boolean) => void;
-  track: SongDetail;
+  track: PlayerTrack;
 }
 
 export interface SortableTrackRowProps extends TrackRowProps {
@@ -174,7 +178,7 @@ export type TrackTitleCellProps = Pick<TrackRowProps, "track" | "isActive">;
 
 export interface PlaylistTrackDeleteRequest {
   playlistId: number | string | undefined;
-  trackId: number;
+  track: PlayerTrack;
 }
 
 export interface PlaylistTrackListProps extends TracklistTableProps {
@@ -182,13 +186,14 @@ export interface PlaylistTrackListProps extends TracklistTableProps {
 }
 
 export interface PlaylistTableSongRowProps extends SortableTrackRowProps {
+  /** The selected rows' NetEase songs, for the batch actions of the NetEase song menu. */
   selectedSongs: SongDetail[];
-  onSelectTrack: (id: number, event: React.MouseEvent) => void;
-  onContextTrack: (id: number) => void;
+  onSelectTrack: (id: string, event: React.MouseEvent) => void;
+  onContextTrack: (id: string) => void;
   canRemoveFromPlaylist: boolean;
   isDailyRecommend: boolean;
   readonly: boolean;
-  onDislikeDailyRecommend: (id: number | string) => Promise<void>;
+  onDislikeDailyRecommend: (id: number) => Promise<void>;
   onDislikePersonalFm?: (track: SongDetail) => void;
   /** Present only on the cloud drive page; swaps the song menu for cloud file actions. */
   cloudActions?: CloudTrackActions;

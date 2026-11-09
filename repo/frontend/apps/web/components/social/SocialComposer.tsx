@@ -5,7 +5,6 @@ import { useState } from "react";
 import { useSocialPublish } from "@/hooks/social/useSocialActions";
 import { useSocialAccount } from "@/hooks/social/useSocialQueries";
 import { useRequireLoginAction } from "@/hooks/auth/useRequireLoginAction";
-import { usePlayerStore } from "@/store/module/player";
 import { useUserStore } from "@/store/module/user";
 import { useTranslation } from "react-i18next";
 
@@ -29,12 +28,13 @@ import {
   socialTextareaClass,
   socialTextButtonClass,
 } from "./socialClasses";
+import { useCurrentNeteaseSong } from "@/hooks/player/useCurrentNeteaseSong";
 
 export function SocialComposer({ forwarded, onDone }: SocialComposerProps) {
   const { t } = useTranslation(),
     { uid } = useSocialAccount();
   const user = useUserStore((state) => state.user),
-    song = usePlayerStore((state) => state.currentSongDetail);
+    song = useCurrentNeteaseSong();
   const [text, setText] = useState(""),
     [resource, setResource] = useState<SocialResource>(),
     [picker, setPicker] = useState(false);

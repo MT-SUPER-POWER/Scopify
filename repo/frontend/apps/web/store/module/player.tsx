@@ -3,10 +3,9 @@ import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 import { isPersonalFmPlaybackSource } from "@/constants/personalFm";
 import { PLAYER_PERSISTENCE_STORAGE_KEY } from "@/constants/playbackPersistence";
-import { getSongLyric } from "@/lib/lyrics/cloudLyric";
+import { getTrackLyric } from "@/lib/lyrics/cloudLyric";
 import {
   getCachedLyric,
-  getCachedReplayGain,
   getImportedLyricOverride,
   getLyricMatchOverride,
   getLyricSourceSelection,
@@ -16,13 +15,21 @@ import { translate } from "@/lib/i18n";
 import { getPlaybackFailureAction } from "@/lib/player/playbackFailure";
 import { isPlaybackLoadCurrent } from "@/lib/player/playbackLoad";
 import { createPlaybackQueue, type PlaybackQueueSnapshot } from "@/lib/player/playbackQueue";
-import { webNeteasePlayableSourceResolver } from "@/lib/player/adapters/neteasePlayableSourceAdapter";
+import {
+  PLAYER_PERSISTENCE_VERSION,
+  restorePersistedQueueState,
+} from "@/lib/player/persistedPlayerState";
+import { isSamePlayerTrack, playerTrackKey } from "@/lib/player/trackIdentity";
+import { getMusicProvider } from "@/lib/providers";
+import { getNeteaseTrackId, toNeteaseSongDetail } from "@/lib/providers/netease/adapters/track";
 import { getVoiceNeteaseLyric } from "@/lib/lyrics/voiceLyric";
 import { enrichSongStatsById } from "@/lib/song/enrichSongStats";
 import { useI18nStore } from "@/store/module/i18n";
 import { useTimeStore } from "@/store/module/time";
-import { pruneNeteaseLyric, type NeteaseLyric, type SongDetail } from "@/types/song/api";
-import type { PlayerStore } from "@/types/player/model";
+import type { LyricSource } from "@/types/lyrics/model";
+import type { ImmerseType } from "@/types/song/api";
+import type { MusicPlaybackRequest } from "@scopify/music-domain/playback";
+import type { MusicQuality, PlayerStore, PlayerTrack } from "@/types/player/model";
 
 export type {
   MusicQuality,
@@ -42,9 +49,20 @@ function shuffleArray<T>(array: readonly T[]): T[] {
   return shuffled;
 }
 
-const playbackQueue = createPlaybackQueue<SongDetail>(shuffleArray);
+const playbackQueue = createPlaybackQueue<PlayerTrack>(shuffleArray, playerTrackKey);
 
-function createPlayerQueueSnapshot(state: PlayerStore): PlaybackQueueSnapshot<SongDetail> {
+/** The store keeps NetEase's quality names; the playback area uses neutral ones. */
+function toPlaybackRequest(
+  quality: MusicQuality,
+  immerseType: ImmerseType,
+): Omit<MusicPlaybackRequest, "signal"> {
+  return {
+    quality: quality === "jymaster" ? "master" : quality,
+    ...(quality === "sky" ? { variant: immerseType } : {}),
+  };
+}
+
+function createPlayerQueueSnapshot(state: PlayerStore): PlaybackQueueSnapshot<PlayerTrack> {
   return {
     historyIndex: state.historyIndex,
     historyStack: state.historyStack,
@@ -57,7 +75,7 @@ function createPlayerQueueSnapshot(state: PlayerStore): PlaybackQueueSnapshot<So
   };
 }
 
-function selectPlayerQueueState(snapshot: PlaybackQueueSnapshot<SongDetail>) {
+function selectPlayerQueueState(snapshot: PlaybackQueueSnapshot<PlayerTrack>) {
   return {
     historyIndex: snapshot.historyIndex,
     historyStack: snapshot.historyStack,
@@ -80,7 +98,7 @@ function selectPlayerQueueState(snapshot: PlaybackQueueSnapshot<SongDetail>) {
   >;
 }
 
-async function getStoredLyricSource(songId: number): Promise<NeteaseLyric | null> {
+async function getStoredLyricSource(songId: number): Promise<LyricSource | null> {
   const [source, importedLyric, matchedLyric] = await Promise.all([
     getLyricSourceSelection(songId),
     getImportedLyricOverride(songId),
@@ -91,11 +109,9 @@ async function getStoredLyricSource(songId: number): Promise<NeteaseLyric | null
   return matchedLyric?.lyric ?? null;
 }
 
-async function getVoiceLyricForPlayback(song: SongDetail): Promise<NeteaseLyric | null> {
-  if (song.voiceId === undefined) return null;
-
+async function getVoiceLyricForPlayback(voiceId: number): Promise<LyricSource | null> {
   try {
-    return await getVoiceNeteaseLyric(song.voiceId);
+    return await getVoiceNeteaseLyric(voiceId);
   } catch (error) {
     // A missing voice transcript must not make an otherwise playable voice fail.
     console.warn("获取声音文字稿失败，继续播放声音:", error);
@@ -103,10 +119,47 @@ async function getVoiceLyricForPlayback(song: SongDetail): Promise<NeteaseLyric 
   }
 }
 
+/**
+ * The lyric of a track about to play. NetEase songs honour a manual match or import and the
+ * lyric cache (`useCache`); voices read their transcript; other platforms ask the provider
+ * when it has lyrics. `shouldCache` tells whether the result is worth caching.
+ */
+async function loadTrackLyric(
+  track: PlayerTrack,
+  useCache: boolean,
+): Promise<{ lyric: LyricSource | null; shouldCache: boolean }> {
+  const neteaseId = getNeteaseTrackId(track);
+  if (neteaseId !== null) {
+    const voiceId = track.netease?.voiceId;
+    if (voiceId !== undefined) {
+      return { lyric: await getVoiceLyricForPlayback(voiceId), shouldCache: false };
+    }
+    const [storedLyric, cachedLyric] = await Promise.all([
+      getStoredLyricSource(neteaseId),
+      useCache ? getCachedLyric(neteaseId) : null,
+    ]);
+    if (storedLyric || cachedLyric) {
+      return { lyric: storedLyric ?? cachedLyric, shouldCache: false };
+    }
+    return { lyric: await getTrackLyric(track), shouldCache: useCache };
+  }
+
+  if (!getMusicProvider(track.ref.provider).capabilities.has("track.lyrics")) {
+    return { lyric: null, shouldCache: false };
+  }
+  try {
+    return { lyric: await getTrackLyric(track), shouldCache: false };
+  } catch (error) {
+    // Missing lyrics must not stop a playable track.
+    console.warn("获取歌词失败，继续播放:", error);
+    return { lyric: null, shouldCache: false };
+  }
+}
+
 export function selectPersistedPlayerState(state: PlayerStore) {
   return {
     volume: state.volume,
-    currentSongDetail: state.currentSongDetail,
+    currentTrack: state.currentTrack,
     repeatMode: state.repeatMode,
     isShuffle: state.isShuffle,
     originalQueue: state.originalQueue,
@@ -125,11 +178,19 @@ export function mergePersistedPlayerState(
   persistedState: unknown,
   currentState: PlayerStore,
 ): PlayerStore {
+  const persisted: Partial<PlayerStore> & { currentSongDetail?: unknown } = {
+    ...(persistedState as Partial<PlayerStore> | undefined),
+  };
+  // Builds before interface tracks stored the current song under this key.
+  delete persisted.currentSongDetail;
   return {
     ...currentState,
-    ...(persistedState as Partial<PlayerStore>),
+    ...persisted,
+    // Old builds stored NetEase songs; anything unreadable is dropped rather than played.
+    ...restorePersistedQueueState(persistedState),
     // Playback URLs are time-limited CDN capabilities. Never revive one
     // from an older app session, including payloads written by old builds.
+    currentReplayGain: null,
     currentSongUrl: null,
     isPlaying: false,
     playbackFailureCount: 0,
@@ -147,7 +208,8 @@ export const usePlayerStore = create<PlayerStore>()(
       },
       volume: 100,
       isPlaying: false,
-      currentSongDetail: null,
+      currentTrack: null,
+      currentReplayGain: null,
       currentSongUrl: null,
       repeatMode: "off",
       replayGainMode: "off",
@@ -167,20 +229,20 @@ export const usePlayerStore = create<PlayerStore>()(
       sourceChangeMode: "new-track",
       setMusicQuality: (quality) => set({ musicQuality: quality }),
       changeMusicQuality: async (quality, nextImmerseType = get().immerseType) => {
-        const { currentSongDetail, musicQuality, immerseType } = get();
+        const { currentTrack, musicQuality, immerseType } = get();
         if (musicQuality === quality && immerseType === nextImmerseType) return;
 
         set({ musicQuality: quality, immerseType: nextImmerseType });
-        if (!currentSongDetail) return;
+        if (!currentTrack) return;
 
-        const didSwitch = await get().playTrack(currentSongDetail, {
+        const didSwitch = await get().playTrack(currentTrack, {
           preservePlaybackSession: true,
         });
         if (
           !didSwitch &&
           get().musicQuality === quality &&
           get().immerseType === nextImmerseType &&
-          get().currentSongDetail?.id === currentSongDetail.id
+          isSamePlayerTrack(get().currentTrack, currentTrack)
         ) {
           set({ musicQuality, immerseType });
         }
@@ -189,7 +251,7 @@ export const usePlayerStore = create<PlayerStore>()(
         set({ volume: v });
       },
       setIsPlaying: (isPlaying) => {
-        const { currentSongDetail, currentSongUrl } = get();
+        const { currentTrack, currentSongUrl } = get();
         if (!isPlaying || currentSongUrl) {
           set({ isPlaying });
           return;
@@ -197,7 +259,7 @@ export const usePlayerStore = create<PlayerStore>()(
 
         // Several legacy controls still express "play" as setIsPlaying(true).
         // Route that intent through the URL-aware resume path after hydration.
-        if (currentSongDetail) void get().togglePlaying();
+        if (currentTrack) void get().togglePlaying();
       },
       setRepeatMode: (mode) => {
         const snapshot = createPlayerQueueSnapshot(get());
@@ -210,7 +272,7 @@ export const usePlayerStore = create<PlayerStore>()(
         const snapshot = createPlayerQueueSnapshot(state);
         const transition = playbackQueue.moveQueueItem(
           snapshot,
-          { currentTrack: state.currentSongDetail },
+          { currentTrack: state.currentTrack },
           fromIndex,
           toIndex,
         );
@@ -222,7 +284,7 @@ export const usePlayerStore = create<PlayerStore>()(
         const snapshot = createPlayerQueueSnapshot(state);
         const transition = playbackQueue.moveQueueItemToNext(
           snapshot,
-          { currentTrack: state.currentSongDetail },
+          { currentTrack: state.currentTrack },
           index,
         );
         if (transition.snapshot === snapshot) return;
@@ -233,7 +295,7 @@ export const usePlayerStore = create<PlayerStore>()(
         const snapshot = createPlayerQueueSnapshot(state);
         const transition = playbackQueue.removeQueueItem(
           snapshot,
-          { currentTrack: state.currentSongDetail },
+          { currentTrack: state.currentTrack },
           index,
         );
         if (transition.snapshot === snapshot) return;
@@ -241,7 +303,8 @@ export const usePlayerStore = create<PlayerStore>()(
         if (transition.effect.type === "clear") {
           set({
             ...selectPlayerQueueState(transition.snapshot),
-            currentSongDetail: null,
+            currentTrack: null,
+            currentReplayGain: null,
             currentSongUrl: null,
             isPlaying: false,
             lyric: null,
@@ -258,7 +321,7 @@ export const usePlayerStore = create<PlayerStore>()(
         const transition = playbackQueue.setQueue(snapshot, songs, startIndex, playlistId);
         set(selectPlayerQueueState(transition.snapshot));
       },
-      setLyric: (lyric) => set({ lyric: pruneNeteaseLyric(lyric) }),
+      setLyric: (lyric) => set({ lyric }),
       setShuffle: (v) => {
         const snapshot = createPlayerQueueSnapshot(get());
         const transition = playbackQueue.setShuffle(snapshot, v);
@@ -274,14 +337,14 @@ export const usePlayerStore = create<PlayerStore>()(
       },
 
       togglePlaying: async () => {
-        const { currentSongDetail, currentSongUrl, isPlaying } = get();
+        const { currentTrack, currentSongUrl, isPlaying } = get();
         if (currentSongUrl) {
           set({ isPlaying: !isPlaying });
           return;
         }
-        if (!currentSongDetail || isPlaying) return;
+        if (!currentTrack || isPlaying) return;
 
-        const didLoad = await get().playTrack(currentSongDetail, {
+        const didLoad = await get().playTrack(currentTrack, {
           preservePlaybackSession: true,
         });
         if (didLoad) set({ isPlaying: true });
@@ -294,19 +357,14 @@ export const usePlayerStore = create<PlayerStore>()(
       },
 
       fetchCurrentLyric: async () => {
-        const { currentSongDetail, lyric, playbackLoadRevision } = get();
-        if (!currentSongDetail || lyric) return;
-        const songId = currentSongDetail.id;
-        const loadIdentity = { revision: playbackLoadRevision, trackId: songId };
+        const { currentTrack, lyric, playbackLoadRevision } = get();
+        if (!currentTrack || lyric) return;
+        const loadIdentity = {
+          revision: playbackLoadRevision,
+          trackKey: playerTrackKey(currentTrack),
+        };
         try {
-          const storedLyric =
-            currentSongDetail.voiceId === undefined ? await getStoredLyricSource(songId) : null;
-          const lyricData =
-            currentSongDetail.voiceId === undefined
-              ? storedLyric
-                ? storedLyric
-                : await getSongLyric(currentSongDetail)
-              : await getVoiceLyricForPlayback(currentSongDetail);
+          const { lyric: lyricData } = await loadTrackLyric(currentTrack, false);
           if (!isPlaybackLoadCurrent(get(), loadIdentity)) return;
           set({ lyric: lyricData });
         } catch (e) {
@@ -353,13 +411,14 @@ export const usePlayerStore = create<PlayerStore>()(
       },
 
       refreshCurrentTrackUrl: async () => {
-        const { currentSongDetail, musicQuality, immerseType } = get();
-        if (!currentSongDetail) return { status: "superseded" };
-        const songId = currentSongDetail.id;
+        const { currentTrack, musicQuality, immerseType } = get();
+        if (!currentTrack) return { status: "superseded" };
+        const trackKey = playerTrackKey(currentTrack);
 
         console.info("[player] Refreshing playback URL", {
           musicQuality,
-          songId: currentSongDetail.id,
+          provider: currentTrack.ref.provider,
+          trackId: currentTrack.ref.id,
         });
         set({
           currentSongUrl: null,
@@ -367,9 +426,12 @@ export const usePlayerStore = create<PlayerStore>()(
           sourceChangeMode: "preserve-position",
         });
         const refreshRevision = get().playbackLoadRevision;
-        const refreshIdentity = { revision: refreshRevision, trackId: songId };
+        const refreshIdentity = { revision: refreshRevision, trackKey };
         try {
-          await webNeteasePlayableSourceResolver.invalidate(songId, musicQuality, immerseType);
+          await getMusicProvider(currentTrack.ref.provider).invalidatePlayableSource(
+            currentTrack.ref,
+            toPlaybackRequest(musicQuality, immerseType),
+          );
         } catch (error) {
           if (!isPlaybackLoadCurrent(get(), refreshIdentity)) return { status: "superseded" };
           console.error("清理过期播放地址失败", error);
@@ -383,13 +445,13 @@ export const usePlayerStore = create<PlayerStore>()(
           return { status: "superseded" };
         }
 
-        const refreshPromise = get().playTrack(currentSongDetail, {
+        const refreshPromise = get().playTrack(currentTrack, {
           preservePlaybackSession: true,
           resetFailureCount: false,
         });
         const loadIdentity = {
           revision: get().playbackLoadRevision,
-          trackId: songId,
+          trackKey,
         };
         const refreshed = await refreshPromise;
         if (
@@ -410,8 +472,9 @@ export const usePlayerStore = create<PlayerStore>()(
           useTimeStore.getState().setBufferedTime(0);
         }
         set({
-          currentSongDetail: song,
+          currentTrack: song,
           currentSongUrl: shouldPreservePlaybackSession ? get().currentSongUrl : null,
+          ...(!shouldPreservePlaybackSession ? { currentReplayGain: null } : {}),
           isPlaying: shouldPreservePlaybackSession ? get().isPlaying : false,
           playbackLoadRevision: get().playbackLoadRevision + 1,
           sourceChangeMode: shouldPreservePlaybackSession ? "preserve-position" : "new-track",
@@ -424,68 +487,44 @@ export const usePlayerStore = create<PlayerStore>()(
           ...(shouldResetFailureCount ? { playbackFailureCount: 0 } : {}),
         });
         const requestLoadRevision = get().playbackLoadRevision;
-        const loadIdentity = { revision: requestLoadRevision, trackId: song.id };
+        const loadIdentity = { revision: requestLoadRevision, trackKey: playerTrackKey(song) };
         const isCurrentPlaybackLoad = () => isPlaybackLoadCurrent(get(), loadIdentity);
+        // Lyrics and stats still come from NetEase; tracks from other platforms skip them.
+        const neteaseSong = toNeteaseSongDetail(song);
+        const neteaseId = getNeteaseTrackId(song);
 
-        void enrichSongStatsById(
-          song.id,
-          {
-            likedCount: song.likedCount,
-            commentCount: song.commentCount,
-          },
-          song.voiceId,
-        );
+        if (neteaseSong) {
+          void enrichSongStatsById(
+            neteaseSong.id,
+            {
+              likedCount: neteaseSong.likedCount,
+              commentCount: neteaseSong.commentCount,
+            },
+            neteaseSong.voiceId,
+          );
+        }
 
         try {
           const { musicQuality, immerseType } = get();
-          const lyricResult = (async () => {
-            if (song.voiceId !== undefined) {
-              return {
-                lyric: await getVoiceLyricForPlayback(song),
-                shouldCache: false,
-              };
-            }
-
-            const [storedLyric, cachedLyric] = await Promise.all([
-              getStoredLyricSource(song.id),
-              getCachedLyric(song.id),
-            ]);
-            if (storedLyric || cachedLyric) {
-              return { lyric: storedLyric ?? cachedLyric, shouldCache: false };
-            }
-
-            return {
-              lyric: await getSongLyric(song),
-              shouldCache: true,
-            };
-          })();
+          const lyricResult = loadTrackLyric(song, true);
           const [sourceResolution, resolvedLyric] = await Promise.all([
-            webNeteasePlayableSourceResolver.resolve(song.id, musicQuality, undefined, immerseType),
+            getMusicProvider(song.ref.provider).resolvePlayableSource(
+              song.ref,
+              toPlaybackRequest(musicQuality, immerseType),
+            ),
             lyricResult,
           ]);
           if (!isCurrentPlaybackLoad()) return false;
-          // The resolver persists ReplayGain together with a newly resolved URL.
-          // Read it afterwards so first playback and cache hits share one path.
-          const cachedReplayGain = await getCachedReplayGain(song.id);
-          if (!isCurrentPlaybackLoad()) return false;
-          const cachedSong =
-            cachedReplayGain !== null && Number.isFinite(cachedReplayGain)
-              ? { ...song, replayGain: cachedReplayGain, replayGainTrackGain: cachedReplayGain }
-              : song;
-          if (sourceResolution.status !== "resolved" || sourceResolution.source.kind !== "remote") {
-            throw new Error(
-              sourceResolution.status === "resolved"
-                ? "Playback source is not supported by the HTML audio adapter"
-                : sourceResolution.reason,
-            );
+          if (sourceResolution.status !== "resolved") {
+            throw new Error(sourceResolution.reason);
           }
-          if (resolvedLyric.lyric && resolvedLyric.shouldCache) {
-            await setCachedLyric(song.id, resolvedLyric.lyric);
+          if (neteaseId !== null && resolvedLyric.lyric && resolvedLyric.shouldCache) {
+            await setCachedLyric(neteaseId, resolvedLyric.lyric);
           }
           if (!isCurrentPlaybackLoad()) return false;
-          useTimeStore.getState().setTotalTime(song.dt ?? 0);
+          useTimeStore.getState().setTotalTime(song.durationMs);
           set({
-            currentSongDetail: cachedSong,
+            currentReplayGain: sourceResolution.source.replayGain,
             currentSongUrl: sourceResolution.source.url,
             ...(shouldPreservePlaybackSession ? {} : { isPlaying: true }),
             lyric: resolvedLyric.lyric ?? null,
@@ -518,7 +557,7 @@ export const usePlayerStore = create<PlayerStore>()(
         const snapshot = createPlayerQueueSnapshot(state);
         const transition = playbackQueue.playNext(
           snapshot,
-          { currentTrack: state.currentSongDetail },
+          { currentTrack: state.currentTrack },
           source,
         );
         if (transition.effect.type === "none") return;
@@ -546,7 +585,7 @@ export const usePlayerStore = create<PlayerStore>()(
         const state = get();
         const snapshot = createPlayerQueueSnapshot(state);
         const transition = playbackQueue.reshuffleQueue(snapshot, {
-          currentTrack: state.currentSongDetail,
+          currentTrack: state.currentTrack,
         });
         if (transition.snapshot === snapshot) return;
         set(selectPlayerQueueState(transition.snapshot));
@@ -558,7 +597,8 @@ export const usePlayerStore = create<PlayerStore>()(
         set({
           volume: 100,
           isPlaying: false,
-          currentSongDetail: null,
+          currentTrack: null,
+          currentReplayGain: null,
           currentSongUrl: null,
           repeatMode: "off",
           isShuffle: false,
@@ -577,6 +617,9 @@ export const usePlayerStore = create<PlayerStore>()(
     }),
     {
       name: PLAYER_PERSISTENCE_STORAGE_KEY,
+      version: PLAYER_PERSISTENCE_VERSION,
+      // `merge` reads both stored shapes, so older versions need no separate step.
+      migrate: (persistedState) => persistedState as PlayerStore,
       storage: createJSONStorage(() => localStorage),
       partialize: selectPersistedPlayerState,
       merge: mergePersistedPlayerState,

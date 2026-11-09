@@ -72,6 +72,40 @@ export async function probeBackend(url: string, timeout = 10000): Promise<Backen
 }
 
 /**
+ * QQ Music API health probe. `/login/channels` needs no session and replies `{ code: 200 }`;
+ * the API has no version endpoint, so `version` is always null.
+ */
+export async function probeQqBackend(url: string, timeout = 10000): Promise<BackendPingResult> {
+  const pingUrl = url.endsWith("/") ? `${url}login/channels` : `${url}/login/channels`;
+  const startedAt = Date.now();
+
+  try {
+    const response = await axios.get<unknown>(pingUrl, { timeout, validateStatus: () => true });
+    const latencyMs = resolveLatency(startedAt);
+    if (response.status < 200 || response.status >= 300) {
+      return { latencyMs, reachable: false, reason: "server", status: response.status, url };
+    }
+    if (!isRecord(response.data) || response.data.code !== 200) {
+      return {
+        latencyMs,
+        reachable: false,
+        reason: "invalid-response",
+        status: response.status,
+        url,
+      };
+    }
+    return { latencyMs, reachable: true, url, version: null };
+  } catch (error: unknown) {
+    return {
+      latencyMs: resolveLatency(startedAt),
+      reachable: false,
+      reason: resolveFailureReason(error),
+      url,
+    };
+  }
+}
+
+/**
  * 等待后端服务就绪
  * @param url 后端地址
  * @param timeout 最大等待时间 (ms)

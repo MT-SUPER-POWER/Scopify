@@ -21,18 +21,10 @@ export default function ArtistPage() {
   const artistId = useSearchParams().get("id");
   const router = useSmartRouter();
 
-  const {
-    artist,
-    popularTracks,
-    hotTracksQueue,
-    discography,
-    isError,
-    isLoading,
-    isRefreshing,
-    refetch,
-  } = useArtistData(artistId);
-  const { isPlayingArtist, loadingAlbumId, handlePlayArtist, handlePlayAlbum } =
-    useArtistPlay(hotTracksQueue);
+  const { artist, popularTracks, discography, isError, isLoading, isRefreshing, refetch } =
+    useArtistData(artistId);
+  const { isPlayingArtist, loadingAlbumKey, handlePlayArtist, handlePlayAlbum } =
+    useArtistPlay(popularTracks);
 
   if (!artistId) return <ArtistInvalidId />;
 
@@ -61,12 +53,12 @@ export default function ArtistPage() {
         <ActionBar
           artistId={artist.id}
           isPlayingArtist={isPlayingArtist}
-          disabled={hotTracksQueue.length === 0}
+          disabled={popularTracks.length === 0}
           onPlayArtist={handlePlayArtist}
         />
 
         <div className="flex flex-col items-start gap-8 px-6 md:px-8 lg:flex-row lg:gap-12">
-          <PopularTracks tracks={popularTracks} queue={hotTracksQueue} artist={artist} />
+          <PopularTracks tracks={popularTracks} artist={artist} />
           <aside className="sticky top-4 w-full shrink-0 self-start lg:w-80">
             <AboutSection artist={artist} />
           </aside>
@@ -74,7 +66,7 @@ export default function ArtistPage() {
 
         <DiscographyGrid
           albums={discography}
-          loadingAlbumId={loadingAlbumId}
+          loadingAlbumKey={loadingAlbumKey}
           onPlayAlbum={handlePlayAlbum}
           onClickAlbum={(id) => router.push(`/album?id=${id}`)}
         />

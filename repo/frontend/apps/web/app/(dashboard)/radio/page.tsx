@@ -1,9 +1,11 @@
 "use client";
 
+import { useMemo } from "react";
 import { PlaylistContent } from "@/components/Playlist/PlaylistContent";
 import { CollectionToggleButton } from "@/components/shared/CollectionToggleButton";
 import { useRadioData } from "@/hooks/radio/useRadioData";
 import { useRadioFavorite } from "@/hooks/radio/useRadioFavorite";
+import { toNeteaseTrackList } from "@/lib/providers/netease/adapters/track";
 import { useTranslation } from "react-i18next";
 
 import { RadioTracklistTable } from "./_components/RadioTracklistTable";
@@ -13,6 +15,7 @@ export default function RadioPage() {
   const radio = useRadioData();
   const { isFavorited, isFavoriting, toggleFavorite } = useRadioFavorite(radio.isSubscribed);
   const radioId = radio.radioId;
+  const tracks = useMemo(() => toNeteaseTrackList(radio.tracks), [radio.tracks]);
 
   if (!radioId) return <div className="p-8 text-content">{t("playlist.page.invalidUrl")}</div>;
 
@@ -46,7 +49,7 @@ export default function RadioPage() {
       readonly
       refetchTracks={radio.refetchTracks}
       themeColor={radio.themeColor}
-      tracks={radio.tracks}
+      tracks={tracks}
     />
   );
 }

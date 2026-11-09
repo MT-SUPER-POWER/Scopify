@@ -9,9 +9,9 @@ import { request as httpRequest } from "node:http";
 import { createRequire } from "node:module";
 import type { Server } from "node:http";
 import type {
+  DesktopBackendConfig,
   DesktopBackendStatus,
   DesktopBackendState,
-  DesktopHostConfig,
 } from "@scopify/desktop-contract";
 
 const BACKEND_HOST = "127.0.0.1";
@@ -98,7 +98,7 @@ function probeBackend(port: number): Promise<BackendProbeResult> {
   });
 }
 
-function getFreePort(): Promise<number> {
+export function getFreePort(): Promise<number> {
   return new Promise((resolve, reject) => {
     const srv = createServer();
     srv.listen(0, BACKEND_HOST, () => {
@@ -192,7 +192,7 @@ async function startEmbeddedBackend(
 
 export function createDesktopBackendController(
   options: BackendControllerOptions,
-  initialConfig: DesktopHostConfig["backend"],
+  initialConfig: DesktopBackendConfig,
 ): DesktopBackendController {
   let status = createStatus(initialConfig.autoStart ? "stopped" : "disabled", initialConfig.port);
   let activeServer: Server | null = null;

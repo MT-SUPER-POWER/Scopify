@@ -2,10 +2,11 @@
 
 import { useQuery } from "@tanstack/react-query";
 
-import { getAlbumDetailData } from "@/lib/api/album";
+import { useActiveProvider } from "@/hooks/provider/useActiveProvider";
 import { musicQueryKeys } from "@/lib/query/queryKeys";
 
 export function useAlbumQuery(albumId: null | string) {
+  const provider = useActiveProvider();
   return useQuery({
     enabled: albumId !== null,
     meta: {
@@ -14,8 +15,8 @@ export function useAlbumQuery(albumId: null | string) {
     },
     queryFn: ({ signal }) => {
       if (!albumId) throw new Error("Album ID is required.");
-      return getAlbumDetailData(albumId, signal);
+      return provider.getAlbum({ provider: provider.provider, kind: "album", id: albumId }, signal);
     },
-    queryKey: musicQueryKeys.album.detail(albumId ?? ""),
+    queryKey: musicQueryKeys.album.content(provider.provider, albumId ?? ""),
   });
 }

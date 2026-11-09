@@ -1,7 +1,6 @@
-import { getAlbumDetail } from "@/lib/api/album";
-import { getArtistTopSongs } from "@/lib/api/artist";
-import { getPlaylistAllTracks } from "@/lib/api/playlist";
-import { getRadioPrograms } from "@/lib/api/radio";
+import type { MusicProviderClient } from "@scopify/music-domain/provider";
+import { adaptNeteaseTrack } from "@/lib/providers/netease/adapters/track";
+import { getRadioPrograms } from "@/lib/providers/netease/api/radio";
 import { toVoiceSongDetail } from "@/lib/search/voiceSong";
 import { pruneSongDetail, type SongDetail } from "@/types/song/api";
 import type {
@@ -12,10 +11,11 @@ import type { RadioProgram } from "@/types/radio/api";
 
 export async function loadCommandWorkspaceTrackList(
   item: CommandWorkspaceSearchItem,
+  provider: MusicProviderClient,
 ): Promise<CommandWorkspaceTrackList> {
   switch (item.kind) {
     case "song":
-      return { title: item.entity.name, tracks: [toCommandWorkspaceSongDetail(item.entity)] };
+      return { title: item.entity.title, tracks: [item.entity] };
     case "voice":
       if (!item.entity.mainSong || item.entity.isPlayable === false) {
         throw new Error("该节目当前没有可播放曲目。");
@@ -23,62 +23,40 @@ export async function loadCommandWorkspaceTrackList(
       return {
         description: item.entity.podcastName,
         title: item.entity.name,
-        tracks: [toVoiceSongDetail(item.entity.mainSong, item.entity.coverUrl, item.entity.id)],
+        tracks: [
+          adaptNeteaseTrack(
+            toVoiceSongDetail(item.entity.mainSong, item.entity.coverUrl, item.entity.id),
+          ),
+        ],
       };
     case "playlist": {
-      const response = await getPlaylistAllTracks({
-        id: item.entity.id,
+      const { tracks } = await provider.getPlaylistTracks(item.entity.ref, {
+        offset: 0,
+        limit: Math.max(item.entity.trackCount, 1),
       });
       return {
-        description: item.entity.creator?.nickname,
-        title: item.entity.name,
-        tracks: (response.data.songs ?? []).map(pruneSongDetail),
+        description: item.entity.creator?.name,
+        title: item.entity.title,
+        tracks,
       };
     }
     case "album": {
-      const response = await getAlbumDetail(item.entity.id);
-      const coverUrl = item.entity.picUrl ?? item.entity.blurPicUrl ?? "";
+      const { tracks } = await provider.getAlbum(item.entity.ref);
       return {
-        description: item.entity.artist.name,
-        title: item.entity.name,
-        tracks: (response.data.songs ?? []).map((song) =>
-          pruneSongDetail({
-            ...song,
-            al: {
-              id: song.al?.id ?? item.entity.id,
-              name: song.al?.name ?? item.entity.name,
-              picUrl: song.al?.picUrl ?? coverUrl,
-            },
-          }),
-        ),
+        description: item.entity.artists[0]?.name,
+        title: item.entity.title,
+        tracks,
       };
     }
-    case "artist": {
-      const response = await getArtistTopSongs(item.entity.id);
+    case "artist":
       return {
         description: "热门歌曲",
         title: item.entity.name,
-        tracks: (response.data.songs ?? []).map(pruneSongDetail),
+        tracks: await provider.getArtistTopTracks(item.entity.ref),
       };
-    }
     case "podcast":
       return loadPodcastTrackList(item.entity);
   }
-}
-
-export function toCommandWorkspaceSongDetail(
-  song: Extract<CommandWorkspaceSearchItem, { kind: "song" }>["entity"],
-): SongDetail {
-  const picUrl = song.album.picUrl ?? song.album.blurPicUrl ?? song.artists[0]?.picUrl ?? "";
-  return {
-    al: { id: song.album.id, name: song.album.name, picUrl },
-    ar: song.artists.map((artist) => ({ id: artist.id, name: artist.name })),
-    dt: song.duration,
-    fee: song.fee ?? 0,
-    id: song.id,
-    name: song.name,
-    publishTime: song.album.publishTime,
-  };
 }
 
 async function loadPodcastTrackList(
@@ -93,7 +71,7 @@ async function loadPodcastTrackList(
   return {
     description: podcast.hostName,
     title: podcast.name,
-    tracks: programs.map((program) => toPodcastProgramTrack(program, podcast)),
+    tracks: programs.map((program) => adaptNeteaseTrack(toPodcastProgramTrack(program, podcast))),
   };
 }
 

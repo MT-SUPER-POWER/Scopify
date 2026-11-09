@@ -1,17 +1,27 @@
 "use client";
 
 import Link from "next/link";
+import { useMemo } from "react";
 import { NowPlayingCard } from "./NowPlayingCard";
 import { CommentPreviewList } from "@/components/Comment/CommentPreviewList";
 import { useSongHotCommentsQuery } from "@/hooks/comment/useSongHotCommentsQuery";
 import { useTranslation } from "react-i18next";
 
-import type { NowPlayingSectionProps } from "@/types/player/nowPlayingComponents";
+import { getCommentHref } from "@/lib/comment/commentResource";
+import type { MusicProvider } from "@scopify/music-domain/identity";
 
-/** 「精彩评论」：网易云特色的热评预览，标题旁可进入完整评论页。 */
-export function NowPlayingHotComments({ song }: NowPlayingSectionProps) {
+/** 「精彩评论」：热评预览，标题旁可进入完整评论页。 */
+export function NowPlayingHotComments({
+  track,
+}: {
+  track: { provider: MusicProvider; id: string };
+}) {
   const { t } = useTranslation();
-  const query = useSongHotCommentsQuery(song.id);
+  const target = useMemo(
+    () => ({ provider: track.provider, kind: "track" as const, id: track.id }),
+    [track.id, track.provider],
+  );
+  const query = useSongHotCommentsQuery(target);
   const comments = query.data?.comments ?? [];
 
   if (comments.length === 0) return null;
@@ -22,7 +32,7 @@ export function NowPlayingHotComments({ song }: NowPlayingSectionProps) {
       className="pb-2"
       action={
         <Link
-          href={`/comment?songId=${song.id}`}
+          href={getCommentHref("song", track.id)}
           scroll={false}
           className="shrink-0 text-xs font-bold text-content-muted transition-colors hover:text-content hover:underline"
         >

@@ -4,8 +4,9 @@ import { ArrowUpRight, CornerDownLeft, LoaderCircle } from "lucide-react";
 import { CommandWorkspaceQueryInput } from "@/components/commandWorkspace/CommandWorkspaceQueryInput";
 import { CommandWorkspaceSearchResultList } from "@/components/commandWorkspace/CommandWorkspaceSearchResultList";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { COMMAND_WORKSPACE_SEARCH_CATEGORY_HINT } from "@/constants/commandWorkspace";
 import { useCommandWorkspaceSearch } from "@/hooks/commandWorkspace/useCommandWorkspaceSearch";
+import { useActiveProvider } from "@/hooks/provider/useActiveProvider";
+import { getAvailableCommandWorkspaceSearchFilters } from "@/lib/commandWorkspace/search";
 import type { CommandWorkspaceSearchProps } from "@/types/commandWorkspace/model";
 
 export function CommandWorkspaceSearch(props: CommandWorkspaceSearchProps) {
@@ -25,6 +26,10 @@ export function CommandWorkspaceSearch(props: CommandWorkspaceSearchProps) {
     appendItem,
     insertItemNext,
   } = useCommandWorkspaceSearch(props);
+  const { capabilities } = useActiveProvider();
+  const categoryHint = getAvailableCommandWorkspaceSearchFilters(capabilities)
+    .map((candidate) => candidate.label)
+    .join("、");
 
   return (
     <>
@@ -61,7 +66,7 @@ export function CommandWorkspaceSearch(props: CommandWorkspaceSearchProps) {
             selectItem(items[selectedIndex]);
           }
         }}
-        placeholder={`搜索${COMMAND_WORKSPACE_SEARCH_CATEGORY_HINT}`}
+        placeholder={`搜索${categoryHint}`}
         query={query}
       />
       <div className="mx-5 h-px bg-content/8" />
@@ -71,7 +76,7 @@ export function CommandWorkspaceSearch(props: CommandWorkspaceSearchProps) {
       >
         {!query.trim() ? (
           <p className="px-5 py-10 text-center text-sm text-content-muted">
-            输入关键词，或用 @ 筛选{COMMAND_WORKSPACE_SEARCH_CATEGORY_HINT}。
+            输入关键词，或用 @ 筛选{categoryHint}。
           </p>
         ) : opensSearchPage ? (
           <button

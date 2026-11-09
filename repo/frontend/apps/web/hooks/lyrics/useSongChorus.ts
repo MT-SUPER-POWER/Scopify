@@ -2,13 +2,14 @@
 
 import { useQuery } from "@tanstack/react-query";
 
-import { getSongChorus } from "@/lib/api/music";
+import { getSongChorus } from "@/lib/providers/netease/api/music";
 import { normalizeSongChorusRanges } from "@/lib/lyrics/chorusRanges";
 import { musicQueryKeys } from "@/lib/query/queryKeys";
 
 export function useSongChorus(songId: number | string | null) {
   return useQuery({
-    enabled: songId !== null,
+    // Only NetEase has chorus ranges, and only its song IDs are numeric.
+    enabled: songId !== null && /^\d+$/.test(String(songId)),
     meta: {
       persist: true,
       scope: "public",

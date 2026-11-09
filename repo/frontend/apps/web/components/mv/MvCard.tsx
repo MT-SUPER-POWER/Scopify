@@ -82,7 +82,9 @@ export function MvCard({ mv }: MvCardProps) {
             className="object-cover"
           />
         )}
-        {isPreviewing && <MvCardPreview mvid={mv.id} />}
+        {isPreviewing && (
+          <MvCardPreview mv={{ provider: "netease", kind: "mv", id: String(mv.id) }} />
+        )}
         {mv.playCount && !isPreviewing ? (
           <span className="absolute bottom-2 left-2 flex items-center gap-1 rounded bg-black/60 px-1.5 py-px text-xs leading-[18px] font-medium text-white tabular-nums">
             <Play className="size-3 fill-current" />

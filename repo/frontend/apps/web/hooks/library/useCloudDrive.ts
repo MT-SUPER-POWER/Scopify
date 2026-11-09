@@ -9,7 +9,7 @@ import {
   getUserCloud,
   matchCloudSong,
   uploadCloudSong,
-} from "@/lib/api/cloud";
+} from "@/lib/providers/netease/api/cloud";
 import { useLoginStatus } from "@/hooks/auth/useLoginStatus";
 import { musicQueryKeys } from "@/lib/query/queryKeys";
 import { useUserStore } from "@/store";

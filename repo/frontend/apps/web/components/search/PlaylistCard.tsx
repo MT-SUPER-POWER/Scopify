@@ -1,11 +1,11 @@
 "use client";
 
+import type { MusicPlaylist } from "@scopify/music-domain/playlist";
 import { Loader2, Pause, Play } from "lucide-react";
 import type React from "react";
 import { cn } from "@/lib/utils";
 import { useTranslation } from "react-i18next";
 
-import type { Playlist } from "@/types/search/model";
 import { getSizedImageUrl } from "@/lib/music/imageUrl";
 
 /** 格式化播放量 (例如 123456 -> 123.5K) */
@@ -24,7 +24,7 @@ export function PlaylistCard({
   onTogglePlay,
   onClick,
 }: {
-  playlist: Playlist;
+  playlist: MusicPlaylist;
   isPlaying: boolean;
   isLoading?: boolean;
   onTogglePlay: (e: React.MouseEvent) => void;
@@ -39,20 +39,20 @@ export function PlaylistCard({
     >
       <div className="relative mb-4 aspect-square w-full overflow-hidden rounded-md bg-surface-sunken shadow-panel">
         <img
-          src={getSizedImageUrl(playlist.coverImgUrl, 400)}
-          alt={playlist.name}
+          src={getSizedImageUrl(playlist.coverUrl, 400)}
+          alt={playlist.title}
           className="size-full object-cover"
         />
-        {playlist.playCount > 0 && (
+        {playlist.playCount !== null && playlist.playCount > 0 && (
           <div className="absolute top-1 right-2 rounded bg-overlay/75 px-2 py-0.5 text-[11px] font-bold text-overlay-foreground">
             ▷ {formatCount(playlist.playCount)}
           </div>
         )}
       </div>
-      <h4 className="mb-1 truncate text-base font-bold">{playlist.name}</h4>
+      <h4 className="mb-1 truncate text-base font-bold">{playlist.title}</h4>
       <p className="mt-1 truncate text-sm text-content-muted">
         {t("search.playlist.byCreator", {
-          name: playlist.creator?.nickname || t("search.playlist.neteaseUser"),
+          name: playlist.creator?.name || t("search.playlist.unknownCreator"),
         })}
       </p>
 

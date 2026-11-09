@@ -6,6 +6,7 @@ import type { HtmlAudioEngineAdapter } from "@/types/playback/adapters";
 import { usePlayerStore } from "@/store/module/player";
 import { useTimeStore } from "@/store/module/time";
 import type { PlaybackMediaSourceState } from "@/types/playback/media";
+import { playerTrackKey } from "@/lib/player/trackIdentity";
 
 export function shouldWarmPlaybackUrl(input: {
   hasSong: boolean;
@@ -22,7 +23,7 @@ export function usePlaybackMediaSource(
   const isMediaSourceLoadingRef = useRef(false);
   const mediaSourceLoadRevisionRef = useRef(-1);
   const hasWarmedPlaybackUrlRef = useRef(false);
-  const currentSongDetail = usePlayerStore((state) => state.currentSongDetail);
+  const currentTrack = usePlayerStore((state) => state.currentTrack);
   const currentSongUrl = usePlayerStore((state) => state.currentSongUrl);
   const playbackLoadRevision = usePlayerStore((state) => state.playbackLoadRevision);
   const refreshCurrentTrackUrl = usePlayerStore((state) => state.refreshCurrentTrackUrl);
@@ -44,11 +45,11 @@ export function usePlaybackMediaSource(
 
     if (!currentSongUrl) {
       capturePreservedPosition();
-      isMediaSourceLoadingRef.current = currentSongDetail !== null;
+      isMediaSourceLoadingRef.current = currentTrack !== null;
       mediaSourceLoadRevisionRef.current = -1;
       audioEngine.clearSource(playbackLoadRevision);
       useTimeStore.getState().setBufferedTime(0);
-      if (!currentSongDetail) {
+      if (!currentTrack) {
         useTimeStore.getState().setCurrentTime(0);
         useTimeStore.getState().setTotalTime(0);
       }
@@ -65,14 +66,14 @@ export function usePlaybackMediaSource(
       audioEngine.setRemoteSource(currentSongUrl, playbackLoadRevision);
     }
     void usePlayerStore.getState().fetchCurrentLyric();
-  }, [audioEngine, currentSongDetail, currentSongUrl, playbackLoadRevision, sourceChangeMode]);
+  }, [audioEngine, currentTrack, currentSongUrl, playbackLoadRevision, sourceChangeMode]);
 
   // Restored songs deliberately do not persist expiring CDN URLs. Warm one
   // while paused so the next user gesture can invoke play() against a source.
   useEffect(() => {
     if (
       !shouldWarmPlaybackUrl({
-        hasSong: currentSongDetail !== null,
+        hasSong: currentTrack !== null,
         hasSourceUrl: Boolean(currentSongUrl),
         hasWarmed: hasWarmedPlaybackUrlRef.current,
       })
@@ -82,7 +83,7 @@ export function usePlaybackMediaSource(
     hasWarmedPlaybackUrlRef.current = true;
 
     void refreshCurrentTrackUrl();
-  }, [currentSongDetail, currentSongUrl, refreshCurrentTrackUrl]);
+  }, [currentTrack, currentSongUrl, refreshCurrentTrackUrl]);
 
   const isActiveMediaSource = useCallback(() => {
     if (!audioEngine) return false;
@@ -97,8 +98,10 @@ export function usePlaybackMediaSource(
   const isPlaybackSessionCurrent = useCallback((sessionKey: string | null) => {
     if (!sessionKey) return false;
     const player = usePlayerStore.getState();
-    const songId = player.currentSongDetail?.id;
-    return songId !== undefined && `${player.playbackSessionRevision}:${songId}` === sessionKey;
+    if (!player.currentTrack) return false;
+    return (
+      `${player.playbackSessionRevision}:${playerTrackKey(player.currentTrack)}` === sessionKey
+    );
   }, []);
 
   return useMemo(

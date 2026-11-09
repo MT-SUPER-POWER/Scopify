@@ -4,16 +4,18 @@ import { ChevronLeft, ChevronRight, Loader2, Play } from "lucide-react";
 import Image from "next/image";
 import { memo, useCallback, useEffect, useMemo, useState } from "react";
 
+import type { MusicToplist } from "@scopify/music-domain/recommend";
+
 import { useToplistTracksQuery } from "@/hooks/home/useHomeQueries";
 import { useSmartRouter } from "@/hooks/core/useSmartRouter";
+import { getSizedImageUrl } from "@/lib/music/imageUrl";
 import { cn } from "@/lib/utils";
-import type { ToplistDetailItem } from "@/types/home/toplistApi";
 import type { ToplistCarouselItem } from "@/types/home/components";
 
 interface ToplistCardProps {
   isLoading?: boolean;
-  onPlay: (id: number | string, event: React.MouseEvent) => void;
-  toplist: ToplistDetailItem;
+  onPlay: (id: string, event: React.MouseEvent) => void;
+  toplist: MusicToplist;
 }
 
 export const ToplistCard = memo(function ToplistCard({
@@ -27,30 +29,32 @@ export const ToplistCard = memo(function ToplistCard({
   const [isHovered, setIsHovered] = useState(false);
 
   // Fetch top 3 tracks with album covers
-  const { data: topTracks } = useToplistTracksQuery(toplist.id);
+  const { data: topTracks } = useToplistTracksQuery(toplist.ref);
 
-  const chartBadgeCover = toplist.coverImgUrl ? `${toplist.coverImgUrl}?param=120y120` : "";
+  const chartBadgeCover = getSizedImageUrl(toplist.coverUrl, 120);
+  const chartCover = getSizedImageUrl(toplist.coverUrl, 600);
 
   // Prepare carousel slides (fallback to toplist.tracks while loading)
   const carouselItems = useMemo<ToplistCarouselItem[]>(() => {
     if (topTracks && topTracks.length > 0) {
       return topTracks.slice(0, 3).map((song, idx) => ({
-        artist: song.ar.map((a) => a.name).join(" / "),
-        coverUrl: song.al?.picUrl ? `${song.al.picUrl}?param=600y600` : toplist.coverImgUrl,
-        id: song.id,
-        name: song.name,
+        artist: song.artists.map((artist) => artist.name).join(" / "),
+        coverUrl: song.album?.coverUrl
+          ? getSizedImageUrl(song.album.coverUrl, 600)
+          : (toplist.coverUrl ?? ""),
+        id: song.ref.id,
+        name: song.title,
         rank: idx + 1,
-        song,
       }));
     }
 
-    const fallbackTracks = toplist.tracks?.slice(0, 3) ?? [];
+    const fallbackTracks = toplist.preview.slice(0, 3);
     if (fallbackTracks.length > 0) {
       return fallbackTracks.map((item, idx) => ({
-        artist: item.second,
-        coverUrl: toplist.coverImgUrl ? `${toplist.coverImgUrl}?param=600y600` : "",
-        id: idx + 1,
-        name: item.first,
+        artist: item.artist,
+        coverUrl: chartCover,
+        id: String(idx + 1),
+        name: item.title,
         rank: idx + 1,
       }));
     }
@@ -58,13 +62,13 @@ export const ToplistCard = memo(function ToplistCard({
     return [
       {
         artist: toplist.updateFrequency || "官方榜单",
-        coverUrl: toplist.coverImgUrl ? `${toplist.coverImgUrl}?param=600y600` : "",
-        id: toplist.id,
-        name: toplist.name,
+        coverUrl: chartCover,
+        id: toplist.ref.id,
+        name: toplist.title,
         rank: 1,
       },
     ];
-  }, [topTracks, toplist]);
+  }, [topTracks, toplist, chartCover]);
 
   const itemsCount = carouselItems.length;
 
@@ -95,7 +99,7 @@ export const ToplistCard = memo(function ToplistCard({
   );
 
   const handleCardClick = () => {
-    smartRouter.push(`/playlist/?id=${toplist.id}&isRecommend=true`);
+    smartRouter.push(`/playlist/?id=${encodeURIComponent(toplist.ref.id)}&isRecommend=true`);
   };
 
   const currentItem = carouselItems[activeIndex] ?? carouselItems[0];
@@ -146,7 +150,7 @@ export const ToplistCard = memo(function ToplistCard({
           {chartBadgeCover ? (
             <Image
               src={chartBadgeCover}
-              alt={toplist.name}
+              alt={toplist.title}
               width={48}
               height={48}
               className="size-full object-cover"
@@ -157,7 +161,7 @@ export const ToplistCard = memo(function ToplistCard({
         </div>
         <div className="min-w-0 flex-1">
           <h3 className="truncate text-base font-bold text-overlay-foreground drop-shadow-md sm:text-lg">
-            {toplist.name}
+            {toplist.title}
           </h3>
           <span className="mt-0.5 inline-block truncate text-xs font-medium text-overlay-foreground/80 drop-shadow-sm">
             {toplist.updateFrequency ? `榜单 · ${toplist.updateFrequency}` : "官方榜单"}
@@ -231,7 +235,7 @@ export const ToplistCard = memo(function ToplistCard({
         <button
           type="button"
           aria-label="Play Toplist"
-          onClick={(e) => onPlay(toplist.id, e)}
+          onClick={(e) => onPlay(toplist.ref.id, e)}
           disabled={isLoading}
           className={cn(
             "flex size-11 shrink-0 items-center justify-center rounded-full bg-overlay-foreground text-overlay shadow-2xl transition-all duration-200 sm:size-12",

@@ -1,7 +1,7 @@
 "use client";
 
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
-import { fetchGroup, fetchGroupNotes } from "@/lib/api/social";
+import { fetchGroup, fetchGroupNotes } from "@/lib/providers/netease/api/social";
 import { socialKey } from "@/lib/social/cache";
 import { useSocialAccount } from "./useSocialQueries";
 

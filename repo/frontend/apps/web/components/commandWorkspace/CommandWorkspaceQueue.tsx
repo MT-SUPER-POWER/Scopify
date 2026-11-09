@@ -7,6 +7,7 @@ import { CommandWorkspaceQueueItem } from "@/components/commandWorkspace/Command
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { usePlaybackCommands } from "@/hooks/player/usePlaybackCommands";
 import { usePlaybackProjection } from "@/hooks/player/usePlaybackProjection";
+import { playerTrackKey } from "@/lib/player/trackIdentity";
 import { usePlayerStore } from "@/store";
 import type {
   CommandWorkspaceQueueDropTarget,
@@ -105,10 +106,10 @@ export function CommandWorkspaceQueue({ onClose }: CommandWorkspaceQueueProps) {
         className="min-h-[min(58vh,36rem)] space-y-0.5 px-2.5 py-2"
       >
         {queue.map((track, index) => {
-          const isCurrent = index === queueIndex || String(playback.track?.id) === String(track.id);
+          const isCurrent = index === queueIndex;
           return (
             <CommandWorkspaceQueueItem
-              key={`${track.voiceId ?? "song"}-${track.id}-${index}`}
+              key={`${playerTrackKey(track)}-${index}`}
               index={index}
               isCurrent={isCurrent}
               isCurrentPlaying={isCurrent && playback.isPlaying}

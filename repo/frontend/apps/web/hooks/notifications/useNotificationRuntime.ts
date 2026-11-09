@@ -3,12 +3,16 @@
 import { useEffect } from "react";
 import { runtime } from "@/lib/runtime";
 import { useAuth } from "@/hooks/auth/useAuth";
+import { useProviderCapability } from "@/hooks/provider/useActiveProvider";
 import { useI18nStore } from "@/store/module/i18n";
 import { useNotificationStore } from "@/store/module/notifications";
 
 /** Mounted once in the dashboard; the popover itself never owns a scheduler. */
 export function useNotificationRuntime() {
-  const { accountId } = useAuth();
+  const auth = useAuth();
+  // Notifications are a NetEase account feature: a platform without them polls nothing.
+  const hasMessages = useProviderCapability("messages");
+  const accountId = hasMessages ? auth.accountId : null;
   const locale = useI18nStore((state) => state.locale);
   useEffect(() => {
     let disposed = false;

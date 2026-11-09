@@ -1,18 +1,20 @@
 "use client";
 
-import { SongQualityBadge } from "@/components/shared/SongQualityBadge";
 import { SongTitleWithAlia } from "@/components/shared/SongTitleWithAlia";
-import { SongMvBadge } from "@/components/shared/SongMvBadge";
-import { SongVipBadge } from "@/components/shared/SongVipBadge";
+import { TrackMvBadge, TrackQualityBadge, TrackVipBadge } from "@/components/shared/TrackBadges";
 import { TableCell } from "@/components/ui/table";
 import { CLOUD_SONG_FALLBACK_COVER } from "@/constants/cloud";
 import { useSmartRouter } from "@/hooks/core/useSmartRouter";
+import { useProviderCapability } from "@/hooks/provider/useActiveProvider";
 import { cn } from "@/lib/utils";
 import type { TrackTitleCellProps } from "@/types/playlist/components";
 import { getSizedImageUrl } from "@/lib/music/imageUrl";
 
 export function TrackTitleCell({ track, isActive }: TrackTitleCellProps) {
   const smartRouter = useSmartRouter();
+  const canOpenArtist = useProviderCapability("artist.read");
+  // Aliases, badges and the quality tier are NetEase song fields.
+  const extras = track.netease;
   return (
     <TableCell className="max-w-0 min-w-0">
       <div className="flex min-w-0 items-center gap-3">
@@ -21,8 +23,8 @@ export function TrackTitleCell({ track, isActive }: TrackTitleCellProps) {
             draggable={false}
             width={40}
             height={40}
-            src={getSizedImageUrl(track.al.picUrl, 120) || CLOUD_SONG_FALLBACK_COVER}
-            alt={track.al.name}
+            src={getSizedImageUrl(track.album?.coverUrl ?? "", 120) || CLOUD_SONG_FALLBACK_COVER}
+            alt={track.album?.title ?? ""}
             decoding="async"
             loading="lazy"
             onError={(event) => {
@@ -35,27 +37,28 @@ export function TrackTitleCell({ track, isActive }: TrackTitleCellProps) {
         </div>
         <div className="flex min-w-0 flex-1 flex-col truncate">
           <SongTitleWithAlia
-            name={track.name}
-            alia={track.alia}
+            name={track.title}
+            alia={extras?.alia}
             className={cn(
               "w-full cursor-pointer text-base font-normal group-hover:underline",
               isActive ? "text-brand" : "text-content",
             )}
           />
           <div className="mt-0.5 flex min-w-0 items-center gap-0.5">
-            <SongQualityBadge qualityLevel={track.privilege?.maxBrLevel} />
-            <SongVipBadge fee={track.fee} />
-            <SongMvBadge mvId={track.mv} />
+            <TrackQualityBadge track={track} />
+            <TrackVipBadge track={track} />
+            <TrackMvBadge track={track} />
             <span className="min-w-0 cursor-pointer truncate text-sm font-normal text-content-muted">
-              {track.ar.slice(0, 2).map((artist, index, artists) => (
+              {track.artists.slice(0, 2).map((artist, index, artists) => (
                 <span
-                  key={`${artist.id}-${index}`}
+                  key={`${artist.ref.id}-${index}`}
                   onClick={(event) => {
+                    if (!canOpenArtist) return;
                     event.stopPropagation();
-                    smartRouter.push(`/artist?id=${artist.id}`);
+                    smartRouter.push(`/artist?id=${artist.ref.id}`);
                   }}
-                  title={`/artist?id=${artist.id}`}
-                  className="hover:text-content hover:underline"
+                  title={canOpenArtist ? `/artist?id=${artist.ref.id}` : artist.name}
+                  className={cn(canOpenArtist && "hover:text-content hover:underline")}
                   style={{ display: "inline" }}
                 >
                   {artist.name}

@@ -5,6 +5,7 @@ import { GripVertical, Music, Pause, Play } from "lucide-react";
 import { CommandWorkspaceQueueItemMenu } from "@/components/commandWorkspace/CommandWorkspaceQueueItemMenu";
 import { CommandWorkspaceQueueItemMetadata } from "@/components/commandWorkspace/CommandWorkspaceQueueItemMetadata";
 import { PlayingAnimation } from "@/components/shared/PlayingAnimation";
+import { getSizedImageUrl } from "@/lib/music/imageUrl";
 import { cn, formatDuration } from "@/lib/utils";
 import type { CommandWorkspaceQueueItemProps } from "@/types/commandWorkspace/model";
 
@@ -25,7 +26,7 @@ export function CommandWorkspaceQueueItem({
   onRemove,
   track,
 }: CommandWorkspaceQueueItemProps) {
-  const coverUrl = track.al?.picUrl ? `${track.al.picUrl}?param=80y80` : null;
+  const coverUrl = track.album?.coverUrl ? getSizedImageUrl(track.album.coverUrl, 80) : null;
 
   return (
     <div
@@ -66,10 +67,10 @@ export function CommandWorkspaceQueueItem({
         type="button"
         onClick={() => onPlay(index)}
         className="relative size-10 shrink-0 overflow-hidden rounded-md bg-content/8 focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-brand"
-        title={isCurrent ? (isCurrentPlaying ? "暂停" : "继续播放") : `播放 ${track.name}`}
+        title={isCurrent ? (isCurrentPlaying ? "暂停" : "继续播放") : `播放 ${track.title}`}
       >
         {coverUrl ? (
-          <img src={coverUrl} alt={track.name} loading="lazy" className="size-full object-cover" />
+          <img src={coverUrl} alt={track.title} loading="lazy" className="size-full object-cover" />
         ) : (
           <div className="flex size-full items-center justify-center bg-content/5 text-content-muted">
             <Music className="size-4" />
@@ -94,7 +95,9 @@ export function CommandWorkspaceQueueItem({
       />
 
       <div className="flex shrink-0 items-center gap-1.5">
-        <span className="text-xs text-content-muted tabular-nums">{formatDuration(track.dt)}</span>
+        <span className="text-xs text-content-muted tabular-nums">
+          {formatDuration(track.durationMs)}
+        </span>
         <CommandWorkspaceQueueItemMenu
           index={index}
           onNavigateAlbum={onNavigateAlbum}

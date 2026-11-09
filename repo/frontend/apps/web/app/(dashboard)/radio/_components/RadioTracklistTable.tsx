@@ -31,6 +31,7 @@ import type {
   RadioSortState,
   RadioTracklistTableProps,
 } from "@/types/radio/components";
+import { adaptNeteaseTrack } from "@/lib/providers/netease/adapters/track";
 
 export function RadioTracklistTable({
   programs,
@@ -148,7 +149,11 @@ export function RadioTracklistTable({
         return;
       }
 
-      void playFromSong(track, sortedTracks, playSourceId);
+      void playFromSong(
+        adaptNeteaseTrack(track),
+        sortedTracks.map(adaptNeteaseTrack),
+        playSourceId,
+      );
     },
     [commands, playback.track?.id, playFromSong, playSourceId, playlistId, sortedTracks],
   );

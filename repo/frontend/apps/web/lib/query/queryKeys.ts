@@ -1,18 +1,29 @@
-import type { CommentResourceKind } from "@/types/comment/api";
-import type { CommentSortType } from "@/types/comment/model";
+import type { MusicProvider } from "@scopify/music-domain/identity";
+import type { MusicSearchKind } from "@scopify/music-domain/search";
+
+import type { CommentResourceKind, CommentSortType } from "@/types/comment/model";
 import { mvQueryKeys } from "@/lib/query/mvQueryKeys";
+import { providerQueryKey } from "@/lib/query/providerQueryKey";
 
 export const musicQueryKeys = {
   mv: mvQueryKeys,
   album: {
-    detail: (albumId: string) => ["album", "detail", albumId] as const,
-    subscriptions: (userId: number) => ["album", "subscriptions", userId] as const,
+    /** An album with its tracks, however the platform serves them. */
+    content: (provider: MusicProvider, albumId: string) =>
+      providerQueryKey(provider, "album", "content", albumId),
   },
   artist: {
-    albums: (artistId: string) => ["artist", "albums", artistId] as const,
-    detail: (artistId: string) => ["artist", "detail", artistId] as const,
-    followCount: (artistId: string) => ["artist", "follow-count", artistId] as const,
-    topSongs: (artistId: string) => ["artist", "top-songs", artistId] as const,
+    albums: (provider: MusicProvider, artistId: string, limit: number) =>
+      providerQueryKey(provider, "artist", "albums", artistId, limit),
+    detail: (provider: MusicProvider, artistId: string) =>
+      providerQueryKey(provider, "artist", "detail", artistId),
+    /** Whether an account follows an artist; every artist and account of a platform. */
+    followStateAll: (provider: MusicProvider) =>
+      providerQueryKey(provider, "artist", "follow-state"),
+    followState: (provider: MusicProvider, accountId: string, artistId: string) =>
+      [...musicQueryKeys.artist.followStateAll(provider), accountId, artistId] as const,
+    topTracks: (provider: MusicProvider, artistId: string) =>
+      providerQueryKey(provider, "artist", "top-tracks", artistId),
     fansGroup: (artistId: string | number) => ["fans-group", "artist", String(artistId)] as const,
   },
   fansGroup: {
@@ -44,9 +55,27 @@ export const musicQueryKeys = {
     collection: (userId: number) => ["library", "collection", userId] as const,
     createdPodcasts: (userId: number) => ["library", "podcasts", "created", userId] as const,
     likedVoices: (userId: number) => ["library", "podcasts", "liked-voices", userId] as const,
-    likedPlaylist: (userId: number) => ["library", "liked-playlist", userId] as const,
-    likedSongIds: (userId: number) => ["library", "liked-song-ids", userId] as const,
-    playlists: (userId: number) => ["library", "playlists", userId] as const,
+    /** Every account's saved albums of a platform. */
+    albumsAll: (provider: MusicProvider) => providerQueryKey(provider, "library", "albums"),
+    albums: (provider: MusicProvider, accountId: string) =>
+      [...musicQueryKeys.library.albumsAll(provider), accountId] as const,
+    /** The liked-tracks playlist of every account of a platform. */
+    likedPlaylistAll: (provider: MusicProvider) =>
+      providerQueryKey(provider, "library", "liked-playlist"),
+    likedPlaylist: (provider: MusicProvider, accountId: string) =>
+      [...musicQueryKeys.library.likedPlaylistAll(provider), accountId] as const,
+    /** Liked track IDs of every account of a platform. */
+    likedTrackIdsAll: (provider: MusicProvider) =>
+      providerQueryKey(provider, "library", "liked-track-ids"),
+    likedTrackIds: (provider: MusicProvider, accountId: string) =>
+      [...musicQueryKeys.library.likedTrackIdsAll(provider), accountId] as const,
+    /** Library playlists of every account of a platform. */
+    playlistsAll: (provider: MusicProvider) => providerQueryKey(provider, "library", "playlists"),
+    playlists: (provider: MusicProvider, accountId: string) =>
+      [...musicQueryKeys.library.playlistsAll(provider), "summary", accountId] as const,
+    /** NetEase's own playlist rows, which the sidebar's ordering and drop targets read. */
+    neteasePlaylists: (userId: number) =>
+      [...musicQueryKeys.library.playlistsAll("netease"), "detail", String(userId)] as const,
     recentSongs: (userId: number) => ["library", "recent-songs", userId] as const,
     recommendedPodcasts: (userId: number) =>
       ["library", "podcasts", "recommendations", userId] as const,
@@ -64,45 +93,85 @@ export const musicQueryKeys = {
     total: (userId: number) => ["listening-report", "total", userId] as const,
   },
   comment: {
-    count: (kind: CommentResourceKind | "unknown", resourceId: string) =>
-      ["comment", "count", kind, resourceId] as const,
-    hotPreview: (songId: number, limit: number, accountId: string) =>
-      ["comment", "hot-preview", songId, limit, accountId] as const,
-    header: (kind: CommentResourceKind, resourceId: string) =>
-      ["comment", "header", kind, resourceId] as const,
+    count: (provider: MusicProvider, kind: CommentResourceKind | "unknown", resourceId: string) =>
+      providerQueryKey(provider, "comment", "count", kind, resourceId),
+    hotPreview: (
+      provider: MusicProvider,
+      kind: CommentResourceKind,
+      resourceId: string,
+      limit: number,
+      accountId: string,
+    ) => providerQueryKey(provider, "comment", "hot-preview", kind, resourceId, limit, accountId),
+    header: (provider: MusicProvider, kind: CommentResourceKind, resourceId: string) =>
+      providerQueryKey(provider, "comment", "header", kind, resourceId),
     /** 一个资源下的全部评论数据（列表与各层楼的回复）共用的前缀；点赞、删除、发表据此批量更新。 */
-    thread: (accountId: string, kind: CommentResourceKind, resourceId: string) =>
-      ["comment", "thread", accountId, kind, resourceId] as const,
+    thread: (
+      provider: MusicProvider,
+      accountId: string,
+      kind: CommentResourceKind,
+      resourceId: string,
+    ) => providerQueryKey(provider, "comment", "thread", accountId, kind, resourceId),
     list: (
+      provider: MusicProvider,
       accountId: string,
       kind: CommentResourceKind,
       resourceId: string,
       sort: CommentSortType,
-    ) => [...musicQueryKeys.comment.thread(accountId, kind, resourceId), "list", sort] as const,
-    replies: (accountId: string, kind: CommentResourceKind, resourceId: string, rootId: number) =>
-      [...musicQueryKeys.comment.thread(accountId, kind, resourceId), "replies", rootId] as const,
+    ) =>
+      [
+        ...musicQueryKeys.comment.thread(provider, accountId, kind, resourceId),
+        "list",
+        sort,
+      ] as const,
+    replies: (
+      provider: MusicProvider,
+      accountId: string,
+      kind: CommentResourceKind,
+      resourceId: string,
+      rootId: string,
+    ) =>
+      [
+        ...musicQueryKeys.comment.thread(provider, accountId, kind, resourceId),
+        "replies",
+        rootId,
+      ] as const,
   },
   playlist: {
-    content: (playlistId: string, isRecommend: boolean) =>
-      ["playlist", "content", "playlist", playlistId, isRecommend] as const,
-    daily: (date: string) => ["playlist", "content", "daily", date] as const,
+    /** Every playlist and daily list of a platform. */
+    all: (provider: MusicProvider) => providerQueryKey(provider, "playlist", "content"),
+    /** One playlist however it was read; the prefix of `content`. */
+    contentOf: (provider: MusicProvider, playlistId: string) =>
+      providerQueryKey(provider, "playlist", "content", "playlist", playlistId),
+    content: (provider: MusicProvider, playlistId: string, isRecommend: boolean) =>
+      [...musicQueryKeys.playlist.contentOf(provider, playlistId), isRecommend] as const,
+    /** Daily recommendations of a platform; NetEase's unless another is named. */
+    allDaily: (provider: MusicProvider = "netease") =>
+      providerQueryKey(provider, "playlist", "content", "daily"),
+    daily: (date: string, provider: MusicProvider = "netease") =>
+      [...musicQueryKeys.playlist.allDaily(provider), date] as const,
   },
   radio: {
     content: (radioId: string) => ["radio", "content", radioId] as const,
     subscriptions: (userId: number) => ["radio", "subscriptions", userId] as const,
   },
   search: {
-    albums: (keyword: string, limit: number) => ["search", "albums", keyword, limit] as const,
-    artists: (keyword: string, limit: number) => ["search", "artists", keyword, limit] as const,
+    /** One page-by-page list of results of a kind, however the platform serves it. */
+    results: (provider: MusicProvider, kind: MusicSearchKind, keyword: string, limit: number) =>
+      providerQueryKey(provider, "search", "results", kind, keyword, limit),
+    /** The first results of every kind from one request, where the platform has one. */
+    overview: (provider: MusicProvider, keyword: string) =>
+      providerQueryKey(provider, "search", "overview", keyword),
+    hot: (provider: MusicProvider) => providerQueryKey(provider, "search", "hot"),
+    suggest: (provider: MusicProvider, keyword: string) =>
+      providerQueryKey(provider, "search", "suggest", keyword),
     /** 云盘匹配与歌词匹配共用：搜歌并转成匹配候选。 */
     matchCandidates: (keyword: string, limit: number) =>
       ["search", "match-candidates", keyword, limit] as const,
-    complex: (keyword: string) => ["search", "complex", keyword] as const,
     lyrics: (keyword: string, limit: number) => ["search", "lyrics", keyword, limit] as const,
+    /** 乐谱搜索读取网易云歌曲的原始结果。 */
+    sheetSongs: (keyword: string, limit: number) =>
+      ["search", "sheet-songs", keyword, limit] as const,
     mvs: (keyword: string, limit: number) => ["search", "mvs", keyword, limit] as const,
-    playlists: (keyword: string, limit: number) => ["search", "playlists", keyword, limit] as const,
-    songs: (keyword: string, limit: number) => ["search", "songs", keyword, limit] as const,
-    suggest: (keyword: string) => ["search", "suggest", keyword] as const,
     voices: (keyword: string, limit: number) => ["search", "voices", keyword, limit] as const,
     voiceLists: (keyword: string, limit: number) =>
       ["search", "voice-lists", keyword, limit] as const,

@@ -1,5 +1,5 @@
 import { runtime } from "@/lib/runtime";
-import { getBackendBaseUrl } from "@/lib/web/request";
+import { getNeteaseBaseUrl } from "@/lib/providers/netease/client";
 import type { FreshLoginDevice } from "@/types/devices/model";
 
 const ID_KEY = "scopify-device-id";
@@ -32,7 +32,7 @@ export async function resolveLocalDeviceName(): Promise<string> {
   }
   if (typeof window !== "undefined") {
     try {
-      const name = localStorage.getItem(NAME_KEY + getBackendBaseUrl());
+      const name = localStorage.getItem(NAME_KEY + getNeteaseBaseUrl());
       if (name) return name;
     } catch {
       /* Storage can be unavailable. */
@@ -49,7 +49,7 @@ export function getLocalDeviceName() {
   if (cachedDeviceName) return cachedDeviceName;
   if (typeof window !== "undefined") {
     try {
-      const name = localStorage.getItem(NAME_KEY + getBackendBaseUrl());
+      const name = localStorage.getItem(NAME_KEY + getNeteaseBaseUrl());
       if (name) return name;
     } catch {
       /* Storage can be unavailable. */
@@ -58,7 +58,7 @@ export function getLocalDeviceName() {
   return `${runtime.isDesktop ? "Scopify" : "Scopify Web"} · ${getClientPlatform().name}`;
 }
 
-export function rememberDeviceName(name: string, backend = getBackendBaseUrl()) {
+export function rememberDeviceName(name: string, backend = getNeteaseBaseUrl()) {
   try {
     localStorage.setItem(NAME_KEY + backend, name);
   } catch {
@@ -85,7 +85,7 @@ export async function createFreshLoginDevice(name?: string): Promise<FreshLoginD
   return {
     name: resolvedName,
     cookie: `deviceId=${id}; os=${getClientPlatform().os}`,
-    backend: getBackendBaseUrl(),
+    backend: getNeteaseBaseUrl(),
   };
 }
 

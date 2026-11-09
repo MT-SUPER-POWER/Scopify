@@ -7,7 +7,7 @@ import type { SubscribedPodcastGridProps } from "@/types/library/components";
 
 export function SubscribedPodcastGrid({ podcasts }: SubscribedPodcastGridProps) {
   const { handlePlayPodcast, loadingPodcastId } = usePodcastPlay();
-  const currentSongDetail = usePlayerStore((state) => state.currentSongDetail);
+  const currentTrack = usePlayerStore((state) => state.currentTrack);
   const isPlaying = usePlayerStore((state) => state.isPlaying);
   const playlistId = usePlayerStore((state) => state.playlistId);
   const setIsPlaying = usePlayerStore((state) => state.setIsPlaying);
@@ -16,7 +16,8 @@ export function SubscribedPodcastGrid({ podcasts }: SubscribedPodcastGridProps) 
     <div className="grid grid-cols-1 gap-x-4 gap-y-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
       {podcasts.map((podcast) => {
         const isActive =
-          currentSongDetail?.al?.id === podcast.id ||
+          (currentTrack?.ref.provider === "netease" &&
+            currentTrack.album?.ref.id === String(podcast.id)) ||
           String(playlistId) === `radio:${podcast.id}` ||
           String(playlistId) === String(podcast.id);
 

@@ -1,0 +1,138 @@
+import type {
+  SongUrlMatchResponse,
+  SongUrlMatchParams,
+  MusicQualityLevel,
+  SongMusicDetailResponse,
+  SongUrlV1Response,
+  CheckMusicResponse,
+  SongChorusResponse,
+  SongUrlOptions,
+} from "@/types/song/api";
+import type { NeteaseNewSongsDto } from "@/types/providers/netease/recommendApi";
+import request, { requestConfig } from "@/lib/providers/netease/client";
+
+export async function greySongUrlMatch(
+  id: number | string,
+  source?: string,
+  signal?: AbortSignal,
+): Promise<SongUrlMatchResponse> {
+  const params: SongUrlMatchParams = { id };
+  if (source) params.source = source;
+
+  const response = await request.get<SongUrlMatchResponse>("/song/url/match", {
+    params,
+    signal,
+  });
+  return response.data;
+}
+
+export async function getSongChorus(id: number | string, signal?: AbortSignal) {
+  return request.get<SongChorusResponse>("/song/chorus", { params: { id }, signal });
+}
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// 音质相关 API
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+/** UI 音质选项 -> API level 参数映射 */
+export const UI_QUALITY_TO_LEVEL: Record<string, MusicQualityLevel> = {
+  sky: "sky",
+  jymaster: "jymaster",
+  dolby: "dolby",
+  vivid: "vivid",
+  spatial: "jyeffect",
+  hires: "hires",
+  lossless: "lossless",
+  high: "exhigh",
+  standard: "standard",
+};
+
+/**
+ * 获取歌曲各个音质的文件信息
+ * 与获取歌曲详情接口相比，多出高清环绕声、沉浸环绕声、超清母带等音质的信息
+ * GET /song/music/detail?id={id}
+ */
+export async function getSongMusicDetail(id: number | string) {
+  return request.get<SongMusicDetailResponse>("/song/music/detail", {
+    params: { id },
+  });
+}
+
+/**
+ * 获取音乐 URL - 新版
+ * GET /song/url/v1?id={id}&level={level}
+ * @param id   音乐 id（可多个，用逗号隔开）
+ * @param level 播放音质等级
+ */
+export async function getSongUrlV1(
+  id: number | string,
+  level: MusicQualityLevel = "exhigh",
+  options: SongUrlOptions = {},
+) {
+  return request.get<SongUrlV1Response>("/song/url/v1", {
+    params: {
+      id,
+      level,
+      ...(level === "sky" ? { immerseType: options.immerseType ?? "c51" } : {}),
+    },
+    signal: options.signal,
+  });
+}
+
+/**
+ * 音乐是否可用
+ * GET /check/music?id={id}&br={br}
+ */
+export async function checkMusicAvailable(id: number | string, br?: number) {
+  return request.get<CheckMusicResponse>("/check/music", {
+    params: { id, ...(br ? { br } : {}) },
+  });
+}
+
+/**
+ * 带音质选择的歌曲 URL 获取
+ * 先尝试 /song/url/v1 (新音质接口)，失败后降级到 /song/url/match (灰色歌曲解灰)
+ */
+export async function getSongUrlWithQuality(
+  id: number | string,
+  level: MusicQualityLevel = "exhigh",
+  options: SongUrlOptions = {},
+) {
+  try {
+    const res = await getSongUrlV1(id, level, options);
+    const item = res.data?.data?.[0];
+    if (item?.url) {
+      return {
+        data: item.url,
+        level: item.level,
+        replayGainTrackGain: Number.isFinite(item.gain) ? item.gain : undefined,
+        source: "url-v1" as const,
+      };
+    }
+    throw new Error("No URL returned from v1");
+  } catch (error) {
+    if (options.signal?.aborted) throw error;
+    // 降级到灰色歌曲链接
+    const fallback = await greySongUrlMatch(id, undefined, options.signal);
+    return {
+      data: fallback.data ?? fallback.proxyUrl,
+      level: undefined,
+      replayGainTrackGain: undefined,
+      source: "url-match" as const,
+    };
+  }
+}
+
+/**
+ * 获取推荐新音乐
+ * GET /personalized/newsong?limit={limit}
+ */
+export async function getPersonalizedNewSongs(limit = 12) {
+  return request<NeteaseNewSongsDto>(
+    requestConfig({
+      method: "get",
+      params: { limit },
+      url: "/personalized/newsong",
+    }),
+  );
+}

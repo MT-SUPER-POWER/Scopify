@@ -86,7 +86,13 @@ export function createWindowServiceHost(options: WindowServiceHostOptions) {
       window,
     });
 
-    registerIpcHandlers(window, options.discordPresence, options.backendController, mcpRuntime);
+    registerIpcHandlers(
+      window,
+      options.discordPresence,
+      options.backendController,
+      options.qqBackendController,
+      mcpRuntime,
+    );
     initializeDesktopIconVisibilityService(window, {
       getControllerWindow: controllerWindow.getWindow,
     });

@@ -75,13 +75,9 @@ const SettingsPage = () => {
           {/*网络*/}
           <TabsContent value="network">
             <NetworkSettingsTab
-              backendPingResult={settings.backendPingResult}
               config={settings.config}
-              isPingingBackend={settings.isPingingBackend}
               onWebChange={settings.handleWebChange}
               onDesktopChange={settings.handleDesktopChange}
-              onPingBackend={settings.handlePingBackend}
-              onBackendHostBlur={settings.handleBackendHostBlur}
             />
           </TabsContent>
           {/*存储*/}
@@ -98,7 +94,6 @@ const SettingsPage = () => {
           {settings.config.desktop ? (
             <TabsContent value="desktop">
               <DesktopSettingsTab
-                backendStatus={settings.backendStatus}
                 config={settings.config.desktop}
                 discordStatus={settings.discordStatus}
                 isTestingDiscord={settings.isTestingDiscord}
@@ -120,7 +115,9 @@ const SettingsPage = () => {
       {activeTab !== "appearance" && activeTab !== "notifications" && (
         <SaveChangesButton
           visible={settings.hasChanges}
-          onClick={() => settings.setIsModalOpen(true)}
+          onSave={() => settings.setIsModalOpen(true)}
+          onDiscard={() => settings.handleDiscardChanges()}
+          isSaving={settings.isSaving}
         />
       )}
       <SaveConfirmModal

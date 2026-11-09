@@ -1,0 +1,33 @@
+{
+  "name": "@scopify/music-domain",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Provider-independent music entities and account-scoped resource identity",
+  "type": "module",
+  "files": [
+    "src"
+  ],
+  "exports": {
+    "./album": "./src/album.ts",
+    "./artist": "./src/artist.ts",
+    "./capability": "./src/capability.ts",
+    "./comment": "./src/comment.ts",
+    "./identity": "./src/identity.ts",
+    "./library": "./src/library.ts",
+    "./lyrics": "./src/lyrics.ts",
+    "./mv": "./src/mv.ts",
+    "./playback": "./src/playback.ts",
+    "./playlist": "./src/playlist.ts",
+    "./provider": "./src/provider.ts",
+    "./recommend": "./src/recommend.ts",
+    "./search": "./src/search.ts",
+    "./track": "./src/track.ts"
+  },
+  "scripts": {
+    "lint": "eslint . --max-warnings 0 --no-warn-ignored",
+    "typecheck": "tsc --noEmit --incremental --tsBuildInfoFile .cache/typecheck.tsbuildinfo"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.3"
+  }
+}

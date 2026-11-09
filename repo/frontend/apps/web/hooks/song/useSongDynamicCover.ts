@@ -2,7 +2,7 @@
 
 import { useQuery } from "@tanstack/react-query";
 
-import { getSongDynamicCover } from "@/lib/api/track";
+import { getSongDynamicCover } from "@/lib/providers/netease/api/track";
 import { musicQueryKeys } from "@/lib/query/queryKeys";
 import { useUserStore } from "@/store/module/user";
 

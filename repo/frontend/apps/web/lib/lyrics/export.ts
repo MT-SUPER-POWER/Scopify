@@ -1,8 +1,9 @@
 import { downloadBlob, sanitizeDownloadFileName } from "@/lib/web/download";
-import type { NeteaseLyric, SongDetail } from "@/types/song/api";
+import type { LyricSource } from "@/types/lyrics/model";
+import type { SongDetail } from "@/types/song/api";
 import type { LyricExportFormat } from "@/types/lyrics/model";
 
-export function buildLyricExport(song: SongDetail, lyric: NeteaseLyric, format: LyricExportFormat) {
+export function buildLyricExport(song: SongDetail, lyric: LyricSource, format: LyricExportFormat) {
   const content = lyric[format]?.lyric?.trim();
   if (!content) return null;
   const artists = song.ar?.map((artist) => artist.name).join(", ");

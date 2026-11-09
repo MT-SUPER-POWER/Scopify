@@ -3,13 +3,13 @@ import { getMvResolutions, restoreMvQualityPlayback } from "@/lib/music/mvQualit
 
 describe("MV quality selection", () => {
   it("retains high resolutions, removes duplicates and rejects invalid values", () => {
-    const resolutions = [720, 2160, 1080, 720, 0, -1, Number.NaN].map((br) => ({ br, size: 1 }));
+    const resolutions = [720, 2160, 1080, 720, 0, -1, Number.NaN];
     expect(getMvResolutions(resolutions, 1080)).toEqual([2160, 1080, 720]);
   });
 
   it("shows the actual stream resolution even without detail metadata", () => {
     expect(getMvResolutions([], 480)).toEqual([480]);
-    expect(getMvResolutions([{ br: 1080, size: 1 }], 720)).toEqual([1080, 720]);
+    expect(getMvResolutions([1080], 720)).toEqual([1080, 720]);
   });
 
   it("restores progress, volume, mute and speed without resuming a paused video", () => {

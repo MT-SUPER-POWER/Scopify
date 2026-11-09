@@ -1,3 +1,14 @@
+import type { MusicPlaylist } from "@scopify/music-domain/playlist";
+import type {
+  MusicAlbumResult,
+  MusicArtistResult,
+  MusicSearchBestMatch,
+  MusicSearchOverview,
+} from "@scopify/music-domain/search";
+
+import type { PlayerTrack } from "@/types/player/model";
+import type { NeteaseSearchOverviewExtras } from "@/types/providers/netease/searchApi";
+
 export interface Artist {
   id: number;
   name: string;
@@ -28,17 +39,6 @@ export interface Song {
   mvid?: number;
   fee?: number;
   alias?: string[];
-}
-
-export interface Playlist {
-  id: number;
-  name: string;
-  coverImgUrl: string;
-  creator?: { nickname: string };
-  trackCount: number;
-  playCount: number;
-  bookCount?: number;
-  description?: string;
 }
 
 export interface Podcast {
@@ -72,12 +72,6 @@ export interface Voice {
   publishTime?: number;
 }
 
-export type SearchBestMatch =
-  | { kind: "album"; album: Album }
-  | { kind: "artist"; artist: Artist }
-  | { kind: "playlist"; playlist: Playlist }
-  | { kind: "song"; song: Song };
-
 export interface LyricSearchItem {
   highlightText?: string;
   lyric: string;
@@ -85,16 +79,22 @@ export interface LyricSearchItem {
   song: Song;
 }
 
+/** What the search page lists. Songs, artists, albums and playlists are interface types. */
 export interface SearchResults {
-  albums: Album[];
-  artists: Artist[];
-  bestMatch: SearchBestMatch | null;
+  albums: MusicAlbumResult[];
+  artists: MusicArtistResult[];
+  bestMatch: MusicSearchBestMatch | null;
   lyrics?: LyricSearchItem[];
   podcasts: Podcast[];
-  playlists: Playlist[];
-  songs: Song[];
+  playlists: MusicPlaylist[];
+  songs: PlayerTrack[];
   voices: Voice[];
 }
+
+/** An overview as the page reads it; NetEase adds its podcast and voice blocks. */
+export type SearchOverview = MusicSearchOverview & {
+  readonly netease?: NeteaseSearchOverviewExtras;
+};
 
 export const CATEGORIES = [
   "All",

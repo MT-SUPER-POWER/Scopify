@@ -1,0 +1,39 @@
+import request, { requestConfig } from "@/lib/providers/netease/client";
+import type {
+  SimilarSongDetailsResponse,
+  SimilarSongListResponse,
+  SimilarSongsResponse,
+} from "@/types/song/similarApi";
+
+export function getSimilarSongs(id: number, signal?: AbortSignal) {
+  return request.get<SimilarSongsResponse>(
+    "/song/simi/get",
+    requestConfig({
+      params: { id },
+      signal,
+      expectedBusinessCodes: [200],
+    }),
+  );
+}
+
+export function getSimilarSongList(id: number, signal?: AbortSignal) {
+  return request.get<SimilarSongListResponse>(
+    "/simi/song",
+    requestConfig({
+      params: { id },
+      signal,
+      expectedBusinessCodes: [200],
+    }),
+  );
+}
+
+export function getSimilarSongDetails(ids: number[], signal?: AbortSignal) {
+  return request.get<SimilarSongDetailsResponse>(
+    "/song/detail",
+    requestConfig({
+      params: { ids: ids.join(",") },
+      signal,
+      expectedBusinessCodes: [200],
+    }),
+  );
+}

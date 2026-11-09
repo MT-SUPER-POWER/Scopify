@@ -2,95 +2,115 @@
 
 import { throwQueryErrorWithoutData } from "@/lib/query/errorPolicy";
 
+import type {
+  MusicSearchKind,
+  MusicSearchPage,
+  MusicSearchResultMap,
+} from "@scopify/music-domain/search";
 import { type InfiniteData, useInfiniteQuery, useQuery } from "@tanstack/react-query";
 
+import { useActiveProvider } from "@/hooks/provider/useActiveProvider";
 import {
-  searchAlbums,
-  searchArtists,
-  searchComplex,
   searchLyrics,
   searchMVs,
-  searchPlaylists,
   searchSongs,
   searchVoices,
-} from "@/lib/api/search";
-import { searchVoiceLists } from "@/lib/api/voicelist";
+} from "@/lib/providers/netease/api/search";
+import { getNeteaseSearchNextOffset } from "@/lib/providers/netease/search";
+import { searchVoiceLists } from "@/lib/providers/netease/api/voicelist";
 import { getVoiceListSearchItems } from "@/lib/search/voiceListSearchAdapter";
 import { getVoiceSearchItems, hasMoreVoiceSearchResults } from "@/lib/search/voiceSearchAdapter";
+import { providerQueryKey } from "@/lib/query/providerQueryKey";
 import { musicQueryKeys } from "@/lib/query/queryKeys";
 import type {
-  AlbumSearchResponse,
-  ArtistSearchResponse,
   LyricSearchResponse,
   MvSearchResponse,
-  PlaylistSearchResponse,
   SongSearchResponse,
   VoiceSearchResponse,
-} from "@/types/search/api";
+} from "@/types/providers/netease/searchApi";
+import type { SearchOverview } from "@/types/search/model";
 import type { VoiceListSearchResponse } from "@/types/voice/api";
 
 function isEnabled(keyword: string, enabled: boolean) {
   return enabled && keyword.length > 0;
 }
 
-function toRecord(value: unknown): Record<string, unknown> | undefined {
-  return value !== null && typeof value === "object"
-    ? (value as Record<string, unknown>)
-    : undefined;
-}
-
-function getSearchHasMore(response: unknown): boolean | undefined {
-  const record = toRecord(response);
-  const candidates = [record, toRecord(record?.data), toRecord(record?.result)];
-
-  for (const candidate of candidates) {
-    if (typeof candidate?.hasMore === "boolean") return candidate.hasMore;
-    if (typeof candidate?.more === "boolean") return candidate.more;
-  }
-
-  return undefined;
-}
-
-function getNextSearchPageOffset<T>(
-  lastPage: T,
-  lastPageOffset: number,
-  limit: number,
-  getItems: (page: T) => readonly unknown[],
-) {
-  const itemCount = getItems(lastPage).length;
-  const hasMore = getSearchHasMore(lastPage);
-  if (itemCount === 0 || hasMore === false) return undefined;
-  if (hasMore === undefined && itemCount < limit) return undefined;
-
-  return lastPageOffset + itemCount;
-}
-
-export function useInfiniteSongSearchQuery(
+/**
+ * Results of one kind, page by page, from the active platform. The list is as long as the
+ * pages loaded so far; the platform says where the next page starts.
+ */
+export function useInfiniteSearchQuery<Kind extends MusicSearchKind>(
+  kind: Kind,
   keyword: string,
   limit: number,
   enabled: boolean,
-  useBoundary = false,
 ) {
+  const provider = useActiveProvider();
+  return useInfiniteQuery<
+    MusicSearchPage<MusicSearchResultMap[Kind]>,
+    Error,
+    InfiniteData<MusicSearchPage<MusicSearchResultMap[Kind]>>,
+    ReturnType<typeof musicQueryKeys.search.results>,
+    number
+  >({
+    enabled: isEnabled(keyword, enabled),
+    getNextPageParam: (lastPage) => lastPage.nextOffset ?? undefined,
+    initialPageParam: 0,
+    queryFn: ({ pageParam, signal }) =>
+      provider.search({ keyword, kind, limit, offset: pageParam }, signal),
+    queryKey: musicQueryKeys.search.results(provider.provider, kind, keyword, limit),
+  });
+}
+
+/** The first results of every kind from one request; only for platforms with the overview. */
+export function useSearchOverviewQuery(keyword: string, enabled: boolean) {
+  const provider = useActiveProvider();
+  return useQuery<SearchOverview>({
+    enabled: isEnabled(keyword, enabled),
+    queryFn: ({ signal }) => {
+      if (!provider.searchOverview) throw new Error("This platform has no search overview.");
+      return provider.searchOverview(keyword, signal);
+    },
+    queryKey: musicQueryKeys.search.overview(provider.provider, keyword),
+  });
+}
+
+/** The platform's direct hit for a keyword, for platforms whose lists are searched by kind. */
+export function useSearchBestMatchQuery(keyword: string, enabled: boolean) {
+  const provider = useActiveProvider();
+  return useQuery({
+    enabled: isEnabled(keyword, enabled && Boolean(provider.getSearchBestMatch)),
+    queryFn: ({ signal }) => {
+      if (!provider.getSearchBestMatch) throw new Error("This platform has no direct hit.");
+      return provider.getSearchBestMatch(keyword, signal);
+    },
+    queryKey: providerQueryKey(provider.provider, "search", "best-match", keyword),
+    retry: false,
+  });
+}
+
+/** Songs as NetEase answers them, for the sheet search that reads NetEase's own fields. */
+export function useInfiniteSheetSongSearchQuery(keyword: string, limit: number, enabled: boolean) {
   return useInfiniteQuery<
     SongSearchResponse,
     Error,
     InfiniteData<SongSearchResponse>,
-    ReturnType<typeof musicQueryKeys.search.songs>,
+    ReturnType<typeof musicQueryKeys.search.sheetSongs>,
     number
   >({
     enabled: isEnabled(keyword, enabled),
-    throwOnError: useBoundary ? throwQueryErrorWithoutData : undefined,
+    throwOnError: throwQueryErrorWithoutData,
     getNextPageParam: (lastPage, _pages, lastPageOffset) =>
-      getNextSearchPageOffset(
+      getNeteaseSearchNextOffset(
         lastPage,
         lastPageOffset,
         limit,
-        (page) => page.data?.resources ?? [],
-      ),
+        (lastPage.data?.resources ?? []).length,
+      ) ?? undefined,
     initialPageParam: 0,
     queryFn: async ({ pageParam, signal }) =>
       (await searchSongs(keyword, limit, pageParam, signal)).data,
-    queryKey: musicQueryKeys.search.songs(keyword, limit),
+    queryKey: musicQueryKeys.search.sheetSongs(keyword, limit),
   });
 }
 
@@ -104,76 +124,15 @@ export function useInfiniteLyricSearchQuery(keyword: string, limit: number, enab
   >({
     enabled: isEnabled(keyword, enabled),
     getNextPageParam: (lastPage, _pages, lastPageOffset) =>
-      getNextSearchPageOffset(
+      getNeteaseSearchNextOffset(
         lastPage,
         lastPageOffset,
         limit,
-        (page) => page.data?.resources ?? [],
-      ),
+        (lastPage.data?.resources ?? []).length,
+      ) ?? undefined,
     initialPageParam: 0,
     queryFn: async ({ pageParam }) => (await searchLyrics(keyword, limit, pageParam)).data,
     queryKey: musicQueryKeys.search.lyrics(keyword, limit),
-  });
-}
-
-export function useInfiniteAlbumSearchQuery(keyword: string, limit: number, enabled: boolean) {
-  return useInfiniteQuery<
-    AlbumSearchResponse,
-    Error,
-    InfiniteData<AlbumSearchResponse>,
-    ReturnType<typeof musicQueryKeys.search.albums>,
-    number
-  >({
-    enabled: isEnabled(keyword, enabled),
-    getNextPageParam: (lastPage, _pages, lastPageOffset) =>
-      getNextSearchPageOffset(lastPage, lastPageOffset, limit, (page) => page.result?.albums ?? []),
-    initialPageParam: 0,
-    queryFn: async ({ pageParam }) => (await searchAlbums(keyword, limit, pageParam)).data,
-    queryKey: musicQueryKeys.search.albums(keyword, limit),
-  });
-}
-
-export function useInfinitePlaylistSearchQuery(keyword: string, limit: number, enabled: boolean) {
-  return useInfiniteQuery<
-    PlaylistSearchResponse,
-    Error,
-    InfiniteData<PlaylistSearchResponse>,
-    ReturnType<typeof musicQueryKeys.search.playlists>,
-    number
-  >({
-    enabled: isEnabled(keyword, enabled),
-    getNextPageParam: (lastPage, _pages, lastPageOffset) =>
-      getNextSearchPageOffset(
-        lastPage,
-        lastPageOffset,
-        limit,
-        (page) => page.result?.playlists ?? [],
-      ),
-    initialPageParam: 0,
-    queryFn: async ({ pageParam }) => (await searchPlaylists(keyword, limit, pageParam)).data,
-    queryKey: musicQueryKeys.search.playlists(keyword, limit),
-  });
-}
-
-export function useInfiniteArtistSearchQuery(keyword: string, limit: number, enabled: boolean) {
-  return useInfiniteQuery<
-    ArtistSearchResponse,
-    Error,
-    InfiniteData<ArtistSearchResponse>,
-    ReturnType<typeof musicQueryKeys.search.artists>,
-    number
-  >({
-    enabled: isEnabled(keyword, enabled),
-    getNextPageParam: (lastPage, _pages, lastPageOffset) =>
-      getNextSearchPageOffset(
-        lastPage,
-        lastPageOffset,
-        limit,
-        (page) => page.result?.artists ?? [],
-      ),
-    initialPageParam: 0,
-    queryFn: async ({ pageParam }) => (await searchArtists(keyword, limit, pageParam)).data,
-    queryKey: musicQueryKeys.search.artists(keyword, limit),
   });
 }
 
@@ -193,15 +152,15 @@ export function useInfiniteMvSearchQuery(
     enabled: isEnabled(keyword, enabled),
     throwOnError: useBoundary ? throwQueryErrorWithoutData : undefined,
     getNextPageParam: (lastPage, pages, lastPageOffset) => {
-      const nextOffset = getNextSearchPageOffset(
+      const nextOffset = getNeteaseSearchNextOffset(
         lastPage,
         lastPageOffset,
         limit,
-        (page) => page.result?.mvs ?? [],
+        (lastPage.result?.mvs ?? []).length,
       );
       // 接口不返回 hasMore，用总数判断是否已经取完
       const total = pages[0]?.result?.mvCount;
-      return nextOffset !== undefined && (total === undefined || nextOffset < total)
+      return nextOffset !== null && (total === undefined || nextOffset < total)
         ? nextOffset
         : undefined;
     },
@@ -209,14 +168,6 @@ export function useInfiniteMvSearchQuery(
     queryFn: async ({ pageParam, signal }) =>
       (await searchMVs(keyword, limit, pageParam, signal)).data,
     queryKey: musicQueryKeys.search.mvs(keyword, limit),
-  });
-}
-
-export function useComplexSearchQuery(keyword: string, enabled: boolean) {
-  return useQuery({
-    enabled: isEnabled(keyword, enabled),
-    queryFn: async () => (await searchComplex(keyword)).data,
-    queryKey: musicQueryKeys.search.complex(keyword),
   });
 }
 
@@ -230,7 +181,12 @@ export function useInfiniteVoiceListSearchQuery(keyword: string, limit: number, 
   >({
     enabled: isEnabled(keyword, enabled),
     getNextPageParam: (lastPage, _pages, lastPageOffset) =>
-      getNextSearchPageOffset(lastPage, lastPageOffset, limit, getVoiceListSearchItems),
+      getNeteaseSearchNextOffset(
+        lastPage,
+        lastPageOffset,
+        limit,
+        getVoiceListSearchItems(lastPage).length,
+      ) ?? undefined,
     initialPageParam: 0,
     queryFn: async ({ pageParam }) => (await searchVoiceLists(keyword, limit, pageParam)).data,
     queryKey: musicQueryKeys.search.voiceLists(keyword, limit),

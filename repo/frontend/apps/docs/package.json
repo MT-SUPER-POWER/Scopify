@@ -22,6 +22,7 @@
     "@paper-design/shaders": "^0.0.80",
     "@paper-design/shaders-react": "^0.0.80",
     "@react-three/fiber": "^9.6.1",
+    "@scopify/music-domain": "workspace:*",
     "@scopify/ui": "workspace:*",
     "framer-motion": "12.42.2",
     "fumadocs-core": "16.17.5",

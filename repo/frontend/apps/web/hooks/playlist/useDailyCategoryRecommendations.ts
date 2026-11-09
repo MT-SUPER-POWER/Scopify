@@ -6,7 +6,7 @@ import {
   getDailyCategoryConfigs,
   getDailyCategorySongs,
   setDailyCategoryConfig,
-} from "@/lib/api/playlist";
+} from "@/lib/providers/netease/api/playlist";
 import { throwQueryErrorWithoutData } from "@/lib/query/errorPolicy";
 
 export const dailyCategoryKeys = {

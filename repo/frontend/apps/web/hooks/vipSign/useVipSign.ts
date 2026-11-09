@@ -1,9 +1,10 @@
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ PACKAGE ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
+import { useProviderCapability } from "@/hooks/provider/useActiveProvider";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useCallback, useMemo } from "react";
 import { toast } from "sonner";
-import { vipSign, vipSignDetail, vipSignHistory } from "@/lib/api/user";
+import { vipSign, vipSignDetail, vipSignHistory } from "@/lib/providers/netease/api/user";
 import { useLoginStatus } from "@/hooks/auth/useLoginStatus";
 import { getVipSignTodayRecord, hasVipSignedToday } from "@/lib/vipSign";
 import { useUserStore } from "@/store";
@@ -28,6 +29,7 @@ function getVipSignErrorMessage(error: unknown) {
 
 export function useVipSign() {
   const isLoggedIn = useLoginStatus();
+  const hasVip = useProviderCapability("vip");
   const queryClient = useQueryClient();
   const userId = useUserStore((state) => state.user?.userId);
 
@@ -40,7 +42,7 @@ export function useVipSign() {
       const res = await vipSignHistory();
       return res.data;
     },
-    enabled: isLoggedIn && userId !== undefined,
+    enabled: hasVip && isLoggedIn && userId !== undefined,
     staleTime: 2 * 60 * 1000,
     refetchOnWindowFocus: true,
   });

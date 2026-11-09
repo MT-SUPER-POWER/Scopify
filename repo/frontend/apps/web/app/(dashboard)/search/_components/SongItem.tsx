@@ -2,6 +2,7 @@
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ PACKAGE ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
+import { musicResourceKey } from "@scopify/music-domain/identity";
 import { Disc3, Heart, Link2, ListPlus, Pause, Play, PlusCircle, User } from "lucide-react";
 import { motion } from "motion/react";
 import Image from "next/image";
@@ -10,8 +11,7 @@ import { memo, useCallback, useMemo } from "react";
 import { FaRegCommentDots } from "react-icons/fa6";
 import { toast } from "sonner";
 import { ArtistInlineLinks } from "@/components/shared/ArtistInlineLinks";
-import { SongMvBadge } from "@/components/shared/SongMvBadge";
-import { SongVipBadge } from "@/components/shared/SongVipBadge";
+import { TrackMvBadge, TrackVipBadge } from "@/components/shared/TrackBadges";
 import {
   ContextMenu,
   ContextMenuContent,
@@ -27,28 +27,14 @@ import { LikeButton } from "@/components/ui/LikeButton";
 import { usePlaylistTrackMutation } from "@/hooks/playlist/usePlaylistTrackMutation";
 import { useSongLikeMutation } from "@/hooks/playlist/useSongLikeMutation";
 import { useLoginStatus } from "@/hooks/auth/useLoginStatus";
+import { useProviderCapability } from "@/hooks/provider/useActiveProvider";
 import { cn, formatDuration } from "@/lib/utils";
 import { usePlayerStore, useUserStore } from "@/store";
 import { useTranslation } from "react-i18next";
 
-import type { SongDetail } from "@/types/song/api";
-import type { Song } from "@/types/search/model";
+import type { PlayerTrack } from "@/types/player/model";
 import { getSizedImageUrl } from "@/lib/music/imageUrl";
-
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ UTILS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-function songToSongDetail(song: Song): SongDetail {
-  const picUrl = song.album.picUrl || song.artists[0]?.picUrl || "";
-  return {
-    id: song.id,
-    name: song.name,
-    dt: song.duration,
-    fee: song.fee ?? 0,
-    ar: song.artists.map((a) => ({ id: a.id, name: a.name })),
-    al: { id: song.album.id, name: song.album.name, picUrl },
-    publishTime: song.album.publishTime || 0,
-  };
-}
+import { getNeteaseTrackId } from "@/lib/providers/netease/adapters/track";
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ TRACK INDEX CELL ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -112,19 +98,19 @@ function SongIndexCell({
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ SONG ITEM ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 interface SongItemProps {
-  song: Song;
+  track: PlayerTrack;
   index: number;
   /** 完整列表，用于构建播放队列 */
-  songs: Song[];
+  tracks: PlayerTrack[];
 }
 
 export const SongItem = memo(
-  function SongItem({ song, index, songs }: SongItemProps) {
+  function SongItem({ track, index, tracks }: SongItemProps) {
     const { t } = useTranslation();
     const songLikeMutation = useSongLikeMutation();
     const { mutateAsync: updatePlaylistTrack } = usePlaylistTrackMutation();
     // ── store ──
-    const currentSongDetail = usePlayerStore((s) => s.currentSongDetail);
+    const currentTrack = usePlayerStore((s) => s.currentTrack);
     const isPlaying = usePlayerStore((s) => s.isPlaying);
     const setIsPlaying = usePlayerStore((s) => s.setIsPlaying);
     const setQueue = usePlayerStore((s) => s.setQueue);
@@ -132,13 +118,33 @@ export const SongItem = memo(
     const likeListIDs = useUserStore((s) => s.likeListIDs);
     const playlists = useUserStore((s) => s.playlist);
 
+    // ── capabilities ──
+    const canOpenArtist = useProviderCapability("artist.read");
+    const canOpenAlbum = useProviderCapability("album.read");
+    const canComment = useProviderCapability("comments.read");
+    const canLike = useProviderCapability("track.like");
+    const canManagePlaylists = useProviderCapability("playlist.manage");
+    // Likes, playlists and the song link are NetEase's: other platforms' rows have no ID for them.
+    const neteaseId = getNeteaseTrackId(track);
+
     // ── derived ──
-    const isActive = currentSongDetail?.id === song.id;
+    const trackKey = musicResourceKey(track.ref);
+    const isActive = !!currentTrack && musicResourceKey(currentTrack.ref) === trackKey;
     const isLogin = useLoginStatus();
     const isLiked = useMemo(
-      () => Array.isArray(likeListIDs) && likeListIDs.includes(song.id),
-      [likeListIDs, song.id],
+      () => neteaseId !== null && Array.isArray(likeListIDs) && likeListIDs.includes(neteaseId),
+      [likeListIDs, neteaseId],
     );
+    const albumId = track.album && track.album.ref.id !== "0" ? track.album.ref.id : null;
+    const artistLinks = useMemo(
+      () =>
+        track.artists.map((artist) => ({
+          id: canOpenArtist ? artist.ref.id : null,
+          name: artist.name,
+        })),
+      [canOpenArtist, track.artists],
+    );
+    const alias = track.netease?.alia;
 
     // ── handlers ──
     const handlePlay = useCallback(() => {
@@ -146,10 +152,9 @@ export const SongItem = memo(
         setIsPlaying(true);
         return;
       }
-      const queue = songs.map(songToSongDetail);
-      setQueue(queue, index);
-      playTrack(songToSongDetail(song));
-    }, [isActive, songs, index, song, setIsPlaying, setQueue, playTrack]);
+      setQueue(tracks, index);
+      playTrack(track);
+    }, [isActive, tracks, index, track, setIsPlaying, setQueue, playTrack]);
 
     const handlePause = useCallback(() => setIsPlaying(false), [setIsPlaying]);
 
@@ -163,22 +168,23 @@ export const SongItem = memo(
 
     const handleLike = useCallback(
       (nextLiked: boolean) => {
-        songLikeMutation.mutate({ like: nextLiked, songId: song.id });
+        if (neteaseId !== null) songLikeMutation.mutate({ like: nextLiked, songId: neteaseId });
       },
-      [songLikeMutation, song.id],
+      [songLikeMutation, neteaseId],
     );
 
     const handleAddToQueue = useCallback(() => {
       const state = usePlayerStore.getState();
-      if (state.queue.some((t) => t.id === song.id)) {
+      if (state.queue.some((queued) => musicResourceKey(queued.ref) === trackKey)) {
         toast.info(t("playlist.table.queueExists"));
         return;
       }
-      state.setQueue([...state.queue, songToSongDetail(song)], state.queueIndex);
+      state.setQueue([...state.queue, track], state.queueIndex);
       toast.success(t("playlist.table.queueAdded"));
-    }, [song, t]);
+    }, [track, trackKey, t]);
 
-    const coverSrc = song.album.picUrl || song.artists[0]?.picUrl || "";
+    const coverUrl = track.album?.coverUrl ?? "";
+    const albumTitle = track.album?.title ?? "";
 
     return (
       <ContextMenu>
@@ -204,69 +210,79 @@ export const SongItem = memo(
 
             {/* 封面 */}
             <div className="size-10 shrink-0 overflow-hidden rounded bg-surface-elevated">
-              <Image
-                width={40}
-                height={40}
-                src={coverSrc}
-                alt={song.album.name}
-                loading="lazy"
-                className="size-full object-cover"
-                onError={(e) => {
-                  (e.currentTarget as HTMLImageElement).src = "";
-                }}
-              />
+              {coverUrl ? (
+                <Image
+                  width={40}
+                  height={40}
+                  src={coverUrl}
+                  alt={albumTitle}
+                  loading="lazy"
+                  className="size-full object-cover"
+                  onError={(e) => {
+                    (e.currentTarget as HTMLImageElement).src = "";
+                  }}
+                />
+              ) : null}
             </div>
 
             {/* 歌名 + 歌手 */}
             <div className="flex min-w-0 flex-1 flex-col">
               <div className="flex min-w-0 items-center gap-1.5">
                 <span
-                  title={song.name}
+                  title={track.title}
                   className={cn(
                     "truncate text-sm font-normal",
                     isActive ? "text-brand" : "text-content",
                   )}
                 >
-                  {song.name}
+                  {track.title}
                 </span>
-                {song.alias?.length ? (
+                {alias?.length ? (
                   <span className="truncate text-xs text-content-subtle">
-                    ({song.alias.join(" / ")})
+                    ({alias.join(" / ")})
                   </span>
                 ) : null}
-                <SongVipBadge fee={song.fee} />
-                <SongMvBadge mvId={song.mvid} />
+                <TrackVipBadge track={track} />
+                <TrackMvBadge track={track} />
               </div>
               <ArtistInlineLinks
-                artists={song.artists.map((a) => ({ id: a.id, name: a.name }))}
+                artists={artistLinks}
                 className="cursor-pointer truncate text-xs text-content-muted"
               />
             </div>
 
             <div className="hidden min-w-0 flex-[0.55] items-center gap-2 lg:flex">
               <Disc3 className="size-3.5 shrink-0 text-content-subtle" aria-hidden="true" />
-              <Link
-                href={`/album?id=${song.album.id}`}
-                title={song.album.name}
-                onClick={(event) => event.stopPropagation()}
-                className="truncate text-xs text-content-muted transition-colors hover:text-content hover:underline"
-              >
-                {song.album.name}
-              </Link>
+              {canOpenAlbum && albumId !== null ? (
+                <Link
+                  href={`/album?id=${albumId}`}
+                  title={albumTitle}
+                  onClick={(event) => event.stopPropagation()}
+                  className="truncate text-xs text-content-muted transition-colors hover:text-content hover:underline"
+                >
+                  {albumTitle}
+                </Link>
+              ) : (
+                <span title={albumTitle} className="truncate text-xs text-content-muted">
+                  {albumTitle}
+                </span>
+              )}
             </div>
 
             {/* Like 按钮 */}
-            <div className="hidden shrink-0 items-center sm:flex">
-              <LikeButton
-                liked={isLiked}
-                onLike={() => handleLike(!isLiked)}
-                iconClassName="w-4 h-4"
-              />
-            </div>
+            {canLike && neteaseId !== null ? (
+              <div className="hidden shrink-0 items-center sm:flex">
+                <LikeButton
+                  liked={isLiked}
+                  onLike={() => handleLike(!isLiked)}
+                  iconClassName="w-4 h-4"
+                />
+              </div>
+            ) : null}
 
             {/* 时长 */}
             <div className="w-12 shrink-0 text-right text-sm text-content-muted">
-              {formatDuration(song.duration)}
+              {formatDuration(track.durationMs)}
             </div>
           </div>
         </ContextMenuTrigger>
@@ -297,7 +313,7 @@ export const SongItem = memo(
             )}
 
             {/* 取消喜欢或者喜欢 */}
-            {isLogin && (
+            {isLogin && canLike && neteaseId !== null && (
               <ContextMenuItem onClick={() => handleLike(!isLiked)}>
                 <Heart className="mr-2 size-4" />
                 {isLiked ? t("contextMenu.removeFromLiked") : t("contextMenu.addToLiked")}
@@ -309,7 +325,7 @@ export const SongItem = memo(
 
           <ContextMenuGroup>
             {/* 添加到播放列表 */}
-            {isLogin && (
+            {isLogin && canManagePlaylists && neteaseId !== null && (
               <ContextMenuSub>
                 <ContextMenuSubTrigger>
                   <PlusCircle className="mr-4 size-4" />
@@ -324,7 +340,7 @@ export const SongItem = memo(
                           await updatePlaylistTrack({
                             operation: "add",
                             playlistId: playlist.id,
-                            trackId: song.id,
+                            trackId: neteaseId,
                           });
                           toast.success(t("playlist.table.addToPlaylistSuccess"));
                         } catch {
@@ -346,34 +362,39 @@ export const SongItem = memo(
               </ContextMenuSub>
             )}
 
-            <ContextMenuItem asChild>
-              <Link href={`/comment/?songId=${song.id}`} className="block size-full">
-                <FaRegCommentDots className="mr-2 size-4" />
-                {t("contextMenu.comments")}
-              </Link>
-            </ContextMenuItem>
+            {canComment && neteaseId !== null && (
+              <ContextMenuItem asChild>
+                <Link href={`/comment/?songId=${neteaseId}`} className="block size-full">
+                  <FaRegCommentDots className="mr-2 size-4" />
+                  {t("contextMenu.comments")}
+                </Link>
+              </ContextMenuItem>
+            )}
 
-            <ContextMenuItem asChild>
-              <button
-                type="button"
-                onClick={() => {
-                  navigator.clipboard
-                    .writeText(`https://music.163.com/#/song?id=${song.id}`)
-                    .then(() => toast.success(t("common.message.linkCopied")))
-                    .catch(() => toast.error(t("common.message.copyFailed")));
-                }}
-                className="block size-full"
-              >
-                <Link2 className="mr-2 size-4" />
-                {t("contextMenu.copyLink")}
-              </button>
-            </ContextMenuItem>
+            {neteaseId !== null && (
+              <ContextMenuItem asChild>
+                <button
+                  type="button"
+                  onClick={() => {
+                    navigator.clipboard
+                      .writeText(`https://music.163.com/#/song?id=${neteaseId}`)
+                      .then(() => toast.success(t("common.message.linkCopied")))
+                      .catch(() => toast.error(t("common.message.copyFailed")));
+                  }}
+                  className="block size-full"
+                >
+                  <Link2 className="mr-2 size-4" />
+                  {t("contextMenu.copyLink")}
+                </button>
+              </ContextMenuItem>
+            )}
 
             {/* View Artist */}
-            {song.artists.length > 0 &&
-              (song.artists.length === 1 ? (
+            {canOpenArtist &&
+              track.artists.length > 0 &&
+              (track.artists.length === 1 ? (
                 <ContextMenuItem asChild>
-                  <Link href={`/artist?id=${song.artists[0].id}`} className="block size-full">
+                  <Link href={`/artist?id=${track.artists[0].ref.id}`} className="block size-full">
                     <User className="mr-2 size-4" />
                     {t("contextMenu.goToArtist")}
                   </Link>
@@ -385,9 +406,9 @@ export const SongItem = memo(
                     {t("contextMenu.goToArtist")}
                   </ContextMenuSubTrigger>
                   <ContextMenuSubContent className="scrollbar-thin max-h-72 max-w-80 overflow-y-auto">
-                    {song.artists.map((artist) => (
-                      <ContextMenuItem key={artist.id} asChild>
-                        <Link href={`/artist?id=${artist.id}`} className="block size-full">
+                    {track.artists.map((artist) => (
+                      <ContextMenuItem key={artist.ref.id} asChild>
+                        <Link href={`/artist?id=${artist.ref.id}`} className="block size-full">
                           {artist.name}
                         </Link>
                       </ContextMenuItem>
@@ -402,5 +423,5 @@ export const SongItem = memo(
   },
   // 只有这几个维度变化才重渲染
   (prev, next) =>
-    prev.song.id === next.song.id && prev.index === next.index && prev.songs === next.songs,
+    prev.track === next.track && prev.index === next.index && prev.tracks === next.tracks,
 );

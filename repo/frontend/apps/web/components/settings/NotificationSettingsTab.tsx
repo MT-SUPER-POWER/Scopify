@@ -47,7 +47,12 @@ export function NotificationSettingsTab() {
           />
         </div>
       </div>
-      <SaveChangesButton visible={hasChanges} onClick={() => setIsModalOpen(true)} />
+      <SaveChangesButton
+        visible={hasChanges}
+        onSave={() => setIsModalOpen(true)}
+        onDiscard={() => settings.reset()}
+        isSaving={saving}
+      />
       <SaveConfirmModal
         open={isModalOpen}
         isSaving={saving}

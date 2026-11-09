@@ -1,32 +1,31 @@
-import type { SongDetail } from "@/types/song/api";
-import type { MvSummary } from "@/types/mv/api";
-import type { MusicSheet } from "@/types/songResources/api";
+import type { MusicPlaylist } from "@scopify/music-domain/playlist";
 import type {
-  Album,
-  Artist,
-  Category,
-  LyricSearchItem,
-  Playlist,
-  Podcast,
-  SearchBestMatch,
-  Song,
-  Voice,
-} from "@/types/search/model";
+  MusicAlbumResult,
+  MusicArtistResult,
+  MusicSearchBestMatch,
+} from "@scopify/music-domain/search";
+import type { SongDetail } from "@/types/song/api";
+import type { PlayerTrack } from "@/types/player/model";
+import type { MvSummary } from "@/types/providers/netease/mvApi";
+import type { MusicSheet } from "@/types/songResources/api";
+import type { Category, LyricSearchItem, Podcast, Voice } from "@/types/search/model";
 import type { ReactNode } from "react";
 
 export interface AllViewProps {
-  albums: Album[];
-  artists: Artist[];
-  bestMatch: SearchBestMatch | null;
+  albums: MusicAlbumResult[];
+  artists: MusicArtistResult[];
+  bestMatch: MusicSearchBestMatch | null;
+  /** The platform ranks a best match; without it the songs take the whole top row. */
+  hasBestMatch: boolean;
   loadingPlayId: string | null;
   mvs: MvSummary[];
   onNavigate: (path: string) => void;
-  onPlayAlbum: (album: Album, event: React.MouseEvent) => void;
-  onPlayPlaylist: (playlist: Playlist, event: React.MouseEvent) => void;
+  onPlayAlbum: (album: MusicAlbumResult, event: React.MouseEvent) => void;
+  onPlayPlaylist: (playlist: MusicPlaylist, event: React.MouseEvent) => void;
   onSeeAll: (category: Category) => void;
   podcasts: Podcast[];
-  playlists: Playlist[];
-  songs: Song[];
+  playlists: MusicPlaylist[];
+  songs: PlayerTrack[];
   voices: Voice[];
 }
 
@@ -53,7 +52,7 @@ export interface SearchPaginationProps {
 }
 
 export interface SongsViewProps extends SearchPaginationProps {
-  songs: Song[];
+  songs: PlayerTrack[];
 }
 
 export interface LyricsViewProps extends SearchPaginationProps {
@@ -73,13 +72,13 @@ export type GridSearchCategory = Extract<Category, "Albums" | "Playlists" | "Art
 
 export interface GridCategoryViewProps extends SearchPaginationProps {
   activeCategory: GridSearchCategory;
-  albums: Album[];
-  artists: Artist[];
+  albums: MusicAlbumResult[];
+  artists: MusicArtistResult[];
   loadingPlayId: string | null;
   onNavigate: (path: string) => void;
-  onPlayAlbum: (album: Album, event: React.MouseEvent) => void;
-  onPlayPlaylist: (playlist: Playlist, event: React.MouseEvent) => void;
-  playlists: Playlist[];
+  onPlayAlbum: (album: MusicAlbumResult, event: React.MouseEvent) => void;
+  onPlayPlaylist: (playlist: MusicPlaylist, event: React.MouseEvent) => void;
+  playlists: MusicPlaylist[];
 }
 
 export interface VoiceItemProps {
@@ -158,18 +157,4 @@ export interface SheetSongFailureCardProps {
   song: SongDetail;
   error: Error;
   onRetry: () => void;
-}
-
-export interface HighLightSegment {
-  text: string;
-  highLighted: boolean;
-}
-
-export interface SuggestItem {
-  keyword: string;
-  highLightInfo: string;
-  iconUrl?: string;
-  tag: string | null;
-  tagUrl: string | null;
-  skinType: string | null;
 }

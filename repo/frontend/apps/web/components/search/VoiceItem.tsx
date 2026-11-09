@@ -12,6 +12,7 @@ import { usePlayerStore } from "@/store";
 import { useTranslation } from "react-i18next";
 
 import type { VoiceItemProps } from "@/types/search/components";
+import { adaptNeteaseTrack, getNeteaseTrackId } from "@/lib/providers/netease/adapters/track";
 
 const FALLBACK_COVER =
   "https://images.unsplash.com/photo-1590602847861-f357a9332bbc?q=80&w=160&auto=format&fit=crop";
@@ -26,7 +27,7 @@ export function VoiceItem({
   voices,
 }: VoiceItemProps) {
   const { t } = useTranslation();
-  const currentSongDetail = usePlayerStore((state) => state.currentSongDetail);
+  const currentTrack = usePlayerStore((state) => state.currentTrack);
   const isPlaying = usePlayerStore((state) => state.isPlaying);
   const playTrack = usePlayerStore((state) => state.playTrack);
   const setIsPlaying = usePlayerStore((state) => state.setIsPlaying);
@@ -35,7 +36,7 @@ export function VoiceItem({
   const [isTranscriptOpen, setIsTranscriptOpen] = useState(false);
   const isUnavailable = voice.isPlayable === false;
   const isActive =
-    !isUnavailable && !!voice.mainSong && voice.mainSong.id === currentSongDetail?.id;
+    !isUnavailable && !!voice.mainSong && voice.mainSong.id === getNeteaseTrackId(currentTrack);
 
   const handlePlay = useCallback(() => {
     if (!voice.mainSong || isUnavailable) return;
@@ -53,8 +54,8 @@ export function VoiceItem({
     const queueIndex = voices
       .slice(0, index)
       .filter((item) => item.mainSong && item.isPlayable !== false).length;
-    setQueue(queue, queueIndex);
-    void playTrack(toVoiceSongDetail(voice.mainSong, voice.coverUrl, voice.id));
+    setQueue(queue.map(adaptNeteaseTrack), queueIndex);
+    void playTrack(adaptNeteaseTrack(toVoiceSongDetail(voice.mainSong, voice.coverUrl, voice.id)));
   }, [
     index,
     isActive,

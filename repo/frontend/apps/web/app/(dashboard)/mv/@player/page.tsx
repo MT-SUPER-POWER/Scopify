@@ -5,10 +5,9 @@ import { MvPlayer } from "./_components/MvPlayer";
 import { useMvPage } from "../_components/MvPageProvider";
 import { QueryPending } from "@/components/shared/QueryPending";
 import { useSmartRouter } from "@/hooks/core/useSmartRouter";
-import { useMVDetailQuery } from "@/hooks/mv/useMVQueries";
-import { useMvId } from "@/hooks/mv/useMvId";
+import { useMvDetailQuery } from "@/hooks/mv/useMVQueries";
+import { useMvId, useMvRef } from "@/hooks/mv/useMvId";
 import { getSizedImageUrl } from "@/lib/music/imageUrl";
-import { getMvCover } from "@/lib/music/mvCover";
 import { cn } from "@/lib/utils";
 import { useUiStore } from "@/store/module/ui";
 
@@ -16,11 +15,11 @@ export default function MvPlayerSlot() {
   const smartRouter = useSmartRouter();
   const mvid = useMvId();
   const { isTheater, toggleTheater, nextId } = useMvPage();
-  const detailQuery = useMVDetailQuery(mvid, { boundary: true });
-  const detail = detailQuery.data?.data;
+  const detailQuery = useMvDetailQuery(useMvRef(), { boundary: true });
+  const detail = detailQuery.data;
   const isPlayerBarHidden = useUiStore((state) => state.isPlayerBarHidden);
   const setIsPlayerBarHidden = useUiStore((state) => state.setIsPlayerBarHidden);
-  const poster = detail ? getMvCover(detail) : "";
+  const poster = detail?.coverUrl ?? "";
 
   // 详情加载期间占住播放器的位置，尺寸与播放器一致。
   if (detailQuery.isPending)
@@ -45,12 +44,11 @@ export default function MvPlayerSlot() {
   return (
     <MvPlayer
       key={mvid}
-      mvid={mvid}
       isTheater={isTheater}
       isPlayerBarHidden={isPlayerBarHidden}
       onTogglePlayerBar={() => setIsPlayerBarHidden(!isPlayerBarHidden)}
       onToggleTheater={toggleTheater}
-      resolutions={detail?.brs ?? []}
+      resolutions={detail?.qualities.map((quality) => quality.height) ?? []}
       poster={poster ? getSizedImageUrl(poster, 1280) : undefined}
       onNext={nextId ? () => void smartRouter.push(`/mv?id=${nextId}`) : undefined}
     />

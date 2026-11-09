@@ -1,4 +1,4 @@
-import type { MvSummary } from "@/types/mv/api";
+import type { MvSummary } from "@/types/providers/netease/mvApi";
 
 /** 不同 MV 接口的封面字段不一致，优先取 16:9 的版本。 */
 export function getMvCover(mv: MvSummary) {
