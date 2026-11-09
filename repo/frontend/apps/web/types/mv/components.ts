@@ -1,11 +1,12 @@
 import type { ReactNode } from "react";
-import type { MvArtist, MvDetail, MvResolution, MvSummary } from "@/types/mv/api";
+import type { MusicMv, MusicMvDetail } from "@scopify/music-domain/mv";
+import type { MvSummary } from "@/types/providers/netease/mvApi";
 
 export interface MvListItemProps {
-  mv: MvSummary;
+  mv: MusicMv;
   /** 传入时渲染为链接；否则为按钮并调用 onSelect。 */
   href?: string;
-  onSelect?: (mvId: number) => void;
+  onSelect?: (mvId: string) => void;
   isActive?: boolean;
   /** 艺人前的小标签，例如「本曲 MV」。 */
   badge?: ReactNode;
@@ -13,15 +14,15 @@ export interface MvListItemProps {
   size?: "sm" | "md" | "lg";
 }
 
+/** The search grids are NetEase's, so their cards take its summaries. */
 export interface MvCardProps {
   mv: MvSummary;
 }
 
 export interface MvSimilarContentProps {
-  mvid: number;
-  detail: MvDetail;
+  detail: MusicMvDetail;
   isTheater: boolean;
-  onNextChange: (id: number | null) => void;
+  onNextChange: (id: string | null) => void;
 }
 
 export interface MvSimilarSkeletonProps {
@@ -29,12 +30,12 @@ export interface MvSimilarSkeletonProps {
 }
 
 export interface MvPlayerProps {
-  mvid: number;
   isTheater: boolean;
   isPlayerBarHidden: boolean;
   onTogglePlayerBar: () => void;
   onToggleTheater: () => void;
-  resolutions: MvResolution[];
+  /** 详情里已知的画质高度（像素）；平台只在播放时给出画质时为空。 */
+  resolutions: readonly number[];
   poster?: string;
   /** 播放下一个（相似 MV 的第一个）；播完也会自动调用。 */
   onNext?: () => void;
@@ -68,8 +69,7 @@ export interface MvSettingsMenuProps {
 }
 
 export interface MvInfoProps {
-  detail: MvDetail;
-  isSubscribed: boolean;
+  detail: MusicMvDetail;
 }
 
 export interface SongMvBadgeProps {
@@ -79,17 +79,17 @@ export interface SongMvBadgeProps {
 }
 
 export interface MvArtistAvatarProps {
-  artistId?: number;
+  artistId?: number | string;
   name: string;
   className?: string;
 }
 
 export interface MvChannelProps {
-  artist: Pick<MvArtist, "id" | "name">;
+  artist: { id: number | string; name: string };
 }
 
 export interface MvCommentsProps {
-  mvid: number;
+  mvid: string;
 }
 
 export interface MvCardPreviewProps {

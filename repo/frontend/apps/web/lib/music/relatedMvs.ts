@@ -1,16 +1,11 @@
-import type { MvSummary } from "@/types/providers/netease/mvApi";
+import type { MusicMv } from "@scopify/music-domain/mv";
 
-export function getRelatedMvKeyword(mv: MvSummary) {
-  const artist = mv.artists?.[0]?.name.trim() || mv.artistName?.trim();
-  return [mv.name.trim(), artist].filter(Boolean).join(" ");
-}
-
-/** 保持搜索排序，排除当前视频及跨页重复项。 */
-export function getRelatedMvs(items: readonly MvSummary[], currentId: number) {
+/** 保持平台给出的排序，排除当前视频及跨页重复项。 */
+export function getRelatedMvs(items: readonly MusicMv[], currentId: string) {
   const seen = new Set([currentId]);
   return items.filter((item) => {
-    if (seen.has(item.id)) return false;
-    seen.add(item.id);
+    if (seen.has(item.ref.id)) return false;
+    seen.add(item.ref.id);
     return true;
   });
 }

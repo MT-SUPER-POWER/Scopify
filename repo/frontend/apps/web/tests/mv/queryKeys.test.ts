@@ -54,8 +54,12 @@ describe("MV query cache boundaries", () => {
   });
 
   it("keeps playback URLs separate across resolutions and accounts", () => {
-    expect(keys.url(1, 1080, "a")).not.toEqual(keys.url(1, 720, "a"));
-    expect(keys.url(1, 1080, "a")).not.toEqual(keys.url(1, 1080, "b"));
+    expect(keys.stream("netease", "1", 1080, "a")).not.toEqual(
+      keys.stream("netease", "1", 720, "a"),
+    );
+    expect(keys.stream("netease", "1", 1080, "a")).not.toEqual(
+      keys.stream("netease", "1", 1080, "b"),
+    );
     expect(keys.recommended("a")).not.toEqual(keys.recommended("b"));
   });
 });

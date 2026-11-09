@@ -31,6 +31,7 @@ import { CollectionToggleButton } from "@/components/shared/CollectionToggleButt
 import { ShortcutHint } from "@/components/shortcuts/ShortcutHint";
 import { TrackPreviewButton } from "@/components/trackPreview/TrackPreviewButton";
 import { useCommentCountQuery } from "@/hooks/comment/useCommentCountQuery";
+import { useCommentKindSupported } from "@/hooks/comment/useCommentTarget";
 import { useHistoricalDailyRecommendations } from "@/hooks/playlist/useHistoricalDailyRecommendations";
 import { usePlaylistSearchShortcut } from "@/hooks/playlist/usePlaylistSearchShortcut";
 import { subscribePlaylist } from "@/lib/providers/netease/api/playlist";
@@ -161,6 +162,7 @@ export default function PlaylistActions(props: PlaylistActionsProps) {
     commentResourceKind,
     commentResourceId ?? null,
   );
+  const commentsSupported = useCommentKindSupported(commentResourceKind);
   const storePlaylistId = usePlayerStore((s) => s.playlistId);
   const currentPageId =
     playSourceId ?? playlistId ?? (isDaily ? (dailyDate ? `daily:${dailyDate}` : "daily") : null);
@@ -312,7 +314,7 @@ export default function PlaylistActions(props: PlaylistActionsProps) {
             </Tooltip>
           )}
 
-          {commentResourceKind && commentResourceId && (
+          {commentsSupported && commentResourceKind && commentResourceId && (
             <Tooltip>
               <TooltipTrigger asChild>
                 <button

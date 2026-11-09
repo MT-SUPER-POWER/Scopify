@@ -2,7 +2,7 @@
 
 import { VolumeX } from "lucide-react";
 import { useState } from "react";
-import { useMVUrlQuery } from "@/hooks/mv/useMVQueries";
+import { useNeteaseMvStreamQuery } from "@/hooks/mv/useMVQueries";
 import { cn } from "@/lib/utils";
 import type { MvCardPreviewProps } from "@/types/mv/components";
 
@@ -14,7 +14,7 @@ const PREVIEW_RESOLUTION = 480;
  * 顶部静音图标、底部细进度条随播放推进；加载出首帧前保持透明，露出静态封面。
  */
 export function MvCardPreview({ mvid }: MvCardPreviewProps) {
-  const url = useMVUrlQuery(mvid, PREVIEW_RESOLUTION).data?.data?.url ?? null;
+  const url = useNeteaseMvStreamQuery(mvid, PREVIEW_RESOLUTION).data?.url ?? null;
   const [isReady, setIsReady] = useState(false);
   const [progress, setProgress] = useState(0);
 

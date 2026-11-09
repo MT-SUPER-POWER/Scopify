@@ -2,7 +2,7 @@
 
 import { LoaderCircle } from "lucide-react";
 import { useEffect } from "react";
-import { useMVUrlQuery } from "@/hooks/mv/useMVQueries";
+import { useNeteaseMvStreamQuery } from "@/hooks/mv/useMVQueries";
 import { useMvSongExclusivity } from "@/hooks/mv/useMvSongExclusivity";
 import type { TrackPreviewVideoProps } from "@/types/player/trackPreviewComponents";
 
@@ -12,8 +12,8 @@ const PREVIEW_START_RATIO = 0.25;
 
 /** 预览弹窗中央的 MV：自动从中段起播；有声播放时暂停正在播放的歌曲，播完交给外层切到下一首。 */
 export function TrackPreviewVideo({ mvId, muted, onProgress, onEnded }: TrackPreviewVideoProps) {
-  const urlQuery = useMVUrlQuery(mvId, PREVIEW_RESOLUTION);
-  const url = urlQuery.data?.data?.url ?? null;
+  const urlQuery = useNeteaseMvStreamQuery(mvId, PREVIEW_RESOLUTION);
+  const url = urlQuery.data?.url ?? null;
   const { videoRef, handleVideoPlay } = useMvSongExclusivity();
 
   // 取消静音时才和歌曲抢声音

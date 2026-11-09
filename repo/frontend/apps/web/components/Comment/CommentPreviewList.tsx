@@ -11,13 +11,13 @@ export function CommentPreviewList({ comments, className }: CommentPreviewListPr
   return (
     <ul className={cn("flex flex-col", className)}>
       {comments.map((comment) => (
-        <li key={comment.commentId} className="flex gap-3 px-4 py-2.5">
+        <li key={comment.id} className="flex gap-3 px-4 py-2.5">
           <span className="relative size-7 shrink-0 overflow-hidden rounded-full bg-surface-elevated">
-            {comment.user?.avatarUrl && (
+            {comment.author.avatarUrl && (
               <Image
                 fill
                 sizes="28px"
-                src={getSizedImageUrl(comment.user.avatarUrl, 80)}
+                src={getSizedImageUrl(comment.author.avatarUrl, 80)}
                 alt=""
                 className="object-cover"
               />
@@ -26,12 +26,12 @@ export function CommentPreviewList({ comments, className }: CommentPreviewListPr
           <div className="min-w-0 flex-1">
             <div className="flex items-center justify-between gap-2">
               <span className="truncate text-xs font-bold text-content-muted">
-                {comment.user?.nickname}
+                {comment.author.name}
               </span>
-              {comment.likedCount > 0 && (
+              {comment.likeCount > 0 && (
                 <span className="flex shrink-0 items-center gap-1 text-xs text-content-subtle tabular-nums">
                   <ThumbsUp className="size-3" />
-                  {comment.likedCount.toLocaleString()}
+                  {comment.likeCount.toLocaleString()}
                 </span>
               )}
             </div>

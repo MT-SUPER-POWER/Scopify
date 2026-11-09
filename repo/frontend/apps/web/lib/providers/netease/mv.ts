@@ -1,6 +1,10 @@
 import type { MusicMvSource } from "@scopify/music-domain/mv";
 
-import { adaptNeteaseMv, adaptNeteaseMvDetail } from "@/lib/providers/netease/adapters/mv";
+import {
+  adaptNeteaseMv,
+  adaptNeteaseMvDetail,
+  getRelatedMvKeyword,
+} from "@/lib/providers/netease/adapters/mv";
 import { getMVDetail, getMVUrl } from "@/lib/providers/netease/api/mv";
 import { searchMVs } from "@/lib/providers/netease/api/search";
 import { getSongDetail } from "@/lib/providers/netease/api/track";
@@ -33,9 +37,12 @@ export const neteaseMvSource: MusicMvSource = {
 
   /** The MV page has always found related MVs by searching for the title and the artist. */
   async getRelatedMvs(mv, request) {
-    const artist = mv.artists[0]?.name.trim();
-    const keyword = [mv.title.trim(), artist].filter(Boolean).join(" ");
-    const response = await searchMVs(keyword, request.limit, request.offset, request.signal);
+    const response = await searchMVs(
+      getRelatedMvKeyword(mv),
+      request.limit,
+      request.offset,
+      request.signal,
+    );
     const mvs = response.data?.result?.mvs ?? [];
     const total = response.data?.result?.mvCount;
     const next = request.offset + mvs.length;

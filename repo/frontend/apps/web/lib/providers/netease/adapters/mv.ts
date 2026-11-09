@@ -4,6 +4,12 @@ import type { MusicArtist } from "@scopify/music-domain/track";
 import { getMvCover } from "@/lib/music/mvCover";
 import type { MvDetail, MvResolution, MvSummary } from "@/types/providers/netease/mvApi";
 
+/** The search words that find an MV's neighbours: its title and main artist. */
+export function getRelatedMvKeyword(mv: Pick<MusicMv, "title" | "artists">) {
+  const artist = mv.artists[0]?.name.trim();
+  return [mv.title.trim(), artist].filter(Boolean).join(" ");
+}
+
 function artistsOf(raw: MvSummary): MusicArtist[] {
   const credited = raw.artists?.length
     ? raw.artists

@@ -1,101 +1,67 @@
 import type { InfiniteData } from "@tanstack/react-query";
+import type {
+  MusicComment,
+  MusicCommentTarget,
+  MusicCommentTargetKind,
+} from "@scopify/music-domain/comment";
+import type { MusicProvider } from "@scopify/music-domain/identity";
+
 import {
-  COMMENT_RESOURCE_TYPE,
+  COMMENT_RESOURCE_KINDS,
+  type CommentResource,
   type CommentResourceKind,
-  type FloorCommentResponse,
-  type NewCommentResponse,
-} from "@/types/comment/api";
-import type { NeteaseComment } from "@/types/song/api";
+} from "@/types/comment/model";
 
 export function getCommentHref(kind: CommentResourceKind, id: number | string) {
   if (kind === "song") return `/comment?songId=${id}`;
   return `/comment?resource=${kind}&id=${id}`;
 }
 
+function isCommentResourceKind(value: null | string): value is CommentResourceKind {
+  return value !== null && (COMMENT_RESOURCE_KINDS as readonly string[]).includes(value);
+}
+
 export function resolveCommentResource(
   resource: null | string,
   id: null | string,
   legacySongId: null | string,
-) {
-  if (legacySongId) {
-    return { id: legacySongId, kind: "song", type: COMMENT_RESOURCE_TYPE.song } as const;
-  }
-
+): CommentResource | null {
+  if (legacySongId) return { id: legacySongId, kind: "song" };
   if (!id || !isCommentResourceKind(resource)) return null;
-  return { id, kind: resource, type: COMMENT_RESOURCE_TYPE[resource] };
+  return { id, kind: resource };
 }
 
-export function normalizeNewComments(data: NewCommentResponse | undefined) {
-  return {
-    comments: data?.data?.comments ?? [],
-    cursor: data?.data?.cursor,
-    hasMore: data?.data?.hasMore ?? false,
-    total: data?.data?.totalCount ?? 0,
-  };
+/** The kind of thread a page's resource kind names on the platform side ("song" is a track). */
+export function commentTargetKindOf(kind: CommentResourceKind): MusicCommentTargetKind {
+  return kind === "song" ? "track" : kind;
 }
 
-export function normalizeFloorComments(data: FloorCommentResponse | undefined) {
-  return {
-    comments: data?.data?.comments ?? [],
-    hasMore: data?.data?.hasMore ?? false,
-    time: data?.data?.time,
-    total: data?.data?.totalCount ?? 0,
-  };
-}
-
-export function getReplyCount(comment: NeteaseComment) {
-  return comment.showFloorComment?.replyCount ?? 0;
-}
-
-function isCommentResourceKind(value: null | string): value is CommentResourceKind {
-  return value !== null && value in COMMENT_RESOURCE_TYPE;
-}
-
-export function resolveCommentIpLocation(
-  comment:
-    | {
-        ipLocation?: { ip?: string; location?: string } | string | null;
-        location?: string | null;
-      }
-    | undefined,
-): string | undefined {
-  if (!comment) return undefined;
-  const raw = comment.ipLocation ?? comment.location;
-  if (!raw) return undefined;
-
-  let loc = "";
-  if (typeof raw === "string") {
-    loc = raw;
-  } else if (typeof raw === "object") {
-    loc = raw.location ?? raw.ip ?? "";
-  }
-
-  const cleaned = loc
-    .trim()
-    .replace(/^IP属地[：:]\s*/i, "")
-    .replace(/^IP[：:]\s*/i, "");
-  return cleaned.length > 0 ? cleaned : undefined;
+export function toCommentTarget(
+  provider: MusicProvider,
+  resource: CommentResource,
+): MusicCommentTarget {
+  return { provider, kind: commentTargetKindOf(resource.kind), id: resource.id };
 }
 
 /** 按评论 id 去重，保留先出现的那条：翻页时两页可能有重叠。 */
-export function dedupeComments(comments: NeteaseComment[]) {
-  const seen = new Set<number>();
+export function dedupeComments(comments: readonly MusicComment[]) {
+  const seen = new Set<string>();
   return comments.filter((comment) => {
-    if (seen.has(comment.commentId)) return false;
-    seen.add(comment.commentId);
+    if (seen.has(comment.id)) return false;
+    seen.add(comment.id);
     return true;
   });
 }
 
-export function toggleCommentLiked(comment: NeteaseComment): NeteaseComment {
+export function toggleCommentLiked(comment: MusicComment): MusicComment {
   const liked = !comment.liked;
-  return { ...comment, liked, likedCount: Math.max(0, comment.likedCount + (liked ? 1 : -1)) };
+  return { ...comment, liked, likeCount: Math.max(0, comment.likeCount + (liked ? 1 : -1)) };
 }
 
 /** 改写评论列表或楼中楼缓存（InfiniteData，每页带 comments）里的每一页。 */
-export function mapCommentPages<TPage extends { comments: NeteaseComment[] }>(
+export function mapCommentPages<TPage extends { comments: MusicComment[] }>(
   data: InfiniteData<TPage> | undefined,
-  update: (comments: NeteaseComment[]) => NeteaseComment[],
+  update: (comments: MusicComment[]) => MusicComment[],
 ): InfiniteData<TPage> | undefined {
   if (!data) return data;
   return {

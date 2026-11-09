@@ -1,77 +1,70 @@
 "use client";
 
+import type { MusicComment } from "@scopify/music-domain/comment";
 import { type InfiniteData, useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
 import { useCallback, useMemo, useState } from "react";
 import { toast } from "sonner";
-import {
-  addResourceComment,
-  delComments,
-  getNewComments,
-  replyComments,
-  toggleLikeComments,
-} from "@/lib/providers/netease/api/comment";
-import {
-  dedupeComments,
-  getReplyCount,
-  mapCommentPages,
-  normalizeNewComments,
-  toggleCommentLiked,
-} from "@/lib/comment/commentResource";
-import { useLoginStatus } from "@/hooks/auth/useLoginStatus";
-import { throwQueryErrorWithoutData } from "@/lib/query/errorPolicy";
-import { musicQueryKeys } from "@/lib/query/queryKeys";
 import { useTranslation } from "react-i18next";
 
-import { useUserStore } from "@/store/module/user";
-import type { CommentResource } from "@/types/comment/api";
-import type { CommentListPage, CommentListPageParam, CommentSortType } from "@/types/comment/model";
-import type { NeteaseComment } from "@/types/song/api";
+import { useCommentTarget } from "@/hooks/comment/useCommentTarget";
+import { useActiveAccount } from "@/hooks/auth/useProviderAccounts";
+import { useActiveProvider } from "@/hooks/provider/useActiveProvider";
+import { dedupeComments, mapCommentPages, toggleCommentLiked } from "@/lib/comment/commentResource";
+import { throwQueryErrorWithoutData } from "@/lib/query/errorPolicy";
+import { musicQueryKeys } from "@/lib/query/queryKeys";
+import type { CommentListPageParam, CommentResource, CommentSortType } from "@/types/comment/model";
 
 const PAGE_SIZE = 20;
 /** 网易云评论的字数上限。 */
 const MAX_LENGTH = 140;
-/** /comment/new 的 sortType：1 推荐（热度在前），3 按时间。 */
-const SORT_TYPE = { hot: 1, latest: 3 } as const;
 
-type CommentPages = InfiniteData<{ comments: NeteaseComment[] }>;
+type CommentPages = InfiniteData<{ comments: MusicComment[] }>;
 
 /**
  * 一个资源下的评论区：分页列表、排序、点赞、删除、发表与回复。
- * 列表走 /comment/new（只有它带回复数）；首页失败交给评论区自己的边界，
- * 翻页失败保留已加载的评论、在列表尾部重试。点赞、删除、发表是用户操作，
- * 反馈留在操作本身，成功后直接改写这个资源下的所有评论缓存（列表与各层楼）。
+ * 首页失败交给评论区自己的边界，翻页失败保留已加载的评论、在列表尾部重试。
+ * 点赞、删除、发表是用户操作（平台有 comments.write 时才有），反馈留在操作本身，
+ * 成功后直接改写这个资源下的所有评论缓存（列表与各层楼）。
  */
 export function useCommentThread(resource: CommentResource) {
   const { t } = useTranslation();
-  const isLogin = useLoginStatus();
+  const provider = useActiveProvider();
+  const account = useActiveAccount();
   const queryClient = useQueryClient();
-  const accountId = String(useUserStore((state) => state.user?.userId ?? ""));
+  const target = useCommentTarget(resource);
+  const accountId = account.profile?.accountId ?? "";
   const [sort, setSort] = useState<CommentSortType>("hot");
   // 正在回复的评论；顶部输入框与各条评论下的内联回复共用，同一时间只开一个
-  const [replyTarget, setReplyTarget] = useState<NeteaseComment | null>(null);
+  const [replyTarget, setReplyTarget] = useState<MusicComment | null>(null);
   const threadKey = useMemo(
-    () => musicQueryKeys.comment.thread(accountId, resource.kind, resource.id),
-    [accountId, resource.id, resource.kind],
+    () => musicQueryKeys.comment.thread(provider.provider, accountId, resource.kind, resource.id),
+    [accountId, provider.provider, resource.id, resource.kind],
   );
 
   const listQuery = useInfiniteQuery({
-    queryKey: musicQueryKeys.comment.list(accountId, resource.kind, resource.id, sort),
-    queryFn: async ({ pageParam }): Promise<CommentListPage> =>
-      normalizeNewComments(
-        (
-          await getNewComments({
-            cursor: pageParam.cursor,
-            id: resource.id,
-            pageNo: pageParam.pageNo,
-            pageSize: PAGE_SIZE,
-            sortType: SORT_TYPE[sort],
-            type: resource.type,
-          })
-        ).data,
-      ),
+    queryKey: musicQueryKeys.comment.list(
+      provider.provider,
+      accountId,
+      resource.kind,
+      resource.id,
+      sort,
+    ),
+    queryFn: ({ pageParam, signal }) =>
+      provider.getComments(target, {
+        sort,
+        pageNo: pageParam.pageNo,
+        ...(pageParam.cursor === undefined ? {} : { cursor: pageParam.cursor }),
+        pageSize: PAGE_SIZE,
+        signal,
+      }),
     initialPageParam: { pageNo: 1 } as CommentListPageParam,
     getNextPageParam: (lastPage, pages): CommentListPageParam | undefined =>
-      lastPage.hasMore ? { cursor: lastPage.cursor, pageNo: pages.length + 1 } : undefined,
+      lastPage.hasMore
+        ? {
+            ...(lastPage.nextCursor === null ? {} : { cursor: lastPage.nextCursor }),
+            pageNo: pages.length + 1,
+          }
+        : undefined,
     throwOnError: throwQueryErrorWithoutData,
   });
 
@@ -82,40 +75,34 @@ export function useCommentThread(resource: CommentResource) {
 
   /** 改写这个资源下所有已缓存的评论页（各排序的列表与各层楼的回复）。 */
   const updateCachedComments = useCallback(
-    (update: (comments: NeteaseComment[]) => NeteaseComment[]) =>
+    (update: (comments: MusicComment[]) => MusicComment[]) =>
       queryClient.setQueriesData<CommentPages>({ queryKey: threadKey }, (data) =>
         mapCommentPages(data, update),
       ),
     [queryClient, threadKey],
   );
 
+  const countKey = musicQueryKeys.comment.count(provider.provider, resource.kind, resource.id);
+
   /** 发表、删除之后：重新拉这个资源的评论，顺带刷新别处显示的评论数。 */
   const refreshThread = useCallback(
     () =>
       Promise.all([
         queryClient.invalidateQueries({ queryKey: threadKey }),
-        queryClient.invalidateQueries({
-          queryKey: musicQueryKeys.comment.count(resource.kind, resource.id),
-        }),
+        queryClient.invalidateQueries({ queryKey: countKey }),
       ]),
-    [queryClient, resource.id, resource.kind, threadKey],
+    [countKey, queryClient, threadKey],
   );
 
   const like = useCallback(
-    async (comment: NeteaseComment) => {
-      const toggle = (list: NeteaseComment[]) =>
-        list.map((item) =>
-          item.commentId === comment.commentId ? toggleCommentLiked(item) : item,
-        );
+    async (comment: MusicComment) => {
+      if (!provider.setCommentLiked) return;
+      const toggle = (list: MusicComment[]) =>
+        list.map((item) => (item.id === comment.id ? toggleCommentLiked(item) : item));
       // 先改界面，失败再改回来
       updateCachedComments(toggle);
       try {
-        await toggleLikeComments(
-          resource.id,
-          comment.commentId,
-          comment.liked ? 0 : 1,
-          resource.type,
-        );
+        await provider.setCommentLiked(target, comment.id, !comment.liked);
         toast.success(
           comment.liked ? t("comments.page.unlikeSuccess") : t("comments.page.likeSuccess"),
         );
@@ -125,35 +112,31 @@ export function useCommentThread(resource: CommentResource) {
         toast.error(t("common.message.requestFailed", { message: "" }));
       }
     },
-    [resource.id, resource.type, t, updateCachedComments],
+    [provider, t, target, updateCachedComments],
   );
 
   const remove = useCallback(
-    async (comment: NeteaseComment, rootId?: number) => {
+    async (comment: MusicComment, rootId?: string) => {
+      if (!provider.deleteComment) return;
       try {
-        await delComments(resource.id, comment.commentId, resource.type);
+        await provider.deleteComment(target, comment.id);
         updateCachedComments((list) =>
           list
-            .filter((item) => item.commentId !== comment.commentId)
+            .filter((item) => item.id !== comment.id)
             .map((item) =>
-              rootId !== undefined && item.commentId === rootId
-                ? {
-                    ...item,
-                    showFloorComment: { replyCount: Math.max(0, getReplyCount(item) - 1) },
-                  }
+              rootId !== undefined && item.id === rootId
+                ? { ...item, replyCount: Math.max(0, item.replyCount - 1) }
                 : item,
             ),
         );
         toast.success(t("comments.page.deleted"));
-        void queryClient.invalidateQueries({
-          queryKey: musicQueryKeys.comment.count(resource.kind, resource.id),
-        });
+        void queryClient.invalidateQueries({ queryKey: countKey });
       } catch (error) {
         console.error("Failed to delete comment:", error);
         toast.error(t("common.message.requestFailed", { message: "" }));
       }
     },
-    [queryClient, resource.id, resource.kind, resource.type, t, updateCachedComments],
+    [countKey, provider, queryClient, t, target, updateCachedComments],
   );
 
   const closeReply = useCallback(() => setReplyTarget(null), []);
@@ -162,17 +145,18 @@ export function useCommentThread(resource: CommentResource) {
   const submit = useCallback(
     async (text: string) => {
       if (!text.trim() || text.length > MAX_LENGTH) return false;
-      if (!isLogin) {
+      if (!account.isLoggedIn) {
         toast.error(t("comments.page.loginRequired"));
         return false;
       }
+      if (!provider.addComment || !provider.replyToComment) return false;
 
       try {
         if (replyTarget) {
-          await replyComments(resource.id, replyTarget.commentId, text, resource.type);
+          await provider.replyToComment(target, replyTarget.id, text);
           toast.success(t("comments.page.replySuccess"));
         } else {
-          await addResourceComment(resource.id, text, resource.type);
+          await provider.addComment(target, text);
           toast.success(t("comments.page.publishSuccess"));
           // 刚发的评论按时间排在最前
           setSort("latest");
@@ -186,7 +170,7 @@ export function useCommentThread(resource: CommentResource) {
         return false;
       }
     },
-    [closeReply, isLogin, refreshThread, replyTarget, resource.id, resource.type, t],
+    [account.isLoggedIn, closeReply, provider, refreshThread, replyTarget, t, target],
   );
 
   return {

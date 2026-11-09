@@ -12,6 +12,7 @@ import {
   ContextMenuTrigger,
 } from "@/components/ui/context-menu";
 import { useCommentCountQuery } from "@/hooks/comment/useCommentCountQuery";
+import { useCommentKindSupported } from "@/hooks/comment/useCommentTarget";
 import { useSidebarPlaylistPlayback } from "@/hooks/sidebar/useSidebarPlaylistPlayback";
 import { getCommentHref } from "@/lib/comment/commentResource";
 import { useSmartRouter } from "@/hooks/core/useSmartRouter";
@@ -26,6 +27,7 @@ function LibItemContextMenu({ children, playlistID }: LibItemMenuProps) {
   const { t } = useTranslation();
   const [contextMenuOpen, setContextMenuOpen] = React.useState(false);
   const play = useSidebarPlaylistPlayback(playlistID);
+  const commentsSupported = useCommentKindSupported("playlist");
   const { data: commentCount } = useCommentCountQuery(
     "playlist",
     String(playlistID),
@@ -58,19 +60,21 @@ function LibItemContextMenu({ children, playlistID }: LibItemMenuProps) {
 
             {/* 杂项，未来拓展 */}
             <ContextMenuGroup>
-              <ContextMenuItem
-                onClick={() => {
-                  smartRouter.push(getCommentHref("playlist", playlistID));
-                }}
-              >
-                <MessageCircle className="mr-2 size-4" />
-                {commentCount === undefined
-                  ? t("contextMenu.viewComments")
-                  : t("contextMenu.viewCommentsWithCount", {
-                      count: commentCount,
-                      replace: { count: formatCompactCount(commentCount) },
-                    })}
-              </ContextMenuItem>
+              {commentsSupported && (
+                <ContextMenuItem
+                  onClick={() => {
+                    smartRouter.push(getCommentHref("playlist", playlistID));
+                  }}
+                >
+                  <MessageCircle className="mr-2 size-4" />
+                  {commentCount === undefined
+                    ? t("contextMenu.viewComments")
+                    : t("contextMenu.viewCommentsWithCount", {
+                        count: commentCount,
+                        replace: { count: formatCompactCount(commentCount) },
+                      })}
+                </ContextMenuItem>
+              )}
               <ContextMenuItem
                 onClick={() => {
                   const url = `https://music.163.com/#/playlist?id=${playlistID}`;

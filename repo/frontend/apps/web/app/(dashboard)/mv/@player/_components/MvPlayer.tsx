@@ -18,7 +18,8 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { MvProgressBar } from "./player/MvProgressBar";
 import { MvSettingsMenu } from "./player/MvSettingsMenu";
 import { MvVolumeControl } from "./player/MvVolumeControl";
-import { useMVUrlQuery } from "@/hooks/mv/useMVQueries";
+import { useMvStreamQuery } from "@/hooks/mv/useMVQueries";
+import { useMvRef } from "@/hooks/mv/useMvId";
 import { useMvSongExclusivity } from "@/hooks/mv/useMvSongExclusivity";
 import { useMvVideoState } from "@/hooks/mv/useMvVideoState";
 import { useMvQualitySwitch } from "@/hooks/mv/useMvQualitySwitch";
@@ -56,7 +57,6 @@ function isTypingTarget(target: EventTarget | null) {
  * T 剧场模式，W 网页全屏，F 全屏，Esc 退出网页全屏。这些无修饰键优先控制 MV。
  */
 export function MvPlayer({
-  mvid,
   resolutions,
   poster,
   onNext,
@@ -76,10 +76,13 @@ export function MvPlayer({
   const setPlaybackRate = useMvPlaybackStore((state) => state.setPlaybackRate);
   const autoNext = useMvPlaybackStore((state) => state.autoNext);
   const setAutoNext = useMvPlaybackStore((state) => state.setAutoNext);
-  const urlQuery = useMVUrlQuery(mvid, resolution);
-  const url = urlQuery.data?.data?.url ?? null;
-  const currentResolution = urlQuery.data?.data?.r || resolution;
-  const available = getMvResolutions(resolutions, currentResolution);
+  const urlQuery = useMvStreamQuery(useMvRef(), resolution);
+  const url = urlQuery.data?.url ?? null;
+  const currentResolution = urlQuery.data?.height || resolution;
+  const available = getMvResolutions(
+    [...resolutions, ...(urlQuery.data?.qualities.map((quality) => quality.height) ?? [])],
+    currentResolution,
+  );
   const video = useMvVideoState(videoRef, url);
   const containerRef = useRef<HTMLDivElement>(null);
   const idleTimerRef = useRef<number | undefined>(undefined);

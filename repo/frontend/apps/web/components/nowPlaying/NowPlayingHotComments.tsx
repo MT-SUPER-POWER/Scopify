@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useMemo } from "react";
 import { NowPlayingCard } from "./NowPlayingCard";
 import { CommentPreviewList } from "@/components/Comment/CommentPreviewList";
 import { useSongHotCommentsQuery } from "@/hooks/comment/useSongHotCommentsQuery";
@@ -11,7 +12,11 @@ import type { NowPlayingSectionProps } from "@/types/player/nowPlayingComponents
 /** 「精彩评论」：网易云特色的热评预览，标题旁可进入完整评论页。 */
 export function NowPlayingHotComments({ song }: NowPlayingSectionProps) {
   const { t } = useTranslation();
-  const query = useSongHotCommentsQuery(song.id);
+  const target = useMemo(
+    () => ({ provider: "netease" as const, kind: "track" as const, id: String(song.id) }),
+    [song.id],
+  );
+  const query = useSongHotCommentsQuery(target);
   const comments = query.data?.comments ?? [];
 
   if (comments.length === 0) return null;

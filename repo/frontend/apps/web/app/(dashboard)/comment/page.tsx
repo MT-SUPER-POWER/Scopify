@@ -4,12 +4,14 @@ import { MessageCircle } from "lucide-react";
 import { CommentSection } from "@/components/Comment/CommentSection";
 import { QueryBoundary } from "@/components/shared/QueryBoundary";
 import { useCommentResource } from "@/hooks/comment/useCommentResource";
+import { useCommentKindSupported } from "@/hooks/comment/useCommentTarget";
 import { useTranslation } from "react-i18next";
 
 export default function CommentPage() {
   const { t } = useTranslation();
   const resource = useCommentResource();
-  if (!resource)
+  const supported = useCommentKindSupported(resource?.kind);
+  if (!resource || !supported)
     return (
       <div className="flex min-h-[60vh] flex-col items-center justify-center gap-4 text-content-muted">
         <MessageCircle className="size-16 opacity-30" />

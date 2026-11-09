@@ -4,6 +4,7 @@ import { Badge } from "@scopify/ui/shadcn/components/badge";
 import { MessageCircle } from "lucide-react";
 
 import { useCommentCountQuery } from "@/hooks/comment/useCommentCountQuery";
+import { useCommentKindSupported } from "@/hooks/comment/useCommentTarget";
 import { useSmartRouter } from "@/hooks/core/useSmartRouter";
 import { getCommentHref } from "@/lib/comment/commentResource";
 import { formatCompactCount } from "@/lib/utils";
@@ -16,6 +17,7 @@ export function AlbumCommentButton({ albumId }: { albumId: string }) {
   const { t } = useTranslation();
   const smartRouter = useSmartRouter();
   const { data: commentCount } = useCommentCountQuery("album", albumId);
+  const supported = useCommentKindSupported("album");
   const commentLabel =
     commentCount === undefined
       ? t("album.action.comments")
@@ -23,6 +25,8 @@ export function AlbumCommentButton({ albumId }: { albumId: string }) {
           count: commentCount,
           replace: { count: formatCompactCount(commentCount) },
         });
+
+  if (!supported) return null;
 
   return (
     <Tooltip>
