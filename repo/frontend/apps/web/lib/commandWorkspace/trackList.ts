@@ -1,7 +1,5 @@
 import type { MusicProviderClient } from "@scopify/music-domain/provider";
 import { adaptNeteaseTrack } from "@/lib/providers/netease/adapters/track";
-import { getAlbumDetail } from "@/lib/providers/netease/api/album";
-import { getArtistTopSongs } from "@/lib/providers/netease/api/artist";
 import { getRadioPrograms } from "@/lib/providers/netease/api/radio";
 import { toVoiceSongDetail } from "@/lib/search/voiceSong";
 import { pruneSongDetail, type SongDetail } from "@/types/song/api";
@@ -43,34 +41,19 @@ export async function loadCommandWorkspaceTrackList(
       };
     }
     case "album": {
-      const albumId = Number(item.entity.ref.id);
-      const response = await getAlbumDetail(albumId);
-      const coverUrl = item.entity.coverUrl ?? "";
+      const { tracks } = await provider.getAlbum(item.entity.ref);
       return {
         description: item.entity.artists[0]?.name,
         title: item.entity.title,
-        tracks: (response.data.songs ?? []).map((song) =>
-          adaptNeteaseTrack(
-            pruneSongDetail({
-              ...song,
-              al: {
-                id: song.al?.id ?? albumId,
-                name: song.al?.name ?? item.entity.title,
-                picUrl: song.al?.picUrl ?? coverUrl,
-              },
-            }),
-          ),
-        ),
+        tracks,
       };
     }
-    case "artist": {
-      const response = await getArtistTopSongs(item.entity.ref.id);
+    case "artist":
       return {
         description: "热门歌曲",
         title: item.entity.name,
-        tracks: (response.data.songs ?? []).map(pruneSongDetail).map(adaptNeteaseTrack),
+        tracks: await provider.getArtistTopTracks(item.entity.ref),
       };
-    }
     case "podcast":
       return loadPodcastTrackList(item.entity);
   }

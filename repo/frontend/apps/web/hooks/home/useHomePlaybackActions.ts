@@ -3,16 +3,15 @@
 import { useCallback, useState } from "react";
 import { toast } from "sonner";
 import { useActiveProvider } from "@/hooks/provider/useActiveProvider";
-import { adaptNeteaseTrack } from "@/lib/providers/netease/adapters/track";
-import { getAlbumDetailData } from "@/lib/providers/netease/api/album";
-import { getArtistTopSongs } from "@/lib/providers/netease/api/artist";
 import { readAllPlaylistTracks } from "@/lib/music/readPlaylistTracks";
 import { usePlayerStore } from "@/store";
 import { useTranslation } from "react-i18next";
 
-import { pruneSongDetail } from "@/types/song/api";
 import type { HomePlaybackActions } from "@/types/home/model";
 import type { PlayerTrack } from "@/types/player/model";
+
+/** Tracks of an artist the home page queues when the artist card is played. */
+const HOME_ARTIST_TOP_TRACKS = 50;
 
 /** 首页各栏目共用播放动作；读取 Query 的状态不参与此 hook。 */
 export function useHomePlaybackActions(): HomePlaybackActions {
@@ -55,18 +54,23 @@ export function useHomePlaybackActions(): HomePlaybackActions {
           id: String(id),
         }),
       ),
-    // Albums and artists are NetEase-only on the home page until their areas are migrated.
     handlePlayAlbum: (id, event) =>
-      playCollection(`album-${id}`, event, async () =>
-        ((await getAlbumDetailData(id)).songs ?? []).map((song) =>
-          adaptNeteaseTrack(pruneSongDetail(song)),
-        ),
+      playCollection(
+        `album-${id}`,
+        event,
+        async () =>
+          (await provider.getAlbum({ provider: provider.provider, kind: "album", id: String(id) }))
+            .tracks,
       ),
     handlePlayArtistTopSongs: (id, event) =>
       playCollection(`artist-${id}`, event, async () =>
-        ((await getArtistTopSongs(id, 50)).data.songs ?? []).map((song) =>
-          adaptNeteaseTrack(pruneSongDetail(song)),
-        ),
+        (
+          await provider.getArtistTopTracks({
+            provider: provider.provider,
+            kind: "artist",
+            id: String(id),
+          })
+        ).slice(0, HOME_ARTIST_TOP_TRACKS),
       ),
     playTracks: async (tracks, index) => {
       if (!tracks[index]) return;

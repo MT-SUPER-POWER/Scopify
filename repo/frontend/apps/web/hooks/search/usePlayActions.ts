@@ -3,12 +3,9 @@ import type { MusicAlbumResult } from "@scopify/music-domain/search";
 import { useCallback, useState } from "react";
 import { toast } from "sonner";
 import { useActiveProvider } from "@/hooks/provider/useActiveProvider";
-import { getAlbumDetail } from "@/lib/providers/netease/api/album";
-import { adaptNeteaseTrack } from "@/lib/providers/netease/adapters/track";
 import { translate } from "@/lib/i18n";
 import { usePlayerStore } from "@/store";
 import { useI18nStore } from "@/store/module/i18n";
-import { pruneSongDetail, type RawSongDetail, type SongDetail } from "@/types/song/api";
 
 export function usePlayActions() {
   const provider = useActiveProvider();
@@ -41,7 +38,6 @@ export function usePlayActions() {
     [loadingPlayId, provider, setQueue, playQueueIndex],
   );
 
-  /** Albums have no interface type yet, so this is NetEase's album read (`album.read`). */
   const handlePlayAlbum = useCallback(
     async (album: MusicAlbumResult, e: React.MouseEvent) => {
       e.stopPropagation();
@@ -49,23 +45,12 @@ export function usePlayActions() {
       if (loadingPlayId === key) return;
       setLoadingPlayId(key);
       try {
-        const res = await getAlbumDetail(Number(album.ref.id));
-        const tracks: SongDetail[] = (res.data.songs ?? []).map((song: RawSongDetail) =>
-          pruneSongDetail({
-            ...song,
-            al: {
-              id: song.al?.id ?? 0,
-              name: song.al?.name ?? "",
-              picUrl:
-                song.al?.picUrl ?? res.data?.album?.picUrl ?? res.data?.album?.blurPicUrl ?? "",
-            },
-          }),
-        );
+        const { tracks } = await provider.getAlbum(album.ref);
         if (!tracks.length) {
           toast.error(translate(useI18nStore.getState().locale, "artist.toast.albumEmpty"));
           return;
         }
-        setQueue(tracks.map(adaptNeteaseTrack), 0);
+        setQueue(tracks, 0);
         await playQueueIndex(0);
       } catch {
         toast.error(translate(useI18nStore.getState().locale, "artist.toast.loadAlbumFailed"));
@@ -73,7 +58,7 @@ export function usePlayActions() {
         setLoadingPlayId(null);
       }
     },
-    [loadingPlayId, setQueue, playQueueIndex],
+    [loadingPlayId, provider, setQueue, playQueueIndex],
   );
 
   return { loadingPlayId, handlePlayPlaylist, handlePlayAlbum };
