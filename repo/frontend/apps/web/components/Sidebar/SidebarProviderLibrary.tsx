@@ -23,6 +23,7 @@ import { useTranslation } from "react-i18next";
 import type { SidebarPlaylistLibraryContentProps } from "@/types/sidebar/components";
 import { CollapsibleLibraryGroup } from "./CollapsibleLibraryGroup";
 import { LibraryItem } from "./LibraryItem";
+import { PersonalFmPlaylistItem } from "./PersonalFmPlaylistItem";
 import { SidebarLibraryStateCard } from "./SidebarLibraryStateCard";
 import { SidebarPlaylistConfirmDialog } from "./SidebarPlaylistConfirmDialog";
 import { SidebarPlaylistSkeleton } from "./SidebarPlaylistSkeleton";
@@ -175,16 +176,21 @@ export function SidebarProviderLibrary({
       </div>
     </PlaylistMenu>
   );
-  const personal = liked && (
-    <LibraryItem
-      id={liked.playlist.ref.id}
-      href="/liked"
-      hasContextMenu={false}
-      title={t("sidebar.library.likedMusic")}
-      subtitle={t("sidebar.playlist.you")}
-      coverImg={coverOf(liked.playlist.coverUrl)}
-      isCollapsed={isCollapsed}
-    />
+  const personal = (
+    <>
+      <PersonalFmPlaylistItem isCollapsed={isCollapsed} />
+      {liked && (
+        <LibraryItem
+          id={liked.playlist.ref.id}
+          href="/liked"
+          hasContextMenu={false}
+          title={t("sidebar.library.likedMusic")}
+          subtitle={t("sidebar.playlist.you")}
+          coverImg={coverOf(liked.playlist.coverUrl)}
+          isCollapsed={isCollapsed}
+        />
+      )}
+    </>
   );
 
   return (
@@ -207,14 +213,13 @@ export function SidebarProviderLibrary({
           </Button>
         </div>
       )}
-      {personal &&
-        (isCollapsed ? (
-          personal
-        ) : (
-          <CollapsibleLibraryGroup title={t("sidebar.group.personal")}>
-            {personal}
-          </CollapsibleLibraryGroup>
-        ))}
+      {isCollapsed ? (
+        personal
+      ) : (
+        <CollapsibleLibraryGroup title={t("sidebar.group.personal")}>
+          {personal}
+        </CollapsibleLibraryGroup>
+      )}
       {others.length === 0 ? (
         <SidebarLibraryStateCard
           isCollapsed={isCollapsed}

@@ -192,7 +192,7 @@ export function useRecentSongsQuery() {
 /** The artists the account follows; following is NetEase's, so other platforms stay idle. */
 export function useFollowedArtistsQuery() {
   const { isLoggedIn, userId } = useLibrarySession();
-  const canFollow = useProviderCapability("artist.read");
+  const canFollow = useProviderCapability("artist.follow");
 
   return useQuery({
     enabled: canFollow && isLoggedIn && Boolean(userId),
