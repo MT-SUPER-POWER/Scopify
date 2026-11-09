@@ -1,18 +1,18 @@
 "use client";
 
+import type { MusicSearchSuggestion } from "@scopify/music-domain/search";
 import { Clock, Search, X } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { searchDefault, searchSuggest } from "@/lib/providers/netease/api/search";
 import { getCommandWorkspaceSearchFilterForCategory } from "@/lib/commandWorkspace/search";
 import { useSmartRouter } from "@/hooks/core/useSmartRouter";
+import { useActiveProvider } from "@/hooks/provider/useActiveProvider";
 import { buildSearchUrl } from "@/lib/search/searchCategory";
 import { cn } from "@/lib/utils";
 import { useTranslation } from "react-i18next";
 
 import { useSearchStore } from "@/store/module/search";
 import type { SearchRecentEntry } from "@/types/search/model";
-import type { SuggestItem } from "@/types/search/components";
 import { HighlightText, SuggestTag } from "./SearchHelper";
 
 const NAV_BTN = "bg-surface-sunken/80 hover:bg-surface-elevated";
@@ -27,6 +27,7 @@ const GLASS = cn(
 export default function HeaderSearch() {
   const { t } = useTranslation();
   const smartRouter = useSmartRouter();
+  const provider = useActiveProvider();
   const intervalRef = useRef<number | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const wrapperRef = useRef<HTMLDivElement>(null);
@@ -43,7 +44,7 @@ export default function HeaderSearch() {
   const [localValue, setLocalValue] = useState(persistedQuery || "");
   const [focused, setFocused] = useState(false);
   const [open, setOpen] = useState(false);
-  const [suggests, setSuggests] = useState<SuggestItem[]>([]);
+  const [suggests, setSuggests] = useState<MusicSearchSuggestion[]>([]);
   const [loading, setLoading] = useState(false);
   const [isMac, setIsMac] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(-1);
@@ -72,29 +73,35 @@ export default function HeaderSearch() {
       return;
     }
     setLoading(true);
+    const controller = new AbortController();
     const t = setTimeout(async () => {
       try {
-        const res = await searchSuggest(localValue.trim());
-        setSuggests(res.data?.data?.suggests ?? []);
+        const next = await provider.getSearchSuggestions(localValue.trim(), controller.signal);
+        if (controller.signal.aborted) return;
+        setSuggests(next);
         setSelectedIndex(-1);
       } catch {
+        if (controller.signal.aborted) return;
         setSuggests([]);
         setSelectedIndex(-1);
       } finally {
-        setLoading(false);
+        if (!controller.signal.aborted) setLoading(false);
       }
     }, 200);
-    return () => clearTimeout(t);
-  }, [localValue]);
+    return () => {
+      clearTimeout(t);
+      controller.abort();
+    };
+  }, [localValue, provider]);
 
   // 轮播默认热搜
   useEffect(() => {
     let isActive = true;
     const fetchHot = async () => {
       try {
-        const res = await searchDefault();
+        const hotSearches = await provider.getHotSearches();
         if (!isActive) return;
-        const kws = res.data?.data.algWords.map((w: { keyword: string }) => w.keyword) || [];
+        const kws = hotSearches.map((hot) => hot.keyword);
         if (!kws.length) return;
         let idx = 0;
         if (!localValue && !isSearching) setStorePlaceholder(kws[0]);
@@ -114,7 +121,7 @@ export default function HeaderSearch() {
       isActive = false;
       if (intervalRef.current) clearInterval(intervalRef.current);
     };
-  }, [localValue, isSearching, setStorePlaceholder]);
+  }, [localValue, isSearching, provider, setStorePlaceholder]);
 
   // 点击外部关闭下拉框
   useEffect(() => {
@@ -361,10 +368,10 @@ export default function HeaderSearch() {
                     <div className="flex min-w-0 items-center gap-2.5">
                       <Search className="size-4 shrink-0 text-content-subtle" />
                       <span className="truncate text-sm text-content">
-                        <HighlightText raw={item.highLightInfo} />
+                        <HighlightText highlights={item.highlights} />
                       </span>
                     </div>
-                    <SuggestTag item={item} />
+                    <SuggestTag tag={item.tag} />
                   </motion.div>
                 ))}
               </div>
