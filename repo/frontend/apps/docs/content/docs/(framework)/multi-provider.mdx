@@ -3,6 +3,10 @@ title: 多平台接入架构
 description: 网易云音乐与 QQ 音乐的一刀切接入：按平台拆请求和 DTO，经转换层汇成一套界面类型，缺失的能力在界面上直接不出现。
 ---
 
+import layersChart from "./multi-provider-layers.mmd";
+import capabilityChart from "./multi-provider-capability.mmd";
+import switchChart from "./multi-provider-switch.mmd";
+
 Scopify 同时接入网易云音乐和 QQ 音乐，但**任何时候只有一个激活平台**。切账号就整体换源：两个平台的数据不合并、不互补、不在同一个队列里混放。当前平台没有的能力，对应的入口、区块和页面都不出现。
 
 以后要做跨平台的统一 Provider（混合歌单、跨源换播、歌曲匹配），在本文的平台接口之上再加一层即可，页面不用回头改。
@@ -17,14 +21,7 @@ Scopify 同时接入网易云音乐和 QQ 音乐，但**任何时候只有一个
 
 ## 分层与目录
 
-```text
-网易云后端 ─→ netease/client ─→ netease/api ─→ 网易云 DTO ─→ netease/adapters ─┐
-                                                                            ├─→ 界面类型 ─→ hooks ─→ 组件 / 页面
-QQ 音乐后端 ─→ qq/client ─────→ qq/api ──────→ QQ DTO ─────→ qq/adapters ──────┘
-                     ↑                                          ↑
-          lib/web/http/createApiClient           平台对象（netease/index.ts、qq/index.ts）
-          共用的地址、超时、trace、错误上报         按区域组合，声明 capabilities
-```
+<Mermaid chart={layersChart} />
 
 | 层 | 位置 | 放什么 | 谁可以用 |
 | --- | --- | --- | --- |
@@ -94,6 +91,8 @@ hooks 通过 `useActiveProvider()` 拿当前平台对象并调用其方法，不
 
 这是这套架构里最需要守住的部分。
 
+<Mermaid chart={capabilityChart} />
+
 ### 能力怎么声明
 
 - 能力名在 `packages/music-domain/src/capability.ts`，格式是 `区域.动作`，例如 `comments.read`、`comments.write`、`playlist.read`、`playlist.manage`、`playlist.reorder`。只缺一半的功能拆成两个能力，界面就能只藏缺的那一半。
@@ -131,6 +130,8 @@ hooks 通过 `useActiveProvider()` 拿当前平台对象并调用其方法，不
 “需要登录”和“平台没有这个能力”是两回事。能力描述的是平台；登录要求仍由现有的 `useRequireLoginAction` 等机制处理。不要用“不声明能力”来代替登录拦截。
 
 ## 账号与切换
+
+<Mermaid chart={switchChart} />
 
 - **会话分开存。** 网易云沿用原有凭据；QQ 的 token 存在 `localStorage` 的 `scopify:qq-session` 里（`lib/providers/qq/session.ts`）。切换平台不会清掉另一个平台的登录，切回来不用重新扫码。
 - **登录即激活。** 登录哪个平台就切到哪个平台；如果登录前它已经是激活平台，就不切换。桌面端的登录窗口只记录切换请求，由主窗口重新加载后执行，避免登录窗口改写主窗口的队列。
