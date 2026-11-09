@@ -2,8 +2,10 @@ import type { MusicAlbumSource } from "./album";
 import type { MusicArtistSource } from "./artist";
 import type { MusicCapability } from "./capability";
 import type { MusicProvider } from "./identity";
+import type { MusicCommentSource } from "./comment";
 import type { MusicLibrarySource } from "./library";
 import type { MusicLyricsSource } from "./lyrics";
+import type { MusicMvSource } from "./mv";
 import type { MusicPlaybackSource } from "./playback";
 import type { MusicPlaylistSource } from "./playlist";
 import type { MusicSearchSource } from "./search";
@@ -32,7 +34,9 @@ export interface MusicProviderClient
     MusicLibrarySource,
     MusicArtistSource,
     MusicAlbumSource,
-    MusicLyricsSource {
+    MusicLyricsSource,
+    MusicCommentSource,
+    MusicMvSource {
   readonly provider: MusicProvider;
   readonly capabilities: ReadonlySet<MusicCapability>;
 }

@@ -1,5 +1,5 @@
 export type MusicProvider = "netease" | "qq";
-export type MusicResourceKind = "track" | "album" | "artist" | "playlist";
+export type MusicResourceKind = "track" | "album" | "artist" | "playlist" | "mv";
 
 /** A durable resource reference, independent of the current account or playback URL. */
 export interface MusicResourceRef<Kind extends MusicResourceKind = MusicResourceKind> {
