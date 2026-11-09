@@ -11,6 +11,7 @@ const QQ_CAPABILITIES: ReadonlySet<MusicCapability> = new Set<MusicCapability>([
   "track.read",
   "track.play",
   "playlist.read",
+  "search",
 ]);
 
 /** Composed from one module per area (`./<area>.ts`), so areas can change independently. */
