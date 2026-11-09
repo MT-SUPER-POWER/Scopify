@@ -1,5 +1,6 @@
 import { qqClient } from "@/lib/providers/qq/client";
 import type {
+  QqNewAlbumsDto,
   QqDailySongsDto,
   QqNewSongsDto,
   QqPersonalFmDto,
@@ -27,6 +28,17 @@ export function getQqNewSongs(signal?: AbortSignal) {
     noSession: true,
     signal,
     errorContext: { operation: "qq.recommend.newSongs" },
+  });
+}
+
+export function getQqNewAlbums(limit: number, signal?: AbortSignal) {
+  return qqClient.requestData<QqNewAlbumsDto>({
+    method: "GET",
+    url: "/recommend/new-albums",
+    params: { limit },
+    noSession: true,
+    signal,
+    errorContext: { operation: "qq.recommend.newAlbums" },
   });
 }
 

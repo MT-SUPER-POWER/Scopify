@@ -1,8 +1,10 @@
 import type { MusicPlaylist, MusicPlaylistDetail } from "@scopify/music-domain/playlist";
-import type { MusicToplist } from "@scopify/music-domain/recommend";
+import type { MusicAlbumSummary, MusicToplist } from "@scopify/music-domain/recommend";
 
-import { qqSecureUrl } from "@/lib/providers/qq/adapters/playlist";
+import { parseQqDate } from "@/lib/providers/qq/adapters/artist";
+import { qqAlbumCoverUrl, qqSecureUrl } from "@/lib/providers/qq/adapters/playlist";
 import type {
+  QqNewAlbumDto,
   QqRecommendPlaylistDto,
   QqToplistDto,
   QqToplistsDto,
@@ -23,6 +25,19 @@ export function qqToplistIdOf(playlistId: string): string | null {
   return playlistId.startsWith(QQ_TOPLIST_ID_PREFIX)
     ? playlistId.slice(QQ_TOPLIST_ID_PREFIX.length)
     : null;
+}
+
+export function adaptQqNewAlbums(raw: readonly QqNewAlbumDto[]): MusicAlbumSummary[] {
+  return raw.map((album) => ({
+    ref: { provider: "qq", kind: "album", id: album.mid },
+    title: album.name,
+    coverUrl: qqAlbumCoverUrl(album.mid),
+    artists: album.singers.map((singer) => ({
+      ref: { provider: "qq", kind: "artist", id: singer.mid },
+      name: singer.name,
+    })),
+    publishedAt: parseQqDate(album.publishDate),
+  }));
 }
 
 export function adaptQqRecommendPlaylists(raw: readonly QqRecommendPlaylistDto[]): MusicPlaylist[] {

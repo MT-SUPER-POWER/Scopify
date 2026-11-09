@@ -1,9 +1,14 @@
 import type { MusicRecommendSource } from "@scopify/music-domain/recommend";
 
 import { adaptQqPlaylistSong } from "@/lib/providers/qq/adapters/playlist";
-import { adaptQqRecommendPlaylists, adaptQqToplists } from "@/lib/providers/qq/adapters/recommend";
+import {
+  adaptQqNewAlbums,
+  adaptQqRecommendPlaylists,
+  adaptQqToplists,
+} from "@/lib/providers/qq/adapters/recommend";
 import {
   getQqDailySongs,
+  getQqNewAlbums,
   getQqNewSongs,
   getQqPersonalFm,
   getQqRecommendPlaylists,
@@ -46,5 +51,10 @@ export const qqRecommendSource: MusicRecommendSource = {
   async getNewTracks(limit, options) {
     const data = await getQqNewSongs(options?.signal);
     return data.songs.slice(0, limit).map(adaptQqPlaylistSong);
+  },
+
+  async getNewAlbums(limit, options) {
+    const data = await getQqNewAlbums(limit, options?.signal);
+    return adaptQqNewAlbums(data.albums);
   },
 };

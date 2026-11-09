@@ -26,6 +26,21 @@ export interface QqNewSongsDto {
   songs: QqTrackDto[];
 }
 
+/** An album of GET /recommend/new-albums. */
+export interface QqNewAlbumDto {
+  mid: string;
+  name: string;
+  singers: { mid: string; name: string }[];
+  /** Release date as `YYYY-MM-DD`. */
+  publishDate?: string;
+}
+
+/** GET /recommend/new-albums: the newest albums of the default area. */
+export interface QqNewAlbumsDto {
+  code: 200;
+  albums: QqNewAlbumDto[];
+}
+
 /** GET /user/daily-songs. Needs the account session. */
 export interface QqDailySongsDto {
   code: 200;
