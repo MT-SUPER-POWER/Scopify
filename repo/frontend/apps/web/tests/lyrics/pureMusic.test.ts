@@ -7,8 +7,7 @@ import {
 import { adaptNeteaseLyric } from "@/lib/lyrics/neteaseLyricAdapter";
 import { adaptLyricDataToFolia } from "@/lib/lyrics/foliaLyricAdapter";
 import { decideSongCommit, isInstrumentalConfirmed } from "@/lib/lyrics/folia/songHandover";
-import type { NeteaseLyric } from "@/types/song/api";
-import type { LyricData } from "@/types/lyrics/model";
+import type { LyricData, LyricSource } from "@/types/lyrics/model";
 
 describe("isPureMusicLyricText", () => {
   const notices = [
@@ -139,7 +138,7 @@ describe("hasNeteasePureMusicFlag", () => {
 
 describe("adaptNeteaseLyric pure music handling", () => {
   it("clears lines and sets isPureMusic when pureMusic flag is set", () => {
-    const raw: NeteaseLyric = {
+    const raw: LyricSource = {
       code: 200,
       pureMusic: true,
       lrc: { lyric: "[00:00.00]纯音乐，请欣赏", version: 1 },
@@ -150,7 +149,7 @@ describe("adaptNeteaseLyric pure music handling", () => {
   });
 
   it("clears lines and sets isPureMusic when text is pure music notice without boolean flag", () => {
-    const raw: NeteaseLyric = {
+    const raw: LyricSource = {
       code: 200,
       lrc: { lyric: "[00:00.00]此歌曲为没有填词的纯音乐，请您欣赏", version: 1 },
     };
@@ -160,7 +159,7 @@ describe("adaptNeteaseLyric pure music handling", () => {
   });
 
   it("keeps lines for normal songs", () => {
-    const raw: NeteaseLyric = {
+    const raw: LyricSource = {
       code: 200,
       lrc: { lyric: "[00:01.00]第一句歌词\n[00:05.00]第二句歌词", version: 1 },
     };

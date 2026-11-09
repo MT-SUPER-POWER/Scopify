@@ -4,7 +4,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useCallback, useState } from "react";
 import { toast } from "sonner";
 
-import { getLyric } from "@/lib/providers/netease/api/music";
+import { getNeteaseLyricSource } from "@/lib/lyrics/musicLyrics";
 import {
   clearImportedLyricOverride,
   clearLyricMatchOverride,
@@ -26,9 +26,9 @@ import { useLyricStageStore } from "@/store/module/lyrics";
 import type {
   ImportedLyricOverride,
   LyricExportFormat,
+  LyricSource,
   LyricSourceSelection,
 } from "@/types/lyrics/model";
-import type { NeteaseLyric } from "@/types/song/api";
 import { useCurrentNeteaseSong } from "@/hooks/player/useCurrentNeteaseSong";
 
 /** 读本地保存的导入歌词与歌词来源；来源选了「导入」但文件已不在时按「在线」算。 */
@@ -87,7 +87,8 @@ export function useOnlineLyricsTab() {
         const nextLyric =
           nextSource === "imported"
             ? importedLyric?.lyric
-            : ((await getLyricMatchOverride(song.id))?.lyric ?? (await getLyric(song.id)).data);
+            : ((await getLyricMatchOverride(song.id))?.lyric ??
+              (await getNeteaseLyricSource(song.id)));
         if (!nextLyric) return;
 
         await setLyricSourceSelection(song.id, nextSource);
@@ -110,7 +111,7 @@ export function useOnlineLyricsTab() {
       setIsUpdating(true);
       try {
         const content = await file.text();
-        const lyric: NeteaseLyric = file.name.toLocaleLowerCase().endsWith(".yrc")
+        const lyric: LyricSource = file.name.toLocaleLowerCase().endsWith(".yrc")
           ? { code: 200, yrc: { lyric: content, version: 1 } }
           : { code: 200, lrc: { lyric: content, version: 1 } };
         if (adaptNeteaseLyric(lyric).lines.length === 0) {
@@ -150,9 +151,9 @@ export function useOnlineLyricsTab() {
         clearLyricMatchOverride(song.id),
         clearLyricSourceSelection(song.id),
       ]);
-      const response = await getLyric(song.id);
-      await setCachedLyric(song.id, response.data);
-      usePlayerStore.getState().setLyric(response.data);
+      const lyric = await getNeteaseLyricSource(song.id);
+      await setCachedLyric(song.id, lyric);
+      usePlayerStore.getState().setLyric(lyric);
       setSourceState(song.id, { importedLyric: null, source: "online" });
       // 匹配也一起清掉了，「匹配歌词」里显示的已保存匹配要跟着失效
       queryClient.setQueryData(musicQueryKeys.lyrics.matchOverride(song.id), null);

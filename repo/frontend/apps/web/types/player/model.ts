@@ -2,7 +2,8 @@ import type { MusicReplayGain } from "@scopify/music-domain/playback";
 import type { MusicTrack } from "@scopify/music-domain/track";
 
 import type { NeteaseTrackExtras } from "@/types/providers/netease/trackApi";
-import type { ImmerseType, NeteaseLyric } from "@/types/song/api";
+import type { LyricSource } from "@/types/lyrics/model";
+import type { ImmerseType } from "@/types/song/api";
 
 export type MusicQuality =
   "sky" | "jymaster" | "dolby" | "vivid" | "spatial" | "hires" | "lossless" | "high" | "standard";
@@ -54,7 +55,7 @@ export interface PlayerStore {
   historyStack: number[];
   isPlaying: boolean;
   isShuffle: boolean;
-  lyric: NeteaseLyric | null;
+  lyric: LyricSource | null;
   moveQueueItem: (fromIndex: number, toIndex: number) => void;
   moveQueueItemToNext: (index: number) => void;
   musicQuality: MusicQuality;
@@ -85,7 +86,7 @@ export interface PlayerStore {
   repeatMode: RepeatMode;
   replayGainMode: ReplayGainMode;
   setIsPlaying: (isPlaying: boolean) => void;
-  setLyric: (lyric: NeteaseLyric | null) => void;
+  setLyric: (lyric: LyricSource | null) => void;
   setMusicQuality: (quality: MusicQuality) => void;
   setQueue: (
     songs: PlayerTrack[],

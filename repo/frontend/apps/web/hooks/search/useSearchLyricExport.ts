@@ -2,7 +2,7 @@
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { getLyric } from "@/lib/providers/netease/api/music";
+import { getNeteaseLyricSource } from "@/lib/lyrics/musicLyrics";
 import { buildLyricExport, downloadLyricExport } from "@/lib/lyrics/export";
 import { useTranslation } from "react-i18next";
 
@@ -17,7 +17,7 @@ export function useSearchLyricExport(song: SongDetail) {
     mutationFn: async (format: LyricExportFormat) => {
       const lyric = await queryClient.fetchQuery({
         queryKey: ["search-lyric-export", song.id],
-        queryFn: async () => (await getLyric(song.id)).data,
+        queryFn: async () => await getNeteaseLyricSource(song.id),
         staleTime: 5 * 60 * 1000,
         retry: false,
       });

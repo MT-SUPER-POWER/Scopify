@@ -3,7 +3,7 @@ import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 import { isPersonalFmPlaybackSource } from "@/constants/personalFm";
 import { PLAYER_PERSISTENCE_STORAGE_KEY } from "@/constants/playbackPersistence";
-import { getSongLyric } from "@/lib/lyrics/cloudLyric";
+import { getTrackLyric } from "@/lib/lyrics/cloudLyric";
 import {
   getCachedLyric,
   getImportedLyricOverride,
@@ -21,17 +21,13 @@ import {
 } from "@/lib/player/persistedPlayerState";
 import { isSamePlayerTrack, playerTrackKey } from "@/lib/player/trackIdentity";
 import { getMusicProvider } from "@/lib/providers";
-import { toNeteaseSongDetail } from "@/lib/providers/netease/adapters/track";
+import { getNeteaseTrackId, toNeteaseSongDetail } from "@/lib/providers/netease/adapters/track";
 import { getVoiceNeteaseLyric } from "@/lib/lyrics/voiceLyric";
 import { enrichSongStatsById } from "@/lib/song/enrichSongStats";
 import { useI18nStore } from "@/store/module/i18n";
 import { useTimeStore } from "@/store/module/time";
-import {
-  pruneNeteaseLyric,
-  type ImmerseType,
-  type NeteaseLyric,
-  type SongDetail,
-} from "@/types/song/api";
+import type { LyricSource } from "@/types/lyrics/model";
+import type { ImmerseType } from "@/types/song/api";
 import type { MusicPlaybackRequest } from "@scopify/music-domain/playback";
 import type { MusicQuality, PlayerStore, PlayerTrack } from "@/types/player/model";
 
@@ -102,7 +98,7 @@ function selectPlayerQueueState(snapshot: PlaybackQueueSnapshot<PlayerTrack>) {
   >;
 }
 
-async function getStoredLyricSource(songId: number): Promise<NeteaseLyric | null> {
+async function getStoredLyricSource(songId: number): Promise<LyricSource | null> {
   const [source, importedLyric, matchedLyric] = await Promise.all([
     getLyricSourceSelection(songId),
     getImportedLyricOverride(songId),
@@ -113,17 +109,50 @@ async function getStoredLyricSource(songId: number): Promise<NeteaseLyric | null
   return matchedLyric?.lyric ?? null;
 }
 
-async function getVoiceLyricForPlayback(
-  song: Pick<SongDetail, "voiceId">,
-): Promise<NeteaseLyric | null> {
-  if (song.voiceId === undefined) return null;
-
+async function getVoiceLyricForPlayback(voiceId: number): Promise<LyricSource | null> {
   try {
-    return await getVoiceNeteaseLyric(song.voiceId);
+    return await getVoiceNeteaseLyric(voiceId);
   } catch (error) {
     // A missing voice transcript must not make an otherwise playable voice fail.
     console.warn("获取声音文字稿失败，继续播放声音:", error);
     return null;
+  }
+}
+
+/**
+ * The lyric of a track about to play. NetEase songs honour a manual match or import and the
+ * lyric cache (`useCache`); voices read their transcript; other platforms ask the provider
+ * when it has lyrics. `shouldCache` tells whether the result is worth caching.
+ */
+async function loadTrackLyric(
+  track: PlayerTrack,
+  useCache: boolean,
+): Promise<{ lyric: LyricSource | null; shouldCache: boolean }> {
+  const neteaseId = getNeteaseTrackId(track);
+  if (neteaseId !== null) {
+    const voiceId = track.netease?.voiceId;
+    if (voiceId !== undefined) {
+      return { lyric: await getVoiceLyricForPlayback(voiceId), shouldCache: false };
+    }
+    const [storedLyric, cachedLyric] = await Promise.all([
+      getStoredLyricSource(neteaseId),
+      useCache ? getCachedLyric(neteaseId) : null,
+    ]);
+    if (storedLyric || cachedLyric) {
+      return { lyric: storedLyric ?? cachedLyric, shouldCache: false };
+    }
+    return { lyric: await getTrackLyric(track), shouldCache: useCache };
+  }
+
+  if (!getMusicProvider(track.ref.provider).capabilities.has("track.lyrics")) {
+    return { lyric: null, shouldCache: false };
+  }
+  try {
+    return { lyric: await getTrackLyric(track), shouldCache: false };
+  } catch (error) {
+    // Missing lyrics must not stop a playable track.
+    console.warn("获取歌词失败，继续播放:", error);
+    return { lyric: null, shouldCache: false };
   }
 }
 
@@ -292,7 +321,7 @@ export const usePlayerStore = create<PlayerStore>()(
         const transition = playbackQueue.setQueue(snapshot, songs, startIndex, playlistId);
         set(selectPlayerQueueState(transition.snapshot));
       },
-      setLyric: (lyric) => set({ lyric: pruneNeteaseLyric(lyric) }),
+      setLyric: (lyric) => set({ lyric }),
       setShuffle: (v) => {
         const snapshot = createPlayerQueueSnapshot(get());
         const transition = playbackQueue.setShuffle(snapshot, v);
@@ -330,22 +359,12 @@ export const usePlayerStore = create<PlayerStore>()(
       fetchCurrentLyric: async () => {
         const { currentTrack, lyric, playbackLoadRevision } = get();
         if (!currentTrack || lyric) return;
-        // Lyrics are NetEase-only for now; other platforms show none.
-        const song = toNeteaseSongDetail(currentTrack);
-        if (!song) return;
         const loadIdentity = {
           revision: playbackLoadRevision,
           trackKey: playerTrackKey(currentTrack),
         };
         try {
-          const storedLyric =
-            song.voiceId === undefined ? await getStoredLyricSource(song.id) : null;
-          const lyricData =
-            song.voiceId === undefined
-              ? storedLyric
-                ? storedLyric
-                : await getSongLyric(song)
-              : await getVoiceLyricForPlayback(song);
+          const { lyric: lyricData } = await loadTrackLyric(currentTrack, false);
           if (!isPlaybackLoadCurrent(get(), loadIdentity)) return;
           set({ lyric: lyricData });
         } catch (e) {
@@ -472,6 +491,7 @@ export const usePlayerStore = create<PlayerStore>()(
         const isCurrentPlaybackLoad = () => isPlaybackLoadCurrent(get(), loadIdentity);
         // Lyrics and stats still come from NetEase; tracks from other platforms skip them.
         const neteaseSong = toNeteaseSongDetail(song);
+        const neteaseId = getNeteaseTrackId(song);
 
         if (neteaseSong) {
           void enrichSongStatsById(
@@ -486,28 +506,7 @@ export const usePlayerStore = create<PlayerStore>()(
 
         try {
           const { musicQuality, immerseType } = get();
-          const lyricResult = (async () => {
-            if (!neteaseSong) return { lyric: null, shouldCache: false };
-            if (neteaseSong.voiceId !== undefined) {
-              return {
-                lyric: await getVoiceLyricForPlayback(neteaseSong),
-                shouldCache: false,
-              };
-            }
-
-            const [storedLyric, cachedLyric] = await Promise.all([
-              getStoredLyricSource(neteaseSong.id),
-              getCachedLyric(neteaseSong.id),
-            ]);
-            if (storedLyric || cachedLyric) {
-              return { lyric: storedLyric ?? cachedLyric, shouldCache: false };
-            }
-
-            return {
-              lyric: await getSongLyric(neteaseSong),
-              shouldCache: true,
-            };
-          })();
+          const lyricResult = loadTrackLyric(song, true);
           const [sourceResolution, resolvedLyric] = await Promise.all([
             getMusicProvider(song.ref.provider).resolvePlayableSource(
               song.ref,
@@ -519,8 +518,8 @@ export const usePlayerStore = create<PlayerStore>()(
           if (sourceResolution.status !== "resolved") {
             throw new Error(sourceResolution.reason);
           }
-          if (neteaseSong && resolvedLyric.lyric && resolvedLyric.shouldCache) {
-            await setCachedLyric(neteaseSong.id, resolvedLyric.lyric);
+          if (neteaseId !== null && resolvedLyric.lyric && resolvedLyric.shouldCache) {
+            await setCachedLyric(neteaseId, resolvedLyric.lyric);
           }
           if (!isCurrentPlaybackLoad()) return false;
           useTimeStore.getState().setTotalTime(song.durationMs);

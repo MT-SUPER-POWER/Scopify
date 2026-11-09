@@ -1,4 +1,4 @@
-import type { NeteaseLyric } from "@/types/song/api";
+import type { LyricSource } from "@/types/lyrics/model";
 import { getVoiceLyric } from "@/lib/providers/netease/api/voicelist";
 import type { VoiceLyricDocument, VoiceLyricSentence } from "@/types/voice/api";
 
@@ -15,7 +15,7 @@ export async function getVoiceLyricDocument(voiceId: number): Promise<VoiceLyric
 }
 
 /** Converts the voice transcript's sentence/syllable timeline to NetEase YRC. */
-export function adaptVoiceLyricToNetease(document: VoiceLyricDocument): NeteaseLyric {
+export function adaptVoiceLyricToNetease(document: VoiceLyricDocument): LyricSource {
   const lines = (document.sents ?? []).flatMap((sentence) => {
     const line = toYrcLine(sentence);
     return line ? [line] : [];
@@ -27,7 +27,7 @@ export function adaptVoiceLyricToNetease(document: VoiceLyricDocument): NeteaseL
   };
 }
 
-export async function getVoiceNeteaseLyric(voiceId: number): Promise<NeteaseLyric | null> {
+export async function getVoiceNeteaseLyric(voiceId: number): Promise<LyricSource | null> {
   const document = await getVoiceLyricDocument(voiceId);
   return document ? adaptVoiceLyricToNetease(document) : null;
 }
