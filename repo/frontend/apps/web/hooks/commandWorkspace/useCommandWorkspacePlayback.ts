@@ -1,10 +1,10 @@
 "use client";
 
 import { useCallback } from "react";
-import { toCommandWorkspaceSongDetail } from "@/lib/commandWorkspace/trackList";
 import { toVoiceSongDetail } from "@/lib/search/voiceSong";
 import { usePlayerStore } from "@/store";
-import type { SongDetail } from "@/types/song/api";
+import { musicResourceKey } from "@scopify/music-domain/identity";
+import type { PlayerTrack } from "@/types/player/model";
 import type { Song, Voice } from "@/types/search/model";
 import { adaptNeteaseTrack } from "@/lib/providers/netease/adapters/track";
 
@@ -15,27 +15,27 @@ export function useCommandWorkspacePlayback() {
   const setQueue = usePlayerStore((state) => state.setQueue);
 
   const playTracks = useCallback(
-    async (tracks: SongDetail[], index = 0) => {
+    async (tracks: PlayerTrack[], index = 0) => {
       if (tracks.length === 0) return;
-      setQueue(tracks.map(adaptNeteaseTrack), index);
+      setQueue(tracks, index);
       await playQueueIndex(index);
     },
     [playQueueIndex, setQueue],
   );
 
   const appendTracks = useCallback(
-    (tracks: SongDetail[]) => {
+    (tracks: PlayerTrack[]) => {
       if (tracks.length === 0) return;
-      appendQueueItems(tracks.map(adaptNeteaseTrack));
+      appendQueueItems(tracks);
     },
     [appendQueueItems],
   );
 
   const insertTracksNext = useCallback(
-    (tracks: SongDetail[]) => {
+    (tracks: PlayerTrack[]) => {
       if (tracks.length === 0) return;
       const previousLength = usePlayerStore.getState().queue.length;
-      appendQueueItems(tracks.map(adaptNeteaseTrack));
+      appendQueueItems(tracks);
       for (let index = tracks.length - 1; index >= 0; index -= 1) {
         moveQueueItemToNext(previousLength + index);
       }
@@ -44,10 +44,10 @@ export function useCommandWorkspacePlayback() {
   );
 
   const playSong = useCallback(
-    async (song: Song, songs: Song[]) => {
-      const tracks = songs.map(toCommandWorkspaceSongDetail);
-      const index = songs.findIndex((candidate) => candidate.id === song.id);
-      await playTracks(tracks, Math.max(index, 0));
+    async (song: PlayerTrack, songs: PlayerTrack[]) => {
+      const key = musicResourceKey(song.ref);
+      const index = songs.findIndex((candidate) => musicResourceKey(candidate.ref) === key);
+      await playTracks(songs, Math.max(index, 0));
     },
     [playTracks],
   );
@@ -60,7 +60,7 @@ export function useCommandWorkspacePlayback() {
           candidate.mainSong !== null && candidate.isPlayable !== false,
       );
       const tracks = playableVoices.map((candidate) =>
-        toVoiceSongDetail(candidate.mainSong, candidate.coverUrl, candidate.id),
+        adaptNeteaseTrack(toVoiceSongDetail(candidate.mainSong, candidate.coverUrl, candidate.id)),
       );
       const index = playableVoices.findIndex((candidate) => candidate.id === voice.id);
       await playTracks(tracks, Math.max(index, 0));

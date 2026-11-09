@@ -1,7 +1,9 @@
 "use client";
 
 import { ListPlus, Pause, Play, Plus } from "lucide-react";
+import { musicResourceKey } from "@scopify/music-domain/identity";
 import { PlayingAnimation } from "@/components/shared/PlayingAnimation";
+import { getCommandWorkspaceSearchItemKey } from "@/lib/commandWorkspace/search";
 import {
   getCommandSearchKindLabel,
   getCommandSearchTitle,
@@ -35,7 +37,8 @@ export function CommandWorkspaceSearchResultList({
           (item.kind === "voice" && !!item.entity.mainSong && item.entity.isPlayable !== false);
         const isCurrent =
           !!currentSong &&
-          ((item.kind === "song" && item.entity.id === getNeteaseTrackId(currentSong)) ||
+          ((item.kind === "song" &&
+            musicResourceKey(item.entity.ref) === musicResourceKey(currentSong.ref)) ||
             (item.kind === "voice" && item.entity.mainSong?.id === getNeteaseTrackId(currentSong)));
         const isCurrentPlaying = isCurrent && isPlaying;
 
@@ -49,7 +52,7 @@ export function CommandWorkspaceSearchResultList({
 
         return (
           <div
-            key={`${item.kind}-${item.entity.id}`}
+            key={getCommandWorkspaceSearchItemKey(item)}
             className={cn(
               "group flex items-center gap-3 rounded-lg px-3.5 py-2 transition-colors",
               isCurrent

@@ -1,7 +1,8 @@
 import type { FoliaCommandEntry, FoliaCommandGroup } from "@/types/lyrics/folia/commands";
 import type { PlayerTrack } from "@/types/player/model";
-import type { SongDetail } from "@/types/song/api";
-import type { Album, Artist, Category, Playlist, Podcast, Song, Voice } from "@/types/search/model";
+import type { MusicPlaylist } from "@scopify/music-domain/playlist";
+import type { MusicAlbumResult, MusicArtistResult } from "@scopify/music-domain/search";
+import type { Category, Podcast, Voice } from "@/types/search/model";
 import type { DragEvent, KeyboardEvent, RefObject } from "react";
 import type { LucideIcon } from "lucide-react";
 import type { ShortcutBinding, ShortcutCommandId } from "@/types/shortcuts/model";
@@ -218,8 +219,8 @@ export interface CommandWorkspaceSearchResultListProps {
 }
 
 export interface CommandWorkspaceTrackListProps {
-  onAppend(track: SongDetail): void;
-  onInsertNext(track: SongDetail): void;
+  onAppend(track: PlayerTrack): void;
+  onInsertNext(track: PlayerTrack): void;
   onPlay(index: number): void;
   trackList: CommandWorkspaceTrackList;
 }
@@ -239,17 +240,17 @@ export interface CommandWorkspaceSearchFilter {
 }
 
 export type CommandWorkspaceSearchItem =
-  | { entity: Album; kind: "album" }
-  | { entity: Artist; kind: "artist" }
-  | { entity: Playlist; kind: "playlist" }
+  | { entity: MusicAlbumResult; kind: "album" }
+  | { entity: MusicArtistResult; kind: "artist" }
+  | { entity: MusicPlaylist; kind: "playlist" }
   | { entity: Podcast; kind: "podcast" }
-  | { entity: Song; kind: "song" }
+  | { entity: PlayerTrack; kind: "song" }
   | { entity: Voice; kind: "voice" };
 
 export interface CommandWorkspaceTrackList {
   description?: string;
   title: string;
-  tracks: SongDetail[];
+  tracks: PlayerTrack[];
 }
 
 export interface CommandWorkspaceSearchSuggestion {
