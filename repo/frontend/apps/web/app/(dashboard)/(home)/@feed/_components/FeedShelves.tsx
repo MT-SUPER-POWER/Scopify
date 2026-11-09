@@ -5,7 +5,7 @@ import { useState } from "react";
 
 import { CollapsibleSection } from "../../_components/CollapsibleSection";
 import { useHome } from "../../_components/HomeProvider";
-import { NewSongItem } from "../../@releases/_components/NewSongItem";
+import { NewSongItem } from "@/components/home/NewSongItem";
 import { GridCard } from "@/components/home/GridCard";
 import { useHomeFeedQuery } from "@/hooks/home/useHomeQueries";
 import { useSmartRouter } from "@/hooks/core/useSmartRouter";

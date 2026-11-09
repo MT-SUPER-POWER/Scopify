@@ -1,6 +1,7 @@
 {
   "title.recent": "最近播放",
   "collection.tab.songs": "歌曲",
+  "collection.viewAllLiked": "查看全部 {{count}} 首",
   "collection.tab.playlists": "歌单",
   "collection.tab.albums": "专辑",
   "collection.tab.artists": "歌手",

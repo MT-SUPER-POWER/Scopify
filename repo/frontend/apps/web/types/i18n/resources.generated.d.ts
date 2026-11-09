@@ -1286,6 +1286,7 @@ export default interface Resources {
     "collection.tab.artists": "歌手";
     "collection.tab.playlists": "歌单";
     "collection.tab.songs": "歌曲";
+    "collection.viewAllLiked": "查看全部 {{count}} 首";
     "empty.cloud.description": "上传本地歌曲后，它们会显示在这里。";
     "empty.cloud.title": "云盘还是空的";
     "empty.collection.description": "收藏专辑或关注歌手后，它们会显示在这里。";

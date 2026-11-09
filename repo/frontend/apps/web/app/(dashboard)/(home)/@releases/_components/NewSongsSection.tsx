@@ -4,7 +4,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { Play } from "lucide-react";
 import { useEffect, useState } from "react";
 
-import { NewSongItem } from "./NewSongItem";
+import { NewSongItem } from "@/components/home/NewSongItem";
 import { useHome } from "../../_components/HomeProvider";
 import { CollapsibleSection } from "../../_components/CollapsibleSection";
 import { SectionPagination } from "../../_components/SectionPagination";

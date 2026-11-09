@@ -1,191 +1,124 @@
 "use client";
 
-import { Bookmark, Heart, Play } from "lucide-react";
-import Image from "next/image";
-import Link from "next/link";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { Bookmark } from "lucide-react";
 import { useMemo } from "react";
 import { LibraryContentState } from "@/components/library/LibraryContentState";
-import { LibraryMediaGrid } from "@/components/library/LibraryMediaGrid";
 import { QuietState } from "@/components/shared/QuietState";
 import { useActiveAccount } from "@/hooks/auth/useProviderAccounts";
+import { useHomePlaybackActions } from "@/hooks/home/useHomePlaybackActions";
 import { useLibraryAlbumsQuery } from "@/hooks/library/useLibraryAlbums";
 import {
   useLibraryPlaylistsQuery,
   useLikedPlaylistQuery,
 } from "@/hooks/library/useLibraryPlaylists";
 import { useFollowedArtistsQuery } from "@/hooks/library/useLibraryQueries";
-import { useProviderCapability } from "@/hooks/provider/useActiveProvider";
-import type { TranslationKey } from "@/lib/i18n";
 import { getSizedImageUrl } from "@/lib/music/imageUrl";
-import { cn } from "@/lib/utils";
 import { useTranslation } from "react-i18next";
 
-import type { LibraryMediaItem } from "@/types/library/model";
+import { CollectionShelf, type CollectionShelfItem } from "./_components/CollectionShelf";
+import { LikedSongsHero } from "./_components/LikedSongsHero";
 
-type CollectionTab = "songs" | "playlists" | "albums" | "artists";
-
-/** What the account saved: its liked songs, and the playlists, albums and artists it keeps. */
+/** What the account keeps: its liked songs first, then the playlists, albums and artists saved. */
 export default function CollectionPage() {
   const { t } = useTranslation();
-  const router = useRouter();
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
   const { isLoggedIn } = useActiveAccount();
-  const canFollow = useProviderCapability("artist.follow");
+  const actions = useHomePlaybackActions();
   const likedQuery = useLikedPlaylistQuery();
   const playlistsQuery = useLibraryPlaylistsQuery();
   const albumsQuery = useLibraryAlbumsQuery();
   const artistsQuery = useFollowedArtistsQuery();
 
   const liked = likedQuery.data;
-  const playlists = useMemo<LibraryMediaItem[]>(
+  const playlists = useMemo<CollectionShelfItem[]>(
     () =>
       (playlistsQuery.data ?? [])
         .filter((item) => item.relation === "subscribed")
-        .map((item) => ({
-          coverUrl: getSizedImageUrl(item.playlist.coverUrl, 300) || undefined,
-          href: `/playlist?id=${encodeURIComponent(item.playlist.ref.id)}`,
-          id: item.playlist.ref.id,
-          subtitle: [
-            t("home.playlistSummary", { count: item.playlist.trackCount }),
-            item.playlist.creator?.name,
-          ]
-            .filter(Boolean)
-            .join(" · "),
-          title: item.playlist.title,
-        })),
-    [playlistsQuery.data, t],
+        .map((item) => {
+          const id = item.playlist.ref.id;
+          return {
+            id,
+            title: item.playlist.title,
+            coverUrl: getSizedImageUrl(item.playlist.coverUrl, 300),
+            subtitle: [
+              t("home.playlistSummary", { count: item.playlist.trackCount }),
+              item.playlist.creator?.name,
+            ]
+              .filter(Boolean)
+              .join(" · "),
+            href: `/playlist?id=${encodeURIComponent(id)}`,
+            isLoading: actions.loadingPlayId === `playlist-${id}`,
+            onPlay: (event: React.MouseEvent) => void actions.handlePlayPlaylist(id, event),
+          };
+        }),
+    [actions, playlistsQuery.data, t],
   );
-  const albums = albumsQuery.data ?? [];
-  const artists = artistsQuery.data?.artists ?? [];
-
-  const tabs: { key: CollectionTab; count: number | null }[] = [
-    { key: "songs", count: liked?.playlist.trackCount ?? null },
-    { key: "playlists", count: playlists.length },
-    { key: "albums", count: albums.length },
-    ...(canFollow ? [{ key: "artists" as const, count: artists.length }] : []),
-  ];
-  const requested = searchParams.get("tab");
-  const active = tabs.find((tab) => tab.key === requested)?.key ?? "songs";
-  const selectTab = (key: CollectionTab) => {
-    const next = new URLSearchParams(searchParams.toString());
-    next.set("tab", key);
-    router.replace(`${pathname}?${next.toString()}`, { scroll: false });
-  };
-
-  if (!isLoggedIn) {
-    return (
-      <>
-        <CollectionHeader title={t("library.title.collection")} />
-        <QuietState icon={Bookmark} title={t("library.loggedOut.collection")} />
-      </>
-    );
-  }
-
-  const grid = (
-    items: LibraryMediaItem[],
-    query: { isError: boolean; isLoading: boolean; isRefetching: boolean; refetch: () => unknown },
-    emptyKey: TranslationKey,
-  ) => (
-    <LibraryContentState
-      hasItems={items.length > 0}
-      isError={query.isError}
-      isLoading={query.isLoading}
-      isRetrying={query.isRefetching}
-      emptyState={<QuietState icon={Bookmark} title={t(emptyKey)} />}
-      onRetry={() => void query.refetch()}
-    >
-      <LibraryMediaGrid items={items} />
-    </LibraryContentState>
+  const albums = useMemo<CollectionShelfItem[]>(
+    () =>
+      (albumsQuery.data ?? []).map((album) => ({
+        id: String(album.id),
+        title: album.title,
+        coverUrl: album.coverUrl ?? "",
+        subtitle: album.subtitle,
+        href: album.href,
+        isLoading: actions.loadingPlayId === `album-${album.id}`,
+        onPlay: album.href
+          ? (event: React.MouseEvent) => void actions.handlePlayAlbum(album.id, event)
+          : undefined,
+      })),
+    [actions, albumsQuery.data],
   );
+  const artists = useMemo<CollectionShelfItem[]>(
+    () =>
+      (artistsQuery.data?.artists ?? []).map((artist) => ({
+        id: String(artist.id),
+        title: artist.title,
+        coverUrl: artist.coverUrl ?? "",
+        href: artist.href,
+        isArtist: true,
+      })),
+    [artistsQuery.data],
+  );
+
+  const isLoading = likedQuery.isLoading || playlistsQuery.isLoading || albumsQuery.isLoading;
+  const isError = likedQuery.isError && playlistsQuery.isError && albumsQuery.isError;
+  const isEmpty = !liked && playlists.length + albums.length + artists.length === 0;
 
   return (
     <>
-      <CollectionHeader title={t("library.title.collection")} />
-      <div role="tablist" className="mb-8 flex items-center gap-6 border-b border-content/10">
-        {tabs.map((tab) => (
-          <button
-            key={tab.key}
-            type="button"
-            role="tab"
-            aria-selected={tab.key === active}
-            onClick={() => selectTab(tab.key)}
-            className={cn(
-              "-mb-px cursor-pointer border-b-2 px-1 pb-3 text-base font-medium transition-colors",
-              tab.key === active
-                ? "border-brand text-content"
-                : "border-transparent text-content-muted hover:text-content",
-            )}
-          >
-            {t(`library.collection.tab.${tab.key}`)}
-            {tab.count !== null && (
-              <span className="ml-1.5 text-sm text-content-muted">{tab.count}</span>
-            )}
-          </button>
-        ))}
-      </div>
-
-      {active === "songs" && (
+      <header className="pb-8">
+        <h1 className="text-4xl font-bold tracking-tight text-content">
+          {t("library.title.collection")}
+        </h1>
+      </header>
+      {!isLoggedIn ? (
+        <QuietState icon={Bookmark} title={t("library.loggedOut.collection")} />
+      ) : (
         <LibraryContentState
-          hasItems={liked !== null && liked !== undefined}
-          isError={likedQuery.isError}
-          isLoading={likedQuery.isLoading}
+          hasItems={!isEmpty}
+          isError={isError}
+          isLoading={isLoading}
           isRetrying={likedQuery.isRefetching}
           emptyState={
             <QuietState
-              icon={Heart}
-              title={t("library.empty.liked.title")}
-              description={t("library.empty.liked.description")}
+              icon={Bookmark}
+              title={t("library.empty.collection.title")}
+              description={t("library.empty.collection.description")}
             />
           }
-          onRetry={() => void likedQuery.refetch()}
+          onRetry={() => {
+            void likedQuery.refetch();
+            void playlistsQuery.refetch();
+            void albumsQuery.refetch();
+          }}
         >
-          {liked && (
-            <Link
-              href="/liked"
-              className="group flex max-w-xl items-center gap-5 rounded-xl bg-content/5 p-5 transition-colors hover:bg-content/10"
-            >
-              <div className="relative size-28 shrink-0 overflow-hidden rounded-lg bg-surface-elevated">
-                {liked.playlist.coverUrl ? (
-                  <Image
-                    src={getSizedImageUrl(liked.playlist.coverUrl, 300)}
-                    alt=""
-                    fill
-                    sizes="112px"
-                    className="object-cover"
-                  />
-                ) : (
-                  <Heart className="absolute inset-0 m-auto size-10 text-brand" />
-                )}
-              </div>
-              <div className="min-w-0 flex-1">
-                <h2 className="truncate text-xl font-bold text-content">
-                  {t("sidebar.library.likedMusic")}
-                </h2>
-                <p className="mt-1 text-sm text-content-muted">
-                  {t("home.playlistSummary", { count: liked.playlist.trackCount })}
-                </p>
-              </div>
-              <span className="flex size-12 shrink-0 items-center justify-center rounded-full bg-brand text-brand-foreground shadow-brand transition-transform group-hover:scale-105">
-                <Play className="ml-0.5 size-6 fill-current" />
-              </span>
-            </Link>
-          )}
+          <div className="space-y-10">
+            {liked && <LikedSongsHero liked={liked} />}
+            <CollectionShelf title={t("library.collection.tab.playlists")} items={playlists} />
+            <CollectionShelf title={t("library.collection.tab.albums")} items={albums} />
+            <CollectionShelf title={t("library.collection.tab.artists")} items={artists} />
+          </div>
         </LibraryContentState>
       )}
-      {active === "playlists" &&
-        grid(playlists, playlistsQuery, "library.collection.empty.playlists")}
-      {active === "albums" && grid(albums, albumsQuery, "library.collection.empty.albums")}
-      {active === "artists" && grid(artists, artistsQuery, "library.collection.empty.artists")}
     </>
-  );
-}
-
-function CollectionHeader({ title }: { title: string }) {
-  return (
-    <header className="pb-6">
-      <h1 className="text-4xl font-bold tracking-tight text-content">{title}</h1>
-    </header>
   );
 }

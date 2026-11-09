@@ -1,6 +1,7 @@
 {
   "title.recent": "Recently Played",
   "collection.tab.songs": "Songs",
+  "collection.viewAllLiked": "View all {{count}} songs",
   "collection.tab.playlists": "Playlists",
   "collection.tab.albums": "Albums",
   "collection.tab.artists": "Artists",
