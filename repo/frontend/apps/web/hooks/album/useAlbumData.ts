@@ -6,18 +6,19 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 
 import type { AlbumInfo, AlbumSubscriptionMutation } from "@/types/album/model";
+import type { LibraryMediaItem } from "@/types/library/model";
+import type { PlayerTrack } from "@/types/player/model";
 
-import { subscribeAlbum } from "@/lib/providers/netease/api/album";
 import { useRequireLoginAction } from "@/hooks/auth/useRequireLoginAction";
+import { useLibraryAccount } from "@/hooks/library/useLibraryAccount";
+import { useLibraryAlbumsQuery } from "@/hooks/library/useLibraryAlbums";
 import { musicQueryKeys } from "@/lib/query/queryKeys";
-import { usePlayerStore, useUserStore } from "@/store";
+import { usePlayerStore } from "@/store";
 import { useTranslation } from "react-i18next";
 
-import { pruneSongDetail } from "@/types/song/api";
-
 import { useAlbumQuery } from "./useAlbumQuery";
-import { useAlbumCollectionQuery } from "./useAlbumCollectionQuery";
-import { adaptNeteaseTrack } from "@/lib/providers/netease/adapters/track";
+
+const NO_TRACKS: PlayerTrack[] = [];
 
 const colorCache = new Map<string, string>();
 const COLOR_CACHE_LIMIT = 10;
@@ -28,9 +29,9 @@ export function useAlbumData() {
   const albumId = searchParams.get("id");
   const requireLoginAction = useRequireLoginAction();
   const queryClient = useQueryClient();
-  const userId = useUserStore((state) => state.user?.userId);
+  const { account, provider } = useLibraryAccount();
   const {
-    data: albumDetail,
+    data: albumContent,
     isError,
     isFetching,
     isLoading,
@@ -41,49 +42,39 @@ export function useAlbumData() {
   const [themeColor, setThemeColor] = useState("from-[#88b325]");
   const isPlaying = usePlayerStore((s) => s.isPlaying && s.playlistId === albumId);
   const isShuffle = usePlayerStore((s) => s.isShuffle);
-  const albumCollectionQuery = useAlbumCollectionQuery();
-  const albumCollectionQueryKey = musicQueryKeys.album.subscriptions(userId ?? 0);
+  const albumCollectionQuery = useLibraryAlbumsQuery();
+  const albumCollectionQueryKey = musicQueryKeys.library.albums(
+    provider.provider,
+    account?.accountId ?? "",
+  );
   const isAlbumCollected = albumId
-    ? albumCollectionQuery.data?.includes(Number(albumId)) === true
+    ? albumCollectionQuery.data?.some((item) => String(item.id) === albumId) === true
     : false;
 
   const ALBUM_INFO = useMemo<AlbumInfo | null>(() => {
-    const album = albumDetail?.album;
+    const album = albumContent?.album;
     if (!album) return null;
 
-    const artist = album.artist ?? album.artists?.[0];
+    const artist = album.artists[0];
     return {
-      artistAvatar: artist?.picUrl ?? artist?.img1v1Url ?? "",
-      artistId: artist?.id,
+      artistAvatar: artist?.avatarUrl ?? "",
+      artistId: artist?.ref?.id ?? null,
       artistName: artist?.name ?? t("album.meta.unknownArtist"),
       company: album.company ?? "",
-      cover: album.picUrl ?? "",
-      description: album.description ?? "",
-      releaseYear: album.publishTime
-        ? new Date(album.publishTime).toISOString().slice(0, 10)
-        : t("album.meta.unknownYear"),
+      cover: album.coverUrl ?? "",
+      description: album.description,
+      releaseYear:
+        album.publishedAt === null
+          ? t("album.meta.unknownYear")
+          : new Date(album.publishedAt).toISOString().slice(0, 10),
       subType: album.subType ?? "",
-      title: album.name ?? t("album.meta.unknownAlbum"),
-      totalSongs: album.size ?? 0,
-      type: album.type ?? t("album.meta.type"),
+      title: album.title || t("album.meta.unknownAlbum"),
+      totalSongs: album.trackCount,
+      type: album.releaseType ?? t("album.meta.type"),
     };
-  }, [albumDetail, t]);
+  }, [albumContent, t]);
 
-  const tracks = useMemo(() => {
-    if (!albumDetail?.songs) return [];
-
-    const cover = albumDetail.album?.picUrl ?? albumDetail.album?.blurPicUrl;
-    return albumDetail.songs.map((song) =>
-      pruneSongDetail({
-        ...song,
-        al: {
-          id: song.al?.id ?? 0,
-          name: song.al?.name ?? "",
-          picUrl: song.al?.picUrl ?? cover ?? "",
-        },
-      }),
-    );
-  }, [albumDetail]);
+  const tracks = albumContent?.tracks ?? NO_TRACKS;
 
   useEffect(() => {
     if (!ALBUM_INFO?.cover) return;
@@ -111,28 +102,39 @@ export function useAlbumData() {
     const isCurrentQueue = player.playlistId === albumId;
     if (isCurrentQueue) player.setIsPlaying(!player.isPlaying);
     else {
-      player.setQueue(tracks.map(adaptNeteaseTrack), 0, albumId);
+      player.setQueue([...tracks], 0, albumId);
       void player.playQueueIndex(0);
     }
   }, [albumId, tracks]);
 
   const subscribeMutation = useMutation({
-    mutationFn: ({ id, subscribe }: AlbumSubscriptionMutation) => subscribeAlbum(id, subscribe),
+    mutationFn: ({ album, subscribe }: AlbumSubscriptionMutation) => {
+      if (!provider.setAlbumSubscribed) throw new Error("Saving albums is not supported.");
+      return provider.setAlbumSubscribed(album.ref, subscribe);
+    },
     onMutate: async (variables) => {
       await queryClient.cancelQueries({ queryKey: albumCollectionQueryKey });
-      const previousCollectedAlbumIds = queryClient.getQueryData<number[]>(albumCollectionQueryKey);
+      const previousCollectedAlbums =
+        queryClient.getQueryData<LibraryMediaItem[]>(albumCollectionQueryKey);
 
-      queryClient.setQueryData<number[]>(albumCollectionQueryKey, (current = []) =>
+      queryClient.setQueryData<LibraryMediaItem[]>(albumCollectionQueryKey, (current = []) =>
         variables.subscribe
-          ? [...new Set([...current, Number(variables.id)])]
-          : current.filter((id) => id !== Number(variables.id)),
+          ? [
+              ...current.filter((item) => String(item.id) !== variables.album.ref.id),
+              {
+                coverUrl: variables.album.coverUrl ?? undefined,
+                id: variables.album.ref.id,
+                title: variables.album.title,
+              },
+            ]
+          : current.filter((item) => String(item.id) !== variables.album.ref.id),
       );
 
-      return { previousCollectedAlbumIds };
+      return { previousCollectedAlbums };
     },
     onError: (_error, _variables, context) => {
-      if (context?.previousCollectedAlbumIds !== undefined) {
-        queryClient.setQueryData(albumCollectionQueryKey, context.previousCollectedAlbumIds);
+      if (context?.previousCollectedAlbums !== undefined) {
+        queryClient.setQueryData(albumCollectionQueryKey, context.previousCollectedAlbums);
       } else {
         queryClient.removeQueries({ queryKey: albumCollectionQueryKey });
       }
@@ -146,34 +148,37 @@ export function useAlbumData() {
       );
     },
     onSettled: () => {
-      void queryClient.invalidateQueries({ queryKey: albumCollectionQueryKey });
       void queryClient.invalidateQueries({
-        queryKey: musicQueryKeys.library.albumsAll("netease"),
+        queryKey: musicQueryKeys.library.albumsAll(provider.provider),
       });
-      if (userId) {
-        void queryClient.invalidateQueries({ queryKey: musicQueryKeys.library.collection(userId) });
+      // NetEase's collection page reads its own list of the account's saved albums.
+      if (provider.provider === "netease" && account) {
+        void queryClient.invalidateQueries({
+          queryKey: musicQueryKeys.library.collection(Number(account.accountId)),
+        });
       }
     },
   });
 
   const handleToggleAlbumSubscribe = useCallback(async () => {
-    if (!albumId) return;
+    const album = albumContent?.album;
+    if (!album) return;
 
     await requireLoginAction(async () => {
       await subscribeMutation.mutateAsync({
-        id: albumId,
+        album,
         subscribe: !isAlbumCollected,
       });
     });
-  }, [albumId, isAlbumCollected, requireLoginAction, subscribeMutation]);
+  }, [albumContent, isAlbumCollected, requireLoginAction, subscribeMutation]);
 
   const handleRefresh = useCallback(async () => {
-    const hadCachedData = Boolean(albumDetail);
+    const hadCachedData = Boolean(albumContent);
     const result = await refetch();
     if (hadCachedData && result.isError) {
       toast.error(t("album.toast.refreshFailed"));
     }
-  }, [albumDetail, refetch, t]);
+  }, [albumContent, refetch, t]);
 
   return {
     ALBUM_INFO,
@@ -188,7 +193,7 @@ export function useAlbumData() {
     isRefreshing: isFetching,
     isShuffle,
     isTogglingAlbumSubscribe:
-      subscribeMutation.isPending || (Boolean(userId) && albumCollectionQuery.isPending),
+      subscribeMutation.isPending || (account !== null && albumCollectionQuery.isPending),
     themeColor,
     togglePlay,
     tracks,

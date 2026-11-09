@@ -8,7 +8,8 @@ import TracklistTable from "@/components/Playlist/TrackTable";
 import { NetworkRetryState } from "@/components/shared/NetworkRetryState";
 import { useAlbumData } from "@/hooks/album/useAlbumData";
 import { useSmartRouter } from "@/hooks/core/useSmartRouter";
-import { toNeteaseTrackList } from "@/lib/providers/netease/adapters/track";
+import { useProviderCapability } from "@/hooks/provider/useActiveProvider";
+import { toNeteaseSongDetails } from "@/lib/providers/netease/adapters/track";
 import { useTranslation } from "react-i18next";
 
 import { AlbumActions } from "./_components/AlbumActions";
@@ -33,7 +34,10 @@ export default function AlbumPage() {
     togglePlay,
     tracks,
   } = useAlbumData();
-  const tableTracks = useMemo(() => toNeteaseTrackList(tracks), [tracks]);
+  const canOpenArtist = useProviderCapability("artist.read");
+  // The immersive views and MV previews read NetEase songs, so only NetEase albums open them.
+  const neteaseSongs = useMemo(() => toNeteaseSongDetails(tracks), [tracks]);
+  const canOpenLattice = neteaseSongs.length === tracks.length;
 
   if (!albumId)
     return (
@@ -65,7 +69,12 @@ export default function AlbumPage() {
   if (!ALBUM_INFO) return null;
 
   return (
-    <PlaylistLatticeView key={albumId} sourceId={albumId} tracks={tracks} title={ALBUM_INFO.title}>
+    <PlaylistLatticeView
+      key={albumId}
+      sourceId={albumId}
+      tracks={neteaseSongs}
+      title={ALBUM_INFO.title}
+    >
       {(openLattice) => (
         <div className="flex min-h-screen w-full flex-col">
           <div
@@ -75,7 +84,8 @@ export default function AlbumPage() {
           <AlbumHeader
             info={ALBUM_INFO}
             onArtistClick={() => {
-              if (ALBUM_INFO.artistId) void smartRouter.push(`/artist?id=${ALBUM_INFO.artistId}`);
+              if (canOpenArtist && ALBUM_INFO.artistId)
+                void smartRouter.push(`/artist?id=${ALBUM_INFO.artistId}`);
             }}
           />
           {isRefetchError && (
@@ -94,12 +104,12 @@ export default function AlbumPage() {
             <AlbumActions
               albumId={albumId}
               albumTitle={ALBUM_INFO.title}
-              tracks={tracks}
+              previewSongs={neteaseSongs}
               isPlaying={isPlaying}
               isAlbumCollected={isAlbumCollected}
               isTogglingAlbumSubscribe={isTogglingAlbumSubscribe}
               onPlay={togglePlay}
-              onOpenLattice={openLattice}
+              onOpenLattice={canOpenLattice ? openLattice : undefined}
               onToggleSubscribe={() => void handleToggleAlbumSubscribe()}
             />
             <div className="min-w-0 flex-1 px-6 pb-10">
@@ -108,7 +118,7 @@ export default function AlbumPage() {
                 hideDateColumn
                 hideLikeColumn
                 readonly
-                tracks={tableTracks}
+                tracks={tracks}
               />
             </div>
           </div>
