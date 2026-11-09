@@ -11,6 +11,8 @@ import {
   adaptQqToplists,
 } from "@/lib/providers/qq/adapters/recommend";
 import {
+  getQqDailyHistory,
+  getQqDailyHistoryDates,
   getQqDailySongs,
   getQqCategoryPlaylists,
   getQqGuessYouLike,
@@ -31,10 +33,25 @@ import {
  */
 let nextPersonalFmPage = 1;
 
+function localDateKey(date: Date): string {
+  const pad = (value: number) => String(value).padStart(2, "0");
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
+}
+
 export const qqRecommendSource: MusicRecommendSource = {
   async getDailyTracks(request) {
+    // A past day comes from the history route; today's list is the ordinary daily list.
+    if (request?.date && request.date !== localDateKey(new Date())) {
+      const history = await getQqDailyHistory(request.date, request.signal);
+      return history.songs.map(adaptQqPlaylistSong);
+    }
     const data = await getQqDailySongs(request?.signal);
     return data.songs.map(adaptQqPlaylistSong);
+  },
+
+  async getDailyHistoryDates(options) {
+    const data = await getQqDailyHistoryDates(options?.signal);
+    return data.dates.filter((date) => /^\d{4}-\d{2}-\d{2}$/.test(date));
   },
 
   async getPersonalFmTracks(request) {

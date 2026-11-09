@@ -147,3 +147,16 @@ export interface QqCategoryPlaylistsDto {
   code: 200;
   playlists: QqRecommendPlaylistDto[];
 }
+
+/** GET /user/daily-songs/history/dates: past days that have a daily list, newest first. */
+export interface QqDailyHistoryDatesDto {
+  code: 200;
+  dates: string[];
+}
+
+/** GET /user/daily-songs/history?date=…: the daily songs of one past day. */
+export interface QqDailyHistoryDto {
+  code: 200;
+  date: string;
+  songs: QqTrackDto[];
+}

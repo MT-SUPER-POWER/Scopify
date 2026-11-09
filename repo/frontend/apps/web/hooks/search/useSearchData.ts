@@ -8,6 +8,7 @@ import {
   useInfiniteSearchQuery,
   useInfiniteVoiceListSearchQuery,
   useInfiniteVoiceSearchQuery,
+  useSearchBestMatchQuery,
   useSearchOverviewQuery,
 } from "@/hooks/search/useSearchQueries";
 import { useProviderCapability } from "@/hooks/provider/useActiveProvider";
@@ -100,6 +101,7 @@ export function useSearchData(keywords: string, activeCategory: Category) {
   // 综合搜索不含 MV，全部视图与 MV 分类共用同一个 MV 查询
   const loadMvs = (isAll || activeCategory === "MVs") && canSearchMvs;
   const overviewQuery = useSearchOverviewQuery(keyword, usesOverview);
+  const directHit = useSearchBestMatchQuery(keyword, isAll && !hasOverview);
   const songQuery = useInfiniteSearchQuery("song", keyword, 30, !usesOverview && loadSongs);
   const lyricQuery = useInfiniteLyricSearchQuery(keyword, 30, loadLyrics);
   const albumQuery = useInfiniteSearchQuery("album", keyword, 20, !usesOverview && loadAlbums);
@@ -216,7 +218,7 @@ export function useSearchData(keywords: string, activeCategory: Category) {
     () => (loadMvs ? (mvQuery.data?.pages.flatMap((page) => page.result?.mvs ?? []) ?? []) : []),
     [loadMvs, mvQuery.data?.pages],
   );
-  const bestMatch = usesOverview ? (overview?.bestMatch ?? null) : null;
+  const bestMatch = usesOverview ? (overview?.bestMatch ?? null) : (directHit.data ?? null);
   const loading = usesOverview
     ? overviewQuery.isLoading
     : (loadSongs && songQuery.isLoading) ||
@@ -313,6 +315,6 @@ export function useSearchData(keywords: string, activeCategory: Category) {
     songs,
     voices,
     /** The platform ranks a best match across kinds; otherwise the overview has none. */
-    hasBestMatch: usesOverview,
+    hasBestMatch: usesOverview || bestMatch !== null,
   };
 }

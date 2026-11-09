@@ -1,6 +1,6 @@
 "use client";
 
-import { Bookmark, BookmarkMinus, Edit, Link, MoreHorizontal, Trash2 } from "lucide-react";
+import { Edit, Link, MoreHorizontal, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import { SidebarPlaylistConfirmDialog } from "@/components/Sidebar/SidebarPlaylistConfirmDialog";
@@ -43,7 +43,7 @@ export function ProviderPlaylistMoreMenu({
   const smartRouter = useSmartRouter();
   const canManage = useProviderCapability("playlist.manage");
   const library = useLibraryPlaylistsQuery(true);
-  const { remove, rename, subscribe } = useLibraryPlaylistActions();
+  const { remove, rename } = useLibraryPlaylistActions();
   const [renaming, setRenaming] = useState(false);
   const [name, setName] = useState("");
   const [deleting, setDeleting] = useState(false);
@@ -52,12 +52,10 @@ export function ProviderPlaylistMoreMenu({
   const entry = library.data?.find((item) => item.playlist.ref.id === playlistId);
   // The liked list is the platform's own; it can be neither renamed nor deleted.
   const isOwn = canManage && entry?.relation === "created" && !entry.isLikedList;
-  const isSaved = canManage && entry?.relation === "subscribed";
-  const canSave = canManage && entry === undefined && provider.setPlaylistSubscribed !== undefined;
   const shareUrl = provider.getPlaylistShareUrl?.(ref) ?? null;
-  const busy = remove.isPending || rename.isPending || subscribe.isPending;
+  const busy = remove.isPending || rename.isPending;
 
-  if (!isOwn && !isSaved && !canSave && !shareUrl) return null;
+  if (!isOwn && !shareUrl) return null;
 
   const confirmRename = async () => {
     const next = name.trim();
@@ -85,17 +83,6 @@ export function ProviderPlaylistMoreMenu({
     }
   };
 
-  const toggleSaved = async (subscribed: boolean) => {
-    try {
-      await subscribe.mutateAsync({ playlist: ref, subscribed });
-      toast.success(
-        t(subscribed ? "playlist.actions.subscribeSuccess" : "playlist.actions.unsubscribeSuccess"),
-      );
-    } catch {
-      toast.error(t("playlist.table.operationFailed"));
-    }
-  };
-
   return (
     <>
       <DropdownMenu>
@@ -120,18 +107,6 @@ export function ProviderPlaylistMoreMenu({
             >
               <Edit className="size-4" />
               {t("sidebar.lib.renameTitle")}
-            </DropdownMenuItem>
-          )}
-          {isSaved && (
-            <DropdownMenuItem disabled={busy} onSelect={() => void toggleSaved(false)}>
-              <BookmarkMinus className="size-4" />
-              {t("playlist.actions.unsubscribe")}
-            </DropdownMenuItem>
-          )}
-          {canSave && (
-            <DropdownMenuItem disabled={busy} onSelect={() => void toggleSaved(true)}>
-              <Bookmark className="size-4" />
-              {t("playlist.actions.subscribe")}
             </DropdownMenuItem>
           )}
           {shareUrl && (

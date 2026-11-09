@@ -20,6 +20,7 @@ import { useTranslation } from "react-i18next";
 
 import { isPersonalFmPlaybackSource } from "@/constants/personalFm";
 import type { LatticePlaybackControlsProps } from "@/types/playlist/latticeComponents";
+import { playbackTrackId } from "@/lib/player/trackIdentity";
 import { LatticeProgress } from "./LatticeProgress";
 
 const transportButton =
@@ -57,7 +58,7 @@ export function LatticePlaybackControls({
         <button
           type="button"
           className={cn(transportButton, "size-14 opacity-100 [&_svg]:size-[34px]")}
-          aria-label={`${t(playing ? "ui.pause" : "ui.play")} ${track.name}`}
+          aria-label={`${t(playing ? "ui.pause" : "ui.play")} ${track.title}`}
           onClick={() => onPlay(track)}
         >
           {playing ? <Pause fill="currentColor" /> : <Play fill="currentColor" />}
@@ -140,7 +141,11 @@ export function LatticePlaybackControls({
           <ArrowUpRight />
         </button>
       </div>
-      <LatticeProgress current={current} trackId={track.id} durationMs={track.dt} />
+      <LatticeProgress
+        current={current}
+        trackId={playbackTrackId(track)}
+        durationMs={track.durationMs}
+      />
     </div>
   );
 }

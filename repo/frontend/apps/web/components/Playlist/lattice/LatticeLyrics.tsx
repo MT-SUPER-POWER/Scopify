@@ -34,7 +34,7 @@ export default function LatticeLyrics({ track }: LatticeLyricsProps) {
       showSubtitleTranslation,
       hideTranslationSubtitle,
       subtitleContentMode,
-      songKey: String(track.id),
+      songKey: track.ref.id,
       keywordColoringEnabled: true,
       reducedMotion: Boolean(reducedMotion),
       fontsEpoch,
@@ -49,13 +49,13 @@ export default function LatticeLyrics({ track }: LatticeLyricsProps) {
       showSubtitleTranslation,
       hideTranslationSubtitle,
       subtitleContentMode,
-      track.id,
+      track.ref.id,
       reducedMotion,
       fontsEpoch,
     ],
   );
   const ready = useLatticeLyricCanvas(host, input);
-  const artist = track.ar.map((item) => item.name).join(" / ");
+  const artist = track.artists.map((item) => item.name).join(" / ");
   return (
     <>
       <span
@@ -65,9 +65,9 @@ export default function LatticeLyrics({ track }: LatticeLyricsProps) {
       >
         <strong
           className={ready ? "truncate text-[22px] leading-tight font-semibold" : posterTitleClass}
-          title={track.name}
+          title={track.title}
         >
-          {track.name}
+          {track.title}
         </strong>
         <small
           className={

@@ -4,6 +4,7 @@ import { Pause, Play } from "lucide-react";
 import Image from "next/image";
 import { memo, useCallback } from "react";
 
+import { TrackContextMenu } from "@/components/shared/TrackContextMenu";
 import { SongContextMenu } from "@/components/shared/SongContextMenu";
 import { TrackVipBadge } from "@/components/shared/TrackBadges";
 import { getSizedImageUrl } from "@/lib/music/imageUrl";
@@ -103,9 +104,15 @@ export const NewSongItem = memo(function NewSongItem({ index, onPlay, song }: Ne
     </div>
   );
 
-  // The context menu's actions are NetEase's; tracks of other platforms have none yet.
+  // NetEase keeps its own menu; other platforms get the neutral one.
   const neteaseSong = toNeteaseSongDetail(song);
-  if (!neteaseSong) return itemContent;
+  if (!neteaseSong) {
+    return (
+      <TrackContextMenu track={song} isActive={isActive} isPlaying={isPlaying} onPlay={handleClick}>
+        {itemContent}
+      </TrackContextMenu>
+    );
+  }
 
   return (
     <SongContextMenu

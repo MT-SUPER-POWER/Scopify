@@ -10,6 +10,7 @@ export const MUSIC_CAPABILITIES = [
   "track.like",
   "search",
   "search.overview",
+  "search.match",
   "search.lyrics",
   "track.sheet",
   "playlist.read",

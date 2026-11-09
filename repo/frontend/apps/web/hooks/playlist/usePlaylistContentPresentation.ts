@@ -2,7 +2,8 @@
 
 import { useCallback, useMemo, useRef, useState } from "react";
 import { canRemoveTracksFromPlaylist } from "@/lib/playlist/playlistTrackRemovalPermission";
-import { useUserStore } from "@/store";
+import { useActiveAccount } from "@/hooks/auth/useProviderAccounts";
+import { useProviderCapability } from "@/hooks/provider/useActiveProvider";
 import type { PlaylistContentPresentationOptions } from "@/types/playlist/components";
 
 export function usePlaylistContentPresentation({
@@ -14,7 +15,10 @@ export function usePlaylistContentPresentation({
   readonly,
   refetchTracks,
 }: PlaylistContentPresentationOptions) {
-  const currentUserId = useUserStore((state) => state.user?.userId ?? null);
+  // The signed-in account of the active platform, whichever platform that is.
+  const account = useActiveAccount();
+  const currentUserId = account.isLoggedIn ? (account.profile?.accountId ?? null) : null;
+  const canManagePlaylists = useProviderCapability("playlist.manage");
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
@@ -32,7 +36,7 @@ export function usePlaylistContentPresentation({
     // Missing metadata is treated as virtual until the concrete playlist detail loads.
     isVirtualPlaylist: playlistInfo?.isSpecial ?? true,
     playlistId,
-    readonly,
+    readonly: readonly || !canManagePlaylists,
   });
 
   const handleSearchOpen = useCallback(() => {

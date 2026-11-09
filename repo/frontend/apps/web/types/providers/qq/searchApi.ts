@@ -55,3 +55,22 @@ export interface QqSearchSuggestResponseDto {
   keyword: string;
   suggestions: string[];
 }
+
+/** One group of GET /search/match: the entries of a kind, ranked by `order` across groups. */
+export interface QqMatchGroupDto {
+  order: number;
+  itemlist: {
+    mid: string;
+    name: string;
+    singer?: string;
+    pic?: string;
+    vid?: string;
+  }[];
+}
+
+/** GET /search/match: the entities a keyword names outright, by kind. */
+export interface QqSearchMatchDto {
+  code: 200;
+  keyword: string;
+  data: Partial<Record<"song" | "singer" | "album" | "mv", QqMatchGroupDto>>;
+}

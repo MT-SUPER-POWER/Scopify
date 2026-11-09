@@ -7,6 +7,8 @@ import type {
   QqRecommendPlaylistsDto,
   QqToplistSongsDto,
   QqCategoryPlaylistsDto,
+  QqDailyHistoryDatesDto,
+  QqDailyHistoryDto,
   QqFeedDto,
   QqPlaylistCategoriesDto,
   QqSongBatchStationDto,
@@ -141,5 +143,25 @@ export function getQqCategoryPlaylists(id: number, limit: number, signal?: Abort
     noSession: true,
     signal,
     errorContext: { operation: "qq.recommend.categoryPlaylists", id },
+  });
+}
+
+export function getQqDailyHistoryDates(signal?: AbortSignal) {
+  return qqClient.requestData<QqDailyHistoryDatesDto>({
+    method: "GET",
+    url: "/user/daily-songs/history/dates",
+    signal,
+    errorContext: { operation: "qq.recommend.dailyHistoryDates" },
+  });
+}
+
+/** The daily songs of a past day, `date` as `YYYY-MM-DD`. */
+export function getQqDailyHistory(date: string, signal?: AbortSignal) {
+  return qqClient.requestData<QqDailyHistoryDto>({
+    method: "GET",
+    url: "/user/daily-songs/history",
+    params: { date },
+    signal,
+    errorContext: { operation: "qq.recommend.dailyHistory", date },
   });
 }

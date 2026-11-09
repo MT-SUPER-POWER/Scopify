@@ -85,7 +85,7 @@ export default function PlaylistLattice({
             const rect = wall.layout?.get(instance.instanceId) ?? instance;
             return (
               <LatticePoster
-                key={`${instance.instanceId}:${track.id}`}
+                key={`${instance.instanceId}:${track.ref.id}`}
                 instance={instance}
                 track={track}
                 rect={rect}

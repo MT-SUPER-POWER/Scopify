@@ -20,6 +20,7 @@ import { getNeteaseSearchNextOffset } from "@/lib/providers/netease/search";
 import { searchVoiceLists } from "@/lib/providers/netease/api/voicelist";
 import { getVoiceListSearchItems } from "@/lib/search/voiceListSearchAdapter";
 import { getVoiceSearchItems, hasMoreVoiceSearchResults } from "@/lib/search/voiceSearchAdapter";
+import { providerQueryKey } from "@/lib/query/providerQueryKey";
 import { musicQueryKeys } from "@/lib/query/queryKeys";
 import type {
   LyricSearchResponse,
@@ -71,6 +72,20 @@ export function useSearchOverviewQuery(keyword: string, enabled: boolean) {
       return provider.searchOverview(keyword, signal);
     },
     queryKey: musicQueryKeys.search.overview(provider.provider, keyword),
+  });
+}
+
+/** The platform's direct hit for a keyword, for platforms whose lists are searched by kind. */
+export function useSearchBestMatchQuery(keyword: string, enabled: boolean) {
+  const provider = useActiveProvider();
+  return useQuery({
+    enabled: isEnabled(keyword, enabled && Boolean(provider.getSearchBestMatch)),
+    queryFn: ({ signal }) => {
+      if (!provider.getSearchBestMatch) throw new Error("This platform has no direct hit.");
+      return provider.getSearchBestMatch(keyword, signal);
+    },
+    queryKey: providerQueryKey(provider.provider, "search", "best-match", keyword),
+    retry: false,
   });
 }
 

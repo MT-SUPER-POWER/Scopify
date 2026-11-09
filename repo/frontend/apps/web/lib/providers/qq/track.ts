@@ -1,7 +1,13 @@
 import type { MusicTrackSource } from "@scopify/music-domain/provider";
 
 import { adaptQqTrack } from "@/lib/providers/qq/adapters/track";
-import { getQqSongBatch, QQ_SONG_BATCH_LIMIT } from "@/lib/providers/qq/api/track";
+import {
+  getQqFavCount,
+  getQqSongBatch,
+  getQqSongLabels,
+  QQ_SONG_BATCH_LIMIT,
+} from "@/lib/providers/qq/api/track";
+import { resolveQqSongId } from "@/lib/providers/qq/songId";
 import { isApiError } from "@/lib/web/apiError";
 import type { QqTrackDto } from "@/types/providers/qq/trackApi";
 
@@ -14,6 +20,16 @@ function chunk<T>(items: readonly T[], size: number): T[][] {
 }
 
 export const qqTrackSource: MusicTrackSource = {
+  async getTrackLikeCount(track, signal) {
+    const data = await getQqFavCount(await resolveQqSongId(track.id, signal), signal);
+    return data.items[0]?.count ?? null;
+  },
+
+  async getTrackLabels(track, signal) {
+    const data = await getQqSongLabels(await resolveQqSongId(track.id, signal), signal);
+    return data.labels.map((label) => label.text).filter(Boolean);
+  },
+
   async getTracks(mids, signal) {
     const batches = await Promise.all(
       chunk(mids, QQ_SONG_BATCH_LIMIT).map(async (batch) => {

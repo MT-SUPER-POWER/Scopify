@@ -4,10 +4,10 @@ import { Music2, PanelRightClose } from "lucide-react";
 import { useState } from "react";
 import { NowPlayingLyricsView } from "./NowPlayingLyricsView";
 import { NowPlayingOverview } from "./NowPlayingOverview";
+import { NowPlayingProviderCard } from "./NowPlayingProviderCard";
 import { NowPlayingPanelTabs } from "./NowPlayingPanelTabs";
 import { NowPlayingQueueView } from "./NowPlayingQueueView";
 import { useCurrentNeteaseSong } from "@/hooks/player/useCurrentNeteaseSong";
-import { formatTrackArtists } from "@/lib/player/trackDisplay";
 import { cn } from "@/lib/utils";
 import { usePlayerStore } from "@/store";
 import { useTranslation } from "react-i18next";
@@ -73,10 +73,7 @@ export function NowPlayingPanel() {
           <NowPlayingOverview song={song} onCoverVisibleChange={setIsOverCover} />
         )
       ) : track ? (
-        <div className="flex min-h-0 flex-1 flex-col items-center justify-center gap-1 px-6 py-8 text-center">
-          <h3 className="text-base font-semibold text-content">{track.title}</h3>
-          <p className="text-sm text-content-muted">{formatTrackArtists(track)}</p>
-        </div>
+        <NowPlayingProviderCard track={track} />
       ) : (
         <div className="flex min-h-0 flex-1 flex-col items-center justify-center gap-3 px-6 py-8 text-center">
           <span className="mb-2 flex size-16 items-center justify-center rounded-2xl bg-content/5 text-content-muted">

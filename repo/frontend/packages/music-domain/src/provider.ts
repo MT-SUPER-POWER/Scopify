@@ -10,12 +10,20 @@ import type { MusicPlaybackSource } from "./playback";
 import type { MusicPlaylistSource } from "./playlist";
 import type { MusicSearchSource } from "./search";
 import type { MusicRecommendSource } from "./recommend";
+import type { MusicResourceRef } from "./identity";
 import type { MusicTrack } from "./track";
 
 /** Track lookup, implemented by every platform. */
 export interface MusicTrackSource {
   /** Tracks for native IDs, in request order; IDs the platform cannot resolve are left out. */
   getTracks(ids: readonly string[], signal?: AbortSignal): Promise<MusicTrack[]>;
+  /** How many accounts liked the track; null when the platform does not count. */
+  getTrackLikeCount?(
+    track: MusicResourceRef<"track">,
+    signal?: AbortSignal,
+  ): Promise<number | null>;
+  /** The short tags the platform puts on the track ("Pop", "76% listened to the end"). */
+  getTrackLabels?(track: MusicResourceRef<"track">, signal?: AbortSignal): Promise<string[]>;
 }
 
 /**

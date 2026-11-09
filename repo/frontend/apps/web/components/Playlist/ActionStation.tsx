@@ -27,6 +27,7 @@ import {
 } from "@scopify/ui/shadcn/components/tooltip";
 import { PlaylistViewButton } from "@/components/Playlist/lattice/PlaylistViewButton";
 import { PlaylistMoreMenu } from "@/components/Playlist/PlaylistMoreMenu";
+import { ProviderPlaylistSaveButton } from "@/components/Playlist/ProviderPlaylistSaveButton";
 import { CollectionToggleButton } from "@/components/shared/CollectionToggleButton";
 import { ShortcutHint } from "@/components/shortcuts/ShortcutHint";
 import { TrackPreviewButton } from "@/components/trackPreview/TrackPreviewButton";
@@ -286,6 +287,12 @@ export default function PlaylistActions(props: PlaylistActionsProps) {
               unsubscribeLabel={t("playlist.actions.unsubscribe")}
             />
           )}
+
+          {!isNeteasePlaylist &&
+            !isDaily &&
+            playlistId &&
+            playlistInfo &&
+            !playlistInfo.isSpecial && <ProviderPlaylistSaveButton playlistId={playlistId} />}
 
           {showShuffle && (
             <Tooltip>

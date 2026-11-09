@@ -1,9 +1,9 @@
 import type { GridCell } from "@/types/playlist/grid";
 import type { CardFlipPlan } from "@/types/playlist/latticeComponents";
-import type { SongDetail } from "@/types/song/api";
+import type { PlayerTrack } from "@/types/player/model";
 
 export interface GridCardProps {
-  track: SongDetail;
+  track: PlayerTrack;
   cell: GridCell;
   current: boolean;
   playing: boolean;
@@ -12,5 +12,5 @@ export interface GridCardProps {
   /** Click on a card: pan to it, or play it when it is already the focused one. */
   onSelect: (cell: GridCell, centered: boolean) => void;
   flipPlan: CardFlipPlan | null;
-  onPlay: (track: SongDetail) => void;
+  onPlay: (track: PlayerTrack) => void;
 }

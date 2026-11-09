@@ -15,10 +15,18 @@ import {
 } from "@/lib/providers/qq/adapters/search";
 import {
   getQqHotSearches,
+  getQqSearchMatch,
   getQqSearchSuggestions,
   QQ_SEARCH_PAGE_LIMIT,
   searchQq,
 } from "@/lib/providers/qq/api/search";
+import { getQqSongBatch } from "@/lib/providers/qq/api/track";
+import {
+  adaptQqPlaylistSong,
+  qqAlbumCoverUrl,
+  qqSecureUrl,
+} from "@/lib/providers/qq/adapters/playlist";
+import { qqArtistAvatarUrl } from "@/lib/providers/qq/adapters/search";
 import { isApiError } from "@/lib/web/apiError";
 import type { QqSearchResponseDto } from "@/types/providers/qq/searchApi";
 
@@ -98,6 +106,54 @@ export const qqSearchSource: MusicSearchSource = {
       if (isNothingToOffer(error)) return [];
       throw error;
     }
+  },
+
+  async getSearchBestMatch(keyword, signal) {
+    let response;
+    try {
+      response = await getQqSearchMatch(keyword, signal);
+    } catch (error) {
+      if (isNothingToOffer(error)) return null;
+      throw error;
+    }
+    // The first group by rank that holds a kind the best match can show.
+    const groups = (["song", "singer", "album"] as const)
+      .flatMap((kind) => {
+        const group = response.data[kind];
+        const item = group?.itemlist[0];
+        return group && item ? [{ kind, order: group.order, item }] : [];
+      })
+      .sort((a, b) => a.order - b.order);
+    const hit = groups[0];
+    if (!hit) return null;
+    const { item } = hit;
+    if (hit.kind === "song") {
+      const batch = await getQqSongBatch([item.mid], signal);
+      const entry = batch.results[0];
+      if (!entry || entry.code !== 200 || !("song" in entry)) return null;
+      return { kind: "song", song: adaptQqPlaylistSong(entry.song) };
+    }
+    if (hit.kind === "singer") {
+      return {
+        kind: "artist",
+        artist: {
+          ref: { provider: "qq", kind: "artist", id: item.mid },
+          name: item.name,
+          avatarUrl: qqSecureUrl(item.pic) ?? qqArtistAvatarUrl(item.mid),
+          aliases: [],
+        },
+      };
+    }
+    return {
+      kind: "album",
+      album: {
+        ref: { provider: "qq", kind: "album", id: item.mid },
+        title: item.name,
+        coverUrl: qqAlbumCoverUrl(item.mid) ?? qqSecureUrl(item.pic),
+        artists: item.singer ? [{ ref: null, name: item.singer }] : [],
+        publishedAt: null,
+      },
+    };
   },
 
   async getSearchSuggestions(keyword, signal) {

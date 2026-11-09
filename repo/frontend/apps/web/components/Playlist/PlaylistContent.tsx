@@ -1,6 +1,5 @@
 "use client";
 
-import { useMemo } from "react";
 import PlaylistActions from "@/components/Playlist/ActionStation";
 import { PlaylistLatticeView } from "@/components/Playlist/lattice/PlaylistLatticeView";
 import { PlaylistHero } from "@/components/Playlist/PlaylistHero";
@@ -10,11 +9,9 @@ import { PlaylistTrackList } from "@/components/Playlist/PlaylistTrackList";
 import { useRouteRestorationPlaceholder } from "@/components/shared/NavigationScrollProvider";
 import { DASHBOARD_MAIN_STICKY_TOP } from "@/constants/layout";
 import { usePlaylistContentPresentation } from "@/hooks/playlist/usePlaylistContentPresentation";
-import { toNeteasePlayerTrack, toNeteaseSongDetails } from "@/lib/providers/netease/adapters/track";
 import { useTranslation } from "react-i18next";
 
 import type { PlaylistContentProps } from "@/types/playlist/components";
-import type { SongDetail } from "@/types/song/api";
 
 export function PlaylistContent({
   actionSlot,
@@ -64,20 +61,15 @@ export function PlaylistContent({
   });
   const sourceId = playSourceId ?? playlistId ?? (dailyDate ? `daily:${dailyDate}` : "daily");
   // The immersive views read NetEase songs (lyrics, song fields), so only NetEase lists open them.
-  const latticeSongs = useMemo(() => toNeteaseSongDetails(tracks), [tracks]);
-  const canOpenLattice = latticeSongs.length === tracks.length;
-  const playLatticeSong = useMemo(
-    () => (onTrackPlay ? (song: SongDetail) => onTrackPlay(toNeteasePlayerTrack(song)) : undefined),
-    [onTrackPlay],
-  );
+  const canOpenLattice = tracks.length > 0;
   return (
     <PlaylistLatticeView
       key={sourceId}
       loading={isLoading}
-      tracks={latticeSongs}
+      tracks={tracks}
       title={dynamicPlaylistInfo?.title ?? t("playlist.actions.listLabel")}
       sourceId={sourceId}
-      onTrackPlay={playLatticeSong}
+      onTrackPlay={onTrackPlay}
     >
       {(openLattice) => (
         <div className="relative flex min-h-screen w-full flex-col bg-surface-raised font-sans">

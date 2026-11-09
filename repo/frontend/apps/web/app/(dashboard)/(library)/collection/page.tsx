@@ -7,28 +7,22 @@ import { QuietState } from "@/components/shared/QuietState";
 import { useActiveAccount } from "@/hooks/auth/useProviderAccounts";
 import { useHomePlaybackActions } from "@/hooks/home/useHomePlaybackActions";
 import { useLibraryAlbumsQuery } from "@/hooks/library/useLibraryAlbums";
-import {
-  useLibraryPlaylistsQuery,
-  useLikedPlaylistQuery,
-} from "@/hooks/library/useLibraryPlaylists";
+import { useLibraryPlaylistsQuery } from "@/hooks/library/useLibraryPlaylists";
 import { useFollowedArtistsQuery } from "@/hooks/library/useLibraryQueries";
 import { getSizedImageUrl } from "@/lib/music/imageUrl";
 import { useTranslation } from "react-i18next";
 
 import { CollectionShelf, type CollectionShelfItem } from "./_components/CollectionShelf";
-import { LikedSongsHero } from "./_components/LikedSongsHero";
 
 /** What the account keeps: its liked songs first, then the playlists, albums and artists saved. */
 export default function CollectionPage() {
   const { t } = useTranslation();
   const { isLoggedIn } = useActiveAccount();
   const actions = useHomePlaybackActions();
-  const likedQuery = useLikedPlaylistQuery();
   const playlistsQuery = useLibraryPlaylistsQuery();
   const albumsQuery = useLibraryAlbumsQuery();
   const artistsQuery = useFollowedArtistsQuery();
 
-  const liked = likedQuery.data;
   const playlists = useMemo<CollectionShelfItem[]>(
     () =>
       (playlistsQuery.data ?? [])
@@ -79,9 +73,9 @@ export default function CollectionPage() {
     [artistsQuery.data],
   );
 
-  const isLoading = likedQuery.isLoading || playlistsQuery.isLoading || albumsQuery.isLoading;
-  const isError = likedQuery.isError && playlistsQuery.isError && albumsQuery.isError;
-  const isEmpty = !liked && playlists.length + albums.length + artists.length === 0;
+  const isLoading = playlistsQuery.isLoading || albumsQuery.isLoading;
+  const isError = playlistsQuery.isError && albumsQuery.isError;
+  const isEmpty = playlists.length + albums.length + artists.length === 0;
 
   return (
     <>
@@ -97,7 +91,7 @@ export default function CollectionPage() {
           hasItems={!isEmpty}
           isError={isError}
           isLoading={isLoading}
-          isRetrying={likedQuery.isRefetching}
+          isRetrying={playlistsQuery.isRefetching}
           emptyState={
             <QuietState
               icon={Bookmark}
@@ -106,13 +100,11 @@ export default function CollectionPage() {
             />
           }
           onRetry={() => {
-            void likedQuery.refetch();
             void playlistsQuery.refetch();
             void albumsQuery.refetch();
           }}
         >
           <div className="space-y-10">
-            {liked && <LikedSongsHero liked={liked} />}
             <CollectionShelf title={t("library.collection.tab.playlists")} items={playlists} />
             <CollectionShelf title={t("library.collection.tab.albums")} items={albums} />
             <CollectionShelf title={t("library.collection.tab.artists")} items={artists} />

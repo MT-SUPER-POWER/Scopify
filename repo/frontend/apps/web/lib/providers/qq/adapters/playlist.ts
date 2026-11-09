@@ -34,6 +34,15 @@ function creatorAccountId(uin: QqPlaylistDetailDto["uin"]): string | null {
   return uin && /^\d+$/.test(uin) ? uin : null;
 }
 
+/** QQ writes descriptions with HTML line breaks; the page shows plain text. */
+function plainDescription(desc: string | undefined): string {
+  return (desc ?? "")
+    .replace(/<br\s*\/?>/gi, "\n")
+    .replace(/<[^>]+>/g, "")
+    .replace(/&nbsp;/g, " ")
+    .trim();
+}
+
 export function adaptQqPlaylistDetail(raw: QqPlaylistDetailDto): MusicPlaylistDetail {
   const creatorName = raw.nickname || raw.nick || "";
   const accountId = creatorAccountId(raw.uin);
@@ -51,7 +60,7 @@ export function adaptQqPlaylistDetail(raw: QqPlaylistDetailDto): MusicPlaylistDe
       : null,
     trackCount: raw.total_song_num ?? raw.songnum ?? raw.songlist?.length ?? 0,
     playCount: playCount ?? null,
-    description: raw.desc ?? "",
+    description: plainDescription(raw.desc),
     // Anonymous reads list tag IDs with empty names; a tag without a name is not shown.
     tags: (raw.tags ?? []).flatMap((tag) => (tag.name ? [tag.name] : [])),
     createdAt: raw.ctime ? raw.ctime * 1000 : null,

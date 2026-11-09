@@ -37,7 +37,7 @@ export default function AlbumPage() {
   const canOpenArtist = useProviderCapability("artist.read");
   // The immersive views and MV previews read NetEase songs, so only NetEase albums open them.
   const neteaseSongs = useMemo(() => toNeteaseSongDetails(tracks), [tracks]);
-  const canOpenLattice = neteaseSongs.length === tracks.length;
+  const canOpenLattice = tracks.length > 0;
 
   if (!albumId)
     return (
@@ -69,12 +69,7 @@ export default function AlbumPage() {
   if (!ALBUM_INFO) return null;
 
   return (
-    <PlaylistLatticeView
-      key={albumId}
-      sourceId={albumId}
-      tracks={neteaseSongs}
-      title={ALBUM_INFO.title}
-    >
+    <PlaylistLatticeView key={albumId} sourceId={albumId} tracks={tracks} title={ALBUM_INFO.title}>
       {(openLattice) => (
         <div className="flex min-h-screen w-full flex-col">
           <div

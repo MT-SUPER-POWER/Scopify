@@ -20,6 +20,7 @@ const QQ_CAPABILITIES: ReadonlySet<MusicCapability> = new Set<MusicCapability>([
   "track.lyrics",
   "playlist.read",
   "search",
+  "search.match",
   "artist.read",
   "album.read",
   "album.subscribe",

@@ -267,6 +267,7 @@ export default interface Resources {
     copyLink: "复制链接";
     copyPlaylistLink: "复制歌单链接";
     deletePlaylist: "删除歌单";
+    goToAlbum: "查看专辑";
     goToArtist: "查看歌手";
     pause: "暂停";
     play: "播放";

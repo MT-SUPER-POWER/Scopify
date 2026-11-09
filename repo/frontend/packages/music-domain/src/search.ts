@@ -106,4 +106,9 @@ export interface MusicSearchSource {
   /** Completions for a half-typed keyword; empty when the platform has none. */
   getSearchSuggestions(keyword: string, signal?: AbortSignal): Promise<MusicSearchSuggestion[]>;
   searchOverview?(keyword: string, signal?: AbortSignal): Promise<MusicSearchOverview>;
+  /**
+   * The platform's direct hit for a keyword, for platforms whose lists are searched one kind at
+   * a time (`search.match`); null when the keyword matches nothing outright.
+   */
+  getSearchBestMatch?(keyword: string, signal?: AbortSignal): Promise<MusicSearchBestMatch | null>;
 }

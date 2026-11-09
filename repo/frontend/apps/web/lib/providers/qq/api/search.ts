@@ -6,6 +6,7 @@ import type {
   QqSearchResponseDto,
   QqSearchSingerDto,
   QqSearchSongDto,
+  QqSearchMatchDto,
   QqSearchSuggestResponseDto,
 } from "@/types/providers/qq/searchApi";
 
@@ -52,5 +53,17 @@ export function getQqSearchSuggestions(keyword: string, signal?: AbortSignal) {
     params: { keyword },
     signal,
     errorContext: { operation: "qq.search.suggest" },
+  });
+}
+
+/** The entities a keyword names outright. */
+export function getQqSearchMatch(keyword: string, signal?: AbortSignal) {
+  return qqClient.requestData<QqSearchMatchDto>({
+    method: "GET",
+    url: "/search/match",
+    params: { keyword },
+    noSession: true,
+    signal,
+    errorContext: { operation: "qq.search.match" },
   });
 }

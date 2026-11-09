@@ -88,6 +88,8 @@ export interface MusicRecommendSource {
   getDailyTracks?(request?: MusicDailyTracksRequest): Promise<MusicTrack[]>;
   /** The next batch of the signed-in account's personal FM; a repeat call serves more songs. */
   getPersonalFmTracks?(request?: MusicPersonalFmRequest): Promise<MusicTrack[]>;
+  /** The past days (`YYYY-MM-DD`) whose daily songs `getDailyTracks({ date })` can still serve. */
+  getDailyHistoryDates?(options?: MusicRecommendReadOptions): Promise<string[]>;
   /** Tells the platform the account does not want this FM song (`recommend.fm.dislike`). */
   dislikePersonalFmTrack?(track: MusicResourceRef<"track">): Promise<void>;
   /** Playlists anyone gets, with no account needed. */

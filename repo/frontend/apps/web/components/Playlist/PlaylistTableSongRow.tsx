@@ -3,6 +3,7 @@
 import { memo, useCallback, useMemo, useState } from "react";
 import dynamic from "next/dynamic";
 import { CloudSongContextMenu } from "@/components/library/CloudSongContextMenu";
+import { TrackContextMenu } from "@/components/shared/TrackContextMenu";
 import { SongContextMenu } from "@/components/shared/SongContextMenu";
 import { SortableTrackRow } from "@/components/Playlist/SortableTrackRow";
 import { toNeteaseSongDetail } from "@/lib/providers/netease/adapters/track";
@@ -34,7 +35,23 @@ export const PlaylistTableSongRow = memo(function PlaylistTableSongRow({
     [onSelectTrack, track.ref.id],
   );
   const rowContent = <SortableTrackRow {...row} onRowClick={select} />;
-  if (!song) return rowContent;
+  if (!song) {
+    return (
+      <TrackContextMenu
+        track={track}
+        isActive={row.isActive}
+        isPlaying={row.isPlaying}
+        onPlay={() => onPlay(track)}
+        playlistId={playlistID}
+        onRemoveFromPlaylist={
+          canRemoveFromPlaylist ? () => onRequestDelete(playlistID ?? undefined, track) : undefined
+        }
+        onOpenContextMenu={() => onContextTrack(track.ref.id)}
+      >
+        {rowContent}
+      </TrackContextMenu>
+    );
+  }
   if (cloudActions) {
     return (
       <CloudSongContextMenu

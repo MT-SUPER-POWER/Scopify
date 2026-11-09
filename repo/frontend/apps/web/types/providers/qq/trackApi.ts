@@ -29,3 +29,16 @@ export interface QqSongBatchDto {
   results: QqSongBatchEntry[];
   partial: boolean;
 }
+
+/** GET /song/fav-count?ids=…: one entry per requested ID. `count` is null when not reported. */
+export interface QqFavCountDto {
+  code: 200;
+  items: { id: number; count: number | null; display: string | null }[];
+}
+
+/** GET /song/labels?id=…: tags the platform shows on a song. */
+export interface QqSongLabelsDto {
+  code: 200;
+  id: number;
+  labels: { text: string }[];
+}

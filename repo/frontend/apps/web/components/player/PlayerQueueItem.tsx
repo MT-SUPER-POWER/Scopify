@@ -3,6 +3,7 @@
 import { memo, useMemo } from "react";
 import { PlayerQueueItemCover } from "@/components/player/PlayerQueueItemCover";
 import { ArtistInlineLinks } from "@/components/shared/ArtistInlineLinks";
+import { TrackContextMenu } from "@/components/shared/TrackContextMenu";
 import { SongContextMenu } from "@/components/shared/SongContextMenu";
 import { TrackVipBadge } from "@/components/shared/TrackBadges";
 import { useNowPlayingDislike } from "@/hooks/player/useNowPlayingDislike";
@@ -52,7 +53,19 @@ export const PlayerQueueItem = memo(function PlayerQueueItem({
       </div>
     </div>
   );
-  if (!neteaseSong) return content;
+  if (!neteaseSong) {
+    return (
+      <TrackContextMenu
+        track={song}
+        isActive={isActive}
+        isPlaying={isPlaying}
+        onPlay={() => onPlay(index)}
+        onRemoveFromQueue={() => onRemove(index)}
+      >
+        {content}
+      </TrackContextMenu>
+    );
+  }
   return (
     <SongContextMenu
       song={neteaseSong}

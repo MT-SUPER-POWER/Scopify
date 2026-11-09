@@ -29,8 +29,8 @@ export const GridCard = memo(function GridCard({
     register(cell, ref.current);
     return () => register(cell, null);
   }, [cell, register]);
-  const artist = track.ar.map((item) => item.name).join(" / ");
-  const cover = track.al.picUrl || track.al.coverUrl;
+  const artist = track.artists.map((item) => item.name).join(" / ");
+  const cover = track.album?.coverUrl;
   return (
     <div
       ref={ref}
@@ -41,7 +41,7 @@ export const GridCard = memo(function GridCard({
       data-current={current}
       data-playing={playing}
       data-flipping={flipping}
-      aria-label={t("playlist.grid.select", { name: track.name })}
+      aria-label={t("playlist.grid.select", { name: track.title })}
       className="group/card absolute cursor-pointer text-foreground [contain:layout_paint] focus-visible:outline-none data-[flipping=true]:[contain:layout]"
       style={{
         left: -GRID_METRICS.cardWidth / 2,
@@ -79,7 +79,7 @@ export const GridCard = memo(function GridCard({
           )}
           <button
             type="button"
-            aria-label={`${t(playing ? "ui.pause" : "ui.play")} ${track.name}`}
+            aria-label={`${t(playing ? "ui.pause" : "ui.play")} ${track.title}`}
             onClick={() => onPlay(track)}
             className="pointer-events-none absolute inset-0 m-auto grid size-14 place-items-center rounded-full bg-black/55 text-white opacity-0 backdrop-blur-sm transition-[opacity,transform] duration-200 group-data-[centered=true]/card:pointer-events-auto group-data-[centered=true]/card:opacity-100 group-data-[current=true]/card:pointer-events-auto group-data-[current=true]/card:not-group-data-[playing=true]/card:opacity-100 group-data-[current=true]/card:group-hover/card:opacity-100 hover:scale-105 hover:bg-black/70 focus-visible:opacity-100 focus-visible:outline-2 focus-visible:outline-white [&_svg]:size-6"
           >
@@ -94,19 +94,19 @@ export const GridCard = memo(function GridCard({
         <div className="mt-2.5 flex min-h-0 min-w-0 flex-1 flex-col text-left">
           <strong
             className="line-clamp-2 text-[14px] leading-snug font-bold tracking-tight wrap-anywhere"
-            title={track.name}
+            title={track.title}
           >
-            {track.name}
+            {track.title}
           </strong>
           <small
             className="mt-0.5 line-clamp-1 text-[12px] font-medium text-muted-foreground"
-            title={artist || track.al.name}
+            title={artist || (track.album?.title ?? "")}
           >
-            {artist || track.al.name}
+            {artist || (track.album?.title ?? "")}
           </small>
           <span className="mt-auto flex items-center justify-between font-mono text-[10px] tabular-nums opacity-55">
             <span>{String(cell.index + 1).padStart(2, "0")}</span>
-            {formatDuration(track.dt)}
+            {formatDuration(track.durationMs)}
           </span>
         </div>
       </div>

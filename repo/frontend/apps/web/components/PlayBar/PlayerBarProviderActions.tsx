@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { PiChatCircleDotsBold, PiHeartBold, PiHeartFill } from "react-icons/pi";
 import { PlayerBarStatAction } from "@/components/PlayBar/PlayerBarStatAction";
 import { useActiveProvider, useProviderCapability } from "@/hooks/provider/useActiveProvider";
+import { useTrackLikeCount } from "@/hooks/song/useTrackInsights";
 import { usePlaybackCommands } from "@/hooks/player/usePlaybackCommands";
 import { getCommentHref } from "@/lib/comment/commentResource";
 import { providerQueryKey } from "@/lib/query/providerQueryKey";
@@ -21,6 +22,7 @@ export function PlayerBarProviderActions({ track, liked }: { track: PlayerTrack;
   const commands = usePlaybackCommands();
   const canLike = useProviderCapability("track.like");
   const canComment = useProviderCapability("comments.read");
+  const likeCount = useTrackLikeCount(track.ref);
   const commentCount = useQuery({
     enabled: canComment && provider.commentTargetKinds.has("track"),
     queryKey: providerQueryKey(provider.provider, "comment", "count", track.ref.id),
@@ -38,6 +40,8 @@ export function PlayerBarProviderActions({ track, liked }: { track: PlayerTrack;
     <div className="hidden shrink-0 items-center gap-4 sm:flex lg:gap-5">
       {canLike && (
         <PlayerBarStatAction
+          count={likeCount.data ?? undefined}
+          countClassName={liked ? "text-brand" : "text-content-muted"}
           title={liked ? t("common.action.unlike") : t("common.action.like")}
           shortcutCommandId="toggle-like"
           onClick={() => void commands.toggleLike()}
