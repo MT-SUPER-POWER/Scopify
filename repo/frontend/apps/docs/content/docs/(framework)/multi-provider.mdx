@@ -61,11 +61,11 @@ Scopify 同时接入网易云音乐和 QQ 音乐，但**任何时候只有一个
 
 ## 平台接口
 
-`MusicProviderClient` 由每个区域的 `Music<区域>Source` 组合而成，目前有 `MusicTrackSource`、`MusicPlaybackSource`、`MusicPlaylistSource`：
+`MusicProviderClient` 由每个区域的 `Music<区域>Source` 组合而成，目前有曲目、播放、歌单、搜索、推荐与首页、账号歌单库、歌手、专辑、歌词、评论、MV 十类（`MusicTrackSource`、`MusicPlaybackSource`、`MusicPlaylistSource`、`MusicSearchSource`、`MusicRecommendSource`、`MusicLibrarySource`、`MusicArtistSource`、`MusicAlbumSource`、`MusicLyricsSource`、`MusicCommentSource`、`MusicMvSource`）。其中推荐、歌单库、歌手、专辑、评论、MV 里有只有部分平台具备的方法，都是可选的，并对应能力：
 
 ```ts
 export interface MusicProviderClient
-  extends MusicTrackSource, MusicPlaybackSource, MusicPlaylistSource {
+  extends MusicTrackSource, MusicPlaybackSource, MusicPlaylistSource, MusicSearchSource /* … */ {
   readonly provider: MusicProvider;
   readonly capabilities: ReadonlySet<MusicCapability>;
 }
@@ -208,17 +208,19 @@ WebConfig = {
 | 播放器与队列 | 已完成，网易云播放已在浏览器中验证 |
 | QQ 登录与平台切换、能力隐藏、缓存键 | 已完成，二维码可以生成，尚未实际扫码 |
 | 歌单详情 | 已完成，QQ 歌单可以打开和播放；网易云页面尚未在界面上回归 |
-| 搜索 | 待做 |
-| 我的歌单与喜欢 | 待做 |
-| 每日推荐、私人 FM 与 QQ 首页 | 待做 |
-| 歌手与专辑 | 待做 |
-| 歌词 | 待做 |
-| 评论与 MV | 待做 |
+| 搜索 | 已完成，QQ 可搜歌曲、歌手、专辑、歌单；网易云独有页签（歌词、曲谱、MV、播客）只在网易云出现 |
+| 我的歌单与喜欢 | 已完成，QQ 的歌单库、喜欢、收藏歌单都按后端源码实现，未登录实测 |
+| 每日推荐、私人 FM 与 QQ 首页 | 已完成，QQ 有自己的首页；榜单用 `toplist:<id>` 作为歌单 ID |
+| 歌手与专辑 | 已完成，QQ 歌手页和专辑页可用；QQ 没有关注歌手 |
+| 歌词 | 已完成，QQ 歌词只有整行时间，没有逐字和罗马音 |
+| 评论与 MV | 已完成，QQ 评论只读且只支持歌曲；QQ 没有评论发表和点赞 |
 | 收尾：剩余网易云类型移入 `types/providers/netease/`，去掉 `toNeteaseSongDetail` 等过渡桥 | 待做 |
 
 ### 已知欠账
 
-- **QQ 模式没有首页。** 首页全部是网易云推荐，`/` 要求 `recommend.daily`，所以切到 QQ 后首页显示“当前平台不支持”。计划在“每日推荐、私人 FM”区域里做 QQ 首页，QQ 后端有日推、新歌、排行榜和推荐歌单。
+- **QQ 登录后的功能都没实测过。** 日推、私人 FM、歌单库、喜欢、收藏专辑、会员歌曲播放，都是按后端源码实现的，需要扫码登录后逐项验证。
+- **过渡桥还在。** `toNeteaseSongDetail`、`useCurrentNeteaseSong` 等仍被少量网易云独有的功能使用（歌词匹配、在线歌词页签、粉丝团等），这些功能在迁移或确认永久只属网易云之前保留。
+- **部分界面只在网易云出现。** MV 货架、歌手 MV、MV 点赞与收藏、相似歌手没有页面展示，播放器栏的喜欢按钮仍绑定网易云数据。
 - **安装包不含 QQ 后端。** 桌面端找不到 QQ 后端时显示“未启用”。要随安装包分发，需要先把 QQ 后端打成单文件，再放进 `extraResources`。
 - **QQ 会话只在客户端保存。** QQ 后端重启后 token 是否仍然有效，取决于它的会话持久化配置（`QQ_SESSION_SECRET`）。这个密钥应由主进程用 `safeStorage` 保管。
 - **Web 部署还没有 QQ 后端。** 浏览器端可以填自定义地址，但官方部署里还没有 QQ 后端。
