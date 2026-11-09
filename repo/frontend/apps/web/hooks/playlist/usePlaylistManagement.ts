@@ -38,7 +38,9 @@ export function usePlaylistManagement(playlistId: number | string, detail?: RawN
   const refresh = () => {
     void clearPageCache();
     if (userId)
-      void queryClient.invalidateQueries({ queryKey: musicQueryKeys.library.playlists(userId) });
+      void queryClient.invalidateQueries({
+        queryKey: musicQueryKeys.library.neteasePlaylists(userId),
+      });
     void queryClient.invalidateQueries({
       queryKey: musicQueryKeys.playlist.contentOf("netease", String(playlistId)),
     });
@@ -61,7 +63,7 @@ export function usePlaylistManagement(playlistId: number | string, detail?: RawN
       // Remove the entry immediately, then reconcile the subscribed query with the server.
       if (userId)
         queryClient.setQueryData(
-          musicQueryKeys.library.playlists(userId),
+          musicQueryKeys.library.neteasePlaylists(userId),
           (items: typeof playlists | undefined) =>
             items?.filter((item) => String(item.id) !== String(playlistId)),
         );

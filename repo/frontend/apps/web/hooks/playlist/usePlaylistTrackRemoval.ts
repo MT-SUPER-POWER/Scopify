@@ -40,8 +40,12 @@ export function usePlaylistTrackRemoval() {
         queryClient.invalidateQueries({
           queryKey: musicQueryKeys.playlist.contentOf(playlist.provider, playlist.id),
         }),
-        queryClient.invalidateQueries({ queryKey: ["library", "playlists"] }),
-        queryClient.invalidateQueries({ queryKey: ["library", "liked-playlist"] }),
+        queryClient.invalidateQueries({
+          queryKey: musicQueryKeys.library.playlistsAll(playlist.provider),
+        }),
+        queryClient.invalidateQueries({
+          queryKey: musicQueryKeys.library.likedPlaylistAll(playlist.provider),
+        }),
       ]);
     },
   });

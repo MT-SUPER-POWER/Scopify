@@ -8,7 +8,6 @@ import { TableCell } from "@/components/ui/table";
 import { LikeButton } from "@/components/ui/LikeButton";
 import { useSmartRouter } from "@/hooks/core/useSmartRouter";
 import { useProviderCapability } from "@/hooks/provider/useActiveProvider";
-import { getNeteaseTrackId } from "@/lib/providers/netease/adapters/track";
 import { formatDate, formatDuration } from "@/lib/utils";
 import type { TrackRowCellsProps } from "@/types/playlist/components";
 
@@ -29,16 +28,15 @@ export const TrackRowCells = memo(function TrackRowCells({
   const songLikeMutation = useSongLikeMutation();
   const smartRouter = useSmartRouter();
   const canOpenAlbum = useProviderCapability("album.read");
-  // Liking goes through NetEase's like list; other platforms' rows have no like button yet.
-  const neteaseId = getNeteaseTrackId(track);
+  const canLike = useProviderCapability("track.like");
   const album = track.album;
   const albumTitle = album?.title ?? "";
   const publishTime = track.netease?.publishTime ?? 0;
   const handleLike = useCallback(
     (nextLiked: boolean) => {
-      if (neteaseId !== null) songLikeMutation.mutate({ like: nextLiked, songId: neteaseId });
+      if (canLike) songLikeMutation.mutate({ like: nextLiked, track: track.ref });
     },
-    [neteaseId, songLikeMutation],
+    [canLike, songLikeMutation, track.ref],
   );
   return (
     <>
@@ -89,7 +87,7 @@ export const TrackRowCells = memo(function TrackRowCells({
 
       {!hideLikeColumn && (
         <TableCell className="truncate">
-          {neteaseId !== null && (
+          {canLike && (
             <div className="flex size-full justify-center">
               <LikeButton
                 liked={isLiked}

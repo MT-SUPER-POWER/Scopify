@@ -152,11 +152,17 @@ export interface PlaylistTrackRemovalVariables {
   track: MusicResourceRef<"track">;
 }
 
-export interface SongLikeMutationVariables {
+/**
+ * Liking one track. `track` names it on any platform; `songId` is the NetEase song ID that the
+ * NetEase-only entry points (search, artist pages, drag and drop) still hold.
+ */
+export type SongLikeMutationVariables = {
   like: boolean;
   silentToast?: boolean;
-  songId: number | string;
-}
+} & (
+  | { songId: number | string; track?: undefined }
+  | { songId?: undefined; track: MusicResourceRef<"track"> }
+);
 
 export interface DailyRecommendationDislikeResponse {
   code: number;

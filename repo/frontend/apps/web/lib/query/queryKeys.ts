@@ -48,9 +48,27 @@ export const musicQueryKeys = {
     collection: (userId: number) => ["library", "collection", userId] as const,
     createdPodcasts: (userId: number) => ["library", "podcasts", "created", userId] as const,
     likedVoices: (userId: number) => ["library", "podcasts", "liked-voices", userId] as const,
-    likedPlaylist: (userId: number) => ["library", "liked-playlist", userId] as const,
-    likedSongIds: (userId: number) => ["library", "liked-song-ids", userId] as const,
-    playlists: (userId: number) => ["library", "playlists", userId] as const,
+    /** Every account's saved albums of a platform. */
+    albumsAll: (provider: MusicProvider) => providerQueryKey(provider, "library", "albums"),
+    albums: (provider: MusicProvider, accountId: string) =>
+      [...musicQueryKeys.library.albumsAll(provider), accountId] as const,
+    /** The liked-tracks playlist of every account of a platform. */
+    likedPlaylistAll: (provider: MusicProvider) =>
+      providerQueryKey(provider, "library", "liked-playlist"),
+    likedPlaylist: (provider: MusicProvider, accountId: string) =>
+      [...musicQueryKeys.library.likedPlaylistAll(provider), accountId] as const,
+    /** Liked track IDs of every account of a platform. */
+    likedTrackIdsAll: (provider: MusicProvider) =>
+      providerQueryKey(provider, "library", "liked-track-ids"),
+    likedTrackIds: (provider: MusicProvider, accountId: string) =>
+      [...musicQueryKeys.library.likedTrackIdsAll(provider), accountId] as const,
+    /** Library playlists of every account of a platform. */
+    playlistsAll: (provider: MusicProvider) => providerQueryKey(provider, "library", "playlists"),
+    playlists: (provider: MusicProvider, accountId: string) =>
+      [...musicQueryKeys.library.playlistsAll(provider), "summary", accountId] as const,
+    /** NetEase's own playlist rows, which the sidebar's ordering and drop targets read. */
+    neteasePlaylists: (userId: number) =>
+      [...musicQueryKeys.library.playlistsAll("netease"), "detail", String(userId)] as const,
     recentSongs: (userId: number) => ["library", "recent-songs", userId] as const,
     recommendedPodcasts: (userId: number) =>
       ["library", "podcasts", "recommendations", userId] as const,

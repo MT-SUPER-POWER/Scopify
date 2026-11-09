@@ -15,7 +15,8 @@ function getCurrentPath() {
 }
 
 export function useRequireLoginAction() {
-  const isLoggedIn = useActiveAccount().isLoggedIn;
+  // Signed in on the platform the page is showing, not on NetEase alone.
+  const { isLoggedIn } = useActiveAccount();
   const smartRouter = useSmartRouter();
   const { t } = useTranslation();
 

@@ -76,7 +76,9 @@ export function usePlaylistTrackDrop() {
       void queryClient.invalidateQueries({
         queryKey: musicQueryKeys.playlist.contentOf("netease", String(playlistId)),
       });
-      void queryClient.invalidateQueries({ queryKey: ["library", "playlists"] });
+      void queryClient.invalidateQueries({
+        queryKey: musicQueryKeys.library.playlistsAll("netease"),
+      });
     } finally {
       useAppDragStore.getState().setTargetPending(targetId, false);
     }

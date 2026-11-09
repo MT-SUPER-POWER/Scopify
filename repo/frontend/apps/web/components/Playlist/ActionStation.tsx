@@ -42,6 +42,7 @@ import { usePlayerStore, useUserStore } from "@/store";
 import { useTranslation } from "react-i18next";
 import { useI18nStore } from "@/store/module/i18n";
 import { useQueryClient } from "@tanstack/react-query";
+import { musicQueryKeys } from "@/lib/query/queryKeys";
 import { toNeteaseSongDetails } from "@/lib/providers/netease/adapters/track";
 
 function formatDateKey(date: Date) {
@@ -123,7 +124,9 @@ export default function PlaylistActions(props: PlaylistActionsProps) {
             : t("playlist.actions.unsubscribeSuccess"),
         );
         void Promise.all([
-          queryClient.invalidateQueries({ queryKey: ["library", "playlists"] }),
+          queryClient.invalidateQueries({
+            queryKey: musicQueryKeys.library.playlistsAll("netease"),
+          }),
           queryClient.invalidateQueries({ queryKey: ["playlist", playlistId] }),
         ]);
       } catch {

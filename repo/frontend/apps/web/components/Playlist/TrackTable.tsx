@@ -44,7 +44,8 @@ import { useMediaQuery } from "@/hooks/ui/useMediaQuery";
 import { clearPageCache } from "@/lib/cache/pageCache";
 import { cn } from "@/lib/utils";
 import { reportActionFailure } from "@/lib/web/errorTracking";
-import { usePlayerStore, useUserStore } from "@/store";
+import { usePlayerStore } from "@/store";
+import { useTrackLikes } from "@/hooks/library/useLikedTracks";
 import { useTranslation } from "react-i18next";
 
 import { musicResourceKey } from "@scopify/music-domain/identity";
@@ -139,7 +140,7 @@ export default function TracklistTable({
   }, [currentPageId, storePlaylistId]);
   const [pendingDelete, setPendingDelete] = useState<PlaylistTrackDeleteRequest | null>(null);
 
-  const likelist = useUserStore((s) => s.likeListIDs);
+  const { isLiked } = useTrackLikes();
 
   const setIsPlaying = usePlayerStore((s) => s.setIsPlaying);
   const playFromSong = usePlayerStore((s) => s.playFromSong);
@@ -149,11 +150,6 @@ export default function TracklistTable({
   const onPlayTrackRef = useRef(onPlayTrack);
   onPlayTrackRef.current = onPlayTrack;
   const isPlaying = usePlayerStore((s) => s.isPlaying);
-
-  const likeSet = useMemo(() => {
-    if (Array.isArray(likelist)) return new Set(likelist);
-    return new Set<number>();
-  }, [likelist]);
 
   const filteredTracks = useMemo(() => {
     if (!searchQuery?.trim()) return tracks;
@@ -177,7 +173,7 @@ export default function TracklistTable({
       { accessorFn: (track) => track.album?.title ?? "", id: "album" },
       { accessorFn: (track) => track.netease?.publishTime ?? 0, id: "date" },
       {
-        accessorFn: (track) => Number(likeSet.has(getNeteaseTrackId(track) ?? -1)),
+        accessorFn: (track) => Number(isLiked(track.ref)),
         id: "like",
       },
       {
@@ -185,7 +181,7 @@ export default function TracklistTable({
         enableSorting: false,
       },
     ],
-    [likeSet],
+    [isLiked],
   );
   const table = useReactTable({
     columns,
@@ -677,7 +673,7 @@ export default function TracklistTable({
                         allowReorder={!hasSearchQuery && sorting.length === 0}
                         isActive={currentTrackKey === musicResourceKey(track.ref) && isCurrentQueue}
                         isPlaying={isPlaying}
-                        isLiked={likeSet.has(getNeteaseTrackId(track) ?? -1)}
+                        isLiked={isLiked(track.ref)}
                         isSelected={selection.isSelected(track.ref.id)}
                         selectedSongs={selectedSongs}
                         onSelectTrack={selection.handleRowClick}

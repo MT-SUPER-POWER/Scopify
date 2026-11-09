@@ -32,7 +32,7 @@ export function usePlaylistOrderMutation() {
       queryClient.cancelQueries({
         queryKey: move.playlistId
           ? contentKey(move.playlistId)
-          : musicQueryKeys.library.playlists(userId ?? 0),
+          : musicQueryKeys.library.neteasePlaylists(userId ?? 0),
       }),
     mutationFn: async ({ playlistId, fromId, toId, expectedIds }: InlineOrderMove) => {
       if (!userId || useUserStore.getState().user?.userId !== userId)
@@ -100,7 +100,7 @@ export function usePlaylistOrderMutation() {
       const rank = (id: number) => ranks.get(id) ?? Number.MAX_SAFE_INTEGER;
       const queryKey = playlistId
         ? contentKey(playlistId)
-        : musicQueryKeys.library.playlists(userId);
+        : musicQueryKeys.library.neteasePlaylists(userId);
       await queryClient.cancelQueries({ queryKey });
       if (useUserStore.getState().user?.userId !== userId) return;
       if (playlistId) {

@@ -147,6 +147,9 @@ export function useAlbumData() {
     },
     onSettled: () => {
       void queryClient.invalidateQueries({ queryKey: albumCollectionQueryKey });
+      void queryClient.invalidateQueries({
+        queryKey: musicQueryKeys.library.albumsAll("netease"),
+      });
       if (userId) {
         void queryClient.invalidateQueries({ queryKey: musicQueryKeys.library.collection(userId) });
       }

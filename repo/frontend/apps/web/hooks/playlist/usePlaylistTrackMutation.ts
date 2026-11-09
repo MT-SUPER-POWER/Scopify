@@ -35,10 +35,10 @@ export function usePlaylistTrackMutation() {
           queryKey: musicQueryKeys.playlist.contentOf("netease", String(variables.playlistId)),
         }),
         queryClient.invalidateQueries({
-          queryKey: ["library", "playlists"],
+          queryKey: musicQueryKeys.library.playlistsAll("netease"),
         }),
         queryClient.invalidateQueries({
-          queryKey: ["library", "liked-playlist"],
+          queryKey: musicQueryKeys.library.likedPlaylistAll("netease"),
         }),
       ]);
     },

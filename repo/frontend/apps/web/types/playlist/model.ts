@@ -1,4 +1,4 @@
-import type { MusicResourceRef } from "@scopify/music-domain/identity";
+import type { MusicProvider, MusicResourceRef } from "@scopify/music-domain/identity";
 import type { MusicPlaylistDetail } from "@scopify/music-domain/playlist";
 
 import type { PlayerTrack } from "@/types/player/model";
@@ -53,7 +53,10 @@ export interface DailyRecommendationRequest {
 }
 
 export interface SongLikeMutationContext {
-  previousLikeListIDs: number[];
+  /** NetEase's like list before the change; null for another platform. */
+  previousLikeListIDs: number[] | null;
+  /** The cached liked track IDs of the account before the change, when there were any. */
+  previousTrackIds?: { accountId: string; ids: string[] };
 }
 
 export interface SongLikeMutationMessages {
@@ -63,8 +66,10 @@ export interface SongLikeMutationMessages {
 }
 
 export interface SongLikeMutationDependencies {
+  /** The signed-in account of a platform, or null when none is. */
+  accountIdOf(provider: MusicProvider): string | null;
   clearPageCache(): Promise<unknown>;
-  mutateSong(songId: number | string, like: boolean): Promise<unknown>;
+  mutateTrack(track: MusicResourceRef<"track">, like: boolean): Promise<unknown>;
 }
 
 export interface PlaylistUpdateInput {
