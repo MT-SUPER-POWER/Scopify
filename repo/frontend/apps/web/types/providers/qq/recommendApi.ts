@@ -91,3 +91,19 @@ export interface QqToplistSongsDto {
   total?: number;
   more: boolean;
 }
+
+/** A singer of GET /singer/list. */
+export interface QqSingerListItemDto {
+  mid: string;
+  name: string;
+  id?: number;
+  /** Plain HTTP address of the portrait. */
+  pic?: string;
+  otherName?: string;
+}
+
+/** GET /singer/list: popular singers, most popular first. */
+export interface QqSingerListDto {
+  code: 200;
+  singers: QqSingerListItemDto[];
+}

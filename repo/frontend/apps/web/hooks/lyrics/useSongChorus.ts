@@ -8,7 +8,8 @@ import { musicQueryKeys } from "@/lib/query/queryKeys";
 
 export function useSongChorus(songId: number | string | null) {
   return useQuery({
-    enabled: songId !== null,
+    // Only NetEase has chorus ranges, and only its song IDs are numeric.
+    enabled: songId !== null && /^\d+$/.test(String(songId)),
     meta: {
       persist: true,
       scope: "public",

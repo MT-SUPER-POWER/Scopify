@@ -32,7 +32,7 @@ export default function HomeLayout({
         <div className="relative z-10 mx-auto w-full max-w-400 space-y-7 px-4 py-6 sm:px-6">
           <CapabilityGate requires="recommend.playlists">{greeting}</CapabilityGate>
           {playlists}
-          <CapabilityGate requires="artist.read">{artists}</CapabilityGate>
+          <CapabilityGate requires="recommend.artists">{artists}</CapabilityGate>
           {releases}
           <CapabilityGate requires="podcast">{voices}</CapabilityGate>
           <CapabilityGate requires="home.banners">{banners}</CapabilityGate>

@@ -8,6 +8,7 @@ import {
   adaptNeteaseToplists,
 } from "@/lib/providers/netease/adapters/recommend";
 import { getNewestAlbums } from "@/lib/providers/netease/api/album";
+import { getHotArtists } from "@/lib/providers/netease/api/artist";
 import { getPersonalizedNewSongs } from "@/lib/providers/netease/api/music";
 import {
   getPersonalFm,
@@ -79,6 +80,15 @@ export const neteaseRecommendSource: MusicRecommendSource = {
 
   async getToplists() {
     return adaptNeteaseToplists((await getToplistDetail()).data.list);
+  },
+
+  async getFeaturedArtists(limit) {
+    const artists = (await getHotArtists(limit)).data.artists ?? [];
+    return artists.map((artist) => ({
+      ref: { provider: "netease", kind: "artist", id: String(artist.id) },
+      name: artist.name,
+      avatarUrl: artist.picUrl || artist.img1v1Url || null,
+    }));
   },
 
   async getNewTracks(limit) {

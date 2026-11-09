@@ -6,7 +6,8 @@ import { useEffect, useState } from "react";
 import { CollapsibleSection } from "../../_components/CollapsibleSection";
 import { SectionPagination } from "../../_components/SectionPagination";
 import { GridCard } from "@/components/home/GridCard";
-import { useSuspenseHotArtistsQuery } from "@/hooks/home/useHomeQueries";
+import { useSuspenseFeaturedArtistsQuery } from "@/hooks/home/useHomeQueries";
+import { getSizedImageUrl } from "@/lib/music/imageUrl";
 import { useSmartRouter } from "@/hooks/core/useSmartRouter";
 import { useTranslation } from "react-i18next";
 
@@ -15,8 +16,8 @@ const PAGE_SIZE = 10;
 export function SuggestedArtists() {
   const { t } = useTranslation();
   const smartRouter = useSmartRouter();
-  const query = useSuspenseHotArtistsQuery();
-  const artists = query.data.artists ?? [];
+  const query = useSuspenseFeaturedArtistsQuery();
+  const artists = query.data;
   const [isOpen, setIsOpen] = useState(false);
   const [page, setPage] = useState(0);
   const [direction, setDirection] = useState<1 | -1>(1);
@@ -73,13 +74,13 @@ export function SuggestedArtists() {
             >
               {visibleArtists.map((artist) => (
                 <GridCard
-                  key={artist.id}
+                  key={artist.ref.id}
                   appearance="home"
-                  id={artist.id}
+                  id={artist.ref.id}
                   name={artist.name}
-                  coverUrl={`${artist.picUrl}?param=200y200`}
+                  coverUrl={getSizedImageUrl(artist.avatarUrl, 200)}
                   isArtist
-                  onClick={() => smartRouter.push(`/artist?id=${artist.id}`)}
+                  onClick={() => smartRouter.push(`/artist?id=${artist.ref.id}`)}
                 />
               ))}
             </motion.div>

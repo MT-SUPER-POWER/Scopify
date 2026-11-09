@@ -29,6 +29,7 @@ export const MUSIC_CAPABILITIES = [
   "recommend.fm.dislike",
   "recommend.playlists",
   "recommend.toplists",
+  "recommend.artists",
   "recommend.newSongs",
   "recommend.newAlbums",
   "mv",

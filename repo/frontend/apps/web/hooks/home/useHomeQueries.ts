@@ -4,11 +4,7 @@ import type { MusicResourceRef } from "@scopify/music-domain/identity";
 import { queryOptions, useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import { throwQueryErrorWithoutData } from "@/lib/query/errorPolicy";
 
-import {
-  getArtistAlbums,
-  getFollowedArtists,
-  getHotArtists,
-} from "@/lib/providers/netease/api/artist";
+import { getArtistAlbums, getFollowedArtists } from "@/lib/providers/netease/api/artist";
 import { getUserAlbumSublist } from "@/lib/providers/netease/api/album";
 import { getRecentPlaylists, getUserDetail } from "@/lib/providers/netease/api/user";
 import { getRecommendedVoiceLists } from "@/lib/providers/netease/api/voicelist";
@@ -81,23 +77,28 @@ function useHomeAccountKey(enabled: boolean): string {
   return enabled ? (account.profile?.accountId ?? "authenticated") : "anonymous";
 }
 
-const hotArtistsOptions = (limit: number) =>
-  queryOptions({
+function useFeaturedArtistsOptions(limit: number) {
+  const provider = useActiveProvider();
+  return queryOptions({
     meta: { persist: true, scope: "public" },
-    queryFn: async () => (await getHotArtists(limit)).data,
-    queryKey: musicQueryKeys.home.hotArtists(limit),
+    queryFn: ({ signal }) => {
+      if (!provider.getFeaturedArtists) throw new Error("Featured artists are unsupported.");
+      return provider.getFeaturedArtists(limit, { signal });
+    },
+    queryKey: providerQueryKey(provider.provider, ...musicQueryKeys.home.hotArtists(limit)),
   });
+}
 
-export function useHotArtistsQuery(limit = 50, boundary = true) {
+export function useFeaturedArtistsQuery(limit = 50, boundary = true) {
   return useQuery({
-    ...hotArtistsOptions(limit),
+    ...useFeaturedArtistsOptions(limit),
     throwOnError: boundary ? throwQueryErrorWithoutData : false,
   });
 }
 
 /** 首次加载时挂起，由所在位置的 Suspense 显示骨架；失败进最近的边界。 */
-export function useSuspenseHotArtistsQuery(limit = 50) {
-  return useSuspenseQuery(hotArtistsOptions(limit));
+export function useSuspenseFeaturedArtistsQuery(limit = 50) {
+  return useSuspenseQuery(useFeaturedArtistsOptions(limit));
 }
 
 export function useHomeUserProfileQuery(userId: null | string) {

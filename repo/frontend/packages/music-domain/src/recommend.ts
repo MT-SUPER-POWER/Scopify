@@ -23,6 +23,14 @@ export interface MusicToplist {
   preview: readonly MusicToplistPreviewEntry[];
 }
 
+/** An artist as the home page offers one: a name and a picture to open the artist from. */
+export interface MusicFeaturedArtist {
+  ref: MusicResourceRef<"artist">;
+  name: string;
+  /** Null when the platform has no picture for the artist. */
+  avatarUrl: string | null;
+}
+
 /** An album as a release shelf shows it. */
 export interface MusicAlbumSummary {
   ref: MusicResourceRef<"album">;
@@ -55,7 +63,7 @@ export interface MusicRecommendReadOptions {
  * What the home page and the recommendation pages read. Every method is optional: a platform
  * implements the ones it has and declares the matching capability, and callers only call a
  * method after checking it (`recommend.daily`, `recommend.fm`, `recommend.playlists`,
- * `recommend.toplists`, `recommend.newSongs`, `recommend.newAlbums`).
+ * `recommend.toplists`, `recommend.artists`, `recommend.newSongs`, `recommend.newAlbums`).
  */
 export interface MusicRecommendSource {
   /** Today's songs picked for the signed-in account. */
@@ -72,6 +80,11 @@ export interface MusicRecommendSource {
   /** Playlists picked for the signed-in account. */
   getRecommendedPlaylists?(options?: MusicRecommendReadOptions): Promise<MusicPlaylist[]>;
   getToplists?(options?: MusicRecommendReadOptions): Promise<MusicToplist[]>;
+  /** Artists worth opening from the home page, most popular first; no account needed. */
+  getFeaturedArtists?(
+    limit: number,
+    options?: MusicRecommendReadOptions,
+  ): Promise<MusicFeaturedArtist[]>;
   getNewTracks?(limit: number, options?: MusicRecommendReadOptions): Promise<MusicTrack[]>;
   getNewAlbums?(limit: number, options?: MusicRecommendReadOptions): Promise<MusicAlbumSummary[]>;
 }

@@ -25,10 +25,9 @@ export interface HomeContextValue {
 }
 
 export interface ArtistTopListItem {
-  id: number;
+  id: string;
   name: string;
   picUrl: string;
-  musicSize?: number;
 }
 
 export type BannerTargetKind = "album" | "artist" | "playlist" | "radio" | "song";

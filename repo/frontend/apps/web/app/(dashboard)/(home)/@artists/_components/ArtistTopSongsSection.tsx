@@ -8,8 +8,10 @@ import { CollapsibleSection } from "../../_components/CollapsibleSection";
 import { HomeSectionPending } from "../../_components/HomeSectionPending";
 import { SectionPagination } from "../../_components/SectionPagination";
 import { GridCard } from "@/components/home/GridCard";
-import { useHotArtistsQuery, useFollowedArtistsQuery } from "@/hooks/home/useHomeQueries";
-import { useLoginStatus } from "@/hooks/auth/useLoginStatus";
+import { useFeaturedArtistsQuery, useFollowedArtistsQuery } from "@/hooks/home/useHomeQueries";
+import { useActiveAccount } from "@/hooks/auth/useProviderAccounts";
+import { useProviderCapability } from "@/hooks/provider/useActiveProvider";
+import { getSizedImageUrl } from "@/lib/music/imageUrl";
 import { useSmartRouter } from "@/hooks/core/useSmartRouter";
 import { selectFallbackSource, toFallbackSource } from "@/lib/query/fallbackSource";
 import { useTranslation } from "react-i18next";
@@ -22,19 +24,20 @@ export function ArtistTopSongsSection() {
   const { t } = useTranslation();
   const { actions } = useHome();
   const smartRouter = useSmartRouter();
-  const isLogin = useLoginStatus();
+  // Following artists is a NetEase account feature; other platforms start from the popular list.
+  const canFollow = useProviderCapability("artist.follow");
+  const isLogin = useActiveAccount().isLoggedIn && canFollow;
   const followed = useFollowedArtistsQuery(isLogin, 30, false);
-  const hot = useHotArtistsQuery(50, false);
+  const hot = useFeaturedArtistsQuery(50, false);
   const followedItems: ArtistTopListItem[] | undefined = followed.data?.data?.map((artist) => ({
-    id: artist.id,
+    id: String(artist.id),
     name: artist.name,
     picUrl: artist.picUrl || artist.avatarUrl || artist.img1v1Url || "",
   }));
-  const hotItems = hot.data?.artists?.map((artist) => ({
-    id: artist.id,
+  const hotItems: ArtistTopListItem[] | undefined = hot.data?.map((artist) => ({
+    id: artist.ref.id,
     name: artist.name,
-    picUrl: artist.picUrl || artist.img1v1Url || "",
-    musicSize: artist.musicSize,
+    picUrl: artist.avatarUrl ?? "",
   }));
   const result = selectFallbackSource<ArtistTopListItem[]>(
     [
@@ -108,7 +111,7 @@ export function ArtistTopSongsSection() {
                   appearance="home"
                   id={artist.id}
                   name={`${artist.name} 热门精选`}
-                  coverUrl={artist.picUrl ? `${artist.picUrl}?param=300y300` : ""}
+                  coverUrl={getSizedImageUrl(artist.picUrl, 300)}
                   subtitle={t("home.artistTopSongsCardSubtitle")}
                   isLoading={actions.loadingPlayId === `artist-${artist.id}`}
                   onPlay={(event) => actions.handlePlayArtistTopSongs(artist.id, event)}

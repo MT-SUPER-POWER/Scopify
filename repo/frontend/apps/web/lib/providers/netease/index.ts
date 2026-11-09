@@ -40,6 +40,7 @@ const NETEASE_CAPABILITIES: ReadonlySet<MusicCapability> = new Set<MusicCapabili
   "recommend.fm.dislike",
   "recommend.playlists",
   "recommend.toplists",
+  "recommend.artists",
   "recommend.newSongs",
   "recommend.newAlbums",
   "mv",

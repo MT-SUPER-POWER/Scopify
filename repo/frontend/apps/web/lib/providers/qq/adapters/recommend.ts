@@ -1,11 +1,16 @@
 import type { MusicPlaylist, MusicPlaylistDetail } from "@scopify/music-domain/playlist";
-import type { MusicAlbumSummary, MusicToplist } from "@scopify/music-domain/recommend";
+import type {
+  MusicAlbumSummary,
+  MusicFeaturedArtist,
+  MusicToplist,
+} from "@scopify/music-domain/recommend";
 
 import { parseQqDate } from "@/lib/providers/qq/adapters/artist";
 import { qqAlbumCoverUrl, qqSecureUrl } from "@/lib/providers/qq/adapters/playlist";
 import type {
   QqNewAlbumDto,
   QqRecommendPlaylistDto,
+  QqSingerListItemDto,
   QqToplistDto,
   QqToplistsDto,
 } from "@/types/providers/qq/recommendApi";
@@ -91,4 +96,12 @@ export function adaptQqToplistDetail(raw: QqToplistDto): MusicPlaylistDetail {
     createdAt: null,
     visibility: "public",
   };
+}
+
+export function adaptQqFeaturedArtists(raw: readonly QqSingerListItemDto[]): MusicFeaturedArtist[] {
+  return raw.map((singer) => ({
+    ref: { provider: "qq", kind: "artist", id: singer.mid },
+    name: singer.name,
+    avatarUrl: singer.pic ? qqSecureUrl(singer.pic) : null,
+  }));
 }

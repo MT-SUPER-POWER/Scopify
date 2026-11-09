@@ -6,6 +6,7 @@ import type {
   QqPersonalFmDto,
   QqRecommendPlaylistsDto,
   QqToplistSongsDto,
+  QqSingerListDto,
   QqToplistsDto,
 } from "@/types/providers/qq/recommendApi";
 
@@ -84,5 +85,16 @@ export function getQqToplistSongs(
     noSession: true,
     signal,
     errorContext: { operation: "qq.recommend.toplistSongs", id },
+  });
+}
+
+/** Popular singers, no account needed. */
+export function getQqPopularSingers(signal?: AbortSignal) {
+  return qqClient.requestData<QqSingerListDto>({
+    method: "GET",
+    url: "/singer/list",
+    noSession: true,
+    signal,
+    errorContext: { operation: "qq.recommend.singers" },
   });
 }
