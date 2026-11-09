@@ -7,9 +7,9 @@ import type {
   CheckMusicResponse,
   NeteaseLyric,
   SongChorusResponse,
-  PersonalizedNewSongResponse,
   SongUrlOptions,
 } from "@/types/song/api";
+import type { NeteaseNewSongsDto } from "@/types/providers/netease/recommendApi";
 import request, { requestConfig } from "@/lib/providers/netease/client";
 
 export async function greySongUrlMatch(
@@ -133,7 +133,7 @@ export async function getSongUrlWithQuality(
  * GET /personalized/newsong?limit={limit}
  */
 export async function getPersonalizedNewSongs(limit = 12) {
-  return request<PersonalizedNewSongResponse>(
+  return request<NeteaseNewSongsDto>(
     requestConfig({
       method: "get",
       params: { limit },

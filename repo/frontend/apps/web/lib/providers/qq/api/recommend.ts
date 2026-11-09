@@ -1,0 +1,76 @@
+import { qqClient } from "@/lib/providers/qq/client";
+import type {
+  QqDailySongsDto,
+  QqNewSongsDto,
+  QqPersonalFmDto,
+  QqRecommendPlaylistsDto,
+  QqToplistSongsDto,
+  QqToplistsDto,
+} from "@/types/providers/qq/recommendApi";
+
+/** Playlists QQ recommends; `withSession` reads them as the signed-in account sees them. */
+export function getQqRecommendPlaylists(limit: number, withSession: boolean, signal?: AbortSignal) {
+  return qqClient.requestData<QqRecommendPlaylistsDto>({
+    method: "GET",
+    url: "/recommend/playlists",
+    params: { limit },
+    noSession: !withSession,
+    signal,
+    errorContext: { operation: "qq.recommend.playlists", withSession },
+  });
+}
+
+export function getQqNewSongs(signal?: AbortSignal) {
+  return qqClient.requestData<QqNewSongsDto>({
+    method: "GET",
+    url: "/recommend/new-songs",
+    noSession: true,
+    signal,
+    errorContext: { operation: "qq.recommend.newSongs" },
+  });
+}
+
+export function getQqDailySongs(signal?: AbortSignal) {
+  return qqClient.requestData<QqDailySongsDto>({
+    method: "GET",
+    url: "/user/daily-songs",
+    signal,
+    errorContext: { operation: "qq.recommend.dailySongs" },
+  });
+}
+
+export function getQqPersonalFm(page: number, signal?: AbortSignal) {
+  return qqClient.requestData<QqPersonalFmDto>({
+    method: "GET",
+    url: "/user/personal-fm",
+    params: { page },
+    signal,
+    errorContext: { operation: "qq.recommend.personalFm", page },
+  });
+}
+
+export function getQqToplists(signal?: AbortSignal) {
+  return qqClient.requestData<QqToplistsDto>({
+    method: "GET",
+    url: "/recommend/toplists",
+    noSession: true,
+    signal,
+    errorContext: { operation: "qq.recommend.toplists" },
+  });
+}
+
+/** Songs of one chart, from `offset`. An empty `period` asks for the latest issue. */
+export function getQqToplistSongs(
+  id: string,
+  page: { offset: number; limit: number },
+  signal?: AbortSignal,
+) {
+  return qqClient.requestData<QqToplistSongsDto>({
+    method: "GET",
+    url: "/recommend/toplist",
+    params: { id, offset: page.offset, limit: page.limit },
+    noSession: true,
+    signal,
+    errorContext: { operation: "qq.recommend.toplistSongs", id },
+  });
+}

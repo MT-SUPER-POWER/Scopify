@@ -3,6 +3,7 @@ import type { MusicProvider } from "./identity";
 import type { MusicPlaybackSource } from "./playback";
 import type { MusicPlaylistSource } from "./playlist";
 import type { MusicSearchSource } from "./search";
+import type { MusicRecommendSource } from "./recommend";
 import type { MusicTrack } from "./track";
 
 /** Track lookup, implemented by every platform. */
@@ -18,7 +19,12 @@ export interface MusicTrackSource {
  * capability. Work only one platform has stays out and is reached behind a capability check.
  */
 export interface MusicProviderClient
-  extends MusicTrackSource, MusicPlaybackSource, MusicPlaylistSource, MusicSearchSource {
+  extends
+    MusicTrackSource,
+    MusicPlaybackSource,
+    MusicPlaylistSource,
+    MusicSearchSource,
+    MusicRecommendSource {
   readonly provider: MusicProvider;
   readonly capabilities: ReadonlySet<MusicCapability>;
 }

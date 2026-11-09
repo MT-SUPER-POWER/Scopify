@@ -398,15 +398,3 @@ export interface CheckMusicResponse {
   success: boolean;
   message: string;
 }
-
-export interface PersonalizedNewSongItem {
-  id: number;
-  name: string;
-  picUrl: string;
-  song: RawSongDetail;
-}
-
-export interface PersonalizedNewSongResponse {
-  code: number;
-  result?: PersonalizedNewSongItem[];
-}

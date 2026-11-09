@@ -25,12 +25,6 @@ export interface AlbumSubscribeResponse {
   code: number;
 }
 
-export interface NewestAlbumsResponse {
-  albums?: NeteaseAlbum[];
-  code: number;
-  total?: number;
-}
-
 export interface NeteaseAlbum {
   id?: number;
   artist?: NeteaseAlbumArtist;

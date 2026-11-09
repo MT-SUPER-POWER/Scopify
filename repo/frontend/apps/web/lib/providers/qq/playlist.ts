@@ -1,7 +1,9 @@
 import type { MusicPlaylistSource } from "@scopify/music-domain/playlist";
 
 import { adaptQqPlaylistDetail, adaptQqPlaylistSong } from "@/lib/providers/qq/adapters/playlist";
+import { qqToplistIdOf } from "@/lib/providers/qq/adapters/recommend";
 import { getQqPlaylistDetail } from "@/lib/providers/qq/api/playlist";
+import { readQqToplist, readQqToplistTracks } from "@/lib/providers/qq/toplist";
 import type { QqPlaylistDetailDto } from "@/types/providers/qq/playlistApi";
 
 /**
@@ -22,10 +24,14 @@ function readPlaylist(disstid: string, signal?: AbortSignal) {
 
 export const qqPlaylistSource: MusicPlaylistSource = {
   async getPlaylist(playlist, options) {
+    const chartId = qqToplistIdOf(playlist.id);
+    if (chartId) return readQqToplist(chartId, options);
     return adaptQqPlaylistDetail(await readPlaylist(playlist.id, options?.signal));
   },
 
   async getPlaylistTracks(playlist, { offset, limit }, options) {
+    const chartId = qqToplistIdOf(playlist.id);
+    if (chartId) return readQqToplistTracks(chartId, { offset, limit }, options);
     const detail = await readPlaylist(playlist.id, options?.signal);
     const songs = (detail.songlist ?? []).slice(offset, offset + limit);
     return { offset, tracks: songs.map(adaptQqPlaylistSong) };

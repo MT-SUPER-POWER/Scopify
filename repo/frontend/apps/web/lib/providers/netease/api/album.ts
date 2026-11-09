@@ -3,9 +3,8 @@ import type {
   AlbumSublistParams,
   AlbumSublistResponse,
   AlbumSubscribeResponse,
-  NewestAlbumsResponse,
 } from "@/types/album/api";
-
+import type { NeteaseNewestAlbumsDto } from "@/types/providers/netease/recommendApi";
 import request, { requestConfig, requestData } from "@/lib/providers/netease/client";
 
 // 获取已收藏专辑列表
@@ -58,7 +57,7 @@ export function subscribeAlbum(id: number | string, subscribe: boolean) {
  * GET /album/newest
  */
 export const getNewestAlbums = () => {
-  return request<NewestAlbumsResponse>(
+  return request<NeteaseNewestAlbumsDto>(
     requestConfig({
       method: "get",
       url: "/album/newest",

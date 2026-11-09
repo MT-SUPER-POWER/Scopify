@@ -1,4 +1,8 @@
 import type {
+  NeteasePersonalizedPlaylistsDto,
+  NeteaseRecommendedPlaylistsDto,
+} from "@/types/providers/netease/recommendApi";
+import type {
   PlaylistHighQualityTagsResponse,
   UpdatePlaylistParams,
 } from "@/types/playlist/tagsApi";
@@ -11,8 +15,6 @@ import type {
   HistoricalDailyRecommendationDetailResponse,
   HistoricalDailyRecommendationsResponse,
   LikeListResponse,
-  PersonalizedPlaylistsResponse,
-  RecommendedPlaylistsResponse,
   UserPlaylistResponse,
   PlaylistOrderUpdateParams,
   SongOrderUpdateParams,
@@ -216,7 +218,7 @@ export async function updatePlaylistCover(
 }
 
 export function getPersonalizePlaylists(limit = 100) {
-  return request.get<PersonalizedPlaylistsResponse>("/personalized", { params: { limit } });
+  return request.get<NeteasePersonalizedPlaylistsDto>("/personalized", { params: { limit } });
 }
 
 export function getPlaylsitDetail({ id, requiresMusicSession }: NeteasePlaylistDetailParams) {
@@ -228,7 +230,7 @@ export function getPlaylsitDetail({ id, requiresMusicSession }: NeteasePlaylistD
 
 // 获取每日推荐歌单
 export function getRecommendedPlaylists() {
-  return request.get<RecommendedPlaylistsResponse>(
+  return request.get<NeteaseRecommendedPlaylistsDto>(
     "/recommend/resource",
     requestConfig({ requiresMusicSession: true }),
   );

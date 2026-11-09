@@ -123,21 +123,6 @@ export interface RawRecommendPlaylist {
   };
 }
 
-/** `/personalized` 的实际响应。 */
-export interface PersonalizedPlaylistsResponse {
-  category: number;
-  code: number;
-  hasTaste: boolean;
-  result?: RawRecommendPlaylist[];
-}
-
-/** `/recommend/resource` 的实际响应。未登录或会话失效时 `recommend` 可能缺失。 */
-export interface RecommendedPlaylistsResponse {
-  code: number;
-  featureFirst?: boolean;
-  recommend?: RawRecommendPlaylist[];
-}
-
 export type PlaylistTrackOperation = "add" | "del";
 
 /** Successful payload from `GET /playlist/tracks`. */

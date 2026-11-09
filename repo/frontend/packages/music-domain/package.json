@@ -14,6 +14,7 @@
     "./playback": "./src/playback.ts",
     "./playlist": "./src/playlist.ts",
     "./provider": "./src/provider.ts",
+    "./recommend": "./src/recommend.ts",
     "./search": "./src/search.ts",
     "./track": "./src/track.ts"
   },

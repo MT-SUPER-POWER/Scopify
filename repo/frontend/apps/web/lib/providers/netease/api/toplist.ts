@@ -1,4 +1,4 @@
-import type { ToplistDetailResponse } from "@/types/home/toplistApi";
+import type { NeteaseToplistsDto } from "@/types/providers/netease/recommendApi";
 import request, { requestConfig } from "@/lib/providers/netease/client";
 
 /**
@@ -6,7 +6,7 @@ import request, { requestConfig } from "@/lib/providers/netease/client";
  * GET /toplist/detail
  */
 export const getToplistDetail = () => {
-  return request<ToplistDetailResponse>(
+  return request<NeteaseToplistsDto>(
     requestConfig({
       method: "get",
       url: "/toplist/detail",

@@ -94,9 +94,11 @@ export const musicQueryKeys = {
       providerQueryKey(provider, "playlist", "content", "playlist", playlistId),
     content: (provider: MusicProvider, playlistId: string, isRecommend: boolean) =>
       [...musicQueryKeys.playlist.contentOf(provider, playlistId), isRecommend] as const,
-    /** Daily recommendations are NetEase's. */
-    allDaily: () => providerQueryKey("netease", "playlist", "content", "daily"),
-    daily: (date: string) => [...musicQueryKeys.playlist.allDaily(), date] as const,
+    /** Daily recommendations of a platform; NetEase's unless another is named. */
+    allDaily: (provider: MusicProvider = "netease") =>
+      providerQueryKey(provider, "playlist", "content", "daily"),
+    daily: (date: string, provider: MusicProvider = "netease") =>
+      [...musicQueryKeys.playlist.allDaily(provider), date] as const,
   },
   radio: {
     content: (radioId: string) => ["radio", "content", radioId] as const,

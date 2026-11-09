@@ -24,7 +24,7 @@ export function adaptQqPlaylistSong(raw: QqPlaylistSongDto): MusicTrack {
 }
 
 /** QQ still hands out some artwork over plain HTTP; every image host serves HTTPS too. */
-function secureUrl(url: string | undefined): string | null {
+export function qqSecureUrl(url: string | undefined): string | null {
   return url ? url.replace(/^http:\/\//, "https://") : null;
 }
 
@@ -41,12 +41,12 @@ export function adaptQqPlaylistDetail(raw: QqPlaylistDetailDto): MusicPlaylistDe
   return {
     ref: { provider: "qq", kind: "playlist", id: raw.disstid },
     title: raw.dissname,
-    coverUrl: secureUrl(raw.logo),
+    coverUrl: qqSecureUrl(raw.logo),
     creator: creatorName
       ? {
           account: accountId ? { provider: "qq", accountId } : null,
           name: creatorName,
-          avatarUrl: secureUrl(raw.headurl),
+          avatarUrl: qqSecureUrl(raw.headurl),
         }
       : null,
     trackCount: raw.total_song_num ?? raw.songnum ?? raw.songlist?.length ?? 0,
