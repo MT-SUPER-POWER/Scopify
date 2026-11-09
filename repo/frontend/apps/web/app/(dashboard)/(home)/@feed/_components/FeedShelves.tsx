@@ -18,7 +18,6 @@ import type { MusicFeedShelf } from "@scopify/music-domain/recommend";
 function useShelfTitle(shelf: MusicFeedShelf): string {
   const { t } = useTranslation();
   if (shelf.title) return shelf.title;
-  if (shelf.kind === "daily") return t("home.feedKind.daily");
   if (shelf.kind === "guessYouLike") return t("home.feedKind.guessYouLike");
   if (shelf.kind === "radar") return t("home.feedKind.radar");
   return t("home.feed");

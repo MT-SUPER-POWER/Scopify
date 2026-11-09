@@ -116,7 +116,7 @@ export function adaptQqFeaturedArtists(raw: readonly QqSingerListItemDto[]): Mus
 
 /** A shelf of songs the app words itself, by its kind. */
 export function qqSongShelf(
-  kind: "daily" | "guessYouLike" | "radar",
+  kind: "guessYouLike" | "radar",
   songs: readonly QqTrackDto[],
 ): MusicFeedShelf[] {
   return songs.length > 0
@@ -154,6 +154,8 @@ export function qqCategoryShelf(
 /** Shelves that hold at least one card; the title has its `{String}` filled in. */
 export function adaptQqHomeFeed(raw: QqFeedDto): MusicFeedShelf[] {
   return raw.shelves.flatMap((shelf) => {
+    // Its playlist shelves repeat the recommended playlists the home already shows.
+    if (shelf.items.some((item) => item.type === "playlist")) return [];
     const items: MusicFeedShelf["items"][number][] = shelf.items.map((item) =>
       item.type === "song"
         ? { kind: "track", track: adaptQqTrack(item.song) }

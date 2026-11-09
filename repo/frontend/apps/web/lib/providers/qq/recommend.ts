@@ -59,15 +59,15 @@ export const qqRecommendSource: MusicRecommendSource = {
   },
 
   /**
-   * The home feed is assembled from several QQ routes, each of which may fail alone: the
-   * platform's own shelves, the daily 30, "guess you like", the radar and a few playlist
-   * categories. It fails only when none of them answers.
+   * The home feed holds what QQ has beyond the shared home sections (daily songs and the
+   * recommended playlists already have theirs): the song shelves of its own feed, "guess you
+   * like", the radar and a few playlist categories. Each route may fail alone; the feed fails
+   * only when none answers.
    */
   async getHomeFeed(options) {
     const signal = options?.signal;
     const parts = await Promise.allSettled([
       getQqHomeFeed(signal).then(adaptQqHomeFeed),
-      getQqDailySongs(signal).then((data) => qqSongShelf("daily", data.songs)),
       getQqGuessYouLike(signal).then((data) => qqSongShelf("guessYouLike", data.songs)),
       getQqRadar(signal).then((data) => qqSongShelf("radar", data.songs)),
       getQqPlaylistCategories(signal).then(async (data) => {
