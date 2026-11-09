@@ -5,6 +5,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { TrackPreviewDetails } from "./TrackPreviewDetails";
 import { TrackPreviewControls } from "./TrackPreviewControls";
 import { TrackPreviewVideo } from "./TrackPreviewVideo";
+import { trackMvRef } from "@/lib/player/trackMv";
 import { useTranslation } from "react-i18next";
 
 import type { TrackPreviewDialogProps } from "@/types/player/trackPreviewComponents";
@@ -95,7 +96,7 @@ export function TrackPreviewDialog({
         <div className="flex min-w-0 flex-col items-center justify-center">
           <AnimatePresence mode="popLayout" initial={false} custom={direction}>
             <motion.div
-              key={song.id}
+              key={song.ref.id}
               initial={{ opacity: 0, y: `${direction * 30}%` }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: `${direction * -30}%` }}
@@ -103,7 +104,7 @@ export function TrackPreviewDialog({
               className="aspect-video w-full overflow-hidden rounded-xl bg-black shadow-2xl"
             >
               <TrackPreviewVideo
-                mvId={song.mv ?? 0}
+                mv={trackMvRef(song) ?? { provider: song.ref.provider, kind: "mv", id: "" }}
                 muted={muted}
                 onProgress={setProgress}
                 onEnded={() => go(1)}

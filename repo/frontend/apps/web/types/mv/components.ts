@@ -1,3 +1,4 @@
+import type { MusicResourceRef } from "@scopify/music-domain/identity";
 import type { ReactNode } from "react";
 import type { MusicMv, MusicMvDetail } from "@scopify/music-domain/mv";
 import type { MvSummary } from "@/types/providers/netease/mvApi";
@@ -93,5 +94,5 @@ export interface MvCommentsProps {
 }
 
 export interface MvCardPreviewProps {
-  mvid: number;
+  mv: MusicResourceRef<"mv">;
 }

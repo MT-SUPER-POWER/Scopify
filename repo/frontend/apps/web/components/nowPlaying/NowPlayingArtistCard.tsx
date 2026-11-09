@@ -3,20 +3,25 @@
 import Image from "next/image";
 import Link from "next/link";
 import { NowPlayingFollowButton } from "./NowPlayingFollowButton";
+import { useProviderCapability } from "@/hooks/provider/useActiveProvider";
 import { useArtistFollow } from "@/hooks/artist/useArtistFollow";
 import { useArtistDetailQuery } from "@/hooks/artist/useArtistQueries";
 import { getSizedImageUrl } from "@/lib/music/imageUrl";
 import { useTranslation } from "react-i18next";
 
-import type { NowPlayingSectionProps } from "@/types/player/nowPlayingComponents";
 import { Skeleton } from "@scopify/ui/shadcn/components/skeleton";
 
 /** 「关于艺人」：以主艺人大图开头、标题叠在图上，下方是粉丝数、关注按钮与简介摘要。 */
-export function NowPlayingArtistCard({ song }: NowPlayingSectionProps) {
+export function NowPlayingArtistCard({
+  artist: credited,
+}: {
+  artist: { id: string; name: string };
+}) {
   const { t } = useTranslation();
-  const artistId = song.ar?.[0]?.id;
-  const detailQuery = useArtistDetailQuery(artistId ? String(artistId) : null);
-  const follow = useArtistFollow(artistId ?? "");
+  const artistId = credited.id;
+  const canFollow = useProviderCapability("artist.follow");
+  const detailQuery = useArtistDetailQuery(artistId || null);
+  const follow = useArtistFollow(artistId);
 
   // 声音、本地或云盘歌曲可能没有有效的艺人 id
   if (!artistId) return null;
@@ -59,7 +64,7 @@ export function NowPlayingArtistCard({ song }: NowPlayingSectionProps) {
             scroll={false}
             className="block truncate text-base font-bold text-content hover:underline"
           >
-            {artist?.name ?? song.ar[0].name}
+            {artist?.name ?? credited.name}
           </Link>
           {follow.fansCount !== undefined && (
             <p className="mt-0.5 text-sm text-content-muted">
@@ -70,7 +75,7 @@ export function NowPlayingArtistCard({ song }: NowPlayingSectionProps) {
             </p>
           )}
         </div>
-        <NowPlayingFollowButton follow={follow} />
+        {canFollow && <NowPlayingFollowButton follow={follow} />}
       </div>
 
       {artist?.description && (

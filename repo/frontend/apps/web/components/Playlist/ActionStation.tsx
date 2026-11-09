@@ -45,7 +45,6 @@ import { useTranslation } from "react-i18next";
 import { useI18nStore } from "@/store/module/i18n";
 import { useQueryClient } from "@tanstack/react-query";
 import { musicQueryKeys } from "@/lib/query/queryKeys";
-import { toNeteaseSongDetails } from "@/lib/providers/netease/adapters/track";
 
 function formatDateKey(date: Date) {
   const year = date.getFullYear();
@@ -104,7 +103,6 @@ export default function PlaylistActions(props: PlaylistActionsProps) {
     !playlistInfo?.isSpecial &&
     !isOwnPlaylist &&
     Boolean(playlistId);
-  const previewSongs = useMemo(() => toNeteaseSongDetails(tracks), [tracks]);
   const [isSubscribed, setIsSubscribed] = useState(Boolean(playlistInfo?.subscribed));
   const [isTogglingSubscribe, setIsTogglingSubscribe] = useState(false);
 
@@ -269,7 +267,7 @@ export default function PlaylistActions(props: PlaylistActionsProps) {
 
           {!isSticky && (
             <TrackPreviewButton
-              tracks={previewSongs}
+              tracks={tracks}
               title={playlistInfo?.title ?? ""}
               tags={playlistInfo?.tags}
               playlistId={playSourceId ?? playlistId}

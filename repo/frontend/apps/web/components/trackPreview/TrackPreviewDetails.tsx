@@ -16,16 +16,17 @@ export function TrackPreviewDetails({
   progress,
   onClose,
 }: TrackPreviewDetailsProps) {
-  const artworkUrl = resolveCoverUrl(song.al?.picUrl, song.al?.coverUrl);
-  const mainArtist = song.ar?.find((artist) => artist.id);
-  const year = song.publishTime > 0 ? new Date(song.publishTime).getFullYear() : null;
+  const artworkUrl = resolveCoverUrl(song.album?.coverUrl ?? undefined);
+  const mainArtist = song.artists.find((artist) => artist.ref.id);
+  const publishTime = song.netease?.publishTime ?? 0;
+  const year = publishTime > 0 ? new Date(publishTime).getFullYear() : null;
   const chips = [...tags.map((tag) => `#${tag}`), ...(year ? [String(year)] : [])];
   return (
     <div className="flex min-w-0 flex-col">
       <p className="truncate text-2xl font-bold">{title}</p>
       <AnimatePresence mode="wait" initial={false}>
         <motion.div
-          key={song.id}
+          key={song.ref.id}
           initial={{ opacity: 0, y: direction * 24 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: direction * -24 }}
@@ -33,10 +34,10 @@ export function TrackPreviewDetails({
           className="flex flex-1 flex-col justify-center gap-3"
         >
           <h2 className="line-clamp-3 text-5xl leading-tight font-black break-words">
-            {song.name}
+            {song.title}
           </h2>
           <p className="truncate text-base text-content/70">
-            {song.ar?.map((artist) => artist.name).join(", ")}
+            {song.artists.map((artist) => artist.name).join(", ")}
           </p>
           <div className="mt-4 flex items-center gap-4">
             <span className="relative size-14 shrink-0 overflow-hidden rounded bg-content/10">
@@ -60,7 +61,12 @@ export function TrackPreviewDetails({
         </motion.div>
       </AnimatePresence>
       <div className="flex flex-col gap-4">
-        {mainArtist && <MvChannel key={mainArtist.id} artist={mainArtist} />}
+        {mainArtist && (
+          <MvChannel
+            key={mainArtist.ref.id}
+            artist={{ id: mainArtist.ref.id, name: mainArtist.name }}
+          />
+        )}
         {chips.length > 0 && (
           <div className="flex flex-wrap gap-2">
             {chips.map((chip) => (
@@ -73,14 +79,14 @@ export function TrackPreviewDetails({
             ))}
           </div>
         )}
-        {song.al?.id ? (
+        {song.album?.ref.id ? (
           <Link
-            href={`/album?id=${song.al.id}`}
+            href={`/album?id=${song.album.ref.id}`}
             scroll={false}
             onClick={onClose}
             className="w-fit truncate text-sm text-content/60 hover:text-content hover:underline"
           >
-            {song.al.name}
+            {song.album.title}
           </Link>
         ) : null}
       </div>

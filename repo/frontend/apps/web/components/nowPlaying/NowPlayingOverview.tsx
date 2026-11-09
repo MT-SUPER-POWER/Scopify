@@ -10,6 +10,7 @@ import { NowPlayingMvs } from "./NowPlayingMvs";
 import { NowPlayingNextUp } from "./NowPlayingNextUp";
 import { NowPlayingSimilarSongs } from "./NowPlayingSimilarSongs";
 import { useEffect, useRef } from "react";
+import { resolveCoverUrl } from "@/lib/music/resolveCoverUrl";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import type { NowPlayingOverviewProps } from "@/types/player/nowPlayingComponents";
 
@@ -44,12 +45,20 @@ export function NowPlayingOverview({ song, onCoverVisibleChange }: NowPlayingOve
     >
       <div className="flex flex-col gap-4 px-4 pb-4">
         <NowPlayingHero song={song} />
-        <NowPlayingLyricsPreview song={song} />
-        <NowPlayingArtistCard key={song.ar?.[0]?.id} song={song} />
+        <NowPlayingLyricsPreview artworkUrl={resolveCoverUrl(song.al?.picUrl, song.al?.coverUrl)} />
+        {song.ar?.[0] && (
+          <NowPlayingArtistCard
+            key={song.ar[0].id}
+            artist={{ id: String(song.ar[0].id), name: song.ar[0].name }}
+          />
+        )}
         <NowPlayingMvs song={song} />
         <NowPlayingCredits song={song} />
         <NowPlayingSongResources key={`resources-${song.id}`} song={song} />
-        <NowPlayingHotComments key={`comments-${song.id}`} song={song} />
+        <NowPlayingHotComments
+          key={`comments-${song.id}`}
+          track={{ provider: "netease", id: String(song.id) }}
+        />
         <NowPlayingNextUp />
         <NowPlayingSimilarSongs song={song} />
       </div>

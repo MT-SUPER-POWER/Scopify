@@ -1,6 +1,5 @@
 "use client";
 
-import { useMemo } from "react";
 import { PlaylistLatticeView } from "@/components/Playlist/lattice/PlaylistLatticeView";
 import { PlaylistViewLoading } from "@/components/Playlist/lattice/PlaylistViewLoading";
 import PlaylistLoading from "@/components/Playlist/PlaylistLoading";
@@ -9,7 +8,6 @@ import { NetworkRetryState } from "@/components/shared/NetworkRetryState";
 import { useAlbumData } from "@/hooks/album/useAlbumData";
 import { useSmartRouter } from "@/hooks/core/useSmartRouter";
 import { useProviderCapability } from "@/hooks/provider/useActiveProvider";
-import { toNeteaseSongDetails } from "@/lib/providers/netease/adapters/track";
 import { useTranslation } from "react-i18next";
 
 import { AlbumActions } from "./_components/AlbumActions";
@@ -35,8 +33,6 @@ export default function AlbumPage() {
     tracks,
   } = useAlbumData();
   const canOpenArtist = useProviderCapability("artist.read");
-  // The immersive views and MV previews read NetEase songs, so only NetEase albums open them.
-  const neteaseSongs = useMemo(() => toNeteaseSongDetails(tracks), [tracks]);
   const canOpenLattice = tracks.length > 0;
 
   if (!albumId)
@@ -99,7 +95,7 @@ export default function AlbumPage() {
             <AlbumActions
               albumId={albumId}
               albumTitle={ALBUM_INFO.title}
-              previewSongs={neteaseSongs}
+              previewSongs={tracks}
               isPlaying={isPlaying}
               isAlbumCollected={isAlbumCollected}
               isTogglingAlbumSubscribe={isTogglingAlbumSubscribe}

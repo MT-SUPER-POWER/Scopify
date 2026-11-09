@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useMemo, useState } from "react";
 import { TrackPreviewDialog } from "./TrackPreviewDialog";
 import { MvCardPreview } from "@/components/mv/MvCardPreview";
+import { trackMvRef } from "@/lib/player/trackMv";
 import { getSizedImageUrl } from "@/lib/music/imageUrl";
 import { resolveCoverUrl } from "@/lib/music/resolveCoverUrl";
 import { cn } from "@/lib/utils";
@@ -31,12 +32,14 @@ export function TrackPreviewButton({
   const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
   const [isHovering, setIsHovering] = useState(false);
-  const videoTracks = useMemo(() => tracks.filter((track) => (track.mv ?? 0) > 0), [tracks]);
+  const videoTracks = useMemo(() => tracks.filter((track) => trackMvRef(track) !== null), [tracks]);
   const first = videoTracks[0];
+
+  const firstMv = first ? trackMvRef(first) : null;
 
   if (!first) return null;
 
-  const artworkUrl = resolveCoverUrl(first.al?.picUrl, first.al?.coverUrl);
+  const artworkUrl = resolveCoverUrl(first.album?.coverUrl ?? undefined);
   const label = t("trackPreview.open");
 
   return (
@@ -64,7 +67,7 @@ export function TrackPreviewButton({
                   className="object-cover"
                 />
               )}
-              {isHovering && first.mv ? <MvCardPreview mvid={first.mv} /> : null}
+              {isHovering && firstMv ? <MvCardPreview mv={firstMv} /> : null}
             </button>
           </TooltipTrigger>
           <TooltipContent side="top" sideOffset={8}>

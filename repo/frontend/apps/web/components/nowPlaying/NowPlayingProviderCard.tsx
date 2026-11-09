@@ -18,7 +18,7 @@ export function NowPlayingProviderCard({ track }: { track: PlayerTrack }) {
   const artists = track.artists.map((artist) => artist.name).join(" / ");
 
   return (
-    <div className="flex min-h-0 flex-1 flex-col gap-5 overflow-y-auto px-4 pt-16 pb-6">
+    <div className="flex flex-col gap-4">
       <div className="relative aspect-square w-full shrink-0 overflow-hidden rounded-2xl bg-surface-elevated shadow-panel">
         {artwork && (
           <Image

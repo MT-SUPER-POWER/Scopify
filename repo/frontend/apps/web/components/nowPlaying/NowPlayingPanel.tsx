@@ -4,10 +4,11 @@ import { Music2, PanelRightClose } from "lucide-react";
 import { useState } from "react";
 import { NowPlayingLyricsView } from "./NowPlayingLyricsView";
 import { NowPlayingOverview } from "./NowPlayingOverview";
-import { NowPlayingProviderCard } from "./NowPlayingProviderCard";
+import { NowPlayingProviderOverview } from "./NowPlayingProviderOverview";
 import { NowPlayingPanelTabs } from "./NowPlayingPanelTabs";
 import { NowPlayingQueueView } from "./NowPlayingQueueView";
 import { useCurrentNeteaseSong } from "@/hooks/player/useCurrentNeteaseSong";
+import { resolveCoverUrl } from "@/lib/music/resolveCoverUrl";
 import { cn } from "@/lib/utils";
 import { usePlayerStore } from "@/store";
 import { useTranslation } from "react-i18next";
@@ -68,12 +69,16 @@ export function NowPlayingPanel() {
         <NowPlayingQueueView />
       ) : song ? (
         view === "lyrics" ? (
-          <NowPlayingLyricsView song={song} />
+          <NowPlayingLyricsView artworkUrl={resolveCoverUrl(song.al?.picUrl, song.al?.coverUrl)} />
         ) : (
           <NowPlayingOverview song={song} onCoverVisibleChange={setIsOverCover} />
         )
       ) : track ? (
-        <NowPlayingProviderCard track={track} />
+        view === "lyrics" ? (
+          <NowPlayingLyricsView artworkUrl={resolveCoverUrl(track.album?.coverUrl ?? undefined)} />
+        ) : (
+          <NowPlayingProviderOverview track={track} />
+        )
       ) : (
         <div className="flex min-h-0 flex-1 flex-col items-center justify-center gap-3 px-6 py-8 text-center">
           <span className="mb-2 flex size-16 items-center justify-center rounded-2xl bg-content/5 text-content-muted">

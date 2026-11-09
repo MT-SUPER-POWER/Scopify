@@ -1,7 +1,7 @@
+import type { PlayerTrack } from "@/types/player/model";
 import type { MusicAlbum } from "@scopify/music-domain/track";
 
 import type { PlaylistViewMode } from "@/types/playlist/lattice";
-import type { SongDetail } from "@/types/song/api";
 
 export interface AlbumInfo {
   artistAvatar: string;
@@ -28,7 +28,7 @@ export interface AlbumActionsProps {
   /** 专辑曲目与名称，用于播放按钮旁的 MV 预览入口。 */
   albumTitle: string;
   /** 专辑里的网易云歌曲，只有它们带 MV 预览。 */
-  previewSongs: SongDetail[];
+  previewSongs: PlayerTrack[];
   isAlbumCollected: boolean;
   isPlaying: boolean;
   isTogglingAlbumSubscribe: boolean;

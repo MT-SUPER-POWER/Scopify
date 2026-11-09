@@ -11,15 +11,14 @@ import { cn } from "@/lib/utils";
 import { useTranslation } from "react-i18next";
 
 import { useUiStore } from "@/store/module/ui";
-import type { NowPlayingSectionProps } from "@/types/player/nowPlayingComponents";
 
 /** 用户手动滚动后，暂停自动跟随的时长。 */
 const MANUAL_SCROLL_HOLD_MS = 3_000;
 
 /** 面板的歌词视图：封面主色铺底的滚动歌词，当前句自动居上，点击任意一句跳转；右上角提供 Folia 舞台与全局轻量歌词双入口。 */
-export function NowPlayingLyricsView({ song }: NowPlayingSectionProps) {
+export function NowPlayingLyricsView({ artworkUrl }: { artworkUrl: string | null | undefined }) {
   const { t } = useTranslation();
-  const tint = useNowPlayingTint(song);
+  const tint = useNowPlayingTint(artworkUrl);
   const commands = usePlaybackCommands();
   const { lines, lastStartedIndex } = useCompanionLyricLine();
   const viewportRef = useRef<HTMLDivElement>(null);
