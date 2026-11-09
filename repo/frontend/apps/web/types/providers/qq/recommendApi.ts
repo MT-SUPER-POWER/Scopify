@@ -129,3 +129,21 @@ export interface QqFeedDto {
     items: QqFeedItemDto[];
   }[];
 }
+
+/** GET /user/guess-you-like and GET /recommend/radar: one batch of songs. */
+export interface QqSongBatchStationDto {
+  code: 200;
+  songs: QqTrackDto[];
+}
+
+/** GET /recommend/categories: playlist categories in groups. */
+export interface QqPlaylistCategoriesDto {
+  code: 200;
+  groups: { id: number; name: string; categories: { id: number; name: string }[] }[];
+}
+
+/** GET /recommend/category-playlists?id=…: the playlists of one category. */
+export interface QqCategoryPlaylistsDto {
+  code: 200;
+  playlists: QqRecommendPlaylistDto[];
+}

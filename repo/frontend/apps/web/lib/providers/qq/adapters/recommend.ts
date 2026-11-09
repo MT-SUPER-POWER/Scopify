@@ -8,7 +8,11 @@ import type {
 
 import { parseQqDate } from "@/lib/providers/qq/adapters/artist";
 import { adaptQqTrack } from "@/lib/providers/qq/adapters/track";
-import { qqAlbumCoverUrl, qqSecureUrl } from "@/lib/providers/qq/adapters/playlist";
+import {
+  adaptQqPlaylistSong,
+  qqAlbumCoverUrl,
+  qqSecureUrl,
+} from "@/lib/providers/qq/adapters/playlist";
 import type {
   QqNewAlbumDto,
   QqFeedDto,
@@ -17,6 +21,7 @@ import type {
   QqToplistDto,
   QqToplistsDto,
 } from "@/types/providers/qq/recommendApi";
+import type { QqTrackDto } from "@/types/providers/qq/trackApi";
 
 /**
  * QQ charts are not playlists, but they open and play through the playlist source: a chart's
@@ -109,6 +114,43 @@ export function adaptQqFeaturedArtists(raw: readonly QqSingerListItemDto[]): Mus
   }));
 }
 
+/** A shelf of songs the app words itself, by its kind. */
+export function qqSongShelf(
+  kind: "daily" | "guessYouLike" | "radar",
+  songs: readonly QqTrackDto[],
+): MusicFeedShelf[] {
+  return songs.length > 0
+    ? [
+        {
+          id: kind,
+          kind,
+          title: null,
+          items: songs.map((song) => ({ kind: "track", track: adaptQqPlaylistSong(song) })),
+        },
+      ]
+    : [];
+}
+
+/** A shelf of one playlist category, named as the platform names it. */
+export function qqCategoryShelf(
+  category: { id: number; name: string },
+  playlists: readonly QqRecommendPlaylistDto[],
+): MusicFeedShelf[] {
+  return playlists.length > 0
+    ? [
+        {
+          id: `category:${category.id}`,
+          kind: "platform",
+          title: category.name,
+          items: adaptQqRecommendPlaylists(playlists).map((playlist) => ({
+            kind: "playlist",
+            playlist,
+          })),
+        },
+      ]
+    : [];
+}
+
 /** Shelves that hold at least one card; the title has its `{String}` filled in. */
 export function adaptQqHomeFeed(raw: QqFeedDto): MusicFeedShelf[] {
   return raw.shelves.flatMap((shelf) => {
@@ -128,6 +170,8 @@ export function adaptQqHomeFeed(raw: QqFeedDto): MusicFeedShelf[] {
           },
     );
     const title = (shelf.titleTemplate ?? "").replace("{String}", shelf.titleContent ?? "").trim();
-    return items.length > 0 && title ? [{ id: shelf.id, title, items }] : [];
+    return items.length > 0 && title
+      ? [{ id: `feed:${shelf.id}`, kind: "platform", title, items }]
+      : [];
   });
 }

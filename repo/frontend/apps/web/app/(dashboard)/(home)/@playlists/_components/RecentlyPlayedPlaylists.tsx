@@ -78,7 +78,7 @@ export function RecentlyPlayedPlaylists() {
           ) : null
         }
         collapsedRows={1}
-        collapsedHeight="280px"
+        collapsedHeight="310px"
       >
         <div className="relative overflow-hidden">
           <AnimatePresence mode="wait" initial={false}>
@@ -88,7 +88,7 @@ export function RecentlyPlayedPlaylists() {
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -direction * 16 }}
               transition={{ duration: 0.22, ease: "easeOut" }}
-              className="grid w-full min-w-0 grid-cols-[repeat(auto-fill,minmax(min(100%,176px),1fr))] gap-x-2 gap-y-4"
+              className="grid w-full min-w-0 grid-cols-[repeat(auto-fill,minmax(min(100%,200px),1fr))] gap-x-2 gap-y-4"
             >
               {visiblePlaylists.map((playlist) => {
                 const subtitle =

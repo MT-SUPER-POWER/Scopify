@@ -1220,6 +1220,9 @@ export default interface Resources {
     dailyRecommendations: "每日推荐";
     featuredActivities: "精选活动";
     feed: "为你推荐";
+    "feedKind.daily": "每日 30 首";
+    "feedKind.guessYouLike": "猜你喜欢";
+    "feedKind.radar": "刷歌";
     followedArtistsAlbums: "关注歌手的专辑";
     "greeting.afternoon": "下午好";
     "greeting.evening": "傍晚好";

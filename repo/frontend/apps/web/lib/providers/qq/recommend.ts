@@ -4,13 +4,19 @@ import { adaptQqPlaylistSong } from "@/lib/providers/qq/adapters/playlist";
 import {
   adaptQqFeaturedArtists,
   adaptQqHomeFeed,
+  qqCategoryShelf,
+  qqSongShelf,
   adaptQqNewAlbums,
   adaptQqRecommendPlaylists,
   adaptQqToplists,
 } from "@/lib/providers/qq/adapters/recommend";
 import {
   getQqDailySongs,
+  getQqCategoryPlaylists,
+  getQqGuessYouLike,
   getQqHomeFeed,
+  getQqPlaylistCategories,
+  getQqRadar,
   getQqNewAlbums,
   getQqNewSongs,
   getQqPopularSingers,
@@ -52,8 +58,35 @@ export const qqRecommendSource: MusicRecommendSource = {
     return adaptQqToplists(await getQqToplists(options?.signal));
   },
 
+  /**
+   * The home feed is assembled from several QQ routes, each of which may fail alone: the
+   * platform's own shelves, the daily 30, "guess you like", the radar and a few playlist
+   * categories. It fails only when none of them answers.
+   */
   async getHomeFeed(options) {
-    return adaptQqHomeFeed(await getQqHomeFeed(options?.signal));
+    const signal = options?.signal;
+    const parts = await Promise.allSettled([
+      getQqHomeFeed(signal).then(adaptQqHomeFeed),
+      getQqDailySongs(signal).then((data) => qqSongShelf("daily", data.songs)),
+      getQqGuessYouLike(signal).then((data) => qqSongShelf("guessYouLike", data.songs)),
+      getQqRadar(signal).then((data) => qqSongShelf("radar", data.songs)),
+      getQqPlaylistCategories(signal).then(async (data) => {
+        const categories = (data.groups[0]?.categories ?? []).slice(0, 3);
+        const shelves = await Promise.allSettled(
+          categories.map(async (category) =>
+            qqCategoryShelf(
+              category,
+              (await getQqCategoryPlaylists(category.id, 12, signal)).playlists,
+            ),
+          ),
+        );
+        return shelves.flatMap((shelf) => (shelf.status === "fulfilled" ? shelf.value : []));
+      }),
+    ]);
+    const shelves = parts.flatMap((part) => (part.status === "fulfilled" ? part.value : []));
+    const failed = parts.find((part) => part.status === "rejected");
+    if (shelves.length === 0 && failed?.status === "rejected") throw failed.reason;
+    return shelves;
   },
 
   async getFeaturedArtists(limit, options) {

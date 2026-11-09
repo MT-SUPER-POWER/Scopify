@@ -35,13 +35,17 @@ export interface MusicFeaturedArtist {
 export type MusicFeedItem =
   { kind: "track"; track: MusicTrack } | { kind: "playlist"; playlist: MusicPlaylist };
 
+/** What a feed shelf is, for the ones the app names itself because the platform gives no title. */
+export type MusicFeedShelfKind = "daily" | "guessYouLike" | "radar" | "platform";
+
 /**
- * A shelf of the platform's own home feed. The platform decides what it holds and what it is
- * called; `title` is already filled in, so callers show it as it is.
+ * A shelf of the platform's home feed. A `title` the platform wrote is shown as it is; without
+ * one the caller words the shelf by its `kind`.
  */
 export interface MusicFeedShelf {
   id: string;
-  title: string;
+  kind: MusicFeedShelfKind;
+  title: string | null;
   items: readonly MusicFeedItem[];
 }
 

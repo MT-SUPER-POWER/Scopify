@@ -14,11 +14,22 @@ import { useTranslation } from "react-i18next";
 import { musicResourceKey } from "@scopify/music-domain/identity";
 import type { MusicFeedShelf } from "@scopify/music-domain/recommend";
 
+/** The platform's own title, or the app's wording for the shelf kinds it names itself. */
+function useShelfTitle(shelf: MusicFeedShelf): string {
+  const { t } = useTranslation();
+  if (shelf.title) return shelf.title;
+  if (shelf.kind === "daily") return t("home.feedKind.daily");
+  if (shelf.kind === "guessYouLike") return t("home.feedKind.guessYouLike");
+  if (shelf.kind === "radar") return t("home.feedKind.radar");
+  return t("home.feed");
+}
+
 /** Songs shown on a collapsed shelf: three rows of two. */
 const COLLAPSED_SONGS = 6;
 
 function TrackShelf({ shelf }: { shelf: MusicFeedShelf }) {
   const { t } = useTranslation();
+  const title = useShelfTitle(shelf);
   const { actions } = useHome();
   const [isOpen, setIsOpen] = useState(false);
   const tracks = shelf.items.flatMap((item) => (item.kind === "track" ? [item.track] : []));
@@ -31,9 +42,7 @@ function TrackShelf({ shelf }: { shelf: MusicFeedShelf }) {
         onOpenChange={setIsOpen}
         title={
           <div className="flex items-center gap-3">
-            <h2 className="text-xl font-bold tracking-tight text-content sm:text-2xl">
-              {shelf.title}
-            </h2>
+            <h2 className="text-xl font-bold tracking-tight text-content sm:text-2xl">{title}</h2>
             <button
               type="button"
               onClick={(event) => {
@@ -67,6 +76,7 @@ function TrackShelf({ shelf }: { shelf: MusicFeedShelf }) {
 
 function PlaylistShelf({ shelf }: { shelf: MusicFeedShelf }) {
   const { actions } = useHome();
+  const title = useShelfTitle(shelf);
   const smartRouter = useSmartRouter();
   const playlists = shelf.items.flatMap((item) =>
     item.kind === "playlist" ? [item.playlist] : [],
@@ -74,10 +84,8 @@ function PlaylistShelf({ shelf }: { shelf: MusicFeedShelf }) {
 
   return (
     <section>
-      <h2 className="mb-4 text-xl font-bold tracking-tight text-content sm:text-2xl">
-        {shelf.title}
-      </h2>
-      <div className="grid w-full min-w-0 grid-cols-[repeat(auto-fill,minmax(min(100%,232px),1fr))] gap-x-3 gap-y-5">
+      <h2 className="mb-4 text-xl font-bold tracking-tight text-content sm:text-2xl">{title}</h2>
+      <div className="grid w-full min-w-0 grid-cols-[repeat(auto-fill,minmax(min(100%,200px),1fr))] gap-x-2 gap-y-4">
         {playlists.map((playlist) => (
           <GridCard
             key={playlist.ref.id}

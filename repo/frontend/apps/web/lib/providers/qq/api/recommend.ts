@@ -6,7 +6,10 @@ import type {
   QqPersonalFmDto,
   QqRecommendPlaylistsDto,
   QqToplistSongsDto,
+  QqCategoryPlaylistsDto,
   QqFeedDto,
+  QqPlaylistCategoriesDto,
+  QqSongBatchStationDto,
   QqSingerListDto,
   QqToplistsDto,
 } from "@/types/providers/qq/recommendApi";
@@ -107,5 +110,47 @@ export function getQqHomeFeed(signal?: AbortSignal) {
     url: "/recommend/feed",
     signal,
     errorContext: { operation: "qq.recommend.feed" },
+  });
+}
+
+/** One batch of the account's "guess you like" station. */
+export function getQqGuessYouLike(signal?: AbortSignal) {
+  return qqClient.requestData<QqSongBatchStationDto>({
+    method: "GET",
+    url: "/user/guess-you-like",
+    signal,
+    errorContext: { operation: "qq.recommend.guessYouLike" },
+  });
+}
+
+/** One batch of the official radar, which anyone can read. */
+export function getQqRadar(signal?: AbortSignal) {
+  return qqClient.requestData<QqSongBatchStationDto>({
+    method: "GET",
+    url: "/recommend/radar",
+    params: { page: 1 },
+    signal,
+    errorContext: { operation: "qq.recommend.radar" },
+  });
+}
+
+export function getQqPlaylistCategories(signal?: AbortSignal) {
+  return qqClient.requestData<QqPlaylistCategoriesDto>({
+    method: "GET",
+    url: "/recommend/categories",
+    noSession: true,
+    signal,
+    errorContext: { operation: "qq.recommend.categories" },
+  });
+}
+
+export function getQqCategoryPlaylists(id: number, limit: number, signal?: AbortSignal) {
+  return qqClient.requestData<QqCategoryPlaylistsDto>({
+    method: "GET",
+    url: "/recommend/category-playlists",
+    params: { id, limit },
+    noSession: true,
+    signal,
+    errorContext: { operation: "qq.recommend.categoryPlaylists", id },
   });
 }
