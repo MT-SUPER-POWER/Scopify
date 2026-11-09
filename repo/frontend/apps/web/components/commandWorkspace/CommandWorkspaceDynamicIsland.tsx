@@ -22,7 +22,10 @@ export function CommandWorkspaceDynamicIsland() {
 
   return (
     <>
-      <ScrollArea className="h-[min(52vh,32rem)]">
+      <ScrollArea
+        className="h-[min(52vh,32rem)]"
+        viewportClassName="[&>div]:!block [&>div]:!min-w-0 [&>div]:!w-full"
+      >
         <div className="space-y-1 px-5 py-4">
           <p className="mb-4 text-xs leading-5 text-content-muted">
             调整后立即保存；关闭灵动岛时也可预先配置。

@@ -93,7 +93,10 @@ export function CommandWorkspaceFolia({
           <X className="size-4" />
         </button>
       </div>
-      <ScrollArea className="h-[min(52vh,32rem)]">
+      <ScrollArea
+        className="h-[min(52vh,32rem)]"
+        viewportClassName="[&>div]:!block [&>div]:!min-w-0 [&>div]:!w-full"
+      >
         <div className="px-2.5 py-2">
           <div className="flex justify-between gap-3 px-3.5 py-2 text-xs text-content-muted">
             <span>

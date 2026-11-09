@@ -17,7 +17,10 @@ export function CommandWorkspaceDirectSearchResults({
   suggestions,
 }: CommandWorkspaceDirectSearchResultsProps) {
   return (
-    <ScrollArea className="h-[min(52vh,32rem)]">
+    <ScrollArea
+      className="h-[min(52vh,32rem)]"
+      viewportClassName="[&>div]:!block [&>div]:!min-w-0 [&>div]:!w-full"
+    >
       <div className="space-y-2 px-2.5 py-2">
         {!query && recent.length > 0 ? (
           <section className="space-y-0.5">
