@@ -4,6 +4,8 @@ import type {
   ComplexSearchResponse,
   LyricSearchResponse,
   MvSearchResponse,
+  NeteaseDefaultSearchResponse,
+  NeteaseSuggestResponse,
   PlaylistSearchResponse,
   SongSearchResponse,
   VoiceSearchResponse,
@@ -14,8 +16,8 @@ import request from "@/lib/providers/netease/client";
  * 搜索建议
  * @return res.data.showKeyword
  */
-export function searchDefault() {
-  return request.get("/search/default/pc");
+export function searchDefault(signal?: AbortSignal) {
+  return request.get<NeteaseDefaultSearchResponse>("/search/default/pc", { signal });
 }
 
 /**
@@ -28,8 +30,9 @@ export function searchHot() {
 /**
  * 输入一点内容就下拉的搜索意见栏
  */
-export function searchSuggest(keyword: string) {
-  return request.get("/search/suggest/pc", {
+export function searchSuggest(keyword: string, signal?: AbortSignal) {
+  return request.get<NeteaseSuggestResponse>("/search/suggest/pc", {
+    signal,
     params: {
       keyword: keyword,
     },
@@ -49,8 +52,9 @@ export function searchSongs(keyword: string, limit = 15, offset = 0, signal?: Ab
   });
 }
 
-export function searchPlaylists(s: string, limit = 15, offset = 0) {
+export function searchPlaylists(s: string, limit = 15, offset = 0, signal?: AbortSignal) {
   return request.get<PlaylistSearchResponse>("/search/playlist/v1", {
+    signal,
     params: {
       s: s,
       limit: limit,
@@ -60,8 +64,9 @@ export function searchPlaylists(s: string, limit = 15, offset = 0) {
   });
 }
 
-export function searchAlbums(s: string, limit = 15, offset = 0) {
+export function searchAlbums(s: string, limit = 15, offset = 0, signal?: AbortSignal) {
   return request.get<AlbumSearchResponse>("/search/album/v1", {
+    signal,
     params: {
       s: s,
       limit: limit,
@@ -71,8 +76,9 @@ export function searchAlbums(s: string, limit = 15, offset = 0) {
   });
 }
 
-export function searchArtists(s: string, limit = 15, offset = 0) {
+export function searchArtists(s: string, limit = 15, offset = 0, signal?: AbortSignal) {
   return request.get<ArtistSearchResponse>("/search/artist/v1", {
+    signal,
     params: {
       s: s,
       limit: limit,
@@ -82,8 +88,9 @@ export function searchArtists(s: string, limit = 15, offset = 0) {
   });
 }
 
-export function searchComplex(keyword: string) {
+export function searchComplex(keyword: string, signal?: AbortSignal) {
   return request.get<ComplexSearchResponse>("/search/pc/complex/page/v3", {
+    signal,
     params: {
       keyword,
     },

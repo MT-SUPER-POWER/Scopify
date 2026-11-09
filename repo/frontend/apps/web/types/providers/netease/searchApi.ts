@@ -320,3 +320,28 @@ export interface LyricSearchResponse {
   data?: LyricSearchPayload;
   message?: string | null;
 }
+
+/** One entry of `/search/suggest/pc`; `highLightInfo` is a JSON string of text segments. */
+export interface NeteaseSuggestItemDto {
+  highLightInfo: string;
+  iconUrl?: string;
+  keyword: string;
+  skinType: null | string;
+  tag: null | string;
+  tagUrl: null | string;
+}
+
+export interface NeteaseSuggestResponse {
+  code: number;
+  data?: {
+    suggests?: NeteaseSuggestItemDto[];
+  };
+}
+
+/** `/search/default/pc`: the words the search box rotates through while it is empty. */
+export interface NeteaseDefaultSearchResponse {
+  code: number;
+  data?: {
+    algWords?: { keyword: string }[];
+  };
+}

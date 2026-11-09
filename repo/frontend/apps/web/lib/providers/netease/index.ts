@@ -3,6 +3,7 @@ import type { MusicProviderClient } from "@scopify/music-domain/provider";
 
 import { neteasePlaybackSource } from "@/lib/providers/netease/playback";
 import { neteasePlaylistSource } from "@/lib/providers/netease/playlist";
+import { neteaseSearchSource } from "@/lib/providers/netease/search";
 import { neteaseTrackSource } from "@/lib/providers/netease/track";
 
 /** Every existing page is built on NetEase, so it declares every capability. */
@@ -12,6 +13,9 @@ const NETEASE_CAPABILITIES: ReadonlySet<MusicCapability> = new Set<MusicCapabili
   "track.lyrics",
   "track.like",
   "search",
+  "search.overview",
+  "search.lyrics",
+  "track.sheet",
   "playlist.read",
   "playlist.manage",
   "playlist.reorder",
@@ -39,4 +43,5 @@ export const neteaseProvider: MusicProviderClient = {
   ...neteaseTrackSource,
   ...neteasePlaybackSource,
   ...neteasePlaylistSource,
+  ...neteaseSearchSource,
 };

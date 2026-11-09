@@ -36,11 +36,11 @@ export interface MusicSearchRequest<Kind extends MusicSearchKind = MusicSearchKi
   limit: number;
 }
 
-/** Results from `offset` on. `hasMore` is the platform's own answer, not a guess from the count. */
+/** Results from `offset` on, with where the next page starts, or null at the end of the results. */
 export interface MusicSearchPage<Item> {
   offset: number;
   items: Item[];
-  hasMore: boolean;
+  nextOffset: number | null;
 }
 
 /** A part of a suggestion, in order, so the part that matched the input can be emphasised. */
