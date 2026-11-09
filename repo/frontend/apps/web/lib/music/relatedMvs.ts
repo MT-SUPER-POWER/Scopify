@@ -1,4 +1,4 @@
-import type { MvSummary } from "@/types/mv/api";
+import type { MvSummary } from "@/types/providers/netease/mvApi";
 
 export function getRelatedMvKeyword(mv: MvSummary) {
   const artist = mv.artists?.[0]?.name.trim() || mv.artistName?.trim();

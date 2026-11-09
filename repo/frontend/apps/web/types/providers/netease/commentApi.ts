@@ -1,27 +1,17 @@
+import type { MusicCommentTargetKind } from "@scopify/music-domain/comment";
 import type { NeteaseComment } from "@/types/song/api";
 
-export const COMMENT_RESOURCE_TYPE = {
-  song: 0,
+/** NetEase's numeric resource type for each kind of comment thread. */
+export const NETEASE_COMMENT_TYPE = {
+  track: 0,
   mv: 1,
   playlist: 2,
   album: 3,
   voice: 4,
   "voice-list": 7,
-} as const;
+} as const satisfies Record<MusicCommentTargetKind, number>;
 
-export type CommentResourceKind = keyof typeof COMMENT_RESOURCE_TYPE;
-export type CommentResourceType = (typeof COMMENT_RESOURCE_TYPE)[CommentResourceKind];
-
-/** 评论所属资源；评论页从 URL 解析，嵌入式评论区（如 MV 页）直接传入。 */
-export interface CommentResourceRef {
-  kind: CommentResourceKind;
-  id: string;
-}
-
-/** 解析好的评论资源：在 CommentResourceRef 之上带上接口用的数字类型。 */
-export interface CommentResource extends CommentResourceRef {
-  type: CommentResourceType;
-}
+export type CommentResourceType = (typeof NETEASE_COMMENT_TYPE)[MusicCommentTargetKind];
 
 export interface MusicCommentParams {
   id: number | string;

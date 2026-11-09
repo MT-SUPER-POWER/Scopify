@@ -6,7 +6,7 @@ import type {
   FollowedArtistsResponse,
   HotArtistsResponse,
 } from "@/types/providers/netease/artistApi";
-import type { ArtistMvsResponse } from "@/types/mv/api";
+import type { ArtistMvsResponse } from "@/types/providers/netease/mvApi";
 import request from "@/lib/providers/netease/client";
 
 /**

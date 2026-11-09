@@ -13,7 +13,7 @@ import type {
   RecommendedMvsResponse,
   SimilarMvsResponse,
   SubscribedMvsResponse,
-} from "@/types/mv/api";
+} from "@/types/providers/netease/mvApi";
 
 /** 全部 MV，可按地区、类型和排序筛选。 */
 export function getAllMVs(params: MvListParams = {}, signal?: AbortSignal) {

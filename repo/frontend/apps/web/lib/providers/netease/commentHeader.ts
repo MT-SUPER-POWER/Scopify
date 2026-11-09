@@ -6,9 +6,16 @@ import { getRadioDetail, getRadioProgramDetail } from "@/lib/providers/netease/a
 import { getSongDetail } from "@/lib/providers/netease/api/track";
 import { getVoiceDetail } from "@/lib/providers/netease/api/voicelist";
 import { getMvCover } from "@/lib/music/mvCover";
-import type { CommentResourceKind } from "@/types/comment/api";
-import type { CommentResourceHeaderData } from "@/types/comment/model";
+import type { MusicCommentTargetKind } from "@scopify/music-domain/comment";
+import type { CommentHeaderArtist } from "@/types/comment/components";
 import type { SongDetail } from "@/types/song/api";
+
+export interface CommentResourceHeaderData {
+  albumName?: string;
+  artists: CommentHeaderArtist[];
+  coverUrl: string;
+  title: string;
+}
 
 const FALLBACK_COVER =
   "https://images.unsplash.com/photo-1614613535308-eb5fbd3d2c17?q=80&w=1000&auto=format&fit=crop";
@@ -135,7 +142,7 @@ async function getMvHeader(resourceId: string): Promise<CommentResourceHeaderDat
 
 /** 评论页头部要显示的资源信息（封面、标题、歌手），按资源类型取对应的详情接口。 */
 export function getCommentResourceHeader(
-  kind: CommentResourceKind,
+  kind: MusicCommentTargetKind,
   resourceId: string,
 ): Promise<CommentResourceHeaderData> {
   switch (kind) {

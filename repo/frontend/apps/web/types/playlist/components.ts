@@ -2,7 +2,7 @@ import type { HTMLAttributes, ReactNode, RefObject } from "react";
 
 import type { PlayerTrack } from "@/types/player/model";
 import type { SongDetail } from "@/types/song/api";
-import type { CommentResourceKind } from "@/types/comment/api";
+import type { CommentResourceKind } from "@/types/providers/netease/commentApi";
 import type { PlaylistInfo } from "@/types/playlist/model";
 import type { PlaylistViewMode } from "@/types/playlist/lattice";
 import type { CloudTrackActions } from "@/types/library/components";

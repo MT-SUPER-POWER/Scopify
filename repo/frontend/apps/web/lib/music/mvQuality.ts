@@ -1,4 +1,4 @@
-import type { MvResolution } from "@/types/mv/api";
+import type { MvResolution } from "@/types/providers/netease/mvApi";
 import type { MvQualityPlaybackSnapshot, MvQualityPlaybackTarget } from "@/types/mv/model";
 
 /** 只列出接口提供的档位，以及播放地址返回的实际分辨率。 */

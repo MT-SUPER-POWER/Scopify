@@ -1,4 +1,4 @@
-import type { MvSummary } from "@/types/mv/api";
+import type { MvSummary } from "@/types/providers/netease/mvApi";
 
 export interface SearchArtistSource {
   albumSize?: number;

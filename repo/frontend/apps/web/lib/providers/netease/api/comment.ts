@@ -5,7 +5,7 @@ import type {
   MusicCommentParams,
   NewCommentParams,
   NewCommentResponse,
-} from "@/types/comment/api";
+} from "@/types/providers/netease/commentApi";
 import type { SongComment } from "@/types/song/api";
 import request, { requestConfig } from "@/lib/providers/netease/client";
 

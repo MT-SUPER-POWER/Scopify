@@ -1,6 +1,8 @@
 import type { MusicCapability } from "@scopify/music-domain/capability";
 import type { MusicProviderClient } from "@scopify/music-domain/provider";
 
+import { neteaseCommentSource } from "@/lib/providers/netease/comment";
+import { neteaseMvSource } from "@/lib/providers/netease/mv";
 import { neteaseLibrarySource } from "@/lib/providers/netease/library";
 import { neteaseLyricsSource } from "@/lib/providers/netease/lyrics";
 import { neteaseAlbumSource } from "@/lib/providers/netease/album";
@@ -41,8 +43,10 @@ const NETEASE_CAPABILITIES: ReadonlySet<MusicCapability> = new Set<MusicCapabili
   "recommend.newSongs",
   "recommend.newAlbums",
   "mv",
+  "mv.interact",
   "comments.read",
   "comments.write",
+  "comments.replies",
   "cloud",
   "podcast",
   "social",
@@ -65,4 +69,6 @@ export const neteaseProvider: MusicProviderClient = {
   ...neteaseRecommendSource,
   ...neteaseLibrarySource,
   ...neteaseLyricsSource,
+  ...neteaseCommentSource,
+  ...neteaseMvSource,
 };

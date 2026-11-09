@@ -6,7 +6,7 @@ import type {
 } from "@scopify/music-domain/search";
 import type { SongDetail } from "@/types/song/api";
 import type { PlayerTrack } from "@/types/player/model";
-import type { MvSummary } from "@/types/mv/api";
+import type { MvSummary } from "@/types/providers/netease/mvApi";
 import type { MusicSheet } from "@/types/songResources/api";
 import type { Category, LyricSearchItem, Podcast, Voice } from "@/types/search/model";
 import type { ReactNode } from "react";
