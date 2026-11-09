@@ -2,6 +2,18 @@
 
 > 根据 commit 自动生成，请勿手动编辑；推送版本 tag 后由 CI 更新。v2.0.3 及更早版本见[历史更新记录](archive/CHANGELOG-legacy.md)。
 
+## v3.4.3 — 2026-11-09
+
+### 新增
+
+- 支持 Beta 版本发布与更新并完善设置提示 ([384de4d8](https://github.com/MT-SUPER-POWER/Scopify/commit/384de4d8cebb9f7a258533c5d1c4f18f66a023e8))
+- 引入 qq-music-api 子模块 ([cba1d814](https://github.com/MT-SUPER-POWER/Scopify/commit/cba1d814a258a5fd71f5a283984277f6ff440c0c))
+
+### 修复
+
+- Grid 视图正在播放的卡片不再被播放按钮挡住封面 ([fb675fee](https://github.com/MT-SUPER-POWER/Scopify/commit/fb675fee520fdc10e6b2dee124ba5b6fddf2284d))
+- 修复日推减少推荐误切歌并在正在播放中补齐入口 ([23bb1aba](https://github.com/MT-SUPER-POWER/Scopify/commit/23bb1aba8807977020434b4b032284c217c5ab83))
+
 ## v3.4.1 — 2026-11-07
 
 ### 新增
