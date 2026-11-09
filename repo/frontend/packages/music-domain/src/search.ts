@@ -12,9 +12,15 @@ export interface MusicArtistResult extends MusicArtist {
   aliases: readonly string[];
 }
 
+/** An artist credited on a result. A platform that only names the artist leaves `ref` null. */
+export interface MusicCreditedArtist {
+  ref: MusicArtist["ref"] | null;
+  name: string;
+}
+
 /** An album as a search result: the shared album plus who made it and when. */
 export interface MusicAlbumResult extends MusicAlbum {
-  artists: readonly MusicArtist[];
+  artists: readonly MusicCreditedArtist[];
   /** Release time in milliseconds since the epoch; null when the platform does not say. */
   publishedAt: number | null;
 }

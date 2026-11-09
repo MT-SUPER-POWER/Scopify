@@ -3,6 +3,7 @@ import type { MusicProviderClient } from "@scopify/music-domain/provider";
 
 import { qqPlaybackSource } from "@/lib/providers/qq/playback";
 import { qqPlaylistSource } from "@/lib/providers/qq/playlist";
+import { qqSearchSource } from "@/lib/providers/qq/search";
 import { qqTrackSource } from "@/lib/providers/qq/track";
 
 /** Grows as each area is migrated; a capability is declared once its pages work on QQ. */
@@ -19,4 +20,5 @@ export const qqProvider: MusicProviderClient = {
   ...qqTrackSource,
   ...qqPlaybackSource,
   ...qqPlaylistSource,
+  ...qqSearchSource,
 };
