@@ -1221,7 +1221,6 @@ export default interface Resources {
     featuredActivities: "精选活动";
     feed: "为你推荐";
     "feedKind.guessYouLike": "猜你喜欢";
-    "feedKind.radar": "刷歌";
     followedArtistsAlbums: "关注歌手的专辑";
     "greeting.afternoon": "下午好";
     "greeting.evening": "傍晚好";

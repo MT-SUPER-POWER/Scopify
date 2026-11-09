@@ -123,17 +123,6 @@ export function getQqGuessYouLike(signal?: AbortSignal) {
   });
 }
 
-/** One batch of the official radar, which anyone can read. */
-export function getQqRadar(signal?: AbortSignal) {
-  return qqClient.requestData<QqSongBatchStationDto>({
-    method: "GET",
-    url: "/recommend/radar",
-    params: { page: 1 },
-    signal,
-    errorContext: { operation: "qq.recommend.radar" },
-  });
-}
-
 export function getQqPlaylistCategories(signal?: AbortSignal) {
   return qqClient.requestData<QqPlaylistCategoriesDto>({
     method: "GET",

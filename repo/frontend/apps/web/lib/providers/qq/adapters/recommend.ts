@@ -115,10 +115,7 @@ export function adaptQqFeaturedArtists(raw: readonly QqSingerListItemDto[]): Mus
 }
 
 /** A shelf of songs the app words itself, by its kind. */
-export function qqSongShelf(
-  kind: "guessYouLike" | "radar",
-  songs: readonly QqTrackDto[],
-): MusicFeedShelf[] {
+export function qqSongShelf(kind: "guessYouLike", songs: readonly QqTrackDto[]): MusicFeedShelf[] {
   return songs.length > 0
     ? [
         {

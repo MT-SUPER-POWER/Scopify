@@ -36,7 +36,7 @@ export type MusicFeedItem =
   { kind: "track"; track: MusicTrack } | { kind: "playlist"; playlist: MusicPlaylist };
 
 /** What a feed shelf is, for the ones the app names itself because the platform gives no title. */
-export type MusicFeedShelfKind = "guessYouLike" | "radar" | "platform";
+export type MusicFeedShelfKind = "guessYouLike" | "platform";
 
 /**
  * A shelf of the platform's home feed. A `title` the platform wrote is shown as it is; without

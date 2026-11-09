@@ -19,7 +19,6 @@ function useShelfTitle(shelf: MusicFeedShelf): string {
   const { t } = useTranslation();
   if (shelf.title) return shelf.title;
   if (shelf.kind === "guessYouLike") return t("home.feedKind.guessYouLike");
-  if (shelf.kind === "radar") return t("home.feedKind.radar");
   return t("home.feed");
 }
 
