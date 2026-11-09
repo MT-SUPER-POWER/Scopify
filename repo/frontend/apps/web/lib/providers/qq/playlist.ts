@@ -49,6 +49,13 @@ async function readLikedTracks(
 }
 
 export const qqPlaylistSource: MusicPlaylistSource = {
+  getPlaylistShareUrl(playlist) {
+    // A chart is not a playlist on the web; only real playlists have a page to share.
+    return qqToplistIdOf(playlist.id) === null
+      ? `https://y.qq.com/n/ryqq/playlist/${encodeURIComponent(playlist.id)}`
+      : null;
+  },
+
   async getPlaylist(playlist, options) {
     const chartId = qqToplistIdOf(playlist.id);
     if (chartId) return readQqToplist(chartId, options);

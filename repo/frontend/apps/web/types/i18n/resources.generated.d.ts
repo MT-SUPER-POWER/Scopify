@@ -2346,6 +2346,8 @@ export default interface Resources {
     "lib.fetchTracksFailed": "获取歌曲失败";
     "lib.noTracks": "此歌单中没有歌曲";
     "lib.playlistLinkCopied": "歌单链接已复制到剪贴板";
+    "lib.renamePlaceholder": "歌单名称";
+    "lib.renameTitle": "重命名歌单";
     "lib.unsubscribeConfirmContent": "确定取消收藏歌单“{{name}}”吗？原歌单不会被删除。";
     "lib.unsubscribeFailed": "取消收藏失败";
     "lib.untitledPlaylist": "未命名歌单";

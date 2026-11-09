@@ -15,6 +15,11 @@ export interface CreateLibraryPlaylistVariables extends MusicCreatePlaylistInput
   tracks?: readonly MusicResourceRef<"track">[];
 }
 
+export interface RenameLibraryPlaylistVariables {
+  playlist: MusicResourceRef<"playlist">;
+  name: string;
+}
+
 export interface SubscribeLibraryPlaylistVariables {
   playlist: MusicResourceRef<"playlist">;
   subscribed: boolean;
@@ -93,6 +98,19 @@ export function useLibraryPlaylistActions() {
     onSettled: (_data, _error, playlist) => refresh(playlist),
   });
 
+  const rename = useMutation({
+    retry: false,
+    meta: { operation: "library.playlist.rename" },
+    mutationFn: async ({ playlist, name }: RenameLibraryPlaylistVariables) => {
+      requireManage();
+      if (!provider.renamePlaylist)
+        throw new Error(`${provider.provider} cannot rename playlists.`);
+      await provider.renamePlaylist(playlist, name);
+    },
+    onError: (error) => reportActionFailure("library.playlist.rename", error),
+    onSettled: (_data, _error, { playlist }) => refresh(playlist),
+  });
+
   const subscribe = useMutation({
     retry: false,
     meta: { operation: "library.playlist.subscribe" },
@@ -107,5 +125,5 @@ export function useLibraryPlaylistActions() {
     onSettled: (_data, _error, { playlist }) => refresh(playlist),
   });
 
-  return { create, remove, subscribe };
+  return { create, remove, rename, subscribe };
 }

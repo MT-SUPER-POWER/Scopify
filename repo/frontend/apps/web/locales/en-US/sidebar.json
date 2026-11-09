@@ -41,6 +41,8 @@
   "lib.deleteConfirmTitle": "Confirm Playlist Deletion",
   "lib.deleteConfirmContent": "Are you sure you want to delete the playlist \"{{name}}\"? This action cannot be undone.",
   "lib.updateSuccess": "\"{{name}}\" has been updated",
+  "lib.renameTitle": "Rename playlist",
+  "lib.renamePlaceholder": "Playlist name",
   "lib.updateFailed": "Failed to update playlist",
   "lib.noTracks": "No tracks found in this playlist",
   "lib.fetchTracksFailed": "Failed to fetch tracks",

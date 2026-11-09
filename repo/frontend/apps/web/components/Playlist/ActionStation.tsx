@@ -95,7 +95,7 @@ export default function PlaylistActions(props: PlaylistActionsProps) {
     playlistInfo?.creatorID &&
     String(currentUserId) === String(playlistInfo.creatorID),
   );
-  // Collecting, editing and the share link are NetEase's; another platform's playlist has none.
+  // The quick collect button is NetEase's; the more menu adapts to the platform.
   const isNeteasePlaylist = playlistInfo?.ref?.provider === "netease";
   const canSubscribe =
     isNeteasePlaylist &&
@@ -349,7 +349,6 @@ export default function PlaylistActions(props: PlaylistActionsProps) {
             )}
           />
           {commentResourceKind === "playlist" &&
-            isNeteasePlaylist &&
             !isDaily &&
             playlistId &&
             playlistInfo &&

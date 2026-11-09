@@ -64,6 +64,8 @@ export interface MusicPlaylistSource {
     page: MusicPlaylistTrackPageRequest,
     options?: MusicPlaylistReadOptions,
   ): Promise<MusicPlaylistTrackPage>;
+  /** A public web address of the playlist for sharing, or null when it has none. */
+  getPlaylistShareUrl?(playlist: MusicResourceRef<"playlist">): string | null;
   /** Removes tracks from a playlist the signed-in account owns. */
   removePlaylistTracks?(
     playlist: MusicResourceRef<"playlist">,

@@ -41,6 +41,8 @@
   "lib.deleteConfirmTitle": "確認刪除歌單",
   "lib.deleteConfirmContent": "確定要刪除歌單「{{name}}」嗎？此操作無法復原。",
   "lib.updateSuccess": "「{{name}}」已更新",
+  "lib.renameTitle": "重新命名歌單",
+  "lib.renamePlaceholder": "歌單名稱",
   "lib.updateFailed": "更新歌單失敗",
   "lib.noTracks": "此歌單中沒有歌曲",
   "lib.fetchTracksFailed": "取得歌曲失敗",
