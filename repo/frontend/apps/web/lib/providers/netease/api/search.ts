@@ -7,7 +7,7 @@ import type {
   PlaylistSearchResponse,
   SongSearchResponse,
   VoiceSearchResponse,
-} from "@/types/search/api";
+} from "@/types/providers/netease/searchApi";
 import request from "@/lib/providers/netease/client";
 
 /**

@@ -26,7 +26,7 @@ import type {
   PlaylistSearchResponse,
   SongSearchResponse,
   VoiceSearchResponse,
-} from "@/types/search/api";
+} from "@/types/providers/netease/searchApi";
 import type { VoiceListSearchResponse } from "@/types/voice/api";
 
 function isEnabled(keyword: string, enabled: boolean) {

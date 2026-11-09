@@ -1,4 +1,8 @@
-import type { VoiceSearchItem, VoiceSearchProgram, VoiceSearchResponse } from "@/types/search/api";
+import type {
+  VoiceSearchItem,
+  VoiceSearchProgram,
+  VoiceSearchResponse,
+} from "@/types/providers/netease/searchApi";
 import { resolveCoverUrl } from "@/lib/music/resolveCoverUrl";
 import type { Artist, Song, Voice } from "@/types/search/model";
 

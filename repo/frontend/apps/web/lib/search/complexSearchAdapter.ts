@@ -9,7 +9,7 @@ import type {
   SearchResultArtist,
   SearchResultPlaylist,
   SongSearchData,
-} from "@/types/search/api";
+} from "@/types/providers/netease/searchApi";
 import type {
   Album,
   Artist,

@@ -27,7 +27,7 @@ import type {
   SearchResultPlaylist,
   SearchArtistSource,
   SongSearchResource,
-} from "@/types/search/api";
+} from "@/types/providers/netease/searchApi";
 import type {
   Album,
   Artist,
