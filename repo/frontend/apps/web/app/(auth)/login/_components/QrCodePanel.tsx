@@ -16,24 +16,24 @@ export function QrCodePanel({
 }: QrCodePanelProps) {
   const { t } = useTranslation();
   return (
-    <div className="flex flex-col items-center justify-center space-y-4 pt-2">
-      <div className="relative rounded-xl bg-qr-surface p-3 shadow-panel transition-transform hover:scale-105">
+    <div className="flex flex-col items-center">
+      <div className="relative rounded-2xl bg-qr-surface p-3 shadow-panel">
         {qrImg ? (
           <Image
             src={qrImg}
             alt={t("login.qr.alt")}
-            className="block size-40"
-            width={160}
-            height={160}
+            className="block size-48"
+            width={192}
+            height={192}
           />
         ) : (
-          <div className="flex size-40 animate-pulse items-center justify-center text-sm text-calendar-ink">
+          <div className="flex size-48 animate-pulse items-center justify-center text-sm text-calendar-ink">
             {t("login.qr.generating")}
           </div>
         )}
         {qrStatus === "expired" && (
           <div
-            className="absolute inset-0 flex cursor-pointer items-center justify-center rounded-xl bg-overlay backdrop-blur-[2px]"
+            className="absolute inset-0 flex cursor-pointer items-center justify-center rounded-2xl bg-overlay backdrop-blur-[2px]"
             onClick={onRefresh}
           >
             <Button
@@ -46,14 +46,14 @@ export function QrCodePanel({
           </div>
         )}
         {qrStatus === "scanned" && (
-          <div className="absolute inset-0 flex items-center justify-center rounded-xl bg-media-overlay backdrop-blur-[1px]">
+          <div className="absolute inset-0 flex items-center justify-center rounded-2xl bg-media-overlay backdrop-blur-[1px]">
             <p className="text-sm font-bold text-overlay-foreground">
               {t("login.qr.confirmOnPhone")}
             </p>
           </div>
         )}
       </div>
-      <div className="flex flex-col items-center gap-1">
+      <div className="mt-5 flex flex-col items-center gap-1.5">
         <p
           className={`text-sm font-bold ${qrStatus === "success" ? "text-brand" : qrStatus === "expired" ? "text-danger" : "text-content"}`}
         >

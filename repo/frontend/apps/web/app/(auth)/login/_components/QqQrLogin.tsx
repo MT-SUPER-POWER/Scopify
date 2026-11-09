@@ -8,6 +8,11 @@ import type { TranslationKey } from "@/lib/i18n";
 import type { QqQrLoginProps } from "@/types/auth/qqLogin";
 import type { QqLoginChannel } from "@/types/providers/qq/loginApi";
 import { QrCodePanel } from "./QrCodePanel";
+import {
+  LOGIN_BODY_CLASS_NAME,
+  LOGIN_TAB_TRIGGER_CLASS_NAME,
+  LOGIN_TABS_LIST_CLASS_NAME,
+} from "./loginStyles";
 
 const QQ_LOGIN_CHANNELS: readonly {
   channel: QqLoginChannel;
@@ -27,7 +32,7 @@ function isQqLoginChannel(value: string): value is QqLoginChannel {
   return QQ_LOGIN_CHANNELS.some((item) => item.channel === value);
 }
 
-/** QQ Music QR login; the user picks which app scans it. */
+/** QQ Music only signs in by QR; its method tabs choose which app scans it. */
 export function QqQrLogin({ onSuccess }: QqQrLoginProps) {
   const { t } = useTranslation();
   const [channel, setChannel] = useState<QqLoginChannel>("qq");
@@ -36,33 +41,34 @@ export function QqQrLogin({ onSuccess }: QqQrLoginProps) {
     QQ_LOGIN_CHANNELS.find((item) => item.channel === channel)?.hintKey ?? "login.qq.scanHint.qq";
 
   return (
-    <div className="flex flex-col gap-3">
-      <Tabs
-        value={channel}
-        onValueChange={(value) => {
-          if (isQqLoginChannel(value)) setChannel(value);
-        }}
-      >
-        <TabsList className="grid h-8 w-full grid-cols-3 rounded-lg bg-content/5 p-0.5">
-          {QQ_LOGIN_CHANNELS.map((item) => (
-            <TabsTrigger
-              key={item.channel}
-              value={item.channel}
-              disabled={qrStatus === "success"}
-              className="rounded-md text-xs data-[state=active]:bg-surface-elevated"
-            >
-              {t(item.labelKey)}
-            </TabsTrigger>
-          ))}
-        </TabsList>
-      </Tabs>
-      <QrCodePanel
-        qrImg={qrImg}
-        qrStatus={qrStatus}
-        qrStatusText={qrStatusText}
-        scanHint={t(hintKey)}
-        onRefresh={refresh}
-      />
-    </div>
+    <Tabs
+      value={channel}
+      onValueChange={(value) => {
+        if (isQqLoginChannel(value)) setChannel(value);
+      }}
+      className="w-full"
+    >
+      <TabsList className={`${LOGIN_TABS_LIST_CLASS_NAME} grid-cols-3`}>
+        {QQ_LOGIN_CHANNELS.map((item) => (
+          <TabsTrigger
+            key={item.channel}
+            value={item.channel}
+            disabled={qrStatus === "success"}
+            className={LOGIN_TAB_TRIGGER_CLASS_NAME}
+          >
+            {t(item.labelKey)}
+          </TabsTrigger>
+        ))}
+      </TabsList>
+      <div className={LOGIN_BODY_CLASS_NAME}>
+        <QrCodePanel
+          qrImg={qrImg}
+          qrStatus={qrStatus}
+          qrStatusText={qrStatusText}
+          scanHint={t(hintKey)}
+          onRefresh={refresh}
+        />
+      </div>
+    </Tabs>
   );
 }
