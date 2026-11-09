@@ -4,12 +4,12 @@ import { Plus } from "lucide-react";
 import { useState } from "react";
 import { CreatePlaylistFromTracksDialog } from "@/components/shared/CreatePlaylistFromTracksDialog";
 import { QueryBoundary } from "@/components/shared/QueryBoundary";
-import { useLoginStatus } from "@/hooks/auth/useLoginStatus";
 import { useRequireLoginAction } from "@/hooks/auth/useRequireLoginAction";
 import { useSmartRouter } from "@/hooks/core/useSmartRouter";
+import { useLibraryAccount } from "@/hooks/library/useLibraryAccount";
+import { useProviderCapability } from "@/hooks/provider/useActiveProvider";
 import { runtime } from "@/lib/runtime";
 import { openLoginWindowOrFallback } from "@/lib/runtime/login";
-import { useUserStore } from "@/store/module/user";
 import { cn } from "@/lib/utils";
 import { useTranslation } from "react-i18next";
 
@@ -18,13 +18,16 @@ import { SidebarSpecialPlaylists } from "./SidebarSpecialPlaylists";
 import { SidebarPlaylistLibraryContent } from "./SidebarPlaylistLibraryContent";
 import { SidebarPlaylistFailure } from "./SidebarPlaylistFailure";
 import { SidebarPlaylistSkeleton } from "./SidebarPlaylistSkeleton";
+import { SidebarProviderLibrary } from "./SidebarProviderLibrary";
 
 export function SidebarPlaylistLibrary({ isCollapsed }: SidebarPlaylistLibraryProps) {
   const { t } = useTranslation();
-  const isLoggedIn = useLoginStatus();
+  const { account, provider } = useLibraryAccount();
   const requireLoginAction = useRequireLoginAction();
   const smartRouter = useSmartRouter();
-  const userId = useUserStore((state) => state.user?.userId);
+  const canManage = useProviderCapability("playlist.manage");
+  // Ordering and dropping tracks on playlists are NetEase's; other platforms get a plain list.
+  const hasOrderedLibrary = useProviderCapability("playlist.reorder");
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const createPlaylist = () => void requireLoginAction(() => setIsCreateOpen(true));
   const openLogin = () => {
@@ -41,31 +44,43 @@ export function SidebarPlaylistLibrary({ isCollapsed }: SidebarPlaylistLibraryPr
             <p className="text-xs font-medium text-content-subtle">
               {t("sidebar.group.playlists")}
             </p>
-            <button
-              type="button"
-              title={t("sidebar.menu.createPlaylist")}
-              aria-label={t("sidebar.menu.createPlaylist")}
-              onClick={createPlaylist}
-              className="-my-0.5 flex size-5 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-content/10 hover:text-content"
-            >
-              <Plus className="size-3.5" strokeWidth={2.5} />
-            </button>
+            {canManage && (
+              <button
+                type="button"
+                title={t("sidebar.menu.createPlaylist")}
+                aria-label={t("sidebar.menu.createPlaylist")}
+                onClick={createPlaylist}
+                className="-my-0.5 flex size-5 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-content/10 hover:text-content"
+              >
+                <Plus className="size-3.5" strokeWidth={2.5} />
+              </button>
+            )}
           </div>
         </div>
       )}
       <div className={cn("w-full min-w-0 space-y-1 px-2 pt-1", isCollapsed ? "pb-2" : "pb-4")}>
         <QueryBoundary
-          resetKey={`sidebar-playlists:${isLoggedIn}:${userId ?? "anonymous"}`}
+          resetKey={`sidebar-playlists:${provider.provider}:${account?.accountId ?? "anonymous"}`}
           compact
           renderFailure={(props) => <SidebarPlaylistFailure {...props} isCollapsed={isCollapsed} />}
           renderWaiting={() => <SidebarPlaylistSkeleton isCollapsed={isCollapsed} />}
         >
-          {isLoggedIn && <SidebarSpecialPlaylists isCollapsed={isCollapsed} />}
-          <SidebarPlaylistLibraryContent
-            isCollapsed={isCollapsed}
-            onLogin={openLogin}
-            onCreate={createPlaylist}
-          />
+          {hasOrderedLibrary ? (
+            <>
+              {account && <SidebarSpecialPlaylists isCollapsed={isCollapsed} />}
+              <SidebarPlaylistLibraryContent
+                isCollapsed={isCollapsed}
+                onLogin={openLogin}
+                onCreate={createPlaylist}
+              />
+            </>
+          ) : (
+            <SidebarProviderLibrary
+              isCollapsed={isCollapsed}
+              onLogin={openLogin}
+              onCreate={createPlaylist}
+            />
+          )}
         </QueryBoundary>
       </div>
       <CreatePlaylistFromTracksDialog

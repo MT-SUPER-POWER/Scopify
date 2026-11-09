@@ -4,18 +4,20 @@ import { Bookmark } from "lucide-react";
 import { LibraryContentState } from "@/components/library/LibraryContentState";
 import { LibraryMediaGrid } from "@/components/library/LibraryMediaGrid";
 import { QuietState } from "@/components/shared/QuietState";
-import { useCollectionQuery } from "@/hooks/library/useLibraryQueries";
-import { useLoginStatus } from "@/hooks/auth/useLoginStatus";
+import { useActiveAccount } from "@/hooks/auth/useProviderAccounts";
+import { useLibraryAlbumsQuery } from "@/hooks/library/useLibraryAlbums";
+import { useFollowedArtistsQuery } from "@/hooks/library/useLibraryQueries";
 import { useTranslation } from "react-i18next";
 
 import { LibraryPageHeader } from "./_components/LibraryPageHeader";
 
 export default function CollectionPage() {
   const { t } = useTranslation();
-  const isLoggedIn = useLoginStatus();
-  const collectionQuery = useCollectionQuery();
-  const albums = collectionQuery.data?.albums ?? [];
-  const artists = collectionQuery.data?.artists ?? [];
+  const { isLoggedIn } = useActiveAccount();
+  const albumsQuery = useLibraryAlbumsQuery();
+  const artistsQuery = useFollowedArtistsQuery();
+  const albums = albumsQuery.data ?? [];
+  const artists = artistsQuery.data?.artists ?? [];
 
   return (
     <>
@@ -25,9 +27,9 @@ export default function CollectionPage() {
       ) : (
         <LibraryContentState
           hasItems={albums.length > 0 || artists.length > 0}
-          isError={collectionQuery.isError}
-          isLoading={collectionQuery.isLoading}
-          isRetrying={collectionQuery.isRefetching}
+          isError={albumsQuery.isError || artistsQuery.isError}
+          isLoading={albumsQuery.isLoading || artistsQuery.isLoading}
+          isRetrying={albumsQuery.isRefetching || artistsQuery.isRefetching}
           emptyState={
             <QuietState
               icon={Bookmark}
@@ -35,7 +37,10 @@ export default function CollectionPage() {
               description={t("library.empty.collection.description")}
             />
           }
-          onRetry={() => void collectionQuery.refetch()}
+          onRetry={() => {
+            if (albumsQuery.isError) void albumsQuery.refetch();
+            if (artistsQuery.isError) void artistsQuery.refetch();
+          }}
         >
           <div className="space-y-12">
             {albums.length > 0 && (

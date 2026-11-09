@@ -18,22 +18,15 @@ import {
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { createPlaylist, delPlaylist } from "@/lib/providers/netease/api/playlist";
-import { clearPageCache } from "@/lib/cache/pageCache";
-import { musicQueryKeys } from "@/lib/query/queryKeys";
-import { useLoginStatus } from "@/hooks/auth/useLoginStatus";
+import { useActiveAccount } from "@/hooks/auth/useProviderAccounts";
+import { useLibraryPlaylistActions } from "@/hooks/library/useLibraryPlaylistActions";
+import { useLibraryPlaylistsQuery } from "@/hooks/library/useLibraryPlaylists";
 import { useProviderCapability } from "@/hooks/provider/useActiveProvider";
-import { translate } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
-import { useUiStore, useUserStore } from "@/store";
+import { useUiStore } from "@/store";
 import { useTranslation } from "react-i18next";
-import { useI18nStore } from "@/store/module/i18n";
-import type {
-  SidebarConfirmDialogProps,
-  SidebarPendingPlaylist,
-  SidebarMenuProps,
-} from "@/types/sidebar/components";
-import { useQueryClient, type QueryClient } from "@tanstack/react-query";
+import type { MusicResourceRef } from "@scopify/music-domain/identity";
+import type { SidebarConfirmDialogProps, SidebarMenuProps } from "@/types/sidebar/components";
 import {
   AlertDialog,
   AlertDialogContent,
@@ -44,59 +37,6 @@ import {
   AlertDialogTitle,
 } from "../ui/alert-dialog";
 import { getSizedImageUrl } from "@/lib/music/imageUrl";
-
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ UTILS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-function handleCreatePlaylist(
-  playlistName: string,
-  privacy: "0" | "10",
-  queryClient?: QueryClient,
-): void {
-  const locale = useI18nStore.getState().locale;
-  createPlaylist(playlistName, privacy).then((res) => {
-    if (res.data.code === 200) {
-      // 成功创建后更新用户歌单列表
-      const newPlaylist = res.data.playlist;
-      const userStore = useUserStore.getState();
-      userStore.setPlayList([...userStore.playlist, newPlaylist]);
-      void clearPageCache();
-      if (queryClient) {
-        void queryClient.invalidateQueries({ queryKey: ["library", "playlists"] });
-      }
-      toast.success(translate(locale, "sidebar.menu.createSuccess", { name: playlistName }));
-    } else {
-      console.error("创建歌单失败:", res.data.message);
-      toast.error(translate(locale, "sidebar.menu.createFailed"));
-    }
-  });
-}
-
-function handleDeletePlaylist(
-  playlistId: string | number,
-  playlistName: string,
-  queryClient?: QueryClient,
-): void {
-  const locale = useI18nStore.getState().locale;
-  delPlaylist(playlistId).then((res) => {
-    if (res.data.code === 200) {
-      // 成功删除后更新用户歌单列表
-      const userStore = useUserStore.getState();
-      const updatedPlaylists = userStore.playlist.filter((p) => p.id !== playlistId);
-      userStore.setPlayList(updatedPlaylists);
-      void clearPageCache();
-      if (queryClient) {
-        void queryClient.invalidateQueries({ queryKey: ["library", "playlists"] });
-        void queryClient.invalidateQueries({
-          queryKey: musicQueryKeys.playlist.contentOf("netease", String(playlistId)),
-        });
-      }
-      toast.success(translate(locale, "sidebar.menu.deleteSuccess", { name: playlistName }));
-    } else {
-      console.error("删除歌单失败:", res.data.message);
-      toast.error(translate(locale, "sidebar.menu.deleteFailed"));
-    }
-  });
-}
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ COMPOENNT ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -154,23 +94,40 @@ function ConfirmDialogShandCN({
 
 function SidebarMenu({ isCollapsed = false }: SidebarMenuProps) {
   const { t } = useTranslation();
-  const queryClient = useQueryClient();
   const canManagePlaylists = useProviderCapability("playlist.manage");
-  const showPlaylistActions = useLoginStatus() && canManagePlaylists;
-  const userPlaylists = useUserStore((s) => s.playlist);
+  const showPlaylistActions = useActiveAccount().isLoggedIn && canManagePlaylists;
+  const { create, remove } = useLibraryPlaylistActions();
+  // Only playlists the account made can be deleted here; saved ones are removed from the list.
+  const ownPlaylists = (useLibraryPlaylistsQuery().data ?? []).filter(
+    (item) => item.relation === "created" && !item.isLikedList,
+  );
   const [confirmOpen, setConfirmOpen] = React.useState(false);
-  const [pendingDelete, setPendingDelete] = React.useState<SidebarPendingPlaylist | null>(null);
+  const [pendingDelete, setPendingDelete] = React.useState<{
+    ref: MusicResourceRef<"playlist">;
+    name: string;
+  } | null>(null);
 
-  const handleDeleteClick = (id: number | string, name: string) => {
-    setPendingDelete({ id, name });
-    setConfirmOpen(true);
+  const handleCreate = async () => {
+    const name = t("sidebar.lib.untitledPlaylist");
+    try {
+      await create.mutateAsync({ name });
+      toast.success(t("sidebar.menu.createSuccess", { name }));
+    } catch {
+      toast.error(t("sidebar.menu.createFailed"));
+    }
   };
 
   const handleConfirmDelete = async () => {
     if (!pendingDelete) return;
-    handleDeletePlaylist(pendingDelete.id, pendingDelete.name, queryClient);
+    const { ref, name } = pendingDelete;
     setConfirmOpen(false);
     setPendingDelete(null);
+    try {
+      await remove.mutateAsync(ref);
+      toast.success(t("sidebar.menu.deleteSuccess", { name }));
+    } catch {
+      toast.error(t("sidebar.menu.deleteFailed"));
+    }
   };
 
   return (
@@ -229,11 +186,7 @@ function SidebarMenu({ isCollapsed = false }: SidebarMenuProps) {
               </DropdownMenuLabel>
               <DropdownMenuSeparator />
 
-              <DropdownMenuItem
-                onClick={() =>
-                  handleCreatePlaylist(t("sidebar.lib.untitledPlaylist"), "0", queryClient)
-                }
-              >
+              <DropdownMenuItem disabled={create.isPending} onClick={() => void handleCreate()}>
                 <Plus className="mr-2 size-5" />
                 <span>{t("sidebar.menu.createPlaylist")}</span>
               </DropdownMenuItem>
@@ -244,22 +197,25 @@ function SidebarMenu({ isCollapsed = false }: SidebarMenuProps) {
                   <span className="text-danger">{t("sidebar.menu.deletePlaylist")}</span>
                 </DropdownMenuSubTrigger>
                 <DropdownMenuSubContent>
-                  {userPlaylists.map((playlist) => (
+                  {ownPlaylists.map(({ playlist }) => (
                     <DropdownMenuItem
-                      key={playlist.id}
+                      key={playlist.ref.id}
                       onSelect={(e) => {
                         e.preventDefault(); // 防止对话框弹出时 Dropdown 抢夺焦点导致关闭
-                        handleDeleteClick(playlist.id, playlist.name);
+                        setPendingDelete({ ref: playlist.ref, name: playlist.title });
+                        setConfirmOpen(true);
                       }}
                     >
-                      <Image
-                        width={24}
-                        height={24}
-                        src={getSizedImageUrl(playlist.coverImgUrl, 80)}
-                        alt={t("playlist.form.coverAlt")}
-                        className="mr-2 size-6 rounded-sm"
-                      />
-                      <span>{playlist.name}</span>
+                      {playlist.coverUrl && (
+                        <Image
+                          width={24}
+                          height={24}
+                          src={getSizedImageUrl(playlist.coverUrl, 80)}
+                          alt={t("playlist.form.coverAlt")}
+                          className="mr-2 size-6 rounded-sm"
+                        />
+                      )}
+                      <span>{playlist.title}</span>
                     </DropdownMenuItem>
                   ))}
                 </DropdownMenuSubContent>
