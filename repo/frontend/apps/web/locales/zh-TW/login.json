@@ -5,7 +5,6 @@
   "page.sendCaptchaFailed": "發送驗證碼失敗",
   "mode.qr": "掃碼",
   "mode.password": "密碼",
-  "mode.sms": "簡訊",
   "form.phoneLabel": "手機號碼",
   "form.phonePlaceholder": "請輸入手機號碼",
   "form.passwordLabel": "密碼",

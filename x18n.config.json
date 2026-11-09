@@ -58,7 +58,7 @@
       {
         "extensions": ["ts", "tsx"],
         "patterns": [
-          "(?<!operation: )(?<!Symbol.for\\()[\"']((?:album|appClose|appearance|artist|audioEqualizer|audioSettings|comments|common|contextMenu|desktopLyrics|desktopPlaybackController|devices|dynamicIsland|errorPage|folia|home|layout|library|login|lyrics|mv|network|notifications|nowPlaying|personalFm|playbar|playerBar|playlist|privateMessages|profile|queue|search|settings|shortcuts|sidebar|social|song|songResources|subtitleControl|subtitlePalette|subtitlePreview|subtitleSystem|taskbarLyric|themeEditor|trackPreview|tray|ui|updates|vipSign)\\.[a-zA-Z][a-zA-Z0-9.]+)[\"']"
+          "(?<!operation: )(?<!Symbol.for\\()(?<!reportActionFailure\\()[\"'](?!(?:playlist\\.(?:read|manage|reorder)|library\\.playlists|artist\\.(?:read|follow)|album\\.(?:read|subscribe)|home\\.banners|mv\\.interact|comments\\.(?:read|write|replies)|search\\.(?:overview|lyrics))[\"'])((?:album|appClose|appearance|artist|audioEqualizer|audioSettings|comments|common|contextMenu|desktopLyrics|desktopPlaybackController|devices|dynamicIsland|errorPage|folia|home|layout|library|login|lyrics|mv|network|notifications|nowPlaying|personalFm|playbar|playerBar|playlist|privateMessages|profile|queue|search|settings|shortcuts|sidebar|social|song|songResources|subtitleControl|subtitlePalette|subtitlePreview|subtitleSystem|taskbarLyric|themeEditor|trackPreview|tray|ui|updates|vipSign)\\.[a-zA-Z][a-zA-Z0-9.]+)[\"']"
         ]
       }
     ],

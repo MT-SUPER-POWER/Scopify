@@ -5,7 +5,6 @@
   "page.sendCaptchaFailed": "发送验证码失败",
   "mode.qr": "扫码",
   "mode.password": "密码",
-  "mode.sms": "短信",
   "form.phoneLabel": "手机号码",
   "form.phonePlaceholder": "请输入手机号",
   "form.passwordLabel": "密码",

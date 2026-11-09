@@ -5,7 +5,6 @@
   "page.sendCaptchaFailed": "Failed to send verification code",
   "mode.qr": "QR",
   "mode.password": "Password",
-  "mode.sms": "SMS",
   "form.phoneLabel": "Phone Number",
   "form.phonePlaceholder": "Enter your phone number",
   "form.passwordLabel": "Password",

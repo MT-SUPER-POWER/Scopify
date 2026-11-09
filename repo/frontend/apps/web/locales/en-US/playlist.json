@@ -48,7 +48,6 @@
   "lattice.back": "Back to list",
   "lattice.locate": "Locate current track",
   "lattice.select": "Expand {{name}}",
-  "lattice.options": "Browse options",
   "lattice.follow": "Follow current track",
   "lattice.lightsOff": "Dim other covers",
   "lattice.hint": "Drag or scroll to explore · Shift scrolls sideways · Ctrl + wheel or + / - zooms · Arrows select · Enter expands / plays · Esc collapses, then returns",

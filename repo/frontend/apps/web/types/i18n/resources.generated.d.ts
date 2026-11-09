@@ -1245,7 +1245,6 @@ export default interface Resources {
   layout: {
     backendUnavailableDescription: "音乐服务暂时不可用，你仍可进入设置调整或重新启动本地后端。";
     backendUnavailableTitle: "本地后端暂不可用";
-    openBackendSettings: "打开后端设置";
     "unsupported.description": "{{platform}} 暂不支持这个页面。在账号菜单中切换到其他平台后即可使用。";
     "unsupported.openSettings": "前往设置";
     "unsupported.title": "当前平台不支持";
@@ -1380,7 +1379,6 @@ export default interface Resources {
     "form.verifying": "验证中...";
     "mode.password": "密码";
     "mode.qr": "扫码";
-    "mode.sms": "短信";
     "page.backHomeTitle": "返回主页";
     "page.cancelVerification": "取消验证";
     "page.captchaExpired": "验证码已过期，请重新获取";
@@ -1784,7 +1782,6 @@ export default interface Resources {
     "lattice.hint": "拖动或滚轮浏览 · Shift 横向滚动 · Ctrl + 滚轮或 + / - 缩放 · 方向键选图 · Enter 展开 / 播放 · Esc 收起，再按返回";
     "lattice.lightsOff": "暗场";
     "lattice.locate": "定位当前歌曲";
-    "lattice.options": "浏览选项";
     "lattice.select": "展开 {{name}}";
     "meta.dailyTag": "每日";
     "meta.dailyTitle": "每日推荐";

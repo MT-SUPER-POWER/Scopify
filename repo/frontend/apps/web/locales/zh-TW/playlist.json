@@ -48,7 +48,6 @@
   "lattice.back": "返回列表",
   "lattice.locate": "定位目前歌曲",
   "lattice.select": "展開 {{name}}",
-  "lattice.options": "瀏覽選項",
   "lattice.follow": "自動跟隨目前歌曲",
   "lattice.lightsOff": "暗場",
   "lattice.hint": "拖動或滾輪瀏覽 · Shift 橫向捲動 · Ctrl + 滾輪或 + / - 縮放 · 方向鍵選圖 · Enter 展開 / 播放 · Esc 收起，再按返回",
