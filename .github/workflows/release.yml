@@ -41,8 +41,8 @@ jobs:
           ref: ${{ inputs.revision }}
           fetch-depth: 0
 
-      - name: Checkout backend API submodule only
-        run: git submodule update --init --depth 1 repo/backend/api-enhanced
+      - name: Checkout backend API submodules only
+        run: git submodule update --init --depth 1 repo/backend/api-enhanced repo/backend/qq-music-api
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -145,8 +145,8 @@ jobs:
           submodules: false
           ref: ${{ inputs.revision }}
 
-      - name: Checkout backend API submodule only
-        run: git submodule update --init --depth 1 repo/backend/api-enhanced
+      - name: Checkout backend API submodules only
+        run: git submodule update --init --depth 1 repo/backend/api-enhanced repo/backend/qq-music-api
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -305,8 +305,8 @@ jobs:
           fetch-depth: 0
           submodules: false
 
-      - name: Checkout backend API submodule only
-        run: git submodule update --init --depth 1 repo/backend/api-enhanced
+      - name: Checkout backend API submodules only
+        run: git submodule update --init --depth 1 repo/backend/api-enhanced repo/backend/qq-music-api
 
       - name: Skip tags that are not on master
         id: on-master
