@@ -96,7 +96,10 @@ export function CommandWorkspaceQueue({ onClose }: CommandWorkspaceQueueProps) {
   };
 
   return (
-    <ScrollArea className="h-[min(58vh,36rem)]">
+    <ScrollArea
+      className="h-[min(58vh,36rem)]"
+      viewportClassName="[&>div]:!block [&>div]:!min-w-0 [&>div]:!w-full"
+    >
       <div
         onDragOver={handleContainerDragOver}
         onDrop={handleContainerDrop}

@@ -24,7 +24,10 @@ export function CommandWorkspaceRootList({
   }, [selectedId]);
 
   return (
-    <ScrollArea className="h-[min(52vh,32rem)]">
+    <ScrollArea
+      className="h-[min(52vh,32rem)]"
+      viewportClassName="[&>div]:!block [&>div]:!min-w-0 [&>div]:!w-full"
+    >
       <div ref={listRef} className="space-y-0.5 px-2.5 py-2">
         {items.map((item, index) => (
           <button
@@ -49,10 +52,10 @@ export function CommandWorkspaceRootList({
               <span className="block truncate text-xs text-content-muted">{item.summary}</span>
             </span>
             {item.type === "workspace" || item.foliaEntry?.action.kind === "group" ? (
-              <ChevronRight className="size-4 text-content-muted" />
+              <ChevronRight className="size-4 shrink-0 text-content-muted" />
             ) : null}
             {item.binding ? (
-              <kbd className="rounded-md border border-border bg-content/8 px-2 py-1 font-mono text-xs leading-none text-content shadow-sm">
+              <kbd className="shrink-0 rounded-md border border-border bg-content/8 px-2 py-1 font-mono text-xs leading-none text-content shadow-sm">
                 {getShortcutBindingLabel(item.binding)}
               </kbd>
             ) : null}

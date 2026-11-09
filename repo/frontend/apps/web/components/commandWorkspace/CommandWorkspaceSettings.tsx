@@ -136,7 +136,10 @@ export function CommandWorkspaceSettings({
           className="min-w-0 flex-1 border-none bg-transparent text-sm font-medium text-content outline-none placeholder:text-content/40"
         />
       </div>
-      <ScrollArea className="h-[min(52vh,32rem)]">
+      <ScrollArea
+        className="h-[min(52vh,32rem)]"
+        viewportClassName="[&>div]:!block [&>div]:!min-w-0 [&>div]:!w-full"
+      >
         <div ref={listRef} className="space-y-0.5 px-2.5 py-2">
           {filteredItems.map((item, index) => {
             const Icon = item.icon;
@@ -171,7 +174,7 @@ export function CommandWorkspaceSettings({
                 </span>
                 {item.active ? <Check aria-label="当前选择" className="size-4 shrink-0" /> : null}
                 {bindingLabel ? (
-                  <kbd className="rounded-md border border-border bg-content/8 px-2 py-1 font-mono text-xs leading-none text-content shadow-sm">
+                  <kbd className="shrink-0 rounded-md border border-border bg-content/8 px-2 py-1 font-mono text-xs leading-none text-content shadow-sm">
                     {bindingLabel}
                   </kbd>
                 ) : null}
