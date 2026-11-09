@@ -19,6 +19,7 @@ function PlaylistDetail() {
   const playlist = usePlaylist();
   const router = useSmartRouter();
   const canReadComments = useProviderCapability("comments.read");
+  const canBrowseDailyStyles = useProviderCapability("recommend.daily.styles");
   const categoryLabel =
     locale === "en-US" ? "Style recommendations" : locale === "zh-TW" ? "風格推薦" : "风格推荐";
   const categoryUrl = playlist.dailyDate
@@ -32,7 +33,7 @@ function PlaylistDetail() {
     <PlaylistContent
       {...playlist}
       trailingActionSlot={
-        playlist.isDailyRecommend ? (
+        playlist.isDailyRecommend && canBrowseDailyStyles ? (
           <DailyRecommendationSwitch
             label={categoryLabel}
             onClick={() => router.push(categoryUrl)}
@@ -50,6 +51,14 @@ export default function PlaylistPage() {
   const isDailyCategory = params.get("dailyCategory") === "true";
   const page = isDailyCategory ? <DailyCategoryPage /> : <PlaylistDetail />;
   if (!isDailyCategory && params.get("isDailyRecommend") !== "true") return page;
+  // Style recommendations are a NetEase feature of the daily list.
+  if (isDailyCategory) {
+    return (
+      <CapabilityGate requires="recommend.daily.styles" fallback={<UnsupportedPlatformState />}>
+        {page}
+      </CapabilityGate>
+    );
+  }
   // Daily recommendations reuse this page, but they are a recommendation list, not a playlist.
   return (
     <CapabilityGate requires="recommend.daily" fallback={<UnsupportedPlatformState />}>

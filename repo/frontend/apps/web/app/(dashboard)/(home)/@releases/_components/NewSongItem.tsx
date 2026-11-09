@@ -6,15 +6,17 @@ import { memo, useCallback } from "react";
 
 import { SongContextMenu } from "@/components/shared/SongContextMenu";
 import { SongVipBadge } from "@/components/shared/SongVipBadge";
+import { getSizedImageUrl } from "@/lib/music/imageUrl";
+import { toNeteaseSongDetail } from "@/lib/providers/netease/adapters/track";
 import { cn, formatDuration } from "@/lib/utils";
+import { musicResourceKey } from "@scopify/music-domain/identity";
 import { usePlayerStore } from "@/store";
-import type { SongDetail } from "@/types/song/api";
-import { getNeteaseTrackId } from "@/lib/providers/netease/adapters/track";
+import type { PlayerTrack } from "@/types/player/model";
 
 interface NewSongItemProps {
   index: number;
-  song: SongDetail;
-  onPlay: (song: SongDetail, index: number) => void;
+  song: PlayerTrack;
+  onPlay: (song: PlayerTrack, index: number) => void;
 }
 
 export const NewSongItem = memo(function NewSongItem({ index, onPlay, song }: NewSongItemProps) {
@@ -22,7 +24,8 @@ export const NewSongItem = memo(function NewSongItem({ index, onPlay, song }: Ne
   const isPlaying = usePlayerStore((s) => s.isPlaying);
   const setIsPlaying = usePlayerStore((s) => s.setIsPlaying);
 
-  const isActive = getNeteaseTrackId(currentTrack) === song.id;
+  const isActive =
+    currentTrack !== null && musicResourceKey(currentTrack.ref) === musicResourceKey(song.ref);
 
   const handleClick = useCallback(() => {
     if (isActive) {
@@ -32,9 +35,9 @@ export const NewSongItem = memo(function NewSongItem({ index, onPlay, song }: Ne
     onPlay(song, index);
   }, [isActive, isPlaying, setIsPlaying, onPlay, song, index]);
 
-  const artistsText = song.ar?.map((a) => a.name).join(" / ") || "";
-  const subtitle = song.al?.name ? `${artistsText} · ${song.al.name}` : artistsText;
-  const coverUrl = song.al?.picUrl ? `${song.al.picUrl}?param=120y120` : "";
+  const artistsText = song.artists.map((artist) => artist.name).join(" / ");
+  const subtitle = song.album?.title ? `${artistsText} · ${song.album.title}` : artistsText;
+  const coverUrl = getSizedImageUrl(song.album?.coverUrl, 120);
 
   const itemContent = (
     <div
@@ -51,7 +54,7 @@ export const NewSongItem = memo(function NewSongItem({ index, onPlay, song }: Ne
           {coverUrl ? (
             <Image
               src={coverUrl}
-              alt={song.name}
+              alt={song.title}
               width={48}
               height={48}
               className="size-full object-cover"
@@ -81,11 +84,11 @@ export const NewSongItem = memo(function NewSongItem({ index, onPlay, song }: Ne
                 "truncate text-sm font-medium",
                 isActive ? "font-semibold text-brand" : "text-content",
               )}
-              title={song.name}
+              title={song.title}
             >
-              {song.name}
+              {song.title}
             </span>
-            <SongVipBadge fee={song.fee} />
+            <SongVipBadge fee={song.netease?.fee} />
           </div>
           <p className="mt-0.5 truncate text-xs text-content-muted" title={subtitle}>
             {subtitle}
@@ -95,13 +98,22 @@ export const NewSongItem = memo(function NewSongItem({ index, onPlay, song }: Ne
 
       {/* Duration */}
       <div className="ml-3 shrink-0 pr-1 text-xs text-content-muted tabular-nums">
-        {formatDuration(song.dt)}
+        {formatDuration(song.durationMs)}
       </div>
     </div>
   );
 
+  // The context menu's actions are NetEase's; tracks of other platforms have none yet.
+  const neteaseSong = toNeteaseSongDetail(song);
+  if (!neteaseSong) return itemContent;
+
   return (
-    <SongContextMenu isActive={isActive} isPlaying={isPlaying} onPlay={handleClick} song={song}>
+    <SongContextMenu
+      isActive={isActive}
+      isPlaying={isPlaying}
+      onPlay={handleClick}
+      song={neteaseSong}
+    >
       {itemContent}
     </SongContextMenu>
   );

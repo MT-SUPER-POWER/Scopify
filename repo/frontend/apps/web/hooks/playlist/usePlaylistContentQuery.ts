@@ -6,34 +6,25 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useCallback, useMemo } from "react";
 
 import { useActiveProvider } from "@/hooks/provider/useActiveProvider";
-import { adaptNeteaseTrack } from "@/lib/providers/netease/adapters/track";
-import { getHistoricalDailyRecommendationDetail } from "@/lib/providers/netease/api/playlist";
-import { getRecommendedSongs } from "@/lib/providers/netease/api/track";
 import { musicQueryKeys } from "@/lib/query/queryKeys";
 import type { PlayerTrack } from "@/types/player/model";
-import type { HistoricalDailyRecommendationDetailResponse } from "@/types/playlist/api";
 import type { PlaylistContent, PlaylistContentRequest } from "@/types/playlist/model";
-import { pruneSongDetail, type RawSongDetail } from "@/types/song/api";
 
 /** Tracks asked for in the first request; a longer playlist reads the rest in one more. */
 const FIRST_PAGE_SIZE = 1000;
 
-function getHistoricalSongs(
-  response: HistoricalDailyRecommendationDetailResponse,
-): RawSongDetail[] {
-  const songs = response.data?.dailySongs ?? response.data?.songs;
-  return Array.isArray(songs) ? songs : [];
-}
-
-/** Daily recommendations are NetEase's own list, not a playlist on any platform. */
-async function fetchDailyRecommendations(dailyDate: null | string): Promise<PlaylistContent> {
-  const dailySongs: RawSongDetail[] = dailyDate
-    ? getHistoricalSongs((await getHistoricalDailyRecommendationDetail(dailyDate)).data)
-    : ((await getRecommendedSongs()).data?.data?.dailySongs ?? []);
-  return {
-    detail: null,
-    tracks: dailySongs.map((song) => adaptNeteaseTrack(pruneSongDetail(song))),
-  };
+/** Daily recommendations are the account's own list, not a playlist on any platform. */
+async function fetchDailyRecommendations(
+  provider: MusicProviderClient,
+  dailyDate: null | string,
+  signal: AbortSignal,
+): Promise<PlaylistContent> {
+  if (!provider.getDailyTracks) throw new Error("Daily recommendations are unsupported.");
+  const tracks = await provider.getDailyTracks({
+    ...(dailyDate ? { date: dailyDate } : {}),
+    signal,
+  });
+  return { detail: null, tracks };
 }
 
 async function fetchPlaylist(
@@ -71,7 +62,7 @@ export function usePlaylistContentQuery(request: PlaylistContentRequest) {
   const queryKey = useMemo(
     () =>
       isDailyRecommendation
-        ? musicQueryKeys.playlist.daily(dailyCacheDate)
+        ? musicQueryKeys.playlist.daily(dailyCacheDate, provider.provider)
         : musicQueryKeys.playlist.content(provider.provider, playlistId ?? "", isRecommend),
     [dailyCacheDate, isDailyRecommendation, isRecommend, playlistId, provider.provider],
   );
@@ -82,7 +73,7 @@ export function usePlaylistContentQuery(request: PlaylistContentRequest) {
       scope: "account",
     },
     queryFn: ({ signal }) => {
-      if (isDailyRecommendation) return fetchDailyRecommendations(dailyDate);
+      if (isDailyRecommendation) return fetchDailyRecommendations(provider, dailyDate, signal);
       if (!playlistId) throw new Error("Playlist ID is required.");
       return fetchPlaylist(provider, playlistId, isRecommend, signal);
     },

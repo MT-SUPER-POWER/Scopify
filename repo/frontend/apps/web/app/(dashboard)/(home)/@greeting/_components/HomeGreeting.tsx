@@ -9,11 +9,11 @@ import { HomeDailyRecommendation } from "./HomeDailyRecommendation";
 import { useHome } from "../../_components/HomeProvider";
 import { CollapsibleSection } from "../../_components/CollapsibleSection";
 import { SectionPagination } from "../../_components/SectionPagination";
-import { useSuspensePersonalizedPlaylistsQuery } from "@/hooks/home/useHomeQueries";
+import { useSuspenseFeaturedPlaylistsQuery } from "@/hooks/home/useHomeQueries";
+import { useActiveAccount } from "@/hooks/auth/useProviderAccounts";
+import { useProviderCapability } from "@/hooks/provider/useActiveProvider";
 import { useSmartRouter } from "@/hooks/core/useSmartRouter";
 import { useTranslation } from "react-i18next";
-
-import { pruneRecommendPlaylist } from "@/types/playlist/api";
 
 const PAGE_SIZE = 9;
 
@@ -21,8 +21,12 @@ export function HomeGreeting() {
   const { t } = useTranslation();
   const { actions, dateInfo, greeting } = useHome();
   const smartRouter = useSmartRouter();
-  const query = useSuspensePersonalizedPlaylistsQuery();
-  const playlists = query.data.result?.map(pruneRecommendPlaylist) ?? [];
+  const query = useSuspenseFeaturedPlaylistsQuery();
+  const playlists = query.data;
+  const canShowDaily = useProviderCapability("recommend.daily");
+  const isLoggedIn = useActiveAccount().isLoggedIn;
+  // The daily recommendation is the account's own list, so it needs a signed-in account.
+  const showDaily = canShowDaily && isLoggedIn;
   const [isOpen, setIsOpen] = useState(false);
   const [page, setPage] = useState(0);
   const [direction, setDirection] = useState<1 | -1>(1);
@@ -89,32 +93,42 @@ export function HomeGreeting() {
               transition={{ duration: 0.22, ease: "easeOut" }}
               className="grid w-full min-w-0 grid-cols-[repeat(auto-fill,minmax(min(100%,260px),1fr))] gap-3"
             >
-              {(page === 0 || !isOpen) && <HomeDailyRecommendation dateInfo={dateInfo} />}
+              {showDaily && (page === 0 || !isOpen) && (
+                <HomeDailyRecommendation dateInfo={dateInfo} />
+              )}
 
               {displayPlaylists.map((item) => (
                 <div
-                  key={item.id}
+                  key={item.ref.id}
                   data-section-item
-                  onClick={() => smartRouter.push(`/playlist/?id=${item.id}&isRecommend=true`)}
+                  onClick={() =>
+                    smartRouter.push(
+                      `/playlist/?id=${encodeURIComponent(item.ref.id)}&isRecommend=true`,
+                    )
+                  }
                   className="group relative flex h-16 cursor-pointer items-center overflow-hidden rounded-md bg-content/10 pr-4 transition-colors hover:bg-content/20"
                 >
-                  <Image
-                    width={64}
-                    height={64}
-                    src={item.picUrl}
-                    alt={t("playlist.form.coverAlt")}
-                    className="z-10 size-16 object-cover shadow-calendar"
-                  />
+                  {item.coverUrl ? (
+                    <Image
+                      width={64}
+                      height={64}
+                      src={item.coverUrl}
+                      alt={t("playlist.form.coverAlt")}
+                      className="z-10 size-16 object-cover shadow-calendar"
+                    />
+                  ) : (
+                    <div className="z-10 size-16 shrink-0 bg-surface-sunken" />
+                  )}
                   <span className="ml-4 truncate text-sm font-medium text-content">
-                    {item.name}
+                    {item.title}
                   </span>
                   <button
                     type="button"
-                    onClick={(event) => actions.handlePlayPlaylist(item.id, event)}
-                    disabled={actions.loadingPlayId === `playlist-${item.id}`}
+                    onClick={(event) => actions.handlePlayPlaylist(item.ref.id, event)}
+                    disabled={actions.loadingPlayId === `playlist-${item.ref.id}`}
                     className="absolute right-4 z-20 flex size-10 translate-y-2 items-center justify-center rounded-full bg-brand text-brand-foreground opacity-0 shadow-brand transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100 hover:scale-105 hover:bg-brand-hover"
                   >
-                    {actions.loadingPlayId === `playlist-${item.id}` ? (
+                    {actions.loadingPlayId === `playlist-${item.ref.id}` ? (
                       <Loader2 className="size-4 animate-spin" />
                     ) : (
                       <Play className="ml-1 size-5 fill-current" />

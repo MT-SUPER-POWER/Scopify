@@ -6,7 +6,7 @@ import type { ProviderRouteRequirement } from "@/types/music/providerComponents"
  * prefixes are listed before the shorter ones they extend.
  */
 export const PROVIDER_ROUTE_REQUIREMENTS: readonly ProviderRouteRequirement[] = [
-  { prefix: "/", requires: "recommend.daily", exact: true },
+  { prefix: "/", requires: "home", exact: true },
   { prefix: "/recent/report", requires: "history" },
   { prefix: "/recent", requires: "history" },
   { prefix: "/liked", requires: "library.playlists" },

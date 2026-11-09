@@ -9,7 +9,7 @@ import { HomeSectionPending } from "../../_components/HomeSectionPending";
 import { SectionPagination } from "../../_components/SectionPagination";
 import { GridCard } from "@/components/home/GridCard";
 import { useRecentPlaylistsQuery } from "@/hooks/home/useHomeQueries";
-import { useLoginStatus } from "@/hooks/auth/useLoginStatus";
+import { useActiveAccount } from "@/hooks/auth/useProviderAccounts";
 import { useSmartRouter } from "@/hooks/core/useSmartRouter";
 import { useTranslation } from "react-i18next";
 
@@ -21,7 +21,7 @@ export function RecentlyPlayedPlaylists() {
   const { t } = useTranslation();
   const { actions } = useHome();
   const smartRouter = useSmartRouter();
-  const isLogin = useLoginStatus();
+  const isLogin = useActiveAccount().isLoggedIn;
   const query = useRecentPlaylistsQuery(isLogin);
   const playlists = (query.data?.data?.list ?? [])
     .map((entry) => entry.data)

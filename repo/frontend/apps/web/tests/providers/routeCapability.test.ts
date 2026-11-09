@@ -3,7 +3,7 @@ import { expect, test } from "bun:test";
 import { hrefCapability, routeCapability } from "@/lib/providers/routeCapability";
 
 test("maps routes and their sub-paths to the capability they need", () => {
-  expect(routeCapability("/")).toBe("recommend.daily");
+  expect(routeCapability("/")).toBe("home");
   expect(routeCapability("/cloud")).toBe("cloud");
   expect(routeCapability("/cloud/")).toBe("cloud");
   expect(routeCapability("/recent/report")).toBe("history");
@@ -20,5 +20,5 @@ test("leaves routes every platform can show unrestricted", () => {
 test("ignores the query and hash of a link", () => {
   expect(hrefCapability("/playlist?id=1")).toBe("playlist.read");
   expect(hrefCapability("/setting?tab=network")).toBeNull();
-  expect(hrefCapability("/#top")).toBe("recommend.daily");
+  expect(hrefCapability("/#top")).toBe("home");
 });

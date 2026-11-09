@@ -13,7 +13,7 @@ const sections = [
   {
     title: "social.browse",
     items: [
-      { href: "/", icon: Home, labelKey: "social.home", requires: "recommend.daily" },
+      { href: "/", icon: Home, labelKey: "social.home", requires: "home" },
       { href: "/social", icon: Users, labelKey: "social.title", requires: "social" },
     ],
   },

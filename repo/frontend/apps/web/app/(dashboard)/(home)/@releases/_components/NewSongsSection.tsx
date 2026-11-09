@@ -8,20 +8,17 @@ import { NewSongItem } from "./NewSongItem";
 import { useHome } from "../../_components/HomeProvider";
 import { CollapsibleSection } from "../../_components/CollapsibleSection";
 import { SectionPagination } from "../../_components/SectionPagination";
-import { useNewSongsQuery } from "@/hooks/home/useHomeQueries";
+import { useNewTracksQuery } from "@/hooks/home/useHomeQueries";
+import { musicResourceKey } from "@scopify/music-domain/identity";
 import { useTranslation } from "react-i18next";
-
-import { pruneSongDetail } from "@/types/song/api";
 
 const PAGE_SIZE = 6;
 
 export function NewSongsSection() {
   const { t } = useTranslation();
   const { actions } = useHome();
-  const query = useNewSongsQuery();
-  const songs = (query.data.result ?? [])
-    .map((item) => pruneSongDetail(item.song))
-    .filter((song) => Boolean(song?.id));
+  const query = useNewTracksQuery();
+  const songs = query.data;
   const [isOpen, setIsOpen] = useState(false);
   const [page, setPage] = useState(0);
   const [direction, setDirection] = useState<1 | -1>(1);
@@ -58,7 +55,7 @@ export function NewSongsSection() {
               type="button"
               onClick={(e) => {
                 e.stopPropagation();
-                void actions.playSongs(songs, 0);
+                void actions.playTracks(songs, 0);
               }}
               className="flex items-center gap-1.5 rounded-full bg-brand/10 px-3 py-1 text-xs font-semibold text-brand transition-colors hover:bg-brand hover:text-brand-foreground"
             >
@@ -93,10 +90,10 @@ export function NewSongsSection() {
                 const globalIndex = isOpen ? page * PAGE_SIZE + idx : idx;
                 return (
                   <NewSongItem
-                    key={song.id}
+                    key={musicResourceKey(song.ref)}
                     song={song}
                     index={globalIndex}
-                    onPlay={(_song, index) => actions.playSongs(songs, index)}
+                    onPlay={(_song, index) => actions.playTracks(songs, index)}
                   />
                 );
               })}
