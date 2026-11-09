@@ -1,7 +1,17 @@
-import type { MusicTrack } from "@scopify/music-domain/track";
+import type { MusicTrack, MusicTrackQuality } from "@scopify/music-domain/track";
 import type { QqTrackDto } from "@/types/providers/qq/trackApi";
 
+/** The best tier the song's file sizes show; a size of zero means that file does not exist. */
+function bestQqQuality(file: NonNullable<QqTrackDto["file"]>): MusicTrackQuality | undefined {
+  if ((file.size_dolby ?? 0) > 0) return "dolby";
+  if (Array.isArray(file.size_360ra) && file.size_360ra.length > 0) return "spatial";
+  if ((file.size_hires ?? 0) > 0) return "hires";
+  if ((file.size_flac ?? 0) > 0) return "lossless";
+  return undefined;
+}
+
 export function adaptQqTrack(raw: QqTrackDto): MusicTrack {
+  const quality = raw.file ? bestQqQuality(raw.file) : undefined;
   return {
     ref: { provider: "qq", kind: "track", id: raw.mid },
     title: raw.name,
@@ -16,6 +26,8 @@ export function adaptQqTrack(raw: QqTrackDto): MusicTrack {
       // This DTO has no explicit cover URL. Missing artwork is not an invented URL.
       coverUrl: null,
     },
+    ...(raw.pay?.pay_play === undefined ? {} : { requiresVip: raw.pay.pay_play === 1 }),
+    ...(quality ? { bestQuality: quality } : {}),
   };
 }
 
@@ -55,5 +67,7 @@ export function readQqRawTrack(raw: unknown): QqTrackDto | null {
       mid: typeof album.mid === "string" ? album.mid : "",
       name: typeof album.name === "string" ? album.name : "",
     },
+    ...(isRecord(raw.pay) ? { pay: raw.pay as QqTrackDto["pay"] } : {}),
+    ...(isRecord(raw.file) ? { file: raw.file as QqTrackDto["file"] } : {}),
   };
 }

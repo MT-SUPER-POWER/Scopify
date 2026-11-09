@@ -5,8 +5,7 @@ import Image from "next/image";
 import { PiChatCircleDotsBold, PiHeartBold, PiHeartFill } from "react-icons/pi";
 import { PlayerBarStatAction } from "@/components/PlayBar/PlayerBarStatAction";
 import { SongMvBadge } from "@/components/shared/SongMvBadge";
-import { SongQualityBadge } from "@/components/shared/SongQualityBadge";
-import { SongVipBadge } from "@/components/shared/SongVipBadge";
+import { TrackQualityBadge, TrackVipBadge } from "@/components/shared/TrackBadges";
 import { ShortcutHint } from "@/components/shortcuts/ShortcutHint";
 import { usePlaybackCommands } from "@/hooks/player/usePlaybackCommands";
 import { usePlaybackProjection } from "@/hooks/player/usePlaybackProjection";
@@ -156,10 +155,10 @@ export function PlayerBarLeftControls({
               className="flex min-w-0 items-center gap-1.5 text-sm font-medium text-content"
             >
               <span className="cursor-pointer truncate hover:underline">{currentSong.title}</span>
-              <SongVipBadge fee={currentSong.netease?.fee} />
+              <TrackVipBadge track={currentSong} />
             </span>
             <div className="mt-0.5 flex min-w-0 items-center gap-1">
-              <SongQualityBadge qualityLevel={currentSong?.netease?.privilege?.maxBrLevel} />
+              {currentSong && <TrackQualityBadge track={currentSong} />}
               <SongMvBadge
                 mvId={currentSong.netease?.mv}
                 onNavigate={isLyricStageBar ? onCloseLyricStage : undefined}

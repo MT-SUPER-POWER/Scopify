@@ -1,9 +1,8 @@
 "use client";
 
-import { SongQualityBadge } from "@/components/shared/SongQualityBadge";
 import { SongTitleWithAlia } from "@/components/shared/SongTitleWithAlia";
 import { SongMvBadge } from "@/components/shared/SongMvBadge";
-import { SongVipBadge } from "@/components/shared/SongVipBadge";
+import { TrackQualityBadge, TrackVipBadge } from "@/components/shared/TrackBadges";
 import { TableCell } from "@/components/ui/table";
 import { CLOUD_SONG_FALLBACK_COVER } from "@/constants/cloud";
 import { useSmartRouter } from "@/hooks/core/useSmartRouter";
@@ -47,8 +46,8 @@ export function TrackTitleCell({ track, isActive }: TrackTitleCellProps) {
             )}
           />
           <div className="mt-0.5 flex min-w-0 items-center gap-0.5">
-            <SongQualityBadge qualityLevel={extras?.privilege?.maxBrLevel} />
-            <SongVipBadge fee={extras?.fee} />
+            <TrackQualityBadge track={track} />
+            <TrackVipBadge track={track} />
             <SongMvBadge mvId={extras?.mv} />
             <span className="min-w-0 cursor-pointer truncate text-sm font-normal text-content-muted">
               {track.artists.slice(0, 2).map((artist, index, artists) => (

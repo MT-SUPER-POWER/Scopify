@@ -1348,10 +1348,16 @@ export default interface Resources {
     "podcasts.toast.unfavoriteSuccess": "已取消收藏播客";
     "podcasts.view.cards": "卡片视图";
     "podcasts.view.list": "列表视图";
+    "rank.current.day": "本日";
+    "rank.current.month": "本月";
+    "rank.current.week": "本周";
+    "rank.current.year": "本年";
+    "rank.pickPeriod": "选择时间";
     "rank.range.day": "今日";
     "rank.range.month": "本月";
     "rank.range.week": "本周";
     "rank.range.year": "本年";
+    "rank.yearHint": "年排行只看当前这一年。";
     "section.albums": "收藏的专辑";
     "section.artists": "关注的歌手";
     "title.cloud": "我的云盘";

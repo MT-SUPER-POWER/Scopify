@@ -98,10 +98,13 @@ export interface MusicLibrarySource {
   ): Promise<MusicLibraryAlbum[]>;
   /** The songs in the account's cloud drive (`cloud`), whole. */
   getCloudEntries?(options?: MusicLibraryRequestOptions): Promise<MusicCloudEntry[]>;
-  /** The account's most played songs in the current period (`library.rank`). */
+  /**
+   * The account's most played songs in a period (`library.rank`): the current one, or the one
+   * that holds `options.date` (`YYYY-MM-DD`).
+   */
   getListeningRank?(
     range: MusicListeningRankRange,
-    options?: MusicLibraryRequestOptions,
+    options?: MusicLibraryRequestOptions & { date?: string },
   ): Promise<MusicListeningRankEntry[]>;
   /** Likes or unlikes one track for the signed-in account. */
   setTrackLiked?(track: MusicResourceRef<"track">, liked: boolean): Promise<void>;

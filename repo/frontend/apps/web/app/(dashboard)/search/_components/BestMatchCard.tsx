@@ -6,7 +6,7 @@ import { Pause, Play } from "lucide-react";
 import Image from "next/image";
 import { useCallback } from "react";
 import { ArtistInlineLinks } from "@/components/shared/ArtistInlineLinks";
-import { SongVipBadge } from "@/components/shared/SongVipBadge";
+import { TrackVipBadge } from "@/components/shared/TrackBadges";
 import { useProviderCapability } from "@/hooks/provider/useActiveProvider";
 import { usePlayerStore } from "@/store";
 import { useTranslation } from "react-i18next";
@@ -121,7 +121,7 @@ export function BestMatchCard({ bestMatch, onNavigate, songs }: Props) {
           </div>
           <div className="mb-1 flex min-w-0 items-center gap-2">
             <h3 className="min-w-0 truncate text-3xl font-bold">{title}</h3>
-            {song && <SongVipBadge fee={song.netease?.fee} />}
+            {song && <TrackVipBadge track={song} />}
           </div>
           <div className="flex items-center gap-2 text-sm text-content-muted">
             {song &&

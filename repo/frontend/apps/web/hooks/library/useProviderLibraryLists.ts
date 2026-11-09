@@ -21,7 +21,7 @@ export function useProviderCloudQuery() {
 }
 
 /** The account's most played songs in a period, on a platform that ranks them (`library.rank`). */
-export function useListeningRankQuery(range: MusicListeningRankRange) {
+export function useListeningRankQuery(range: MusicListeningRankRange, date?: string) {
   const { account, provider } = useLibraryAccount();
   return useQuery({
     enabled: account !== null && provider.getListeningRank !== undefined,
@@ -32,10 +32,11 @@ export function useListeningRankQuery(range: MusicListeningRankRange) {
       "rank",
       account?.accountId ?? "",
       range,
+      date ?? "current",
     ),
     queryFn: ({ signal }) => {
       if (!provider.getListeningRank) throw new Error("The listening rank is unsupported.");
-      return provider.getListeningRank(range, { signal });
+      return provider.getListeningRank(range, { signal, date });
     },
   });
 }

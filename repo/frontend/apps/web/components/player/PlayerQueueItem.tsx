@@ -4,7 +4,7 @@ import { memo, useMemo } from "react";
 import { PlayerQueueItemCover } from "@/components/player/PlayerQueueItemCover";
 import { ArtistInlineLinks } from "@/components/shared/ArtistInlineLinks";
 import { SongContextMenu } from "@/components/shared/SongContextMenu";
-import { SongVipBadge } from "@/components/shared/SongVipBadge";
+import { TrackVipBadge } from "@/components/shared/TrackBadges";
 import { useNowPlayingDislike } from "@/hooks/player/useNowPlayingDislike";
 import { toArtistLinks } from "@/lib/player/trackDisplay";
 import { toNeteaseSongDetail } from "@/lib/providers/netease/adapters/track";
@@ -41,7 +41,7 @@ export const PlayerQueueItem = memo(function PlayerQueueItem({
           >
             {song.title}
           </span>
-          <SongVipBadge fee={song.netease?.fee} />
+          <TrackVipBadge track={song} />
         </div>
         <div className="mt-0.5 truncate text-xs text-content-muted">
           <ArtistInlineLinks artists={toArtistLinks(song)} />

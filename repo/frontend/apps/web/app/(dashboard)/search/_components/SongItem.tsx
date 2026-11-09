@@ -12,7 +12,7 @@ import { FaRegCommentDots } from "react-icons/fa6";
 import { toast } from "sonner";
 import { ArtistInlineLinks } from "@/components/shared/ArtistInlineLinks";
 import { SongMvBadge } from "@/components/shared/SongMvBadge";
-import { SongVipBadge } from "@/components/shared/SongVipBadge";
+import { TrackVipBadge } from "@/components/shared/TrackBadges";
 import {
   ContextMenu,
   ContextMenuContent,
@@ -145,7 +145,6 @@ export const SongItem = memo(
         })),
       [canOpenArtist, track.artists],
     );
-    const fee = track.netease?.fee;
     const alias = track.netease?.alia;
 
     // ── handlers ──
@@ -244,7 +243,7 @@ export const SongItem = memo(
                     ({alias.join(" / ")})
                   </span>
                 ) : null}
-                <SongVipBadge fee={fee} />
+                <TrackVipBadge track={track} />
                 <SongMvBadge mvId={track.netease?.mv} />
               </div>
               <ArtistInlineLinks

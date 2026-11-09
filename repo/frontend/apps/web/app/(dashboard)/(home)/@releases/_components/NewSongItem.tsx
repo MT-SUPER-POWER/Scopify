@@ -5,7 +5,7 @@ import Image from "next/image";
 import { memo, useCallback } from "react";
 
 import { SongContextMenu } from "@/components/shared/SongContextMenu";
-import { SongVipBadge } from "@/components/shared/SongVipBadge";
+import { TrackVipBadge } from "@/components/shared/TrackBadges";
 import { getSizedImageUrl } from "@/lib/music/imageUrl";
 import { toNeteaseSongDetail } from "@/lib/providers/netease/adapters/track";
 import { cn, formatDuration } from "@/lib/utils";
@@ -88,7 +88,7 @@ export const NewSongItem = memo(function NewSongItem({ index, onPlay, song }: Ne
             >
               {song.title}
             </span>
-            <SongVipBadge fee={song.netease?.fee} />
+            <TrackVipBadge track={song} />
           </div>
           <p className="mt-0.5 truncate text-xs text-content-muted" title={subtitle}>
             {subtitle}

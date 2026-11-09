@@ -106,11 +106,15 @@ export function getQqCloud(offset: number, limit: number, signal?: AbortSignal) 
   });
 }
 
-/** The account's ranking for the current day, week, month or year. */
-export function getQqListeningRank(range: QqListeningRankDto["range"], signal?: AbortSignal) {
+/** The account's ranking for a day, week, month or year; `date` is the backend's own format. */
+export function getQqListeningRank(
+  range: QqListeningRankDto["range"],
+  date: string | undefined,
+  signal?: AbortSignal,
+) {
   return qqClient.requestData<QqListeningRankDto>({
     url: "/user/listening-rank",
-    params: { range },
+    params: { range, ...(date ? { date } : {}) },
     signal,
     errorContext: { operation: "qq.library.listeningRank", range },
   });

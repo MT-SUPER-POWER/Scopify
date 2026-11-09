@@ -9,19 +9,18 @@ import { PlaylistContent } from "@/components/Playlist/PlaylistContent";
 import { QuietState } from "@/components/shared/QuietState";
 import { useActiveAccount } from "@/hooks/auth/useProviderAccounts";
 import { useListeningRankQuery } from "@/hooks/library/useProviderLibraryLists";
-import { cn } from "@/lib/utils";
 import { useTranslation } from "react-i18next";
 
 import type { PlaylistInfo } from "@/types/playlist/model";
-
-const RANGES: readonly MusicListeningRankRange[] = ["day", "week", "month", "year"];
+import { RankPeriodPicker, formatRankDateKey } from "./_components/RankPeriodPicker";
 
 /** The account's most played songs by period, as the platform ranks them. */
 export default function ListeningRankPage() {
   const { t } = useTranslation();
   const { isLoggedIn } = useActiveAccount();
   const [range, setRange] = useState<MusicListeningRankRange>("week");
-  const query = useListeningRankQuery(range);
+  const [date, setDate] = useState<Date | null>(null);
+  const query = useListeningRankQuery(range, date ? formatRankDateKey(date) : undefined);
   const tracks = useMemo(() => (query.data ?? []).map((entry) => entry.track), [query.data]);
   const playlistInfo = useMemo<PlaylistInfo | null>(() => {
     if (query.isLoading) return null;
@@ -55,26 +54,15 @@ export default function ListeningRankPage() {
 
   return (
     <PlaylistContent
-      actionSlot={
-        <div role="tablist" className="flex items-center gap-1 rounded-full bg-content/10 p-1">
-          {RANGES.map((item) => (
-            <button
-              key={item}
-              type="button"
-              role="tab"
-              aria-selected={item === range}
-              onClick={() => setRange(item)}
-              className={cn(
-                "cursor-pointer rounded-full px-3 py-1 text-sm font-medium transition-colors",
-                item === range
-                  ? "bg-brand text-brand-foreground"
-                  : "text-content-muted hover:text-content",
-              )}
-            >
-              {t(`library.rank.range.${item}`)}
-            </button>
-          ))}
-        </div>
+      trailingActionSlot={
+        <RankPeriodPicker
+          range={range}
+          date={date}
+          onChange={(nextRange, nextDate) => {
+            setRange(nextRange);
+            setDate(nextDate);
+          }}
+        />
       }
       contentSlot={
         tracks.length === 0
@@ -92,7 +80,7 @@ export default function ListeningRankPage() {
       isLoading={query.isLoading}
       playlistId={null}
       playlistInfo={playlistInfo}
-      playSourceId={`library:rank:${range}`}
+      playSourceId={`library:rank:${range}:${date ? formatRankDateKey(date) : "current"}`}
       refetchTracks={query.refetch}
       themeColor="var(--scopify-page-accent-recent)"
       tracks={tracks}

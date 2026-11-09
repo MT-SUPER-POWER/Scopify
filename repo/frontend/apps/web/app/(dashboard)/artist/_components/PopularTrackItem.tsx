@@ -23,7 +23,7 @@ import {
 import { LikeButton } from "@/components/ui/LikeButton";
 import { useTrackLikes } from "@/hooks/library/useLikedTracks";
 import { useProviderCapability } from "@/hooks/provider/useActiveProvider";
-import { SongVipBadge } from "@/components/shared/SongVipBadge";
+import { TrackVipBadge } from "@/components/shared/TrackBadges";
 import { usePlaylistTrackMutation } from "@/hooks/playlist/usePlaylistTrackMutation";
 import { useSongLikeMutation } from "@/hooks/playlist/useSongLikeMutation";
 import { clearPageCache } from "@/lib/cache/pageCache";
@@ -210,7 +210,7 @@ export const PopularTrackItem = memo(
                 >
                   {track.title}
                 </span>
-                <SongVipBadge fee={track.netease?.fee} />
+                <TrackVipBadge track={track} />
               </div>
             </div>
 

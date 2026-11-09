@@ -18,4 +18,11 @@ export interface MusicTrack {
   artists: readonly MusicArtist[];
   album: MusicAlbum | null;
   durationMs: number;
+  /** Playing it in full needs a paid membership. Absent when the platform does not say. */
+  requiresVip?: boolean;
+  /** The best quality it comes in beyond standard. Absent when the platform does not say. */
+  bestQuality?: MusicTrackQuality;
 }
+
+/** Quality tiers above standard that a song may come in, lowest first. */
+export type MusicTrackQuality = "lossless" | "hires" | "spatial" | "dolby";
