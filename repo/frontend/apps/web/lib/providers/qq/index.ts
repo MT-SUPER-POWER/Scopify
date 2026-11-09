@@ -1,6 +1,8 @@
 import type { MusicCapability } from "@scopify/music-domain/capability";
 import type { MusicProviderClient } from "@scopify/music-domain/provider";
 
+import { qqAlbumSource } from "@/lib/providers/qq/album";
+import { qqArtistSource } from "@/lib/providers/qq/artist";
 import { qqLibrarySource } from "@/lib/providers/qq/library";
 import { qqPlaybackSource } from "@/lib/providers/qq/playback";
 import { qqPlaylistSource } from "@/lib/providers/qq/playlist";
@@ -33,6 +35,8 @@ export const qqProvider: MusicProviderClient = {
   ...qqPlaybackSource,
   ...qqPlaylistSource,
   ...qqSearchSource,
+  ...qqArtistSource,
+  ...qqAlbumSource,
   ...qqRecommendSource,
   ...qqLibrarySource,
 };
