@@ -11,8 +11,7 @@ import { memo, useCallback, useMemo } from "react";
 import { FaRegCommentDots } from "react-icons/fa6";
 import { toast } from "sonner";
 import { ArtistInlineLinks } from "@/components/shared/ArtistInlineLinks";
-import { SongMvBadge } from "@/components/shared/SongMvBadge";
-import { TrackVipBadge } from "@/components/shared/TrackBadges";
+import { TrackMvBadge, TrackVipBadge } from "@/components/shared/TrackBadges";
 import {
   ContextMenu,
   ContextMenuContent,
@@ -244,7 +243,7 @@ export const SongItem = memo(
                   </span>
                 ) : null}
                 <TrackVipBadge track={track} />
-                <SongMvBadge mvId={track.netease?.mv} />
+                <TrackMvBadge track={track} />
               </div>
               <ArtistInlineLinks
                 artists={artistLinks}

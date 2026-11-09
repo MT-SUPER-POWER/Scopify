@@ -3,9 +3,9 @@
 import { ChevronDown, ChevronUp } from "lucide-react";
 import Image from "next/image";
 import { PiChatCircleDotsBold, PiHeartBold, PiHeartFill } from "react-icons/pi";
+import { PlayerBarProviderActions } from "@/components/PlayBar/PlayerBarProviderActions";
 import { PlayerBarStatAction } from "@/components/PlayBar/PlayerBarStatAction";
-import { SongMvBadge } from "@/components/shared/SongMvBadge";
-import { TrackQualityBadge, TrackVipBadge } from "@/components/shared/TrackBadges";
+import { TrackMvBadge, TrackQualityBadge, TrackVipBadge } from "@/components/shared/TrackBadges";
 import { ShortcutHint } from "@/components/shortcuts/ShortcutHint";
 import { usePlaybackCommands } from "@/hooks/player/usePlaybackCommands";
 import { usePlaybackProjection } from "@/hooks/player/usePlaybackProjection";
@@ -159,8 +159,8 @@ export function PlayerBarLeftControls({
             </span>
             <div className="mt-0.5 flex min-w-0 items-center gap-1">
               {currentSong && <TrackQualityBadge track={currentSong} />}
-              <SongMvBadge
-                mvId={currentSong.netease?.mv}
+              <TrackMvBadge
+                track={currentSong}
                 onNavigate={isLyricStageBar ? onCloseLyricStage : undefined}
               />
               <span className="min-w-0 cursor-pointer truncate text-[11px] font-normal text-content-muted">
@@ -193,6 +193,9 @@ export function PlayerBarLeftControls({
       </div>
 
       {/* 点赞和评论 */}
+      {!neteaseSong && currentSong && !isLyricStageBar && (
+        <PlayerBarProviderActions track={currentSong} liked={isLiked} />
+      )}
       {neteaseSong && (
         <div
           className={cn(

@@ -55,32 +55,32 @@ export function LikedSongsHero({ liked }: { liked: MusicLibraryPlaylist }) {
           </Link>
           <p className="mt-1 text-sm text-content-muted">{t("home.playlistSummary", { count })}</p>
         </div>
-        <div className="flex items-center gap-3">
-          <button
-            type="button"
-            disabled={preview.length === 0}
-            onClick={() => void actions.playTracks(tracks, 0)}
-            className="flex cursor-pointer items-center gap-2 rounded-full bg-brand px-6 py-2.5 text-sm font-semibold text-brand-foreground shadow-brand transition-transform hover:scale-105 disabled:opacity-50 disabled:hover:scale-100"
-          >
-            <Play className="size-4 fill-current" />
-            {t("home.playAll")}
-          </button>
-          <button
-            type="button"
-            disabled={preview.length === 0}
-            aria-label={t("album.action.shuffle")}
-            onClick={() =>
-              void actions.playTracks(tracks, Math.floor(Math.random() * tracks.length))
-            }
-            className="flex size-10 cursor-pointer items-center justify-center rounded-full bg-content/10 text-content transition-colors hover:bg-content/20 disabled:opacity-50"
-          >
-            <Shuffle className="size-4" />
-          </button>
-        </div>
+        {hasPreview && (
+          <div className="flex items-center gap-3">
+            <button
+              type="button"
+              onClick={() => void actions.playTracks(tracks, 0)}
+              className="flex cursor-pointer items-center gap-2 rounded-full bg-brand px-6 py-2.5 text-sm font-semibold text-brand-foreground shadow-brand transition-transform hover:scale-105"
+            >
+              <Play className="size-4 fill-current" />
+              {t("home.playAll")}
+            </button>
+            <button
+              type="button"
+              aria-label={t("album.action.shuffle")}
+              onClick={() =>
+                void actions.playTracks(tracks, Math.floor(Math.random() * tracks.length))
+              }
+              className="flex size-10 cursor-pointer items-center justify-center rounded-full bg-content/10 text-content transition-colors hover:bg-content/20"
+            >
+              <Shuffle className="size-4" />
+            </button>
+          </div>
+        )}
       </div>
 
-      <div className="min-w-0 self-center">
-        {preview.length > 0 ? (
+      {hasPreview && (
+        <div className="min-w-0 self-center">
           <>
             <ul className="grid gap-x-4 gap-y-1 md:grid-cols-2">
               {preview.map((track, index) => (
@@ -102,10 +102,8 @@ export function LikedSongsHero({ liked }: { liked: MusicLibraryPlaylist }) {
               </Link>
             )}
           </>
-        ) : (
-          <p className="text-sm text-content-muted">{t("library.empty.liked.description")}</p>
-        )}
-      </div>
+        </div>
+      )}
     </section>
   );
 }

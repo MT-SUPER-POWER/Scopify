@@ -27,6 +27,7 @@ export function adaptQqTrack(raw: QqTrackDto): MusicTrack {
       coverUrl: null,
     },
     ...(raw.pay?.pay_play === undefined ? {} : { requiresVip: raw.pay.pay_play === 1 }),
+    ...(raw.mv?.vid ? { mvId: raw.mv.vid } : {}),
     ...(quality ? { bestQuality: quality } : {}),
   };
 }
@@ -67,6 +68,7 @@ export function readQqRawTrack(raw: unknown): QqTrackDto | null {
       mid: typeof album.mid === "string" ? album.mid : "",
       name: typeof album.name === "string" ? album.name : "",
     },
+    ...(isRecord(raw.mv) ? { mv: raw.mv as QqTrackDto["mv"] } : {}),
     ...(isRecord(raw.pay) ? { pay: raw.pay as QqTrackDto["pay"] } : {}),
     ...(isRecord(raw.file) ? { file: raw.file as QqTrackDto["file"] } : {}),
   };

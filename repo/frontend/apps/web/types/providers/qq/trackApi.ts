@@ -6,6 +6,8 @@ export interface QqTrackDto {
   interval: number;
   singer: { id: number; mid: string; name: string }[];
   album: { id: number; mid: string; name: string };
+  /** The song's MV; `vid` is empty when it has none. */
+  mv?: { vid?: string };
   /** Present on songs the backend reads in full (not on every list). */
   pay?: { pay_play?: number };
   file?: {

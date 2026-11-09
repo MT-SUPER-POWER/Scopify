@@ -6,6 +6,7 @@ import type { PlaybackCommand, PlaybackSessionState } from "@scopify/desktop-con
 
 import { PlaybackAudioFeaturePublisher } from "@/components/player/PlaybackAudioFeaturePublisher";
 import { PlaybackProjectionProvider } from "@/components/player/PlaybackProjectionProvider";
+import { useTrackLikes } from "@/hooks/library/useLikedTracks";
 import { useSongLikeMutation } from "@/hooks/playlist/useSongLikeMutation";
 import { usePlaybackAuthority } from "@/hooks/player/usePlaybackAuthority";
 import { useDiscordPresence } from "@/hooks/player/useDiscordPresence";
@@ -56,6 +57,10 @@ export function PlaybackAuthorityProvider({
   const volume = usePlayerStore((state) => state.volume);
   const likeListIds = useUserStore((state) => state.likeListIDs);
   const songLikeMutation = useSongLikeMutation();
+  // Other platforms keep their liked IDs in the library query, not in NetEase's user store.
+  const trackLikes = useTrackLikes();
+  const trackLikesRef = useRef(trackLikes);
+  trackLikesRef.current = trackLikes;
   const voiceLike = useVoiceLike(currentTrack?.netease?.voiceId ?? null);
   // Liking and scrobbling are NetEase-only; other platforms show the track without them.
   const neteaseSongId = getNeteaseTrackId(currentTrack);
@@ -75,11 +80,13 @@ export function PlaybackAuthorityProvider({
     [currentTrack],
   );
   const liked = useMemo(() => {
+    if (currentTrack && currentTrack.netease === undefined)
+      return trackLikes.isLiked(currentTrack.ref);
     if (!currentTrack || neteaseSongId === null) return false;
     if (currentTrack.netease?.voiceId !== undefined) return voiceLike.isLiked;
     if (!Array.isArray(likeListIds)) return false;
     return likeListIds.some((id) => Number(id) === neteaseSongId);
-  }, [currentTrack, likeListIds, neteaseSongId, voiceLike.isLiked]);
+  }, [currentTrack, likeListIds, neteaseSongId, trackLikes, voiceLike.isLiked]);
   const discordPresence = useMemo(
     () => ({
       album: currentTrack?.album?.title ?? "",
@@ -266,6 +273,15 @@ export function PlaybackAuthorityProvider({
       removeQueueItem: (index) => usePlayerStore.getState().removeQueueItem(index),
       toggleLike: async () => {
         const currentTrack = usePlayerStore.getState().currentTrack;
+        if (currentTrack && currentTrack.netease === undefined) {
+          const nextLiked = !trackLikesRef.current.isLiked(currentTrack.ref);
+          await songLikeMutation.mutateAsync({
+            like: nextLiked,
+            silentToast: true,
+            track: currentTrack.ref,
+          });
+          return nextLiked;
+        }
         const songId = getNeteaseTrackId(currentTrack);
         if (!currentTrack || songId === null) return false;
         if (currentTrack.netease?.voiceId !== undefined) {

@@ -20,6 +20,8 @@ export interface MusicTrack {
   durationMs: number;
   /** Playing it in full needs a paid membership. Absent when the platform does not say. */
   requiresVip?: boolean;
+  /** The ID of the song's MV on the platform, when it has one. */
+  mvId?: string;
   /** The best quality it comes in beyond standard. Absent when the platform does not say. */
   bestQuality?: MusicTrackQuality;
 }
