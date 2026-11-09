@@ -1,5 +1,12 @@
 {
   "title.recent": "最近播放",
+  "collection.tab.songs": "歌曲",
+  "collection.tab.playlists": "歌單",
+  "collection.tab.albums": "專輯",
+  "collection.tab.artists": "歌手",
+  "collection.empty.playlists": "還沒有收藏的歌單",
+  "collection.empty.albums": "還沒有收藏的專輯",
+  "collection.empty.artists": "還沒有關注的歌手",
   "title.rank": "聽歌排行",
   "meta.rank": "依播放次數排序",
   "loggedOut.rank": "登入後查看聽歌排行",

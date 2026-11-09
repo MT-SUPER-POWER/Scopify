@@ -1,5 +1,12 @@
 {
   "title.recent": "最近播放",
+  "collection.tab.songs": "歌曲",
+  "collection.tab.playlists": "歌单",
+  "collection.tab.albums": "专辑",
+  "collection.tab.artists": "歌手",
+  "collection.empty.playlists": "还没有收藏的歌单",
+  "collection.empty.albums": "还没有收藏的专辑",
+  "collection.empty.artists": "还没有关注的歌手",
   "title.rank": "听歌排行",
   "meta.rank": "按播放次数排序",
   "loggedOut.rank": "登录后查看听歌排行",

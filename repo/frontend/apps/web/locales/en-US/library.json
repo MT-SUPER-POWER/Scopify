@@ -1,5 +1,12 @@
 {
   "title.recent": "Recently Played",
+  "collection.tab.songs": "Songs",
+  "collection.tab.playlists": "Playlists",
+  "collection.tab.albums": "Albums",
+  "collection.tab.artists": "Artists",
+  "collection.empty.playlists": "No saved playlists yet",
+  "collection.empty.albums": "No saved albums yet",
+  "collection.empty.artists": "No followed artists yet",
   "title.rank": "Listening Rank",
   "meta.rank": "Ranked by play count",
   "loggedOut.rank": "Sign in to see your listening rank",

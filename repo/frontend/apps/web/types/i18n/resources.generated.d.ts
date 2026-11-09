@@ -1279,6 +1279,13 @@ export default interface Resources {
     "cloud.uploadFailed": "{{name}} 上传失败";
     "cloud.uploadSuccess": "已上传 {{count}} 首歌曲";
     "cloud.uploading": "正在上传 {{current}}/{{total}} · {{percent}}%";
+    "collection.empty.albums": "还没有收藏的专辑";
+    "collection.empty.artists": "还没有关注的歌手";
+    "collection.empty.playlists": "还没有收藏的歌单";
+    "collection.tab.albums": "专辑";
+    "collection.tab.artists": "歌手";
+    "collection.tab.playlists": "歌单";
+    "collection.tab.songs": "歌曲";
     "empty.cloud.description": "上传本地歌曲后，它们会显示在这里。";
     "empty.cloud.title": "云盘还是空的";
     "empty.collection.description": "收藏专辑或关注歌手后，它们会显示在这里。";
