@@ -21,6 +21,6 @@
   "edit.genderFemale": "女",
   "accounts.title": "帳號與平台",
   "accounts.signedIn": "已登入",
-  "accounts.login": "點擊登入",
+  "accounts.notLoggedIn": "未登入",
   "accounts.active": "目前平台"
 }

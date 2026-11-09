@@ -14,9 +14,7 @@ import { VipSignModal } from "@/components/VipSign/VipSignModal";
 import { useVipSign } from "@/hooks/vipSign/useVipSign";
 import { ProfileMenuAccounts } from "@/components/Header/ProfileMenuAccounts";
 import { useActiveAccount } from "@/hooks/auth/useProviderAccounts";
-import { useSmartRouter } from "@/hooks/core/useSmartRouter";
 import { useProviderCapability } from "@/hooks/provider/useActiveProvider";
-import { openLoginForPlatform } from "@/lib/auth/loginPlatform";
 import { useTranslation } from "react-i18next";
 
 import type { VipSignDetail } from "@/types/vipSign/api";
@@ -24,7 +22,6 @@ import type { ProfileMenuProps } from "@/types/user/profileMenuComponents";
 
 export function ProfileMenu({ children }: ProfileMenuProps) {
   const { t } = useTranslation();
-  const smartRouter = useSmartRouter();
   const activeAccount = useActiveAccount();
   const isLoggedIn = activeAccount.isLoggedIn;
   const hasVip = useProviderCapability("vip");
@@ -79,10 +76,6 @@ export function ProfileMenu({ children }: ProfileMenuProps) {
     setSignModalOpen(true);
   };
 
-  const handleLoginClick = () => {
-    openLoginForPlatform(activeAccount.provider, (url) => smartRouter.push(url));
-  };
-
   return (
     <>
       <DropdownMenu open={isProfileMenuOpen} onOpenChange={setProfileMenuOpen}>
@@ -102,8 +95,12 @@ export function ProfileMenu({ children }: ProfileMenuProps) {
           side="bottom"
           sideOffset={8}
         >
-          <ProfileMenuIdentity isLoggedIn={isLoggedIn} onLogin={handleLoginClick} />
-          <DropdownMenuSeparator className="mx-6 my-0 bg-content/10" />
+          {isLoggedIn && (
+            <>
+              <ProfileMenuIdentity isLoggedIn={isLoggedIn} />
+              <DropdownMenuSeparator className="mx-6 my-0 bg-content/10" />
+            </>
+          )}
           <ProfileMenuAccounts />
           {isLoggedIn && hasVip && (
             <>

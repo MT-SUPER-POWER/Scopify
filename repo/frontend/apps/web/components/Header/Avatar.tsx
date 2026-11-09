@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { User } from "lucide-react";
+import { ProviderLogo } from "@/components/provider/ProviderLogo";
 import { useActiveAccount } from "@/hooks/auth/useProviderAccounts";
 
 /**
@@ -11,10 +12,10 @@ const MockAvatar = () => {
   const nickname = account.profile?.nickname;
 
   if (!account.isLoggedIn)
-    // Logged out: match the neighbouring notification/message buttons instead of a brand badge.
+    // Logged out: the active platform's mark stands in for the avatar.
     return (
-      <div className="flex size-10 items-center justify-center rounded-full bg-surface-sunken/80 text-content-muted transition-colors hover:bg-surface-elevated hover:text-content">
-        <User className="size-4.5" />
+      <div className="flex size-10 items-center justify-center rounded-full bg-surface-sunken/80 transition-transform hover:scale-105">
+        <ProviderLogo provider={account.provider} className="size-8" />
       </div>
     );
 

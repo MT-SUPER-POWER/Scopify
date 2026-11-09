@@ -10,7 +10,7 @@ import { useTranslation } from "react-i18next";
 import type { ProfileMenuIdentityProps } from "@/types/user/profileMenuComponents";
 import { getSizedImageUrl } from "@/lib/music/imageUrl";
 
-export function ProfileMenuIdentity({ isLoggedIn, onLogin }: ProfileMenuIdentityProps) {
+export function ProfileMenuIdentity({ isLoggedIn }: ProfileMenuIdentityProps) {
   const { t } = useTranslation();
   const user = useUserStore((state) => state.user);
   const activeAccount = useActiveAccount();
@@ -44,21 +44,8 @@ export function ProfileMenuIdentity({ isLoggedIn, onLogin }: ProfileMenuIdentity
     );
   }
 
-  if (!isLoggedIn || !user || user.userId <= 0) {
-    return (
-      <DropdownMenuItem onSelect={onLogin} className={className}>
-        <div className="flex size-18 shrink-0 items-center justify-center rounded-full bg-brand/10 text-brand">
-          <User className="size-7" />
-        </div>
-        <div className="flex min-h-18 min-w-0 flex-1 flex-col justify-center gap-2">
-          <span className="text-base font-semibold text-content">{t("common.action.login")}</span>
-          <span className="text-xs leading-relaxed text-content-muted">
-            {t("sidebar.card.loginSubtitle")}
-          </span>
-        </div>
-      </DropdownMenuItem>
-    );
-  }
+  // Signed out: the account list below is where to sign in, so no identity block here.
+  if (!isLoggedIn || !user || user.userId <= 0) return null;
 
   return (
     <DropdownMenuItem asChild className={className}>

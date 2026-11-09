@@ -21,6 +21,6 @@
   "edit.genderFemale": "女",
   "accounts.title": "账号与平台",
   "accounts.signedIn": "已登录",
-  "accounts.login": "点击登录",
+  "accounts.notLoggedIn": "未登录",
   "accounts.active": "当前平台"
 }

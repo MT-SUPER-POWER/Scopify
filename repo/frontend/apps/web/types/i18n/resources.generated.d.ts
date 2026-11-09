@@ -1857,7 +1857,7 @@ export default interface Resources {
   };
   profile: {
     "accounts.active": "当前平台";
-    "accounts.login": "点击登录";
+    "accounts.notLoggedIn": "未登录";
     "accounts.signedIn": "已登录";
     "accounts.title": "账号与平台";
     "edit.gender": "性别";

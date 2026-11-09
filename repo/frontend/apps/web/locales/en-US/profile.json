@@ -21,6 +21,6 @@
   "edit.genderFemale": "Female",
   "accounts.title": "Accounts and platforms",
   "accounts.signedIn": "Signed in",
-  "accounts.login": "Sign in",
+  "accounts.notLoggedIn": "Not signed in",
   "accounts.active": "Current platform"
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { Check, User } from "lucide-react";
+import { Check } from "lucide-react";
 import Image from "next/image";
 import { useTranslation } from "react-i18next";
 import {
@@ -8,6 +8,7 @@ import {
   DropdownMenuItem,
   DropdownMenuLabel,
 } from "@/components/ui/dropdown-menu";
+import { ProviderLogo } from "@/components/provider/ProviderLogo";
 import { useProviderAccounts } from "@/hooks/auth/useProviderAccounts";
 import { useSmartRouter } from "@/hooks/core/useSmartRouter";
 import { useSwitchProvider } from "@/hooks/provider/useSwitchProvider";
@@ -34,8 +35,8 @@ export function ProfileMenuAccounts() {
   const switchProvider = useSwitchProvider();
 
   return (
-    <DropdownMenuGroup className="px-3 py-2">
-      <DropdownMenuLabel className="px-3 text-xs font-medium text-content-subtle">
+    <DropdownMenuGroup className="flex flex-col gap-1 p-3">
+      <DropdownMenuLabel className="px-3 pb-1 text-xs font-medium text-content-subtle">
         {t("profile.accounts.title")}
       </DropdownMenuLabel>
       {accounts.map((account) => {
@@ -44,7 +45,10 @@ export function ProfileMenuAccounts() {
         return (
           <DropdownMenuItem
             key={account.provider}
-            className="min-h-12 cursor-pointer gap-3 rounded-lg px-3 focus:bg-content/5"
+            className={cn(
+              "min-h-14 cursor-pointer gap-3 rounded-xl px-3 py-2 focus:bg-content/5",
+              isActive && "bg-content/5",
+            )}
             onSelect={() => {
               if (!account.isLoggedIn) {
                 openLoginForPlatform(account.provider, (url) => smartRouter.push(url));
@@ -53,37 +57,44 @@ export function ProfileMenuAccounts() {
               }
             }}
           >
-            <div className="relative flex size-8 shrink-0 items-center justify-center overflow-hidden rounded-full bg-content/10 text-content-muted">
+            <div className="relative size-10 shrink-0">
               {account.profile?.avatarUrl ? (
-                <Image
-                  src={account.profile.avatarUrl}
-                  alt={account.profile.nickname}
-                  fill
-                  sizes="32px"
-                  className="object-cover"
-                />
+                <>
+                  <Image
+                    src={account.profile.avatarUrl}
+                    alt={account.profile.nickname}
+                    fill
+                    sizes="40px"
+                    className="rounded-full object-cover"
+                  />
+                  <ProviderLogo
+                    provider={account.provider}
+                    className="absolute -right-1 -bottom-1 size-4 rounded-full ring-2 ring-surface-overlay"
+                  />
+                </>
               ) : (
-                <User className="size-4" />
+                <ProviderLogo provider={account.provider} className="size-10" />
               )}
             </div>
-            <div className="flex min-w-0 flex-1 flex-col">
-              <span className="truncate text-sm text-content">
+            <div className="flex min-w-0 flex-1 flex-col gap-0.5">
+              <span className="truncate text-sm font-medium text-content">
                 {t(PLATFORM_LABEL_KEYS[account.provider])}
               </span>
-              <span
-                className={cn(
-                  "truncate text-xs",
-                  account.isLoggedIn ? "text-content-muted" : "text-brand",
-                )}
-              >
-                {account.isLoggedIn ? name : t("profile.accounts.login")}
+              <span className="truncate text-xs text-content-muted">
+                {account.isLoggedIn ? name : t("profile.accounts.notLoggedIn")}
               </span>
             </div>
-            {isActive && (
-              <Check
-                className="size-4 shrink-0 text-brand"
-                aria-label={t("profile.accounts.active")}
-              />
+            {!account.isLoggedIn ? (
+              <span className="shrink-0 rounded-full bg-brand px-3 py-1 text-xs font-medium text-brand-foreground">
+                {t("common.action.login")}
+              </span>
+            ) : (
+              isActive && (
+                <Check
+                  className="size-4 shrink-0 text-brand"
+                  aria-label={t("profile.accounts.active")}
+                />
+              )
             )}
           </DropdownMenuItem>
         );
