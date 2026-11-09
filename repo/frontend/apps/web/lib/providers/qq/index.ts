@@ -3,6 +3,8 @@ import type { MusicProviderClient } from "@scopify/music-domain/provider";
 
 import { qqAlbumSource } from "@/lib/providers/qq/album";
 import { qqArtistSource } from "@/lib/providers/qq/artist";
+import { qqCommentSource } from "@/lib/providers/qq/comment";
+import { qqMvSource } from "@/lib/providers/qq/mv";
 import { qqLibrarySource } from "@/lib/providers/qq/library";
 import { qqLyricsSource } from "@/lib/providers/qq/lyrics";
 import { qqPlaybackSource } from "@/lib/providers/qq/playback";
@@ -31,6 +33,8 @@ const QQ_CAPABILITIES: ReadonlySet<MusicCapability> = new Set<MusicCapability>([
   "library.playlists",
   "track.like",
   "playlist.manage",
+  "comments.read",
+  "mv",
 ]);
 
 /** Composed from one module per area (`./<area>.ts`), so areas can change independently. */
@@ -46,4 +50,6 @@ export const qqProvider: MusicProviderClient = {
   ...qqRecommendSource,
   ...qqLibrarySource,
   ...qqLyricsSource,
+  ...qqCommentSource,
+  ...qqMvSource,
 };
