@@ -13,6 +13,7 @@
     "./capability": "./src/capability.ts",
     "./identity": "./src/identity.ts",
     "./library": "./src/library.ts",
+    "./lyrics": "./src/lyrics.ts",
     "./playback": "./src/playback.ts",
     "./playlist": "./src/playlist.ts",
     "./provider": "./src/provider.ts",
