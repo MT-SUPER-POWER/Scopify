@@ -5,7 +5,7 @@ import type {
   ArtistTopSongsResponse,
   FollowedArtistsResponse,
   HotArtistsResponse,
-} from "@/types/artist/api";
+} from "@/types/providers/netease/artistApi";
 import type { ArtistMvsResponse } from "@/types/mv/api";
 import request from "@/lib/providers/netease/client";
 
@@ -30,27 +30,30 @@ export function getHotArtists(limit = 50) {
 /**
  * 获取歌手详情（含 briefDesc、cover 等）
  */
-export function getAritstDetail(id: number | string) {
+export function getAritstDetail(id: number | string, signal?: AbortSignal) {
   return request.get<ArtistDetailResponse>("/artist/detail", {
     params: { id },
+    signal,
   });
 }
 
 /**
  * 获取歌手粉丝数
  */
-export function getFansCnt(id: number | string) {
+export function getFansCnt(id: number | string, signal?: AbortSignal) {
   return request.get<ArtistFollowCountResponse>("/artist/follow/count", {
     params: { id },
+    signal,
   });
 }
 
 /**
  * 获取歌手热门歌曲
  */
-export function getArtistTopSongs(id: number | string, limit = 200) {
+export function getArtistTopSongs(id: number | string, limit = 200, signal?: AbortSignal) {
   return request.get<ArtistTopSongsResponse>("/artist/songs/v2", {
     params: { id, limit },
+    signal,
   });
 }
 
@@ -60,9 +63,10 @@ export function getArtistTopSongs(id: number | string, limit = 200) {
  * @param limit 数量，默认 30
  * @param offset 分页偏移
  */
-export function getArtistAlbums(id: number | string, limit = 10, offset = 0) {
+export function getArtistAlbums(id: number | string, limit = 10, offset = 0, signal?: AbortSignal) {
   return request.get<ArtistAlbumsResponse>("/artist/album", {
     params: { id, limit, offset },
+    signal,
   });
 }
 

@@ -6,7 +6,7 @@ import { getUserAlbumSublist } from "@/lib/providers/netease/api/album";
 import { useLoginStatus } from "@/hooks/auth/useLoginStatus";
 import { musicQueryKeys } from "@/lib/query/queryKeys";
 import { useUserStore } from "@/store";
-import type { AlbumSublistResponse } from "@/types/album/api";
+import type { AlbumSublistResponse } from "@/types/providers/netease/albumApi";
 
 export function getCollectedAlbumIds(response: AlbumSublistResponse) {
   return (response.data ?? []).map((album) => album.id);

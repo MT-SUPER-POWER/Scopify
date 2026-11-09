@@ -10,7 +10,7 @@ import { musicQueryKeys } from "@/lib/query/queryKeys";
 import { useUserStore } from "@/store";
 import { useTranslation } from "react-i18next";
 
-import type { ArtistFollowCountResponse } from "@/types/artist/api";
+import type { ArtistFollowCountResponse } from "@/types/providers/netease/artistApi";
 
 /** 艺人关注状态、粉丝数与关注切换；歌手页与正在播放面板共用。 */
 export function useArtistFollow(artistId: number | string) {

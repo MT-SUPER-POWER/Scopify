@@ -3,7 +3,7 @@ import type {
   AlbumSublistParams,
   AlbumSublistResponse,
   AlbumSubscribeResponse,
-} from "@/types/album/api";
+} from "@/types/providers/netease/albumApi";
 import type { NeteaseNewestAlbumsDto } from "@/types/providers/netease/recommendApi";
 import request, { requestConfig, requestData } from "@/lib/providers/netease/client";
 

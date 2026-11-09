@@ -17,7 +17,7 @@ import { useActiveProvider } from "@/hooks/provider/useActiveProvider";
 import { providerQueryKey } from "@/lib/query/providerQueryKey";
 import { musicQueryKeys } from "@/lib/query/queryKeys";
 import { useUserStore } from "@/store";
-import type { NeteaseAlbum } from "@/types/album/api";
+import type { NeteaseAlbum } from "@/types/providers/netease/albumApi";
 
 /** Playlists anyone gets. The reader is the active platform's; one without it never calls this. */
 function useFeaturedPlaylistsOptions(limit: number) {
