@@ -29,6 +29,7 @@ const QQ_CAPABILITIES: ReadonlySet<MusicCapability> = new Set<MusicCapability>([
   "recommend.playlists",
   "recommend.toplists",
   "recommend.artists",
+  "recommend.feed",
   "recommend.newSongs",
   "recommend.newAlbums",
   "library.playlists",

@@ -77,6 +77,20 @@ function useHomeAccountKey(enabled: boolean): string {
   return enabled ? (account.profile?.accountId ?? "authenticated") : "anonymous";
 }
 
+/** The platform's own home feed; it belongs to the signed-in account. */
+export function useHomeFeedQuery() {
+  const provider = useActiveProvider();
+  const accountId = useHomeAccountKey(true);
+  return useSuspenseQuery({
+    meta: { scope: "account" },
+    queryFn: ({ signal }) => {
+      if (!provider.getHomeFeed) throw new Error("The home feed is unsupported.");
+      return provider.getHomeFeed({ signal });
+    },
+    queryKey: providerQueryKey(provider.provider, "home", "feed", accountId),
+  });
+}
+
 function useFeaturedArtistsOptions(limit: number) {
   const provider = useActiveProvider();
   return queryOptions({

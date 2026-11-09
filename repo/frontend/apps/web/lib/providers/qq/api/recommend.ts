@@ -6,6 +6,7 @@ import type {
   QqPersonalFmDto,
   QqRecommendPlaylistsDto,
   QqToplistSongsDto,
+  QqFeedDto,
   QqSingerListDto,
   QqToplistsDto,
 } from "@/types/providers/qq/recommendApi";
@@ -96,5 +97,15 @@ export function getQqPopularSingers(signal?: AbortSignal) {
     noSession: true,
     signal,
     errorContext: { operation: "qq.recommend.singers" },
+  });
+}
+
+/** The signed-in account's home feed. */
+export function getQqHomeFeed(signal?: AbortSignal) {
+  return qqClient.requestData<QqFeedDto>({
+    method: "GET",
+    url: "/recommend/feed",
+    signal,
+    errorContext: { operation: "qq.recommend.feed" },
   });
 }

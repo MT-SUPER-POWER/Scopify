@@ -1219,6 +1219,7 @@ export default interface Resources {
     "banner.previous": "上一张横幅";
     dailyRecommendations: "每日推荐";
     featuredActivities: "精选活动";
+    feed: "为你推荐";
     followedArtistsAlbums: "关注歌手的专辑";
     "greeting.afternoon": "下午好";
     "greeting.evening": "傍晚好";

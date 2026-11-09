@@ -107,3 +107,25 @@ export interface QqSingerListDto {
   code: 200;
   singers: QqSingerListItemDto[];
 }
+
+/** A card of GET /recommend/feed: a song (as /song/batch gives it) or a playlist. */
+export type QqFeedItemDto =
+  | { type: "song"; song: QqTrackDto }
+  | {
+      type: "playlist";
+      playlist: { id: number | string; title: string; subtitle?: string; cover?: string };
+    };
+
+/** GET /recommend/feed: the first page of the client's home feed, as shelves. */
+export interface QqFeedDto {
+  code: 200;
+  page: number;
+  more: boolean;
+  shelves: {
+    id: string;
+    /** May hold a `{String}` placeholder that `titleContent` fills. */
+    titleTemplate?: string;
+    titleContent?: string;
+    items: QqFeedItemDto[];
+  }[];
+}

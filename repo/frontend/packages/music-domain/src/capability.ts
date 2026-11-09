@@ -30,6 +30,7 @@ export const MUSIC_CAPABILITIES = [
   "recommend.playlists",
   "recommend.toplists",
   "recommend.artists",
+  "recommend.feed",
   "recommend.newSongs",
   "recommend.newAlbums",
   "mv",

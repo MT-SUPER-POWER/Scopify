@@ -2,13 +2,16 @@ import type { MusicPlaylist, MusicPlaylistDetail } from "@scopify/music-domain/p
 import type {
   MusicAlbumSummary,
   MusicFeaturedArtist,
+  MusicFeedShelf,
   MusicToplist,
 } from "@scopify/music-domain/recommend";
 
 import { parseQqDate } from "@/lib/providers/qq/adapters/artist";
+import { adaptQqTrack } from "@/lib/providers/qq/adapters/track";
 import { qqAlbumCoverUrl, qqSecureUrl } from "@/lib/providers/qq/adapters/playlist";
 import type {
   QqNewAlbumDto,
+  QqFeedDto,
   QqRecommendPlaylistDto,
   QqSingerListItemDto,
   QqToplistDto,
@@ -104,4 +107,27 @@ export function adaptQqFeaturedArtists(raw: readonly QqSingerListItemDto[]): Mus
     name: singer.name,
     avatarUrl: singer.pic ? qqSecureUrl(singer.pic) : null,
   }));
+}
+
+/** Shelves that hold at least one card; the title has its `{String}` filled in. */
+export function adaptQqHomeFeed(raw: QqFeedDto): MusicFeedShelf[] {
+  return raw.shelves.flatMap((shelf) => {
+    const items: MusicFeedShelf["items"][number][] = shelf.items.map((item) =>
+      item.type === "song"
+        ? { kind: "track", track: adaptQqTrack(item.song) }
+        : {
+            kind: "playlist",
+            playlist: {
+              ref: { provider: "qq", kind: "playlist", id: String(item.playlist.id) },
+              title: item.playlist.title,
+              coverUrl: qqSecureUrl(item.playlist.cover),
+              creator: null,
+              trackCount: 0,
+              playCount: null,
+            },
+          },
+    );
+    const title = (shelf.titleTemplate ?? "").replace("{String}", shelf.titleContent ?? "").trim();
+    return items.length > 0 && title ? [{ id: shelf.id, title, items }] : [];
+  });
 }

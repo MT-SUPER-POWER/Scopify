@@ -31,6 +31,20 @@ export interface MusicFeaturedArtist {
   avatarUrl: string | null;
 }
 
+/** One card on a feed shelf: a song to play or a playlist to open. */
+export type MusicFeedItem =
+  { kind: "track"; track: MusicTrack } | { kind: "playlist"; playlist: MusicPlaylist };
+
+/**
+ * A shelf of the platform's own home feed. The platform decides what it holds and what it is
+ * called; `title` is already filled in, so callers show it as it is.
+ */
+export interface MusicFeedShelf {
+  id: string;
+  title: string;
+  items: readonly MusicFeedItem[];
+}
+
 /** An album as a release shelf shows it. */
 export interface MusicAlbumSummary {
   ref: MusicResourceRef<"album">;
@@ -63,7 +77,7 @@ export interface MusicRecommendReadOptions {
  * What the home page and the recommendation pages read. Every method is optional: a platform
  * implements the ones it has and declares the matching capability, and callers only call a
  * method after checking it (`recommend.daily`, `recommend.fm`, `recommend.playlists`,
- * `recommend.toplists`, `recommend.artists`, `recommend.newSongs`, `recommend.newAlbums`).
+ * `recommend.toplists`, `recommend.artists`, `recommend.feed`, `recommend.newSongs`, `recommend.newAlbums`).
  */
 export interface MusicRecommendSource {
   /** Today's songs picked for the signed-in account. */
@@ -80,6 +94,8 @@ export interface MusicRecommendSource {
   /** Playlists picked for the signed-in account. */
   getRecommendedPlaylists?(options?: MusicRecommendReadOptions): Promise<MusicPlaylist[]>;
   getToplists?(options?: MusicRecommendReadOptions): Promise<MusicToplist[]>;
+  /** The platform's own home feed, shelf by shelf (`recommend.feed`); needs an account. */
+  getHomeFeed?(options?: MusicRecommendReadOptions): Promise<MusicFeedShelf[]>;
   /** Artists worth opening from the home page, most popular first; no account needed. */
   getFeaturedArtists?(
     limit: number,
