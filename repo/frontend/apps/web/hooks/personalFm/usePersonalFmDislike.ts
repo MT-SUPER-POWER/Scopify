@@ -4,8 +4,8 @@ import { useCallback, useRef, useState } from "react";
 import { toast } from "sonner";
 
 import { isPersonalFmPlaybackSource } from "@/constants/personalFm";
-import { trashPersonalFmSong } from "@/lib/providers/netease/api/personalFm";
 import { dislikePersonalFmTrack } from "@/lib/personalFm/dislike";
+import { useActiveProvider } from "@/hooks/provider/useActiveProvider";
 import { useTranslation } from "react-i18next";
 
 import { usePersonalFmStore } from "@/store/module/personalFm";
@@ -19,6 +19,7 @@ import type { SongDetail } from "@/types/song/api";
  */
 export function usePersonalFmDislike() {
   const { t } = useTranslation();
+  const provider = useActiveProvider();
   const [isDisliking, setIsDisliking] = useState(false);
   const isDislikingRef = useRef(false);
 
@@ -41,7 +42,14 @@ export function usePersonalFmDislike() {
             };
           },
           trash: async (songId) => {
-            await trashPersonalFmSong(songId);
+            if (!provider.dislikePersonalFmTrack) {
+              throw new Error("Personal FM dislike is unsupported.");
+            }
+            await provider.dislikePersonalFmTrack({
+              provider: provider.provider,
+              kind: "track",
+              id: String(songId),
+            });
           },
         });
         return true;
@@ -54,7 +62,7 @@ export function usePersonalFmDislike() {
         setIsDisliking(false);
       }
     },
-    [t],
+    [provider, t],
   );
 
   return { dislike, isDisliking };

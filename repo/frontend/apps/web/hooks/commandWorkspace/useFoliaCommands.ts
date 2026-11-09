@@ -3,6 +3,7 @@
 import { getPersonalFmCommandSelection } from "@/lib/commandWorkspace/personalFmCommands";
 import { usePersonalFmStore } from "@/store/module/personalFm";
 import { useMemo } from "react";
+import { useProviderCapability } from "@/hooks/provider/useActiveProvider";
 import { buildFoliaCommands, filterFoliaCommands } from "@/lib/commandWorkspace/foliaCommands";
 import { useFoliaSettingsStore } from "@/store/module/foliaSettings";
 import { useLyricStageStore } from "@/store/module/lyrics";
@@ -13,7 +14,11 @@ import type { FoliaCommandEntry, FoliaCommandGroup } from "@/types/lyrics/folia/
 
 export function useFoliaCommands(group: FoliaCommandGroup | null, query: string) {
   const { t } = useTranslation();
-  const catalog = useMemo(() => buildFoliaCommands(t), [t]);
+  const hasFmModes = useProviderCapability("recommend.fm.modes");
+  const catalog = useMemo(
+    () => buildFoliaCommands(t, { personalFmModes: hasFmModes }),
+    [t, hasFmModes],
+  );
   const entries = useMemo(
     () => filterFoliaCommands(catalog, group, query),
     [catalog, group, query],

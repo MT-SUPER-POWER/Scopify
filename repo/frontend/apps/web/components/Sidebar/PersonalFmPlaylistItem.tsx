@@ -7,6 +7,7 @@ import {
   isPersonalFmPlaybackSource,
 } from "@/constants/personalFm";
 import { usePersonalFmEntry } from "@/hooks/personalFm/usePersonalFmEntry";
+import { useProviderCapability } from "@/hooks/provider/useActiveProvider";
 import { useTranslation } from "react-i18next";
 
 import { usePersonalFmStore } from "@/store/module/personalFm";
@@ -23,6 +24,11 @@ export function PersonalFmPlaylistItem({ isCollapsed }: SidebarPlaylistLibraryPr
   const isLoading = usePersonalFmStore((state) => state.status === "loading");
   const isPersonalFm = isPersonalFmPlaybackSource(playlistId);
   const handleClick = usePersonalFmEntry();
+  const hasFm = useProviderCapability("recommend.fm");
+  const hasModes = useProviderCapability("recommend.fm.modes");
+
+  // The platform has no FM: no sidebar item, no requests.
+  if (!hasFm) return null;
 
   return (
     <LibraryItem
@@ -33,7 +39,11 @@ export function PersonalFmPlaylistItem({ isCollapsed }: SidebarPlaylistLibraryPr
       isCollapsed={isCollapsed}
       onClick={handleClick}
       subtitle={
-        isLoading ? t("personalFm.status.loading") : getPersonalFmSelectionLabel(selection, t)
+        isLoading
+          ? t("personalFm.status.loading")
+          : hasModes
+            ? getPersonalFmSelectionLabel(selection, t)
+            : ""
       }
       title={t("personalFm.title")}
     />

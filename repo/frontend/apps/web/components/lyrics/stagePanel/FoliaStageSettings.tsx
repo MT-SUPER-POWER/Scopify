@@ -36,6 +36,7 @@ import { FoliaPanelQuality } from "@/components/lyrics/stagePanel/FoliaPanelQual
 import { FoliaPanelQueue } from "@/components/lyrics/stagePanel/FoliaPanelQueue";
 import { FoliaPersonalFmControlsTab } from "@/components/lyrics/stagePanel/FoliaPersonalFmControlsTab";
 import { isPersonalFmPlaybackSource } from "@/constants/personalFm";
+import { useProviderCapability } from "@/hooks/provider/useActiveProvider";
 import { useFoliaPanelControls } from "@/hooks/player/useFoliaPanelControls";
 import { useFoliaSettingsStore } from "@/store/module/foliaSettings";
 import { useTranslation } from "react-i18next";
@@ -59,7 +60,10 @@ export function FoliaStageSettings({
   const { t } = useTranslation();
   const model = useFoliaPanelControls();
   const song = usePlayerStore((state) => state.currentTrack);
-  const isPersonalFm = usePlayerStore((state) => isPersonalFmPlaybackSource(state.playlistId));
+  const isFmStream = usePlayerStore((state) => isPersonalFmPlaybackSource(state.playlistId));
+  // The FM tab holds the mode picker, so a platform without modes keeps the queue tab.
+  const hasFmModes = useProviderCapability("recommend.fm.modes");
+  const isPersonalFm = isFmStream && hasFmModes;
   const openVisualSettings = useFoliaSettingsStore((state) => state.openVisualSettings);
   const openThemeLibrary = useFoliaSettingsStore((state) => state.openThemeLibrary);
   const isDaylight = theme.name === "snow";

@@ -8,13 +8,12 @@ import {
   PERSONAL_FM_PLAYBACK_SOURCE_ID,
   PERSONAL_FM_REFILL_THRESHOLD,
 } from "@/constants/personalFm";
-import { getPersonalFm, getPersonalFmByMode } from "@/lib/providers/netease/api/personalFm";
 import { translate } from "@/lib/i18n";
 import { getPersonalFmRemainingCount, selectNewPersonalFmQueueItems } from "@/lib/personalFm/queue";
-import { adaptNeteaseTrack, toNeteaseSongDetail } from "@/lib/providers/netease/adapters/track";
+import { getMusicProvider } from "@/lib/providers";
+import { useActiveProviderStore } from "@/store/module/provider";
 import { useI18nStore } from "@/store/module/i18n";
 import { usePlayerStore } from "@/store/module/player";
-import { pruneSongDetail, type SongDetail } from "@/types/song/api";
 import type { PersonalFmSelection, PersonalFmStore } from "@/types/personalFm/model";
 import type { PlayerTrack } from "@/types/player/model";
 
@@ -23,47 +22,18 @@ let refillPromise: Promise<boolean> | null = null;
 let streamPromise: Promise<boolean> | null = null;
 let streamRevision = 0;
 
-// The FM list renders NetEase songs; derive them once per queue array so the list stays stable.
-const fmTracksByQueue = new WeakMap<readonly PlayerTrack[], SongDetail[]>();
-
-function toPersonalFmTracks(queue: readonly PlayerTrack[]): SongDetail[] {
-  const cached = fmTracksByQueue.get(queue);
-  if (cached) return cached;
-  const tracks = queue.flatMap((track) => {
-    const song = toNeteaseSongDetail(track);
-    return song ? [song] : [];
-  });
-  fmTracksByQueue.set(queue, tracks);
-  return tracks;
-}
-
 function selectionsMatch(left: PersonalFmSelection, right: PersonalFmSelection) {
   return left.mode === right.mode && left.scene === right.scene;
 }
 
-async function fetchPersonalFmSongs(selection: PersonalFmSelection): Promise<SongDetail[]> {
-  const fetchDefault = async () => (await getPersonalFm()).data;
-  let response;
-
-  if (selection.mode === "DEFAULT") {
-    response = await fetchDefault();
-  } else {
-    try {
-      const modeResponse = await getPersonalFmByMode({
-        mode: selection.mode,
-        ...(selection.mode === "SCENE_RCMD" && selection.scene ? { submode: selection.scene } : {}),
-      });
-      response = modeResponse.data;
-      if (!Array.isArray(response.data) || response.data.length === 0) {
-        response = await fetchDefault();
-      }
-    } catch (error) {
-      console.warn("[personal-fm] mode endpoint unavailable, using default FM", error);
-      response = await fetchDefault();
-    }
-  }
-
-  return Array.isArray(response.data) ? response.data.map(pruneSongDetail) : [];
+/** The next batch from the active platform's personal FM. */
+async function fetchPersonalFmSongs(selection: PersonalFmSelection): Promise<PlayerTrack[]> {
+  const provider = getMusicProvider(useActiveProviderStore.getState().activeProvider);
+  if (!provider.getPersonalFmTracks) throw new Error("Personal FM is unsupported.");
+  return provider.getPersonalFmTracks({
+    mode: selection.mode,
+    ...(selection.scene ? { scene: selection.scene } : {}),
+  });
 }
 
 async function refillPersonalFmQueue(): Promise<boolean> {
@@ -87,12 +57,9 @@ async function refillPersonalFmQueue(): Promise<boolean> {
         return false;
       }
 
-      const nextSongs = selectNewPersonalFmQueueItems(
-        toPersonalFmTracks(currentPlayer.queue),
-        songs,
-      );
+      const nextSongs = selectNewPersonalFmQueueItems(currentPlayer.queue, songs);
       if (nextSongs.length === 0) return false;
-      currentPlayer.appendQueueItems(nextSongs.map(adaptNeteaseTrack));
+      currentPlayer.appendQueueItems(nextSongs);
       return true;
     } catch (error) {
       console.error("[personal-fm] failed to refill queue", error);
@@ -127,8 +94,7 @@ function replacePersonalFmStream(selection: PersonalFmSelection): Promise<boolea
 
       player.setShuffle(false);
       player.setRepeatMode("off");
-      const tracks = songs.map(adaptNeteaseTrack);
-      await player.playFromSong(tracks[0], tracks, PERSONAL_FM_PLAYBACK_SOURCE_ID);
+      await player.playFromSong(songs[0], songs, PERSONAL_FM_PLAYBACK_SOURCE_ID);
       if (requestedRevision === streamRevision) {
         usePersonalFmStore.setState({
           error: null,
@@ -196,7 +162,7 @@ export const usePersonalFmStore = create<PersonalFmStore>()(
       ensureReady: async () => {
         const player = usePlayerStore.getState();
         if (isPersonalFmPlaybackSource(player.playlistId) && player.queue.length > 0) {
-          const tracks = toPersonalFmTracks(player.queue);
+          const tracks = player.queue;
           if (get().tracks !== tracks) set({ tracks });
           return true;
         }
@@ -241,8 +207,7 @@ usePlayerStore.subscribe((player, previous) => {
     : isPersonalFmPlaybackSource(previous.playlistId)
       ? previous.queue
       : null;
-  const tracks = queue ? toPersonalFmTracks(queue) : null;
-  if (tracks && usePersonalFmStore.getState().tracks !== tracks) {
-    usePersonalFmStore.setState({ tracks });
+  if (queue && usePersonalFmStore.getState().tracks !== queue) {
+    usePersonalFmStore.setState({ tracks: queue as PlayerTrack[] });
   }
 });

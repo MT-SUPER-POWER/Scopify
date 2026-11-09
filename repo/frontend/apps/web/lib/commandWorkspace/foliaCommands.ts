@@ -6,9 +6,12 @@ import { FOLIA_VISUALIZER_DESCRIPTIONS } from "@/constants/foliaCommandDescripti
 import type { FoliaCommandEntry, FoliaCommandGroup } from "@/types/lyrics/folia/commands";
 import type { TranslateFn } from "@/types/i18n/model";
 
-export function buildFoliaCommands(t: TranslateFn): FoliaCommandEntry[] {
+export function buildFoliaCommands(
+  t: TranslateFn,
+  options: { personalFmModes: boolean } = { personalFmModes: true },
+): FoliaCommandEntry[] {
   const entries: Omit<FoliaCommandEntry, "path">[] = [
-    ...buildPersonalFmCommands(t),
+    ...(options.personalFmModes ? buildPersonalFmCommands(t) : []),
     ...FOLIA_LYRIC_COMMANDS,
     {
       id: "folia-settings",

@@ -3,7 +3,9 @@
 import { useCallback, useEffect, useMemo } from "react";
 import { toast } from "sonner";
 import { usePathname } from "next/navigation";
-import { useLoginStatus } from "@/hooks/auth/useLoginStatus";
+import { musicResourceKey } from "@scopify/music-domain/identity";
+import { useActiveAccount } from "@/hooks/auth/useProviderAccounts";
+import { useProviderCapability } from "@/hooks/provider/useActiveProvider";
 
 import {
   PERSONAL_FM_PLAYBACK_SOURCE_ID,
@@ -21,22 +23,23 @@ import { usePersonalFmStore } from "@/store/module/personalFm";
 import { usePlayerStore } from "@/store/module/player";
 import type { PlayerTrack } from "@/types/player/model";
 import type { PlaylistInfo } from "@/types/playlist/model";
-import { getNeteaseTrackId, toNeteasePlayerTrack } from "@/lib/providers/netease/adapters/track";
 
 export function usePersonalFmPlaylist() {
   const { t } = useTranslation();
   const requireLogin = useRequireLoginAction();
-  const isLoggedIn = useLoginStatus();
+  const isLoggedIn = useActiveAccount().isLoggedIn;
+  const canDislike = useProviderCapability("recommend.fm.dislike");
   const pathname = usePathname();
   const selection = usePersonalFmStore((state) => state.selection);
   const status = usePersonalFmStore((state) => state.status);
   const currentSong = usePlayerStore((state) => state.currentTrack);
   const playlistId = usePlayerStore((state) => state.playlistId);
   // Mirrors the FM queue while FM plays, and keeps the last FM list afterwards.
-  const songs = usePersonalFmStore((state) => state.tracks);
-  // The queue entries the songs were taken from, so the list and the queue stay the same entries.
-  const tracks = useMemo(() => songs.map(toNeteasePlayerTrack), [songs]);
-  const { dislike: onDislikeTrack } = usePersonalFmDislike();
+  // The queue entries themselves, so the list and the queue stay the same entries.
+  const tracks = usePersonalFmStore((state) => state.tracks);
+  const { dislike } = usePersonalFmDislike();
+  // Platforms that cannot record the signal show no dislike action.
+  const onDislikeTrack = canDislike ? dislike : undefined;
 
   const isCurrentSource = isPersonalFmPlaybackSource(playlistId);
 
@@ -83,7 +86,8 @@ export function usePersonalFmPlaylist() {
       const player = usePlayerStore.getState();
       const isCurrentTrack =
         isPersonalFmPlaybackSource(player.playlistId) &&
-        getNeteaseTrackId(player.currentTrack) === getNeteaseTrackId(track);
+        player.currentTrack !== null &&
+        musicResourceKey(player.currentTrack.ref) === musicResourceKey(track.ref);
       if (isCurrentTrack) {
         player.setIsPlaying(!player.isPlaying);
         return;
@@ -98,7 +102,7 @@ export function usePersonalFmPlaylist() {
 
   const cover =
     (isCurrentSource ? currentSong?.album?.coverUrl : undefined) ||
-    songs[0]?.al.picUrl ||
+    tracks[0]?.album?.coverUrl ||
     "/personal-fm-cover.svg";
   const themeColor = useCoverThemeColor(cover);
   const playlistInfo = useMemo<PlaylistInfo>(
