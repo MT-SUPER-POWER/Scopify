@@ -7,7 +7,6 @@ import type {
 } from "@scopify/music-domain/recommend";
 
 import { parseQqDate } from "@/lib/providers/qq/adapters/artist";
-import { adaptQqTrack } from "@/lib/providers/qq/adapters/track";
 import {
   adaptQqPlaylistSong,
   qqAlbumCoverUrl,
@@ -155,7 +154,7 @@ export function adaptQqHomeFeed(raw: QqFeedDto): MusicFeedShelf[] {
     if (shelf.items.some((item) => item.type === "playlist")) return [];
     const items: MusicFeedShelf["items"][number][] = shelf.items.map((item) =>
       item.type === "song"
-        ? { kind: "track", track: adaptQqTrack(item.song) }
+        ? { kind: "track", track: adaptQqPlaylistSong(item.song) }
         : {
             kind: "playlist",
             playlist: {
