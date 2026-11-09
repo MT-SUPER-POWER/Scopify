@@ -7,6 +7,7 @@ import type { ProviderRouteRequirement } from "@/types/music/providerComponents"
  */
 export const PROVIDER_ROUTE_REQUIREMENTS: readonly ProviderRouteRequirement[] = [
   { prefix: "/", requires: "home", exact: true },
+  { prefix: "/rank", requires: "library.rank" },
   { prefix: "/recent/report", requires: "history" },
   { prefix: "/recent", requires: "history" },
   { prefix: "/liked", requires: "library.playlists" },

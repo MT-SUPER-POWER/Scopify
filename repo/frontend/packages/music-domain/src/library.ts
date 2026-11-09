@@ -1,7 +1,7 @@
 import { musicAccountKey, musicResourceKey } from "./identity";
 import type { MusicAccountRef, MusicResourceRef } from "./identity";
 import type { MusicPlaylist, MusicPlaylistVisibility } from "./playlist";
-import type { MusicAlbum } from "./track";
+import type { MusicAlbum, MusicTrack } from "./track";
 
 /** Personal state is separate from shared catalog metadata and always names its owner. */
 export interface AccountTrackState {
@@ -40,6 +40,28 @@ export interface MusicLibraryAlbum {
   savedAt: number | null;
 }
 
+/** A song in the account's cloud drive. */
+export interface MusicCloudEntry {
+  /** The catalog track the file matched; present only for entries that did match one. */
+  track: MusicTrack;
+  /** The name of the file as it was uploaded. */
+  fileName: string;
+  /** When it was added, in milliseconds since the epoch, or null when not reported. */
+  addedAt: number | null;
+  /** Whether the platform can serve audio for it; files without a match often cannot. */
+  playable: boolean;
+}
+
+/** The periods a listening ranking covers. */
+export type MusicListeningRankRange = "day" | "week" | "month" | "year";
+
+/** One song of the account's listening ranking, most played first. */
+export interface MusicListeningRankEntry {
+  track: MusicTrack;
+  /** Times the account played it in the period. */
+  listenCount: number;
+}
+
 export interface MusicLibraryRequestOptions {
   signal?: AbortSignal;
 }
@@ -74,6 +96,13 @@ export interface MusicLibrarySource {
     account: MusicAccountRef,
     options?: MusicLibraryRequestOptions,
   ): Promise<MusicLibraryAlbum[]>;
+  /** The songs in the account's cloud drive (`cloud`), whole. */
+  getCloudEntries?(options?: MusicLibraryRequestOptions): Promise<MusicCloudEntry[]>;
+  /** The account's most played songs in the current period (`library.rank`). */
+  getListeningRank?(
+    range: MusicListeningRankRange,
+    options?: MusicLibraryRequestOptions,
+  ): Promise<MusicListeningRankEntry[]>;
   /** Likes or unlikes one track for the signed-in account. */
   setTrackLiked?(track: MusicResourceRef<"track">, liked: boolean): Promise<void>;
   /** Creates a playlist; answers its reference when the platform reports it. */

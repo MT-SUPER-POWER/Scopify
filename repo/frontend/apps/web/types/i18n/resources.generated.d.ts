@@ -1287,6 +1287,8 @@ export default interface Resources {
     "empty.liked.title": "还没有喜欢的音乐";
     "empty.podcasts.description": "收藏或创建播客后，它们会显示在这里。";
     "empty.podcasts.title": "还没有播客内容";
+    "empty.rank.description": "多听几首歌，排行就会出现在这里。";
+    "empty.rank.title": "这段时间还没有听歌记录";
     "listeningReport.currentMonth": "本月";
     "listeningReport.empty": "这个周期还没有可展示的听歌数据。";
     "listeningReport.entry": "听歌足迹";
@@ -1311,8 +1313,10 @@ export default interface Resources {
     "loggedOut.collection": "登录后查看收藏的专辑和歌手";
     "loggedOut.liked": "登录后查看喜欢的音乐";
     "loggedOut.podcasts": "登录后查看收藏的播客";
+    "loggedOut.rank": "登录后查看听歌排行";
     "loggedOut.recent": "登录后查看最近播放";
     "meta.playbackHistory": "播放记录";
+    "meta.rank": "按播放次数排序";
     "podcasts.action.favorite": "收藏";
     "podcasts.action.showDescription": "查看节目简介";
     "podcasts.action.unfavorite": "取消收藏";
@@ -1344,11 +1348,16 @@ export default interface Resources {
     "podcasts.toast.unfavoriteSuccess": "已取消收藏播客";
     "podcasts.view.cards": "卡片视图";
     "podcasts.view.list": "列表视图";
+    "rank.range.day": "今日";
+    "rank.range.month": "本月";
+    "rank.range.week": "本周";
+    "rank.range.year": "本年";
     "section.albums": "收藏的专辑";
     "section.artists": "关注的歌手";
     "title.cloud": "我的云盘";
     "title.collection": "我的收藏";
     "title.podcasts": "我的播客";
+    "title.rank": "听歌排行";
     "title.recent": "最近播放";
     "voice.likeFailed": "声音喜欢状态更新失败";
     "voice.likeSuccess": "已喜欢该声音";
@@ -2339,6 +2348,7 @@ export default interface Resources {
     "library.cloud": "我的云盘";
     "library.collection": "我的收藏";
     "library.likedMusic": "喜欢的音乐";
+    "library.listeningRank": "听歌排行";
     "library.podcasts": "我的播客";
     "library.recentPlayback": "最近播放";
     "library.title": "资料库";

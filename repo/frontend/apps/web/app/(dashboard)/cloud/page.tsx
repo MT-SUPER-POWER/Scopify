@@ -8,6 +8,7 @@ import { PlaylistContent } from "@/components/Playlist/PlaylistContent";
 import { QuietState } from "@/components/shared/QuietState";
 import { SidebarPlaylistConfirmDialog } from "@/components/Sidebar/SidebarPlaylistConfirmDialog";
 import { CLOUD_SONG_FALLBACK_COVER } from "@/constants/cloud";
+import { useActiveProvider } from "@/hooks/provider/useActiveProvider";
 import { useCloudDrive } from "@/hooks/library/useCloudDrive";
 import { toNeteaseTrackList } from "@/lib/providers/netease/adapters/track";
 import { useTranslation } from "react-i18next";
@@ -18,10 +19,11 @@ import type { PlaylistInfo } from "@/types/playlist/model";
 import { CloudDriveActions } from "./_components/CloudDriveActions";
 import { CloudMatchDialog } from "./_components/CloudMatchDialog";
 import { CloudStorageRing } from "./_components/CloudStorageRing";
+import { ProviderCloudPage } from "./_components/ProviderCloudPage";
 
 const EMPTY_TRACKS: SongDetail[] = [];
 
-export default function CloudDrivePage() {
+function NeteaseCloudDrivePage() {
   const { t } = useTranslation();
   const { downloadTrack, isLoggedIn, matchTrack, query, removeTrack, uploadFiles, uploadProgress } =
     useCloudDrive();
@@ -145,4 +147,10 @@ export default function CloudDrivePage() {
       />
     </>
   );
+}
+
+/** A platform that only lists its cloud drive has the plain page; NetEase manages its own. */
+export default function CloudDrivePage() {
+  const provider = useActiveProvider();
+  return provider.getCloudEntries ? <ProviderCloudPage /> : <NeteaseCloudDrivePage />;
 }

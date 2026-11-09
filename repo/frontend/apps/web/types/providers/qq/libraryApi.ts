@@ -106,3 +106,28 @@ export interface QqPlaylistTracksWriteDto {
   code: number;
   changed: boolean;
 }
+
+/**
+ * GET /user/cloud. `song` is the upstream song object as the backend hands it over, or null for
+ * a file that matched no catalog song; its fields are read defensively.
+ */
+export interface QqCloudDto {
+  code: 200;
+  data: {
+    song: unknown;
+    fileName: string;
+    /** Milliseconds since the epoch, or null when the upstream gives none. */
+    addTime: number | null;
+    playable: boolean;
+  }[];
+  count: number;
+  hasMore: boolean;
+}
+
+/** GET /user/listening-rank: songs the account played in a period, most played first. */
+export interface QqListeningRankDto {
+  code: 200;
+  range: "day" | "week" | "month" | "year";
+  /** Each `track` is the upstream song object; its fields are read defensively. */
+  items: { track: unknown; listenCount: number }[];
+}

@@ -39,6 +39,7 @@ export const MUSIC_CAPABILITIES = [
   "comments.write",
   "comments.replies",
   "cloud",
+  "library.rank",
   "podcast",
   "social",
   "messages",

@@ -1,6 +1,8 @@
 import { qqClient } from "@/lib/providers/qq/client";
 import type {
+  QqCloudDto,
   QqLikedSongsDto,
+  QqListeningRankDto,
   QqPlaylistCreateDto,
   QqPlaylistTracksWriteDto,
   QqPlaylistWriteDto,
@@ -91,5 +93,25 @@ export function changeQqPlaylistTracks(tid: number, op: "add" | "del", songIds: 
     url: "/user/playlist/tracks",
     data: { tid, op, songs: songIds.map((id) => ({ id, type: 0 })) },
     errorContext: { operation: "qq.library.playlist.tracks", tid, op, count: songIds.length },
+  });
+}
+
+/** A page of the cloud drive; the backend serves at most 1000 songs per request. */
+export function getQqCloud(offset: number, limit: number, signal?: AbortSignal) {
+  return qqClient.requestData<QqCloudDto>({
+    url: "/user/cloud",
+    params: { offset, limit },
+    signal,
+    errorContext: { operation: "qq.library.cloud", offset },
+  });
+}
+
+/** The account's ranking for the current day, week, month or year. */
+export function getQqListeningRank(range: QqListeningRankDto["range"], signal?: AbortSignal) {
+  return qqClient.requestData<QqListeningRankDto>({
+    url: "/user/listening-rank",
+    params: { range },
+    signal,
+    errorContext: { operation: "qq.library.listeningRank", range },
   });
 }

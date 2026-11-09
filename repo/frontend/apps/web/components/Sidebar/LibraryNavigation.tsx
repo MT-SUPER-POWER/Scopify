@@ -1,6 +1,6 @@
 "use client";
 
-import { Bookmark, Cloud, History, Home, Podcast, Users } from "lucide-react";
+import { BarChart3, Bookmark, Cloud, History, Home, Podcast, Users } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
@@ -25,6 +25,12 @@ const sections = [
         icon: History,
         labelKey: "sidebar.library.recentPlayback",
         requires: "history",
+      },
+      {
+        href: "/rank",
+        icon: BarChart3,
+        labelKey: "sidebar.library.listeningRank",
+        requires: "library.rank",
       },
       {
         href: "/podcasts",

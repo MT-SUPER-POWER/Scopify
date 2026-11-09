@@ -1,11 +1,19 @@
 import type { MusicAccountRef } from "@scopify/music-domain/identity";
-import type { MusicLibraryAlbum, MusicLibraryPlaylist } from "@scopify/music-domain/library";
+import type {
+  MusicCloudEntry,
+  MusicLibraryAlbum,
+  MusicLibraryPlaylist,
+  MusicListeningRankEntry,
+} from "@scopify/music-domain/library";
 import type { MusicPlaylistVisibility } from "@scopify/music-domain/playlist";
 
-import { qqAlbumCoverUrl } from "@/lib/providers/qq/adapters/playlist";
+import { adaptQqPlaylistSong, qqAlbumCoverUrl } from "@/lib/providers/qq/adapters/playlist";
+import { readQqRawTrack } from "@/lib/providers/qq/adapters/track";
 import type {
+  QqCloudDto,
   QqLibraryAlbumEntryDto,
   QqLibraryPlaylistEntryDto,
+  QqListeningRankDto,
 } from "@/types/providers/qq/libraryApi";
 
 /** The directory number of the built-in "liked songs" inside an account. */
@@ -84,4 +92,29 @@ export function adaptQqLibraryAlbum(raw: QqLibraryAlbumEntryDto): MusicLibraryAl
     trackCount: raw.songnum ?? raw.song_num ?? null,
     savedAt: savedAt ? savedAt * 1000 : null,
   };
+}
+
+/** Cloud entries that matched a catalog song; uploads without a match have no track to show. */
+export function adaptQqCloudEntries(raw: QqCloudDto["data"]): MusicCloudEntry[] {
+  return raw.flatMap((entry) => {
+    const dto = readQqRawTrack(entry.song);
+    if (!dto) return [];
+    return [
+      {
+        track: adaptQqPlaylistSong(dto),
+        fileName: entry.fileName,
+        addedAt: entry.addTime,
+        playable: entry.playable,
+      },
+    ];
+  });
+}
+
+export function adaptQqListeningRank(raw: QqListeningRankDto["items"]): MusicListeningRankEntry[] {
+  return raw.flatMap((item) => {
+    const dto = readQqRawTrack(item.track);
+    return dto
+      ? [{ track: adaptQqPlaylistSong(dto), listenCount: Math.max(0, item.listenCount) }]
+      : [];
+  });
 }

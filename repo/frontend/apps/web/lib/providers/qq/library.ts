@@ -1,8 +1,15 @@
 import type { MusicLibrarySource } from "@scopify/music-domain/library";
 
-import { adaptQqLibraryAlbum, adaptQqLibraryPlaylist } from "@/lib/providers/qq/adapters/library";
+import {
+  adaptQqCloudEntries,
+  adaptQqLibraryAlbum,
+  adaptQqLibraryPlaylist,
+  adaptQqListeningRank,
+} from "@/lib/providers/qq/adapters/library";
 import {
   createQqPlaylist,
+  getQqCloud,
+  getQqListeningRank,
   deleteQqPlaylist,
   getQqLikedSongs,
   getQqUserAlbums,
@@ -17,9 +24,11 @@ import {
   qqPlaylistTid,
   setQqTrackLiked,
 } from "@/lib/providers/qq/libraryWrite";
-import type { QqLibraryPlaylistEntryDto } from "@/types/providers/qq/libraryApi";
+import type { QqCloudDto, QqLibraryPlaylistEntryDto } from "@/types/providers/qq/libraryApi";
 
 const PAGE_SIZE = 100;
+/** The backend serves at most 1000 cloud songs per request. */
+const CLOUD_PAGE_SIZE = 500;
 /** A listing that still reports more after this many rounds is treated as broken. */
 const MAX_ROUNDS = 50;
 
@@ -47,6 +56,23 @@ export const qqLibrarySource: MusicLibrarySource = {
       favoriteOffset = data.nextFavoriteOffset;
     }
     throw new Error("QQ playlist list is incomplete.");
+  },
+
+  /** Reads the cloud drive page by page until the backend reports no more. */
+  async getCloudEntries(options) {
+    const entries: QqCloudDto["data"] = [];
+    for (let offset = 0, round = 0; round < MAX_ROUNDS; round += 1) {
+      const data = await getQqCloud(offset, CLOUD_PAGE_SIZE, options?.signal);
+      entries.push(...data.data);
+      if (!data.hasMore) return adaptQqCloudEntries(entries);
+      if (data.data.length === 0) throw new Error("QQ cloud list is incomplete.");
+      offset += data.data.length;
+    }
+    throw new Error("QQ cloud list is incomplete.");
+  },
+
+  async getListeningRank(range, options) {
+    return adaptQqListeningRank((await getQqListeningRank(range, options?.signal)).items);
   },
 
   async getLikedTrackIds(_account, options) {
