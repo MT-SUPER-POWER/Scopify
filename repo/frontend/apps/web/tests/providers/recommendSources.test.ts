@@ -21,6 +21,7 @@ mock.module("@/lib/providers/qq/api/recommend", () => ({
   getQqToplistSongs: qqToplistSongs,
   getQqPersonalFm: qqPersonalFm,
   getQqDailySongs: mock(async () => ({})),
+  getQqNewAlbums: mock(async () => ({})),
   getQqNewSongs: mock(async () => ({})),
   getQqRecommendPlaylists: mock(async () => ({})),
 }));
