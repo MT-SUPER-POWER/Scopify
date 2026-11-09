@@ -1,4 +1,5 @@
 import type { MusicProvider } from "@scopify/music-domain/identity";
+import type { MusicSearchKind } from "@scopify/music-domain/search";
 
 import type { CommentResourceKind } from "@/types/comment/api";
 import type { CommentSortType } from "@/types/comment/model";
@@ -102,17 +103,23 @@ export const musicQueryKeys = {
     subscriptions: (userId: number) => ["radio", "subscriptions", userId] as const,
   },
   search: {
-    albums: (keyword: string, limit: number) => ["search", "albums", keyword, limit] as const,
-    artists: (keyword: string, limit: number) => ["search", "artists", keyword, limit] as const,
+    /** One page-by-page list of results of a kind, however the platform serves it. */
+    results: (provider: MusicProvider, kind: MusicSearchKind, keyword: string, limit: number) =>
+      providerQueryKey(provider, "search", "results", kind, keyword, limit),
+    /** The first results of every kind from one request, where the platform has one. */
+    overview: (provider: MusicProvider, keyword: string) =>
+      providerQueryKey(provider, "search", "overview", keyword),
+    hot: (provider: MusicProvider) => providerQueryKey(provider, "search", "hot"),
+    suggest: (provider: MusicProvider, keyword: string) =>
+      providerQueryKey(provider, "search", "suggest", keyword),
     /** 云盘匹配与歌词匹配共用：搜歌并转成匹配候选。 */
     matchCandidates: (keyword: string, limit: number) =>
       ["search", "match-candidates", keyword, limit] as const,
-    complex: (keyword: string) => ["search", "complex", keyword] as const,
     lyrics: (keyword: string, limit: number) => ["search", "lyrics", keyword, limit] as const,
+    /** 乐谱搜索读取网易云歌曲的原始结果。 */
+    sheetSongs: (keyword: string, limit: number) =>
+      ["search", "sheet-songs", keyword, limit] as const,
     mvs: (keyword: string, limit: number) => ["search", "mvs", keyword, limit] as const,
-    playlists: (keyword: string, limit: number) => ["search", "playlists", keyword, limit] as const,
-    songs: (keyword: string, limit: number) => ["search", "songs", keyword, limit] as const,
-    suggest: (keyword: string) => ["search", "suggest", keyword] as const,
     voices: (keyword: string, limit: number) => ["search", "voices", keyword, limit] as const,
     voiceLists: (keyword: string, limit: number) =>
       ["search", "voice-lists", keyword, limit] as const,

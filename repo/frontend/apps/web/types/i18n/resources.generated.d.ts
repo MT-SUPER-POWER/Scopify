@@ -1905,7 +1905,7 @@ export default interface Resources {
     "modal.recentSearches": "最近搜索";
     "modal.relatedSuggestions": "相关建议";
     "playlist.byCreator": "来自 {{name}}";
-    "playlist.neteaseUser": "网易云用户";
+    "playlist.unknownCreator": "未知用户";
     "podcast.episodes": "节目";
     "podcast.programCount": "{{count}} 期节目";
     "podcast.rating": "评分";

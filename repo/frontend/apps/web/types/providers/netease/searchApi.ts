@@ -345,3 +345,9 @@ export interface NeteaseDefaultSearchResponse {
     algWords?: { keyword: string }[];
   };
 }
+
+/** What a NetEase overview carries beyond the interface types: the podcast and voice blocks. */
+export interface NeteaseSearchOverviewExtras {
+  /** The unmapped reply; podcasts and voices are read from it where they are shown. */
+  readonly response: ComplexSearchResponse;
+}

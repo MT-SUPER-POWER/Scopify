@@ -1,64 +1,36 @@
+import type { MusicPlaylist } from "@scopify/music-domain/playlist";
+import type { MusicAlbumResult } from "@scopify/music-domain/search";
 import { useCallback, useState } from "react";
 import { toast } from "sonner";
+import { useActiveProvider } from "@/hooks/provider/useActiveProvider";
 import { getAlbumDetail } from "@/lib/providers/netease/api/album";
-import { getPlaylistAllTracks } from "@/lib/providers/netease/api/playlist";
+import { adaptNeteaseTrack } from "@/lib/providers/netease/adapters/track";
 import { translate } from "@/lib/i18n";
 import { usePlayerStore } from "@/store";
 import { useI18nStore } from "@/store/module/i18n";
 import { pruneSongDetail, type RawSongDetail, type SongDetail } from "@/types/song/api";
-import type { Album, Playlist, Song } from "@/types/search/model";
-import { adaptNeteaseTrack, getNeteaseTrackId } from "@/lib/providers/netease/adapters/track";
-
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ UTILS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-function songToSongDetail(song: Song): SongDetail {
-  const picUrl = song.album.picUrl ?? song.artists[0]?.picUrl ?? "";
-  return {
-    id: song.id,
-    name: song.name,
-    dt: song.duration,
-    fee: song.fee ?? 0,
-    ar: song.artists.map((a) => ({ id: a.id, name: a.name })),
-    al: { id: song.album.id, name: song.album.name, picUrl },
-    publishTime: song.album.publishTime ?? 0,
-  };
-}
-
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ HOOK ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 export function usePlayActions() {
-  const { currentTrack, isPlaying, setIsPlaying, setQueue, playTrack, playQueueIndex } =
-    usePlayerStore();
+  const provider = useActiveProvider();
+  const { setQueue, playQueueIndex } = usePlayerStore();
   const [loadingPlayId, setLoadingPlayId] = useState<string | null>(null);
 
-  const isSongPlaying = (id: number) => getNeteaseTrackId(currentTrack) === id && isPlaying;
-
-  const handlePlaySong = useCallback(
-    (song: Song, index: number, songList: Song[]) => {
-      if (getNeteaseTrackId(currentTrack) === song.id) {
-        setIsPlaying(!isPlaying);
-        return;
-      }
-      setQueue(songList.map(songToSongDetail).map(adaptNeteaseTrack), index);
-      void playTrack(adaptNeteaseTrack(songToSongDetail(song)));
-    },
-    [currentTrack, isPlaying, setIsPlaying, setQueue, playTrack],
-  );
-
   const handlePlayPlaylist = useCallback(
-    async (playlist: Playlist, e: React.MouseEvent) => {
+    async (playlist: MusicPlaylist, e: React.MouseEvent) => {
       e.stopPropagation();
-      const key = `playlist-${playlist.id}`;
+      const key = `playlist-${playlist.ref.id}`;
       if (loadingPlayId === key) return;
       setLoadingPlayId(key);
       try {
-        const res = await getPlaylistAllTracks({ id: playlist.id });
-        const tracks: SongDetail[] = (res.data.songs ?? []).map(pruneSongDetail);
+        const { tracks } = await provider.getPlaylistTracks(playlist.ref, {
+          offset: 0,
+          limit: Math.max(playlist.trackCount, 1),
+        });
         if (!tracks.length) {
           toast.error(translate(useI18nStore.getState().locale, "sidebar.lib.noTracks"));
           return;
         }
-        setQueue(tracks.map(adaptNeteaseTrack), 0);
+        setQueue(tracks, 0);
         await playQueueIndex(0);
       } catch {
         toast.error(translate(useI18nStore.getState().locale, "sidebar.lib.fetchTracksFailed"));
@@ -66,17 +38,18 @@ export function usePlayActions() {
         setLoadingPlayId(null);
       }
     },
-    [loadingPlayId, setQueue, playQueueIndex],
+    [loadingPlayId, provider, setQueue, playQueueIndex],
   );
 
+  /** Albums have no interface type yet, so this is NetEase's album read (`album.read`). */
   const handlePlayAlbum = useCallback(
-    async (album: Album, e: React.MouseEvent) => {
+    async (album: MusicAlbumResult, e: React.MouseEvent) => {
       e.stopPropagation();
-      const key = `album-${album.id}`;
+      const key = `album-${album.ref.id}`;
       if (loadingPlayId === key) return;
       setLoadingPlayId(key);
       try {
-        const res = await getAlbumDetail(album.id);
+        const res = await getAlbumDetail(Number(album.ref.id));
         const tracks: SongDetail[] = (res.data.songs ?? []).map((song: RawSongDetail) =>
           pruneSongDetail({
             ...song,
@@ -103,5 +76,5 @@ export function usePlayActions() {
     [loadingPlayId, setQueue, playQueueIndex],
   );
 
-  return { loadingPlayId, isSongPlaying, handlePlaySong, handlePlayPlaylist, handlePlayAlbum };
+  return { loadingPlayId, handlePlayPlaylist, handlePlayAlbum };
 }

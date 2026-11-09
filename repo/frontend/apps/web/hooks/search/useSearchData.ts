@@ -3,40 +3,24 @@
 import { useCallback, useMemo } from "react";
 
 import {
-  useComplexSearchQuery,
-  useInfiniteAlbumSearchQuery,
-  useInfiniteArtistSearchQuery,
   useInfiniteLyricSearchQuery,
   useInfiniteMvSearchQuery,
-  useInfinitePlaylistSearchQuery,
-  useInfiniteSongSearchQuery,
+  useInfiniteSearchQuery,
   useInfiniteVoiceListSearchQuery,
   useInfiniteVoiceSearchQuery,
+  useSearchOverviewQuery,
 } from "@/hooks/search/useSearchQueries";
+import { useProviderCapability } from "@/hooks/provider/useActiveProvider";
 import { translate } from "@/lib/i18n";
-import { mapComplexSearchResponse } from "@/lib/search/complexSearchAdapter";
+import { mapComplexSearchMedia } from "@/lib/search/complexSearchAdapter";
 import {
   getVoiceListSearchItems,
   mapVoiceListSearchItem,
 } from "@/lib/search/voiceListSearchAdapter";
 import { getVoiceSearchItems, mapVoiceSearchItem } from "@/lib/search/voiceSearchAdapter";
 import { useI18nStore } from "@/store/module/i18n";
-import type {
-  LyricSearchResource,
-  SearchResultAlbum,
-  SearchResultPlaylist,
-  SearchArtistSource,
-  SongSearchResource,
-} from "@/types/providers/netease/searchApi";
-import type {
-  Album,
-  Artist,
-  Category,
-  LyricSearchItem,
-  Playlist,
-  Podcast,
-  Song,
-} from "@/types/search/model";
+import type { LyricSearchResource, SearchArtistSource } from "@/types/providers/netease/searchApi";
+import type { Artist, Category, LyricSearchItem, Podcast, Song } from "@/types/search/model";
 
 function isValidPicUrl(url: string | null | undefined): url is string {
   return typeof url === "string" && url.startsWith("http");
@@ -52,65 +36,6 @@ function mapSearchArtist(source: SearchArtistSource | undefined): Artist {
     musicSize: source?.musicSize,
     name: source?.name ?? "",
     picUrl: isValidPicUrl(source?.picUrl) ? source.picUrl : null,
-  };
-}
-
-function mapSearchAlbum(source: SearchResultAlbum, unknownAlbumName: string): Album {
-  return {
-    artist: mapSearchArtist(source.artist),
-    blurPicUrl: source.blurPicUrl,
-    id: source.id,
-    name: source.name || unknownAlbumName,
-    picUrl: source.picUrl,
-    publishTime: source.publishTime ?? 0,
-    size: source.size ?? 0,
-  };
-}
-
-function mapSearchPlaylist(source: SearchResultPlaylist): Playlist {
-  return {
-    bookCount: source.bookCount,
-    coverImgUrl: source.coverImgUrl ?? "",
-    creator: source.creator,
-    description: source.description ?? undefined,
-    id: source.id,
-    name: source.name,
-    playCount: source.playCount ?? 0,
-    trackCount: source.trackCount ?? 0,
-  };
-}
-
-function mapResourceToSong(
-  resource: SongSearchResource,
-  unknownAlbumName: string,
-  unknownSongName: string,
-): Song | null {
-  const song = resource.baseInfo?.simpleSongData;
-  if (!song) return null;
-
-  const artists = song.ar?.map(mapSearchArtist) ?? [];
-  const albumPicUrl = isValidPicUrl(song.al?.picUrl)
-    ? song.al.picUrl
-    : isValidPicUrl(song.al?.blurPicUrl)
-      ? song.al.blurPicUrl
-      : "";
-
-  return {
-    album: {
-      artist: artists[0] ?? mapSearchArtist(undefined),
-      id: song.al?.id ?? 0,
-      name: song.al?.name ?? unknownAlbumName,
-      picUrl: albumPicUrl,
-      publishTime: 0,
-      size: 0,
-    },
-    alias: song.alia ?? song.alias ?? [],
-    artists,
-    duration: song.dt ?? 0,
-    fee: song.fee,
-    id: song.id,
-    mvid: song.mv || song.mvid,
-    name: song.name ?? unknownSongName,
   };
 }
 
@@ -158,61 +83,59 @@ function mapLyricSearchResource(
 export function useSearchData(keywords: string, activeCategory: Category) {
   const locale = useI18nStore((state) => state.locale);
   const keyword = keywords.trim();
+  const hasOverview = useProviderCapability("search.overview");
+  const canSearchLyrics = useProviderCapability("search.lyrics");
+  const canSearchMvs = useProviderCapability("mv");
+  const canSearchPodcasts = useProviderCapability("podcast");
   const isAll = activeCategory === "All";
-  const usesComplexSearch = isAll;
+  // One request ranks every kind together; platforms without it list each kind on its own.
+  const usesOverview = isAll && hasOverview;
   const loadSongs = isAll || activeCategory === "Songs";
   const loadAlbums = isAll || activeCategory === "Albums";
   const loadPlaylists = isAll || activeCategory === "Playlists";
-  const loadPodcasts = activeCategory === "Podcasts";
-  const loadVoices = activeCategory === "Voices";
+  const loadPodcasts = activeCategory === "Podcasts" && canSearchPodcasts;
+  const loadVoices = activeCategory === "Voices" && canSearchPodcasts;
   const loadArtists = isAll || activeCategory === "Artists";
-  const loadLyrics = activeCategory === "Lyrics";
+  const loadLyrics = activeCategory === "Lyrics" && canSearchLyrics;
   // 综合搜索不含 MV，全部视图与 MV 分类共用同一个 MV 查询
-  const loadMvs = isAll || activeCategory === "MVs";
-  const complexQuery = useComplexSearchQuery(keyword, usesComplexSearch);
-  const songQuery = useInfiniteSongSearchQuery(keyword, 30, !usesComplexSearch && loadSongs);
+  const loadMvs = (isAll || activeCategory === "MVs") && canSearchMvs;
+  const overviewQuery = useSearchOverviewQuery(keyword, usesOverview);
+  const songQuery = useInfiniteSearchQuery("song", keyword, 30, !usesOverview && loadSongs);
   const lyricQuery = useInfiniteLyricSearchQuery(keyword, 30, loadLyrics);
-  const albumQuery = useInfiniteAlbumSearchQuery(keyword, 20, !usesComplexSearch && loadAlbums);
-  const playlistQuery = useInfinitePlaylistSearchQuery(
+  const albumQuery = useInfiniteSearchQuery("album", keyword, 20, !usesOverview && loadAlbums);
+  const playlistQuery = useInfiniteSearchQuery(
+    "playlist",
     keyword,
     20,
-    !usesComplexSearch && loadPlaylists,
+    !usesOverview && loadPlaylists,
   );
-  const artistQuery = useInfiniteArtistSearchQuery(keyword, 20, !usesComplexSearch && loadArtists);
+  const artistQuery = useInfiniteSearchQuery("artist", keyword, 20, !usesOverview && loadArtists);
   const voiceListQuery = useInfiniteVoiceListSearchQuery(keyword, 30, loadPodcasts);
   const voiceSearchQuery = useInfiniteVoiceSearchQuery(keyword, 30, loadVoices);
   const mvQuery = useInfiniteMvSearchQuery(keyword, 24, loadMvs);
   const unknownAlbumName = translate(locale, "common.meta.unknownAlbum");
   const unknownPodcastName = translate(locale, "search.podcast.unknown");
   const unknownSongName = translate(locale, "common.meta.unknownSong");
-  const complexResults = useMemo(
+  const overview = overviewQuery.data;
+  const overviewMedia = useMemo(
     () =>
-      mapComplexSearchResponse(
-        complexQuery.data,
+      mapComplexSearchMedia(
+        overview?.netease?.response,
         unknownAlbumName,
         unknownSongName,
         unknownPodcastName,
       ),
-    [complexQuery.data, unknownAlbumName, unknownPodcastName, unknownSongName],
+    [overview?.netease?.response, unknownAlbumName, unknownPodcastName, unknownSongName],
   );
 
   const songs = useMemo(
     () =>
-      isAll
-        ? complexResults.songs
+      usesOverview
+        ? (overview?.songs ?? [])
         : loadSongs
-          ? (songQuery.data?.pages.flatMap((page) => page.data?.resources ?? []) ?? [])
-              .map((resource) => mapResourceToSong(resource, unknownAlbumName, unknownSongName))
-              .filter((song): song is Song => song !== null)
+          ? (songQuery.data?.pages.flatMap((page) => page.items) ?? [])
           : [],
-    [
-      complexResults.songs,
-      isAll,
-      loadSongs,
-      songQuery.data?.pages,
-      unknownAlbumName,
-      unknownSongName,
-    ],
+    [loadSongs, overview?.songs, songQuery.data?.pages, usesOverview],
   );
   const lyrics = useMemo(
     () =>
@@ -225,52 +148,52 @@ export function useSearchData(keywords: string, activeCategory: Category) {
   );
   const albums = useMemo(
     () =>
-      isAll
-        ? complexResults.albums
+      usesOverview
+        ? (overview?.albums ?? [])
         : loadAlbums
-          ? (albumQuery.data?.pages.flatMap((page) => page.result?.albums ?? []) ?? []).map(
-              (album) => mapSearchAlbum(album, unknownAlbumName),
-            )
+          ? (albumQuery.data?.pages.flatMap((page) => page.items) ?? [])
           : [],
-    [albumQuery.data?.pages, complexResults.albums, isAll, loadAlbums, unknownAlbumName],
+    [albumQuery.data?.pages, loadAlbums, overview?.albums, usesOverview],
   );
   const playlists = useMemo(
     () =>
-      isAll
-        ? complexResults.playlists
+      usesOverview
+        ? (overview?.playlists ?? [])
         : loadPlaylists
-          ? (playlistQuery.data?.pages.flatMap((page) => page.result?.playlists ?? []) ?? []).map(
-              mapSearchPlaylist,
-            )
+          ? (playlistQuery.data?.pages.flatMap((page) => page.items) ?? [])
           : [],
-    [complexResults.playlists, isAll, loadPlaylists, playlistQuery.data?.pages],
+    [loadPlaylists, overview?.playlists, playlistQuery.data?.pages, usesOverview],
   );
   const artists = useMemo(
     () =>
-      isAll
-        ? complexResults.artists
+      usesOverview
+        ? (overview?.artists ?? [])
         : loadArtists
-          ? (artistQuery.data?.pages.flatMap((page) => page.result?.artists ?? []) ?? []).map(
-              mapSearchArtist,
-            )
+          ? (artistQuery.data?.pages.flatMap((page) => page.items) ?? [])
           : [],
-    [artistQuery.data?.pages, complexResults.artists, isAll, loadArtists],
+    [artistQuery.data?.pages, loadArtists, overview?.artists, usesOverview],
   );
   const podcasts = useMemo(
     () =>
-      isAll
-        ? complexResults.podcasts
+      usesOverview
+        ? overviewMedia.podcasts
         : loadPodcasts
           ? (voiceListQuery.data?.pages.flatMap(getVoiceListSearchItems) ?? [])
               .map((voiceList) => mapVoiceListSearchItem(voiceList, unknownPodcastName))
               .filter((podcast): podcast is Podcast => podcast !== null)
           : [],
-    [complexResults.podcasts, isAll, loadPodcasts, unknownPodcastName, voiceListQuery.data?.pages],
+    [
+      loadPodcasts,
+      overviewMedia.podcasts,
+      unknownPodcastName,
+      usesOverview,
+      voiceListQuery.data?.pages,
+    ],
   );
   const voices = useMemo(
     () =>
-      isAll
-        ? complexResults.voices
+      usesOverview
+        ? overviewMedia.voices
         : loadVoices
           ? (voiceSearchQuery.data?.pages
               .flatMap(getVoiceSearchItems)
@@ -280,12 +203,12 @@ export function useSearchData(keywords: string, activeCategory: Category) {
               .filter((voice): voice is NonNullable<typeof voice> => voice !== null) ?? [])
           : [],
     [
-      complexResults.voices,
-      isAll,
       loadVoices,
+      overviewMedia.voices,
       unknownAlbumName,
       unknownPodcastName,
       unknownSongName,
+      usesOverview,
       voiceSearchQuery.data?.pages,
     ],
   );
@@ -293,9 +216,9 @@ export function useSearchData(keywords: string, activeCategory: Category) {
     () => (loadMvs ? (mvQuery.data?.pages.flatMap((page) => page.result?.mvs ?? []) ?? []) : []),
     [loadMvs, mvQuery.data?.pages],
   );
-  const bestMatch = isAll ? complexResults.bestMatch : null;
-  const loading = usesComplexSearch
-    ? complexQuery.isLoading
+  const bestMatch = usesOverview ? (overview?.bestMatch ?? null) : null;
+  const loading = usesOverview
+    ? overviewQuery.isLoading
     : (loadSongs && songQuery.isLoading) ||
       (loadAlbums && albumQuery.isLoading) ||
       (loadPlaylists && playlistQuery.isLoading) ||
@@ -304,8 +227,8 @@ export function useSearchData(keywords: string, activeCategory: Category) {
       (loadArtists && artistQuery.isLoading) ||
       (loadLyrics && lyricQuery.isLoading) ||
       (loadMvs && mvQuery.isLoading);
-  const hasError = usesComplexSearch
-    ? complexQuery.isError
+  const hasError = usesOverview
+    ? overviewQuery.isError
     : (loadSongs && songQuery.isError) ||
       (loadAlbums && albumQuery.isError) ||
       (loadPlaylists && playlistQuery.isError) ||
@@ -316,8 +239,8 @@ export function useSearchData(keywords: string, activeCategory: Category) {
       (loadMvs && mvQuery.isError);
 
   const refetch = useCallback(async () => {
-    if (usesComplexSearch) {
-      await complexQuery.refetch();
+    if (usesOverview) {
+      await overviewQuery.refetch();
       return;
     }
 
@@ -334,10 +257,10 @@ export function useSearchData(keywords: string, activeCategory: Category) {
   }, [
     albumQuery,
     artistQuery,
-    complexQuery,
+    overviewQuery,
     lyricQuery,
     mvQuery,
-    usesComplexSearch,
+    usesOverview,
     loadAlbums,
     loadArtists,
     loadLyrics,
@@ -389,5 +312,7 @@ export function useSearchData(keywords: string, activeCategory: Category) {
     refetch,
     songs,
     voices,
+    /** The platform ranks a best match across kinds; otherwise the overview has none. */
+    hasBestMatch: usesOverview,
   };
 }

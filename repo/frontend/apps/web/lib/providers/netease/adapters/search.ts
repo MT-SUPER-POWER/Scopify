@@ -14,6 +14,7 @@ import type {
   ComplexSearchAlbumData,
   ComplexSearchResource,
   ComplexSearchResponse,
+  NeteaseSearchOverviewExtras,
   NeteaseSuggestItemDto,
   SearchArtistSource,
   SearchResultAlbum,
@@ -22,12 +23,6 @@ import type {
   SongSearchData,
 } from "@/types/providers/netease/searchApi";
 import type { NeteaseMusicTrack } from "@/types/providers/netease/trackApi";
-
-/** What an overview carries beyond the interface types: the NetEase-only podcast and voice blocks. */
-export interface NeteaseSearchOverviewExtras {
-  /** The unmapped reply; podcasts and voices are read from it where they are shown. */
-  readonly response: ComplexSearchResponse;
-}
 
 export type NeteaseSearchOverview = MusicSearchOverview & {
   readonly netease: NeteaseSearchOverviewExtras;

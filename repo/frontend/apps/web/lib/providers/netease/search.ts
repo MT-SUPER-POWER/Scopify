@@ -43,7 +43,7 @@ function getHasMore(response: unknown): boolean | undefined {
  * Where the next page starts. A page counts what the platform sent, including entries that
  * could not be shown; without a "more" flag a full page means there may be another.
  */
-function nextOffsetOf(
+export function getNeteaseSearchNextOffset(
   response: unknown,
   offset: number,
   limit: number,
@@ -62,7 +62,11 @@ function page<Item>(
   limit: number,
   receivedCount: number,
 ): MusicSearchPage<Item> {
-  return { offset, items, nextOffset: nextOffsetOf(response, offset, limit, receivedCount) };
+  return {
+    offset,
+    items,
+    nextOffset: getNeteaseSearchNextOffset(response, offset, limit, receivedCount),
+  };
 }
 
 type Searchers = {

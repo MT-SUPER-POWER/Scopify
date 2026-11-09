@@ -10,7 +10,7 @@ import { QuietState } from "@/components/shared/QuietState";
 import { SheetPreviewDialog } from "@/components/songResources/SheetPreviewDialog";
 import { SongResourcesDialog } from "@/components/songResources/SongResourcesDialog";
 import { useInfiniteScrollTrigger } from "@/hooks/search/useInfiniteScrollTrigger";
-import { useInfiniteSongSearchQuery } from "@/hooks/search/useSearchQueries";
+import { useInfiniteSheetSongSearchQuery } from "@/hooks/search/useSearchQueries";
 import { useSongSheetsQueries } from "@/hooks/song/useSongResources";
 import { useRequireLoginAction } from "@/hooks/auth/useRequireLoginAction";
 import { mapSheetSearchSong } from "@/lib/search/sheetSongAdapter";
@@ -57,7 +57,7 @@ export function SheetsView({ keyword }: SheetsViewProps) {
 
 function SheetSearchResults({ keyword }: SheetsViewProps) {
   const { t } = useTranslation();
-  const query = useInfiniteSongSearchQuery(keyword, 12, true, true);
+  const query = useInfiniteSheetSongSearchQuery(keyword, 12, true);
   const requireLogin = useRequireLoginAction();
   const [selectedSong, setSelectedSong] = useState<SongDetail | null>(null);
   const [selectedSheet, setSelectedSheet] = useState<MusicSheet | null>(null);
