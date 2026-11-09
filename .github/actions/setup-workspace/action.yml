@@ -4,9 +4,9 @@ description: Checkout-independent toolchain setup and dependency install shared 
 runs:
   using: composite
   steps:
-    - name: Checkout backend API submodule only
+    - name: Checkout backend API submodules only
       shell: bash
-      run: git submodule update --init --depth 1 repo/backend/api-enhanced
+      run: git submodule update --init --depth 1 repo/backend/api-enhanced repo/backend/qq-music-api
 
     - name: Setup Node.js
       uses: actions/setup-node@v4
