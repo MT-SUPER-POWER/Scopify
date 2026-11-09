@@ -2,7 +2,7 @@ import type {
   UpdateUserProfilePayload,
   UpdateUserProfileResponse,
 } from "@/types/user/profileUpdateApi";
-import type { UserPlaylistResponse } from "@/types/playlist/api";
+import type { NeteaseUserPlaylistsDto } from "@/types/providers/netease/libraryApi";
 import type {
   IUserDetail,
   RecentPlaylistsResponse,
@@ -20,7 +20,7 @@ export function getUserDetail(uid: number | string) {
 
 // /user/playlist
 export function getUserPlaylist(uid: number, limit = 30, offset = 0) {
-  return request.get<UserPlaylistResponse>("/user/playlist", { params: { uid, limit, offset } });
+  return request.get<NeteaseUserPlaylistsDto>("/user/playlist", { params: { uid, limit, offset } });
 }
 
 // 播放历史
@@ -114,7 +114,7 @@ export const getUserFollowsInfo = (params: {
 
 // 获取用户歌单
 export const getUserPlaylists = (params: { uid: string | number }) => {
-  return request<UserPlaylistResponse>({
+  return request<NeteaseUserPlaylistsDto>({
     url: "/user/playlist",
     method: "get",
     params,

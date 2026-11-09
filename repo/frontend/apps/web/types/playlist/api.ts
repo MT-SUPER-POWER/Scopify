@@ -23,12 +23,6 @@ export interface NeteasePlaylist {
   };
 }
 
-export interface UserPlaylistResponse {
-  code: number;
-  more: boolean;
-  playlist: RawNeteasePlaylist[];
-}
-
 export const prunePlaylist = (raw: null | RawNeteasePlaylist | undefined): NeteasePlaylist => {
   if (!raw) {
     return {
@@ -162,11 +156,6 @@ export interface SongLikeMutationVariables {
   like: boolean;
   silentToast?: boolean;
   songId: number | string;
-}
-
-export interface LikeListResponse {
-  code: number;
-  ids?: number[];
 }
 
 export interface DailyRecommendationDislikeResponse {

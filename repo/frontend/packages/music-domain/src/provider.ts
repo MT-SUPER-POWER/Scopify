@@ -1,5 +1,6 @@
 import type { MusicCapability } from "./capability";
 import type { MusicProvider } from "./identity";
+import type { MusicLibrarySource } from "./library";
 import type { MusicPlaybackSource } from "./playback";
 import type { MusicPlaylistSource } from "./playlist";
 import type { MusicSearchSource } from "./search";
@@ -24,7 +25,8 @@ export interface MusicProviderClient
     MusicPlaybackSource,
     MusicPlaylistSource,
     MusicSearchSource,
-    MusicRecommendSource {
+    MusicRecommendSource,
+    MusicLibrarySource {
   readonly provider: MusicProvider;
   readonly capabilities: ReadonlySet<MusicCapability>;
 }

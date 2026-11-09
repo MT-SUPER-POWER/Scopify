@@ -3,7 +3,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { arrayMove } from "@dnd-kit/sortable";
 import { toast } from "sonner";
-import { fetchUserPlaylists } from "@/hooks/library/fetchUserPlaylists";
+import { fetchNeteaseUserPlaylists } from "@/lib/providers/netease/library";
 import {
   getPlaylsitDetail,
   updatePlaylistOrder,
@@ -38,7 +38,7 @@ export function usePlaylistOrderMutation() {
       if (!userId || useUserStore.getState().user?.userId !== userId)
         throw new Error(t("sidebar.card.loginTitle"));
       let ids: number[];
-      const playlists = playlistId ? undefined : await fetchUserPlaylists(userId);
+      const playlists = playlistId ? undefined : await fetchNeteaseUserPlaylists(userId);
       if (playlistId) {
         const { data } = await getPlaylsitDetail({ id: playlistId, requiresMusicSession: true });
         if (data.code !== 200 || data.playlist?.creator?.userId !== userId)

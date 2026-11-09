@@ -14,8 +14,6 @@ import type {
   DailyCategoryConfigUpdate,
   HistoricalDailyRecommendationDetailResponse,
   HistoricalDailyRecommendationsResponse,
-  LikeListResponse,
-  UserPlaylistResponse,
   PlaylistOrderUpdateParams,
   SongOrderUpdateParams,
   PlaylistTrackUpdateResponse,
@@ -26,6 +24,12 @@ import type {
   NeteasePlaylistTracksDto,
   NeteasePlaylistTracksParams,
 } from "@/types/providers/netease/playlistApi";
+import type {
+  NeteaseCreatePlaylistDto,
+  NeteaseLikeListDto,
+  NeteasePlaylistWriteDto,
+  NeteaseUserPlaylistsDto,
+} from "@/types/providers/netease/libraryApi";
 import request, { requestConfig } from "@/lib/providers/netease/client";
 import { measureImageDimensions } from "@/lib/image/measureImage";
 
@@ -53,7 +57,7 @@ export function updateSongOrder({ pid, ids }: SongOrderUpdateParams) {
  * @returns
  */
 export function getUserPlaylist(uid: number, limit = 30, offset = 0) {
-  return request.get<UserPlaylistResponse>("/user/playlist", { params: { uid, limit, offset } });
+  return request.get<NeteaseUserPlaylistsDto>("/user/playlist", { params: { uid, limit, offset } });
 }
 
 /**
@@ -99,7 +103,7 @@ export function getRecentSongs(limit = 10) {
  * 获取用户喜欢的歌曲列表
  */
 export function getUserLikeLists(uid: number | string) {
-  return request.get<LikeListResponse>("/likelist", { params: { uid } });
+  return request.get<NeteaseLikeListDto>("/likelist", { params: { uid } });
 }
 
 /**
@@ -123,7 +127,7 @@ export function likeSong(id: number | string, like: boolean) {
  * @returns
  */
 export function createPlaylist(name: string, privacy = "0") {
-  return request.get("/playlist/create", { params: { name, privacy } });
+  return request.get<NeteaseCreatePlaylistDto>("/playlist/create", { params: { name, privacy } });
 }
 
 /**
@@ -132,12 +136,12 @@ export function createPlaylist(name: string, privacy = "0") {
  * @returns
  */
 export function delPlaylist(id: number | string) {
-  return request.get("/playlist/delete", { params: { id } });
+  return request.get<NeteasePlaylistWriteDto>("/playlist/delete", { params: { id } });
 }
 
 // 收藏/取消收藏歌单 (t: 1收藏, 2取消)
 export function subscribePlaylist(t: 1 | 2, id: number | string) {
-  return request.get(`/playlist/subscribe`, {
+  return request.get<NeteasePlaylistWriteDto>(`/playlist/subscribe`, {
     params: { t, id },
   });
 }
@@ -166,6 +170,13 @@ export function updatePlaylist(
 
   return request.get("/playlist/update", {
     params: { ...params, tags: params.tags?.join(";") },
+  });
+}
+
+/** Renames a playlist and leaves its description and tags as they are. */
+export function renamePlaylist(id: number | string, name: string) {
+  return request.get<NeteasePlaylistWriteDto>("/playlist/name/update", {
+    params: { id, name },
   });
 }
 
