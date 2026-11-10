@@ -2,7 +2,6 @@
 
 import { useAppUpdater } from "@/hooks/settings/useAppUpdater";
 import { useTranslation } from "react-i18next";
-import { Switch } from "@scopify/ui/shadcn/components/switch";
 
 import type { AppUpdaterSectionProps } from "@/types/settings/components";
 import { AppUpdaterStatus } from "./AppUpdaterStatus";
@@ -17,17 +16,14 @@ export function AppUpdaterSection({ config, onChange }: AppUpdaterSectionProps) 
       <SettingSection title={t("settings.section.updater")}>
         <SettingRow
           isBeta
-          label={
-            <label htmlFor="updater-allow-prerelease">
-              {t("settings.updater.allowPrerelease.label")}
-            </label>
-          }
+          label={t("settings.updater.allowPrerelease.label")}
           sublabel={t("settings.updater.allowPrerelease.sublabel")}
           control={
-            <Switch
-              id="updater-allow-prerelease"
-              checked={config.updater.allowPrerelease}
-              onCheckedChange={(checked) => onChange("updater", "allowPrerelease", checked)}
+            <Toggle
+              enabled={config.updater.allowPrerelease}
+              onChange={() =>
+                onChange("updater", "allowPrerelease", !config.updater.allowPrerelease)
+              }
             />
           }
         />
