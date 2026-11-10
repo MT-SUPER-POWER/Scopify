@@ -2,6 +2,17 @@
 
 > 根据 commit 自动生成，请勿手动编辑；推送版本 tag 后由 CI 更新。v2.0.3 及更早版本见[历史更新记录](archive/CHANGELOG-legacy.md)。
 
+## v3.4.4 — 2026-11-10
+
+### 新增
+
+- 优化 Mermaid 流程图尺寸渲染与全屏自适应交互 ([65be5150](https://github.com/MT-SUPER-POWER/Scopify/commit/65be515031a5ac66c4c023c073017803190b028b))
+
+### 修复
+
+- Beta 更新开关改用设置页统一的开关样式 ([6012b980](https://github.com/MT-SUPER-POWER/Scopify/commit/6012b980278dd973a62da316605dbac32e55174f))
+- 修复命令工作区滚动列表右侧边距缺失与内容溢出 ([2b832a48](https://github.com/MT-SUPER-POWER/Scopify/commit/2b832a4886dd9b34280f94087f9b6c63332cecc3))
+
 ## v3.4.3 — 2026-11-09
 
 ### 新增
