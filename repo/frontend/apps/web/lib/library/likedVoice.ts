@@ -50,9 +50,8 @@ export function toLikedVoice(source: LikedVoice): Voice | null {
     duration: source.duration ?? mainSong?.duration ?? 0,
     hostName: source.userName ?? source.dj?.nickname ?? source.djProgram?.dj?.nickname,
     id,
-    // Listing and audit status describe the catalog, not whether the account can stream the audio.
-    // The player checks actual availability when a track is requested.
-    isPlayable: mainSong !== null,
+    // Deleted episodes may retain their old audio track metadata in the liked list.
+    isPlayable: mainSong !== null && (source.displayStatus ?? source.disPlayStatus) !== "DELETE",
     lastPlayTime: source.lastPlayTime,
     likeTime: source.likeTime,
     mainSong,

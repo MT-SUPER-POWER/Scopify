@@ -1353,7 +1353,7 @@ export default interface Resources {
     "voice.meta.likedAt": "收藏于 {{date}}";
     "voice.meta.playCount": "{{count}} 次播放";
     "voice.meta.publishedAt": "发布于 {{date}}";
-    "voice.status.unavailable": "暂无音源";
+    "voice.status.unavailable": "暂不可播放";
     "voice.unlikeSuccess": "已取消喜欢该声音";
     "voiceTranscript.empty": "该声音暂未提供文字稿。";
     "voiceTranscript.loading": "正在加载文字稿…";

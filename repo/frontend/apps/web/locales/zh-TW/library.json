@@ -102,7 +102,7 @@
   "voiceTranscript.loading": "正在載入文字稿…",
   "voiceTranscript.empty": "該聲音暫未提供文字稿。",
   "voiceTranscript.unavailable": "文字稿暫時無法讀取。",
-  "voice.status.unavailable": "暫無音源",
+  "voice.status.unavailable": "暫時無法播放",
   "voice.meta.likedAt": "收藏於 {{date}}",
   "voice.meta.lastPlayedAt": "上次播放 {{date}}",
   "voice.meta.publishedAt": "發佈於 {{date}}",

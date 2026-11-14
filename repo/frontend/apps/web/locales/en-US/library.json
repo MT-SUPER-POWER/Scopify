@@ -102,7 +102,7 @@
   "voiceTranscript.loading": "Loading transcript…",
   "voiceTranscript.empty": "No transcript is available for this voice.",
   "voiceTranscript.unavailable": "The transcript is temporarily unavailable.",
-  "voice.status.unavailable": "No audio source",
+  "voice.status.unavailable": "Playback unavailable",
   "voice.meta.likedAt": "Liked {{date}}",
   "voice.meta.lastPlayedAt": "Last played {{date}}",
   "voice.meta.publishedAt": "Published {{date}}",
