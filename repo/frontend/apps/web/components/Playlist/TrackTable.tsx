@@ -35,30 +35,22 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { useDailyRecommendationMutation } from "@/hooks/playlist/useDailyRecommendationMutation";
 import { usePlaylistTrackRemoval } from "@/hooks/playlist/usePlaylistTrackRemoval";
 import { useTracklistColumnLayout } from "@/hooks/playlist/useTracklistColumnLayout";
 import { useTrackSelection } from "@/hooks/playlist/useTrackSelection";
 import { useProviderCapability } from "@/hooks/provider/useActiveProvider";
 import { useMediaQuery } from "@/hooks/ui/useMediaQuery";
-import { clearPageCache } from "@/lib/cache/pageCache";
 import { cn } from "@/lib/utils";
-import { reportActionFailure } from "@/lib/web/errorTracking";
 import { usePlayerStore } from "@/store";
 import { useTrackLikes } from "@/hooks/library/useLikedTracks";
 import { useTranslation } from "react-i18next";
 
 import { musicResourceKey } from "@scopify/music-domain/identity";
 import type { PlayerTrack } from "@/types/player/model";
-import { pruneSongDetail } from "@/types/song/api";
 import type { NavigationScrollRestorationAdapter } from "@/types/core/navigationScroll";
 
 import { ConfirmDialogShandCN } from "./TableConfirmDialog";
-import {
-  adaptNeteaseTrack,
-  getNeteaseTrackId,
-  toNeteaseSongDetails,
-} from "@/lib/providers/netease/adapters/track";
+import { toNeteaseSongDetails } from "@/lib/providers/netease/adapters/track";
 
 const NO_TRACKS: PlayerTrack[] = [];
 
@@ -84,6 +76,7 @@ export default function TracklistTable({
   hideAlbumColumn = false,
   hideDateColumn = false,
   hideLikeColumn = false,
+  onDislikeDailyRecommend,
   onDislikePersonalFm,
   cloudActions,
   onEmptyAction,
@@ -113,7 +106,6 @@ export default function TracklistTable({
   });
 
   const { t } = useTranslation();
-  const { mutateAsync: dislikeDailyRecommend } = useDailyRecommendationMutation();
   const { mutateAsync: removePlaylistTrack } = usePlaylistTrackRemoval();
   const searchParams = useSearchParams();
   const playlistID = searchParams.get("id");
@@ -123,7 +115,6 @@ export default function TracklistTable({
     dailyRecommendationMode ??
     (isDailyRecommendationPage ? (historicalDailyDate ? "history" : "current") : undefined);
   const isHistoricalDailyRecommendation = resolvedDailyRecommendationMode === "history";
-  const canDislikeDailyRecommendation = resolvedDailyRecommendationMode === "current";
   const dailyQueueId = historicalDailyDate ? `daily:${historicalDailyDate}` : "daily";
   const pathname = usePathname();
   const storePlaylistId = usePlayerStore((s) => s.playlistId);
@@ -441,53 +432,6 @@ export default function TracklistTable({
     setPendingDelete(null);
   }, []);
 
-  const handleDislikeDailyRecommend = useCallback(
-    async (trackId: number) => {
-      try {
-        const dislikeResult = await dislikeDailyRecommend(trackId);
-        if (!dislikeResult.data) {
-          throw new Error("The daily recommendation endpoint did not provide a replacement track.");
-        }
-        const replaceSong = pruneSongDetail(dislikeResult.data);
-        const replaceTrack = adaptNeteaseTrack(replaceSong);
-
-        const nextTracks = tracks.map((track) =>
-          getNeteaseTrackId(track) === trackId ? replaceTrack : track,
-        );
-
-        updateVisibleTracks(nextTracks);
-
-        const playerState = usePlayerStore.getState();
-        const isCurrentPlaying = getNeteaseTrackId(playerState.currentTrack) === trackId;
-
-        // 如果该歌曲已在播放队列中，静默将队列和原始队列中的对应曲目替换为新推荐歌曲
-        const inQueue = playerState.queue.some((s) => getNeteaseTrackId(s) === trackId);
-        if (inQueue) {
-          usePlayerStore.setState({
-            queue: playerState.queue.map((s) =>
-              getNeteaseTrackId(s) === trackId ? replaceTrack : s,
-            ),
-            originalQueue: playerState.originalQueue.map((s) =>
-              getNeteaseTrackId(s) === trackId ? replaceTrack : s,
-            ),
-          });
-        }
-
-        // 只有当前被标记为不感兴趣的歌曲正在播放时，才执行切歌
-        if (isCurrentPlaying) {
-          void playerState.playNext();
-        }
-        void clearPageCache();
-
-        toast.success(t("playlist.table.dislikeSuccess"));
-      } catch (error) {
-        reportActionFailure("playlist.daily_recommendation.dislike", error, { trackId });
-        toast.error(t("playlist.table.operationFailed"));
-      }
-    },
-    [dislikeDailyRecommend, t, tracks, updateVisibleTracks],
-  );
-
   return (
     <>
       <ConfirmDialogShandCN
@@ -685,12 +629,12 @@ export default function TracklistTable({
                         hideAlbumColumn={!showAlbumColumn}
                         hideDateColumn={!showDateColumn}
                         hideLikeColumn={!showLikeColumn}
-                        isDailyRecommend={canDislikeDailyRecommendation}
+                        isDailyRecommend={Boolean(onDislikeDailyRecommend)}
                         readonly={
                           readonly || isHistoricalDailyRecommendation || !canRemoveFromPlaylist
                         }
                         canRemoveFromPlaylist={canRemoveFromPlaylist}
-                        onDislikeDailyRecommend={handleDislikeDailyRecommend}
+                        onDislikeDailyRecommend={onDislikeDailyRecommend}
                         onDislikePersonalFm={onDislikePersonalFm}
                         cloudActions={cloudActions}
                       />

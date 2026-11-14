@@ -18,6 +18,7 @@ export default function PlaylistGrid({
   title,
   sourceId,
   onTrackPlay,
+  onDislikeTrack,
   onClose,
   onModeChange,
 }: PlaylistLatticeProps) {
@@ -119,6 +120,7 @@ export default function PlaylistGrid({
                 register={wall.register}
                 onSelect={select}
                 onPlay={play}
+                onDislikeTrack={onDislikeTrack}
                 flipPlan={flip.plan}
               />
             );
