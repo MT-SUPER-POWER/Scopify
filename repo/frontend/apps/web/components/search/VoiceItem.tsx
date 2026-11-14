@@ -70,7 +70,8 @@ export function VoiceItem({
     voices,
   ]);
 
-  const canViewTranscript = transcriptMode === "popover" || Boolean(onViewTranscript);
+  const canViewTranscript =
+    !isUnavailable && (transcriptMode === "popover" || Boolean(onViewTranscript));
   const handleViewTranscript = useCallback(() => {
     if (transcriptMode === "popover") {
       setIsTranscriptOpen(true);
@@ -89,13 +90,14 @@ export function VoiceItem({
         isPreview ? "gap-3 p-1" : "gap-3 px-3 py-2",
         isLikedVoice && "min-h-16 gap-2 px-2 focus-within:bg-content/10 sm:gap-3 sm:px-3",
         isUnavailable
-          ? "cursor-default"
+          ? "cursor-default opacity-55 grayscale"
           : voice.mainSong
             ? "cursor-pointer hover:bg-content/10"
             : "cursor-default opacity-70",
         isActive && "text-brand",
         isLikedVoice && isActive && "bg-content/10",
       )}
+      aria-disabled={isUnavailable || undefined}
       onClick={canPlay ? handlePlay : undefined}
     >
       {!isPreview && (
@@ -119,28 +121,21 @@ export function VoiceItem({
           height={isPreview ? 64 : 44}
           src={voice.coverUrl || FALLBACK_COVER}
           alt={isLikedVoice ? "" : voice.name}
-          className={cn("size-full object-cover", isUnavailable && "grayscale")}
+          className="size-full object-cover"
         />
       </div>
       <div className="min-w-0 flex-1">
-        <div className="flex min-w-0 items-center gap-2">
-          <p
-            className={cn(
-              "truncate font-medium",
-              isPreview ? "text-base" : "text-sm",
-              isActive && "text-brand",
-              isUnavailable && "text-content-muted",
-              !isActive && !isUnavailable && "text-content",
-            )}
-          >
-            {voice.name}
-          </p>
-          {isLikedVoice && isUnavailable ? (
-            <span className="shrink-0 rounded-full bg-content/10 px-2 py-0.5 text-[10px] font-medium text-content-muted">
-              {t("library.voice.status.unavailable")}
-            </span>
-          ) : null}
-        </div>
+        <p
+          className={cn(
+            "truncate font-medium",
+            isPreview ? "text-base" : "text-sm",
+            isActive && "text-brand",
+            isUnavailable && "text-content-muted",
+            !isActive && !isUnavailable && "text-content",
+          )}
+        >
+          {voice.name}
+        </p>
         <p className={cn("truncate text-xs text-content-muted", isPreview && "mt-1")}>
           {isPreview && voice.duration > 0 && `${formatDuration(voice.duration)} · `}
           {voice.podcastName}
@@ -223,7 +218,7 @@ export function VoiceItem({
       </SongContextMenu>
     );
 
-  if (transcriptMode !== "popover") return contextItem;
+  if (isUnavailable || transcriptMode !== "popover") return contextItem;
 
   return (
     <VoiceTranscriptPopover
