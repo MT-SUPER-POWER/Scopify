@@ -1,7 +1,7 @@
 // Sync the approved, existing Ivory artwork without redrawing it.
 // Add --resize-icons to regenerate icon frames with less transparent padding.
 // icon-master.png remains the original artwork, so regeneration is repeatable.
-// Run from the workspace root: node scripts/sync-ivory-brand.mjs
+// Run from the workspace root: bun scripts/sync-ivory-brand.ts
 import { copyFile, mkdir, readFile, readdir, writeFile } from "node:fs/promises";
 import { createRequire } from "node:module";
 import { dirname, resolve } from "node:path";
@@ -39,7 +39,7 @@ async function resizeIcons() {
     .extract({ left, top, width: right - left + 1, height: bottom - top + 1 })
     .png()
     .toBuffer();
-  const frames = new Map();
+  const frames = new Map<number, Buffer>();
   for (const size of [16, 24, 32, 48, 64, 128, 180, 256, 512, 1024]) {
     const padding = Math.round(size * 0.01);
     const png = await sharp(artwork)
@@ -59,6 +59,12 @@ async function resizeIcons() {
       png,
     );
   }
+  function getFrame(size: number): Buffer {
+    const frame = frames.get(size);
+    if (!frame) throw new Error(`Missing Ivory icon frame at ${size}px.`);
+    return frame;
+  }
+
   // Store PNG-compressed frames in the native Windows ICO directory.
   const sizes = [16, 24, 32, 48, 64, 128, 256];
   const header = Buffer.alloc(6 + sizes.length * 16);
@@ -66,7 +72,7 @@ async function resizeIcons() {
   header.writeUInt16LE(sizes.length, 4);
   let offset = header.length;
   for (const [index, size] of sizes.entries()) {
-    const png = frames.get(size);
+    const png = getFrame(size);
     const at = 6 + index * 16;
     header[at] = size % 256;
     header[at + 1] = size % 256;
@@ -76,18 +82,15 @@ async function resizeIcons() {
     header.writeUInt32LE(offset, at + 12);
     offset += png.length;
   }
-  await writeFile(
-    resolve(root, kit, "icon.ico"),
-    Buffer.concat([header, ...sizes.map((size) => frames.get(size))]),
-  );
+  await writeFile(resolve(root, kit, "icon.ico"), Buffer.concat([header, ...sizes.map(getFrame)]));
   const chunks = [];
   for (const [type, size] of [
     ["ic07", 128],
     ["ic08", 256],
     ["ic09", 512],
     ["ic10", 1024],
-  ]) {
-    const png = frames.get(size);
+  ] as const) {
+    const png = getFrame(size);
     const chunk = Buffer.alloc(8);
     chunk.write(type);
     chunk.writeUInt32BE(png.length + 8, 4);
@@ -101,7 +104,7 @@ async function resizeIcons() {
 
 if (process.argv.includes("--resize-icons")) await resizeIcons();
 
-async function copy(source, destination) {
+async function copy(source: string, destination: string) {
   const target = resolve(root, destination);
   await mkdir(dirname(target), { recursive: true });
   await copyFile(resolve(root, kit, source), target);

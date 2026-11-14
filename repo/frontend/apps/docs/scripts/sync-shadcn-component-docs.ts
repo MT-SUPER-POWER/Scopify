@@ -10,7 +10,7 @@ const componentRoot = path.resolve(appRoot, "../../packages/ui/shadcn/components
 const generatedExamplesFile = path.join(appRoot, "components/docs/shadcn-official-examples.json");
 const generatedSourcesFile = path.join(appRoot, "components/docs/shadcn-component-sources.json");
 
-function findFiles(root, extension) {
+function findFiles(root: string, extension: string): string[] {
   return fs.readdirSync(root, { withFileTypes: true }).flatMap((entry) => {
     const entryPath = path.join(root, entry.name);
     return entry.isDirectory()
@@ -21,7 +21,7 @@ function findFiles(root, extension) {
   });
 }
 
-function getFrontmatter(source) {
+function getFrontmatter(source: string): Partial<Record<string, string>> {
   const match = source.match(/^---\r?\n([\s\S]*?)\r?\n---/);
   if (!match) return {};
   return Object.fromEntries(
@@ -32,11 +32,11 @@ function getFrontmatter(source) {
   );
 }
 
-function escapeYaml(value) {
+function escapeYaml(value: string) {
   return value.replaceAll('"', '\\"');
 }
 
-function transformImports(body) {
+function transformImports(body: string) {
   return body
     .replaceAll("@/components/ui/", "@scopify/ui/shadcn/components/")
     .replaceAll("@/registry/new-york-v4/ui/", "@scopify/ui/shadcn/components/")
@@ -47,15 +47,15 @@ function transformImports(body) {
     .replaceAll("IconInfoCircle", "InfoIcon");
 }
 
-function transformComponentPreviews(body) {
-  return body.replace(/<ComponentPreview\b([\s\S]*?)\/>/g, (_match, attributes) => {
+function transformComponentPreviews(body: string) {
+  return body.replace(/<ComponentPreview\b([\s\S]*?)\/>/g, (_match, attributes: string) => {
     if (!attributes.match(/\bname="([^"]+)"/)) return "";
     return `<ShadcnOfficialPreview${attributes} />`;
   });
 }
 
-function transformComponentSources(body) {
-  return body.replace(/<ComponentSource\b([\s\S]*?)\/>/g, (_match, attributes) => {
+function transformComponentSources(body: string) {
+  return body.replace(/<ComponentSource\b([\s\S]*?)\/>/g, (_match, attributes: string) => {
     return `<ShadcnComponentSource${attributes} />`;
   });
 }
@@ -78,7 +78,7 @@ function syncReferenceSources() {
   return { exampleCount: Object.keys(examples).length, sourceCount: Object.keys(sources).length };
 }
 
-function addScopifyNote(body) {
+function addScopifyNote(body: string) {
   const note = `<Callout title="Scopify 说明">本页按 shadcn/ui 官方 Radix UI 组件文档的章节与示例完整整理。示例预览使用 Scopify 当前的 @scopify/ui/shadcn 实现；导入路径、主题 Token 和行为差异以本仓库源码为准。</Callout>`;
   const marker = "## Installation";
   return body.includes(marker)
@@ -96,7 +96,7 @@ const officialPages = new Map(
 
 const { exampleCount, sourceCount } = syncReferenceSources();
 let synced = 0;
-const skipped = [];
+const skipped: string[] = [];
 
 for (const file of localPages) {
   const slug = path.basename(file, ".mdx");

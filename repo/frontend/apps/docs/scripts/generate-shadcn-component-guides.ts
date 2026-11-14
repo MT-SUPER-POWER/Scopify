@@ -8,7 +8,7 @@ const contentRoot = path.join(appRoot, "content/docs/(ui-library)/shadcn");
 const previewRoot = path.join(appRoot, "components/docs/previews");
 const componentRoot = path.resolve(appRoot, "../../packages/ui/shadcn/components");
 
-const patterns = {
+const patterns: Partial<Record<string, string>> = {
   accordion: "单项展开并允许再次收起；多项同时展开；禁用不可用条目；放入 Card 构建结构化说明区",
   "alert-dialog": "确认删除或退出等高风险操作；明确区分确认与取消；在说明中交代操作后果",
   alert: "展示普通提示、成功状态或破坏性警告；标题保持简短；正文补充用户下一步",
@@ -72,7 +72,7 @@ const patterns = {
   tooltip: "解释不熟悉的图标或缩写；内容保持一句话；关键信息不能只在悬停时出现",
 };
 
-const adviceByGroup = {
+const adviceByGroup: Partial<Record<string, string[]>> = {
   basic: [
     "优先使用组件公开的 variant、size 和语义 props，样式差异由主题 token 统一处理。",
     "只有原生 API 和主题 token 都无法满足需求时，才在 scopify 层复制并扩展。",
@@ -149,7 +149,7 @@ const accordionVariants = `
 \`\`\`
 `;
 
-function findFiles(root, extension) {
+function findFiles(root: string, extension: string): string[] {
   return fs.readdirSync(root, { withFileTypes: true }).flatMap((entry) => {
     const entryPath = path.join(root, entry.name);
     return entry.isDirectory()
@@ -160,9 +160,9 @@ function findFiles(root, extension) {
   });
 }
 
-function findReturn(node) {
+function findReturn(node: ts.Node): ts.Expression | undefined {
   if (ts.isReturnStatement(node) && node.expression) return node.expression;
-  let result;
+  let result: ts.Expression | undefined;
   ts.forEachChild(node, (child) => {
     if (!result) result = findReturn(child);
   });
@@ -170,7 +170,7 @@ function findReturn(node) {
 }
 
 function collectPreviewCode() {
-  const result = new Map();
+  const result = new Map<string, { code: string; file: string }>();
   for (const file of findFiles(previewRoot, ".tsx")) {
     const sourceText = fs.readFileSync(file, "utf8");
     const sourceFile = ts.createSourceFile(
@@ -180,7 +180,7 @@ function collectPreviewCode() {
       true,
       ts.ScriptKind.TSX,
     );
-    sourceFile.forEachChild(function visit(node) {
+    sourceFile.forEachChild(function visit(node: ts.Node) {
       if (
         ts.isCaseClause(node) &&
         ts.isStringLiteral(node.expression) &&
@@ -209,7 +209,7 @@ function collectPreviewCode() {
   return result;
 }
 
-function collectExports(slug) {
+function collectExports(slug: string) {
   const source = fs.readFileSync(path.join(componentRoot, `${slug}.tsx`), "utf8");
   const exports = [...source.matchAll(/export\s*\{([\s\S]*?)\}/g)].flatMap((match) =>
     match[1]
@@ -220,13 +220,13 @@ function collectExports(slug) {
   return exports;
 }
 
-function formatImport(slug, exports) {
+function formatImport(slug: string, exports: string[]) {
   const source = `@scopify/ui/shadcn/components/${slug}`;
   if (exports.length === 1) return `import { ${exports[0]} } from "${source}";`;
   return `import {\n${exports.map((name) => `  ${name},`).join("\n")}\n} from "${source}";`;
 }
 
-function formatComposition(exports) {
+function formatComposition(exports: string[]) {
   const components = exports
     .map((name) => name.replace(/^type\s+/, ""))
     .filter((name) => /^[A-Z]/.test(name));
@@ -252,16 +252,19 @@ for (const file of componentFiles) {
   if (!frontmatter || !title || !description) throw new Error(`Invalid component page: ${file}`);
   if (!slug) continue;
   if (slug === "button") continue;
-  if (!patterns[slug]) throw new Error(`Missing patterns for ${slug}`);
+  const pattern = patterns[slug];
+  if (!pattern) throw new Error(`Missing patterns for ${slug}`);
   const group = path.relative(contentRoot, file).split(path.sep)[0];
   const exports = collectExports(slug);
   const preview = previewCode.get(slug);
   if (!preview) throw new Error(`Missing preview code for ${slug}`);
-  const patternList = patterns[slug]
+  const patternList = pattern
     .split("；")
     .map((item) => `- ${item}。`)
     .join("\n");
-  const adviceList = adviceByGroup[group].map((item) => `- ${item}`).join("\n");
+  const advice = adviceByGroup[group];
+  if (!advice) throw new Error(`Missing advice for ${group}`);
+  const adviceList = advice.map((item) => `- ${item}`).join("\n");
   const exportList = exports.map((name) => `\`${name.replace(/^type\s+/, "")}\``).join("、");
   const officialUrl = `https://ui.shadcn.com/docs/components/radix/${slug}`;
   const code = preview.code;

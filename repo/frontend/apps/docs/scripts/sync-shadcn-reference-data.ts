@@ -7,7 +7,7 @@ const examplesRoot = path.join(referenceRoot, "examples/radix");
 const componentsRoot = path.resolve(appRoot, "../../packages/ui/shadcn/components");
 const outputRoot = path.join(appRoot, "components/docs");
 
-function findFiles(root, extension) {
+function findFiles(root: string, extension: string): string[] {
   return fs.readdirSync(root, { withFileTypes: true }).flatMap((entry) => {
     const file = path.join(root, entry.name);
     return entry.isDirectory()
@@ -18,7 +18,7 @@ function findFiles(root, extension) {
   });
 }
 
-function transformImports(source) {
+function transformImports(source: string) {
   return source
     .replaceAll("@/components/ui/", "@scopify/ui/shadcn/components/")
     .replaceAll("@/registry/new-york-v4/ui/", "@scopify/ui/shadcn/components/")
