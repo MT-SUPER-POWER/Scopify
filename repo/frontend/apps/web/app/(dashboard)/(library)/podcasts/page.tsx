@@ -60,19 +60,19 @@ export default function PodcastsPage() {
         <TabsList className="h-auto w-full justify-start gap-2 overflow-x-auto bg-transparent p-0">
           <TabsTrigger
             value="subscribed"
-            className="shrink-0 rounded-full border border-content/10 bg-content/5"
+            className="shrink-0 rounded-full border border-content/10 bg-content/5 focus-visible:underline focus-visible:underline-offset-4 focus-visible:ring-0 focus-visible:ring-offset-0"
           >
             {t("library.podcasts.subscribed")}
           </TabsTrigger>
           <TabsTrigger
             value="created"
-            className="shrink-0 rounded-full border border-content/10 bg-content/5"
+            className="shrink-0 rounded-full border border-content/10 bg-content/5 focus-visible:underline focus-visible:underline-offset-4 focus-visible:ring-0 focus-visible:ring-offset-0"
           >
             {t("library.podcasts.created")}
           </TabsTrigger>
           <TabsTrigger
             value="liked"
-            className="shrink-0 rounded-full border border-content/10 bg-content/5"
+            className="shrink-0 rounded-full border border-content/10 bg-content/5 focus-visible:underline focus-visible:underline-offset-4 focus-visible:ring-0 focus-visible:ring-offset-0"
           >
             {t("library.podcasts.likedVoices")}
           </TabsTrigger>
