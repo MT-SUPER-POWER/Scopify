@@ -119,7 +119,7 @@ export function VoiceItem({
           height={isPreview ? 64 : 44}
           src={voice.coverUrl || FALLBACK_COVER}
           alt={isLikedVoice ? "" : voice.name}
-          className="size-full object-cover"
+          className={cn("size-full object-cover", isUnavailable && "grayscale")}
         />
       </div>
       <div className="min-w-0 flex-1">
@@ -128,7 +128,9 @@ export function VoiceItem({
             className={cn(
               "truncate font-medium",
               isPreview ? "text-base" : "text-sm",
-              isActive ? "text-brand" : "text-content",
+              isActive && "text-brand",
+              isUnavailable && "text-content-muted",
+              !isActive && !isUnavailable && "text-content",
             )}
           >
             {voice.name}
