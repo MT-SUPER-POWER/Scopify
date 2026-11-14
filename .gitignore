@@ -78,3 +78,4 @@ design-qa.md
 # Config
 repo/frontend/apps/desktop/config/app.config.yml
 .x18n/
+.worktrees/
