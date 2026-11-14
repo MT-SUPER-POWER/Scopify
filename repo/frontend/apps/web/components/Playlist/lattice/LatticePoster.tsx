@@ -1,7 +1,7 @@
 "use client";
 
 import { lazy, memo, Suspense, useEffect, useState } from "react";
-import { Ban } from "lucide-react";
+import { HeartOff } from "lucide-react";
 import { motion, useReducedMotion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { useCardFlip } from "@/hooks/playlist/useFlipReveal";
@@ -136,7 +136,7 @@ export const LatticePoster = memo(
               onClick={() => onDislikeTrack(track)}
               className="absolute top-3 right-3 z-2 grid size-10 place-items-center rounded-full bg-black/65 text-white hover:bg-black/85 focus-visible:outline-2 focus-visible:outline-white"
             >
-              <Ban className="size-5" />
+              <HeartOff className="size-5" />
             </button>
           )}
           {expanded && (

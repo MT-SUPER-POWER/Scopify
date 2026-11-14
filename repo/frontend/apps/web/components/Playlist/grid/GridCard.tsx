@@ -1,7 +1,7 @@
 "use client";
 
 import { memo, useLayoutEffect, useRef } from "react";
-import { Ban, Disc3, Pause, Play } from "lucide-react";
+import { Disc3, HeartOff, Pause, Play } from "lucide-react";
 import { getSizedImageUrl } from "@/lib/music/imageUrl";
 import { formatDuration } from "@/lib/utils";
 import { GRID_METRICS } from "@/constants/playlistGrid";
@@ -94,7 +94,7 @@ export const GridCard = memo(function GridCard({
               onClick={() => onDislikeTrack(track)}
               className="pointer-events-none absolute top-1 right-1 grid size-9 place-items-center rounded-full bg-black/65 text-white opacity-0 transition-opacity group-hover/card:pointer-events-auto group-hover/card:opacity-100 group-data-[centered=true]/card:pointer-events-auto group-data-[centered=true]/card:opacity-100 hover:bg-black/85 focus-visible:pointer-events-auto focus-visible:opacity-100 focus-visible:outline-2 focus-visible:outline-white"
             >
-              <Ban className="size-4" />
+              <HeartOff className="size-4" />
             </button>
           )}
           {playing && (
