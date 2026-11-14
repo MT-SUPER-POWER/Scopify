@@ -2,6 +2,25 @@
 
 > 根据 commit 自动生成，请勿手动编辑；推送版本 tag 后由 CI 更新。v2.0.3 及更早版本见[历史更新记录](archive/CHANGELOG-legacy.md)。
 
+## v3.4.5 — 2026-11-14
+
+### 修复
+
+- 支持配置桌面更新仓库 ([e2eae602](https://github.com/MT-SUPER-POWER/Scopify/commit/e2eae60297e124b3fd45a81ae82a2ae6a59cf0c8))
+- 按版本号选择正式版和 Beta 更新 ([740ab5b4](https://github.com/MT-SUPER-POWER/Scopify/commit/740ab5b40645ea36ddc839f17a8cc053b3292647))
+- 同步收藏货架和播客页面背景 ([fe587f73](https://github.com/MT-SUPER-POWER/Scopify/commit/fe587f7384aecdbbfb5fa43f26fa380167c0e048))
+- 用划线爱心标示不感兴趣 ([9eedf6ab](https://github.com/MT-SUPER-POWER/Scopify/commit/9eedf6abe03d2efdfb415020966b09298c30d985))
+- 整行置灰并禁用不可播放的声音 ([0ac02c51](https://github.com/MT-SUPER-POWER/Scopify/commit/0ac02c51e6f0818c51a858ab5900af76353bcb6e))
+- 去掉播客标签的绿色焦点框 ([1d4b6c28](https://github.com/MT-SUPER-POWER/Scopify/commit/1d4b6c28f98356ecb2e9841fa3fa534cb65a3a82))
+- 灰色标示不可播放的声音 ([7be3755b](https://github.com/MT-SUPER-POWER/Scopify/commit/7be3755b6a2b3d37eb3f2656557955ad354c9247))
+- 禁止播放已删除的收藏声音 ([3484a696](https://github.com/MT-SUPER-POWER/Scopify/commit/3484a696e63fbf16795fa297a989f4eec917c99a))
+- 输满短信验证码后才能验证登录 ([0e00025d](https://github.com/MT-SUPER-POWER/Scopify/commit/0e00025dbafbbe56daabb434c55acd6d213f8d8b))
+- 放大 Windows 登录窗口 ([a6f5b739](https://github.com/MT-SUPER-POWER/Scopify/commit/a6f5b7398ad2dae60a84c9e4c41ab03ed8618a75))
+- 优化喜欢的声音列表布局 ([68d19a91](https://github.com/MT-SUPER-POWER/Scopify/commit/68d19a9167624fc4ff264368372e66b10d0faf55))
+- 修复喜欢的声音被误判为下架 ([3a66532f](https://github.com/MT-SUPER-POWER/Scopify/commit/3a66532ffb37a45f0ffe1fdfce007f7839bdda06))
+- Grid 和 Lattice 支持标记不感兴趣 ([3aa880d6](https://github.com/MT-SUPER-POWER/Scopify/commit/3aa880d664020e2ebd49d44d2460a32ca983591f))
+- 不感兴趣的歌曲从电台队列移除 ([03b1a7f5](https://github.com/MT-SUPER-POWER/Scopify/commit/03b1a7f58f69d9636cce62da07fd2780304cb9ce))
+
 ## v3.4.4 — 2026-11-10
 
 ### 新增
