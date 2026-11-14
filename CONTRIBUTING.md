@@ -33,6 +33,18 @@ pnpm run dev:full       # Web + Electron + 后端联调
 - **同时只开一个 Web dev server。** 第二个会共用 `.next` 并破坏路由（Electron 里表现为莫名其妙的 404）。
 - 后端是独立部署的，首次克隆后运行 `git submodule update --init --recursive`，再用 `pnpm run dev:backend` 启动。
 
+## 项目 Skills
+
+项目专用的 skill 统一维护在根目录的 [`skills/`](./skills/)。新增或下载的项目 skill 放进 `skills/<名称>/SKILL.md`。初次克隆、创建新工作树或新增 skill 后，在对应工作目录执行：
+
+```bash
+bun scripts/link-skills.ts
+```
+
+默认链接到 `.agents/skills/` 和 `.claude/skills/`。也可以指定一个或多个目录，例如 `bun scripts/link-skills.ts .cursor .gemini`。可选目录还包括 `.opencode`。Windows 使用目录联接（junction），macOS 和 Linux 使用相对符号链接。链接由每份工作副本生成并保存在 Git 忽略的目录内。编辑已有 skill 的内容会直接反映到所有链接。
+
+如果已有同名项，脚本会保留并提示。确认以根目录的版本为准后，执行 `bun scripts/link-skills.ts --replace`，原项会移动到对应 agent 目录下的 `skills-backup-*`，可供比对或恢复。删除或重命名 skill 后，可以手动清理旧名称留下的链接。
+
 ## 提交
 
 - **提交信息**用 [Conventional Commits](https://www.conventionalcommits.org/)：`type(scope): subject`，由 commitlint 在 `commit-msg` 钩子和 PR CI 里检查。
