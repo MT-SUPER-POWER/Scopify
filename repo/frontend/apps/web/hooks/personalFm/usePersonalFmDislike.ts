@@ -3,13 +3,10 @@
 import { useCallback, useRef, useState } from "react";
 import { toast } from "sonner";
 
-import { isPersonalFmPlaybackSource } from "@/constants/personalFm";
 import { trashPersonalFmSong } from "@/lib/api/personalFm";
-import { dislikePersonalFmTrack } from "@/lib/personalFm/dislike";
 import { useTranslation } from "react-i18next";
 
 import { usePersonalFmStore } from "@/store/module/personalFm";
-import { usePlayerStore } from "@/store/module/player";
 import type { SongDetail } from "@/types/song/api";
 
 /**
@@ -24,26 +21,13 @@ export function usePersonalFmDislike() {
 
   const dislike = useCallback(
     async (track: SongDetail): Promise<boolean> => {
-      const player = usePlayerStore.getState();
-      if (!isPersonalFmPlaybackSource(player.playlistId) || isDislikingRef.current) return false;
+      if (isDislikingRef.current) return false;
 
       isDislikingRef.current = true;
       setIsDisliking(true);
       try {
-        await dislikePersonalFmTrack(track, {
-          advance: (source) => usePersonalFmStore.getState().advance(source),
-          getPlayer: () => {
-            const currentPlayer = usePlayerStore.getState();
-            return {
-              queue: currentPlayer.queue,
-              queueIndex: currentPlayer.queueIndex,
-              removeQueueItem: currentPlayer.removeQueueItem,
-            };
-          },
-          trash: async (songId) => {
-            await trashPersonalFmSong(songId);
-          },
-        });
+        await trashPersonalFmSong(track.id);
+        await usePersonalFmStore.getState().removeDislikedTrack(track);
         return true;
       } catch (error) {
         console.error("[personal-fm] failed to dislike song", error);

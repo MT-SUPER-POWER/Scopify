@@ -4,7 +4,7 @@ export type MusicQuality =
   "sky" | "jymaster" | "dolby" | "vivid" | "spatial" | "hires" | "lossless" | "high" | "standard";
 export type PlaybackFailureSource = "url" | "audio";
 /** Identifies why queue progression occurred so source-specific policies can react correctly. */
-export type PlaybackNextSource = "manual" | "ended" | "personal-fm-dislike";
+export type PlaybackNextSource = "manual" | "ended";
 export type RepeatMode = "off" | "all" | "one";
 export type ReplayGainMode = "off" | "track" | "album";
 export type SourceChangeMode = "new-track" | "preserve-position";
@@ -67,7 +67,7 @@ export interface PlayerStore {
   queueIndex: number;
   refreshCurrentTrackUrl: () => Promise<PlaybackSourceRefreshResult>;
   cleanCache: () => void;
-  removeQueueItem: (index: number) => void;
+  removeQueueItem: (index: number, playFollowingOnly?: boolean) => void;
   reshuffleQueue: () => void;
   repeatMode: RepeatMode;
   replayGainMode: ReplayGainMode;

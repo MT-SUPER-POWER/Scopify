@@ -7,7 +7,7 @@
  */
 
 export type PlaybackQueueRepeatMode = "off" | "all" | "one";
-export type PlaybackQueueNextSource = "manual" | "ended" | "personal-fm-dislike";
+export type PlaybackQueueNextSource = "manual" | "ended";
 export type PlaybackQueuePlaylistId = number | string | null;
 
 export interface PlaybackQueueItem {
@@ -337,6 +337,7 @@ export function createPlaybackQueue<T extends PlaybackQueueItem>(shuffle: Playba
       snapshot: PlaybackQueueSnapshot<T>,
       context: PlaybackQueueRuntimeContext<T>,
       index: number,
+      playFollowingOnly = false,
     ): PlaybackQueueTransition<T> {
       if (index < 0 || index >= snapshot.queue.length) return noChange(snapshot);
 
@@ -356,20 +357,42 @@ export function createPlaybackQueue<T extends PlaybackQueueItem>(shuffle: Playba
       }
 
       const removedCurrent =
-        index === snapshot.queueIndex || snapshot.queue[index]?.id === context.currentTrack?.id;
+        index === snapshot.queueIndex ||
+        (!playFollowingOnly && snapshot.queue[index]?.id === context.currentTrack?.id);
+      const removedTail = playFollowingOnly && removedCurrent && index === queue.length;
       const queueIndex = removedCurrent
         ? Math.min(index, queue.length - 1)
         : index < snapshot.queueIndex
           ? snapshot.queueIndex - 1
           : snapshot.queueIndex;
       const track = queue[queueIndex];
+      let historyIndex = 0;
+      let historyStack = [queueIndex];
+      if (playFollowingOnly) {
+        historyStack = [];
+        historyIndex = -1;
+        for (const [position, entry] of snapshot.historyStack.entries()) {
+          if (removedCurrent && position > snapshot.historyIndex) break;
+          if (entry === index) continue;
+          historyStack.push(entry > index ? entry - 1 : entry);
+          if (position <= snapshot.historyIndex) historyIndex = historyStack.length - 1;
+        }
+        if (removedCurrent && !removedTail) {
+          historyStack.push(queueIndex);
+          historyIndex = historyStack.length - 1;
+        }
+      }
 
       return {
-        effect: removedCurrent && track ? { track, type: "play" } : NO_EFFECT,
+        effect: removedTail
+          ? { type: "clear" }
+          : removedCurrent && track
+            ? { track, type: "play" }
+            : NO_EFFECT,
         snapshot: {
           ...snapshot,
-          historyIndex: 0,
-          historyStack: [queueIndex],
+          historyIndex,
+          historyStack,
           originalQueue: [...queue],
           queue,
           queueIndex,
