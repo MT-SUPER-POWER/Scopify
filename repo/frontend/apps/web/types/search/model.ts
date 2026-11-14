@@ -55,10 +55,8 @@ export interface Podcast {
 }
 
 export interface Voice {
-  auditStatus?: null | string;
   coverUrl: string;
   description?: string;
-  displayStatus?: null | string;
   duration: number;
   hostName?: string;
   id: number;

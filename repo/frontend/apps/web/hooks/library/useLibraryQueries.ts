@@ -13,6 +13,7 @@ import {
 } from "@/lib/api/voicelist";
 import { getUserLikeLists, getUserPlaylist } from "@/lib/api/playlist";
 import { getRecentSongs } from "@/lib/api/user";
+import { toLikedVoice } from "@/lib/library/likedVoice";
 import { useLoginStatus } from "@/hooks/auth/useLoginStatus";
 import { musicQueryKeys } from "@/lib/query/queryKeys";
 import { throwQueryErrorWithoutData } from "@/lib/query/errorPolicy";
@@ -28,7 +29,7 @@ import type {
 import type { RadioDetail } from "@/types/radio/api";
 import { getRecentSong, getRecentSongEntries } from "@/types/user/api";
 import type { LibraryMediaItem } from "@/types/library/model";
-import type { Artist, Song, Voice } from "@/types/search/model";
+import type { Voice } from "@/types/search/model";
 
 function findLikedPlaylist(playlists: RawNeteasePlaylist[], userId: number) {
   return (
@@ -115,66 +116,6 @@ function getLikedVoiceItems(
     response.contentVOList ??
     []
   );
-}
-
-function toLikedVoiceArtist(source: { id?: number; name?: string; picUrl?: string }): Artist {
-  return {
-    id: source.id ?? 0,
-    name: source.name ?? "",
-    picUrl: source.picUrl ?? null,
-  };
-}
-
-function toLikedVoiceSong(source: LikedVoice): Song | null {
-  const song = source.mainSong ?? source.djProgram?.mainSong;
-  if (!song?.id) return null;
-
-  const artists = (song.artists ?? song.ar ?? []).map(toLikedVoiceArtist);
-  const album = song.album ?? song.al;
-
-  return {
-    album: {
-      artist: artists[0] ?? { id: 0, name: "", picUrl: null },
-      id: album?.id ?? 0,
-      name: album?.name ?? "",
-      picUrl: album?.picUrl ?? album?.blurPicUrl,
-      publishTime: 0,
-      size: 0,
-    },
-    artists,
-    duration: song.duration ?? song.dt ?? 0,
-    id: song.id,
-    name: song.name ?? "",
-  };
-}
-
-function toLikedVoice(source: LikedVoice): Voice | null {
-  const id = Number(source.voiceId ?? source.id ?? source.contentId);
-  const name = source.voiceName ?? source.name ?? source.contentName;
-  if (!Number.isFinite(id) || !name) return null;
-
-  const mainSong = toLikedVoiceSong(source);
-  const displayStatus = source.displayStatus ?? source.disPlayStatus;
-  return {
-    auditStatus: source.auditStatus,
-    coverUrl:
-      source.coverUrl ?? source.picUrl ?? source.contentCoverUrl ?? mainSong?.album.picUrl ?? "",
-    description: source.voiceDesc,
-    displayStatus,
-    duration: source.duration ?? mainSong?.duration ?? 0,
-    hostName: source.userName ?? source.dj?.nickname ?? source.djProgram?.dj?.nickname,
-    id,
-    isPlayable:
-      (displayStatus === undefined || displayStatus === null || displayStatus === "ONLINE") &&
-      source.auditStatus !== "AUDIT_FAILED",
-    lastPlayTime: source.lastPlayTime,
-    likeTime: source.likeTime,
-    mainSong,
-    name,
-    podcastName: source.voiceListName ?? source.radioName ?? "",
-    playCount: source.playCount,
-    publishTime: source.publishTime,
-  };
 }
 
 function useLibrarySession() {
