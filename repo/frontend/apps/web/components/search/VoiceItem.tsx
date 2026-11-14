@@ -126,24 +126,17 @@ export function VoiceItem({
         />
       </div>
       <div className="min-w-0 flex-1">
-        <div className="flex min-w-0 items-center gap-2">
-          <p
-            className={cn(
-              "truncate font-medium",
-              isPreview ? "text-base" : "text-sm",
-              isActive && "text-brand",
-              isUnavailable && "text-content-muted",
-              !isActive && !isUnavailable && "text-content",
-            )}
-          >
-            {voice.name}
-          </p>
-          {isLikedVoice && isUnavailable ? (
-            <span className="shrink-0 rounded-full bg-content/10 px-2 py-0.5 text-[10px] font-medium text-content-muted">
-              {t("library.voice.status.unavailable")}
-            </span>
-          ) : null}
-        </div>
+        <p
+          className={cn(
+            "truncate font-medium",
+            isPreview ? "text-base" : "text-sm",
+            isActive && "text-brand",
+            isUnavailable && "text-content-muted",
+            !isActive && !isUnavailable && "text-content",
+          )}
+        >
+          {voice.name}
+        </p>
         <p className={cn("truncate text-xs text-content-muted", isPreview && "mt-1")}>
           {isPreview && voice.duration > 0 && `${formatDuration(voice.duration)} · `}
           {voice.podcastName}
