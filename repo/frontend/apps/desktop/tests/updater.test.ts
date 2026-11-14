@@ -18,6 +18,7 @@ const nativeUpdater = Object.assign(new EventEmitter(), {
   allowDowngrade: true,
   channel: "latest",
   autoInstallOnAppQuit: true,
+  setFeedURL: mock(() => {}),
   checkForUpdates: mock(async () => {}),
   downloadUpdate: mock(async (_cancellation?: TestCancellationToken) => {}),
   quitAndInstall: mock(() => {}),
