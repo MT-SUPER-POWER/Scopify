@@ -58,6 +58,8 @@ git push origin v3.5.0-beta.1
 
 ## 应用内 Beta 更新
 
+桌面客户端默认使用 Desktop 的 `package.json` 中声明的 GitHub 仓库。要测试 fork 的更新，在启动桌面进程前设置 `SCOPIFY_UPDATE_REPOSITORY=owner/repo`。发布列表、安装包和 macOS 手动下载链接都使用该仓库。GitHub Actions 发包仍使用触发工作流的仓库。
+
 在“设置 → 客户端更新”开启“接收 Beta 更新”，保存设置后点击检查更新。开关默认关闭，旧配置缺少该字段时同样按关闭处理。开启后检查 Beta 和正式发布，Windows 沿用下载与安装流程，macOS 沿用前往对应 Release 页面手动安装的流程。
 
 更新器在包含当前平台更新文件的已发布版本中，按 SemVer 选择最高版本，与发布时间无关。开关关闭时只选正式版；开启时将正式版和 Beta 一起比较。只有比已安装版本更高的候选才会更新。

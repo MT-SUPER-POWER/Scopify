@@ -1,12 +1,25 @@
 import { GitHubProvider } from "electron-updater/out/providers/GitHubProvider";
 import { parseUpdateInfo } from "electron-updater/out/providers/Provider";
 
+import { repository } from "../../../../package.json";
+
 const HOST = "https://github.com";
-const REPOSITORY = "MT-SUPER-POWER/Scopify";
+const REPOSITORY_SLUG = /^[A-Za-z0-9][A-Za-z0-9-]*\/[A-Za-z0-9_.-]+$/;
 const PAGE_SIZE = 100;
 const VERSION_TAG = /^v(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-beta\.(0|[1-9]\d*))?$/;
 
-export const releaseBaseUrl = `${HOST}/${REPOSITORY}/releases`;
+export function getUpdateRepository(override = process.env.SCOPIFY_UPDATE_REPOSITORY) {
+  const slug = override?.trim() || new URL(repository.url).pathname.slice(1).replace(/\.git$/, "");
+  const [, repo] = slug.split("/");
+  if (!REPOSITORY_SLUG.test(slug) || repo === "." || repo === "..") {
+    throw new Error("SCOPIFY_UPDATE_REPOSITORY must use the GitHub owner/repo format");
+  }
+  return slug;
+}
+
+export function getReleaseBaseUrl(slug = getUpdateRepository()) {
+  return `${HOST}/${slug}/releases`;
+}
 
 type ProviderArgs = ConstructorParameters<typeof GitHubProvider>;
 
@@ -46,13 +59,17 @@ export function selectUpdateRelease(
 
 /** Select by version first, then use the GitHub provider's normal installer and blockmap handling. */
 export class ReleaseProvider extends GitHubProvider {
+  private readonly slug: string;
+
   constructor(
     _options: unknown,
     private readonly updateApp: ProviderArgs[1],
     runtimeOptions: ProviderArgs[2],
   ) {
-    const [owner, repo] = REPOSITORY.split("/");
+    const slug = getUpdateRepository();
+    const [owner, repo] = slug.split("/");
     super({ provider: "github", owner, repo }, updateApp, runtimeOptions);
+    this.slug = slug;
   }
 
   override async getLatestVersion() {
@@ -61,7 +78,7 @@ export class ReleaseProvider extends GitHubProvider {
     const releases: unknown[] = [];
     for (let page = 1; ; page++) {
       const url = new URL(
-        `https://api.github.com/repos/${REPOSITORY}/releases?per_page=${PAGE_SIZE}&page=${page}`,
+        `https://api.github.com/repos/${this.slug}/releases?per_page=${PAGE_SIZE}&page=${page}`,
       );
       const raw = await this.httpRequest(url, { Accept: "application/vnd.github+json" });
       const batch: unknown = JSON.parse(raw ?? "null");
@@ -70,8 +87,10 @@ export class ReleaseProvider extends GitHubProvider {
       if (batch.length < PAGE_SIZE) break;
     }
     const release = selectUpdateRelease(releases, allowPrerelease, channelFile);
-    if (!release) throw new Error(`No published Scopify release with ${channelFile}`);
-    const metadataUrl = new URL(`${releaseBaseUrl}/download/${release.tag}/${channelFile}`);
+    if (!release) throw new Error(`No published release in ${this.slug} with ${channelFile}`);
+    const metadataUrl = new URL(
+      `${getReleaseBaseUrl(this.slug)}/download/${release.tag}/${channelFile}`,
+    );
     const update = parseUpdateInfo(await this.httpRequest(metadataUrl), channelFile, metadataUrl);
     if (update.version !== release.version)
       throw new Error("Update metadata does not match its release tag");
