@@ -23,7 +23,9 @@ export function VoiceList({
           ? "grid w-full grid-cols-1 gap-x-12 gap-y-5 lg:grid-cols-2"
           : layout === "grid"
             ? "grid w-full grid-cols-1 gap-2 md:grid-cols-2 2xl:grid-cols-3"
-            : "flex w-full flex-col"
+            : variant === "liked"
+              ? "flex w-full flex-col gap-0.5 pt-1"
+              : "flex w-full flex-col"
       }
     >
       {displayedVoices.map((voice, index) => (

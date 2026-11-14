@@ -1330,6 +1330,7 @@ export default interface Resources {
     "podcasts.action.showDescription": "查看节目简介";
     "podcasts.action.unfavorite": "取消收藏";
     "podcasts.column.duration": "时长";
+    "podcasts.column.likedAt": "收藏日期";
     "podcasts.column.playCount": "播放量";
     "podcasts.column.progress": "播放进度";
     "podcasts.column.title": "标题";
@@ -1380,7 +1381,7 @@ export default interface Resources {
     "voice.meta.likedAt": "收藏于 {{date}}";
     "voice.meta.playCount": "{{count}} 次播放";
     "voice.meta.publishedAt": "发布于 {{date}}";
-    "voice.status.unavailable": "内容已下架";
+    "voice.status.unavailable": "暂无音源";
     "voice.unlikeSuccess": "已取消喜欢该声音";
     "voiceTranscript.empty": "该声音暂未提供文字稿。";
     "voiceTranscript.loading": "正在加载文字稿…";
