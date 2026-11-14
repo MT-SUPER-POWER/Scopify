@@ -23,10 +23,7 @@ const PLATFORM_LABEL_KEYS: Record<MusicProvider, TranslationKey> = {
   qq: "login.platform.qq",
 };
 
-/**
- * Both accounts with their login state. Choosing a signed-in account switches the whole app to
- * that platform; choosing a signed-out one opens its login.
- */
+/** Platform selection and account sign-in are separate actions. */
 export function ProfileMenuAccounts() {
   const { t } = useTranslation();
   const smartRouter = useSmartRouter();
@@ -41,62 +38,64 @@ export function ProfileMenuAccounts() {
       </DropdownMenuLabel>
       {accounts.map((account) => {
         const isActive = account.provider === activeProvider;
+        const platformName = t(PLATFORM_LABEL_KEYS[account.provider]);
         const name = account.profile?.nickname || t("profile.accounts.signedIn");
         return (
-          <DropdownMenuItem
+          <div
             key={account.provider}
-            className={cn(
-              "min-h-14 cursor-pointer gap-3 rounded-xl px-3 py-2 focus:bg-content/5",
-              isActive && "bg-content/5",
-            )}
-            onSelect={() => {
-              if (!account.isLoggedIn) {
-                openLoginForPlatform(account.provider, (url) => smartRouter.push(url));
-              } else if (!isActive) {
-                void switchProvider(account.provider);
-              }
-            }}
+            className={cn("flex min-h-14 items-center rounded-xl", isActive && "bg-content/5")}
           >
-            <div className="relative size-10 shrink-0">
-              {account.profile?.avatarUrl ? (
-                <>
-                  <Image
-                    src={account.profile.avatarUrl}
-                    alt={account.profile.nickname}
-                    fill
-                    sizes="40px"
-                    className="rounded-full object-cover"
-                  />
-                  <ProviderLogo
-                    provider={account.provider}
-                    className="absolute -right-1 -bottom-1 size-4 rounded-full ring-2 ring-surface-overlay"
-                  />
-                </>
-              ) : (
-                <ProviderLogo provider={account.provider} className="size-10" />
-              )}
-            </div>
-            <div className="flex min-w-0 flex-1 flex-col gap-0.5">
-              <span className="truncate text-sm font-medium text-content">
-                {t(PLATFORM_LABEL_KEYS[account.provider])}
-              </span>
-              <span className="truncate text-xs text-content-muted">
-                {account.isLoggedIn ? name : t("profile.accounts.notLoggedIn")}
-              </span>
-            </div>
-            {!account.isLoggedIn ? (
-              <span className="shrink-0 rounded-full bg-brand px-3 py-1 text-xs font-medium text-brand-foreground">
-                {t("common.action.login")}
-              </span>
-            ) : (
-              isActive && (
-                <Check
-                  className="size-4 shrink-0 text-brand"
-                  aria-label={t("profile.accounts.active")}
-                />
-              )
+            <DropdownMenuItem
+              asChild
+              aria-current={isActive ? "true" : undefined}
+              className="min-h-14 min-w-0 flex-1 cursor-pointer gap-3 rounded-xl px-3 py-2 text-left focus:bg-content/10"
+              onSelect={() => {
+                if (!isActive) void switchProvider(account.provider);
+              }}
+            >
+              <button type="button">
+                <span className="relative size-10 shrink-0">
+                  {account.profile?.avatarUrl ? (
+                    <>
+                      <Image
+                        src={account.profile.avatarUrl}
+                        alt={account.profile.nickname}
+                        fill
+                        sizes="40px"
+                        className="rounded-full object-cover"
+                      />
+                      <ProviderLogo
+                        provider={account.provider}
+                        className="absolute -right-1 -bottom-1 size-4 rounded-full ring-2 ring-surface-overlay"
+                      />
+                    </>
+                  ) : (
+                    <ProviderLogo provider={account.provider} className="size-10" />
+                  )}
+                </span>
+                <span className="flex min-w-0 flex-1 flex-col gap-0.5">
+                  <span className="truncate text-sm font-medium text-content">{platformName}</span>
+                  <span className="truncate text-xs text-content-muted">
+                    {account.isLoggedIn ? name : t("profile.accounts.notLoggedIn")}
+                  </span>
+                </span>
+                {isActive && <Check className="size-4 shrink-0 text-brand" aria-hidden="true" />}
+              </button>
+            </DropdownMenuItem>
+            {!account.isLoggedIn && (
+              <DropdownMenuItem
+                asChild
+                className="mr-3 shrink-0 cursor-pointer rounded-full bg-brand px-3 py-1 text-xs font-medium text-brand-foreground focus:bg-brand-hover focus:text-brand-foreground focus:ring-2 focus:ring-content"
+                onSelect={() => {
+                  void openLoginForPlatform(account.provider, (url) => smartRouter.push(url));
+                }}
+              >
+                <button type="button" aria-label={`${t("common.action.login")} · ${platformName}`}>
+                  {t("common.action.login")}
+                </button>
+              </DropdownMenuItem>
             )}
-          </DropdownMenuItem>
+          </div>
         );
       })}
     </DropdownMenuGroup>
