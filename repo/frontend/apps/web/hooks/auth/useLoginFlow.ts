@@ -6,6 +6,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
 
 import { useLoginStatus } from "@/hooks/auth/useLoginStatus";
+import { CAPTCHA_VALIDITY_MS, validateCaptcha } from "@/lib/auth/authValidator";
 import { useSmartRouter } from "@/hooks/core/useSmartRouter";
 import { createYidunClient, nextYidunStep } from "@/lib/auth/yidunClient";
 import { bindYidunDevice } from "@/lib/auth/yidunDevice";
@@ -24,7 +25,6 @@ import type {
 
 import type { LoginMode } from "@/types/auth/login";
 
-const CAPTCHA_VALIDITY_MS = 10 * 60 * 1000;
 const LOGIN_MODE_STORAGE_KEY = "scopify-last-login-mode";
 
 function getRememberedLoginMode(): LoginMode | null {
@@ -186,7 +186,7 @@ export function useLoginFlow() {
       ...credentials,
     });
     if (nextYidunStep(data) === "captcha") {
-      const pending = { ...current, captchaSent: false, captchaSentAt: undefined };
+      const pending = { ...current, captchaSentAt: undefined };
       session.current = pending;
       setSmsSession(pending);
       setVerification({ stage: "sms" });
@@ -216,15 +216,15 @@ export function useLoginFlow() {
 
   const handleSubmitCaptcha = async (captcha: string) => {
     if (!smsSession || operation.current) return;
-    if (!smsSession.captchaSent) {
+    if (smsSession.captchaSentAt === undefined) {
       toast.warning(t("login.page.pleaseSendCaptchaFirst"));
       return;
     }
-    if (smsSession.captchaSentAt && Date.now() - smsSession.captchaSentAt > CAPTCHA_VALIDITY_MS) {
+    if (Date.now() - smsSession.captchaSentAt >= CAPTCHA_VALIDITY_MS) {
       toast.warning(t("login.page.captchaExpired"));
       return;
     }
-    if (!/^\d{4}$/.test(captcha.trim())) {
+    if (!validateCaptcha(captcha).valid) {
       toast.warning(t("login.page.invalidCaptchaLength"));
       return;
     }
@@ -251,7 +251,7 @@ export function useLoginFlow() {
         if (nextYidunStep(data) !== "done") {
           throw new Error(data.msg || data.message || t("login.page.sendCaptchaFailed"));
         }
-        const pending = { ...smsSession, captchaSent: true, captchaSentAt: Date.now() };
+        const pending = { ...smsSession, captchaSentAt: Date.now() };
         session.current = pending;
         setSmsSession(pending);
         setVerification({ stage: "sms" });

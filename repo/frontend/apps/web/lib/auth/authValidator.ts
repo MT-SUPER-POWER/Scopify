@@ -92,6 +92,8 @@ export function validatePhoneNumber(
   return { valid: true, message: "" };
 }
 
+export const CAPTCHA_VALIDITY_MS = 10 * 60 * 1000;
+
 /**
  * 校验短信验证码（网易云固定 4 位数字）
  */
