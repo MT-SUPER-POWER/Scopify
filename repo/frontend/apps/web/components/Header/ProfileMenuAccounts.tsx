@@ -1,6 +1,5 @@
 "use client";
 
-import { Check } from "lucide-react";
 import Image from "next/image";
 import { useTranslation } from "react-i18next";
 import {
@@ -48,7 +47,7 @@ export function ProfileMenuAccounts() {
             <DropdownMenuItem
               asChild
               aria-current={isActive ? "true" : undefined}
-              className="min-h-14 min-w-0 flex-1 cursor-pointer gap-3 rounded-xl px-3 py-2 text-left focus:bg-content/10"
+              className="group min-h-14 min-w-0 flex-1 cursor-pointer gap-3 px-3 py-2 text-left focus:bg-transparent"
               onSelect={() => {
                 if (!isActive) void switchProvider(account.provider);
               }}
@@ -74,12 +73,13 @@ export function ProfileMenuAccounts() {
                   )}
                 </span>
                 <span className="flex min-w-0 flex-1 flex-col gap-0.5">
-                  <span className="truncate text-sm font-medium text-content">{platformName}</span>
+                  <span className="truncate text-sm font-medium text-content group-focus-visible:underline">
+                    {platformName}
+                  </span>
                   <span className="truncate text-xs text-content-muted">
                     {account.isLoggedIn ? name : t("profile.accounts.notLoggedIn")}
                   </span>
                 </span>
-                {isActive && <Check className="size-4 shrink-0 text-brand" aria-hidden="true" />}
               </button>
             </DropdownMenuItem>
             {!account.isLoggedIn && (
