@@ -5,7 +5,6 @@ export interface YidunSession {
   phone: string;
   countrycode?: string;
   device: FreshLoginDevice;
-  captchaSent?: boolean;
   captchaSentAt?: number;
 }
 

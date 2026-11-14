@@ -59,11 +59,12 @@ export function LoginVerificationDialog({
           <div hidden={stage !== "sms"}>
             <SmsLoginForm
               key={smsSession.sid}
-              initialPhone={smsSession.phone}
-              initialCountryCode={smsSession.countrycode}
+              captchaSentAt={smsSession.captchaSentAt}
+              phone={smsSession.phone}
+              countryCode={smsSession.countrycode}
               isLoading={isLoading}
               onSendCaptcha={onSendCaptcha}
-              onSubmit={(_, captcha) => onSubmitCaptcha(captcha)}
+              onSubmit={onSubmitCaptcha}
             />
             {stage === "sms" && verification?.message && (
               <p role="alert" className="mt-3 text-sm text-content-muted">

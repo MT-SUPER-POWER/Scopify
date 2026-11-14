@@ -5,7 +5,7 @@ export interface LoginVerificationDialogProps {
   verification: YidunVerification | null;
   onHostChange: (host: HTMLDivElement | null) => void;
   onCancel: () => void;
-  smsSession: Pick<YidunSession, "sid" | "phone" | "countrycode"> | null;
+  smsSession: Pick<YidunSession, "sid" | "phone" | "countrycode" | "captchaSentAt"> | null;
   isLoading: boolean;
   onSendCaptcha: () => Promise<boolean>;
   onSubmitCaptcha: (captcha: string) => Promise<void>;
@@ -30,11 +30,12 @@ export interface PasswordLoginFormProps {
 }
 
 export interface SmsLoginFormProps {
+  captchaSentAt?: number;
   isLoading: boolean;
-  initialPhone?: string;
-  initialCountryCode?: string;
-  onSendCaptcha: (phone: string, countrycode?: string) => Promise<boolean>;
-  onSubmit: (phone: string, captcha: string, countrycode?: string) => void;
+  phone: string;
+  countryCode?: string;
+  onSendCaptcha: () => Promise<boolean>;
+  onSubmit: (captcha: string) => Promise<void>;
 }
 
 export interface CountryCodeItem {

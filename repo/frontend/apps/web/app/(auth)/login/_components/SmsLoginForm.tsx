@@ -9,66 +9,70 @@ import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 
 import { CountryCodeSelect } from "./CountryCodeSelect";
-import { cleanPhoneNumber, validateCaptcha, validatePhoneNumber } from "@/lib/auth/authValidator";
+import {
+  CAPTCHA_VALIDITY_MS,
+  validateCaptcha,
+  validatePhoneNumber,
+} from "@/lib/auth/authValidator";
 import type { SmsLoginFormProps } from "@/types/auth/login";
-
-const CAPTCHA_VALIDITY_MS = 10 * 60 * 1000;
 
 export function SmsLoginForm({
   isLoading,
-  initialPhone = "",
-  initialCountryCode = "86",
+  captchaSentAt,
+  phone,
+  countryCode = "86",
   onSendCaptcha,
   onSubmit,
 }: SmsLoginFormProps) {
-  const [countryCode, setCountryCode] = useState(initialCountryCode);
-  const [phone, setPhone] = useState(initialPhone);
   const [captcha, setCaptcha] = useState("");
   const [countdown, setCountdown] = useState(0);
-  const [captchaSentAt, setCaptchaSentAt] = useState<number | null>(null);
+  const [expiredSentAt, setExpiredSentAt] = useState<number | null>(null);
   const { t } = useTranslation();
+  const hasCaptcha = captchaSentAt !== undefined;
+  const isExpired = hasCaptcha && expiredSentAt === captchaSentAt;
+  const phoneCheck = validatePhoneNumber(phone, countryCode);
+  const canSubmit =
+    !isLoading && hasCaptcha && !isExpired && phoneCheck.valid && validateCaptcha(captcha).valid;
+  const captchaHint = !hasCaptcha
+    ? t("login.page.pleaseSendCaptchaFirst")
+    : isExpired
+      ? t("login.page.captchaExpired")
+      : t("login.page.invalidCaptchaLength");
+
+  useEffect(() => {
+    if (captchaSentAt === undefined) return;
+    const expiresIn = Math.max(0, captchaSentAt + CAPTCHA_VALIDITY_MS - Date.now());
+    const timer = setTimeout(() => setExpiredSentAt(captchaSentAt), expiresIn);
+    return () => clearTimeout(timer);
+  }, [captchaSentAt]);
 
   const handleSendCaptcha = async () => {
     if (isLoading || countdown > 0) return;
-    const phoneCheck = validatePhoneNumber(phone, countryCode);
     if (!phoneCheck.valid) {
       toast.warning(phoneCheck.message);
       return;
     }
-    const success = await onSendCaptcha(cleanPhoneNumber(phone), countryCode);
+    const success = await onSendCaptcha();
     if (success) {
-      setCaptchaSentAt(Date.now());
+      setCaptcha("");
       setCountdown(60);
     }
   };
 
   useEffect(() => {
     if (countdown <= 0) return;
-    const timer = setInterval(() => setCountdown((c) => c - 1), 1000);
-    return () => clearInterval(timer);
+    const timer = setTimeout(() => setCountdown((c) => c - 1), 1000);
+    return () => clearTimeout(timer);
   }, [countdown]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const phoneCheck = validatePhoneNumber(phone, countryCode);
-    if (!phoneCheck.valid) {
-      toast.warning(phoneCheck.message);
+    if (!canSubmit || captchaSentAt === undefined) return;
+    if (Date.now() - captchaSentAt >= CAPTCHA_VALIDITY_MS) {
+      setExpiredSentAt(captchaSentAt);
       return;
     }
-    if (!captchaSentAt) {
-      toast.warning(t("login.page.pleaseSendCaptchaFirst"));
-      return;
-    }
-    if (Date.now() - captchaSentAt > CAPTCHA_VALIDITY_MS) {
-      toast.warning(t("login.page.captchaExpired"));
-      return;
-    }
-    const captchaCheck = validateCaptcha(captcha);
-    if (!captchaCheck.valid) {
-      toast.warning(captchaCheck.message);
-      return;
-    }
-    onSubmit(cleanPhoneNumber(phone), captcha.trim(), countryCode);
+    void onSubmit(captcha.trim());
   };
 
   return (
@@ -78,24 +82,13 @@ export function SmsLoginForm({
           {t("login.form.phoneLabel")}
         </Label>
         <div className="flex gap-2">
-          <CountryCodeSelect
-            value={countryCode}
-            onChange={(nextCode) => {
-              setCountryCode(nextCode);
-              setCaptchaSentAt(null);
-            }}
-            disabled={isLoading || !!initialPhone}
-          />
+          <CountryCodeSelect value={countryCode} onChange={() => undefined} disabled />
           <Input
             id="phone-sms"
             type="tel"
             autoComplete="tel"
-            disabled={isLoading || !!initialPhone}
+            disabled
             value={phone}
-            onChange={(e) => {
-              setPhone(e.target.value);
-              setCaptchaSentAt(null);
-            }}
             placeholder={t("login.form.phonePlaceholder")}
             className="h-10 flex-1 border-content/10 bg-content/5 text-sm text-content"
           />
@@ -111,8 +104,8 @@ export function SmsLoginForm({
             type="text"
             inputMode="numeric"
             autoComplete="one-time-code"
-            maxLength={4}
-            disabled={isLoading}
+            aria-describedby="sms-captcha-hint"
+            disabled={isLoading || !hasCaptcha || isExpired}
             value={captcha}
             onChange={(e) => {
               const value = e.target.value.replace(/\D/g, "").slice(0, 4);
@@ -131,11 +124,14 @@ export function SmsLoginForm({
             {countdown > 0 ? `${countdown}s` : t("login.form.getCaptcha")}
           </Button>
         </div>
+        <p id="sms-captcha-hint" role="status" className="text-xs text-content-muted">
+          {captchaHint}
+        </p>
       </div>
       <Button
         type="submit"
-        disabled={isLoading}
-        className="hover:scale-1.02 mt-2 h-10 w-full rounded-full bg-brand font-bold text-brand-foreground transition-all hover:bg-brand-hover active:scale-95"
+        disabled={!canSubmit}
+        className="hover:scale-1.02 mt-2 h-10 w-full rounded-full bg-brand font-bold text-brand-foreground transition-all hover:bg-brand-hover active:scale-95 disabled:opacity-50"
       >
         {isLoading ? t("login.form.verifying") : t("login.form.verifyAndLogin")}
       </Button>
