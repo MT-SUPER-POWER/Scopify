@@ -290,13 +290,14 @@ export const usePlayerStore = create<PlayerStore>()(
         if (transition.snapshot === snapshot) return;
         set(selectPlayerQueueState(transition.snapshot));
       },
-      removeQueueItem: (index) => {
+      removeQueueItem: (index, playFollowingOnly) => {
         const state = get();
         const snapshot = createPlayerQueueSnapshot(state);
         const transition = playbackQueue.removeQueueItem(
           snapshot,
           { currentTrack: state.currentTrack },
           index,
+          playFollowingOnly,
         );
         if (transition.snapshot === snapshot) return;
 

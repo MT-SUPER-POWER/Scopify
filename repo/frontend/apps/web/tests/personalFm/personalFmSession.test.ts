@@ -1,5 +1,6 @@
 import { beforeEach, describe, expect, it, mock } from "bun:test";
 import { create } from "zustand";
+import { createPlaybackQueue } from "@/lib/player/playbackQueue";
 import { adaptNeteaseTrack } from "@/lib/providers/netease/adapters/track";
 import type { PlayerTrack } from "@/types/player/model";
 import { pruneSongDetail } from "@/types/song/api";
@@ -9,6 +10,10 @@ let requests = 0;
 let nextSongs: PlayerTrack[] = [song(1), song(2), song(3)];
 let fetchSongs = async (): Promise<PlayerTrack[]> => nextSongs;
 let plays = 0;
+const playbackQueue = createPlaybackQueue<PlayerTrack>(
+  (tracks) => [...tracks],
+  (track) => track.ref.id,
+);
 const player = create(() => ({
   playlistId: null as string | null,
   queue: [] as PlayerTrack[],
@@ -16,6 +21,22 @@ const player = create(() => ({
   historyIndex: 0,
   historyStack: [] as number[],
   playbackSessionRevision: 0,
+  removeQueueItem(index: number, playFollowingOnly?: boolean) {
+    const state = player.getState();
+    const { snapshot, effect } = playbackQueue.removeQueueItem(
+      {
+        ...state,
+        isShuffle: false,
+        originalQueue: state.queue,
+        repeatMode: "off",
+      },
+      { currentTrack: state.queue[state.queueIndex] ?? null },
+      index,
+      playFollowingOnly,
+    );
+    if (effect.type === "play") plays++;
+    player.setState(snapshot);
+  },
   setShuffle() {},
   setRepeatMode() {},
   async playFromSong(_song: PlayerTrack, tracks: PlayerTrack[], source: string) {
@@ -102,6 +123,47 @@ describe("personal FM page session", () => {
     player.setState((state) => ({ queue: state.queue.filter((track) => track.ref.id !== "2") }));
     player.setState({ playlistId: "other", queue: [song(99)] });
     expect(fm.getState().tracks.map((track) => track.ref.id)).toEqual(["1", "3", "4"]);
+  });
+
+  it("removes the current song and plays the following song", async () => {
+    await fm.getState().ensureReady();
+    const [current, next] = player.getState().queue;
+    await fm.getState().removeDislikedTrack(current);
+    expect(fm.getState().tracks).not.toContain(current);
+    expect(player.getState().queue[player.getState().queueIndex]).toBe(next);
+    expect(plays).toBe(2);
+  });
+
+  it("removes a queued song without restarting the current song", async () => {
+    await fm.getState().ensureReady();
+    const [current, queued] = player.getState().queue;
+    await fm.getState().removeDislikedTrack(queued);
+    expect(fm.getState().tracks).not.toContain(queued);
+    expect(player.getState().queue[player.getState().queueIndex]).toBe(current);
+    expect(plays).toBe(1);
+  });
+
+  it("refills before removing the current song at the end of the queue", async () => {
+    await fm.getState().ensureReady();
+    const last = player.getState().queue[2];
+    player.setState({ queueIndex: 2 });
+    nextSongs = [song(3), song(4)];
+    await fm.getState().removeDislikedTrack(last);
+    expect(fm.getState().tracks.map((track) => String(track.ref.id))).toEqual(["1", "2", "4"]);
+    expect(player.getState().queueIndex).toBe(2);
+    expect(plays).toBe(2);
+    expect(requests).toBe(2);
+  });
+
+  it("updates the saved radio list without touching another playlist's queue", async () => {
+    await fm.getState().ensureReady();
+    const disliked = fm.getState().tracks[0];
+    const otherQueue = [song(1)];
+    player.setState({ playlistId: "other", queue: otherQueue });
+    await fm.getState().removeDislikedTrack(disliked);
+    expect(fm.getState().tracks).not.toContain(disliked);
+    expect(player.getState().queue).toBe(otherQueue);
+    expect(plays).toBe(1);
   });
 
   it("replaces the entire list only on an explicit refresh, retaining old songs while it loads", async () => {

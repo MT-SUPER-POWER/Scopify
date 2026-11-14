@@ -158,6 +158,37 @@ export const usePersonalFmStore = create<PersonalFmStore>()(
         }
         await usePlayerStore.getState().playNext(source);
       },
+      removeDislikedTrack: async (track) => {
+        const findIndex = (queue: readonly PlayerTrack[]) => {
+          const exact = queue.indexOf(track);
+          if (exact >= 0) return exact;
+          // Metadata updates can replace queue objects while feedback is pending.
+          const matches = (item: PlayerTrack) =>
+            item.ref.provider === track.ref.provider && item.ref.id === track.ref.id;
+          const index = queue.findIndex(matches);
+          return index < 0 || queue.slice(index + 1).some(matches) ? -1 : index;
+        };
+        const player = usePlayerStore.getState();
+        if (
+          isPersonalFmPlaybackSource(player.playlistId) &&
+          player.queueIndex >= 0 &&
+          player.queueIndex === player.queue.length - 1 &&
+          findIndex(player.queue) === player.queueIndex
+        ) {
+          await refillPersonalFmQueue();
+        }
+
+        // Recheck after refilling: playback can move or switch sources during the request.
+        const currentPlayer = usePlayerStore.getState();
+        if (isPersonalFmPlaybackSource(currentPlayer.playlistId)) {
+          const index = findIndex(currentPlayer.queue);
+          if (index >= 0) currentPlayer.removeQueueItem(index, true);
+        } else {
+          const { tracks } = get();
+          const index = findIndex(tracks);
+          if (index >= 0) set({ tracks: tracks.filter((_, i) => i !== index) });
+        }
+      },
       error: null,
       ensureReady: async () => {
         const player = usePlayerStore.getState();

@@ -18,6 +18,7 @@ export interface PersonalFmRefreshButtonProps {
 }
 
 export interface PersonalFmStore {
+  removeDislikedTrack: (track: PlayerTrack) => Promise<void>;
   advance: (source?: PlaybackNextSource) => Promise<void>;
   ensureReady: () => Promise<boolean>;
   error: string | null;

@@ -3,13 +3,14 @@
 import { useCallback, useRef, useState } from "react";
 import { toast } from "sonner";
 
-import { isPersonalFmPlaybackSource } from "@/constants/personalFm";
-import { dislikePersonalFmTrack } from "@/lib/personalFm/dislike";
+import {
+  adaptNeteaseTrack,
+  getPlayerTrackOfNeteaseSong,
+} from "@/lib/providers/netease/adapters/track";
 import { useActiveProvider } from "@/hooks/provider/useActiveProvider";
 import { useTranslation } from "react-i18next";
 
 import { usePersonalFmStore } from "@/store/module/personalFm";
-import { usePlayerStore } from "@/store/module/player";
 import type { SongDetail } from "@/types/song/api";
 
 /**
@@ -25,33 +26,17 @@ export function usePersonalFmDislike() {
 
   const dislike = useCallback(
     async (track: SongDetail): Promise<boolean> => {
-      const player = usePlayerStore.getState();
-      if (!isPersonalFmPlaybackSource(player.playlistId) || isDislikingRef.current) return false;
+      if (isDislikingRef.current) return false;
 
       isDislikingRef.current = true;
       setIsDisliking(true);
       try {
-        await dislikePersonalFmTrack(track, {
-          advance: (source) => usePersonalFmStore.getState().advance(source),
-          getPlayer: () => {
-            const currentPlayer = usePlayerStore.getState();
-            return {
-              queue: currentPlayer.queue,
-              queueIndex: currentPlayer.queueIndex,
-              removeQueueItem: currentPlayer.removeQueueItem,
-            };
-          },
-          trash: async (songId) => {
-            if (!provider.dislikePersonalFmTrack) {
-              throw new Error("Personal FM dislike is unsupported.");
-            }
-            await provider.dislikePersonalFmTrack({
-              provider: provider.provider,
-              kind: "track",
-              id: String(songId),
-            });
-          },
-        });
+        if (!provider.dislikePersonalFmTrack) {
+          throw new Error("Personal FM dislike is unsupported.");
+        }
+        const queuedTrack = getPlayerTrackOfNeteaseSong(track) ?? adaptNeteaseTrack(track);
+        await provider.dislikePersonalFmTrack(queuedTrack.ref);
+        await usePersonalFmStore.getState().removeDislikedTrack(queuedTrack);
         return true;
       } catch (error) {
         console.error("[personal-fm] failed to dislike song", error);
