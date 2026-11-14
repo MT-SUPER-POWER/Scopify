@@ -98,3 +98,19 @@ export interface LikedVoiceListProps {
 export interface LikedVoiceMetadataProps {
   voice: Voice;
 }
+
+export interface CollectionShelfItem {
+  id: string;
+  title: string;
+  coverUrl: string;
+  subtitle?: string;
+  href?: string;
+  isArtist?: boolean;
+  onPlay?: (event: React.MouseEvent) => void;
+  isLoading?: boolean;
+}
+
+export interface CollectionShelfProps {
+  title: string;
+  items: readonly CollectionShelfItem[];
+}

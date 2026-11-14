@@ -1275,6 +1275,9 @@ export default interface Resources {
     "cloud.uploadFailed": "{{name}} 上传失败";
     "cloud.uploadSuccess": "已上传 {{count}} 首歌曲";
     "cloud.uploading": "正在上传 {{current}}/{{total}} · {{percent}}%";
+    "collection.tab.albums": "专辑";
+    "collection.tab.artists": "歌手";
+    "collection.tab.playlists": "歌单";
     "empty.cloud.description": "上传本地歌曲后，它们会显示在这里。";
     "empty.cloud.title": "云盘还是空的";
     "empty.collection.description": "收藏专辑或关注歌手后，它们会显示在这里。";
