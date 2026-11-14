@@ -35,15 +35,18 @@ pnpm run dev:full       # Web + Electron + 后端联调
 
 ## 项目 Skills
 
-项目专用的 skill 统一维护在根目录的 [`skills/`](./skills/)。新增或下载的项目 skill 放进 `skills/<名称>/SKILL.md`。初次克隆、创建新工作树或新增 skill 后，在对应工作目录执行：
+项目 Skills 统一维护在根目录的 [`skills/`](./skills/)。安装依赖后，在需要链接的工作副本中运行：
 
 ```bash
 bun scripts/link-skills.ts
 ```
 
-默认链接到 `.agents/skills/` 和 `.claude/skills/`。也可以指定一个或多个目录，例如 `bun scripts/link-skills.ts .cursor .gemini`。可选目录还包括 `.opencode`。Windows 使用目录联接（junction），macOS 和 Linux 使用相对符号链接。链接由每份工作副本生成并保存在 Git 忽略的目录内。编辑已有 skill 的内容会直接反映到所有链接。
+- **链接项目 Skills**。选择 Skills 和 AI 工具，查看预览后确认。Windows 创建目录联接（junction），macOS 和 Linux 创建相对符号链接。遇到同名项，可以保留它，或选择备份并替换。备份保存在目标目录旁的 `skills-backup-*`。
+- **创建项目 Skill**。填写名称和描述，即可创建 `skills/<名称>/SKILL.md`。可以只创建，也可以在这次运行中选中并链接。创建后在源文件补充具体说明。
+- **取消链接项目 Skills**。选择工具和链接，查看预览后批量移除。源 Skill 已删除或改名时，旧链接仍会列出。取消链接会保留源文件、独立安装的 Skills 和外部链接。
+- **添加 AI 工具**。输入工具名和项目内的 Skill 目录，例如 `.my-ai/skills`。确认后保存到当前工作副本忽略的 `.skill-tool-targets.json`，工具会立即出现在选择列表。自定义目录的 Git 忽略规则由使用者按项目需要管理。
 
-如果已有同名项，脚本会保留并提示。确认以根目录的版本为准后，执行 `bun scripts/link-skills.ts --replace`，原项会移动到对应 agent 目录下的 `skills-backup-*`，可供比对或恢复。删除或重命名 skill 后，可以手动清理旧名称留下的链接。
+每个多选菜单都支持方向键移动、Space 切换单项、`a` 全选或清空、`i` 反选，以及 Enter 继续。
 
 ## 提交
 

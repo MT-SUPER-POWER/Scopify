@@ -69,6 +69,8 @@ CONTEXT.md
 .codegraph/
 .claude/
 .agents/
+/.skill-tool-targets.json
+/.skill-tool-targets.json.*.tmp
 .gemini/
 .opencode/
 .mcp.json
