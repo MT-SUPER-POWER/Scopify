@@ -13,6 +13,7 @@ export interface PlaylistLatticeProps {
   tracks: SongDetail[];
   title: string;
   sourceId: string | null;
+  onDislikeTrack?: (track: SongDetail) => void;
   onTrackPlay?: (track: SongDetail) => void;
   onClose: () => void;
   /** Jumps to another immersive view without going back to the list first. */
@@ -40,6 +41,7 @@ export interface LatticePosterProps {
   expanded: boolean;
   current: boolean;
   focused: boolean;
+  onDislikeTrack?: (track: SongDetail) => void;
   onFocus: (instance: QueueInstance) => void;
   onSelect: (instance: QueueInstance) => void;
   onPlay: (track: SongDetail) => void;

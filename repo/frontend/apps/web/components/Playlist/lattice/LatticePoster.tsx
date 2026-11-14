@@ -1,6 +1,7 @@
 "use client";
 
 import { lazy, memo, Suspense, useEffect, useState } from "react";
+import { Ban } from "lucide-react";
 import { motion, useReducedMotion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { useCardFlip } from "@/hooks/playlist/useFlipReveal";
@@ -35,6 +36,7 @@ export const LatticePoster = memo(
     onFocus,
     onSelect,
     onPlay,
+    onDislikeTrack,
     flipPlan,
   }: LatticePosterProps) {
     const { t } = useTranslation();
@@ -126,6 +128,17 @@ export const LatticePoster = memo(
           ) : (
             copy
           )}
+          {expanded && onDislikeTrack && (
+            <button
+              type="button"
+              aria-label={t("contextMenu.recommendLess")}
+              title={t("contextMenu.recommendLess")}
+              onClick={() => onDislikeTrack(track)}
+              className="absolute top-3 right-3 z-2 grid size-10 place-items-center rounded-full bg-black/65 text-white hover:bg-black/85 focus-visible:outline-2 focus-visible:outline-white"
+            >
+              <Ban className="size-5" />
+            </button>
+          )}
           {expanded && (
             <LatticePlaybackControls
               track={track}
@@ -156,5 +169,6 @@ export const LatticePoster = memo(
     a.onFocus === b.onFocus &&
     a.onSelect === b.onSelect &&
     a.onPlay === b.onPlay &&
+    a.onDislikeTrack === b.onDislikeTrack &&
     a.flipPlan === b.flipPlan,
 );

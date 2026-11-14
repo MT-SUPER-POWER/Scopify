@@ -17,6 +17,7 @@ export default function PlaylistLattice({
   title,
   sourceId,
   onTrackPlay,
+  onDislikeTrack,
   onClose,
   onModeChange,
 }: PlaylistLatticeProps) {
@@ -95,6 +96,7 @@ export default function PlaylistLattice({
                 current={instance.queueIndex === currentIndex}
                 onSelect={wall.select}
                 onPlay={play}
+                onDislikeTrack={onDislikeTrack}
                 flipPlan={flip.plan}
               />
             );

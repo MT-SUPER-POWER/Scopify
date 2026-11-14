@@ -103,6 +103,7 @@ export interface PlaylistHeaderSkeletonProps {
 export type DailyRecommendationMode = "current" | "history";
 
 export interface TracklistTableProps {
+  onDislikeDailyRecommend?: (trackId: number | string) => Promise<void>;
   /**
    * Whether this playlist context grants the current user permission to remove tracks.
    * The table does not infer ownership from the URL; PlaylistContent resolves it once
@@ -188,7 +189,7 @@ export interface PlaylistTableSongRowProps extends SortableTrackRowProps {
   canRemoveFromPlaylist: boolean;
   isDailyRecommend: boolean;
   readonly: boolean;
-  onDislikeDailyRecommend: (id: number | string) => Promise<void>;
+  onDislikeDailyRecommend?: (id: number | string) => Promise<void>;
   onDislikePersonalFm?: (track: SongDetail) => void;
   /** Present only on the cloud drive page; swaps the song menu for cloud file actions. */
   cloudActions?: CloudTrackActions;

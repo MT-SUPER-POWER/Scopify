@@ -1,5 +1,8 @@
 "use client";
 
+import { useCallback } from "react";
+import { useLoginStatus } from "@/hooks/auth/useLoginStatus";
+import { useDailyRecommendationDislike } from "@/hooks/playlist/useDailyRecommendationDislike";
 import PlaylistActions from "@/components/Playlist/ActionStation";
 import { PlaylistLatticeView } from "@/components/Playlist/lattice/PlaylistLatticeView";
 import { PlaylistHero } from "@/components/Playlist/PlaylistHero";
@@ -11,6 +14,7 @@ import { DASHBOARD_MAIN_STICKY_TOP } from "@/constants/layout";
 import { usePlaylistContentPresentation } from "@/hooks/playlist/usePlaylistContentPresentation";
 import { useTranslation } from "react-i18next";
 
+import type { SongDetail } from "@/types/song/api";
 import type { PlaylistContentProps } from "@/types/playlist/components";
 
 export function PlaylistContent({
@@ -59,6 +63,16 @@ export function PlaylistContent({
     readonly,
     refetchTracks,
   });
+  const isLoggedIn = useLoginStatus();
+  const canDislikeDaily = isLoggedIn && isDailyRecommend && !dailyDate && !!setTracks;
+  const dislikeDaily = useDailyRecommendationDislike(tracks, setTracks);
+  const dislikeTrack = useCallback(
+    (song: SongDetail) => {
+      if (onDislikePersonalFm) onDislikePersonalFm(song);
+      else if (canDislikeDaily) void dislikeDaily(song.id);
+    },
+    [canDislikeDaily, dislikeDaily, onDislikePersonalFm],
+  );
   const sourceId = playSourceId ?? playlistId ?? (dailyDate ? `daily:${dailyDate}` : "daily");
   return (
     <PlaylistLatticeView
@@ -68,6 +82,9 @@ export function PlaylistContent({
       title={dynamicPlaylistInfo?.title ?? t("playlist.actions.listLabel")}
       sourceId={sourceId}
       onTrackPlay={onTrackPlay}
+      onDislikeTrack={
+        isLoggedIn && (onDislikePersonalFm || canDislikeDaily) ? dislikeTrack : undefined
+      }
     >
       {(openLattice) => (
         <div className="relative flex min-h-screen w-full flex-col bg-surface-raised font-sans">
@@ -91,7 +108,7 @@ export function PlaylistContent({
                   isDaily={isDailyRecommend}
                   dailyDate={dailyDate}
                   onPlayToggle={onPlayToggle}
-                  onOpenLattice={openLattice}
+                  onOpenLattice={tracks.length > 0 ? openLattice : undefined}
                   searchOpen={searchOpen}
                   searchQuery={searchQuery}
                   showShuffle={showShuffle}
@@ -123,6 +140,7 @@ export function PlaylistContent({
                   dateColumnLabel={dateColumnLabel}
                   emptyActionLabel={t("common.action.reload")}
                   onEmptyAction={handleRefreshTracks}
+                  onDislikeDailyRecommend={canDislikeDaily ? dislikeDaily : undefined}
                   onDislikePersonalFm={onDislikePersonalFm}
                   cloudActions={cloudActions}
                   onPlayTrack={onTrackPlay}

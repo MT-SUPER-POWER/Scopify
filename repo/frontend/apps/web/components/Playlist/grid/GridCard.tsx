@@ -1,7 +1,7 @@
 "use client";
 
 import { memo, useLayoutEffect, useRef } from "react";
-import { Disc3, Pause, Play } from "lucide-react";
+import { Ban, Disc3, Pause, Play } from "lucide-react";
 import { getSizedImageUrl } from "@/lib/music/imageUrl";
 import { formatDuration } from "@/lib/utils";
 import { GRID_METRICS } from "@/constants/playlistGrid";
@@ -20,6 +20,7 @@ export const GridCard = memo(function GridCard({
   register,
   onSelect,
   onPlay,
+  onDislikeTrack,
   flipPlan,
 }: GridCardProps) {
   const { t } = useTranslation();
@@ -85,6 +86,17 @@ export const GridCard = memo(function GridCard({
           >
             {playing ? <Pause fill="currentColor" /> : <Play fill="currentColor" />}
           </button>
+          {onDislikeTrack && (
+            <button
+              type="button"
+              aria-label={t("contextMenu.recommendLess")}
+              title={t("contextMenu.recommendLess")}
+              onClick={() => onDislikeTrack(track)}
+              className="pointer-events-none absolute top-1 right-1 grid size-9 place-items-center rounded-full bg-black/65 text-white opacity-0 transition-opacity group-hover/card:pointer-events-auto group-hover/card:opacity-100 group-data-[centered=true]/card:pointer-events-auto group-data-[centered=true]/card:opacity-100 hover:bg-black/85 focus-visible:pointer-events-auto focus-visible:opacity-100 focus-visible:outline-2 focus-visible:outline-white"
+            >
+              <Ban className="size-4" />
+            </button>
+          )}
           {playing && (
             <span className="pointer-events-none absolute bottom-2 left-2 grid place-items-center rounded-full bg-black/55 p-1.5 backdrop-blur-sm transition-opacity duration-200 group-hover/card:opacity-0 group-data-[centered=true]/card:opacity-0">
               <PlayingAnimation size={12} className="[&_svg]:text-white" />

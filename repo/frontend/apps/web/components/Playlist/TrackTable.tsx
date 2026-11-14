@@ -35,18 +35,15 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { useDailyRecommendationMutation } from "@/hooks/playlist/useDailyRecommendationMutation";
 import { usePlaylistTrackMutation } from "@/hooks/playlist/usePlaylistTrackMutation";
 import { useTracklistColumnLayout } from "@/hooks/playlist/useTracklistColumnLayout";
 import { useTrackSelection } from "@/hooks/playlist/useTrackSelection";
 import { useMediaQuery } from "@/hooks/ui/useMediaQuery";
-import { clearPageCache } from "@/lib/cache/pageCache";
 import { cn } from "@/lib/utils";
-import { reportActionFailure } from "@/lib/web/errorTracking";
 import { usePlayerStore, useUserStore } from "@/store";
 import { useTranslation } from "react-i18next";
 
-import { pruneSongDetail, type SongDetail } from "@/types/song/api";
+import type { SongDetail } from "@/types/song/api";
 import type { NavigationScrollRestorationAdapter } from "@/types/core/navigationScroll";
 
 import { ConfirmDialogShandCN } from "./TableConfirmDialog";
@@ -73,6 +70,7 @@ export default function TracklistTable({
   hideAlbumColumn = false,
   hideDateColumn = false,
   hideLikeColumn = false,
+  onDislikeDailyRecommend,
   onDislikePersonalFm,
   cloudActions,
   onEmptyAction,
@@ -99,7 +97,6 @@ export default function TracklistTable({
   });
 
   const { t } = useTranslation();
-  const { mutateAsync: dislikeDailyRecommend } = useDailyRecommendationMutation();
   const { mutateAsync: updatePlaylistTrack } = usePlaylistTrackMutation();
   const searchParams = useSearchParams();
   const playlistID = searchParams.get("id");
@@ -109,7 +106,6 @@ export default function TracklistTable({
     dailyRecommendationMode ??
     (isDailyRecommendationPage ? (historicalDailyDate ? "history" : "current") : undefined);
   const isHistoricalDailyRecommendation = resolvedDailyRecommendationMode === "history";
-  const canDislikeDailyRecommendation = resolvedDailyRecommendationMode === "current";
   const dailyQueueId = historicalDailyDate ? `daily:${historicalDailyDate}` : "daily";
   const pathname = usePathname();
   const storePlaylistId = usePlayerStore((s) => s.playlistId);
@@ -433,48 +429,6 @@ export default function TracklistTable({
     setPendingDelete(null);
   }, []);
 
-  const handleDislikeDailyRecommend = useCallback(
-    async (trackId: number | string) => {
-      try {
-        const dislikeResult = await dislikeDailyRecommend(trackId);
-        if (!dislikeResult.data) {
-          throw new Error("The daily recommendation endpoint did not provide a replacement track.");
-        }
-        const replaceSong = pruneSongDetail(dislikeResult.data);
-
-        const nextTracks = tracks.map((track) => (track.id === trackId ? replaceSong : track));
-
-        updateVisibleTracks(nextTracks);
-
-        const playerState = usePlayerStore.getState();
-        const isCurrentPlaying = playerState.currentSongDetail?.id === trackId;
-
-        // 如果该歌曲已在播放队列中，静默将队列和原始队列中的对应曲目替换为新推荐歌曲
-        const inQueue = playerState.queue.some((s) => s.id === trackId);
-        if (inQueue) {
-          usePlayerStore.setState({
-            queue: playerState.queue.map((s) => (s.id === trackId ? replaceSong : s)),
-            originalQueue: playerState.originalQueue.map((s) =>
-              s.id === trackId ? replaceSong : s,
-            ),
-          });
-        }
-
-        // 只有当前被标记为不感兴趣的歌曲正在播放时，才执行切歌
-        if (isCurrentPlaying) {
-          void playerState.playNext();
-        }
-        void clearPageCache();
-
-        toast.success(t("playlist.table.dislikeSuccess"));
-      } catch (error) {
-        reportActionFailure("playlist.daily_recommendation.dislike", error, { trackId });
-        toast.error(t("playlist.table.operationFailed"));
-      }
-    },
-    [dislikeDailyRecommend, t, tracks, updateVisibleTracks],
-  );
-
   return (
     <>
       <ConfirmDialogShandCN
@@ -672,12 +626,12 @@ export default function TracklistTable({
                         hideAlbumColumn={!showAlbumColumn}
                         hideDateColumn={!showDateColumn}
                         hideLikeColumn={!showLikeColumn}
-                        isDailyRecommend={canDislikeDailyRecommendation}
+                        isDailyRecommend={Boolean(onDislikeDailyRecommend)}
                         readonly={
                           readonly || isHistoricalDailyRecommendation || !canRemoveFromPlaylist
                         }
                         canRemoveFromPlaylist={canRemoveFromPlaylist}
-                        onDislikeDailyRecommend={handleDislikeDailyRecommend}
+                        onDislikeDailyRecommend={onDislikeDailyRecommend}
                         onDislikePersonalFm={onDislikePersonalFm}
                         cloudActions={cloudActions}
                       />

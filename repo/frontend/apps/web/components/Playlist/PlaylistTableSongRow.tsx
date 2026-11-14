@@ -65,7 +65,7 @@ export const PlaylistTableSongRow = memo(function PlaylistTableSongRow({
             : undefined
         }
         onDislikeDailyRecommend={
-          isDailyRecommend ? () => void onDislikeDailyRecommend(track.id) : undefined
+          onDislikeDailyRecommend ? () => void onDislikeDailyRecommend(track.id) : undefined
         }
         onDislikePersonalFm={onDislikePersonalFm ? () => onDislikePersonalFm(track) : undefined}
       >
