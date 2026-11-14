@@ -34,6 +34,7 @@ export function VoiceItem({
   const isLikedVoice = variant === "liked";
   const [isTranscriptOpen, setIsTranscriptOpen] = useState(false);
   const isUnavailable = voice.isPlayable === false;
+  const canPlay = !!voice.mainSong && !isUnavailable;
   const isActive =
     !isUnavailable && !!voice.mainSong && voice.mainSong.id === currentSongDetail?.id;
 
@@ -85,18 +86,25 @@ export function VoiceItem({
     <div
       className={cn(
         "group flex min-w-0 items-center rounded-md transition-colors",
-        isPreview ? "gap-3 p-1" : isLikedVoice ? "items-start gap-3 p-3" : "gap-3 px-3 py-2",
+        isPreview ? "gap-3 p-1" : "gap-3 px-3 py-2",
+        isLikedVoice && "min-h-16 gap-2 px-2 focus-within:bg-content/10 sm:gap-3 sm:px-3",
         isUnavailable
-          ? "cursor-not-allowed bg-content/15 opacity-45 grayscale"
+          ? "cursor-default"
           : voice.mainSong
             ? "cursor-pointer hover:bg-content/10"
             : "cursor-default opacity-70",
         isActive && "text-brand",
+        isLikedVoice && isActive && "bg-content/10",
       )}
-      onClick={handlePlay}
+      onClick={canPlay ? handlePlay : undefined}
     >
       {!isPreview && (
-        <div className="flex w-6 shrink-0 justify-center text-sm text-content-muted">
+        <div
+          className={cn(
+            "flex w-6 shrink-0 justify-center text-sm text-content-muted tabular-nums",
+            isLikedVoice && "hidden sm:flex",
+          )}
+        >
           {index + 1}
         </div>
       )}
@@ -110,8 +118,8 @@ export function VoiceItem({
           width={isPreview ? 64 : 44}
           height={isPreview ? 64 : 44}
           src={voice.coverUrl || FALLBACK_COVER}
-          alt={voice.name}
-          className={cn("size-full object-cover", isUnavailable && "brightness-50")}
+          alt={isLikedVoice ? "" : voice.name}
+          className="size-full object-cover"
         />
       </div>
       <div className="min-w-0 flex-1">
@@ -134,17 +142,23 @@ export function VoiceItem({
         <p className={cn("truncate text-xs text-content-muted", isPreview && "mt-1")}>
           {isPreview && voice.duration > 0 && `${formatDuration(voice.duration)} · `}
           {voice.podcastName}
-          {voice.hostName ? ` · ${voice.hostName}` : ""}
+          {voice.hostName && voice.podcastName ? " · " : ""}
+          {voice.hostName}
         </p>
-        {isLikedVoice ? <LikedVoiceMetadata voice={voice} /> : null}
       </div>
+      {isLikedVoice && <LikedVoiceMetadata voice={voice} />}
       {!isPreview && (
-        <span className="w-12 shrink-0 text-right text-sm text-content-muted">
-          {formatDuration(voice.duration)}
+        <span
+          className={cn(
+            "w-12 shrink-0 text-right text-sm text-content-muted tabular-nums",
+            isLikedVoice && "w-10",
+          )}
+        >
+          {voice.duration > 0 ? formatDuration(voice.duration) : "—"}
         </span>
       )}
-      {(canViewTranscript || (voice.mainSong && !isUnavailable)) && (
-        <div className="flex shrink-0 items-center gap-1.5">
+      {(isLikedVoice || canViewTranscript || canPlay) && (
+        <div className={cn("flex shrink-0 items-center gap-1", isLikedVoice && "w-17 justify-end")}>
           {canViewTranscript && (
             <button
               type="button"
@@ -157,12 +171,14 @@ export function VoiceItem({
               className={cn(
                 "flex shrink-0 items-center justify-center rounded-full bg-content/10 text-content opacity-0 transition-all group-hover:opacity-100 hover:scale-105 hover:bg-content/20 focus:opacity-100",
                 isPreview ? "size-10" : "size-9",
+                isLikedVoice &&
+                  "size-8 opacity-100 focus-visible:outline-2 focus-visible:outline-brand",
               )}
             >
               <FileText className="size-4" />
             </button>
           )}
-          {voice.mainSong && !isUnavailable && (
+          {canPlay && (
             <button
               type="button"
               title={playLabel}
@@ -174,6 +190,8 @@ export function VoiceItem({
               className={cn(
                 "flex shrink-0 items-center justify-center rounded-full bg-content/10 text-content opacity-0 transition-all group-hover:opacity-100 hover:scale-105 hover:bg-brand hover:text-brand-foreground focus:opacity-100",
                 isPreview ? "size-10" : "size-9",
+                isLikedVoice &&
+                  "size-8 opacity-100 focus-visible:outline-2 focus-visible:outline-brand",
               )}
             >
               {isActive && isPlaying ? (

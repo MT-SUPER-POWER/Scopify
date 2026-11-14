@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import type { CloudUploadProgress } from "@/types/library/cloudApi";
+import type { Voice } from "@/types/search/model";
 import type { SongDetail } from "@/types/song/api";
 import type { RecommendedPodcast } from "@/types/voice/api";
 import type { RadioDetail } from "@/types/radio/api";
@@ -88,4 +89,12 @@ export type PodcastSortKey = "title" | "playCount" | "voiceCount" | "updatedAt";
 export interface PodcastSortState {
   key: PodcastSortKey | null;
   order: "asc" | "desc" | null;
+}
+
+export interface LikedVoiceListProps {
+  voices: Voice[];
+}
+
+export interface LikedVoiceMetadataProps {
+  voice: Voice;
 }
