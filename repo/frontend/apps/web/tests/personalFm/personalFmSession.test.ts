@@ -35,7 +35,12 @@ const player = create(() => ({
       playFollowingOnly,
     );
     if (effect.type === "play") plays++;
-    player.setState(snapshot);
+    player.setState({
+      queue: snapshot.queue,
+      queueIndex: snapshot.queueIndex,
+      historyIndex: snapshot.historyIndex,
+      historyStack: snapshot.historyStack,
+    });
   },
   setShuffle() {},
   setRepeatMode() {},
