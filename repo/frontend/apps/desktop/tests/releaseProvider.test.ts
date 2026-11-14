@@ -1,8 +1,18 @@
 import { expect, test } from "bun:test";
 import {
+  getReleaseBaseUrl,
+  getUpdateRepository,
   ReleaseProvider,
   selectUpdateRelease,
 } from "../electron/main/service/updates/releaseProvider";
+
+test("the updater defaults to the package repository and accepts a GitHub fork", () => {
+  expect(getUpdateRepository("")).toBe("MT-SUPER-POWER/Scopify");
+  expect(getReleaseBaseUrl(getUpdateRepository("example/scopify-fork"))).toBe(
+    "https://github.com/example/scopify-fork/releases",
+  );
+  expect(() => getUpdateRepository("example/..")).toThrow("owner/repo");
+});
 
 const channelFile = "latest.yml";
 const release = (tag: string) => ({

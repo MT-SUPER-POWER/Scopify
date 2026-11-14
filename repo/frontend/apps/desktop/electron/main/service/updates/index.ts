@@ -7,7 +7,7 @@ import type {
 } from "@scopify/desktop-contract";
 import { openExternalLink } from "@main/service/externalLinks";
 import { updaterLog } from "@main/utils/logger";
-import { ReleaseProvider, releaseBaseUrl } from "./releaseProvider";
+import { getReleaseBaseUrl, ReleaseProvider } from "./releaseProvider";
 
 const { autoUpdater } = electronUpdater;
 
@@ -111,7 +111,6 @@ export function initializeUpdater(window: BrowserWindow, config: DesktopHostConf
   if (initialized) return;
 
   initialized = true;
-  autoUpdater.setFeedURL({ provider: "custom", updateProvider: ReleaseProvider });
   configureUpdater(config);
   autoUpdater.autoDownload = false;
   autoUpdater.autoInstallOnAppQuit = false;
@@ -202,6 +201,7 @@ export async function checkForUpdates(): Promise<AppUpdateState> {
       percent: undefined,
       message: undefined,
     });
+    autoUpdater.setFeedURL({ provider: "custom", updateProvider: ReleaseProvider });
     await autoUpdater.checkForUpdates();
   } catch (error) {
     if (revision === policyRevision) {
@@ -243,7 +243,9 @@ export async function downloadUpdate(): Promise<AppUpdateState> {
   try {
     if (process.platform === "darwin") {
       if (state.version) {
-        await openExternalLink(`${releaseBaseUrl}/tag/${encodeURIComponent(`v${state.version}`)}`);
+        await openExternalLink(
+          `${getReleaseBaseUrl()}/tag/${encodeURIComponent(`v${state.version}`)}`,
+        );
       }
     } else {
       setState({ status: "downloading", percent: 0, message: undefined });
