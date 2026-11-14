@@ -1,5 +1,5 @@
 import fs from "node:fs/promises";
-import { app, BrowserWindow, ipcMain } from "electron";
+import { app, BrowserWindow, ipcMain, screen } from "electron";
 import {
   __iconIcoPath,
   __iconWindow,
@@ -27,9 +27,15 @@ export function createLoginWindow(mainWin: BrowserWindow) {
     return;
   }
 
+  const windowSize = { width: 450, height: 600 };
+  if (process.platform === "win32") {
+    const { workAreaSize } = screen.getDisplayMatching(mainWin.getBounds());
+    windowSize.width = Math.min(500, workAreaSize.width);
+    windowSize.height = Math.min(700, workAreaSize.height);
+  }
+
   loginWindow = new BrowserWindow({
-    width: 450,
-    height: 600,
+    ...windowSize,
     icon: __iconWindow,
     resizable: false,
     title: "Login - Scopify",
