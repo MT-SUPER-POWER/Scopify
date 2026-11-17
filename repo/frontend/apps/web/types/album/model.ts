@@ -2,12 +2,11 @@ import type { PlayerTrack } from "@/types/player/model";
 import type { MusicAlbum } from "@scopify/music-domain/track";
 
 import type { PlaylistViewMode } from "@/types/playlist/lattice";
+import type { ArtistLinkItem } from "@/types/artist/components";
 
 export interface AlbumInfo {
   artistAvatar: string;
-  /** The main artist's ID, or null when the platform does not name one to link to. */
-  artistId: string | null;
-  artistName: string;
+  artists: ArtistLinkItem[];
   company: string;
   cover: string;
   description: string;

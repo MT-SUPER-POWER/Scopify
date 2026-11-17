@@ -6,7 +6,7 @@ import { pruneSongDetail, type RawSongDetail } from "@/types/song/api";
 
 function adaptAlbumArtist(raw: NeteaseAlbumArtist): MusicAlbumArtist {
   return {
-    ref: raw.id === undefined ? null : { provider: "netease", kind: "artist", id: String(raw.id) },
+    ref: Number(raw.id) > 0 ? { provider: "netease", kind: "artist", id: String(raw.id) } : null,
     name: raw.name ?? "",
     avatarUrl: raw.picUrl || raw.img1v1Url || null,
   };
@@ -17,7 +17,10 @@ function creditedArtists(album: NeteaseAlbum): NeteaseAlbumArtist[] {
   const others = album.artists ?? [];
   const main = album.artist;
   if (!main) return others;
-  return [main, ...others.filter((artist) => artist.id !== main.id)];
+  return [
+    main,
+    ...others.filter((artist) => String(artist.id ?? artist.name) !== String(main.id ?? main.name)),
+  ];
 }
 
 /** The album with its songs; a song that lacks album artwork gets the album's own. */

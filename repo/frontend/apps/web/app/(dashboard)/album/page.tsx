@@ -6,8 +6,6 @@ import PlaylistLoading from "@/components/Playlist/PlaylistLoading";
 import TracklistTable from "@/components/Playlist/TrackTable";
 import { NetworkRetryState } from "@/components/shared/NetworkRetryState";
 import { useAlbumData } from "@/hooks/album/useAlbumData";
-import { useSmartRouter } from "@/hooks/core/useSmartRouter";
-import { useProviderCapability } from "@/hooks/provider/useActiveProvider";
 import { useTranslation } from "react-i18next";
 
 import { AlbumActions } from "./_components/AlbumActions";
@@ -15,7 +13,6 @@ import { AlbumHeader } from "./_components/AlbumHeader";
 
 export default function AlbumPage() {
   const { t } = useTranslation();
-  const smartRouter = useSmartRouter();
   const {
     ALBUM_INFO,
     albumId,
@@ -32,7 +29,6 @@ export default function AlbumPage() {
     togglePlay,
     tracks,
   } = useAlbumData();
-  const canOpenArtist = useProviderCapability("artist.read");
   const canOpenLattice = tracks.length > 0;
 
   if (!albumId)
@@ -72,13 +68,7 @@ export default function AlbumPage() {
             className="pointer-events-none absolute inset-x-0 top-0 z-0 h-100 opacity-60 transition-colors duration-700 md:h-125"
             style={{ background: `linear-gradient(to bottom, ${themeColor} 0%, transparent 100%)` }}
           />
-          <AlbumHeader
-            info={ALBUM_INFO}
-            onArtistClick={() => {
-              if (canOpenArtist && ALBUM_INFO.artistId)
-                void smartRouter.push(`/artist?id=${ALBUM_INFO.artistId}`);
-            }}
-          />
+          <AlbumHeader info={ALBUM_INFO} />
           {isRefetchError && (
             <div className="relative z-10 px-6">
               <NetworkRetryState

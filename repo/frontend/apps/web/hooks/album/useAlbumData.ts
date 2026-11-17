@@ -30,6 +30,7 @@ export function useAlbumData() {
   const requireLoginAction = useRequireLoginAction();
   const queryClient = useQueryClient();
   const { account, provider } = useLibraryAccount();
+  const canOpenArtist = provider.capabilities.has("artist.read");
   const {
     data: albumContent,
     isError,
@@ -55,11 +56,14 @@ export function useAlbumData() {
     const album = albumContent?.album;
     if (!album) return null;
 
-    const artist = album.artists[0];
+    const credits = album.artists.filter((artist) => artist.name);
+    const artists = credits.map(({ ref, name }) => ({
+      id: canOpenArtist ? ref?.id : undefined,
+      name,
+    }));
     return {
-      artistAvatar: artist?.avatarUrl ?? "",
-      artistId: artist?.ref?.id ?? null,
-      artistName: artist?.name ?? t("album.meta.unknownArtist"),
+      artistAvatar: credits[0]?.avatarUrl ?? "",
+      artists: artists.length ? artists : [{ name: t("album.meta.unknownArtist") }],
       company: album.company ?? "",
       cover: album.coverUrl ?? "",
       description: album.description,
@@ -72,7 +76,7 @@ export function useAlbumData() {
       totalSongs: album.trackCount,
       type: album.releaseType ?? t("album.meta.type"),
     };
-  }, [albumContent, t]);
+  }, [albumContent, canOpenArtist, t]);
 
   const tracks = albumContent?.tracks ?? NO_TRACKS;
 

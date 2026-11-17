@@ -8,5 +8,4 @@ export interface AlbumDescriptionDialogProps {
 
 export interface AlbumHeaderProps {
   info: AlbumInfo;
-  onArtistClick: () => void;
 }
