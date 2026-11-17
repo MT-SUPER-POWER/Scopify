@@ -47,7 +47,8 @@ const resolveSourceUrl = ({
 
 const loadImage = async (src: string): Promise<HTMLImageElement> => {
   const image = new Image();
-  if (src.startsWith("http://") || src.startsWith("https://")) {
+  // Pixel reads require CORS for resources from custom protocols as well as HTTP(S).
+  if (!src.startsWith("blob:") && !src.startsWith("data:")) {
     image.crossOrigin = "anonymous";
   }
   image.decoding = "async";
@@ -369,7 +370,15 @@ export const resolveMonetBackgroundDataUrl = (options: BuildMonetBackgroundOptio
     return cached;
   }
 
-  const next = buildMonetBackgroundDataUrl(options).catch(() => null);
+  const next = buildMonetBackgroundDataUrl(options)
+    .catch(() => null)
+    .then((url) => {
+      // A transient load or canvas failure should retry the next time the background is requested.
+      if (url === null && monetBackgroundCache.get(cacheKey) === next) {
+        monetBackgroundCache.delete(cacheKey);
+      }
+      return url;
+    });
   monetBackgroundCache.set(cacheKey, next);
   return next;
 };
