@@ -53,7 +53,7 @@ export function useArtistTracksQuery(artistId: string) {
         signal,
       ),
     getNextPageParam: (page) => page.nextOffset ?? undefined,
-    throwOnError: throwQueryErrorWithoutData,
+    throwOnError: (error: Error, query) => throwQueryErrorWithoutData(error, query),
   });
 }
 
