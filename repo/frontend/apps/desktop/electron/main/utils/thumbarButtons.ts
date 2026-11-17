@@ -1,7 +1,9 @@
 import type { BrowserWindow } from "electron";
 import { next, pause, play, prev } from "@main/constants";
 
-export function updateThumbarButtons(mainWindow: BrowserWindow, isPlaying: boolean) {
+const updatePlaybackStates = new WeakMap<BrowserWindow, (isPlaying: boolean) => void>();
+
+function applyThumbarButtons(mainWindow: BrowserWindow, isPlaying: boolean) {
   mainWindow.setThumbarButtons([
     {
       tooltip: "Play Previous",
@@ -28,6 +30,32 @@ export function updateThumbarButtons(mainWindow: BrowserWindow, isPlaying: boole
   ]);
 }
 
-export function initThumbarButtons(mainWindow: BrowserWindow) {
-  updateThumbarButtons(mainWindow, false);
+export function initThumbarButtons(mainWindow: BrowserWindow, hasTaskbarButton: () => boolean) {
+  if (process.platform !== "win32") return;
+
+  let isPlaying = false;
+  let hidden = !mainWindow.isVisible();
+  const replay = () => {
+    if (!hidden && !mainWindow.isDestroyed() && hasTaskbarButton()) {
+      applyThumbarButtons(mainWindow, isPlaying);
+    }
+  };
+
+  // Hiding removes the taskbar button. Minimizing keeps it, even though isVisible() is false.
+  mainWindow.on("hide", () => {
+    hidden = true;
+  });
+  mainWindow.on("show", () => {
+    hidden = false;
+    replay();
+  });
+  mainWindow.on("restore", replay);
+  updatePlaybackStates.set(mainWindow, (nextIsPlaying) => {
+    isPlaying = nextIsPlaying;
+    replay();
+  });
+}
+
+export function updateThumbarButtons(mainWindow: BrowserWindow, isPlaying: boolean) {
+  updatePlaybackStates.get(mainWindow)?.(isPlaying);
 }

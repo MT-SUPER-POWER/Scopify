@@ -29,6 +29,7 @@ import { initializeTaskbarProgressService } from "@main/service/playback/taskbar
 import type { TaskbarProgressService } from "@/types/service/playback/taskbarProgress";
 import { desktopConfig } from "@main/constants";
 import { brokerLog, wallpaperLog } from "@main/utils/logger";
+import { initThumbarButtons } from "@main/utils/thumbarButtons";
 import { registerIpcHandlers } from "@main/ipc";
 import { initializeUpdater } from "@main/service/updates";
 import { getDesktopLyricWindow, initializeDesktopLyricCompanion } from "@main/window/desktopLyric";
@@ -85,6 +86,7 @@ export function createWindowServiceHost(options: WindowServiceHostOptions) {
       playback: playbackGateway,
       window,
     });
+    initThumbarButtons(window, () => !wallpaperDriver?.isWallpaperActive());
 
     registerIpcHandlers(window, options.discordPresence, options.backendController, mcpRuntime);
     initializeDesktopIconVisibilityService(window, {
