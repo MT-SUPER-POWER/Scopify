@@ -64,7 +64,9 @@ export function AlbumDescriptionDialog({ info, onOpenChange, open }: AlbumDescri
                 {info.title}
               </DialogPrimitive.Title>
               <DialogPrimitive.Description className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1.5 text-xs text-overlay-foreground/65 sm:text-sm">
-                <span className="font-medium text-overlay-foreground/90">{info.artistName}</span>
+                <span className="font-medium text-overlay-foreground/90">
+                  {info.artists.map(({ name }) => name).join(", ")}
+                </span>
                 <span className="flex items-center gap-1.5">
                   <CalendarDays className="size-3.5" />
                   {info.releaseYear}

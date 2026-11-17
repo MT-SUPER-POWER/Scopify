@@ -4,13 +4,14 @@ import Image from "next/image";
 import { useState } from "react";
 
 import { AlbumDescriptionDialog } from "./AlbumDescriptionDialog";
+import { ArtistInlineLinks } from "@/components/shared/ArtistInlineLinks";
 import { ResponsiveHeaderTitle } from "@/components/shared/ResponsiveHeaderTitle";
 
 import { useTranslation } from "react-i18next";
 
 import type { AlbumHeaderProps } from "@/types/album/components";
 
-export function AlbumHeader({ info, onArtistClick }: AlbumHeaderProps) {
+export function AlbumHeader({ info }: AlbumHeaderProps) {
   const { t } = useTranslation();
   const [isDescriptionOpen, setIsDescriptionOpen] = useState(false);
 
@@ -62,28 +63,28 @@ export function AlbumHeader({ info, onArtistClick }: AlbumHeaderProps) {
 
         {/* Bottom: Artist & Metadata line */}
         <div className="flex min-w-0 flex-nowrap items-center gap-2.5 overflow-hidden text-xs whitespace-nowrap text-content/80 lg:text-sm">
-          <button
-            type="button"
-            onClick={onArtistClick}
-            className="group mr-1 flex max-w-[45%] min-w-0 cursor-pointer items-center gap-2 text-content"
-          >
+          <div className="mr-1 flex max-w-[65%] min-w-0 items-center gap-2 text-content">
             {info.artistAvatar ? (
               <Image
                 width={28}
                 height={28}
                 src={info.artistAvatar}
-                alt={info.artistName}
-                className="size-7 rounded-full object-cover"
+                alt=""
+                className="size-7 shrink-0 rounded-full object-cover"
               />
             ) : (
-              <div className="flex size-7 items-center justify-center rounded-full bg-content/20 text-xs font-bold">
-                {info.artistName?.charAt(0) || "A"}
+              <div
+                aria-hidden
+                className="flex size-7 shrink-0 items-center justify-center rounded-full bg-content/20 text-xs font-bold"
+              >
+                {info.artists[0]?.name.charAt(0) || "A"}
               </div>
             )}
-            <span className="truncate text-[15px] font-bold group-hover:underline">
-              {info.artistName}
-            </span>
-          </button>
+            <ArtistInlineLinks
+              artists={info.artists}
+              className="scrollbar-none min-w-0 overflow-x-auto text-[15px] font-bold"
+            />
+          </div>
           <span className="hidden shrink-0 opacity-60 sm:inline">•</span>
           <span className="shrink-0">{info.releaseYear}</span>
           <span className="shrink-0 opacity-60">•</span>

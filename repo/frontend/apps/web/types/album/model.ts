@@ -1,10 +1,10 @@
 import type { SongDetail } from "@/types/song/api";
 import type { PlaylistViewMode } from "@/types/playlist/lattice";
+import type { ArtistLinkItem } from "@/types/artist/components";
 
 export interface AlbumInfo {
   artistAvatar: string;
-  artistId: number | string | undefined;
-  artistName: string;
+  artists: ArtistLinkItem[];
   company: string;
   cover: string;
   description: string;

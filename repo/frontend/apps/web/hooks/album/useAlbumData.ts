@@ -50,11 +50,24 @@ export function useAlbumData() {
     const album = albumDetail?.album;
     if (!album) return null;
 
-    const artist = album.artist ?? album.artists?.[0];
+    const otherArtists = album.artists ?? [];
+    const mainArtist = album.artist;
+    const credits = mainArtist
+      ? [
+          mainArtist,
+          ...otherArtists.filter(
+            (artist) =>
+              String(artist.id ?? artist.name) !== String(mainArtist.id ?? mainArtist.name),
+          ),
+        ]
+      : otherArtists;
+    const artists = credits.flatMap(({ id, name }) =>
+      name ? [{ id: Number(id) > 0 ? id : undefined, name }] : [],
+    );
+    const artist = credits.find((credit) => credit.name);
     return {
       artistAvatar: artist?.picUrl ?? artist?.img1v1Url ?? "",
-      artistId: artist?.id,
-      artistName: artist?.name ?? t("album.meta.unknownArtist"),
+      artists: artists.length ? artists : [{ name: t("album.meta.unknownArtist") }],
       company: album.company ?? "",
       cover: album.picUrl ?? "",
       description: album.description ?? "",
