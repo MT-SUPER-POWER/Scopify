@@ -1,5 +1,11 @@
 import { describe, expect, it } from "bun:test";
 import { resolveVisualizerSubtitleOverlayContent } from "@/components/lyrics/folia/src/components/visualizer/VisualizerSubtitleOverlay";
+import {
+  getSubtitleOverlayRows,
+  parseSubtitleOverlayLayout,
+  withSubtitleOverlayRow,
+  withSubtitleOverlayRowCount,
+} from "@/lib/lyrics/subtitleOverlayLayout";
 import type { Line } from "@/components/lyrics/folia/src/types";
 import {
   resolveLyricAlternateText,
@@ -78,5 +84,59 @@ describe("resolveVisualizerSubtitleOverlayContent", () => {
     expect(content.subtitleTracks.map((track) => track.text)).toEqual(["r", "t"]);
     expect(content.subtitleText).toBe("r / t");
     expect(content.upcomingLines).toEqual([]);
+  });
+
+  it("renders configured alternate rows first and skips unreadable upcoming lines", () => {
+    const content = resolveVisualizerSubtitleOverlayContent({
+      showText: true,
+      activeLine: line({ translation: "Translation", romanization: "Romaji" }),
+      recentCompletedLine: null,
+      nextLines: [line({ fullText: "//" }), line({ fullText: "Next line" })],
+      subtitleOverlayLayout: "translation+romanization+next|only",
+    });
+    expect(content.subtitleTracks).toEqual([
+      { role: "translation", text: "Translation" },
+      { role: "romanization", text: "Romaji" },
+      { role: "next", text: "Next line" },
+    ]);
+  });
+
+  it("shows upcoming lyrics only when the fallback is enabled and no selected row is available", () => {
+    const next = line({ fullText: "Next line" });
+    const source = {
+      showText: true,
+      activeLine: line({}),
+      recentCompletedLine: line({ translation: "Old translation" }),
+      nextLines: [next],
+    };
+    const preview = resolveVisualizerSubtitleOverlayContent({
+      ...source,
+      subtitleOverlayLayout: "translation+next",
+    });
+    const selectedOnly = resolveVisualizerSubtitleOverlayContent({
+      ...source,
+      subtitleOverlayLayout: "translation+next|only",
+    });
+    expect(preview.subtitleTracks).toEqual([]);
+    expect(preview.upcomingLines).toEqual([next]);
+    expect(selectedOnly.subtitleTracks).toEqual([]);
+    expect(selectedOnly.upcomingLines).toEqual([]);
+  });
+});
+
+describe("subtitle overlay layout", () => {
+  it("keeps the fallback setting when changing the row count or first row", () => {
+    const expanded = withSubtitleOverlayRowCount("translation|only", 2);
+    expect(expanded).toBe("current+translation|only");
+    const reordered = withSubtitleOverlayRow(expanded, 0, "translation");
+    expect(reordered).toBe("translation+romanization|only");
+    expect(getSubtitleOverlayRows(reordered)).toEqual(["translation", "romanization"]);
+  });
+
+  it("rejects unsupported stored layouts", () => {
+    expect(parseSubtitleOverlayLayout("next+translation")).toBeNull();
+    expect(parseSubtitleOverlayLayout("translation+current")).toBeNull();
+    expect(parseSubtitleOverlayLayout("translation|only|only")).toBeNull();
+    expect(parseSubtitleOverlayLayout("current+next+next|only")).toBe("current+next+next|only");
   });
 });

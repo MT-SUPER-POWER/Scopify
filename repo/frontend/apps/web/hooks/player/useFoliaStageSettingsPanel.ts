@@ -31,6 +31,7 @@ import {
 import { hasVisualizerTuningMode } from "@/components/lyrics/folia/src/components/visualizer/tuningRegistry";
 import type { VisualizerBackgroundActions } from "@/components/lyrics/folia/src/components/visualizer/backgrounds/definition";
 import { useLyricStageStore } from "@/store/module/lyrics";
+import { DEFAULT_SUBTITLE_OVERLAY_LAYOUT } from "@/lib/lyrics/subtitleOverlayLayout";
 import { useTranslation } from "react-i18next";
 
 import type { FoliaStageAssets } from "@/types/lyrics/folia/assets";
@@ -258,7 +259,9 @@ export function useFoliaStageSettingsPanel(
         subtitleFontScale: 1,
         subtitleFontStyle: "sans",
         subtitleOverlayBackground: true,
+        subtitleOverlayLayout: DEFAULT_SUBTITLE_OVERLAY_LAYOUT,
         subtitleOverlayOpacity: 0.6,
+        subtitleUpcomingLyricsBlur: true,
       }),
     onResetVisualizerTuning: resetCurrentTuning,
     onSectionChange,

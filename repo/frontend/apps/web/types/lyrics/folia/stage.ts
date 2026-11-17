@@ -23,6 +23,7 @@ import type {
 } from "@/components/lyrics/folia/src/components/visualizer/tuningRegistry";
 import type { LyricVisualizerMode } from "@/types/lyrics/model";
 import type { FoliaStageAssets } from "@/types/lyrics/folia/assets";
+import type { SubtitleOverlayLayout } from "@/types/lyrics/folia/subtitleTrack";
 import type { PlaybackPresentationTrack } from "@/types/playback/projection";
 import type { DesktopPlaybackWallpaperLayers } from "@scopify/desktop-contract";
 import type { FoliaStageTheme, FoliaThemeVariant } from "@scopify/ui/folia";
@@ -56,7 +57,9 @@ export interface FoliaStageSettings {
   subtitleFontScale: number;
   subtitleFontStyle: Theme["fontStyle"];
   subtitleOverlayBackground: boolean;
+  subtitleOverlayLayout: SubtitleOverlayLayout;
   subtitleOverlayOpacity: number;
+  subtitleUpcomingLyricsBlur: boolean;
   themeId: string;
   themeRecentIds: string[];
   themes: FoliaStageTheme[];

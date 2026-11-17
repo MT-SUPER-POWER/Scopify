@@ -909,5 +909,17 @@
   "options.nebbiaCycleBehind": "切換霧箋窗外場景",
   "options.nebbiaCycleBehindHint": "在雨夜街景、夢海流螢和共用背景之間切換",
   "options.nebbiaCycleGlass": "切換霧箋玻璃",
-  "options.nebbiaCycleGlassHint": "在雨窗、凝露和融雪之間切換"
+  "options.nebbiaCycleGlassHint": "在雨窗、凝露和融雪之間切換",
+  "options.subtitleOverlayRows": "底部字幕行數",
+  "options.subtitleOverlayRowsNone": "無歌詞行",
+  "options.subtitleOverlayRowsOne": "單行",
+  "options.subtitleOverlayRowsTwo": "雙行",
+  "options.subtitleOverlayRowsThree": "三行",
+  "options.subtitleOverlayRow1": "第一行",
+  "options.subtitleOverlayRow2": "第二行",
+  "options.subtitleOverlayRow3": "第三行",
+  "options.subtitleOverlaySourceCurrent": "當前句",
+  "options.subtitleOverlaySourceNext": "下一句",
+  "options.subtitleOverlayUpcomingFallback": "沒有所選內容時預覽後續歌詞",
+  "options.subtitleUpcomingLyricsBlur": "模糊後續歌詞"
 }
