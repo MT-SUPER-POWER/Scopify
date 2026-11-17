@@ -1,3 +1,7 @@
+import {
+  FoliaSettingsRange,
+  FoliaSettingsToggle,
+} from "@scopify/ui/scopify/components/folia-studio/settings";
 import React, { useMemo, useRef, useState } from "react";
 import {
   DEFAULT_CADENZA_TUNING,
@@ -1631,6 +1635,8 @@ export const CladdaghSettingsPanel: React.FC<VisualizerSettingsPanelProps> = ({
     ),
   };
 
+  const translationScale = claddaghTuning.translationScale ?? 1;
+  const translationLetterSpacing = claddaghTuning.translationLetterSpacingOffset ?? 0;
   const axisLineOptions: PresetOption<boolean>[] = useMemo(
     () => [
       { value: true, label: t("folia.options.partitaGuideLinesOn") || "显示" },
@@ -1706,6 +1712,25 @@ export const CladdaghSettingsPanel: React.FC<VisualizerSettingsPanelProps> = ({
         />
       </div>
 
+      <FoliaSettingsRange
+        label={t("folia.options.claddaghPositionX")}
+        min={-40}
+        max={40}
+        step={1}
+        value={claddaghTuning.positionX ?? 0}
+        valueText={`${claddaghTuning.positionX ?? 0}%`}
+        onChange={(positionX) => onCladdaghTuningChange?.({ positionX })}
+      />
+      <FoliaSettingsRange
+        label={t("folia.options.claddaghPositionY")}
+        min={-40}
+        max={40}
+        step={1}
+        value={claddaghTuning.positionY ?? 0}
+        valueText={`${claddaghTuning.positionY ?? 0}%`}
+        onChange={(positionY) => onCladdaghTuningChange?.({ positionY })}
+      />
+
       <div className="space-y-2">
         <div
           className="flex items-center justify-between text-sm"
@@ -1765,6 +1790,35 @@ export const CladdaghSettingsPanel: React.FC<VisualizerSettingsPanelProps> = ({
           className={rangeInputClass}
         />
       </div>
+      <FoliaSettingsToggle
+        label={t("folia.options.claddaghShowTranslation")}
+        checked={Boolean(claddaghTuning.showTranslation)}
+        onChange={(showTranslation) => onCladdaghTuningChange?.({ showTranslation })}
+      />
+      {claddaghTuning.showTranslation && (
+        <>
+          <FoliaSettingsRange
+            label={t("folia.options.claddaghTranslationScale")}
+            min={0.5}
+            max={2}
+            step={0.05}
+            value={translationScale}
+            valueText={`${translationScale.toFixed(2)}x`}
+            onChange={(translationScale) => onCladdaghTuningChange?.({ translationScale })}
+          />
+          <FoliaSettingsRange
+            label={t("folia.options.claddaghTranslationLetterSpacingOffset")}
+            min={-5}
+            max={20}
+            step={0.5}
+            value={translationLetterSpacing}
+            valueText={`${translationLetterSpacing.toFixed(1)}px`}
+            onChange={(translationLetterSpacingOffset) =>
+              onCladdaghTuningChange?.({ translationLetterSpacingOffset })
+            }
+          />
+        </>
+      )}
     </div>
   );
 };
