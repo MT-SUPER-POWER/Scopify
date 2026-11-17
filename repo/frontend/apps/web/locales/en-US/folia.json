@@ -951,5 +951,14 @@
   "options.claddaghTranslationLetterSpacingOffset": "Translation Letter Spacing",
   "floatingControls.quickActions": "Playback quick actions",
   "floatingControls.changeAction": "Change action",
-  "options.visualizerPickerKeepOpen": "Keep open after choosing"
+  "options.visualizerPickerKeepOpen": "Keep open after choosing",
+  "options.nebbiaLayout_ribbon": "Ribbon",
+  "options.nebbiaLayout_lines2": "Two staggered rows",
+  "options.nebbiaLayout_lines3": "Three staggered rows",
+  "options.nebbiaLayout_cross": "Cross",
+  "options.nebbiaLayout_pillar": "Pillar",
+  "options.nebbiaLayout_header": "Masthead",
+  "options.nebbiaLayout_badge": "Badge",
+  "options.nebbiaLayout_columns": "Vertical columns",
+  "options.nebbiaLayout_orbit": "Orbit"
 }

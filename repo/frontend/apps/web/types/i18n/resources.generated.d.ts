@@ -873,6 +873,15 @@ export default interface Resources {
     "options.nebbiaJellies": "水母数量";
     "options.nebbiaJellySize": "水母大小";
     "options.nebbiaJitter": "手写歪斜";
+    "options.nebbiaLayout_badge": "徽章";
+    "options.nebbiaLayout_columns": "竖排几列";
+    "options.nebbiaLayout_cross": "十字";
+    "options.nebbiaLayout_header": "刊头";
+    "options.nebbiaLayout_lines2": "两行错落";
+    "options.nebbiaLayout_lines3": "三行错落";
+    "options.nebbiaLayout_orbit": "环绕";
+    "options.nebbiaLayout_pillar": "竖柱";
+    "options.nebbiaLayout_ribbon": "横条";
     "options.nebbiaLayouts": "构图";
     "options.nebbiaLayoutsHint": "每句在打开的构图里挑最合适的一种；实在放不下的长句仍按三行摆。";
     "options.nebbiaMist": "雾气浓度";
