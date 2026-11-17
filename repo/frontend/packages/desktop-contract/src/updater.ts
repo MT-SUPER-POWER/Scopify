@@ -10,6 +10,7 @@ export type AppUpdateStatus =
 
 export interface AppUpdateState {
   currentVersion: string;
+  downloadPhase?: "differential" | "full" | "full-fallback";
   manualInstall?: boolean;
   lastCheckedAt?: number;
   message?: string;

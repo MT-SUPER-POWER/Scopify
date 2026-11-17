@@ -2,6 +2,7 @@
 
 import { Download, ExternalLink, RefreshCw, RotateCcw } from "lucide-react";
 import { UpdateProgressRing } from "@/components/notifications/UpdateProgressRing";
+import { getUpdateStatusLabelKey } from "@/constants/updater";
 import { useTranslation } from "react-i18next";
 
 import type { AppUpdaterStatusProps } from "@/types/settings/components";
@@ -24,7 +25,7 @@ export function AppUpdaterActions({
     return (
       <span
         role="progressbar"
-        aria-label={t("settings.updater.state.downloading")}
+        aria-label={t(getUpdateStatusLabelKey(state))}
         aria-valuemin={0}
         aria-valuemax={100}
         aria-valuenow={Math.floor(percent)}

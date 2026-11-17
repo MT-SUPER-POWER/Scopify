@@ -2289,6 +2289,9 @@ export default interface Resources {
     "updater.state.checking": "检查中";
     "updater.state.downloaded": "等待安装";
     "updater.state.downloading": "下载中";
+    "updater.state.downloadingDifferential": "正在下载增量更新";
+    "updater.state.downloadingFull": "正在下载完整安装包";
+    "updater.state.downloadingFullFallback": "增量下载失败，正在下载完整安装包";
     "updater.state.error": "更新失败";
     "updater.state.idle": "未检查";
     "updater.state.notAvailable": "已是最新";

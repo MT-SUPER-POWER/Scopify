@@ -1,5 +1,5 @@
 import { app, type BrowserWindow } from "electron";
-import electronUpdater, { CancellationToken } from "electron-updater";
+import electronUpdater, { CancellationToken, type NsisUpdater } from "electron-updater";
 import type {
   AppUpdateState,
   AppUpdateStatePatch,
@@ -9,7 +9,20 @@ import { openExternalLink } from "@main/service/externalLinks";
 import { updaterLog } from "@main/utils/logger";
 import { getReleaseBaseUrl, ReleaseProvider } from "./releaseProvider";
 
-const { autoUpdater } = electronUpdater;
+class WindowsUpdater extends electronUpdater.NsisUpdater {
+  protected override async differentialDownloadInstaller(
+    ...args: Parameters<NsisUpdater["differentialDownloadInstaller"]>
+  ) {
+    reportDownloadPhase("differential");
+    // NSIS starts the full installer download when this method returns true.
+    const needsFullDownload = await super.differentialDownloadInstaller(...args);
+    if (needsFullDownload) reportDownloadPhase("full-fallback");
+    return needsFullDownload;
+  }
+}
+
+const autoUpdater =
+  process.platform === "win32" ? new WindowsUpdater() : electronUpdater.autoUpdater;
 
 let mainWindow: BrowserWindow | null = null;
 let initialized = false;
@@ -35,12 +48,15 @@ function isUpdaterSupported() {
 function setState(patch: AppUpdateStatePatch) {
   state = {
     ...state,
+    downloadPhase: undefined,
     ...patch,
     supported: isUpdaterSupported(),
     currentVersion: app.getVersion(),
     manualInstall: process.platform === "darwin",
   };
-  mainWindow?.webContents.send("updater:status-changed", state);
+  if (mainWindow && !mainWindow.isDestroyed()) {
+    mainWindow.webContents.send("updater:status-changed", state);
+  }
   syncTaskbarProgress();
 }
 
@@ -99,6 +115,11 @@ function isStaleUpdateOperation() {
   );
 }
 
+function reportDownloadPhase(downloadPhase: NonNullable<AppUpdateState["downloadPhase"]>) {
+  if (isStaleUpdateOperation() || state.status !== "downloading") return;
+  setState({ status: "downloading", downloadPhase, percent: 0 });
+}
+
 function isAllowedUpdateVersion(version: string) {
   return (
     !version.includes("-") ||
@@ -154,6 +175,7 @@ export function initializeUpdater(window: BrowserWindow, config: DesktopHostConf
     if (isStaleUpdateOperation()) return;
     setState({
       status: "downloading",
+      downloadPhase: process.platform === "win32" ? (state.downloadPhase ?? "full") : undefined,
       percent: progress.percent,
       message: undefined,
     });
