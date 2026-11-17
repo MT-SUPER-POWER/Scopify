@@ -951,5 +951,14 @@
   "options.claddaghTranslationLetterSpacingOffset": "翻譯字元間距",
   "floatingControls.quickActions": "播放快捷操作",
   "floatingControls.changeAction": "更換操作",
-  "options.visualizerPickerKeepOpen": "選擇後保持開啟"
+  "options.visualizerPickerKeepOpen": "選擇後保持開啟",
+  "options.nebbiaLayout_ribbon": "橫條",
+  "options.nebbiaLayout_lines2": "兩行錯落",
+  "options.nebbiaLayout_lines3": "三行錯落",
+  "options.nebbiaLayout_cross": "十字",
+  "options.nebbiaLayout_pillar": "豎柱",
+  "options.nebbiaLayout_header": "刊頭",
+  "options.nebbiaLayout_badge": "徽章",
+  "options.nebbiaLayout_columns": "直排數欄",
+  "options.nebbiaLayout_orbit": "環繞"
 }
