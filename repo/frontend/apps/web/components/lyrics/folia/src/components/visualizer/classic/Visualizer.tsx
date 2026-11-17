@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useEffect } from "react";
+import React, { useMemo, useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence, MotionValue, Variants, useMotionValueEvent } from "framer-motion";
 import { useTranslation } from "react-i18next";
 
@@ -10,6 +10,7 @@ import {
   type ClassicTuning,
 } from "../../../types";
 import { getLineRenderEndTime, getLineRenderHints } from "../../../utils/lyrics/renderHints";
+import { resolveLyricTextDirection } from "../../../utils/lyrics/textDirection";
 import { useVisualizerRuntime } from "../runtime";
 import { type VisualizerSharedProps } from "../definition";
 import VisualizerShell from "../VisualizerShell";
@@ -21,6 +22,15 @@ import {
 import { buildWordGraphemeTimings } from "../../../utils/lyrics/graphemeTiming";
 import { resolveThemeFontStack } from "../../../utils/fontStacks";
 import { resolveWordColor } from "../wordColoring";
+import {
+  GLOW_WORD_ACTIVE_SCALE,
+  GLOW_WORD_LINE_HEIGHT,
+  getGlowWordOverflow,
+  getGlowWordPairGap,
+  measureGlowWordWidth,
+} from "../glowWordOverlap";
+import type { GlowWordPlacement } from "@/types/lyrics/folia/glowWord";
+import { OVERLAP_FIT_LINE_ATTRIBUTE, useOverlapFit } from "@/hooks/lyrics/useOverlapFit";
 
 // This mode is the most straightforward lyric pipeline in the folder.
 // First we ask runtime which line is active right now, then read renderHints from that line,
@@ -48,6 +58,9 @@ interface LineLayoutConfig {
   justifyContent: string;
   alignItems: string;
   perspective: number;
+  rowGap?: number;
+  reachTop?: number;
+  reachBottom?: number;
 }
 
 interface ClassicLineRenderProfile {
@@ -70,6 +83,7 @@ const resolveClassicTuning = (tuning?: ClassicTuning): ClassicTuning => ({
   wordSpacing: clampClassicWordSpacing(
     tuning?.wordSpacing ?? DEFAULT_CLASSIC_TUNING.wordSpacing ?? 0.7,
   ),
+  avoidOverlap: tuning?.avoidOverlap ?? DEFAULT_CLASSIC_TUNING.avoidOverlap,
 });
 
 // Helper to determine if text contains CJK characters
@@ -160,26 +174,6 @@ const getClassicLineContainerMotion = (renderProfile: ClassicLineRenderProfile |
   };
 };
 
-let classicMeasureCanvas: HTMLCanvasElement | null = null;
-
-/**
- * Measures the width of a given word text using a 2D canvas context.
- */
-const measureWordWidth = (text: string, pxSize: number, fontStack: string): number => {
-  if (typeof document === "undefined") {
-    return text.length * pxSize * 0.65;
-  }
-  if (!classicMeasureCanvas) {
-    classicMeasureCanvas = document.createElement("canvas");
-  }
-  const context = classicMeasureCanvas.getContext("2d");
-  if (!context) {
-    return text.length * pxSize * 0.65;
-  }
-  context.font = `700 ${pxSize}px ${fontStack}`;
-  return context.measureText(text).width;
-};
-
 const Word: React.FC<{
   word: WordType;
   config: WordLayoutConfig;
@@ -248,9 +242,9 @@ const Word: React.FC<{
       className="relative inline-block origin-center font-bold whitespace-nowrap will-change-transform"
       style={{
         fontSize,
-        marginRight: config.marginRight,
+        marginInlineEnd: config.marginRight,
         alignSelf: config.alignSelf,
-        lineHeight: 1.22,
+        lineHeight: GLOW_WORD_LINE_HEIGHT,
       }}
     >
       {/* Glow Layer - Handles Text Shadow - Absolute Position */}
@@ -358,13 +352,14 @@ const Visualizer: React.FC<VisualizerProps> = (props) => {
     activeLineRenderProfile ?? (activeLine ? resolveClassicLineRenderProfile(activeLine) : null);
   const activeLineContainerMotion = getClassicLineContainerMotion(activeLineRenderProfile);
 
-  const [viewportWidth, setViewportWidth] = useState(() =>
-    typeof window === "undefined" ? 1200 : window.innerWidth,
-  );
+  const [viewportSize, setViewportSize] = useState(() => ({
+    width: typeof window === "undefined" ? 1200 : window.innerWidth,
+    height: typeof window === "undefined" ? 800 : window.innerHeight,
+  }));
 
   useEffect(() => {
     const handleResize = () => {
-      setViewportWidth(window.innerWidth);
+      setViewportSize({ width: window.innerWidth, height: window.innerHeight });
     };
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
@@ -379,14 +374,26 @@ const Visualizer: React.FC<VisualizerProps> = (props) => {
     return buildDisplayWordsFromLayoutUnits(layoutUnits);
   }, [activeLine, resolvedClassicTuning.useLegacyLayout]);
 
-  const mainFontSize = `clamp(${(2.25 * lyricsFontScale).toFixed(3)}rem, ${(6 * lyricsFontScale).toFixed(3)}vw, ${(4.5 * lyricsFontScale).toFixed(3)}rem)`;
+  const avoidOverlap =
+    Boolean(resolvedClassicTuning.avoidOverlap) && !resolvedClassicTuning.useLegacyLayout;
+  const lyricAreaRef = useRef<HTMLDivElement>(null);
+  const fitLayout = useMemo(
+    () => ({ displayWords, lyricsFontScale, viewportSize, resolvedClassicTuning, theme }),
+    [displayWords, lyricsFontScale, viewportSize, resolvedClassicTuning, theme],
+  );
+  const overlapFit = useOverlapFit(avoidOverlap, activeLine?.startTime, lyricAreaRef, fitLayout);
+  const lineFontScale = lyricsFontScale * overlapFit;
+  const mainFontSize = `clamp(${(2.25 * lineFontScale).toFixed(3)}rem, ${(6 * lineFontScale).toFixed(3)}vw, ${(4.5 * lineFontScale).toFixed(3)}rem)`;
   const emptyFontSize = `clamp(${(1.5 * lyricsFontScale).toFixed(3)}rem, ${(3.5 * lyricsFontScale).toFixed(3)}vw, ${(2.25 * lyricsFontScale).toFixed(3)}rem)`;
   const translationFontSize = `clamp(${(1.125 * lyricsFontScale).toFixed(3)}rem, ${(2.6 * lyricsFontScale).toFixed(3)}vw, ${(1.25 * lyricsFontScale).toFixed(3)}rem)`;
   const upcomingFontSize = `clamp(${(0.875 * lyricsFontScale).toFixed(3)}rem, ${(2 * lyricsFontScale).toFixed(3)}vw, ${(1 * lyricsFontScale).toFixed(3)}rem)`;
 
   // Generate a stable random layout configuration for the current line.
   // Use the line start time as seed so the same lyric does not reshuffle every rerender.
-  const { wordConfigs, lineConfig } = useMemo(() => {
+  const { wordConfigs, lineConfig } = useMemo<{
+    wordConfigs: WordLayoutConfig[];
+    lineConfig: LineLayoutConfig;
+  }>(() => {
     if (!activeLine)
       return {
         wordConfigs: [],
@@ -426,12 +433,35 @@ const Visualizer: React.FC<VisualizerProps> = (props) => {
       const maxPx = 4.5 * fontScale * rem;
       return Math.max(minPx, Math.min(valPx, maxPx));
     };
-    const pxFontSize = getPixelFontSize(lyricsFontScale, viewportWidth);
-    const wordWidths = displayWords.map((w) => measureWordWidth(w.text, pxFontSize, fontStack));
+    const pxFontSize = getPixelFontSize(lineFontScale, viewportSize.width);
+    const wordWidths = displayWords.map((w) =>
+      measureGlowWordWidth(w.text, pxFontSize, fontStack, 700),
+    );
 
     const baseSpread = isChaotic ? 60 : isCalm ? 0 : 20;
     const baseRotate = isChaotic ? 30 : isCalm ? 0 : 5;
 
+    const rtl = resolveLyricTextDirection(activeLine.fullText) === "rtl";
+    let reachTop = 0;
+    let reachBottom = 0;
+    const placements = wordWidths.map((width, index): Required<GlowWordPlacement> => {
+      const random = (offset: number) => {
+        const x = Math.sin(seed + index + offset) * 10000;
+        return x - Math.floor(x);
+      };
+      return {
+        width,
+        pose: {
+          scale: isChaotic ? 0.8 + random(4) * 0.6 : 1.1 + random(4) * 0.2,
+          rotate: resolvedClassicTuning.enableWordRotation ? (random(3) - 0.5) * baseRotate * 2 : 0,
+          passedRotate: resolvedClassicTuning.enableWordRotation ? (random(8) - 0.5) * 45 : 0,
+        },
+        offset: {
+          x: (random(1) - 0.5) * baseSpread * 2,
+          y: (random(2) - 0.5) * baseSpread * 2,
+        },
+      };
+    });
     const wordConfigs: WordLayoutConfig[] = displayWords.map((w, i) => {
       const wordSeed = seed + i;
 
@@ -456,43 +486,50 @@ const Visualizer: React.FC<VisualizerProps> = (props) => {
         };
       }
 
-      const wordConfigScale = isChaotic ? 0.8 + random(4) * 0.6 : 1.1 + random(4) * 0.2;
-      const xVal = (random(1) - 0.5) * baseSpread * 2;
-      const yVal = (random(2) - 0.5) * baseSpread * 2;
+      const placement = placements[i];
+      const { x: xVal, y: yVal } = placement.offset;
+      const { scale, rotate, passedRotate } = placement.pose;
+      const nextPlacement = placements[i + 1];
 
       let marginRight = isChaotic ? `${random(5) * 1.5}rem` : "0.8rem";
 
       if (!resolvedClassicTuning.useLegacyLayout) {
         // Calculate precise margin right to avoid visual overlap during scaling and translation
-        const w_i = wordWidths[i] ?? 0;
-        const s_i = wordConfigScale * 1.4; // active scale max multiplier
-
-        let w_next = 0;
-        let s_next = 1.0;
-        let x_next = 0;
-
-        if (i + 1 < displayWords.length) {
-          const nextSeed = seed + (i + 1);
-          const nextRandom = (offset: number) => {
-            const x = Math.sin(nextSeed + offset) * 10000;
-            return x - Math.floor(x);
-          };
-          const nextConfigScale = isChaotic ? 0.8 + nextRandom(4) * 0.6 : 1.1 + nextRandom(4) * 0.2;
-          s_next = nextConfigScale * 1.4;
-          x_next = (nextRandom(1) - 0.5) * baseSpread * 2;
-          w_next = wordWidths[i + 1] ?? 0;
-        }
+        const w_i = placement.width;
+        const s_i = scale * GLOW_WORD_ACTIVE_SCALE;
+        const w_next = nextPlacement?.width ?? 0;
+        const s_next = nextPlacement ? nextPlacement.pose.scale * GLOW_WORD_ACTIVE_SCALE : 1;
+        const x_next = nextPlacement?.offset.x ?? 0;
 
         const spacingMultiplier = resolvedClassicTuning.wordSpacing ?? 0.7;
         const gap = 0.05 * pxFontSize;
         const halfOverflow_i = (w_i * (s_i - 1)) / 2;
         const halfOverflow_next = (w_next * (s_next - 1)) / 2;
-        const xOffsetDiff = xVal - x_next;
+        const xOffsetDiff = rtl ? x_next - xVal : xVal - x_next;
 
         const calculatedMargin =
           (halfOverflow_i + halfOverflow_next + xOffsetDiff + gap) * spacingMultiplier;
         const minMargin = (isChaotic ? 0.08 * pxFontSize : 0.12 * pxFontSize) * spacingMultiplier;
-        const finalMargin = Math.max(minMargin, calculatedMargin);
+        let finalMargin = Math.max(minMargin, calculatedMargin);
+        if (avoidOverlap) {
+          if (nextPlacement) {
+            const pairGap = getGlowWordPairGap(
+              placement,
+              nextPlacement,
+              pxFontSize,
+              rtl ? "rtl" : "ltr",
+            );
+            finalMargin = Math.max(finalMargin, pairGap + gap);
+          }
+          const overflow = getGlowWordOverflow(
+            placement.width,
+            pxFontSize,
+            placement.pose,
+            placement.offset,
+          );
+          reachTop = Math.max(reachTop, overflow.top);
+          reachBottom = Math.max(reachBottom, overflow.bottom);
+        }
         marginRight = `${finalMargin.toFixed(1)}px`;
       }
 
@@ -500,15 +537,20 @@ const Visualizer: React.FC<VisualizerProps> = (props) => {
         id: `${w.text}-${i}-${seed}`,
         x: xVal,
         y: yVal,
-        rotate: resolvedClassicTuning.enableWordRotation ? (random(3) - 0.5) * baseRotate * 2 : 0,
-        scale: wordConfigScale,
+        rotate,
+        scale,
         marginRight,
         alignSelf:
           isChaotic && random(6) > 0.7 ? (random(7) > 0.5 ? "flex-start" : "flex-end") : "auto",
-        passedRotate: resolvedClassicTuning.enableWordRotation ? (random(8) - 0.5) * 45 : 0,
+        passedRotate,
       };
     });
 
+    if (avoidOverlap && !isInterlude) {
+      lineConfig.rowGap = Math.ceil(reachTop + reachBottom);
+      lineConfig.reachTop = Math.ceil(reachTop);
+      lineConfig.reachBottom = Math.ceil(reachBottom);
+    }
     return { wordConfigs, lineConfig };
   }, [
     activeLine,
@@ -517,8 +559,9 @@ const Visualizer: React.FC<VisualizerProps> = (props) => {
     resolvedClassicTuning.useLegacyLayout,
     resolvedClassicTuning.wordSpacing,
     theme,
-    lyricsFontScale,
-    viewportWidth,
+    lineFontScale,
+    viewportSize.width,
+    avoidOverlap,
   ]);
 
   // Container motion is the "body" of each word.
@@ -534,7 +577,7 @@ const Visualizer: React.FC<VisualizerProps> = (props) => {
     }),
     active: ({ config }: any) => ({
       opacity: 1,
-      scale: isNaN(config.scale) ? 1.5 : config.scale * 1.4,
+      scale: isNaN(config.scale) ? 1.5 : config.scale * GLOW_WORD_ACTIVE_SCALE,
       x: config.x,
       y: config.y,
       rotate: config.rotate,
@@ -726,6 +769,7 @@ const Visualizer: React.FC<VisualizerProps> = (props) => {
     >
       {/* Main Container */}
       <motion.div
+        ref={lyricAreaRef}
         className="pointer-events-none relative z-10 flex h-[70vh] w-full items-center justify-center p-8 will-change-transform"
         animate={lyricContainerFloat?.animate}
         transition={lyricContainerFloat?.transition}
@@ -737,8 +781,16 @@ const Visualizer: React.FC<VisualizerProps> = (props) => {
               initial={activeLineContainerMotion.initial}
               animate={activeLineContainerMotion.animate}
               exit={activeLineContainerMotion.exit}
+              dir={resolveLyricTextDirection(activeLine.fullText)}
               className={`flex w-full max-w-6xl flex-wrap content-center ${lineConfig.justifyContent} ${lineConfig.alignItems}`}
-              style={{ perspective: `${lineConfig.perspective}px`, minHeight: "300px" }}
+              {...{ [OVERLAP_FIT_LINE_ATTRIBUTE]: activeLine.startTime }}
+              style={{
+                perspective: `${lineConfig.perspective}px`,
+                minHeight: lineConfig.rowGap === undefined ? "300px" : undefined,
+                rowGap: lineConfig.rowGap,
+                paddingTop: lineConfig.reachTop,
+                paddingBottom: lineConfig.reachBottom,
+              }}
             >
               {displayWords.map((word, idx) => {
                 const config = wordConfigs[idx] || {

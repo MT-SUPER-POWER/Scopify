@@ -129,6 +129,7 @@ export const ClassicSettingsPanel: React.FC<VisualizerSettingsPanelProps> = ({
     wordSpacing: clampClassicWordSpacing(
       classicTuning.wordSpacing ?? DEFAULT_CLASSIC_TUNING.wordSpacing ?? 0.7,
     ),
+    avoidOverlap: classicTuning.avoidOverlap ?? DEFAULT_CLASSIC_TUNING.avoidOverlap ?? false,
   };
   const wordRotationOptions: PresetOption<boolean>[] = useMemo(
     () => [
@@ -229,6 +230,17 @@ export const ClassicSettingsPanel: React.FC<VisualizerSettingsPanelProps> = ({
             onPointerUp={onSliderCommit}
             className={rangeInputClass}
           />
+          <PresetGroup
+            label={t("folia.options.avoidOverlap")}
+            value={resolvedClassicTuning.avoidOverlap}
+            options={wordRotationOptions}
+            onChange={(avoidOverlap) => onClassicTuningChange?.({ avoidOverlap })}
+            isDaylight={isDaylight}
+            theme={theme}
+          />
+          <p className="text-xs opacity-50" style={{ color: "var(--text-secondary)" }}>
+            {t("folia.options.avoidOverlapHint")}
+          </p>
         </div>
       )}
     </div>
@@ -424,6 +436,7 @@ export const PartitaSettingsPanel: React.FC<VisualizerSettingsPanelProps> = ({
     useSemanticLayout: partitaTuning.useSemanticLayout ?? DEFAULT_PARTITA_TUNING.useSemanticLayout,
     staggerMin: Math.min(rawMin, rawMax),
     staggerMax: Math.max(rawMin, rawMax),
+    avoidOverlap: partitaTuning.avoidOverlap ?? DEFAULT_PARTITA_TUNING.avoidOverlap,
   };
   const guideLineOptions: PresetOption<boolean>[] = useMemo(
     () => [
@@ -488,6 +501,18 @@ export const PartitaSettingsPanel: React.FC<VisualizerSettingsPanelProps> = ({
         isDaylight={isDaylight}
         theme={theme}
       />
+
+      <PresetGroup
+        label={t("folia.options.avoidOverlap")}
+        value={Boolean(resolvedPartitaTuning.avoidOverlap)}
+        options={semanticLayoutOptions}
+        onChange={(avoidOverlap) => onPartitaTuningChange?.({ avoidOverlap })}
+        isDaylight={isDaylight}
+        theme={theme}
+      />
+      <p className="text-xs opacity-50" style={{ color: "var(--text-secondary)" }}>
+        {t("folia.options.avoidOverlapHint")}
+      </p>
 
       <div className="space-y-2">
         <div

@@ -447,6 +447,8 @@ export default interface Resources {
     "options.animationIntensity": "动画强度";
     "options.autoHideCursorWithChrome": "控制栏收起时隐藏鼠标指针";
     "options.autoHideCursorWithChromeDesc": "控制栏自动收起后指针一起消失，移动鼠标即可唤回；关闭后只收起控制栏。";
+    "options.avoidOverlap": "防止文字重叠";
+    "options.avoidOverlapHint": "按字放大、旋转后的大小留出间距";
     "options.cappellaAvatarClear": "清空自定义头像";
     "options.cappellaAvatarCleared": "自定义头像已清空。";
     "options.cappellaAvatarImportFailed": "导入失败。";
