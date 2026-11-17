@@ -27,6 +27,7 @@ export interface LyricSource {
 /** A NetEase song selected as the source for another track's lyrics. */
 export interface LyricMatchCandidate {
   albumName: string;
+  alternateArtistNames?: string[];
   artistNames: string[];
   coverUrl: string | null;
   durationMs: number;

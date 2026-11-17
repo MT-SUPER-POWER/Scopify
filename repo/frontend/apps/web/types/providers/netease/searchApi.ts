@@ -15,6 +15,7 @@ export interface SongSearchArtist extends SearchArtistSource {
   id: number;
   name: string;
   picUrl?: string;
+  tns?: string[];
 }
 
 export interface SongSearchAlbum {
