@@ -8,6 +8,7 @@ import type { LyricAudioBands, LyricChorusRange, LyricData } from "@/types/lyric
 import type { FoliaPlaybackBridge } from "@/types/lyrics/folia/stage";
 
 import { useSongChorus } from "@/hooks/lyrics/useSongChorus";
+import { useLyricSegmentation } from "@/hooks/lyrics/useLyricSegmentation";
 import {
   usePlaybackProjection,
   usePlaybackProjectionStore,
@@ -26,6 +27,10 @@ export function useFoliaPlaybackBridge(active = true): FoliaPlaybackBridge {
   const rawLyric = playback.lyrics;
   const currentSongId = playback.track?.id ?? null;
   const lyricOffsetMs = useLyricStageStore((state) => state.lyricOffsetMs);
+  const isHanabi = useLyricStageStore((state) => state.mode === "hanabi");
+  const segmentation = useLyricSegmentation(currentSongId, isHanabi && !!rawLyric);
+  const automatic = segmentation.automatic.data ?? false;
+  const overrides = segmentation.overrides.data;
   const initialPositionSeconds = playbackStore.samplePositionMs() / 1_000;
   const currentTime = useMotionValue(initialPositionSeconds);
   const lyricCurrentTime = useMotionValue(initialPositionSeconds);
@@ -41,8 +46,15 @@ export function useFoliaPlaybackBridge(active = true): FoliaPlaybackBridge {
   const chorusQuery = useSongChorus(currentSongId);
   const chorusRanges = chorusQuery.data ?? EMPTY_CHORUS_RANGES;
   const lyrics = useMemo(
-    () => (rawLyric ? adaptLyricDataToFolia(rawLyric, chorusRanges) : null),
-    [chorusRanges, rawLyric],
+    () =>
+      rawLyric
+        ? adaptLyricDataToFolia(
+            rawLyric,
+            chorusRanges,
+            isHanabi ? { automatic, overrides } : undefined,
+          )
+        : null,
+    [automatic, chorusRanges, isHanabi, overrides, rawLyric],
   );
   const audioBands = useMemo<AudioBands>(
     () => ({ bass, lowMid, mid, spectrum, treble, vocal }),

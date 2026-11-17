@@ -36,5 +36,14 @@
   "tab.importFailed": "导入歌词文件失败",
   "tab.sourceChangeFailed": "切换歌词来源失败",
   "tab.cleared": "已还原在线歌词",
-  "tab.clearFailed": "还原在线歌词失败"
+  "tab.clearFailed": "还原在线歌词失败",
+  "segmentation.title": "歌词分词",
+  "segmentation.automatic": "本地自动分词",
+  "segmentation.line": "歌词行",
+  "segmentation.hint": "点击字之间的分隔线调整词语边界。",
+  "segmentation.boundary": "在第 {{index}} 个字符后分词",
+  "segmentation.empty": "当前歌曲没有可分词的歌词。",
+  "segmentation.saveFailed": "保存分词失败",
+  "segmentation.loadFailed": "无法加载歌词分词",
+  "segmentation.reset": "恢复默认分词"
 }

@@ -54,9 +54,9 @@ export interface LineWord extends LayoutWordInput {
   text: string;
 }
 
-/** 行 → 词（字区间按 grapheme 计）：手动分词 → icu-folia → Intl.Segmenter；对不上时退回逐字。 */
+/** 行 → 词（字区间按 grapheme 计）：手动分词 → 本地自动分词 → Intl.Segmenter。 */
 export const lineWords = (
-  line: Pick<Line, "fullText" | "wordSegments">,
+  line: Pick<Line, "fullText" | "wordSegments" | "autoWordSegments">,
   count: number,
 ): LineWord[] => {
   const words: LineWord[] = [];

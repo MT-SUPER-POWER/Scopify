@@ -3,9 +3,15 @@ import type {
   LyricData as FoliaLyricData,
 } from "@/components/lyrics/folia/src/types";
 import type { LyricChorusRange, LyricData } from "@/types/lyrics/model";
+import type { LyricSegmentationSettings } from "@/types/lyrics/segmentation";
 
 import { detectRepeatedChorusTexts } from "./chorusRanges";
 import { isPureMusicLyricLines } from "./pureMusic";
+import {
+  getDefaultLyricBoundaries,
+  getLyricSegmentationLineKey,
+  isValidLyricSegmentation,
+} from "./segmentation";
 
 const MILLISECONDS_PER_SECOND = 1_000;
 const MINIMUM_TIMED_UNIT_SECONDS = 0.04;
@@ -19,6 +25,7 @@ const CHORUS_EFFECTS = ["bars", "circles", "beams"] as const;
 export function adaptLyricDataToFolia(
   lyrics: LyricData,
   chorusRanges: LyricChorusRange[] = [],
+  segmentation?: LyricSegmentationSettings,
 ): FoliaLyricData {
   if (lyrics.isPureMusic || isPureMusicLyricLines(lyrics.lines)) {
     return {
@@ -30,7 +37,7 @@ export function adaptLyricDataToFolia(
   }
 
   const lyricLines = lyrics.lines.map((line, index, lines) =>
-    adaptLine(line, lines[index + 1]?.startTimeMs, lyrics.isWordByWord),
+    adaptLine(line, lines[index + 1]?.startTimeMs, lyrics.isWordByWord, segmentation),
   );
   const repeatedChorusTexts =
     chorusRanges.length === 0 ? detectRepeatedChorusTexts(lyrics.lines) : new Set<string>();
@@ -49,6 +56,7 @@ function adaptLine(
   line: LyricData["lines"][number],
   nextLineStartTimeMs: number | undefined,
   isWordByWord: boolean,
+  segmentation: LyricSegmentationSettings | undefined,
 ): FoliaLine {
   const startTime = line.startTimeMs / MILLISECONDS_PER_SECOND;
   const declaredEndTime = line.endTimeMs / MILLISECONDS_PER_SECOND;
@@ -62,6 +70,12 @@ function adaptLine(
     isWordByWord,
   );
   const endTime = resolveDisplayEndTime(startTime, rawEndTime, nextStartTime);
+  const saved = segmentation?.overrides?.[getLyricSegmentationLineKey(line)];
+  const wordBoundaries = isValidLyricSegmentation(line.text, saved) ? saved : undefined;
+  const autoBoundaries =
+    !wordBoundaries && segmentation?.automatic && line.text
+      ? getDefaultLyricBoundaries(line.text, true)
+      : undefined;
 
   return {
     alternateTexts: [
@@ -70,6 +84,8 @@ function adaptLine(
     ],
     endTime,
     fullText: line.text,
+    ...(wordBoundaries ? { wordSegments: wordBoundaries } : {}),
+    ...(autoBoundaries ? { autoWordSegments: autoBoundaries } : {}),
     agentId: line.agentId,
     blockIndex: line.blockIndex,
     backgroundVocals: line.backgroundVocals?.map((vocal) => ({

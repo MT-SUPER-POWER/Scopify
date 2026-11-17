@@ -36,5 +36,14 @@
   "tab.importFailed": "匯入歌詞檔案失敗",
   "tab.sourceChangeFailed": "切換歌詞來源失敗",
   "tab.cleared": "已還原線上歌詞",
-  "tab.clearFailed": "還原線上歌詞失敗"
+  "tab.clearFailed": "還原線上歌詞失敗",
+  "segmentation.title": "歌詞分詞",
+  "segmentation.automatic": "本機自動分詞",
+  "segmentation.line": "歌詞行",
+  "segmentation.hint": "點擊字元之間的分隔線以調整詞語邊界。",
+  "segmentation.boundary": "在第 {{index}} 個字元後分詞",
+  "segmentation.empty": "目前歌曲沒有可分詞的歌詞。",
+  "segmentation.saveFailed": "無法儲存分詞",
+  "segmentation.loadFailed": "無法載入歌詞分詞",
+  "segmentation.reset": "恢復預設分詞"
 }
