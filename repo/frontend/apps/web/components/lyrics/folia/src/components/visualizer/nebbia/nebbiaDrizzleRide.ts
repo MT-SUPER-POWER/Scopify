@@ -12,7 +12,14 @@ export class NebbiaDrizzleRide {
   rain = 1;
 
   /** 开一帧的玻璃运动（车随机颠）；`env`、`rain` 随后读。 */
-  step(motion: NebbiaGlassMotion, now: number, _T: number, frozen: boolean, _bump: number) {
-    motion.beginFrame(now, frozen, true);
+  step(
+    motion: NebbiaGlassMotion,
+    now: number,
+    _T: number,
+    frozen: boolean,
+    _bump: number,
+    bumps = true,
+  ) {
+    motion.beginFrame(now, frozen, bumps);
   }
 }

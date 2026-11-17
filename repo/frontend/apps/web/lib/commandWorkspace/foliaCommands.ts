@@ -8,11 +8,31 @@ import type { TranslateFn } from "@/types/i18n/model";
 
 export function buildFoliaCommands(
   t: TranslateFn,
-  options: { personalFmModes: boolean } = { personalFmModes: true },
+  options: { personalFmModes: boolean; nebbiaControls?: boolean } = { personalFmModes: true },
 ): FoliaCommandEntry[] {
   const entries: Omit<FoliaCommandEntry, "path">[] = [
     ...(options.personalFmModes ? buildPersonalFmCommands(t) : []),
     ...FOLIA_LYRIC_COMMANDS,
+    ...(options.nebbiaControls
+      ? ([
+          {
+            id: "folia-nebbia-cycle-behind",
+            parentId: "folia-visualizers",
+            label: t("folia.options.nebbiaCycleBehind"),
+            summary: t("folia.options.nebbiaCycleBehindHint"),
+            keywords: "nebbia window scene aquarium dream sea glow 雾笺 切换窗外 水族箱 梦海流萤",
+            action: { kind: "nebbia-cycle", control: "behind" },
+          },
+          {
+            id: "folia-nebbia-cycle-glass",
+            parentId: "folia-visualizers",
+            label: t("folia.options.nebbiaCycleGlass"),
+            summary: t("folia.options.nebbiaCycleGlassHint"),
+            keywords: "nebbia window glass rain dew condensation snow 雾笺 玻璃 雨窗 凝露 融雪",
+            action: { kind: "nebbia-cycle", control: "glass" },
+          },
+        ] as const)
+      : []),
     {
       id: "folia-settings",
       parentId: null,

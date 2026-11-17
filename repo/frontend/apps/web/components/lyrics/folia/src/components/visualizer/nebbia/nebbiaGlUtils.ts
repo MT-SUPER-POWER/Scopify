@@ -21,6 +21,20 @@ export interface NebbiaUniforms {
   spotTgt: [number, number];
   spotR: number;
   spotI: number;
+  /** 窗外画哪几样，位和着色器的 SCN_* 对应（nebbiaFrameUniforms.ts 的 SCENERY_BITS）。 */
+  scenery: number;
+  /** 凝露玻璃的冷凝水珠高光（tuning.dewGlint；雨窗的程序里没有这个 uniform）。 */
+  dewGlint: number;
+  /** 窗外是水族箱时：水母（nebbiaJellies.ts 每帧算好）和气泡多少；街景时 null。 */
+  aqua: NebbiaAquaUniforms | null;
+}
+export interface NebbiaAquaUniforms {
+  /** 每只 4 个数：x、y（scene 坐标）、伞盖半径、收缩；长度是着色器数组的 24 只。 */
+  jelly: Float32Array;
+  /** 每只 4 个数：颜色 rgb、触手波的相位。 */
+  jellyColor: Float32Array;
+  count: number;
+  bubbles: number;
 }
 
 /** 提交编译，不等结果（结果在链接时一起查，见 checkLinked）。 */
