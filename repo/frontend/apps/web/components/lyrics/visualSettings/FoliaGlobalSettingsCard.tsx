@@ -8,6 +8,7 @@ import {
   FoliaSettingsToggle,
 } from "@scopify/ui/scopify/components/folia-studio/settings";
 import { FoliaGlobalLyricOffsetDialog } from "@/components/lyrics/lyricOffset/FoliaGlobalLyricOffsetDialog";
+import { FoliaRenderQualitySettings } from "@/components/lyrics/visualSettings/FoliaRenderQualitySettings";
 import { FoliaVideoExportDialog } from "@/components/lyrics/visualSettings/FoliaVideoExportDialog";
 import { useTranslation } from "react-i18next";
 
@@ -55,6 +56,7 @@ export function FoliaGlobalSettingsCard({ theme }: FoliaGlobalSettingsCardProps)
           onChange={(autoHideCursorWithChrome) => patchSettings({ autoHideCursorWithChrome })}
         />
       </FoliaSettingsGroup>
+      <FoliaRenderQualitySettings />
       <FoliaVideoExportDialog
         isOpen={isVideoExportOpen}
         onClose={() => setIsVideoExportOpen(false)}

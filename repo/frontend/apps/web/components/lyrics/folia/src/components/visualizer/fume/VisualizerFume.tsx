@@ -17,6 +17,8 @@ import {
   Word as WordType,
 } from "../../../types";
 import { resolveThemeFontStack } from "../../../utils/fontStacks";
+import { resolveLyricPixelRatio } from "../../../utils/lyricRenderQuality";
+import { useLyricRenderQuality } from "../renderQuality/useLyricRenderQuality";
 import {
   buildWordGraphemeTimings,
   type GraphemeTiming,
@@ -1615,6 +1617,7 @@ const drawRenderTextRun = (
 const createStaticBlockSnapshot = (
   block: FumeBlock,
   theme: Theme,
+  rasterScale: number,
   fillStyle: string,
   shadowBlur = 0,
   shadowColor = "transparent",
@@ -1623,7 +1626,6 @@ const createStaticBlockSnapshot = (
     return null;
   }
 
-  const rasterScale = clamp(window.devicePixelRatio || 1, 1, 2);
   const padding = Math.ceil(Math.max(block.fontPx * 0.32, shadowBlur + block.fontPx * 0.08, 4));
   const canvas = document.createElement("canvas");
   canvas.width = Math.max(1, Math.ceil((block.width + padding * 2) * rasterScale));
@@ -1870,7 +1872,9 @@ const VisualizerFume: React.FC<VisualizerProps> = (props) => {
     showSubtitleTranslation = true,
     subtitleContentMode,
     paused = false,
+    isPreviewMode,
   } = props;
+  const { scale: renderScale } = useLyricRenderQuality(fumeTuning?.render, isPreviewMode);
   const viewportRef = useRef<HTMLDivElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const currentLineIndexRef = useRef(currentLineIndex);
@@ -1900,6 +1904,9 @@ const VisualizerFume: React.FC<VisualizerProps> = (props) => {
     focusScale: 1,
   });
   const staticBlockSnapshotCacheRef = useRef<Map<string, StaticBlockSnapshot>>(new Map());
+  useEffect(() => {
+    staticBlockSnapshotCacheRef.current.clear();
+  }, [renderScale]);
   const layoutBuildVersionRef = useRef(0);
   const hasResolvedArticleRef = useRef(false);
   const [viewport, setViewport] = useState<ViewportSize>({ width: 0, height: 0 });
@@ -2117,7 +2124,7 @@ const VisualizerFume: React.FC<VisualizerProps> = (props) => {
 
     const width = Math.max(Math.floor(viewport.width), 1);
     const height = Math.max(Math.floor(viewport.height), 1);
-    const dpr = window.devicePixelRatio || 1;
+    const dpr = resolveLyricPixelRatio(window.devicePixelRatio || 1, renderScale);
 
     if (canvas.width !== Math.floor(width * dpr) || canvas.height !== Math.floor(height * dpr)) {
       canvas.width = Math.floor(width * dpr);
@@ -2166,7 +2173,9 @@ const VisualizerFume: React.FC<VisualizerProps> = (props) => {
 
       const currentWidth = Math.max(Math.floor(viewport.width), 1);
       const currentHeight = Math.max(Math.floor(viewport.height), 1);
-      const currentDpr = window.devicePixelRatio || 1;
+      const devicePixelRatio = window.devicePixelRatio || 1;
+      const currentDpr = resolveLyricPixelRatio(devicePixelRatio, renderScale);
+      const snapshotScale = resolveLyricPixelRatio(clamp(devicePixelRatio, 1, 2), renderScale);
 
       if (
         canvas.width !== Math.floor(currentWidth * currentDpr) ||
@@ -2636,7 +2645,6 @@ const VisualizerFume: React.FC<VisualizerProps> = (props) => {
                 : null;
 
           if (staticState) {
-            const snapshotScale = clamp(window.devicePixelRatio || 1, 1, 2);
             const cacheStyleKey = staticState === "passed" ? effectiveTextHoldStyle : "base";
             const cacheKey = `${block.id}:${staticState}:${cacheStyleKey}:${snapshotScale}`;
             let snapshot = staticBlockSnapshotCacheRef.current.get(cacheKey);
@@ -2646,6 +2654,7 @@ const VisualizerFume: React.FC<VisualizerProps> = (props) => {
                 createStaticBlockSnapshot(
                   block,
                   theme,
+                  snapshotScale,
                   staticState === "waiting"
                     ? colorWithAlpha(theme.primaryColor, waitingOpacity)
                     : colorWithAlpha(theme.primaryColor, passedOpacity),
@@ -2676,6 +2685,7 @@ const VisualizerFume: React.FC<VisualizerProps> = (props) => {
                     createStaticBlockSnapshot(
                       block,
                       theme,
+                      snapshotScale,
                       colorWithAlpha(theme.primaryColor, standardStyle.opacity),
                       (2 + block.fontPx * 0.1) *
                         0.65 *
@@ -3068,6 +3078,7 @@ const VisualizerFume: React.FC<VisualizerProps> = (props) => {
     showPrintStamp,
     showText,
     paused,
+    renderScale,
     staticMode,
     textHoldRatio,
     theme,

@@ -842,5 +842,13 @@
   "scene.unavailable": "影厅暂时无法显示",
   "scene.retry": "重试进入影厅",
   "scene.lookAround": "拖动或按方向键转头",
-  "scene.screen": "荧幕"
+  "scene.screen": "荧幕",
+  "options.lyricRenderScaleHint": "调整支持此设置的歌词样式的像素密度。",
+  "options.lyricRenderScaleStyleHint": "全局分辨率：{{value}}",
+  "options.lyricRenderAntialias": "抗锯齿",
+  "options.lyricRenderAntialiasHint": "自动使用各样式的默认值。",
+  "options.lyricRenderAntialiasStyleHint": "全局抗锯齿：{{value}}",
+  "options.lyricRenderAntialiasAuto": "自动",
+  "options.lyricRenderAntialiasOn": "开",
+  "options.lyricRenderAntialiasOff": "关"
 }

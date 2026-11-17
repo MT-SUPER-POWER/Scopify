@@ -124,6 +124,7 @@ export const applyHanabiLayerFrame = (
         quality: 3,
         resolution: blurResolution,
       });
+      entry.blur.antialias = "inherit";
     }
     entry.blur.strength = frame.blur;
     if (!entry.holder.filters?.includes(entry.blur)) {

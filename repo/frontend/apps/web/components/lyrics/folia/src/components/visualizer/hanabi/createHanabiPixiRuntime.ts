@@ -1,7 +1,8 @@
 // Copyright (c) 2026 chthollyphile
 import type { MotionValue } from "framer-motion";
 import type { Container } from "pixi.js";
-import type { Theme } from "../../../types";
+import type { LyricRenderScale, Theme } from "../../../types";
+import { resolveLyricPixelRatio } from "../../../utils/lyricRenderQuality";
 import { resolveLucideIconNames } from "../../../services/lucideIconResolver";
 import { loadPixi } from "@/lib/lyrics/folia/loadPixi";
 import { destroyPixiContainerChildren } from "../pixiDisplayResources";
@@ -18,7 +19,13 @@ import {
 } from "./hanabiSceneEntry";
 import { resolveHanabiSceneFrames } from "./hanabiSceneFrames";
 import { HanabiSkyLayer } from "./hanabiSky";
-import { changedHanabiKeys, HANABI_OVERLAY_KEYS, requiresHanabiSceneRebuild } from "./hanabiTuning";
+import {
+  changedHanabiKeys,
+  HANABI_OVERLAY_KEYS,
+  requiresHanabiSceneRebuild,
+  resolveHanabiBaseResolution,
+} from "./hanabiTuning";
+import { setHanabiGlyphTextureLimit } from "./text/glyphs";
 import { createBloomFilter, type BloomFilter } from "../pixi/bloomFilter";
 import { resolveHanabiChorusWeight, resolveHanabiScreenBloomStrength } from "./hanabiScreenBloom";
 import { createHanabiTextures } from "./mg/textures";
@@ -43,6 +50,8 @@ export interface HanabiRuntimeOptions {
   host: HTMLDivElement;
   song: HanabiSongContext;
   tuning: HanabiTuning;
+  renderScale: LyricRenderScale;
+  antialias: boolean;
   currentTime: MotionValue<number>;
   staticMode: boolean;
   showText: boolean;
@@ -55,14 +64,12 @@ export interface HanabiRuntimeOptions {
 const REBUILD_DEBOUNCE_MS = 220;
 const MIN_WIDTH = 320;
 const MIN_HEIGHT = 240;
-/** 渲染倍率上限：烟花是成千上万的小精灵，3 倍屏上满分辨率只换来更贵的填充。 */
-const MAX_RESOLUTION = 2;
 /** 夜空不透明度到这里以上，配色按深色底算（纸白字、亮色描边）。 */
 const DARK_SKY = 0.5;
 const NIGHT_BACKGROUND = "#0b0d24";
 
-const resolveRenderResolution = (devicePixelRatio: number) =>
-  Math.min(MAX_RESOLUTION, Math.max(1, devicePixelRatio || 1));
+const resolveRenderResolution = (scale: LyricRenderScale) =>
+  resolveLyricPixelRatio(resolveHanabiBaseResolution(window.devicePixelRatio), scale);
 
 export class HanabiPixiRuntime {
   private readonly sceneCache = new PixiSceneCache<HanabiSceneEntry>({
@@ -118,13 +125,13 @@ export class HanabiPixiRuntime {
     const contextOptions = {
       // 画布透明：夜空不透明度小于 1 时 folia 的共享背景要透出来。
       backgroundAlpha: 0,
-      antialias: false,
+      antialias: options.antialias,
       powerPreference: "high-performance",
     } as const;
     const app = new pixi.Application();
     const width = Math.max(options.host.clientWidth, MIN_WIDTH);
     const height = Math.max(options.host.clientHeight, MIN_HEIGHT);
-    const resolution = resolveRenderResolution(window.devicePixelRatio);
+    const resolution = resolveRenderResolution(options.renderScale);
     await app.init({
       width,
       height,
@@ -138,6 +145,10 @@ export class HanabiPixiRuntime {
     if (app.renderer.type !== pixi.RendererType.WEBGL) {
       app.destroy({ removeView: true });
       throw new Error("Hanabi requires WebGL");
+    }
+    if ("gl" in app.renderer) {
+      const { gl } = app.renderer;
+      setHanabiGlyphTextureLimit(gl.getParameter(gl.MAX_TEXTURE_SIZE));
     }
     const runtime = new HanabiPixiRuntime(pixi, options, app);
     runtime.renderResolution = resolution;
@@ -191,7 +202,7 @@ export class HanabiPixiRuntime {
     if (this.destroyed) return false;
     const width = Math.max(this.options.host.clientWidth, MIN_WIDTH);
     const height = Math.max(this.options.host.clientHeight, MIN_HEIGHT);
-    const resolution = resolveRenderResolution(window.devicePixelRatio);
+    const resolution = resolveRenderResolution(this.options.renderScale);
     if (width === this.width && height === this.height && resolution === this.renderResolution)
       return false;
     this.width = width;
@@ -417,6 +428,7 @@ export class HanabiPixiRuntime {
       });
       // 满分辨率：默认 1 时 1.5× / 2× 屏上整层字会先画成 1× 再拉伸，开着辉光时字会糊。
       this.screenBloom.resolution = "inherit";
+      this.screenBloom.antialias = "inherit";
       this.screenBloomArea = new this.pixi.Rectangle();
     }
     this.screenBloom.options.strength = strength;
@@ -503,6 +515,12 @@ export class HanabiPixiRuntime {
     if (changedHanabiKeys(previous, tuning, HANABI_OVERLAY_KEYS) || darkChanged) this.drawOverlay();
     if (requiresHanabiSceneRebuild(previous, tuning) || darkChanged) this.scheduleRebuild();
     if (this.options.paused) this.renderOnce();
+  }
+
+  setRenderScale(renderScale: LyricRenderScale) {
+    if (this.destroyed || this.options.renderScale === renderScale) return;
+    this.options.renderScale = renderScale;
+    if (this.resizeToHost(false) && this.options.paused) this.renderOnce();
   }
 
   setShowText(showText: boolean) {

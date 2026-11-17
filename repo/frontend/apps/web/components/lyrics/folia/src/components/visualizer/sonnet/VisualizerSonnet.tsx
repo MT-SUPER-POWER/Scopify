@@ -9,6 +9,7 @@ import { getLineRenderEndTime } from "../../../utils/lyrics/renderHints";
 import type { VisualizerSharedProps } from "../definition";
 import { useVisualizerPixiHost } from "../../../../../../../hooks/lyrics/useVisualizerPixiHost";
 import { useVisualizerRuntime } from "../runtime";
+import { useLyricRenderQuality } from "../renderQuality/useLyricRenderQuality";
 import { useVisualizerSongCommit } from "../../../../../../../hooks/lyrics/useVisualizerSongCommit";
 import VisualizerShell from "../VisualizerShell";
 import VisualizerSubtitleOverlay from "../VisualizerSubtitleOverlay";
@@ -48,10 +49,17 @@ const VisualizerSonnet: React.FC<VisualizerSharedProps> = (props) => {
     subtitleOverlayOpacity,
     subtitleOverlayBackground,
     background,
+    isPreviewMode,
     sonnetTuning = DEFAULT_SONNET_TUNING,
   } = props;
   const transparentBackground = background?.transparent ?? false;
   const { t } = useTranslation();
+  const { scale: renderScale, antialias: antialiasMode } = useLyricRenderQuality(
+    sonnetTuning.render,
+    isPreviewMode,
+  );
+  const renderScaleRef = useRef(renderScale);
+  renderScaleRef.current = renderScale;
   const hostRef = useRef<HTMLDivElement>(null);
   const pausedRef = useRef(paused);
   pausedRef.current = paused;
@@ -130,6 +138,7 @@ const VisualizerSonnet: React.FC<VisualizerSharedProps> = (props) => {
       currentTime,
       lyricsFontScale,
       sonnetTuning.textureResolution,
+      antialiasMode,
       sonnetTuning.showOnlyText,
       sonnetTuning.showBackgroundDecor,
       staticMode,
@@ -145,6 +154,8 @@ const VisualizerSonnet: React.FC<VisualizerSharedProps> = (props) => {
         program: song.program,
         theme: song.theme,
         tuning: sonnetTuningRef.current,
+        renderScale: renderScaleRef.current,
+        antialiasMode,
         currentTime,
         audioPower,
         audioBands,
@@ -160,6 +171,7 @@ const VisualizerSonnet: React.FC<VisualizerSharedProps> = (props) => {
       runtime.setSongMetadata(latestSongMetadataRef.current);
       // The tuning may have moved on while Pixi was importing or initializing.
       runtime.setTuning(sonnetTuningRef.current);
+      runtime.setRenderScale(renderScaleRef.current);
       // The pause state may have changed while Pixi was importing or initializing.
       runtime.setPaused(pausedRef.current);
       return runtime;
@@ -180,6 +192,10 @@ const VisualizerSonnet: React.FC<VisualizerSharedProps> = (props) => {
   useEffect(() => {
     runtimeRef.current?.setTuning(sonnetTuning);
   }, [sonnetTuning, runtimeRef]);
+
+  useEffect(() => {
+    runtimeRef.current?.setRenderScale(renderScale);
+  }, [renderScale, runtimeRef]);
 
   useEffect(
     () =>

@@ -842,5 +842,13 @@
   "scene.unavailable": "Cinema is unavailable",
   "scene.retry": "Retry cinema",
   "scene.lookAround": "Drag or use the arrow keys to look around",
-  "scene.screen": "Screen"
+  "scene.screen": "Screen",
+  "options.lyricRenderScaleHint": "Adjust the pixel density of supported lyric styles.",
+  "options.lyricRenderScaleStyleHint": "Global resolution: {{value}}",
+  "options.lyricRenderAntialias": "Anti-aliasing",
+  "options.lyricRenderAntialiasHint": "Auto uses each style’s default.",
+  "options.lyricRenderAntialiasStyleHint": "Global anti-aliasing: {{value}}",
+  "options.lyricRenderAntialiasAuto": "Auto",
+  "options.lyricRenderAntialiasOn": "On",
+  "options.lyricRenderAntialiasOff": "Off"
 }

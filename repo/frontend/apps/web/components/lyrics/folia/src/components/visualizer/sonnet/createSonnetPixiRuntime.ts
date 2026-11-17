@@ -2,7 +2,8 @@ import type {
   SonnetSongSwap,
   SonnetStagedScene,
 } from "../../../../../../../types/lyrics/folia/sonnetRuntime";
-import type { Theme } from "../../../types";
+import type { LyricRenderScale, Theme } from "../../../types";
+import { resolveLyricPixelRatio } from "../../../utils/lyricRenderQuality";
 import type {
   SonnetSongContext,
   SonnetIconTextures,
@@ -72,6 +73,13 @@ export const SONNET_SONG_SWAP_MS = 560;
  * most of the way opaque, early enough to leave headroom before the swap at the halfway point.
  */
 const SONNET_SWAP_STAGE_PROGRESS = 0.35;
+
+const resolveRenderResolution = (options: SonnetRuntimeOptions, width: number, height: number) =>
+  snapResolutionToTexturePool(
+    width,
+    height,
+    resolveLyricPixelRatio(options.tuning.textureResolution, options.renderScale),
+  );
 
 // The camera-tracked segments and their focus windows are fixed once a shot is built, so they
 // are worked out on the shot's first frame and reused for the rest of its life (Folia 75804bfa).
@@ -146,9 +154,9 @@ export class SonnetPixiRuntime {
       width,
       height,
       backgroundAlpha: 0,
-      antialias: true,
+      antialias: options.antialiasMode !== "off",
       autoDensity: true,
-      resolution: snapResolutionToTexturePool(width, height, options.tuning.textureResolution),
+      resolution: resolveRenderResolution(options, width, height),
       autoStart: false,
       sharedTicker: false,
       preference: "webgl",
@@ -191,14 +199,16 @@ export class SonnetPixiRuntime {
     if (this.destroyed) return false;
     const width = Math.max(this.options.host.clientWidth, 320);
     const height = Math.max(this.options.host.clientHeight, 240);
-    if (width === this.lastWidth && height === this.lastHeight) return false;
+    const resolution = resolveRenderResolution(this.options, width, height);
+    if (
+      width === this.lastWidth &&
+      height === this.lastHeight &&
+      resolution === this.app.renderer.resolution
+    )
+      return false;
     this.lastWidth = width;
     this.lastHeight = height;
-    this.app.renderer.resize(
-      width,
-      height,
-      snapResolutionToTexturePool(width, height, this.options.tuning.textureResolution),
-    );
+    this.app.renderer.resize(width, height, resolution);
     // Staged against the old viewport, so its layout no longer fits.
     if (this.songSwap?.staged) {
       this.destroyScene(this.songSwap.staged.scene);
@@ -259,7 +269,14 @@ export class SonnetPixiRuntime {
    */
   setTuning(tuning: SonnetRuntimeOptions["tuning"]) {
     if (this.destroyed || this.options.tuning === tuning) return;
+    const previous = this.options.tuning;
     this.options.tuning = tuning;
+    if (
+      (Object.keys(tuning) as Array<keyof typeof tuning>).every(
+        (key) => key === "render" || tuning[key] === previous[key],
+      )
+    )
+      return;
     // Staged against the old tuning, so it can no longer be adopted.
     if (this.songSwap?.staged) {
       this.destroyScene(this.songSwap.staged.scene);
@@ -273,6 +290,12 @@ export class SonnetPixiRuntime {
       this.drawOverlay(this.lastWidth, this.lastHeight);
     }
     if (this.options.paused) this.renderOnce();
+  }
+
+  setRenderScale(renderScale: LyricRenderScale) {
+    if (this.destroyed || this.options.renderScale === renderScale) return;
+    this.options.renderScale = renderScale;
+    if (this.resizeToHost() && this.options.paused) this.renderOnce();
   }
 
   private clearOutroBlur() {
@@ -297,8 +320,9 @@ export class SonnetPixiRuntime {
         strength: 0,
         quality: 2,
         kernelSize: 5,
-        resolution: 0.75,
+        resolution: this.app.renderer.resolution * 0.75,
       });
+      this.outroBlurFilter.antialias = scene.filterAntialias;
       // Shares the scene's filter chain with the post-process vignette, so its padding would
       // grow the shared render frame and drift the vignette outward as the outro blur ramps.
       this.outroBlurFilter.repeatEdgePixels = true;
@@ -457,6 +481,8 @@ export class SonnetPixiRuntime {
         lyricsFontScale: this.options.lyricsFontScale,
         staticMode: this.options.staticMode,
         transparentBackground: this.options.transparentBackground,
+        renderResolution: this.app.renderer.resolution,
+        antialiasMode: this.options.antialiasMode,
       },
       iconTextures,
       song.program.paragraphs[index],

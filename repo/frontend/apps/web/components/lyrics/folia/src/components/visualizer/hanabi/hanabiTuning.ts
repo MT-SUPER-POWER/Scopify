@@ -1,5 +1,6 @@
 // Copyright (c) 2026 chthollyphile
 import { snapResolutionToTexturePool } from "@/lib/lyrics/folia/pixiTextureBudget";
+import { normalizeLyricRenderOverride } from "../../../utils/lyricRenderQuality";
 import { numberWithin } from "../tuningRegistry";
 import { DEFAULT_HANABI_TUNING, type HanabiRenderQuality, type HanabiTuning } from "./types";
 
@@ -11,6 +12,9 @@ import { DEFAULT_HANABI_TUNING, type HanabiRenderQuality, type HanabiTuning } fr
 const COLOR_MODES: HanabiTuning["colorMode"][] = ["theme", "vivid", "mixed"];
 const RENDER_QUALITIES: HanabiRenderQuality[] = ["full", "balanced", "low"];
 
+export const resolveHanabiBaseResolution = (devicePixelRatio: number) =>
+  Math.min(2, Math.max(1, devicePixelRatio || 1));
+
 /** 任何存下来的值 → 完整、合法的 tuning（缺字段走默认，越界钳住）。 */
 export const normalizeHanabiTuning = (raw: unknown): HanabiTuning => {
   const input = {
@@ -19,6 +23,7 @@ export const normalizeHanabiTuning = (raw: unknown): HanabiTuning => {
   };
   const d = DEFAULT_HANABI_TUNING;
   return {
+    render: normalizeLyricRenderOverride(input.render),
     colorMode: COLOR_MODES.includes(input.colorMode) ? input.colorMode : d.colorMode,
     sparkAmount: numberWithin(input.sparkAmount, d.sparkAmount, 0, 2),
     ornamentAmount: numberWithin(input.ornamentAmount, d.ornamentAmount, 0, 2),
@@ -43,6 +48,7 @@ export const normalizeHanabiTuning = (raw: unknown): HanabiTuning => {
 
 /** 每帧现读、改了不用重建场景的字段（夜空、全屏辉光）；画框另由 HANABI_OVERLAY_KEYS 决定是否重画。 */
 const HANABI_LIVE_KEYS: ReadonlyArray<keyof HanabiTuning> = [
+  "render",
   "sky",
   "overlayFrame",
   "bloom",

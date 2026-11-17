@@ -4,6 +4,8 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useTranslation } from "react-i18next";
 
 import { DEFAULT_DIORAMA_TUNING, type Line } from "../../../types";
+import { resolveLyricAntialias, resolveLyricPixelRatio } from "../../../utils/lyricRenderQuality";
+import { useLyricRenderQuality } from "../renderQuality/useLyricRenderQuality";
 import { useVisualizerRuntime } from "../runtime";
 import { type VisualizerSharedProps } from "../definition";
 import VisualizerShell from "../VisualizerShell";
@@ -117,8 +119,16 @@ const VisualizerDiorama: React.FC<VisualizerDioramaProps> = (props) => {
     subtitleContentMode,
     seed,
     dioramaTuning,
+    isPreviewMode,
   } = props;
   const { t } = useTranslation();
+  const quality = useLyricRenderQuality(dioramaTuning?.render, isPreviewMode);
+  const antialias = resolveLyricAntialias(quality.antialias, true);
+  const devicePixelRatio = typeof window === "undefined" ? 1 : window.devicePixelRatio || 1;
+  const dpr: [number, number] | number =
+    quality.scale === 1
+      ? [1, 2]
+      : resolveLyricPixelRatio(Math.min(2, Math.max(1, devicePixelRatio)), quality.scale);
 
   useEffect(() => () => clearDioramaStructuredSurfaceCache(), []);
 
@@ -393,9 +403,10 @@ const VisualizerDiorama: React.FC<VisualizerDioramaProps> = (props) => {
     >
       <div className="absolute inset-0 z-0">
         <Canvas
+          key={antialias ? "antialias" : "no-antialias"}
           camera={{ position: [0, 0.6, 9], fov: 55 }}
-          dpr={[1, 2]}
-          gl={{ alpha: true, antialias: true }}
+          dpr={dpr}
+          gl={{ alpha: true, antialias }}
           style={{ background: "transparent" }}
         >
           <CameraRig

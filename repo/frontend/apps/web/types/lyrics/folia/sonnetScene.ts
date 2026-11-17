@@ -1,4 +1,8 @@
-import type { SonnetTuning, Theme } from "../../../components/lyrics/folia/src/types";
+import type {
+  LyricAntialias,
+  SonnetTuning,
+  Theme,
+} from "../../../components/lyrics/folia/src/types";
 import type {
   SonnetParagraph,
   SonnetShot,
@@ -34,6 +38,7 @@ export interface SceneView {
   shots: ShotView[];
   shotTimeline: SonnetShot[];
   postProcessFilters: import("pixi.js").Filter[];
+  filterAntialias: import("pixi.js").Filter["antialias"];
   transitionBlurFilter: import("pixi.js").BlurFilter | null;
   transitionGlitchEffect: SonnetGlitchEffect | null;
   activeShotIndex: number;
@@ -47,4 +52,6 @@ export interface SonnetSceneBuildOptions {
   lyricsFontScale: number;
   staticMode: boolean;
   transparentBackground: boolean;
+  renderResolution: number;
+  antialiasMode: LyricAntialias;
 }

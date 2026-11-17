@@ -3,6 +3,7 @@ import type {
   LatentBackgroundTuning,
   Line,
   LyricData,
+  LyricRenderQuality,
   MonetBackgroundTuning,
   NomandBackgroundTuning,
   SoraBackgroundTuning,
@@ -60,6 +61,7 @@ export interface FoliaStageSettings {
   themeRecentIds: string[];
   themes: FoliaStageTheme[];
   themeVariant: FoliaThemeVariant;
+  lyricRenderQuality: LyricRenderQuality;
   tunings: VisualizerTuningBundle;
   visualizerOpacity: number;
 }

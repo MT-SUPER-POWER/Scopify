@@ -842,5 +842,13 @@
   "scene.unavailable": "影廳暫時無法顯示",
   "scene.retry": "重試進入影廳",
   "scene.lookAround": "拖曳或按方向鍵轉頭",
-  "scene.screen": "銀幕"
+  "scene.screen": "銀幕",
+  "options.lyricRenderScaleHint": "調整支援此設定的歌詞樣式的像素密度。",
+  "options.lyricRenderScaleStyleHint": "全域解析度：{{value}}",
+  "options.lyricRenderAntialias": "抗鋸齒",
+  "options.lyricRenderAntialiasHint": "自動使用各樣式的預設值。",
+  "options.lyricRenderAntialiasStyleHint": "全域抗鋸齒：{{value}}",
+  "options.lyricRenderAntialiasAuto": "自動",
+  "options.lyricRenderAntialiasOn": "開",
+  "options.lyricRenderAntialiasOff": "關"
 }
