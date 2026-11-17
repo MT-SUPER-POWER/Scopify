@@ -44,6 +44,10 @@ import {
 } from "@/lib/lyrics/subtitleOverlayLayout";
 import { DEFAULT_FACET_BACKGROUND_TUNING } from "@/constants/facetBackground";
 import { DEFAULT_RHINE_BACKGROUND_TUNING } from "@/constants/rhineBackground";
+import {
+  MONET_CUSTOM_DESCRIPTION_MAX_LENGTH,
+  resolveMonetChromeVisibility,
+} from "./folia/monetAppearance";
 
 const NUMERIC_RANGES = {
   "background.rhine.tuning.strength": [0, 2],
@@ -203,7 +207,7 @@ const STRING_ENUMS = {
   "tunings.hanabi.colorMode": ["theme", "vivid", "mixed"],
   "tunings.hanabi.renderQuality": ["full", "balanced", "low"],
   "tunings.monet.audioStyle": ["bar", "line"],
-  "tunings.monet.portraitSource": ["cover", "custom"],
+  "tunings.monet.portraitSource": ["cover", "custom", "none"],
   "tunings.monet.portraitStyle": ["square", "rectangular"],
   "tunings.sonnet.outerFrameMode": ["none", "frame", "full"],
   "tunings.tempera.colorMode": ["duo", "mono", "gradient"],
@@ -429,12 +433,38 @@ function normalizeAgainstSchema<T>(candidate: unknown, schema: T, path: string):
 
   if (isRecord(schema)) {
     const source = isRecord(candidate) ? candidate : {};
-    return Object.fromEntries(
+    const normalized = Object.fromEntries(
       Object.entries(schema).map(([key, value]) => {
         const childPath = path ? `${path}.${key}` : key;
         return [key, normalizeAgainstSchema(source[key], value, childPath)];
       }),
-    ) as T;
+    );
+    if (path === "tunings.monet") {
+      const descriptionVisibility = resolveMonetChromeVisibility(
+        source.descriptionVisibility,
+        source.showDescription,
+        resolveMonetChromeVisibility(schema.descriptionVisibility, schema.showDescription),
+      );
+      const portraitHangerVisibility = resolveMonetChromeVisibility(
+        source.portraitHangerVisibility,
+        source.showPortraitDragHanger,
+        resolveMonetChromeVisibility(
+          schema.portraitHangerVisibility,
+          schema.showPortraitDragHanger,
+        ),
+      );
+      normalized.descriptionVisibility = descriptionVisibility;
+      normalized.showDescription = descriptionVisibility !== "hidden";
+      normalized.portraitHangerVisibility = portraitHangerVisibility;
+      normalized.showPortraitDragHanger = portraitHangerVisibility !== "hidden";
+      if (typeof normalized.customDescription === "string") {
+        normalized.customDescription = normalized.customDescription.slice(
+          0,
+          MONET_CUSTOM_DESCRIPTION_MAX_LENGTH,
+        );
+      }
+    }
+    return normalized as T;
   }
 
   return schema;

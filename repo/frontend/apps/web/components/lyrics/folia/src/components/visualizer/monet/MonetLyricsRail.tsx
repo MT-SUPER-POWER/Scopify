@@ -4,6 +4,7 @@ import type { Theme, AudioBands, Line, SubtitleContentMode } from "../../../type
 import { SECONDARY_TRACK_OPACITY } from "../../../utils/lyrics/subtitleTrackStyle";
 import type { GraphemeTiming } from "../../../utils/lyrics/graphemeTiming";
 import { getLineRenderEndTime } from "../../../utils/lyrics/renderHints";
+import { resolveLyricTextDirection } from "../../../utils/lyrics/textDirection";
 import { useFontsEpoch } from "../../../hooks/useFontsEpoch";
 import { colorWithAlpha, mixColors } from "../colorMix";
 import {
@@ -50,6 +51,7 @@ interface MonetLyricsRailProps {
   onLyricLineSeek?: (lyricTimeSec: number) => void;
   seekDisabled?: boolean;
   layoutScale?: number;
+  alignEnd?: boolean;
 }
 
 interface MonetRailSize {
@@ -390,9 +392,9 @@ const getClippedTextMask = (isClipped: boolean, contentBottomPx: number, fadePx:
   return `linear-gradient(180deg, black 0px, black ${solidEndPx}px, transparent ${contentBottomPx}px)`;
 };
 
-const getEdgeFadeMask = (isOverflowing: boolean, fadePx: number) =>
+const getEdgeFadeMask = (isOverflowing: boolean, fadePx: number, rtl: boolean) =>
   isOverflowing
-    ? `linear-gradient(90deg, black 0%, black calc(100% - ${fadePx}px), transparent 100%)`
+    ? `linear-gradient(${rtl ? 270 : 90}deg, black 0%, black calc(100% - ${fadePx}px), transparent 100%)`
     : undefined;
 
 const composeLineMasks = (...masks: (string | undefined)[]) => {
@@ -421,6 +423,7 @@ const MonetTimedTokenSpan: React.FC<{
   chorusAccentColor?: string;
   audioPower?: MotionValue<number>;
   renderStaticPassed?: boolean;
+  rtl: boolean;
 }> = ({
   entry,
   currentTime,
@@ -433,6 +436,7 @@ const MonetTimedTokenSpan: React.FC<{
   chorusAccentColor,
   audioPower,
   renderStaticPassed = false,
+  rtl,
 }) => {
   const lineRenderEndTime = useMemo(() => getLineRenderEndTime(entry.line), [entry.line]);
   const tokens = useMemo(() => buildMonetDisplayTokens(entry.line), [entry.line]);
@@ -483,6 +487,7 @@ const MonetTimedTokenSpan: React.FC<{
             fontsEpoch={fontsEpoch}
             isChorus={isChorus}
             audioPower={audioPower}
+            rtl={rtl}
           />
         ) : (
           <span key={token.key} style={{ color: entry.tone.baseColor }}>
@@ -509,6 +514,7 @@ const MonetWordSweep: React.FC<{
   fontsEpoch: number;
   isChorus?: boolean;
   audioPower?: MotionValue<number>;
+  rtl: boolean;
 }> = ({
   text,
   startTime,
@@ -524,7 +530,9 @@ const MonetWordSweep: React.FC<{
   fontsEpoch,
   isChorus,
   audioPower,
+  rtl,
 }) => {
+  const sweepAngle = rtl ? 270 : 90;
   const isLineActive = lineStatus === "active";
   const canRenderGlow = lineStatus === "active" || lineStatus === "passed";
   const graphemeOffsets = useMemo(
@@ -597,12 +605,12 @@ const MonetWordSweep: React.FC<{
     const solidEnd = Math.max(latest - edgeSoftness, 0);
     const featherStart = Math.max(latest - edgeSoftness * 0.55, 0);
     const featherEnd = Math.max(latest, 0);
-    return `linear-gradient(90deg, rgba(0, 0, 0, 1) 0px, rgba(0, 0, 0, 1) ${solidEnd}px, rgba(0, 0, 0, 0.92) ${featherStart}px, rgba(0, 0, 0, 0) ${featherEnd}px, rgba(0, 0, 0, 0) 100%)`;
+    return `linear-gradient(${sweepAngle}deg, rgba(0, 0, 0, 1) 0px, rgba(0, 0, 0, 1) ${solidEnd}px, rgba(0, 0, 0, 0.92) ${featherStart}px, rgba(0, 0, 0, 0) ${featherEnd}px, rgba(0, 0, 0, 0) 100%)`;
   });
 
   const fillGradient = useTransform(wordProgress, (progress) => {
     const color = mixColors(baseColor, wordColor, Math.min(progress, 1));
-    return `linear-gradient(90deg, ${color} 0%, ${colorWithAlpha(color, 0.92)} 68%, ${colorWithAlpha(color, 0.72)} 100%)`;
+    return `linear-gradient(${sweepAngle}deg, ${color} 0%, ${colorWithAlpha(color, 0.92)} 68%, ${colorWithAlpha(color, 0.72)} 100%)`;
   });
 
   const resolvedBaseColor = useTransform(wordStatus, (status) =>
@@ -699,6 +707,7 @@ const MonetRailLine: React.FC<{
   canSeek?: boolean;
   disableEntryMotion?: boolean;
   renderStaticPassed?: boolean;
+  alignEnd: boolean;
 }> = ({
   entry,
   currentTime,
@@ -715,10 +724,13 @@ const MonetRailLine: React.FC<{
   canSeek = false,
   disableEntryMotion = false,
   renderStaticPassed = false,
+  alignEnd,
 }) => {
   const initialOffset = entry.offset >= 0 ? 34 : -34;
   const exitOffset = entry.status === "passed" || entry.offset < 0 ? -38 : 38;
   const isActiveLine = entry.status === "active";
+  const rtl = resolveLyricTextDirection(entry.line.fullText) === "rtl";
+  const flushRight = rtl || alignEnd;
   const textMask = isActiveLine
     ? undefined
     : getClippedTextMask(
@@ -729,6 +741,7 @@ const MonetRailLine: React.FC<{
   const textEdgeMask = getEdgeFadeMask(
     entry.layout.isTextOverflowingWidth,
     Math.max(lyricFontPx * 0.9, 24),
+    flushRight,
   );
   const textMaskStyle = composeLineMasks(textMask, textEdgeMask);
   const handleSeek = (event: React.MouseEvent | React.KeyboardEvent) => {
@@ -792,7 +805,7 @@ const MonetRailLine: React.FC<{
         left: `${glowBufferPx}px`,
         right: `${glowBufferPx}px`,
         height: entry.layout.visualHeightPx,
-        transformOrigin: "left top",
+        transformOrigin: flushRight ? "right top" : "left top",
         zIndex: entry.tone.zIndex,
       }}
     >
@@ -812,6 +825,7 @@ const MonetRailLine: React.FC<{
         />
       )}
       <div
+        dir={rtl ? "rtl" : "ltr"}
         className="min-w-0 overflow-hidden"
         style={{
           marginLeft: `-${glowBufferPx}px`,
@@ -829,6 +843,7 @@ const MonetRailLine: React.FC<{
           fontWeight: entry.tone.fontWeight,
           lineHeight: `${entry.layout.lineHeightPx}px`,
           letterSpacing: 0,
+          textAlign: flushRight ? "right" : "left",
           ...textMaskStyle,
           textShadow:
             entry.status === "active"
@@ -848,6 +863,7 @@ const MonetRailLine: React.FC<{
           chorusAccentColor={theme.accentColor}
           audioPower={audioPower}
           renderStaticPassed={renderStaticPassed}
+          rtl={rtl}
         />
       </div>
       {entry.layout.subtitleTracks.map((track, trackIndex) => {
@@ -857,6 +873,7 @@ const MonetRailLine: React.FC<{
         return (
           <motion.div
             key={track.role}
+            dir="auto"
             data-subtitle-track={track.role}
             className="min-w-0 overflow-hidden wrap-break-word whitespace-pre-wrap"
             initial={{ opacity: 0, y: 8 }}
@@ -879,6 +896,7 @@ const MonetRailLine: React.FC<{
                 theme.primaryColor,
                 trackIndex > 0 ? 0.68 * SECONDARY_TRACK_OPACITY : 0.68,
               ),
+              textAlign: flushRight ? "right" : "left",
               fontFamily: translationFontStack,
               fontSize: track.fontPx,
               fontWeight: track.fontWeight,
@@ -919,6 +937,7 @@ const MonetLyricsRail: React.FC<MonetLyricsRailProps> = ({
   onLyricLineSeek,
   seekDisabled = false,
   layoutScale = 1,
+  alignEnd = false,
 }) => {
   const railRef = useRef<HTMLDivElement | null>(null);
   const layoutCacheRef = useRef<MonetLayoutCache>(new Map());
@@ -1164,7 +1183,7 @@ const MonetLyricsRail: React.FC<MonetLyricsRailProps> = ({
       style={{
         height: `clamp(280px, 52vh, ${railMaxHeightPx}px)`,
         maxWidth: `${railMaxWidthPx}px`,
-        marginLeft: `-${glowBufferPx}px`,
+        marginLeft: alignEnd ? "auto" : `-${glowBufferPx}px`,
         marginRight: `-${glowBufferPx}px`,
         paddingLeft: `${glowBufferPx}px`,
         paddingRight: `${glowBufferPx}px`,
@@ -1197,12 +1216,13 @@ const MonetLyricsRail: React.FC<MonetLyricsRailProps> = ({
               canSeek={canSeek}
               disableEntryMotion={isManualScrolling}
               renderStaticPassed={isManualScrolling && entry.index !== currentLineIndex}
+              alignEnd={alignEnd}
             />
           ))}
         </AnimatePresence>
       ) : emptyText ? (
         <div
-          className="absolute top-1/2 left-0 -translate-y-1/2 font-semibold"
+          className={`absolute top-1/2 -translate-y-1/2 font-semibold ${alignEnd ? "right-0" : "left-0"}`}
           style={{
             color: theme.primaryColor,
             fontSize: "clamp(1.8rem, 4.2vw, 3.2rem)",
