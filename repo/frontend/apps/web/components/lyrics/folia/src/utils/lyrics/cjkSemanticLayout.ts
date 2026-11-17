@@ -53,7 +53,6 @@ interface WordSegment {
 }
 
 const CJK_REGEX = /[\u4e00-\u9fa5\u3040-\u30ff\uac00-\ud7af]/;
-const WHITESPACE_REGEX = /^\s+$/;
 const APOSTROPHE_ONLY_REGEX = /^['’]\s*$/;
 const CONTRACTION_SUFFIX_REGEX = /^(s|t|m|d|ll|re|ve|em)\s*$/i;
 const DIRECT_CONTRACTION_REGEX = /^['’](s|t|m|d|ll|re|ve|em)\s*$/i;
@@ -147,31 +146,43 @@ const hasAttachedTrailingPunctuation = (unit: LyricLayoutUnit) => {
 const hasInlineContraction = (unit: LyricLayoutUnit) =>
   unit.words.length > 1 && !unit.isSemantic && INLINE_CONTRACTION_REGEX.test(unit.text);
 
-// Maps Intl.Segmenter output back onto parser words.
-// If any segment cannot be aligned exactly, callers fall back to one-word units instead of guessing.
+const stripWhitespace = (text: string) => text.replace(/\s+/g, "");
+
+// Segmenter emits whitespace separately, while timed words can carry it with their syllable.
+// Align visible text and keep each word's original text and timing in the resulting unit.
 const mapSegmentsToWords = (segments: WordSegment[], words: Word[]): LyricLayoutUnit[] | null => {
   const units: LyricLayoutUnit[] = [];
   let wordIndex = 0;
 
+  const absorbWhitespaceWords = () => {
+    const previous = units[units.length - 1];
+    // Leading spaces have no previous unit and are collected by the first segment.
+    while (previous && wordIndex < words.length && !stripWhitespace(words[wordIndex].text)) {
+      appendWordsToUnit(previous, words[wordIndex].text, [words[wordIndex]]);
+      wordIndex += 1;
+    }
+  };
+
   for (const segment of segments) {
-    const segmentText = segment.segment;
-    if (!segmentText || WHITESPACE_REGEX.test(segmentText)) {
+    const segmentKey = stripWhitespace(segment.segment);
+    if (!segmentKey) {
       continue;
     }
 
+    absorbWhitespaceWords();
     const startWordIndex = wordIndex;
-    let collectedText = "";
+    let collectedKey = "";
 
-    while (wordIndex < words.length && collectedText.length < segmentText.length) {
-      collectedText += words[wordIndex].text;
+    while (wordIndex < words.length && collectedKey.length < segmentKey.length) {
+      collectedKey += stripWhitespace(words[wordIndex].text);
       wordIndex += 1;
 
-      if (!segmentText.startsWith(collectedText)) {
+      if (!segmentKey.startsWith(collectedKey)) {
         return null;
       }
     }
 
-    if (collectedText !== segmentText) {
+    if (collectedKey !== segmentKey) {
       return null;
     }
 
@@ -182,20 +193,23 @@ const mapSegmentsToWords = (segments: WordSegment[], words: Word[]): LyricLayout
       return null;
     }
 
+    const segmentText = segmentWords.map((word) => word.text).join("");
     if (!segment.isWordLike && units.length > 0) {
       appendWordsToUnit(units[units.length - 1], segmentText, segmentWords);
       continue;
     }
 
+    const visibleWordCount = segmentWords.filter((word) => stripWhitespace(word.text)).length;
     units.push({
       text: segmentText,
       words: segmentWords,
       startTime: firstWord.startTime,
       endTime: lastWord.endTime,
-      isSemantic: Boolean(segment.isWordLike && hasCjkText(segmentText) && segmentWords.length > 1),
+      isSemantic: Boolean(segment.isWordLike && hasCjkText(segmentText) && visibleWordCount > 1),
     });
   }
 
+  absorbWhitespaceWords();
   if (wordIndex !== words.length || units.length === 0) {
     return null;
   }
