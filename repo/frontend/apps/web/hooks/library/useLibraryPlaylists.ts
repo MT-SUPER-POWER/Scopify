@@ -1,7 +1,9 @@
 "use client";
 
+import type { MusicAccountRef } from "@scopify/music-domain/identity";
 import type { MusicLibraryPlaylist } from "@scopify/music-domain/library";
-import { useQuery } from "@tanstack/react-query";
+import type { MusicProviderClient } from "@scopify/music-domain/provider";
+import { queryOptions, useQuery } from "@tanstack/react-query";
 
 import { useLibraryAccount } from "@/hooks/library/useLibraryAccount";
 import { throwQueryErrorWithoutData } from "@/lib/query/errorPolicy";
@@ -11,18 +13,26 @@ import { musicQueryKeys } from "@/lib/query/queryKeys";
  * The signed-in account's playlists on the active platform, read through its library source.
  * The key names the platform and the account, so a switch of either never shows the other's.
  */
-export function useLibraryPlaylistsQuery(throwOnError = false) {
-  const { account, provider } = useLibraryAccount();
-  const enabled = account !== null && provider.capabilities.has("library.playlists");
-  return useQuery({
-    enabled,
+export function libraryPlaylistsOptions(
+  provider: MusicProviderClient,
+  account: MusicAccountRef | null,
+) {
+  return queryOptions({
     queryKey: musicQueryKeys.library.playlists(provider.provider, account?.accountId ?? ""),
-    throwOnError: throwOnError ? throwQueryErrorWithoutData : false,
     meta: { persist: true, scope: "account" },
     queryFn: ({ signal }): Promise<MusicLibraryPlaylist[]> => {
       if (!account) throw new Error("Missing account.");
       return provider.getLibraryPlaylists(account, { signal });
     },
+  });
+}
+
+export function useLibraryPlaylistsQuery(throwOnError = false) {
+  const { account, provider } = useLibraryAccount();
+  return useQuery({
+    ...libraryPlaylistsOptions(provider, account),
+    enabled: account !== null && provider.capabilities.has("library.playlists"),
+    throwOnError: throwOnError ? throwQueryErrorWithoutData : false,
   });
 }
 

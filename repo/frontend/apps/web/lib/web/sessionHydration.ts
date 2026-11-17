@@ -45,6 +45,7 @@ export async function syncUserSessionFromCookie(force = false): Promise<boolean>
 
   try {
     const res = await getUserAccount();
+    if (getMusicSessionCredential() !== credential) return false;
     const account = res.data;
     if (account.code !== 200) {
       lastAttemptedFailed = true;
@@ -65,6 +66,7 @@ export async function syncUserSessionFromCookie(force = false): Promise<boolean>
       // 容错：降级使用 account.profile
     }
 
+    if (getMusicSessionCredential() !== credential) return false;
     if (!profile) {
       lastAttemptedFailed = true;
       return false;

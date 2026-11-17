@@ -1,34 +1,48 @@
 "use client";
 
-import type { MusicResourceRef } from "@scopify/music-domain/identity";
-import { useQuery } from "@tanstack/react-query";
+import type { MusicAccountRef, MusicResourceRef } from "@scopify/music-domain/identity";
+import type { MusicProviderClient } from "@scopify/music-domain/provider";
+import { queryOptions, useQuery } from "@tanstack/react-query";
 import { useCallback, useMemo } from "react";
 
 import { useLibraryAccount } from "@/hooks/library/useLibraryAccount";
 import { musicQueryKeys } from "@/lib/query/queryKeys";
+import { getMusicSessionCredential } from "@/lib/web/musicSessionCredential";
 import { useUserStore } from "@/store/module/user";
 
 /**
  * The IDs of the tracks the account liked on the active platform. NetEase keeps mirroring them
  * into the user store, which its search, artist and queue entry points still read.
  */
-export function useLikedTrackIdsQuery() {
-  const { account, provider } = useLibraryAccount();
-  return useQuery({
-    enabled: account !== null && provider.capabilities.has("track.like"),
+export function likedTrackIdsOptions(
+  provider: MusicProviderClient,
+  account: MusicAccountRef | null,
+) {
+  return queryOptions({
     queryKey: musicQueryKeys.library.likedTrackIds(provider.provider, account?.accountId ?? ""),
     meta: { scope: "account" },
     queryFn: async ({ signal }): Promise<string[]> => {
       if (!account) throw new Error("Missing account.");
+      const credential = provider.provider === "netease" ? getMusicSessionCredential() : null;
       const ids = await provider.getLikedTrackIds(account, { signal });
       if (
-        provider.provider === "netease" &&
+        credential &&
+        getMusicSessionCredential() === credential &&
+        !signal.aborted &&
         String(useUserStore.getState().user?.userId) === account.accountId
       ) {
         useUserStore.getState().setLikeListIDs(ids.map(Number));
       }
       return ids;
     },
+  });
+}
+
+export function useLikedTrackIdsQuery() {
+  const { account, provider } = useLibraryAccount();
+  return useQuery({
+    ...likedTrackIdsOptions(provider, account),
+    enabled: account !== null && provider.capabilities.has("track.like"),
   });
 }
 

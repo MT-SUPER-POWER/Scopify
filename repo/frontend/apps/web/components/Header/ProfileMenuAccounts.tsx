@@ -1,5 +1,6 @@
 "use client";
 
+import { RefreshCw } from "lucide-react";
 import Image from "next/image";
 import { useTranslation } from "react-i18next";
 import {
@@ -9,6 +10,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { ProviderLogo } from "@/components/provider/ProviderLogo";
 import { useProviderAccounts } from "@/hooks/auth/useProviderAccounts";
+import { useSyncAccountData } from "@/hooks/auth/useSyncAccountData";
 import { useSmartRouter } from "@/hooks/core/useSmartRouter";
 import { useSwitchProvider } from "@/hooks/provider/useSwitchProvider";
 import { openLoginForPlatform } from "@/lib/auth/loginPlatform";
@@ -27,6 +29,7 @@ export function ProfileMenuAccounts() {
   const { t } = useTranslation();
   const smartRouter = useSmartRouter();
   const accounts = useProviderAccounts();
+  const { isSyncing, syncingProvider, syncAccountData } = useSyncAccountData();
   const activeProvider = useActiveProviderStore((state) => state.activeProvider);
   const switchProvider = useSwitchProvider();
 
@@ -39,6 +42,8 @@ export function ProfileMenuAccounts() {
         const isActive = account.provider === activeProvider;
         const platformName = t(PLATFORM_LABEL_KEYS[account.provider]);
         const name = account.profile?.nickname || t("profile.accounts.signedIn");
+        const syncing = syncingProvider === account.provider;
+        const syncLabel = t(syncing ? "profile.menu.syncing" : "profile.menu.syncData");
         return (
           <div
             key={account.provider}
@@ -82,7 +87,20 @@ export function ProfileMenuAccounts() {
                 </span>
               </button>
             </DropdownMenuItem>
-            {!account.isLoggedIn && (
+            {account.isLoggedIn ? (
+              <DropdownMenuItem
+                aria-label={`${syncLabel} · ${platformName}`}
+                className="mr-3 shrink-0 cursor-pointer gap-1.5 rounded-full px-3 py-1 text-xs"
+                disabled={isSyncing}
+                onSelect={(event) => {
+                  event.preventDefault();
+                  syncAccountData(account.provider);
+                }}
+              >
+                <RefreshCw aria-hidden className={cn("size-3", syncing && "animate-spin")} />
+                <span>{syncLabel}</span>
+              </DropdownMenuItem>
+            ) : (
               <DropdownMenuItem
                 asChild
                 className="mr-3 shrink-0 cursor-pointer rounded-full bg-brand px-3 py-1 text-xs font-medium text-brand-foreground focus:bg-brand-hover focus:text-brand-foreground focus:ring-2 focus:ring-content"

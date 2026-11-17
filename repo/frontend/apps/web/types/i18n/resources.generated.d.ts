@@ -1929,8 +1929,12 @@ export default interface Resources {
     "menu.settings": "设置";
     "menu.signIn": "签到";
     "menu.signToday": "今日";
+    "menu.syncData": "同步账号数据";
+    "menu.syncing": "正在同步…";
     "menu.viewMonthlySign": "查看月签";
     "menu.vipSign": "网易云签到";
+    "toast.syncFailed": "同步账号数据失败";
+    "toast.syncSuccess": "账号数据已同步";
     "toast.updateFailed": "更新个人信息失败";
     "toast.updateSuccess": "个人信息已更新";
   };
