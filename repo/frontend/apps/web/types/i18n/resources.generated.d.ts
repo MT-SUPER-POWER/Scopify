@@ -1476,6 +1476,15 @@ export default interface Resources {
     "match.selectCandidate": "选择一首歌曲以预览歌词";
     "match.sourceNetease": "网易云音乐";
     "match.title": "匹配歌词";
+    "segmentation.automatic": "本地自动分词";
+    "segmentation.boundary": "在第 {{index}} 个字符后分词";
+    "segmentation.empty": "当前歌曲没有可分词的歌词。";
+    "segmentation.hint": "点击字之间的分隔线调整词语边界。";
+    "segmentation.line": "歌词行";
+    "segmentation.loadFailed": "无法加载歌词分词";
+    "segmentation.reset": "恢复默认分词";
+    "segmentation.saveFailed": "保存分词失败";
+    "segmentation.title": "歌词分词";
     "tab.clear": "清除歌词覆盖";
     "tab.clearFailed": "还原在线歌词失败";
     "tab.cleared": "已还原在线歌词";

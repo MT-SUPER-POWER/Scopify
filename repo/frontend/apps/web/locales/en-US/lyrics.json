@@ -36,5 +36,14 @@
   "tab.importFailed": "Could not import the lyric file",
   "tab.sourceChangeFailed": "Could not change the lyrics source",
   "tab.cleared": "Online lyrics restored",
-  "tab.clearFailed": "Could not restore online lyrics"
+  "tab.clearFailed": "Could not restore online lyrics",
+  "segmentation.title": "Lyric segmentation",
+  "segmentation.automatic": "Automatic local segmentation",
+  "segmentation.line": "Lyric line",
+  "segmentation.hint": "Select the dividers between characters to adjust word boundaries.",
+  "segmentation.boundary": "Word boundary after character {{index}}",
+  "segmentation.empty": "No lyrics to segment for the current track.",
+  "segmentation.saveFailed": "Couldn't save segmentation",
+  "segmentation.loadFailed": "Couldn't load segmentation",
+  "segmentation.reset": "Reset word boundaries"
 }

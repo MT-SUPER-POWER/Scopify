@@ -15,9 +15,12 @@ import { FoliaPopover } from "@scopify/ui/scopify/components/folia-panel/popover
 import { useOnlineLyricsTab } from "@/hooks/lyrics/useOnlineLyricsTab";
 import { useTranslation } from "react-i18next";
 
+import { useLyricStageStore } from "@/store/module/lyrics";
 import { usePlayerStore } from "@/store/module/player";
 import type { FoliaLyricsControlsProps } from "@/types/lyrics/components";
 import type { ReplayGainMode } from "@/types/player/model";
+
+import { FoliaLyricSegmentationControls } from "./FoliaLyricSegmentationControls";
 
 // The lyrics tab (Folia panelTab/SourceTab.tsx, LyricTimelineOffsetControl.tsx, LyricFileButton.tsx,
 // ReplayGainControl.tsx): where the lyrics come from, the timeline offset in 250 ms steps, online
@@ -32,6 +35,7 @@ const formatGain = (gain: number) => `${gain > 0 ? "+" : ""}${gain.toFixed(1)} d
 export function FoliaLyricsControls({ onOpenLyricMatch }: FoliaLyricsControlsProps) {
   const { t } = useTranslation();
   const model = useOnlineLyricsTab();
+  const isHanabi = useLyricStageStore((state) => state.mode === "hanabi");
   const inputRef = useRef<HTMLInputElement>(null);
   const fileButtonRef = useRef<HTMLButtonElement>(null);
   const [isFileMenuOpen, setIsFileMenuOpen] = useState(false);
@@ -169,6 +173,8 @@ export function FoliaLyricsControls({ onOpenLyricMatch }: FoliaLyricsControlsPro
         ref={inputRef}
         type="file"
       />
+
+      {isHanabi ? <FoliaLyricSegmentationControls /> : null}
 
       <FoliaGroupLine />
 

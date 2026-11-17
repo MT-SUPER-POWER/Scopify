@@ -1,7 +1,11 @@
 // Copyright (c) 2026 chthollyphile
 import type { Line, Word } from "../../../types";
 import { splitLyricGraphemes } from "../../../utils/lyrics/graphemeTiming";
-import { segmentLyricWords } from "../../../utils/lyrics/wordSegmentation";
+import {
+  hasWordSegmentationOverride,
+  isValidWordSegmentation,
+  segmentLyricWords,
+} from "../../../utils/lyrics/wordSegmentation";
 import type { ParagraphKind, StructureLine } from "../paragraphStructure";
 import type { Mood } from "./hanabiKernel";
 import { createRng } from "./hanabiRandom";
@@ -151,6 +155,26 @@ export const segmentHanabiLine = (line: Line): HanabiSegment[] => {
   }));
 };
 
+function sliceWordBoundaries(
+  text: string,
+  boundaries: string[] | undefined,
+  start: number,
+  end: number,
+): string[] | undefined {
+  if (!boundaries || !isValidWordSegmentation(text, boundaries)) return undefined;
+  const slices: string[] = [];
+  let offset = 0;
+  for (const boundary of boundaries) {
+    const next = offset + boundary.length;
+    const from = Math.max(start, offset);
+    const to = Math.min(end, next);
+    if (to > from) slices.push(text.slice(from, to));
+    if (next >= end) break;
+    offset = next;
+  }
+  return slices;
+}
+
 /** 一行在 [start, end) 这段文字上的切片：词按偏移裁开，时间按比例分配。整行时原样返回。 */
 export const sliceLine = (line: Line, startOffset: number, endOffset: number): Line => {
   const text = line.fullText;
@@ -188,6 +212,8 @@ export const sliceLine = (line: Line, startOffset: number, endOffset: number): L
     ...line,
     fullText,
     words,
+    wordSegments: sliceWordBoundaries(text, line.wordSegments, start, end),
+    autoWordSegments: sliceWordBoundaries(text, line.autoWordSegments, start, end),
     startTime: words[0]!.startTime,
     endTime: words.at(-1)!.endTime,
     translation: undefined,
@@ -216,10 +242,23 @@ export const shotLine = (
     }
     words.push(...part.words);
   });
+  const hasManual = parts.some(hasWordSegmentationOverride);
+  const hasAutomatic = parts.some((part) =>
+    isValidWordSegmentation(part.fullText, part.autoWordSegments),
+  );
+  const boundaries =
+    hasManual || hasAutomatic
+      ? parts.flatMap((part, index) => [
+          ...(index > 0 ? [" "] : []),
+          ...segmentLyricWords(part).map(({ segment }) => segment),
+        ])
+      : undefined;
   return {
     ...parts[0]!,
-    fullText: words.map((word) => word.text).join(""),
+    fullText: boundaries?.join("") ?? words.map((word) => word.text).join(""),
     words,
+    wordSegments: hasManual ? boundaries : undefined,
+    autoWordSegments: hasManual ? undefined : boundaries,
     startTime: parts[0]!.startTime,
     endTime: Math.max(...parts.map((part) => part.endTime)),
   };
