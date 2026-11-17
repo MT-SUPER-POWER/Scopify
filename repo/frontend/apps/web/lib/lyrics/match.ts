@@ -1,9 +1,58 @@
-import type { SongSearchResource } from "@/types/search/api";
+import type { SongSearchArtist, SongSearchResource } from "@/types/search/api";
 import type { NeteaseLyric, SongDetail } from "@/types/song/api";
 import type { LyricMatchCandidate } from "@/types/lyrics/model";
 
 export function buildLyricMatchQuery(song: SongDetail): string {
-  return [song.name, song.ar.map((artist) => artist.name).join(" ")].filter(Boolean).join(" ");
+  return [song.name, ...song.ar.map((artist) => artist.name)].filter(Boolean).join(" ").trim();
+}
+
+const NON_LATIN_LETTER = /[^\p{Script=Latin}\p{Script=Common}\p{Script=Inherited}]/u;
+const LATIN_LETTER = /\p{Script=Latin}/u;
+const INSTRUMENTAL_MARKER = /instrumental|\binst\b|off\s*vocal|karaoke|伴奏|カラオケ|インスト/iu;
+
+function alternateArtistName(artist: SongSearchArtist): string {
+  const name = typeof artist.name === "string" ? artist.name.trim() : "";
+  if (!name) return name;
+  const wantsLatin = NON_LATIN_LETTER.test(name);
+  const aliases = [
+    ...(Array.isArray(artist.tns) ? artist.tns : []),
+    ...(Array.isArray(artist.alias) ? artist.alias : []),
+  ];
+  const alternate = aliases.find((value) => {
+    if (typeof value !== "string" || !value.trim() || value.trim() === name) return false;
+    return wantsLatin
+      ? LATIN_LETTER.test(value) && !NON_LATIN_LETTER.test(value)
+      : NON_LATIN_LETTER.test(value);
+  });
+  return alternate?.trim() ?? name;
+}
+
+/** Offer a second search if the default query has no likely alternative to the playing song. */
+export function buildLyricMatchAliasQuery(
+  song: SongDetail,
+  candidates: LyricMatchCandidate[],
+): string {
+  if (
+    candidates.some(
+      (candidate) => candidate.id !== song.id && getLyricMatchScore(song, candidate) >= 85,
+    )
+  ) {
+    return "";
+  }
+
+  const aliases = candidates.find((candidate) => candidate.id === song.id)?.alternateArtistNames;
+  const artistNames = aliases ?? song.ar.map((artist) => artist.name);
+  const instrumental = INSTRUMENTAL_MARKER.test(song.name);
+  const title = aliases
+    ? song.name
+    : song.alia?.find(
+        (name) =>
+          typeof name === "string" &&
+          name.trim() &&
+          name.trim() !== song.name.trim() &&
+          INSTRUMENTAL_MARKER.test(name) === instrumental,
+      );
+  return title ? [title.trim(), ...artistNames].filter(Boolean).join(" ") : "";
 }
 
 export function mapSongSearchResourceToLyricMatchCandidate(
@@ -12,9 +61,13 @@ export function mapSongSearchResourceToLyricMatchCandidate(
   const song = resource.baseInfo?.simpleSongData;
   if (!song?.id) return null;
 
+  const artists = song.ar ?? [];
+  const artistNames = artists.map((artist) => artist.name).filter(Boolean);
+  const alternateArtistNames = artists.map(alternateArtistName).filter(Boolean);
   return {
     albumName: song.al?.name ?? "",
-    artistNames: song.ar?.map((artist) => artist.name).filter(Boolean) ?? [],
+    ...(alternateArtistNames.join(" ") !== artistNames.join(" ") ? { alternateArtistNames } : {}),
+    artistNames,
     coverUrl: song.al?.picUrl ?? song.al?.blurPicUrl ?? null,
     durationMs: song.dt ?? 0,
     id: song.id,

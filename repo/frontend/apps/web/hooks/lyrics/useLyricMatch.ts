@@ -14,6 +14,7 @@ import {
   setLyricSourceSelection,
 } from "@/lib/cache/playbackCache";
 import {
+  buildLyricMatchAliasQuery,
   buildLyricMatchQuery,
   hasUsableNeteaseLyric,
   sortLyricMatchCandidates,
@@ -27,6 +28,16 @@ import { usePlayerStore } from "@/store/module/player";
 import type { LyricMatchOverride } from "@/types/lyrics/model";
 
 const CANDIDATE_LIMIT = 15;
+
+function matchSearchOptions(keyword: string) {
+  return {
+    queryKey: musicQueryKeys.search.matchCandidates(keyword, CANDIDATE_LIMIT),
+    queryFn: async ({ signal }: { signal: AbortSignal }) =>
+      toLyricMatchCandidates(
+        (await searchSongs(keyword, CANDIDATE_LIMIT, 0, signal)).data?.data?.resources ?? [],
+      ),
+  };
+}
 
 /**
  * 「匹配歌词」：为当前歌曲搜索候选曲目、预览所选曲目的歌词，并把它存为这首歌的歌词。
@@ -63,18 +74,28 @@ export function useLyricMatch(isOpen: boolean) {
   });
 
   const searchQuery = useQuery({
-    queryKey: musicQueryKeys.search.matchCandidates(keyword, CANDIDATE_LIMIT),
-    queryFn: async () =>
-      toLyricMatchCandidates(
-        (await searchSongs(keyword, CANDIDATE_LIMIT)).data?.data?.resources ?? [],
-      ),
+    ...matchSearchOptions(keyword),
     enabled: isOpen && keyword.length > 0,
   });
+  const primaryCandidates = searchQuery.data;
+  const aliasKeyword =
+    song && primaryCandidates && keyword === buildLyricMatchQuery(song)
+      ? buildLyricMatchAliasQuery(song, primaryCandidates)
+      : "";
+  const searchAlias = aliasKeyword.length > 0 && aliasKeyword !== keyword;
+  const aliasQuery = useQuery({
+    ...matchSearchOptions(aliasKeyword),
+    enabled: isOpen && searchAlias,
+  });
+  const aliasCandidates = searchAlias ? aliasQuery.data : undefined;
 
-  const candidates = useMemo(
-    () => sortLyricMatchCandidates(searchQuery.data ?? [], song),
-    [searchQuery.data, song],
-  );
+  const candidates = useMemo(() => {
+    const unique = new Map(primaryCandidates?.map((candidate) => [candidate.id, candidate]));
+    for (const candidate of aliasCandidates ?? []) {
+      if (!unique.has(candidate.id)) unique.set(candidate.id, candidate);
+    }
+    return sortLyricMatchCandidates([...unique.values()], song);
+  }, [aliasCandidates, primaryCandidates, song]);
   // 没手动选过，或选中的那首不在这次结果里时，默认选最匹配的第一首
   const selectedCandidate =
     candidates.find((candidate) => candidate.id === pickedId) ?? candidates[0] ?? null;
@@ -155,8 +176,14 @@ export function useLyricMatch(isOpen: boolean) {
     applyMatch,
     candidates,
     isApplying,
-    isLoading: searchQuery.isFetching,
-    isSearchError: searchQuery.data === undefined && searchQuery.isError,
+    isLoading:
+      candidates.length === 0 && (searchQuery.isFetching || (searchAlias && aliasQuery.isFetching)),
+    isSearchError:
+      (primaryCandidates === undefined && searchQuery.isError) ||
+      (searchAlias &&
+        candidates.length === 0 &&
+        aliasCandidates === undefined &&
+        aliasQuery.isError),
     isPreviewError: previewQuery.data === undefined && previewQuery.isError,
     isPreviewLoading: previewQuery.isFetching && previewQuery.data === undefined,
     isPreviewPureMusic: previewQuery.data?.isPureMusic ?? false,
@@ -165,7 +192,7 @@ export function useLyricMatch(isOpen: boolean) {
     query,
     restoreOriginalLyrics,
     retryPreview: () => void previewQuery.refetch(),
-    retrySearch: () => void searchQuery.refetch(),
+    retrySearch: () => void (searchAlias ? aliasQuery.refetch() : searchQuery.refetch()),
     search,
     selectedCandidate,
     setQuery,
