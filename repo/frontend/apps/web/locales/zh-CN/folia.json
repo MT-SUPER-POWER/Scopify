@@ -762,7 +762,7 @@
   "options.monetAudioVisualizationShow": "显示",
   "options.monetAudioVisualizationHide": "隐藏",
   "options.monetFontScale": "字体缩放",
-  "options.monetShowDescription": "显示歌曲描述",
+  "options.monetShowDescription": "歌曲描述",
   "options.monetGroupBackgroundSource": "背景来源",
   "options.monetGroupLayoutPosition": "布局与对齐",
   "options.monetGroupFiltersPostProcessing": "视觉增强与滤镜",
@@ -935,5 +935,13 @@
   "options.pendoloPresetDefault": "默认",
   "options.pendoloPreset1": "预设 1",
   "options.pendoloPreset2": "预设 2",
-  "options.pendoloPreset3": "预设 3"
+  "options.pendoloPreset3": "预设 3",
+  "options.monetCustomDescription": "自定义描述",
+  "options.monetCustomDescriptionPlaceholder": "留空显示原来的描述",
+  "options.monetChromeVisibilityAuto": "自动隐藏",
+  "options.monetChromeVisibilityAlways": "常显",
+  "options.monetChromeVisibilityHidden": "隐藏",
+  "options.monetMirrorLayout": "歌词左右镜像",
+  "options.monetPortraitSourceMirrored": "左侧肖像来源",
+  "options.monetPortraitSourceNone": "关闭"
 }

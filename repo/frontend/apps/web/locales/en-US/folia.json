@@ -762,7 +762,7 @@
   "options.monetAudioVisualizationShow": "Show",
   "options.monetAudioVisualizationHide": "Hide",
   "options.monetFontScale": "Font Size Scale",
-  "options.monetShowDescription": "Show Song Description",
+  "options.monetShowDescription": "Song Description",
   "options.monetGroupBackgroundSource": "Background Source",
   "options.monetGroupLayoutPosition": "Layout & Position",
   "options.monetGroupFiltersPostProcessing": "Filters & Post-processing",
@@ -935,5 +935,13 @@
   "options.pendoloPresetDefault": "Default",
   "options.pendoloPreset1": "Preset 1",
   "options.pendoloPreset2": "Preset 2",
-  "options.pendoloPreset3": "Preset 3"
+  "options.pendoloPreset3": "Preset 3",
+  "options.monetCustomDescription": "Custom Description",
+  "options.monetCustomDescriptionPlaceholder": "Empty shows the original description",
+  "options.monetChromeVisibilityAuto": "Auto-hide",
+  "options.monetChromeVisibilityAlways": "Always",
+  "options.monetChromeVisibilityHidden": "Hidden",
+  "options.monetMirrorLayout": "Mirror Lyrics Left/Right",
+  "options.monetPortraitSourceMirrored": "Left Portrait Source",
+  "options.monetPortraitSourceNone": "Off"
 }

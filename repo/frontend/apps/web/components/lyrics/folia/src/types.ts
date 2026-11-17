@@ -869,7 +869,8 @@ export type NomandBackgroundEffect =
 export type LatentBackgroundDisplayMode = "dithering" | "mesh" | "both";
 export type LatentBackgroundColorSource = "cover-theme" | "cover-only";
 export type MonetAudioStyle = "bar" | "line";
-export type MonetPortraitSource = "cover" | "custom";
+export type MonetPortraitSource = "cover" | "custom" | "none";
+export type MonetChromeVisibility = "auto" | "always" | "hidden";
 export type BuiltinVisualizerBackgroundMode =
   "common" | "monet" | "nomand" | "latent" | "url" | "sora" | "rhine" | "facet";
 export type VisualizerBackgroundMode = BuiltinVisualizerBackgroundMode | (string & {});
@@ -954,8 +955,10 @@ export interface LatentBackgroundTuning {
 }
 
 export interface MonetTuning {
+  render?: LyricRenderOverride;
   keywordColoringEnabled: boolean;
   showDescription: boolean;
+  descriptionVisibility?: MonetChromeVisibility;
   showAudioVisualization: boolean;
   audioStyle: MonetAudioStyle;
   fontScale: number;
@@ -963,6 +966,9 @@ export interface MonetTuning {
   portraitOffsetX?: number;
   portraitStyle?: "square" | "rectangular";
   showPortraitDragHanger?: boolean;
+  portraitHangerVisibility?: MonetChromeVisibility;
+  mirrorLayout?: boolean;
+  customDescription?: string;
 }
 
 export const DEFAULT_MONET_BACKGROUND_TUNING: MonetBackgroundTuning = {
@@ -1037,8 +1043,10 @@ export const DEFAULT_LATENT_BACKGROUND_TUNING: LatentBackgroundTuning = {
 };
 
 export const DEFAULT_MONET_TUNING: MonetTuning = {
+  render: { scale: "global", antialias: "global" },
   keywordColoringEnabled: true,
   showDescription: true,
+  descriptionVisibility: "auto",
   showAudioVisualization: true,
   audioStyle: "bar",
   fontScale: 1.2,
@@ -1046,6 +1054,9 @@ export const DEFAULT_MONET_TUNING: MonetTuning = {
   portraitOffsetX: 0,
   portraitStyle: "square",
   showPortraitDragHanger: true,
+  portraitHangerVisibility: "auto",
+  mirrorLayout: false,
+  customDescription: "",
 };
 
 export interface StoredCappellaEmojiImage {

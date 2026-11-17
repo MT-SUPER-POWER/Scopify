@@ -1,12 +1,20 @@
+import {
+  MONET_CUSTOM_DESCRIPTION_MAX_LENGTH,
+  resolveMonetChromeVisibility,
+} from "@/lib/lyrics/folia/monetAppearance";
 import React, { useMemo, useRef, useState } from "react";
 import { ImagePlus, Trash2 } from "lucide-react";
 import {
   DEFAULT_MONET_TUNING,
   type MonetAudioStyle,
+  type MonetChromeVisibility,
   type MonetPortraitSource,
 } from "../../../types";
 import { colorWithAlpha } from "../colorMix";
 import { type VisualizerSettingsPanelProps } from "../definition";
+import { DEFAULT_LYRIC_RENDER_OVERRIDE } from "../../../utils/lyricRenderQuality";
+import { LyricRenderQualityRows } from "../renderQuality/LyricRenderQualityRows";
+import { MONET_CHROME_VISIBILITIES, MONET_CHROME_VISIBILITY_KEYS } from "./tuning";
 
 // src/components/visualizer/monet/MonetSettingsPanel.tsx
 // Monet-specific lyric, audio, and portrait controls. Background controls live in the shared background panel.
@@ -158,7 +166,16 @@ export const MonetSettingsPanel: React.FC<VisualizerSettingsPanelProps> = ({
   const resolvedTuning = {
     keywordColoringEnabled:
       monetTuning.keywordColoringEnabled ?? DEFAULT_MONET_TUNING.keywordColoringEnabled,
-    showDescription: monetTuning.showDescription ?? DEFAULT_MONET_TUNING.showDescription,
+    descriptionVisibility: resolveMonetChromeVisibility(
+      monetTuning.descriptionVisibility,
+      monetTuning.showDescription,
+    ),
+    portraitHangerVisibility: resolveMonetChromeVisibility(
+      monetTuning.portraitHangerVisibility,
+      monetTuning.showPortraitDragHanger,
+    ),
+    mirrorLayout: monetTuning.mirrorLayout ?? false,
+    render: monetTuning.render ?? DEFAULT_LYRIC_RENDER_OVERRIDE,
     showAudioVisualization:
       monetTuning.showAudioVisualization ?? DEFAULT_MONET_TUNING.showAudioVisualization,
     audioStyle: monetTuning.audioStyle ?? DEFAULT_MONET_TUNING.audioStyle,
@@ -170,8 +187,6 @@ export const MonetSettingsPanel: React.FC<VisualizerSettingsPanelProps> = ({
     ),
     portraitSource: monetTuning.portraitSource ?? DEFAULT_MONET_TUNING.portraitSource,
     portraitStyle: monetTuning.portraitStyle ?? DEFAULT_MONET_TUNING.portraitStyle ?? "rectangular",
-    showPortraitDragHanger:
-      monetTuning.showPortraitDragHanger ?? DEFAULT_MONET_TUNING.showPortraitDragHanger,
   };
 
   const keywordColoringOptions = useMemo<PresetOption<boolean>[]>(
@@ -181,13 +196,16 @@ export const MonetSettingsPanel: React.FC<VisualizerSettingsPanelProps> = ({
     ],
     [t],
   );
-  const showDescriptionOptions = useMemo<PresetOption<boolean>[]>(
-    () => [
-      { value: true, label: t("folia.options.partitaGuideLinesOn") },
-      { value: false, label: t("folia.options.partitaGuideLinesOff") },
-    ],
-    [t],
+  const visibilityOptions: PresetOption<MonetChromeVisibility>[] = MONET_CHROME_VISIBILITIES.map(
+    (value) => ({
+      value,
+      label: t(MONET_CHROME_VISIBILITY_KEYS[value]),
+    }),
   );
+  const mirrorOptions: PresetOption<boolean>[] = [
+    { value: true, label: t("folia.options.monetPortraitDragHangerShow") },
+    { value: false, label: t("folia.options.monetPortraitDragHangerHide") },
+  ];
   const portraitSourceOptions = useMemo<PresetOption<MonetPortraitSource>[]>(
     () => [
       { value: "cover", label: t("folia.options.monetPortraitSourceCover") },
@@ -196,6 +214,7 @@ export const MonetSettingsPanel: React.FC<VisualizerSettingsPanelProps> = ({
         label: t("folia.options.monetPortraitSourceCustom"),
         disabled: !monetPortraitImage && !isLoadingMonetPortraitImage,
       },
+      { value: "none", label: t("folia.options.monetPortraitSourceNone") },
     ],
     [isLoadingMonetPortraitImage, monetPortraitImage, t],
   );
@@ -220,14 +239,6 @@ export const MonetSettingsPanel: React.FC<VisualizerSettingsPanelProps> = ({
     ],
     [t],
   );
-  const showPortraitDragHangerOptions = useMemo<PresetOption<boolean>[]>(
-    () => [
-      { value: true, label: t("folia.options.monetPortraitDragHangerShow") },
-      { value: false, label: t("folia.options.monetPortraitDragHangerHide") },
-    ],
-    [t],
-  );
-
   const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(event.target.files ?? []);
     event.target.value = "";
@@ -292,9 +303,34 @@ export const MonetSettingsPanel: React.FC<VisualizerSettingsPanelProps> = ({
 
         <PresetGroup
           label={t("folia.options.monetShowDescription")}
-          value={resolvedTuning.showDescription}
-          options={showDescriptionOptions}
-          onChange={(value) => onMonetTuningChange?.({ showDescription: value })}
+          value={resolvedTuning.descriptionVisibility}
+          options={visibilityOptions}
+          onChange={(descriptionVisibility) =>
+            onMonetTuningChange?.({
+              descriptionVisibility,
+              showDescription: descriptionVisibility !== "hidden",
+            })
+          }
+          isDaylight={isDaylight}
+          theme={theme}
+        />
+        {resolvedTuning.descriptionVisibility !== "hidden" && (
+          <label className="block space-y-2 text-sm">
+            <span>{t("folia.options.monetCustomDescription")}</span>
+            <input
+              className="w-full rounded-lg border border-current/20 bg-transparent px-3 py-2"
+              value={monetTuning.customDescription ?? ""}
+              maxLength={MONET_CUSTOM_DESCRIPTION_MAX_LENGTH}
+              placeholder={t("folia.options.monetCustomDescriptionPlaceholder")}
+              onChange={(event) => onMonetTuningChange?.({ customDescription: event.target.value })}
+            />
+          </label>
+        )}
+        <PresetGroup
+          label={t("folia.options.monetMirrorLayout")}
+          value={resolvedTuning.mirrorLayout}
+          options={mirrorOptions}
+          onChange={(mirrorLayout) => onMonetTuningChange?.({ mirrorLayout })}
           isDaylight={isDaylight}
           theme={theme}
         />
@@ -310,7 +346,11 @@ export const MonetSettingsPanel: React.FC<VisualizerSettingsPanelProps> = ({
         </div>
 
         <PresetGroup
-          label={t("folia.options.monetPortraitSource")}
+          label={t(
+            resolvedTuning.mirrorLayout
+              ? "folia.options.monetPortraitSourceMirrored"
+              : "folia.options.monetPortraitSource",
+          )}
           value={resolvedTuning.portraitSource}
           options={portraitSourceOptions}
           onChange={(value) => onMonetTuningChange?.({ portraitSource: value })}
@@ -318,67 +358,82 @@ export const MonetSettingsPanel: React.FC<VisualizerSettingsPanelProps> = ({
           theme={theme}
         />
 
-        <PresetGroup
-          label={t("folia.options.monetPortraitStyle")}
-          value={resolvedTuning.portraitStyle}
-          options={portraitStyleOptions}
-          onChange={(value) => onMonetTuningChange?.({ portraitStyle: value })}
-          isDaylight={isDaylight}
-          theme={theme}
-        />
+        {resolvedTuning.portraitSource !== "none" && (
+          <>
+            <PresetGroup
+              label={t("folia.options.monetPortraitStyle")}
+              value={resolvedTuning.portraitStyle}
+              options={portraitStyleOptions}
+              onChange={(value) => onMonetTuningChange?.({ portraitStyle: value })}
+              isDaylight={isDaylight}
+              theme={theme}
+            />
 
-        <PresetGroup
-          label={t("folia.options.monetPortraitDragHanger")}
-          value={resolvedTuning.showPortraitDragHanger}
-          options={showPortraitDragHangerOptions}
-          onChange={(value) => onMonetTuningChange?.({ showPortraitDragHanger: value })}
-          isDaylight={isDaylight}
-          theme={theme}
-        />
+            <PresetGroup
+              label={t("folia.options.monetPortraitDragHanger")}
+              value={resolvedTuning.portraitHangerVisibility}
+              options={visibilityOptions}
+              onChange={(portraitHangerVisibility) =>
+                onMonetTuningChange?.({
+                  portraitHangerVisibility,
+                  showPortraitDragHanger: portraitHangerVisibility !== "hidden",
+                })
+              }
+              isDaylight={isDaylight}
+              theme={theme}
+            />
 
-        <div className="space-y-2.5">
-          <SectionLabel theme={theme}>{t("folia.options.monetUploadPortrait")}</SectionLabel>
-          <div className="flex flex-wrap items-center gap-2">
-            <button
-              type="button"
-              onClick={() => fileInputRef.current?.click()}
-              disabled={isLoadingMonetPortraitImage || !onUploadMonetPortraitImage}
-              className="inline-flex items-center gap-2 rounded-full border px-3 py-2 text-sm transition-all disabled:cursor-not-allowed disabled:opacity-45"
-              style={{
-                color: theme.primaryColor,
-                borderColor: colorWithAlpha(theme.secondaryColor, isDaylight ? 0.18 : 0.14),
-                backgroundColor: colorWithAlpha(theme.backgroundColor, isDaylight ? 0.24 : 0.34),
-              }}
-            >
-              <ImagePlus size={15} />
-              <span>{t("folia.options.monetUploadPortrait")}</span>
-            </button>
-            <button
-              type="button"
-              onClick={() => void onClearMonetPortraitImage?.()}
-              disabled={!monetPortraitImage || !onClearMonetPortraitImage}
-              className="inline-flex items-center gap-2 rounded-full border px-3 py-2 text-sm transition-all disabled:cursor-not-allowed disabled:opacity-45"
-              style={{
-                color: theme.primaryColor,
-                borderColor: colorWithAlpha(theme.secondaryColor, isDaylight ? 0.18 : 0.14),
-                backgroundColor: colorWithAlpha(theme.backgroundColor, isDaylight ? 0.24 : 0.34),
-              }}
-            >
-              <Trash2 size={15} />
-              <span>{t("folia.options.monetClearPortrait")}</span>
-            </button>
-          </div>
-          <div className="text-xs opacity-60" style={{ color: "var(--text-secondary)" }}>
-            {feedback || monetPortraitImage?.name || "-"}
-          </div>
-        </div>
-        <input
-          ref={fileInputRef}
-          type="file"
-          accept=".png,.jpg,.jpeg,.gif,.webp,.svg,image/*"
-          className="hidden"
-          onChange={(event) => void handleFileChange(event)}
-        />
+            <div className="space-y-2.5">
+              <SectionLabel theme={theme}>{t("folia.options.monetUploadPortrait")}</SectionLabel>
+              <div className="flex flex-wrap items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => fileInputRef.current?.click()}
+                  disabled={isLoadingMonetPortraitImage || !onUploadMonetPortraitImage}
+                  className="inline-flex items-center gap-2 rounded-full border px-3 py-2 text-sm transition-all disabled:cursor-not-allowed disabled:opacity-45"
+                  style={{
+                    color: theme.primaryColor,
+                    borderColor: colorWithAlpha(theme.secondaryColor, isDaylight ? 0.18 : 0.14),
+                    backgroundColor: colorWithAlpha(
+                      theme.backgroundColor,
+                      isDaylight ? 0.24 : 0.34,
+                    ),
+                  }}
+                >
+                  <ImagePlus size={15} />
+                  <span>{t("folia.options.monetUploadPortrait")}</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => void onClearMonetPortraitImage?.()}
+                  disabled={!monetPortraitImage || !onClearMonetPortraitImage}
+                  className="inline-flex items-center gap-2 rounded-full border px-3 py-2 text-sm transition-all disabled:cursor-not-allowed disabled:opacity-45"
+                  style={{
+                    color: theme.primaryColor,
+                    borderColor: colorWithAlpha(theme.secondaryColor, isDaylight ? 0.18 : 0.14),
+                    backgroundColor: colorWithAlpha(
+                      theme.backgroundColor,
+                      isDaylight ? 0.24 : 0.34,
+                    ),
+                  }}
+                >
+                  <Trash2 size={15} />
+                  <span>{t("folia.options.monetClearPortrait")}</span>
+                </button>
+              </div>
+              <div className="text-xs opacity-60" style={{ color: "var(--text-secondary)" }}>
+                {feedback || monetPortraitImage?.name || "-"}
+              </div>
+            </div>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept=".png,.jpg,.jpeg,.gif,.webp,.svg,image/*"
+              className="hidden"
+              onChange={(event) => void handleFileChange(event)}
+            />
+          </>
+        )}
       </div>
 
       {/* Section 3: Audio Spectrum */}
@@ -408,6 +463,16 @@ export const MonetSettingsPanel: React.FC<VisualizerSettingsPanelProps> = ({
           theme={theme}
         />
       </div>
+      <section className="space-y-3.5">
+        <SectionLabel theme={theme}>{t("folia.options.lyricRenderSection")}</SectionLabel>
+        <LyricRenderQualityRows
+          value={resolvedTuning.render}
+          antialias={false}
+          onChange={(patch) =>
+            onMonetTuningChange?.({ render: { ...resolvedTuning.render, ...patch } })
+          }
+        />
+      </section>
     </div>
   );
 };

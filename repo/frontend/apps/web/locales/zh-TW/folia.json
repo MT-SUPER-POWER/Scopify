@@ -762,7 +762,7 @@
   "options.monetAudioVisualizationShow": "顯示",
   "options.monetAudioVisualizationHide": "隱藏",
   "options.monetFontScale": "字體縮放",
-  "options.monetShowDescription": "顯示歌曲描述",
+  "options.monetShowDescription": "歌曲描述",
   "options.monetGroupBackgroundSource": "背景來源",
   "options.monetGroupLayoutPosition": "佈局與對齊",
   "options.monetGroupFiltersPostProcessing": "視覺增強與濾鏡",
@@ -935,5 +935,13 @@
   "options.pendoloPresetDefault": "預設",
   "options.pendoloPreset1": "預設 1",
   "options.pendoloPreset2": "預設 2",
-  "options.pendoloPreset3": "預設 3"
+  "options.pendoloPreset3": "預設 3",
+  "options.monetCustomDescription": "自訂描述",
+  "options.monetCustomDescriptionPlaceholder": "留空顯示原本的描述",
+  "options.monetChromeVisibilityAuto": "自動隱藏",
+  "options.monetChromeVisibilityAlways": "常顯",
+  "options.monetChromeVisibilityHidden": "隱藏",
+  "options.monetMirrorLayout": "歌詞左右鏡像",
+  "options.monetPortraitSourceMirrored": "左側肖像來源",
+  "options.monetPortraitSourceNone": "關閉"
 }

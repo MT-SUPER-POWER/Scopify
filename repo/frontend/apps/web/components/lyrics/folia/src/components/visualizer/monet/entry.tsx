@@ -1,3 +1,4 @@
+import { resolveMonetChromeVisibility } from "@/lib/lyrics/folia/monetAppearance";
 import { AlignLeft, AudioWaveform, Move } from "lucide-react";
 import { FoliaQuickToggle } from "@scopify/ui/scopify/components/folia-panel/controls";
 import type { MonetTuning } from "../../../types";
@@ -5,6 +6,7 @@ import React, { lazy } from "react";
 import { DEFAULT_MONET_TUNING } from "../../../types";
 import { defineVisualizer } from "../definition";
 import { MonetSettingsPanel } from "./MonetSettingsPanel";
+import { MONET_CHROME_VISIBILITY_KEYS, nextMonetChromeVisibility } from "./tuning";
 
 const VisualizerMonet = lazy(() => import("./VisualizerMonet"));
 
@@ -37,20 +39,39 @@ export default defineVisualizer({
     const tuning = props.monetTuning ?? DEFAULT_MONET_TUNING;
     const onTuningChange = (patch: Partial<MonetTuning>) => props.onMonetTuningChange?.(patch);
 
-    const showHanger = tuning.showPortraitDragHanger ?? true;
+    const description = resolveMonetChromeVisibility(
+      tuning.descriptionVisibility,
+      tuning.showDescription,
+    );
+    const hanger = resolveMonetChromeVisibility(
+      tuning.portraitHangerVisibility,
+      tuning.showPortraitDragHanger,
+    );
     return (
       <>
         <FoliaQuickToggle
-          active={tuning.showDescription}
-          label={t("folia.options.monetShowDescription")}
-          onToggle={() => onTuningChange({ showDescription: !tuning.showDescription })}
+          active={description !== "hidden"}
+          label={`${t("folia.options.monetShowDescription")} (${t(MONET_CHROME_VISIBILITY_KEYS[description])})`}
+          onToggle={() => {
+            const descriptionVisibility = nextMonetChromeVisibility(description);
+            onTuningChange({
+              descriptionVisibility,
+              showDescription: descriptionVisibility !== "hidden",
+            });
+          }}
         >
           <AlignLeft size={14} />
         </FoliaQuickToggle>
         <FoliaQuickToggle
-          active={showHanger}
-          label={t("folia.options.monetPortraitDragHanger")}
-          onToggle={() => onTuningChange({ showPortraitDragHanger: !showHanger })}
+          active={hanger !== "hidden"}
+          label={`${t("folia.options.monetPortraitDragHanger")} (${t(MONET_CHROME_VISIBILITY_KEYS[hanger])})`}
+          onToggle={() => {
+            const portraitHangerVisibility = nextMonetChromeVisibility(hanger);
+            onTuningChange({
+              portraitHangerVisibility,
+              showPortraitDragHanger: portraitHangerVisibility !== "hidden",
+            });
+          }}
         >
           <Move size={14} />
         </FoliaQuickToggle>
