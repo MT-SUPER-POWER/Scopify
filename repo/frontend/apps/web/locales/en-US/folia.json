@@ -909,5 +909,17 @@
   "options.nebbiaCycleBehind": "Switch Nebbia window scene",
   "options.nebbiaCycleBehindHint": "Cycle through the night street, Dream Sea Glow and the shared background",
   "options.nebbiaCycleGlass": "Switch Nebbia glass",
-  "options.nebbiaCycleGlassHint": "Cycle through rain, dew and snow glass"
+  "options.nebbiaCycleGlassHint": "Cycle through rain, dew and snow glass",
+  "options.subtitleOverlayRows": "Bottom subtitle rows",
+  "options.subtitleOverlayRowsNone": "No lyric rows",
+  "options.subtitleOverlayRowsOne": "One row",
+  "options.subtitleOverlayRowsTwo": "Two rows",
+  "options.subtitleOverlayRowsThree": "Three rows",
+  "options.subtitleOverlayRow1": "First row",
+  "options.subtitleOverlayRow2": "Second row",
+  "options.subtitleOverlayRow3": "Third row",
+  "options.subtitleOverlaySourceCurrent": "Current lyric",
+  "options.subtitleOverlaySourceNext": "Next lyric",
+  "options.subtitleOverlayUpcomingFallback": "Preview upcoming lyrics when content is missing",
+  "options.subtitleUpcomingLyricsBlur": "Blur upcoming lyrics"
 }

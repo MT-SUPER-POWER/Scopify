@@ -162,6 +162,10 @@ export function FoliaPresentationSurface({
           background={lyricBackground}
           lyricsFontScale={settings.fontScale}
           subtitleFontScale={settings.subtitleFontScale}
+          subtitleOverlay={{
+            layout: settings.subtitleOverlayLayout,
+            blurUpcoming: settings.subtitleUpcomingLyricsBlur,
+          }}
           subtitleOverlayOpacity={settings.subtitleOverlayOpacity}
           subtitleOverlayBackground={settings.subtitleOverlayBackground}
           isPlayerChromeHidden={isPlayerChromeHidden}

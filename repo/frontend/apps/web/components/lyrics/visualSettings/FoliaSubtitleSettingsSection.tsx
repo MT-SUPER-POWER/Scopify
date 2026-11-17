@@ -2,11 +2,11 @@
 
 import {
   FoliaSettingsGroup,
-  FoliaSettingsRange,
   FoliaSettingsRow,
   FoliaSettingsToggle,
 } from "@scopify/ui/scopify/components/folia-studio/settings";
 import { FoliaHarmonySettingsCard } from "@/components/lyrics/visualSettings/FoliaHarmonySettingsCard";
+import { FoliaSubtitleOverlaySettings } from "@/components/lyrics/visualSettings/FoliaSubtitleOverlaySettings";
 import type { FoliaVisualSettingsSectionProps } from "@/types/lyrics/folia/visualSettings";
 
 export function FoliaSubtitleSettingsSection({ model: m }: FoliaVisualSettingsSectionProps) {
@@ -19,12 +19,8 @@ export function FoliaSubtitleSettingsSection({ model: m }: FoliaVisualSettingsSe
   ];
   return (
     <>
-      <FoliaSettingsGroup title={t("folia.options.previewSubtitleSettings")}>
-        <FoliaSettingsToggle
-          label={t("folia.options.hidePlayerTranslationSubtitle")}
-          checked={m.hideTranslationSubtitle}
-          onChange={m.onToggleHideTranslationSubtitle}
-        />
+      <FoliaSubtitleOverlaySettings />
+      <FoliaSettingsGroup title={t("folia.options.subtitleFontFamily")}>
         <FoliaSettingsRow label={t("folia.options.subtitleContentMode")}>
           <select
             aria-label={t("folia.options.subtitleContentMode")}
@@ -41,22 +37,6 @@ export function FoliaSubtitleSettingsSection({ model: m }: FoliaVisualSettingsSe
             ))}
           </select>
         </FoliaSettingsRow>
-        <FoliaSettingsToggle
-          label={t("folia.options.subtitleOverlayBackground")}
-          checked={m.subtitleOverlayBackground}
-          onChange={m.onToggleSubtitleOverlayBackground}
-        />
-        <FoliaSettingsRange
-          label={t("folia.options.subtitleOverlayOpacity")}
-          value={m.subtitleOverlayOpacity}
-          min={0.2}
-          max={1}
-          step={0.05}
-          valueText={`${Math.round(m.subtitleOverlayOpacity * 100)}%`}
-          onChange={m.onSubtitleOverlayOpacityChange}
-        />
-      </FoliaSettingsGroup>
-      <FoliaSettingsGroup title={t("folia.options.subtitleFontFamily")}>
         <FoliaSettingsToggle
           label={t("folia.options.subtitleFontInheritsLyrics")}
           checked={m.subtitleFontInheritsLyrics}
@@ -85,15 +65,6 @@ export function FoliaSubtitleSettingsSection({ model: m }: FoliaVisualSettingsSe
             </select>
           </FoliaSettingsRow>
         ) : null}
-        <FoliaSettingsRange
-          label={t("folia.options.subtitleFontScale")}
-          value={m.subtitleFontScale}
-          min={0.85}
-          max={1.4}
-          step={0.05}
-          valueText={`${Math.round(m.subtitleFontScale * 100)}%`}
-          onChange={m.onSubtitleFontScaleChange}
-        />
       </FoliaSettingsGroup>
       {!m.subtitleFontInheritsLyrics && m.subtitleFontFamily ? (
         <button

@@ -909,5 +909,17 @@
   "options.nebbiaCycleBehind": "切换雾笺窗外场景",
   "options.nebbiaCycleBehindHint": "在雨夜街景、梦海流萤和共用背景之间切换",
   "options.nebbiaCycleGlass": "切换雾笺玻璃",
-  "options.nebbiaCycleGlassHint": "在雨窗、凝露和融雪之间切换"
+  "options.nebbiaCycleGlassHint": "在雨窗、凝露和融雪之间切换",
+  "options.subtitleOverlayRows": "底部字幕行数",
+  "options.subtitleOverlayRowsNone": "无歌词行",
+  "options.subtitleOverlayRowsOne": "单行",
+  "options.subtitleOverlayRowsTwo": "双行",
+  "options.subtitleOverlayRowsThree": "三行",
+  "options.subtitleOverlayRow1": "第一行",
+  "options.subtitleOverlayRow2": "第二行",
+  "options.subtitleOverlayRow3": "第三行",
+  "options.subtitleOverlaySourceCurrent": "当前句",
+  "options.subtitleOverlaySourceNext": "下一句",
+  "options.subtitleOverlayUpcomingFallback": "没有所选内容时预览后续歌词",
+  "options.subtitleUpcomingLyricsBlur": "模糊后续歌词"
 }

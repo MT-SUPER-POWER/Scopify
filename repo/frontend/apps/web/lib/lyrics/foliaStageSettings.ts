@@ -38,6 +38,10 @@ import {
   normalizeFoliaStageThemes,
 } from "@scopify/ui/folia";
 import type { FoliaStageSettings } from "@/types/lyrics/folia/stage";
+import {
+  DEFAULT_SUBTITLE_OVERLAY_LAYOUT,
+  parseSubtitleOverlayLayout,
+} from "@/lib/lyrics/subtitleOverlayLayout";
 import { DEFAULT_FACET_BACKGROUND_TUNING } from "@/constants/facetBackground";
 import { DEFAULT_RHINE_BACKGROUND_TUNING } from "@/constants/rhineBackground";
 
@@ -241,7 +245,9 @@ export function createDefaultFoliaStageSettings(): FoliaStageSettings {
     subtitleFontScale: 1,
     subtitleFontStyle: "sans",
     subtitleOverlayBackground: true,
+    subtitleOverlayLayout: DEFAULT_SUBTITLE_OVERLAY_LAYOUT,
     subtitleOverlayOpacity: 0.6,
+    subtitleUpcomingLyricsBlur: true,
     themeId: "monochrome",
     themeRecentIds: [],
     themes: createBuiltinFoliaStageThemes(),
@@ -316,6 +322,10 @@ function normalizeAgainstSchema(
 ): FoliaStageSettings;
 function normalizeAgainstSchema<T>(candidate: unknown, schema: T, path: string): T;
 function normalizeAgainstSchema<T>(candidate: unknown, schema: T, path: string): T {
+  if (path === "subtitleOverlayLayout") {
+    return (parseSubtitleOverlayLayout(candidate) ?? schema) as T;
+  }
+
   if (
     path === "fontFamily" ||
     path === "subtitleFontFamily" ||
@@ -478,11 +488,19 @@ function withLegacyAliases(candidate: unknown): unknown {
     typeof candidate.showTranslation === "boolean"
       ? { ...candidate, showSubtitleTranslation: candidate.showTranslation }
       : candidate;
-  if (normalized.subtitleContentMode !== undefined) return normalized;
-  if (typeof normalized.showSubtitleTranslation !== "boolean") return normalized;
+  const contentMode =
+    normalized.subtitleContentMode ??
+    (typeof normalized.showSubtitleTranslation === "boolean"
+      ? normalized.showSubtitleTranslation
+        ? "translation"
+        : "none"
+      : undefined);
   return {
     ...normalized,
-    subtitleContentMode: normalized.showSubtitleTranslation ? "translation" : "none",
+    subtitleContentMode: contentMode,
+    subtitleOverlayLayout:
+      normalized.subtitleOverlayLayout ??
+      (contentMode === "both" ? "romanization+translation" : contentMode),
   };
 }
 

@@ -1024,6 +1024,18 @@ export default interface Resources {
     "options.subtitleFontScale": "字幕缩放";
     "options.subtitleOverlayBackground": "字幕背景";
     "options.subtitleOverlayOpacity": "字幕透明度";
+    "options.subtitleOverlayRow1": "第一行";
+    "options.subtitleOverlayRow2": "第二行";
+    "options.subtitleOverlayRow3": "第三行";
+    "options.subtitleOverlayRows": "底部字幕行数";
+    "options.subtitleOverlayRowsNone": "无歌词行";
+    "options.subtitleOverlayRowsOne": "单行";
+    "options.subtitleOverlayRowsThree": "三行";
+    "options.subtitleOverlayRowsTwo": "双行";
+    "options.subtitleOverlaySourceCurrent": "当前句";
+    "options.subtitleOverlaySourceNext": "下一句";
+    "options.subtitleOverlayUpcomingFallback": "没有所选内容时预览后续歌词";
+    "options.subtitleUpcomingLyricsBlur": "模糊后续歌词";
     "options.systemFontEmpty": "没有读取到可用字体。";
     "options.systemFontUnsupported": "当前浏览器不支持系统字体访问。";
     "options.temperaAddLayerImage": "添加图片";
