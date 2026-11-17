@@ -24,6 +24,12 @@ export function FoliaPartitaSettingsSection({ model: m }: FoliaVisualSettingsSec
         checked={tuning.useSemanticLayout}
         onChange={(useSemanticLayout) => patch({ useSemanticLayout })}
       />
+      <FoliaSettingsToggle
+        label={t("folia.options.avoidOverlap")}
+        checked={Boolean(tuning.avoidOverlap)}
+        onChange={(avoidOverlap) => patch({ avoidOverlap })}
+      />
+      <p className="text-xs opacity-50">{t("folia.options.avoidOverlapHint")}</p>
       <FoliaSettingsRange
         label={t("folia.options.partitaStaggerMin")}
         min={0}

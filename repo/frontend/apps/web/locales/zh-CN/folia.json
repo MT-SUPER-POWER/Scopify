@@ -921,5 +921,7 @@
   "options.subtitleOverlaySourceCurrent": "当前句",
   "options.subtitleOverlaySourceNext": "下一句",
   "options.subtitleOverlayUpcomingFallback": "没有所选内容时预览后续歌词",
-  "options.subtitleUpcomingLyricsBlur": "模糊后续歌词"
+  "options.subtitleUpcomingLyricsBlur": "模糊后续歌词",
+  "options.avoidOverlap": "防止文字重叠",
+  "options.avoidOverlapHint": "按字放大、旋转后的大小留出间距"
 }

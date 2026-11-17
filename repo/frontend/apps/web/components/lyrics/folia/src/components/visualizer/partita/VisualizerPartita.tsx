@@ -17,11 +17,25 @@ import {
 } from "../../../utils/lyrics/cjkSemanticLayout";
 import { buildWordGraphemeTimings } from "../../../utils/lyrics/graphemeTiming";
 import { getLineRenderEndTime, getLineRenderHints } from "../../../utils/lyrics/renderHints";
+import { resolveLyricTextDirection } from "../../../utils/lyrics/textDirection";
 import { shouldPreheatLine, useVisualizerRuntime, type VisualizerPreheatWindow } from "../runtime";
 import { type VisualizerSharedProps } from "../definition";
 import VisualizerShell from "../VisualizerShell";
 import VisualizerSubtitleOverlay from "../VisualizerSubtitleOverlay";
 import { resolveWordColor } from "../wordColoring";
+import { resolveThemeFontStack } from "../../../utils/fontStacks";
+import {
+  GLOW_WORD_ACTIVE_SCALE,
+  GLOW_WORD_LINE_HEIGHT,
+  measureGlowWordWidth,
+} from "../glowWordOverlap";
+import {
+  OVERLAP_FIT_LINE_ATTRIBUTE,
+  OVERLAP_FIT_ROW_ATTRIBUTE,
+  useOverlapFit,
+} from "@/hooks/lyrics/useOverlapFit";
+import type { PartitaRowSpacing } from "@/types/lyrics/folia/partitaOverlap";
+import { getPartitaOverlapSpacing } from "./partitaOverlap";
 
 // This one is still word-driven, but unlike Classic it needs to pre-build a column/chunk structure first.
 // The flow is basically: ask runtime for the active line, optionally preheat the upcoming line,
@@ -125,6 +139,7 @@ const resolvePartitaTuning = (tuning?: PartitaTuning): PartitaTuning => {
     useSemanticLayout: tuning?.useSemanticLayout ?? DEFAULT_PARTITA_TUNING.useSemanticLayout,
     staggerMin: Math.min(rawMin, rawMax),
     staggerMax: Math.max(rawMin, rawMax),
+    avoidOverlap: tuning?.avoidOverlap ?? DEFAULT_PARTITA_TUNING.avoidOverlap,
   };
 };
 
@@ -408,6 +423,7 @@ const PartitaWord: React.FC<{
   renderProfile: PartitaLineRenderProfile;
   isChorus?: boolean;
   fontSize: string;
+  wordSpacing?: React.CSSProperties;
 }> = ({
   word,
   config,
@@ -421,6 +437,7 @@ const PartitaWord: React.FC<{
   renderProfile,
   isChorus,
   fontSize,
+  wordSpacing,
 }) => {
   const [status, setStatus] = useState<"waiting" | "active" | "passed">("waiting");
   const rippleScale = useMemo(() => 1.5 + Math.random() * 2, []);
@@ -456,8 +473,9 @@ const PartitaWord: React.FC<{
       className="relative inline-block origin-center font-bold whitespace-nowrap will-change-transform"
       style={{
         fontSize,
-        lineHeight: 1.22,
-        marginRight: "0.8rem",
+        lineHeight: GLOW_WORD_LINE_HEIGHT,
+        ...wordSpacing,
+        marginInlineEnd: wordSpacing?.marginInlineEnd ?? "0.8rem",
       }}
     >
       {/* Glow Layer */}
@@ -532,6 +550,37 @@ const PartitaWord: React.FC<{
   );
 };
 
+// Stable per-word offsets shared by the row measurement and its rendered words.
+const buildPartitaWordConfigs = (
+  displayWords: WordType[],
+  config: WordLayoutConfig,
+  intensity: Theme["animationIntensity"],
+): WordLayoutConfig[] =>
+  displayWords.map((_, idx): WordLayoutConfig => {
+    // Per-word random offset only (chunk position is on the container)
+    const wordSeed = displayWords[0].startTime + idx * 7.13;
+    const random = (offset: number) => {
+      const x = Math.sin(wordSeed + offset) * 10000;
+      return x - Math.floor(x);
+    };
+
+    const isCalm = intensity === "calm";
+    const isChaotic = intensity === "chaotic";
+    const baseSpread = isChaotic ? 15 : isCalm ? 0 : 6;
+    const baseRotate = isChaotic ? 8 : isCalm ? 0 : 3;
+
+    return {
+      id: `${config.id}-w${idx}`,
+      x: (random(1) - 0.5) * baseSpread * 2,
+      y: (random(2) - 0.5) * baseSpread * 2,
+      rotate: (random(3) - 0.5) * baseRotate * 2,
+      scale: config.scale,
+      marginBottom: "0",
+      alignSelf: "auto",
+      passedRotate: (random(8) - 0.5) * 20,
+    };
+  });
+
 // Chunk is the structural wrapper.
 // It does not own lyric timing directly; it mostly exists so guide lines and grouped word offsets have a place to live.
 const PartitaChunk: React.FC<{
@@ -548,6 +597,7 @@ const PartitaChunk: React.FC<{
   renderProfile: PartitaLineRenderProfile;
   isChorus?: boolean;
   showGuideLines: boolean;
+  overlapSpacing?: PartitaRowSpacing;
   fontSize: string;
 }> = ({
   chunkWords,
@@ -563,6 +613,7 @@ const PartitaChunk: React.FC<{
   renderProfile,
   isChorus,
   showGuideLines,
+  overlapSpacing,
   fontSize,
 }) => {
   const [chunkStatus, setChunkStatus] = useState<"waiting" | "active" | "passed">("waiting");
@@ -585,12 +636,20 @@ const PartitaChunk: React.FC<{
 
   const activeColor = getActiveColor(displayWords.map((w) => w.text).join(" "), theme);
   const guidePosition = guideIndex % 2 === 0 ? "left" : "right";
+  const wordConfigs = useMemo(
+    () => buildPartitaWordConfigs(displayWords, config, theme.animationIntensity),
+    [displayWords, config, theme.animationIntensity],
+  );
 
   return (
     <motion.div
+      dir={resolveLyricTextDirection(displayWords.map((word) => word.text).join(" "))}
+      {...(overlapSpacing ? { [OVERLAP_FIT_ROW_ATTRIBUTE]: "" } : null)}
       className="relative inline-flex origin-center flex-row items-center justify-center whitespace-nowrap"
       style={{
-        marginBottom: config.marginBottom,
+        fontSize: overlapSpacing ? fontSize : undefined,
+        marginTop: overlapSpacing?.marginTop,
+        marginBottom: overlapSpacing?.marginBottom ?? config.marginBottom,
         alignSelf: config.alignSelf,
         lineHeight: 1,
         minWidth: "auto",
@@ -728,30 +787,7 @@ const PartitaChunk: React.FC<{
       )}
 
       {displayWords.map((w, idx) => {
-        // Per-word random offset only (chunk position is on the container)
-        const wordSeed = displayWords[0].startTime + idx * 7.13;
-        const random = (offset: number) => {
-          const x = Math.sin(wordSeed + offset) * 10000;
-          return x - Math.floor(x);
-        };
-
-        const intensity = theme.animationIntensity;
-        const isCalm = intensity === "calm";
-        const isChaotic = intensity === "chaotic";
-        const baseSpread = isChaotic ? 15 : isCalm ? 0 : 6;
-        const baseRotate = isChaotic ? 8 : isCalm ? 0 : 3;
-
-        const wordConfig: WordLayoutConfig = {
-          id: `${config.id}-w${idx}`,
-          x: (random(1) - 0.5) * baseSpread * 2,
-          y: (random(2) - 0.5) * baseSpread * 2,
-          rotate: (random(3) - 0.5) * baseRotate * 2,
-          scale: config.scale,
-          marginBottom: "0",
-          alignSelf: "auto",
-          passedRotate: (random(8) - 0.5) * 20,
-        };
-
+        const wordConfig = wordConfigs[idx];
         return (
           <PartitaWord
             key={`${w.text}-${idx}`}
@@ -767,6 +803,7 @@ const PartitaChunk: React.FC<{
             renderProfile={renderProfile}
             isChorus={isChorus}
             fontSize={fontSize}
+            wordSpacing={overlapSpacing?.words[idx]}
           />
         );
       })}
@@ -798,12 +835,16 @@ const VisualizerPartita: React.FC<VisualizerPartitaProps> = (props) => {
   } = props;
   const { t } = useTranslation();
   const [windowHeight, setWindowHeight] = useState(800);
+  const [windowWidth, setWindowWidth] = useState(1200);
   const resolvedPartitaTuning = useMemo(() => resolvePartitaTuning(partitaTuning), [partitaTuning]);
   const layoutCacheRef = useRef<Map<string, PartitaSequentialLayout>>(new Map());
 
   useEffect(() => {
-    setWindowHeight(window.innerHeight);
-    const handleResize = () => setWindowHeight(window.innerHeight);
+    const handleResize = () => {
+      setWindowHeight(window.innerHeight);
+      setWindowWidth(window.innerWidth);
+    };
+    handleResize();
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
@@ -855,7 +896,34 @@ const VisualizerPartita: React.FC<VisualizerPartitaProps> = (props) => {
     );
   });
 
-  const densityScale = sequentialLayout.totalGraphemes > 40 ? 0.8 : 1;
+  const avoidOverlap = Boolean(resolvedPartitaTuning.avoidOverlap);
+  const overlapSpacing = useMemo(() => {
+    if (!avoidOverlap) return null;
+    const fontStack = resolveThemeFontStack(theme);
+    const measurePx = 100;
+    const spacing = new Map<string, PartitaRowSpacing>();
+    for (const column of sequentialLayout.columns) {
+      const rows = column.words.map(({ displayWords, config }) => ({
+        widthsEm: displayWords.map(
+          (word) => measureGlowWordWidth(word.text, measurePx, fontStack, 700) / measurePx,
+        ),
+        wordConfigs: buildPartitaWordConfigs(displayWords, config, theme.animationIntensity),
+        config,
+        rtl: resolveLyricTextDirection(displayWords.map((word) => word.text).join(" ")) === "rtl",
+      }));
+      getPartitaOverlapSpacing(rows).forEach((row, index) => {
+        spacing.set(column.words[index].config.id, row);
+      });
+    }
+    return spacing;
+  }, [avoidOverlap, sequentialLayout, theme]);
+  const lyricAreaRef = useRef<HTMLDivElement>(null);
+  const fitLayout = useMemo(
+    () => ({ sequentialLayout, lyricsFontScale, windowHeight, windowWidth, theme }),
+    [sequentialLayout, lyricsFontScale, windowHeight, windowWidth, theme],
+  );
+  const overlapFit = useOverlapFit(avoidOverlap, activeLine?.startTime, lyricAreaRef, fitLayout);
+  const densityScale = (sequentialLayout.totalGraphemes > 40 ? 0.8 : 1) * overlapFit;
   const mainFontSize = `clamp(${(2.5 * densityScale * lyricsFontScale).toFixed(3)}rem, ${(5.5 * densityScale * lyricsFontScale).toFixed(3)}vw, ${(4.5 * densityScale * lyricsFontScale).toFixed(3)}rem)`;
   const emptyFontSize = `clamp(${(1.2 * lyricsFontScale).toFixed(3)}rem, ${(2.8 * lyricsFontScale).toFixed(3)}vw, ${(1.9 * lyricsFontScale).toFixed(3)}rem)`;
   const translationFontSize = `clamp(${(1.05 * lyricsFontScale).toFixed(3)}rem, ${(2.2 * lyricsFontScale).toFixed(3)}vw, ${(1.2 * lyricsFontScale).toFixed(3)}rem)`;
@@ -872,7 +940,7 @@ const VisualizerPartita: React.FC<VisualizerPartitaProps> = (props) => {
     }),
     active: ({ config }: any) => ({
       opacity: 1,
-      scale: isNaN(config.scale) ? 1.5 : config.scale * 1.4,
+      scale: isNaN(config.scale) ? 1.5 : config.scale * GLOW_WORD_ACTIVE_SCALE,
       x: config.x,
       y: config.y,
       rotate: config.rotate,
@@ -1055,6 +1123,7 @@ const VisualizerPartita: React.FC<VisualizerPartitaProps> = (props) => {
       sharedProps={props}
     >
       <motion.div
+        ref={lyricAreaRef}
         className="pointer-events-none relative z-10 flex h-[70vh] w-full items-center justify-center p-8 will-change-transform"
         animate={paused || staticMode ? { y: 0, scale: 1 } : lyricContainerFloat.animate}
         transition={paused || staticMode ? { duration: 0 } : lyricContainerFloat.transition}
@@ -1066,18 +1135,19 @@ const VisualizerPartita: React.FC<VisualizerPartitaProps> = (props) => {
               initial={activeLineContainerMotion.initial}
               animate={activeLineContainerMotion.animate}
               exit={activeLineContainerMotion.exit}
+              {...{ [OVERLAP_FIT_LINE_ATTRIBUTE]: activeLine.startTime }}
               className="flex w-full max-w-5xl flex-row-reverse items-stretch justify-center"
               style={{
                 perspective: `${sequentialLayout.lineConfig.perspective}px`,
                 gap: sequentialLayout.lineConfig.columnGap,
-                minHeight: "320px",
+                minHeight: overlapSpacing ? undefined : "320px",
               }}
             >
               {sequentialLayout.columns.map((column) => {
                 return (
                   <div
                     key={column.id}
-                    className="relative flex min-h-96 min-w-[3.8rem] items-center justify-center px-3"
+                    className={`relative flex min-w-[3.8rem] items-center justify-center px-3 ${overlapSpacing ? "" : "min-h-96"}`}
                   >
                     <div className="relative z-10 flex flex-col items-center justify-start">
                       {column.words.map(({ chunkWords, displayWords, config, order, rowIndex }) => (
@@ -1096,6 +1166,7 @@ const VisualizerPartita: React.FC<VisualizerPartitaProps> = (props) => {
                           renderProfile={activeLineRenderProfile}
                           isChorus={activeLine.isChorus}
                           showGuideLines={resolvedPartitaTuning.showGuideLines}
+                          overlapSpacing={overlapSpacing?.get(config.id)}
                           fontSize={mainFontSize}
                         />
                       ))}

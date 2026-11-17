@@ -7,6 +7,7 @@ import {
   buildLineGraphemeTimeline,
   type GraphemeTiming,
 } from "../../../utils/lyrics/graphemeTiming";
+import { resolveLyricTextDirection } from "../../../utils/lyrics/textDirection";
 import { getLineRenderEndTime } from "../../../utils/lyrics/renderHints";
 import {
   DIORAMA_CAMERA_LIFT,
@@ -206,6 +207,10 @@ const CameraRig: React.FC<CameraRigProps> = ({
   // Grapheme timeline, assigned shot and text placement for the current line - rebuilt only when the
   // resolved line (or the weave scale) changes, never per frame.
   const line = resolved?.line ?? null;
+  const rtl = useMemo(
+    () => Boolean(line && resolveLyricTextDirection(line.fullText) === "rtl"),
+    [line],
+  );
   const timeline = useMemo(() => (line ? buildLineGraphemeTimeline(line) : []), [line]);
   const shotKind: DioramaShotKind = useMemo(
     () =>
@@ -254,7 +259,11 @@ const CameraRig: React.FC<CameraRigProps> = ({
 
     // Read-head = the line's ACTUAL text position (path anchor + placement offsets) + the lateral
     // truck that follows the sung word.
-    const truck = resolveReadHeadTruck(wordProgress, activeLineWidthRef.current, visibleHalf);
+    const truck = resolveReadHeadTruck(
+      rtl ? 1 - wordProgress : wordProgress,
+      activeLineWidthRef.current,
+      visibleHalf,
+    );
     const headR = placement.offsetR + truck;
     const headU = placement.offsetU;
     const baseX = frame.position.x + R.x * headR + U.x * headU;

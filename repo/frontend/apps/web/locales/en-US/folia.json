@@ -921,5 +921,7 @@
   "options.subtitleOverlaySourceCurrent": "Current lyric",
   "options.subtitleOverlaySourceNext": "Next lyric",
   "options.subtitleOverlayUpcomingFallback": "Preview upcoming lyrics when content is missing",
-  "options.subtitleUpcomingLyricsBlur": "Blur upcoming lyrics"
+  "options.subtitleUpcomingLyricsBlur": "Blur upcoming lyrics",
+  "options.avoidOverlap": "Prevent Overlap",
+  "options.avoidOverlapHint": "Space words by their size when scaled and turned"
 }
