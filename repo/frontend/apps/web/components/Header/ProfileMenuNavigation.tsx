@@ -7,6 +7,7 @@ import {
   Info,
   LogOut,
   MonitorSmartphone,
+  RefreshCw,
   Settings,
   MessagesSquare,
 } from "lucide-react";
@@ -16,6 +17,7 @@ import {
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import { useSmartRouter } from "@/hooks/core/useSmartRouter";
+import { useSyncAccountData } from "@/hooks/auth/useSyncAccountData";
 import { runtime } from "@/lib/runtime";
 import { usePlayerStore, useUserStore } from "@/store";
 import { useFriendsStore } from "@/store/module/friends";
@@ -31,6 +33,7 @@ const arrowClassName = "ml-auto size-4 text-content-muted";
 export function ProfileMenuNavigation({ isLoggedIn }: ProfileMenuNavigationProps) {
   const { t } = useTranslation();
   const smartRouter = useSmartRouter();
+  const { isSyncing, syncAccountData } = useSyncAccountData();
   const logout = () => {
     useUserStore.getState().handleLogout();
     usePlayerStore.getState().cleanCache();
@@ -113,6 +116,20 @@ export function ProfileMenuNavigation({ isLoggedIn }: ProfileMenuNavigationProps
         <>
           <DropdownMenuSeparator className="mx-6 my-0 bg-content/10" />
           <div className="px-3 py-2">
+            <DropdownMenuItem
+              className={itemClassName}
+              disabled={isSyncing}
+              onSelect={(event) => {
+                event.preventDefault();
+                syncAccountData();
+              }}
+            >
+              <RefreshCw
+                aria-hidden
+                className={`${iconClassName}${isSyncing ? "animate-spin" : ""}`}
+              />
+              <span>{t(isSyncing ? "profile.menu.syncing" : "profile.menu.syncData")}</span>
+            </DropdownMenuItem>
             <DropdownMenuItem
               onSelect={logout}
               variant="destructive"

@@ -1,4 +1,8 @@
 {
+  "menu.syncData": "Sync account data",
+  "menu.syncing": "Syncing…",
+  "toast.syncSuccess": "Account data synced",
+  "toast.syncFailed": "Could not sync account data",
   "menu.notifications": "Notifications",
   "menu.friends": "Friends",
   "menu.profile": "Profile",

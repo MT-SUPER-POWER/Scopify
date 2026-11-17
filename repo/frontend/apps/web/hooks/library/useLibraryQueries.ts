@@ -1,6 +1,6 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
+import { queryOptions, useQuery } from "@tanstack/react-query";
 import { useEffect } from "react";
 import { fetchUserPlaylists } from "@/hooks/library/fetchUserPlaylists";
 import { getUserAlbumSublist } from "@/lib/api/album";
@@ -17,6 +17,7 @@ import { toLikedVoice } from "@/lib/library/likedVoice";
 import { useLoginStatus } from "@/hooks/auth/useLoginStatus";
 import { musicQueryKeys } from "@/lib/query/queryKeys";
 import { throwQueryErrorWithoutData } from "@/lib/query/errorPolicy";
+import { getMusicSessionCredential } from "@/lib/web/musicSessionCredential";
 import { useUserStore } from "@/store";
 import { prunePlaylist, type NeteasePlaylist, type RawNeteasePlaylist } from "@/types/playlist/api";
 import { pruneSongDetail, type SongDetail } from "@/types/song/api";
@@ -253,18 +254,23 @@ export function useCreatedPodcastsQuery() {
   });
 }
 
-export function useUserPlaylistsQuery(throwOnError = false) {
-  const { isLoggedIn, userId } = useLibrarySession();
-
-  const query = useQuery({
-    enabled: isLoggedIn && Boolean(userId),
+export function userPlaylistsOptions(userId: number | undefined) {
+  return queryOptions({
     queryKey: musicQueryKeys.library.playlists(userId ?? 0),
-    throwOnError: throwOnError ? throwQueryErrorWithoutData : false,
     meta: { persist: true, scope: "account" },
     queryFn: async (): Promise<NeteasePlaylist[]> => {
       if (!userId) throw new Error("Missing user ID.");
       return (await fetchUserPlaylists(userId)).map(prunePlaylist);
     },
+  });
+}
+
+export function useUserPlaylistsQuery(throwOnError = false) {
+  const { isLoggedIn, userId } = useLibrarySession();
+  const query = useQuery({
+    ...userPlaylistsOptions(userId),
+    enabled: isLoggedIn && Boolean(userId),
+    throwOnError: throwOnError ? throwQueryErrorWithoutData : false,
   });
   useEffect(() => {
     if (!isLoggedIn || !userId || query.data === undefined) return;
@@ -274,19 +280,32 @@ export function useUserPlaylistsQuery(throwOnError = false) {
   return query;
 }
 
+export function userLikedSongIdsOptions(userId: number | undefined) {
+  return queryOptions({
+    queryKey: musicQueryKeys.library.likedSongIds(userId ?? 0),
+    meta: { scope: "account" },
+    queryFn: async ({ signal }) => {
+      if (!userId) throw new Error("Missing user ID.");
+      const credential = getMusicSessionCredential();
+      const response = await getUserLikeLists(userId);
+      if (!Array.isArray(response.data.ids)) throw new Error("Unable to load liked songs.");
+      if (
+        credential &&
+        getMusicSessionCredential() === credential &&
+        !signal.aborted &&
+        Number(useUserStore.getState().user?.userId) === userId
+      ) {
+        useUserStore.getState().setLikeListIDs(response.data.ids);
+      }
+      return response.data.ids;
+    },
+  });
+}
+
 export function useUserLikedSongIdsQuery() {
   const { isLoggedIn, userId } = useLibrarySession();
   return useQuery({
+    ...userLikedSongIdsOptions(userId),
     enabled: isLoggedIn && Boolean(userId),
-    queryKey: musicQueryKeys.library.likedSongIds(userId ?? 0),
-    meta: { scope: "account" },
-    queryFn: async () => {
-      if (!userId) throw new Error("Missing user ID.");
-      const response = await getUserLikeLists(userId);
-      if (!Array.isArray(response.data.ids)) throw new Error("Unable to load liked songs.");
-      if (Number(useUserStore.getState().user?.userId) === userId)
-        useUserStore.getState().setLikeListIDs(response.data.ids);
-      return response.data.ids;
-    },
   });
 }

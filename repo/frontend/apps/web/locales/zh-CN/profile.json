@@ -1,4 +1,8 @@
 {
+  "menu.syncData": "同步账号数据",
+  "menu.syncing": "正在同步…",
+  "toast.syncSuccess": "账号数据已同步",
+  "toast.syncFailed": "同步账号数据失败",
   "menu.notifications": "通知",
   "menu.friends": "好友",
   "menu.profile": "个人主页",
