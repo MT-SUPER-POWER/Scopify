@@ -428,6 +428,8 @@ export default interface Resources {
     "facet.retry": "重试";
     "facet.strength": "律动强度";
     "facet.title": "棱面故障";
+    "floatingControls.changeAction": "更换操作";
+    "floatingControls.quickActions": "播放快捷操作";
     "floatingControls.viewTimeline": "查看歌词时间轴";
     "localMusic.replayGainAlbum": "专辑";
     "localMusic.replayGainOff": "关闭";
@@ -1207,6 +1209,7 @@ export default interface Resources {
     "options.visualizerBackgroundModeUrl": "嵌入";
     "options.visualizerMode": "动画模式";
     "options.visualizerOpacity": "整体透明度";
+    "options.visualizerPickerKeepOpen": "选择后保持打开";
     "panel.controls": "控制";
     "panel.cover": "封面";
     "panel.equalizer": "音频效果器";

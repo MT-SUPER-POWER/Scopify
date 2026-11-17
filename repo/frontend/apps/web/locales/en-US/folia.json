@@ -948,5 +948,8 @@
   "options.claddaghPositionY": "Vertical Position",
   "options.claddaghShowTranslation": "Show Translation",
   "options.claddaghTranslationScale": "Translation Size",
-  "options.claddaghTranslationLetterSpacingOffset": "Translation Letter Spacing"
+  "options.claddaghTranslationLetterSpacingOffset": "Translation Letter Spacing",
+  "floatingControls.quickActions": "Playback quick actions",
+  "floatingControls.changeAction": "Change action",
+  "options.visualizerPickerKeepOpen": "Keep open after choosing"
 }

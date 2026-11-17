@@ -1,4 +1,5 @@
 import { Command } from "lucide-react";
+import { useFoliaPlaybackControlsStore } from "@/store/module/foliaPlaybackControls";
 import type { CommandWorkspaceRootInputProps } from "@/types/commandWorkspace/model";
 
 export function CommandWorkspaceRootInput({
@@ -7,13 +8,18 @@ export function CommandWorkspaceRootInput({
   onKeyDown,
   query,
 }: CommandWorkspaceRootInputProps) {
+  const capsuleLaunch = useFoliaPlaybackControlsStore((state) => state.commandWorkspaceLaunch);
+  const shouldFocusInput =
+    !capsuleLaunch ||
+    typeof window === "undefined" ||
+    !window.matchMedia("(pointer: coarse)").matches;
   return (
     <div className="flex items-center gap-3 px-5 py-4">
       <Command className="size-5 shrink-0 text-content-muted" />
       <span className="text-base font-medium text-content-muted">&gt;</span>
       <input
         ref={inputRef}
-        autoFocus
+        autoFocus={shouldFocusInput}
         value={query}
         onChange={(event) => onChange(event.target.value)}
         onKeyDown={onKeyDown}

@@ -948,5 +948,8 @@
   "options.claddaghPositionY": "上下位置",
   "options.claddaghShowTranslation": "顯示翻譯",
   "options.claddaghTranslationScale": "翻譯放大倍率",
-  "options.claddaghTranslationLetterSpacingOffset": "翻譯字元間距"
+  "options.claddaghTranslationLetterSpacingOffset": "翻譯字元間距",
+  "floatingControls.quickActions": "播放快捷操作",
+  "floatingControls.changeAction": "更換操作",
+  "options.visualizerPickerKeepOpen": "選擇後保持開啟"
 }

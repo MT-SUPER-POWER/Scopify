@@ -2,6 +2,8 @@
 
 import { CommandWorkspacePersonalFm } from "@/components/commandWorkspace/CommandWorkspacePersonalFm";
 import { CommandWorkspaceFolia } from "@/components/commandWorkspace/CommandWorkspaceFolia";
+import { CommandWorkspaceSubtitles } from "@/components/commandWorkspace/CommandWorkspaceSubtitles";
+import { CommandWorkspaceAddToPlaylist } from "@/components/commandWorkspace/CommandWorkspaceAddToPlaylist";
 import { CommandWorkspaceDynamicIsland } from "@/components/commandWorkspace/CommandWorkspaceDynamicIsland";
 import { ChevronLeft } from "lucide-react";
 import { useCallback, useState } from "react";
@@ -22,8 +24,12 @@ import type {
   CommandWorkspaceSearchItem,
 } from "@/types/commandWorkspace/model";
 
-export function CommandWorkspaceCommand({ onClose, onLeaveCommand }: CommandWorkspaceCommandProps) {
-  const [page, setPage] = useState<CommandWorkspacePage>("root");
+export function CommandWorkspaceCommand({
+  onClose,
+  onLeaveCommand,
+  page,
+  setPage,
+}: CommandWorkspaceCommandProps) {
   const [isHelpOpen, setIsHelpOpen] = useState(false);
   const { appendTracks, insertTracksNext, playTracks } = useCommandWorkspacePlayback();
   const { isLoadingTrackList, openTrackList, setTrackList, trackList } =
@@ -32,10 +38,10 @@ export function CommandWorkspaceCommand({ onClose, onLeaveCommand }: CommandWork
   const returnToRoot = useCallback(() => {
     setTrackList(null);
     setPage("root");
-  }, [setTrackList]);
+  }, [setPage, setTrackList]);
 
   const goBack = useCallback(() => {
-    if (page === "root") {
+    if (page === "root" || page === "folia-subtitles" || page === "folia-add-to-playlist") {
       onClose();
       return;
     }
@@ -45,7 +51,7 @@ export function CommandWorkspaceCommand({ onClose, onLeaveCommand }: CommandWork
       return;
     }
     returnToRoot();
-  }, [onClose, page, returnToRoot, setTrackList]);
+  }, [onClose, page, returnToRoot, setPage, setTrackList]);
 
   useCommandWorkspaceNavigation({
     onBack: goBack,
@@ -60,6 +66,9 @@ export function CommandWorkspaceCommand({ onClose, onLeaveCommand }: CommandWork
 
   if (page === "personal-fm")
     return <CommandWorkspacePersonalFm onBack={returnToRoot} onClose={onClose} />;
+
+  if (page === "folia-subtitles") return <CommandWorkspaceSubtitles onClose={onClose} />;
+  if (page === "folia-add-to-playlist") return <CommandWorkspaceAddToPlaylist onClose={onClose} />;
 
   if (
     page === "folia-settings" ||

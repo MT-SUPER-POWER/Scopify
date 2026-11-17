@@ -1,12 +1,14 @@
 "use client";
 
 import { ChevronLeft, Search, X } from "lucide-react";
-import { useState } from "react";
+import { useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { FoliaCommandList } from "@/components/commandWorkspace/FoliaCommandList";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useFoliaCommands } from "@/hooks/commandWorkspace/useFoliaCommands";
+import { useFoliaPlaybackControlsStore } from "@/store/module/foliaPlaybackControls";
 import { useLyricStageStore } from "@/store/module/lyrics";
-import type { CommandWorkspaceFoliaProps } from "@/types/lyrics/folia/commands";
+import type { CommandWorkspaceFoliaProps, FoliaCommandEntry } from "@/types/lyrics/folia/commands";
 
 export function CommandWorkspaceFolia({
   group,
@@ -14,6 +16,8 @@ export function CommandWorkspaceFolia({
   onBack,
   onClose,
 }: CommandWorkspaceFoliaProps) {
+  const { t } = useTranslation();
+  const inputRef = useRef<HTMLInputElement>(null);
   const [query, setQuery] = useState("");
   const [selectedIndex, setSelectedIndex] = useState(0);
   const { catalog, entries, execute } = useFoliaCommands(group, query);
@@ -22,6 +26,19 @@ export function CommandWorkspaceFolia({
   const currentMode = catalog.find(
     (entry) => entry.action.kind === "visualizer" && entry.action.mode === mode,
   );
+  const isVisualizerPicker = group === "folia-visualizers";
+  const capsuleLaunch = useFoliaPlaybackControlsStore((state) => state.commandWorkspaceLaunch);
+  const shouldFocusInput =
+    !capsuleLaunch ||
+    typeof window === "undefined" ||
+    !window.matchMedia("(pointer: coarse)").matches;
+  const keepOpen = useFoliaPlaybackControlsStore((state) => state.visualizerPickerKeepOpen);
+  const setKeepOpen = useFoliaPlaybackControlsStore((state) => state.setVisualizerPickerKeepOpen);
+  const selectEntry = (entry: FoliaCommandEntry) => {
+    const stay = isVisualizerPicker && keepOpen && entry.action.kind === "visualizer";
+    execute(entry, onNavigate, stay ? () => undefined : onClose);
+    if (stay && shouldFocusInput) inputRef.current?.focus();
+  };
   const back = () => (current?.parentId ? onNavigate(current.parentId) : onBack());
   return (
     <div
@@ -53,7 +70,8 @@ export function CommandWorkspaceFolia({
           <X className="size-3" />
         </button>
         <input
-          autoFocus
+          autoFocus={shouldFocusInput}
+          ref={inputRef}
           value={query}
           aria-label={`搜索${current?.label ?? "Folia"}`}
           placeholder="输入以筛选，然后点击或按回车"
@@ -79,7 +97,7 @@ export function CommandWorkspaceFolia({
             if (event.key === "Enter") {
               event.preventDefault();
               const entry = entries[selectedIndex];
-              if (entry) execute(entry, onNavigate, onClose);
+              if (entry) selectEntry(entry);
             }
           }}
           className="min-w-0 flex-1 bg-transparent text-sm text-content outline-none placeholder:text-content-muted"
@@ -102,14 +120,25 @@ export function CommandWorkspaceFolia({
             <span>
               {current?.path ? `${current.path} › ` : ""}
               {current?.label}
+              {isVisualizerPicker && currentMode ? ` · ${currentMode.label}` : null}
             </span>
-            {group === "folia-visualizers" ? <span>当前：{currentMode?.label}</span> : null}
+            {isVisualizerPicker ? (
+              <label className="flex min-w-0 items-center gap-2">
+                <input
+                  type="checkbox"
+                  className="size-4 shrink-0 accent-current"
+                  checked={keepOpen}
+                  onChange={(event) => setKeepOpen(event.target.checked)}
+                />
+                {t("folia.options.visualizerPickerKeepOpen")}
+              </label>
+            ) : null}
           </div>
           <FoliaCommandList
             entries={entries}
             selectedIndex={selectedIndex}
             onHighlight={setSelectedIndex}
-            onSelect={(entry) => execute(entry, onNavigate, onClose)}
+            onSelect={selectEntry}
             showPath={Boolean(query.trim())}
           />
           {!entries.length ? (

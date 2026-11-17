@@ -1,4 +1,5 @@
 import type { FoliaCommandEntry, FoliaCommandGroup } from "@/types/lyrics/folia/commands";
+import type { FoliaCommandWorkspaceLaunch } from "@/types/player/foliaControls";
 import type { SongDetail } from "@/types/song/api";
 import type { Album, Artist, Category, Playlist, Podcast, Song, Voice } from "@/types/search/model";
 import type { DragEvent, KeyboardEvent, RefObject } from "react";
@@ -16,9 +17,14 @@ export type CommandWorkspacePage =
   | "settings"
   | "dynamic-island"
   | "theme"
+  | "folia-subtitles"
+  | "folia-add-to-playlist"
   | "track-list"
   | FoliaCommandGroup;
-export type CommandWorkspaceRootPage = Exclude<CommandWorkspacePage, "root" | "track-list">;
+export type CommandWorkspaceRootPage = Exclude<
+  CommandWorkspacePage,
+  "root" | "track-list" | "folia-subtitles" | "folia-add-to-playlist"
+>;
 
 export interface CommandWorkspaceSettingsProps {
   onClose(): void;
@@ -96,6 +102,8 @@ export interface CommandWorkspaceRootListProps {
 export interface CommandWorkspaceCommandProps {
   onClose(): void;
   onLeaveCommand(): void;
+  page: CommandWorkspacePage;
+  setPage(page: CommandWorkspacePage): void;
 }
 
 export interface CommandWorkspaceDirectSearchProps {
@@ -156,6 +164,12 @@ export interface CommandWorkspaceRootInputProps {
 
 export interface CommandWorkspaceModalProps {
   isOpen: boolean;
+  onClose(): void;
+}
+
+export interface CommandWorkspaceSessionProps {
+  initialQuery: string;
+  launch: FoliaCommandWorkspaceLaunch | null;
   onClose(): void;
 }
 
