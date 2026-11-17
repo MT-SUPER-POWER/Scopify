@@ -12,28 +12,41 @@ class TestCancellationToken {
   }
 }
 
-const nativeUpdater = Object.assign(new EventEmitter(), {
-  autoDownload: true,
-  allowPrerelease: false,
-  allowDowngrade: true,
-  channel: "latest",
-  autoInstallOnAppQuit: true,
-  setFeedURL: mock(() => {}),
-  checkForUpdates: mock(async () => {}),
-  downloadUpdate: mock(async (_cancellation?: TestCancellationToken) => {}),
-  quitAndInstall: mock(() => {}),
-});
+const downloadDifferentially = mock(async () => false);
+let nativeUpdater: TestNsisUpdater;
+
+class TestNsisUpdater extends EventEmitter {
+  autoDownload = true;
+  allowPrerelease = false;
+  allowDowngrade = true;
+  channel = "latest";
+  autoInstallOnAppQuit = true;
+  setFeedURL = mock(() => {});
+  checkForUpdates = mock(async () => {});
+  downloadUpdate = mock(async (_cancellation?: TestCancellationToken) => {});
+  quitAndInstall = mock(() => {});
+
+  constructor() {
+    super();
+    nativeUpdater = this;
+  }
+
+  differentialDownloadInstaller() {
+    return downloadDifferentially();
+  }
+}
 
 mock.module("electron", () => ({
   app: { isPackaged: true, getVersion: () => "2.0.4" },
 }));
 mock.module("electron-updater", () => ({
-  default: { autoUpdater: nativeUpdater },
+  default: { NsisUpdater: TestNsisUpdater },
   CancellationToken: TestCancellationToken,
 }));
 mock.module("../electron/main/service/externalLinks", () => ({ openExternalLink }));
 mock.module("../electron/main/utils/logger", () => ({ updaterLog: { info() {}, warn() {} } }));
 
+Object.defineProperty(process, "platform", { value: "win32" });
 const updater = await import("../electron/main/service/updates");
 const setProgressBar = mock((_progress: number) => {});
 updater.initializeUpdater(
@@ -114,12 +127,44 @@ test("Windows retains automatic download and explicit installation", async () =>
   expect(updater.getUpdateState().manualInstall).toBe(false);
   expect(openExternalLink).not.toHaveBeenCalled();
   nativeUpdater.emit("download-progress", { percent: 42 });
+  expect(updater.getUpdateState().downloadPhase).toBe("full");
   expect(setProgressBar).toHaveBeenLastCalledWith(0.42);
   nativeUpdater.emit("update-downloaded", { version: "2.1.0" });
   expect(setProgressBar).toHaveBeenLastCalledWith(-1);
   expect(nativeUpdater.autoInstallOnAppQuit).toBe(true);
   updater.quitAndInstallUpdate();
   expect(nativeUpdater.quitAndInstall).toHaveBeenCalledWith(false, true);
+});
+
+test("Windows resets progress and reports a full installer retry after differential failure", async () => {
+  Object.defineProperty(process, "platform", { value: "win32" });
+  downloadDifferentially.mockImplementationOnce(async () => {
+    nativeUpdater.emit("download-progress", { percent: 42 });
+    expect(updater.getUpdateState()).toMatchObject({
+      downloadPhase: "differential",
+      percent: 42,
+    });
+    return true;
+  });
+  nativeUpdater.downloadUpdate.mockImplementationOnce(async () => {
+    expect(await nativeUpdater.differentialDownloadInstaller()).toBe(true);
+    expect(updater.getUpdateState()).toMatchObject({
+      downloadPhase: "full-fallback",
+      percent: 0,
+    });
+    nativeUpdater.emit("download-progress", { percent: 5 });
+    expect(updater.getUpdateState()).toMatchObject({
+      downloadPhase: "full-fallback",
+      percent: 5,
+    });
+    nativeUpdater.emit("update-downloaded", { version: "2.1.0" });
+  });
+
+  nativeUpdater.emit("update-available", { version: "2.1.0" });
+  expect(await updater.downloadUpdate()).toMatchObject({
+    status: "downloaded",
+    downloadPhase: undefined,
+  });
 });
 
 test("older configuration opts out of Beta while an explicit choice survives normalization", () => {

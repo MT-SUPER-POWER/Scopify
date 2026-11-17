@@ -1,23 +1,5 @@
-export type AppUpdateStatus =
-  | "idle"
-  | "checking"
-  | "available"
-  | "not-available"
-  | "downloading"
-  | "downloaded"
-  | "unsupported"
-  | "error";
-
-export interface AppUpdateState {
-  status: AppUpdateStatus;
-  supported: boolean;
-  currentVersion: string;
-  manualInstall?: boolean;
-  version?: string;
-  percent?: number;
-  message?: string;
-  lastCheckedAt?: number;
-}
-
-export type AppUpdateStatePatch = Pick<AppUpdateState, "status"> &
-  Partial<Omit<AppUpdateState, "status">>;
+export type {
+  AppUpdateState,
+  AppUpdateStatePatch,
+  AppUpdateStatus,
+} from "@scopify/desktop-contract";

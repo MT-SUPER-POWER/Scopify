@@ -1,6 +1,6 @@
 "use client";
 
-import { UPDATE_STATUS_LABEL_KEYS } from "@/constants/updater";
+import { getUpdateStatusLabelKey } from "@/constants/updater";
 import { cn } from "@/lib/utils";
 import { useTranslation } from "react-i18next";
 import { useI18nStore } from "@/store/module/i18n";
@@ -52,7 +52,7 @@ export function AppUpdaterStatus({ state, onCheck, onDownload, onInstall }: AppU
       <SettingRow
         label={
           <>
-            {t(UPDATE_STATUS_LABEL_KEYS[state.status])}
+            {t(getUpdateStatusLabelKey(state))}
             {hasTargetVersion ? <span className="ml-2 tabular-nums">v{state.version}</span> : null}
           </>
         }
