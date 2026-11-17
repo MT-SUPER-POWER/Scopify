@@ -21,7 +21,7 @@ export interface ArtistFollowCountResponse {
   message: string;
 }
 
-export interface ArtistTopSongsResponse {
+export interface ArtistSongsResponse {
   code: number;
   more: boolean;
   songs: RawSongDetail[];
