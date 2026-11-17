@@ -850,5 +850,17 @@
   "options.lyricRenderAntialiasStyleHint": "全域抗鋸齒：{{value}}",
   "options.lyricRenderAntialiasAuto": "自動",
   "options.lyricRenderAntialiasOn": "開",
-  "options.lyricRenderAntialiasOff": "關"
+  "options.lyricRenderAntialiasOff": "關",
+  "perfCheck.title": "歌詞渲染效能檢測",
+  "perfCheck.description": "用商籟範例比較畫布設定，結果取決於目前視窗大小與負載。",
+  "perfCheck.start": "開始檢測",
+  "perfCheck.retry": "重新檢測",
+  "perfCheck.measuringDisplay": "正在測量螢幕更新間隔…",
+  "perfCheck.progress": "正在測量第 {{step}} 檔，共 {{total}} 檔…",
+  "perfCheck.failed": "無法完成渲染檢測，請保持此視窗可見後重試。",
+  "perfCheck.averageFps": "平均影格率",
+  "perfCheck.lowFps": "1% 低幀",
+  "perfCheck.lateFrames": "延遲影格",
+  "perfCheck.recommended": "建議",
+  "perfCheck.apply": "套用建議設定"
 }

@@ -1131,6 +1131,18 @@ export default interface Resources {
     "panel.playlist": "播放列表";
     "panel.quality": "音质";
     "panel.shuffle": "随机播放";
+    "perfCheck.apply": "应用推荐设置";
+    "perfCheck.averageFps": "平均帧率";
+    "perfCheck.description": "用商籁示例比较画布设置，结果取决于当前窗口大小和负载。";
+    "perfCheck.failed": "无法完成渲染检测，请保持此窗口可见后重试。";
+    "perfCheck.lateFrames": "延迟帧";
+    "perfCheck.lowFps": "1% 低帧";
+    "perfCheck.measuringDisplay": "正在测量屏幕刷新间隔…";
+    "perfCheck.progress": "正在测量第 {{step}} 档，共 {{total}} 档…";
+    "perfCheck.recommended": "推荐";
+    "perfCheck.retry": "重新检测";
+    "perfCheck.start": "开始检测";
+    "perfCheck.title": "歌词渲染性能检测";
     "preset.amber": "琥珀";
     "preset.dusk": "黄昏";
     "preset.forest": "森林";

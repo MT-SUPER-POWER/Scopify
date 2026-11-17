@@ -6,6 +6,7 @@ import { FoliaSubtitleSettingsSection } from "@/components/lyrics/visualSettings
 import { FoliaBackgroundSettingsSection } from "@/components/lyrics/visualSettings/FoliaBackgroundSettingsSection";
 import { FoliaVisualizerSettingsSection } from "@/components/lyrics/visualSettings/FoliaVisualizerSettingsSection";
 import { FoliaGlobalSettingsCard } from "@/components/lyrics/visualSettings/FoliaGlobalSettingsCard";
+import { FoliaRenderPerformanceSettings } from "@/components/lyrics/visualSettings/FoliaRenderPerformanceSettings";
 import type { FoliaStageEditSection } from "@/types/lyrics/folia/stage";
 import type { FoliaVisualSettingsPanelProps } from "@/types/lyrics/folia/visualSettings";
 import {
@@ -75,7 +76,10 @@ export function FoliaVisualSettingsPanel({
           )}
           {value === "subtitle" && <FoliaSubtitleSettingsSection model={model} />}
           {value === "global" && (
-            <FoliaGlobalSettingsCard controlCardBg="var(--st-card)" theme={theme} />
+            <>
+              <FoliaGlobalSettingsCard controlCardBg="var(--st-card)" theme={theme} />
+              <FoliaRenderPerformanceSettings theme={theme} />
+            </>
           )}
         </TabsContent>
       ))}
