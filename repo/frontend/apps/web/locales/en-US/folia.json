@@ -276,7 +276,7 @@
   "options.claddaghRadiusScale": "Orbit Radius Scale",
   "options.claddaghEllipseTiltDeg": "Orbit Tilt Degree",
   "options.claddaghShowAxisLine": "Center Axis Line",
-  "options.claddaghLetterSpacingOffset": "Letter Spacing",
+  "options.claddaghLetterSpacingOffset": "Lyric Letter Spacing",
   "options.pendoloWheelCenterX": "Wheel Center X (0 = Left Edge)",
   "options.pendoloArcRadius": "Arc Radius",
   "options.pendoloArcAngleDeg": "Arc Angle Spread",
@@ -943,5 +943,10 @@
   "options.monetChromeVisibilityHidden": "Hidden",
   "options.monetMirrorLayout": "Mirror Lyrics Left/Right",
   "options.monetPortraitSourceMirrored": "Left Portrait Source",
-  "options.monetPortraitSourceNone": "Off"
+  "options.monetPortraitSourceNone": "Off",
+  "options.claddaghPositionX": "Horizontal Position",
+  "options.claddaghPositionY": "Vertical Position",
+  "options.claddaghShowTranslation": "Show Translation",
+  "options.claddaghTranslationScale": "Translation Size",
+  "options.claddaghTranslationLetterSpacingOffset": "Translation Letter Spacing"
 }

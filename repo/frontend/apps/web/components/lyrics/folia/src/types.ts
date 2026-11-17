@@ -465,6 +465,12 @@ export interface CladdaghTuning {
   ellipseTiltDeg: number;
   showAxisLine: boolean;
   letterSpacingOffset: number;
+  /** Ring center offset in percent of the stage width and height, respectively. */
+  positionX?: number;
+  positionY?: number;
+  showTranslation?: boolean;
+  translationScale?: number;
+  translationLetterSpacingOffset?: number;
 }
 
 export const DEFAULT_CLADDAGH_TUNING: CladdaghTuning = {
@@ -473,6 +479,11 @@ export const DEFAULT_CLADDAGH_TUNING: CladdaghTuning = {
   ellipseTiltDeg: 45,
   showAxisLine: true,
   letterSpacingOffset: 0,
+  positionX: 0,
+  positionY: 0,
+  showTranslation: false,
+  translationScale: 1,
+  translationLetterSpacingOffset: 0,
 };
 
 export type CappellaEmojiPackSource = "builtin" | "custom";

@@ -276,7 +276,7 @@
   "options.claddaghRadiusScale": "軌道半徑",
   "options.claddaghEllipseTiltDeg": "軌道傾斜度",
   "options.claddaghShowAxisLine": "中間軸線",
-  "options.claddaghLetterSpacingOffset": "字符間距",
+  "options.claddaghLetterSpacingOffset": "主歌詞字元間距",
   "options.pendoloWheelCenterX": "輪盤水平位置 (0 = 左邊緣)",
   "options.pendoloArcRadius": "輪盤半徑",
   "options.pendoloArcAngleDeg": "弧度角度",
@@ -943,5 +943,10 @@
   "options.monetChromeVisibilityHidden": "隱藏",
   "options.monetMirrorLayout": "歌詞左右鏡像",
   "options.monetPortraitSourceMirrored": "左側肖像來源",
-  "options.monetPortraitSourceNone": "關閉"
+  "options.monetPortraitSourceNone": "關閉",
+  "options.claddaghPositionX": "左右位置",
+  "options.claddaghPositionY": "上下位置",
+  "options.claddaghShowTranslation": "顯示翻譯",
+  "options.claddaghTranslationScale": "翻譯放大倍率",
+  "options.claddaghTranslationLetterSpacingOffset": "翻譯字元間距"
 }

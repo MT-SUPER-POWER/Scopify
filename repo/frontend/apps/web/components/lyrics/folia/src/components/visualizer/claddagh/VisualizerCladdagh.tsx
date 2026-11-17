@@ -4,8 +4,11 @@ import React, { useMemo, useState, useEffect, useRef, useLayoutEffect, useCallba
 import { measureNaturalWidth, prepareWithSegments } from "@chenglou/pretext";
 import { useMotionValue, animate, MotionValue, useSpring, motion } from "framer-motion";
 import { DEFAULT_CLADDAGH_TUNING, type Line, type Theme } from "../../../types";
-import { buildLineGraphemeTimeline } from "../../../utils/lyrics/graphemeTiming";
-import { resolveThemeFontStack } from "../../../utils/fontStacks";
+import {
+  buildLineGraphemeTimeline,
+  splitLyricGraphemes,
+} from "../../../utils/lyrics/graphemeTiming";
+import { resolveThemeFontStack, resolveThemeTranslationFontStack } from "../../../utils/fontStacks";
 import { type VisualizerSharedProps } from "../definition";
 import { useVisualizerRuntime } from "../runtime";
 import { colorWithAlpha, mixColors } from "../colorMix";
@@ -354,6 +357,10 @@ interface RingLineProps {
   ellipseTiltDeg?: number;
   textSpacingScale?: number;
   letterSpacingOffset?: number;
+  translation?: string;
+  translationFontStack?: string;
+  translationScale?: number;
+  translationLetterSpacingOffset?: number;
 }
 
 /**
@@ -379,6 +386,10 @@ const RingLine: React.FC<RingLineProps> = ({
   ellipseTiltDeg,
   textSpacingScale = 1,
   letterSpacingOffset = 0,
+  translation,
+  translationFontStack,
+  translationScale = 1,
+  translationLetterSpacingOffset = 0,
 }) => {
   const fontStack = resolveThemeFontStack(theme);
   const baseFontSize = 72 * lyricsFontScale;
@@ -430,7 +441,31 @@ const RingLine: React.FC<RingLineProps> = ({
     );
   }, [line, theme.wordColors, fontSpec, baseFontSize, Rx, textSpacingScale, letterSpacingOffset]);
 
+  const translationFontPx = baseFontSize * 0.5 * translationScale;
+  const resolvedTranslationFontStack = translationFontStack ?? fontStack;
+  const translationSpacingInfo = useMemo(() => {
+    const text = translation?.trim();
+    if (!text) return [];
+    const items = splitLyricGraphemes(text).map((char) => ({ char }));
+    const spec = `600 ${translationFontPx}px ${resolvedTranslationFontStack}`;
+    return buildMeasuredSpacingInfo(
+      items,
+      spec,
+      translationFontPx,
+      Rx,
+      1,
+      translationLetterSpacingOffset,
+    );
+  }, [
+    translation,
+    translationFontPx,
+    resolvedTranslationFontStack,
+    Rx,
+    translationLetterSpacingOffset,
+  ]);
+
   const charRefs = useRef<(HTMLSpanElement | null)[]>([]);
+  const translationRefs = useRef<(HTMLSpanElement | null)[]>([]);
   const previousTimeRef = useRef(currentTime.get());
   const holdResetFrameRef = useRef(false);
 
@@ -758,6 +793,83 @@ const RingLine: React.FC<RingLineProps> = ({
           filter,
         });
       }
+
+      // The translation (#1124): on the same ellipse and turn as the lyric, moved out along the
+      // ellipse's minor axis so it runs under the lyric, clear of the focused glyphs' scale-up.
+      // No per-glyph timing of its own: it fills in at the pace the lyric line is sung.
+      const translationLength = translationSpacingInfo.length;
+      if (translationLength > 0) {
+        const thetaRot = -((ellipseTiltDeg ?? 45) * Math.PI) / 180;
+        const cosTheta = Math.cos(thetaRot);
+        const sinTheta = Math.sin(thetaRot);
+        const lineDiffNormalized = lineDiffFromCenter;
+        const activeLineFactor = Math.max(0, 1 - lineDiffNormalized);
+        const maxVisibleDist = currentRx * 0.48;
+        const focusScale = focusScaleRatio ?? 0.65;
+        const gapPx = baseFontSize * 0.62 * (1 + focusScale * 0.5) + translationFontPx * 0.8;
+        const sungGlyphs =
+          getLinePlaybackProgress(spacingInfo, latestTime, ownRenderEnd) * translationLength;
+
+        for (let i = 0; i < translationLength; i++) {
+          const el = translationRefs.current[i];
+          if (!el) continue;
+
+          const item = translationSpacingInfo[i];
+          const psi = lineIndex * Math.PI + item.nominalAngle - curLineOffset - wordOffset;
+          const deltaDist = psi * R_ref;
+          const thetaCurve = deltaDist / R_major;
+          const localCos = Math.cos(thetaCurve);
+          const D = (localCos + 1) / 2;
+          const depthScale = 0.22 + 0.98 * Math.pow(D, 1.5);
+          const spacingFactor = 0.35 + 0.65 * Math.pow(D, 1.2);
+          const rawX = Math.sin(thetaCurve) * R_major * spacingFactor;
+          const rawY = localCos * R_minor + gapPx * depthScale;
+          const x = rawX * cosTheta - rawY * sinTheta;
+          const y = rawX * sinTheta + rawY * cosTheta;
+
+          const tangentX = Math.cos(thetaCurve) * R_major;
+          const tangentY = -Math.sin(thetaCurve) * R_minor;
+          const tangentAngle = normalizeReadableAngle(
+            (Math.atan2(
+              tangentX * sinTheta + tangentY * cosTheta,
+              tangentX * cosTheta - tangentY * sinTheta,
+            ) *
+              180) /
+              Math.PI,
+          );
+
+          const F =
+            activeLineFactor * Math.pow(1 - Math.min(1, Math.abs(deltaDist) / maxVisibleDist), 1.8);
+          let opacity =
+            (0.35 + 0.65 * Math.pow(D, 1.5) * (0.35 + 0.65 * F)) * (0.68 + 0.32 * Math.pow(D, 1.9));
+          opacity *= clamp(2 - lineDiffNormalized, 0, 1) * lengthFadeFactor * 0.9;
+          if (lineIndex < centerLineIndex) opacity *= Math.max(0, 1 - lineDiffNormalized);
+          if (isUpcomingLine) opacity *= 0.18 + 0.82 * upcomingEntryProgress;
+          if (lineDiffFromCenter > 0.02) {
+            const cosThreshold = 1.0 - 1.2 * clamp((lineDiffFromCenter - 0.3) / 0.6, 0, 1);
+            if (localCos > cosThreshold)
+              opacity *= clamp(1.0 - (localCos - cosThreshold) / 0.15, 0, 1);
+          }
+
+          const opacityText = opacity.toFixed(3);
+          if (Number(opacityText) === 0 && Number(written.get(el)?.opacity ?? 1) === 0) continue;
+
+          const scale =
+            depthScale * (1 + focusScale * 0.35 * F) * lengthScaleFactor * item.scaleFactor;
+          const blur = 8.0 * (1 - D) * (1 - 0.5 * F);
+          const tiltAngle = clamp(tangentAngle * (0.4 + 0.6 * D), -38, 38);
+          const sung = clamp(sungGlyphs - i, 0, 1);
+
+          writeGlyph(el, {
+            transform: `translate3d(calc(-50% + ${x.toFixed(1)}px), calc(-50% + ${y.toFixed(1)}px), 0px) rotate(${tiltAngle.toFixed(2)}deg) scale(${scale.toFixed(3)})`,
+            opacity: opacityText,
+            color:
+              sung > 0 ? mixColors(baseColor, highlightColor, sung, 0.55 + 0.3 * sung) : baseColor,
+            textShadow: "none",
+            filter: blur < 0.2 ? "none" : `blur(${blur.toFixed(2)}px)`,
+          });
+        }
+      }
     };
 
     const handleUpdate = () => {
@@ -774,6 +886,9 @@ const RingLine: React.FC<RingLineProps> = ({
     };
   }, [
     spacingInfo,
+    translationSpacingInfo,
+    translationFontPx,
+    baseFontSize,
     lineIndex,
     centerLineIndex,
     lineOffset,
@@ -820,6 +935,32 @@ const RingLine: React.FC<RingLineProps> = ({
           {item.char}
         </span>
       ))}
+      {translationSpacingInfo.map((item, idx) => (
+        <span
+          key={`translation-${idx}`}
+          ref={(el) => {
+            translationRefs.current[idx] = el;
+          }}
+          data-claddagh-translation
+          style={{
+            position: "absolute",
+            left: "50%",
+            top: "50%",
+            opacity: 0,
+            transform: "translate3d(-50%, -50%, 0px) scale(0.2)",
+            transformOrigin: "center center",
+            willChange: "transform, opacity, filter, color",
+            fontFamily: resolvedTranslationFontStack,
+            fontSize: `${translationFontPx}px`,
+            fontWeight: 600,
+            letterSpacing: `${CLADDAGH_LETTER_SPACING_EM}em`,
+            whiteSpace: "nowrap",
+            color: baseColor,
+          }}
+        >
+          {item.char}
+        </span>
+      ))}
     </div>
   );
 };
@@ -845,6 +986,9 @@ const VisualizerCladdagh: React.FC<VisualizerSharedProps> = (props) => {
     paused = false,
   } = props;
 
+  const positionX = claddaghTuning.positionX ?? 0;
+  const positionY = claddaghTuning.positionY ?? 0;
+  const translationFontStack = resolveThemeTranslationFontStack(subtitleTheme ?? theme);
   const centerNormalTiltDeg = 90 - claddaghTuning.ellipseTiltDeg;
 
   const isRawScaleRef = useRef(false);
@@ -1099,8 +1243,8 @@ const VisualizerCladdagh: React.FC<VisualizerSharedProps> = (props) => {
               ref={axisLineRef}
               style={{
                 position: "absolute",
-                left: "50%",
-                top: "50%",
+                left: `${50 + positionX}%`,
+                top: `${50 + positionY}%`,
                 width: "300px",
                 height: "4px",
                 transform: `translate(-50%, -50%) rotate(${centerNormalTiltDeg}deg) scale(1, 1)`,
@@ -1111,7 +1255,13 @@ const VisualizerCladdagh: React.FC<VisualizerSharedProps> = (props) => {
           )}
         </div>
 
-        <div style={{ width: "100%", height: "100%", position: "relative", zIndex: 10 }}>
+        <div
+          className="relative z-10 size-full"
+          style={{
+            transform:
+              positionX || positionY ? `translate(${positionX}%, ${positionY}%)` : undefined,
+          }}
+        >
           {showText &&
             Rx > 0 &&
             Ry > 0 &&
@@ -1137,6 +1287,10 @@ const VisualizerCladdagh: React.FC<VisualizerSharedProps> = (props) => {
                 ellipseTiltDeg={claddaghTuning.ellipseTiltDeg}
                 textSpacingScale={activeTextSpacingScale}
                 letterSpacingOffset={claddaghTuning.letterSpacingOffset}
+                translation={claddaghTuning.showTranslation ? lines[idx].translation : undefined}
+                translationFontStack={translationFontStack}
+                translationScale={claddaghTuning.translationScale}
+                translationLetterSpacingOffset={claddaghTuning.translationLetterSpacingOffset}
               />
             ))}
         </div>

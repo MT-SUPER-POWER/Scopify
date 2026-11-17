@@ -481,11 +481,16 @@ export default interface Resources {
     "options.cappellaShowEmoMessages": "显示表情包";
     "options.claddaghEllipseTiltDeg": "轨道倾斜度";
     "options.claddaghFocusScaleRatio": "主歌词放大倍率";
-    "options.claddaghLetterSpacingOffset": "字符间距";
+    "options.claddaghLetterSpacingOffset": "主歌词字符间距";
+    "options.claddaghPositionX": "左右位置";
+    "options.claddaghPositionY": "上下位置";
     "options.claddaghRadiusScale": "轨道半径";
     "options.claddaghSettings": "回环参数";
     "options.claddaghSettingsDesc": "调整歌词大小对比率、轨道半径及倾斜度。";
     "options.claddaghShowAxisLine": "中间轴线";
+    "options.claddaghShowTranslation": "显示翻译";
+    "options.claddaghTranslationLetterSpacingOffset": "翻译字符间距";
+    "options.claddaghTranslationScale": "翻译放大倍率";
     "options.classicBreathingFloatMultiplier": "呼吸浮动范围";
     "options.classicLegacyLayout": "排版模式";
     "options.classicLegacyLayoutOff": "自适应";
