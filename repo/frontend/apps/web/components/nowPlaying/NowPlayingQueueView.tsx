@@ -3,6 +3,7 @@
 import { LocateFixed } from "lucide-react";
 import { useRef } from "react";
 import { PlayerQueueList } from "@/components/player/PlayerQueueList";
+import { QueueRadioWallButton } from "@/components/Playlist/lattice/QueueRadioWallButton";
 import { usePlayerStore } from "@/store";
 import { useTranslation } from "react-i18next";
 
@@ -20,15 +21,18 @@ export function NowPlayingQueueView() {
         <p className="text-xs text-content-muted">
           {t("queue.totalSongs", { count: queueLength })}
         </p>
-        <button
-          type="button"
-          onClick={() => queueListRef.current?.scrollToCurrent()}
-          title={t("queue.locateCurrent")}
-          aria-label={t("queue.locateCurrent")}
-          className="rounded-full p-1.5 text-content-muted transition-colors hover:bg-content/10 hover:text-content"
-        >
-          <LocateFixed className="size-4" />
-        </button>
+        <div className="flex items-center gap-1">
+          {queueLength > 0 && <QueueRadioWallButton />}
+          <button
+            type="button"
+            onClick={() => queueListRef.current?.scrollToCurrent()}
+            title={t("queue.locateCurrent")}
+            aria-label={t("queue.locateCurrent")}
+            className="rounded-full p-1.5 text-content-muted transition-colors hover:bg-content/10 hover:text-content"
+          >
+            <LocateFixed className="size-4" />
+          </button>
+        </div>
       </div>
       <PlayerQueueList ref={queueListRef} isOpen className="h-auto min-h-0 flex-1" />
     </div>

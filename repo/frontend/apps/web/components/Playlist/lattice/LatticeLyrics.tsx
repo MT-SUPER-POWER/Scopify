@@ -10,7 +10,7 @@ import type { LatticeLyricsProps } from "@/types/playlist/latticeComponents";
 import type { LatticeLyricInput } from "@/types/playlist/latticeLyrics";
 import { posterCopyClass, posterSubtitleClass, posterTitleClass } from "./latticePosterCopy";
 
-export default function LatticeLyrics({ track }: LatticeLyricsProps) {
+export default function LatticeLyrics({ track, compact = false }: LatticeLyricsProps) {
   const bridge = useFoliaPlaybackBridge();
   const { theme, subtitleTheme, settings } = useFoliaPresentationAppearance();
   // A photographic poster always needs light ink; preserve the chosen fonts and accents.
@@ -60,7 +60,13 @@ export default function LatticeLyrics({ track }: LatticeLyricsProps) {
     <>
       <span
         className={
-          ready ? "absolute top-18 right-18 left-10 flex flex-col gap-1.5" : posterCopyClass
+          ready
+            ? compact
+              ? "absolute inset-x-[8%] top-[10%] flex flex-col gap-1"
+              : "absolute top-18 right-18 left-10 flex flex-col gap-1.5"
+            : compact
+              ? "absolute inset-x-[8%] bottom-[8%] flex flex-col gap-1"
+              : posterCopyClass
         }
       >
         <strong
@@ -79,7 +85,11 @@ export default function LatticeLyrics({ track }: LatticeLyricsProps) {
         </small>
       </span>
       <div
-        className="pointer-events-none absolute inset-x-8 top-35 bottom-46 z-1 opacity-0 data-[ready=true]:opacity-100"
+        className={
+          compact
+            ? "pointer-events-none absolute inset-x-[7%] top-[31%] bottom-[6%] z-1 opacity-0 data-[ready=true]:opacity-100"
+            : "pointer-events-none absolute inset-x-8 top-35 bottom-46 z-1 opacity-0 data-[ready=true]:opacity-100"
+        }
         data-ready={ready}
       >
         <div

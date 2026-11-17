@@ -1988,6 +1988,11 @@ export default interface Resources {
     "order.notOwner": "只能调整自己创建的歌单中的歌曲顺序。";
     "order.reverted": "顺序保存失败，已恢复原顺序";
     "page.invalidUrl": "无效的歌单地址";
+    "radio.browseNext": "浏览下一张卡片";
+    "radio.browsePrevious": "浏览上一张卡片";
+    "radio.hideUpcoming": "隐藏接下来的歌曲";
+    "radio.hint": "拖动、滚轮或左右方向键浏览 · 单击居中 · 双击居中的卡片或按 Enter 播放";
+    "radio.unknown": "即将播放";
     "table.addToPlaylistFailed": "添加到歌单失败";
     "table.addToPlaylistSuccess": "已成功添加到歌单";
     "table.columnAlbum": "专辑";
@@ -2012,6 +2017,7 @@ export default interface Resources {
     "view.grid": "Grid 卡片墙";
     "view.lattice": "Lattice 拼贴";
     "view.open": "歌单视图";
+    "view.radio": "电台墙";
     "view.tools": "视图工具";
     "view.zoom": "缩放";
     "view.zoomIn": "放大";

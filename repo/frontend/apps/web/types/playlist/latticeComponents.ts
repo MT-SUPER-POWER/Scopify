@@ -12,7 +12,9 @@ export interface CardFlipPlan {
 export interface PlaylistLatticeProps {
   tracks: PlayerTrack[];
   title: string;
-  sourceId: string | null;
+  sourceId: number | string | null;
+  /** When following the live queue, ignore a card action if that queue has been replaced. */
+  playbackQueue?: boolean;
   onDislikeTrack?: (track: PlayerTrack) => void;
   onTrackPlay?: (track: PlayerTrack) => void;
   onClose: () => void;
@@ -44,7 +46,7 @@ export interface LatticePosterProps {
   onDislikeTrack?: (track: PlayerTrack) => void;
   onFocus: (instance: QueueInstance) => void;
   onSelect: (instance: QueueInstance) => void;
-  onPlay: (track: PlayerTrack) => void;
+  onPlay: (index: number) => void;
   flipPlan: CardFlipPlan | null;
 }
 
@@ -58,17 +60,18 @@ export interface PlaylistViewToolsProps {
   /** Usage hint for the current view, shown at the bottom of the options menu. */
   hint: string;
   /** Multiplies the zoom by a factor. */
-  onZoom: (factor: number) => void;
+  onZoom?: (factor: number) => void;
   canLocate: boolean;
   onLocate: () => void;
   onClose: () => void;
   tracks?: PlaylistLatticeProps["tracks"];
   onLocateTrack?: (index: number) => void;
+  isPersonalFm?: boolean;
 }
 
 export type PlaylistViewPlaybackOptions = Pick<
   PlaylistLatticeProps,
-  "tracks" | "sourceId" | "onTrackPlay"
+  "tracks" | "sourceId" | "onTrackPlay" | "playbackQueue"
 >;
 export interface LatticeProgressProps {
   current: boolean;
@@ -81,6 +84,8 @@ export interface LatticePlaybackControlsProps {
   current: boolean;
   revealed: boolean;
   onPlay: (track: PlayerTrack) => void;
+  className?: string;
+  onDislikeTrack?: () => void;
 }
 
 export type LatticePosterArtworkProps = Pick<
@@ -89,4 +94,5 @@ export type LatticePosterArtworkProps = Pick<
 >;
 export interface LatticeLyricsProps {
   track: PlayerTrack;
+  compact?: boolean;
 }

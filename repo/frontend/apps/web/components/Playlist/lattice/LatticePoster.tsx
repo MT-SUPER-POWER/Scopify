@@ -92,7 +92,7 @@ export const LatticePoster = memo(
           if (event.key === "Enter" || event.key === " ") {
             event.preventDefault();
             if (!expanded) onSelect(instance);
-            else if (event.key === "Enter") onPlay(track);
+            else if (event.key === "Enter") onPlay(instance.queueIndex);
             else setRevealed((value) => !value);
           }
         }}
@@ -146,7 +146,7 @@ export const LatticePoster = memo(
               track={track}
               current={current}
               revealed={revealed || hovered || focusWithin}
-              onPlay={onPlay}
+              onPlay={() => onPlay(instance.queueIndex)}
             />
           )}
         </div>

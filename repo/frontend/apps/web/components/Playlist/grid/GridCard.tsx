@@ -81,7 +81,7 @@ export const GridCard = memo(function GridCard({
           <button
             type="button"
             aria-label={`${t(playing ? "ui.pause" : "ui.play")} ${track.title}`}
-            onClick={() => onPlay(track)}
+            onClick={() => onPlay(cell.index)}
             className="pointer-events-none absolute inset-0 m-auto grid size-14 place-items-center rounded-full bg-black/55 text-white opacity-0 backdrop-blur-sm transition-[opacity,transform] duration-200 group-data-[centered=true]/card:pointer-events-auto group-data-[centered=true]/card:opacity-100 group-data-[current=true]/card:pointer-events-auto group-data-[current=true]/card:not-group-data-[playing=true]/card:opacity-100 group-data-[current=true]/card:group-hover/card:opacity-100 hover:scale-105 hover:bg-black/70 focus-visible:opacity-100 focus-visible:outline-2 focus-visible:outline-white [&_svg]:size-6"
           >
             {playing ? <Pause fill="currentColor" /> : <Play fill="currentColor" />}

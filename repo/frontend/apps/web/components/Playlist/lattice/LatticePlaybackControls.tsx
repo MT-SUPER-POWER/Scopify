@@ -4,6 +4,7 @@ import { cn } from "@/lib/utils";
 import {
   ArrowUpRight,
   Heart,
+  HeartOff,
   Pause,
   Play,
   Repeat,
@@ -31,6 +32,8 @@ export function LatticePlaybackControls({
   current,
   revealed,
   onPlay,
+  onDislikeTrack,
+  className,
 }: LatticePlaybackControlsProps) {
   const { t } = useTranslation();
   const playback = usePlaybackProjection();
@@ -50,7 +53,10 @@ export function LatticePlaybackControls({
   };
   return (
     <div
-      className="group/chrome absolute inset-x-10 bottom-8 z-2 cursor-auto text-white motion-reduce:**:transition-none"
+      className={cn(
+        "group/chrome absolute inset-x-10 bottom-8 z-2 cursor-auto text-white motion-reduce:**:transition-none",
+        className,
+      )}
       data-lattice-controls=""
       data-revealed={revealed}
     >
@@ -89,6 +95,18 @@ export function LatticePlaybackControls({
           >
             <Heart fill={current && playback.liked ? "currentColor" : "none"} />
           </button>
+          {onDislikeTrack && (
+            <button
+              type="button"
+              className={transportButton}
+              disabled={!canControl}
+              aria-label={t("contextMenu.recommendLess")}
+              title={t("contextMenu.recommendLess")}
+              onClick={onDislikeTrack}
+            >
+              <HeartOff />
+            </button>
+          )}
           {!personalFm && (
             <button
               type="button"

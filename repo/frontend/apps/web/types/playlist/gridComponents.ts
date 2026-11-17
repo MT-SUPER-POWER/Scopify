@@ -13,5 +13,5 @@ export interface GridCardProps {
   onSelect: (cell: GridCell, centered: boolean) => void;
   flipPlan: CardFlipPlan | null;
   onDislikeTrack?: (track: PlayerTrack) => void;
-  onPlay: (track: PlayerTrack) => void;
+  onPlay: (index: number) => void;
 }

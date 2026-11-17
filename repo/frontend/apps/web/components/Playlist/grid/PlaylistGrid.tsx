@@ -17,6 +17,7 @@ export default function PlaylistGrid({
   tracks,
   title,
   sourceId,
+  playbackQueue,
   onTrackPlay,
   onDislikeTrack,
   onClose,
@@ -28,10 +29,11 @@ export default function PlaylistGrid({
   const { panTo, panToCell, fieldRef } = wall;
   const followCurrent = useLatticePreferences((state) => state.followCurrent);
   const lightsOff = useLatticePreferences((state) => state.lightsOff);
-  const { currentIndex, isPlaying, play } = usePlaylistViewPlayback({
+  const { currentIndex, isPlaying, playAt } = usePlaylistViewPlayback({
     tracks,
     sourceId,
     onTrackPlay,
+    playbackQueue,
   });
   const flip = useFlipReveal(fieldRef, wall.visible, tracks.length > 0, (cell) => {
     const camera = wall.cameraRef.current;
@@ -49,17 +51,16 @@ export default function PlaylistGrid({
     (cell: GridCell, centered: boolean) => {
       const track = tracks[cell.index];
       if (!track) return;
-      if (centered) play(track);
+      if (centered) playAt(cell.index);
       else panToCell(cell);
     },
-    [panToCell, play, tracks],
+    [panToCell, playAt, tracks],
   );
   const activate = useCallback(
     (index: number) => {
-      const track = tracks[index];
-      if (track) play(track);
+      playAt(index);
     },
-    [play, tracks],
+    [playAt],
   );
   useEffect(() => {
     fieldRef.current?.focus({ preventScroll: true });
@@ -95,6 +96,11 @@ export default function PlaylistGrid({
         onModeChange={onModeChange}
         hint={t("playlist.grid.hint")}
         onZoom={wall.zoomBy}
+        tracks={tracks}
+        onLocateTrack={(index) => {
+          panTo(index);
+          fieldRef.current?.focus({ preventScroll: true });
+        }}
       />
       <div
         ref={fieldRef}
@@ -119,7 +125,7 @@ export default function PlaylistGrid({
                 playing={cell.index === currentIndex && isPlaying}
                 register={wall.register}
                 onSelect={select}
-                onPlay={play}
+                onPlay={playAt}
                 onDislikeTrack={onDislikeTrack}
                 flipPlan={flip.plan}
               />

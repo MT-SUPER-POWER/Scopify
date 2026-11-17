@@ -36,6 +36,7 @@ export function PlaylistViewTools({
   onClose,
   tracks,
   onLocateTrack,
+  isPersonalFm,
 }: PlaylistViewToolsProps) {
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
@@ -79,7 +80,7 @@ export function PlaylistViewTools({
             transition={{ duration: 0.16, ease: [0.22, 1, 0.36, 1] }}
             className="max-h-[calc(100cqh-104px)] w-[min(296px,calc(100cqw-48px))] origin-bottom-right overflow-y-auto overscroll-contain rounded-2xl border border-white/10 bg-[#151515]/85 p-1.5 shadow-[0_24px_64px_#000a] backdrop-blur-xl"
           >
-            <div className="grid grid-cols-3 gap-1 p-0.5">
+            <div className="grid grid-cols-4 gap-1 p-0.5">
               <button
                 type="button"
                 className={CELL}
@@ -103,29 +104,31 @@ export function PlaylistViewTools({
                 </button>
               ))}
             </div>
-            <div className="mt-1 flex h-[38px] items-center justify-between rounded-xl px-2.5 text-[13px]">
-              <span>{t("playlist.view.zoom")}</span>
-              <span className="flex items-center gap-0.5">
-                <button
-                  type="button"
-                  className="grid size-8 place-items-center rounded-lg hover:bg-white/10 focus-visible:outline-2 focus-visible:outline-white/70 [&_svg]:size-4"
-                  onClick={() => onZoom(1 / ZOOM_STEP)}
-                  aria-label={t("playlist.view.zoomOut")}
-                  title={`${t("playlist.view.zoomOut")} · -`}
-                >
-                  <ZoomOut />
-                </button>
-                <button
-                  type="button"
-                  className="grid size-8 place-items-center rounded-lg hover:bg-white/10 focus-visible:outline-2 focus-visible:outline-white/70 [&_svg]:size-4"
-                  onClick={() => onZoom(ZOOM_STEP)}
-                  aria-label={t("playlist.view.zoomIn")}
-                  title={`${t("playlist.view.zoomIn")} · +`}
-                >
-                  <ZoomIn />
-                </button>
-              </span>
-            </div>
+            {onZoom && (
+              <div className="mt-1 flex h-[38px] items-center justify-between rounded-xl px-2.5 text-[13px]">
+                <span>{t("playlist.view.zoom")}</span>
+                <span className="flex items-center gap-0.5">
+                  <button
+                    type="button"
+                    className="grid size-8 place-items-center rounded-lg hover:bg-white/10 focus-visible:outline-2 focus-visible:outline-white/70 [&_svg]:size-4"
+                    onClick={() => onZoom(1 / ZOOM_STEP)}
+                    aria-label={t("playlist.view.zoomOut")}
+                    title={`${t("playlist.view.zoomOut")} · -`}
+                  >
+                    <ZoomOut />
+                  </button>
+                  <button
+                    type="button"
+                    className="grid size-8 place-items-center rounded-lg hover:bg-white/10 focus-visible:outline-2 focus-visible:outline-white/70 [&_svg]:size-4"
+                    onClick={() => onZoom(ZOOM_STEP)}
+                    aria-label={t("playlist.view.zoomIn")}
+                    title={`${t("playlist.view.zoomIn")} · +`}
+                  >
+                    <ZoomIn />
+                  </button>
+                </span>
+              </div>
+            )}
             <button type="button" className={ROW} disabled={!canLocate} onClick={onLocate}>
               <Crosshair />
               {t("playlist.lattice.locate")}
@@ -140,18 +143,34 @@ export function PlaylistViewTools({
                 }}
               />
             )}
-            <label className={cn(ROW, "cursor-pointer justify-between")}>
-              {t("playlist.lattice.follow")}
-              <Switch
-                checked={preferences.followCurrent}
-                onCheckedChange={preferences.setFollowCurrent}
-              />
-            </label>
-            <label className={cn(ROW, "cursor-pointer justify-between")}>
-              {t("playlist.lattice.lightsOff")}
-              <Switch checked={preferences.lightsOff} onCheckedChange={preferences.setLightsOff} />
-            </label>
-            {mode === "lattice" && (
+            {mode !== "radio" && (
+              <>
+                <label className={cn(ROW, "cursor-pointer justify-between")}>
+                  {t("playlist.lattice.follow")}
+                  <Switch
+                    checked={preferences.followCurrent}
+                    onCheckedChange={preferences.setFollowCurrent}
+                  />
+                </label>
+                <label className={cn(ROW, "cursor-pointer justify-between")}>
+                  {t("playlist.lattice.lightsOff")}
+                  <Switch
+                    checked={preferences.lightsOff}
+                    onCheckedChange={preferences.setLightsOff}
+                  />
+                </label>
+              </>
+            )}
+            {mode === "radio" && !isPersonalFm && (
+              <label className={cn(ROW, "cursor-pointer justify-between")}>
+                {t("playlist.radio.hideUpcoming")}
+                <Switch
+                  checked={preferences.radioHideUpcoming}
+                  onCheckedChange={preferences.setRadioHideUpcoming}
+                />
+              </label>
+            )}
+            {mode !== "grid" && (
               <label className={cn(ROW, "cursor-pointer justify-between")}>
                 {t("playlist.lattice.currentNumberOnly")}
                 <Switch
