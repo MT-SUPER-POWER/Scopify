@@ -23,6 +23,7 @@ export function createLatticeRaster(pixi: typeof import("pixi.js")) {
     const cached = byText?.get(text);
     if (cached) return cached;
     context.font = font;
+    context.direction = "ltr";
     const metrics = context.measureText(text);
     const size = {
       width: metrics.width,
@@ -46,8 +47,11 @@ export function createLatticeRaster(pixi: typeof import("pixi.js")) {
     font: string,
     fontPx: number,
     resolution: number,
+    rtl = false,
   ): { texture: Texture; width: number; height: number; pad: number } => {
     context.font = font;
+    context.direction = rtl ? "rtl" : "ltr";
+    context.textAlign = "left";
     const metrics = context.measureText(text);
     const pad = Math.ceil(
       Math.max(
@@ -69,6 +73,8 @@ export function createLatticeRaster(pixi: typeof import("pixi.js")) {
     if (!paint) throw new Error("Lattice text texture is unavailable");
     paint.scale(resolution, resolution);
     paint.font = font;
+    paint.direction = context.direction;
+    paint.textAlign = "left";
     paint.fillStyle = "#ffffff";
     paint.fillText(text, pad, pad + ascent);
     // Construct at resolution 1 and set the real one afterwards (Folia 2cb9e56e, 194d0c4a).

@@ -16,6 +16,7 @@ import {
   resolveThemeTranslationFontStack,
   resolveThemeFontWeight,
 } from "@/components/lyrics/folia/src/utils/fontStacks";
+import { resolveLyricTextDirection } from "@/components/lyrics/folia/src/utils/lyrics/textDirection";
 
 import { resolveMonetFillWidth } from "./monetLyricMotion";
 
@@ -79,6 +80,7 @@ export function wrapLatticeTokens(
   lineHeight: number,
   measure: MeasureText,
   translation = false,
+  rtl = false,
 ): LyricPiece[] {
   const pieces: LyricPiece[] = [];
   let x = 0,
@@ -112,7 +114,7 @@ export function wrapLatticeTokens(
       const pieceWidth = measure(text, font).width;
       pieces.push({
         text,
-        x,
+        x: rtl ? width - x - pieceWidth : x,
         y: row * lineHeight,
         width: pieceWidth,
         row,
@@ -120,6 +122,7 @@ export function wrapLatticeTokens(
         offsets,
         tokenOffset: offsets[first],
         translation,
+        rtl,
       });
       x += pieceWidth;
       first = last;
@@ -140,7 +143,8 @@ export function layoutLatticeLine(
   romanization: boolean,
 ) {
   const tokens = buildMonetDisplayTokens(line);
-  const pieces = wrapLatticeTokens(tokens, width, type.font, type.lineHeight, measure);
+  const rtl = resolveLyricTextDirection(line.fullText) === "rtl";
+  const pieces = wrapLatticeTokens(tokens, width, type.font, type.lineHeight, measure, false, rtl);
   const rows = (pieces.at(-1)?.row ?? 0) + 1;
   const translation = type.showTranslation
     ? romanization
@@ -157,6 +161,7 @@ export function layoutLatticeLine(
     endOffset: translation?.length ?? 0,
     graphemeTimings: [],
   };
+  const translationRtl = resolveLyricTextDirection(subToken.text) === "rtl";
   const sub = translation
     ? wrapLatticeTokens(
         [subToken],
@@ -165,14 +170,31 @@ export function layoutLatticeLine(
         type.translationLineHeight,
         measure,
         true,
+        translationRtl,
       ).filter((piece) => piece.row < 2)
     : [];
   const textHeight = rows * type.lineHeight;
   for (const piece of sub) piece.y += textHeight + type.fontPx * 0.3;
+  // Keep subtitle reading order while aligning it with the main lyric column.
+  if (translationRtl !== rtl) {
+    const edges = new Map<number, number>();
+    for (const piece of sub) {
+      const edge = edges.get(piece.row);
+      edges.set(
+        piece.row,
+        rtl ? Math.max(edge ?? 0, piece.x + piece.width) : Math.min(edge ?? width, piece.x),
+      );
+    }
+    for (const piece of sub) {
+      piece.x += rtl ? width - (edges.get(piece.row) ?? width) : -(edges.get(piece.row) ?? 0);
+    }
+  }
   return {
     pieces: [...pieces, ...sub],
     rows,
     textHeight,
+    width,
+    rtl,
     height:
       textHeight +
       (sub.length

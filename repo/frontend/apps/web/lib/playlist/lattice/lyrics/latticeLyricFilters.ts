@@ -72,11 +72,12 @@ uniform float uProgress;
 uniform float uFront;
 uniform float uSoftness;
 uniform float uPassed;
+uniform float uRtl;
 uniform vec2 uGlyphRange;
 uniform vec2 uVerticalFade;
 void main() {
     float glyphAlpha = texture(uTexture, vUV).a;
-    float x = vUV.x;
+    float x = mix(vUV.x, 1.0 - vUV.x, uRtl);
     float start = uFront - uSoftness;
     float middle = uFront - uSoftness * 0.55;
     float mask = x < middle ? mix(1.0, 0.92, clamp((x - start) / max(0.00001, middle - start), 0.0, 1.0))
@@ -113,6 +114,7 @@ export function createLatticeSweepShader(
     uFront: { value: 0, type: "f32" },
     uSoftness: { value: 0.1, type: "f32" },
     uPassed: { value: 0, type: "f32" },
+    uRtl: { value: 0, type: "f32" },
     uGlyphRange: { value: [0, 1], type: "vec2<f32>" },
     uVerticalFade: { value: [2, 3], type: "vec2<f32>" },
   });

@@ -4,6 +4,8 @@ import { useEffect, useId, useRef } from "react";
 import { useFlipReveal } from "@/hooks/playlist/useFlipReveal";
 import { useLatticeWall } from "@/hooks/playlist/useLatticeWall";
 import { usePlaylistViewPlayback } from "@/hooks/playlist/usePlaylistViewPlayback";
+import { useWallDoubleClick } from "@/hooks/playlist/useWallDoubleClick";
+import { playerTrackKey } from "@/lib/player/trackIdentity";
 import { overlaps, toBounds } from "@/lib/playlist/lattice/layout";
 import { useLatticePreferences } from "@/store/module/lattice";
 import { useTranslation } from "react-i18next";
@@ -27,8 +29,10 @@ export default function PlaylistLattice({
   const wall = useLatticeWall(tracks.length);
   const followCurrent = useLatticePreferences((state) => state.followCurrent);
   const lightsOff = useLatticePreferences((state) => state.lightsOff);
+  const currentNumberOnly = useLatticePreferences((state) => state.currentNumberOnly);
   const { currentIndex, play } = usePlaylistViewPlayback({ tracks, sourceId, onTrackPlay });
-  const { bounds } = wall;
+  const doubleClick = useWallDoubleClick();
+  const { bounds, locate } = wall;
   const flip = useFlipReveal(wall.fieldRef, wall.instances, tracks.length > 0, (instance) => {
     if (!overlaps(toBounds(instance), bounds)) return null;
     const radius = Math.hypot(bounds.right - bounds.left, bounds.bottom - bounds.top) / 2;
@@ -47,8 +51,8 @@ export default function PlaylistLattice({
   }, []);
   // Waits for the flip: the camera flying off mid-turn would drag half-turned cards out of view.
   useEffect(() => {
-    if (flip.settled && followCurrent && currentIndex >= 0) wall.locate(currentIndex);
-  }, [flip.settled, followCurrent, currentIndex, wall]);
+    if (flip.settled && followCurrent && currentIndex >= 0) locate(currentIndex);
+  }, [flip.settled, followCurrent, currentIndex, locate]);
   return (
     <section
       data-playlist-view=""
@@ -56,6 +60,7 @@ export default function PlaylistLattice({
       tabIndex={-1}
       className="group/lattice @container absolute inset-0 isolate z-15 overflow-hidden bg-card text-foreground outline-none motion-reduce:**:transition-none"
       data-lights-off={lightsOff && currentIndex >= 0}
+      data-current-number-only={currentNumberOnly}
       aria-label={t("playlist.view.lattice")}
       aria-describedby={hintId}
       onKeyDown={(event) => wall.onKeyDown(event, onClose)}
@@ -71,6 +76,11 @@ export default function PlaylistLattice({
         onModeChange={onModeChange}
         hint={t("playlist.lattice.hint")}
         onZoom={wall.zoomBy}
+        tracks={tracks}
+        onLocateTrack={(index) => {
+          wall.locate(index);
+          wall.fieldRef.current?.focus({ preventScroll: true });
+        }}
       />
       <div
         ref={wall.fieldRef}
@@ -78,6 +88,16 @@ export default function PlaylistLattice({
         aria-label={title}
         tabIndex={0}
         {...wall.pointerHandlers}
+        onClickCapture={(event) => {
+          wall.pointerHandlers.onClickCapture(event);
+          doubleClick.note(event);
+        }}
+        onDoubleClick={(event) => {
+          const poster = doubleClick.take(event);
+          if (!poster) return;
+          const track = tracks[Number(poster.dataset.wallTrack)];
+          if (track) play(track, true);
+        }}
       >
         <div ref={wall.worldRef} className="absolute inset-0 origin-top-left will-change-transform">
           {wall.instances.map((instance) => {
@@ -86,7 +106,7 @@ export default function PlaylistLattice({
             const rect = wall.layout?.get(instance.instanceId) ?? instance;
             return (
               <LatticePoster
-                key={`${instance.instanceId}:${track.ref.id}`}
+                key={`${instance.instanceId}:${playerTrackKey(track)}`}
                 instance={instance}
                 track={track}
                 rect={rect}
