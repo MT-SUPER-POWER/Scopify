@@ -5,6 +5,7 @@ import { useCallback, useMemo } from "react";
 import { buildAppStyle } from "@/components/lyrics/folia/src/components/app/presentation/buildAppStyle";
 import FloatingPlayerControls from "@/components/lyrics/folia/src/components/FloatingPlayerControls";
 import { PlayerState } from "@/components/lyrics/folia/src/types";
+import { CinemaSceneSurface } from "@/components/lyrics/scenes/CinemaSceneSurface";
 import { useFoliaSettingsStore } from "@/store/module/foliaSettings";
 import type { LyricStageProps } from "@/types/lyrics/components";
 import { useFoliaPlaybackBridge } from "@/hooks/player/useFoliaPlaybackBridge";
@@ -91,26 +92,38 @@ export function LyricStage({ hasEntered, onClose }: LyricStageProps) {
             isCursorHidden ? "folia-cursor-auto-hidden absolute inset-0" : "absolute inset-0"
           }
         >
-          <FoliaPresentationSurface
-            appearance={appearance}
+          <CinemaSceneSurface
+            accentColor={theme.accentColor}
+            active={isMainSurfaceActive}
+            artworkUrl={currentSong?.al.picUrl ?? null}
             bridge={bridge}
-            isPlayerChromeHidden={isPlayerChromeHidden}
-            layers={{ background: !isTransparent, lyrics: true }}
+            isChromeHidden={isPlayerChromeHidden}
             onBack={onClose}
-            onLyricLineSeek={settings.mode === "monet" ? seekToAndResume : undefined}
-            track={
-              currentSong
-                ? {
-                    albumTitle: currentSong.al.name,
-                    artistNames: currentSong.ar.map((artist) => artist.name),
-                    artworkUrl: currentSong.al.picUrl,
-                    durationMs: playback.durationMs,
-                    id: currentSong.id,
-                    title: currentSong.name,
-                  }
-                : null
-            }
-          />
+            preserveScreenDrag={settings.mode === "machi" || settings.mode === "nebbia"}
+          >
+            {(projected) => (
+              <FoliaPresentationSurface
+                appearance={appearance}
+                bridge={bridge}
+                isPlayerChromeHidden={isPlayerChromeHidden}
+                layers={{ background: projected || !isTransparent, lyrics: true }}
+                onBack={projected ? undefined : onClose}
+                onLyricLineSeek={settings.mode === "monet" ? seekToAndResume : undefined}
+                track={
+                  currentSong
+                    ? {
+                        albumTitle: currentSong.al.name,
+                        artistNames: currentSong.ar.map((artist) => artist.name),
+                        artworkUrl: currentSong.al.picUrl,
+                        durationMs: playback.durationMs,
+                        id: currentSong.id,
+                        title: currentSong.name,
+                      }
+                    : null
+                }
+              />
+            )}
+          </CinemaSceneSurface>
         </div>
       ) : null}
 

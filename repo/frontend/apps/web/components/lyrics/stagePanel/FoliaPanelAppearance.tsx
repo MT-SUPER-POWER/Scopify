@@ -8,6 +8,7 @@ import {
 } from "@scopify/ui/scopify/components/folia-panel/mode-stepper-row";
 
 import { FoliaBackgroundQuickControl } from "@/components/lyrics/stagePanel/FoliaBackgroundQuickControl";
+import { CinemaSceneSettings } from "@/components/lyrics/scenes/CinemaSceneSettings";
 
 import {
   getVisualizerBackgroundModeLabel,
@@ -177,6 +178,7 @@ export function FoliaPanelAppearance({
           ) : null
         }
       />
+      <CinemaSceneSettings />
     </div>
   );
 }

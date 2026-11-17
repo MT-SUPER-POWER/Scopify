@@ -112,6 +112,8 @@ Selected upstream presentation updates are reviewed and recorded separately from
 
 - `fa164a54` (Folia #1269), `dc80ecaa`, `8006b40f` and `0a84c516` add Metaphor and its word-tracking cuts. Scopify uses its existing lyric clock and audio level for motion, retains its own settings and quality controls, and uses lyric onsets for collisions.
 
+- `c82aeb70` (Folia #1174) and cinema source at `bbbe74df` add the Cinema geometry, materials, and scene renderer. Scopify projects its existing lyric stage onto the screen and uses its cover palette for hall lighting.
+
 The copied source remains licensed under AGPL-3.0. See [LICENSE](./LICENSE). Scopify is also distributed under AGPL-3.0.
 
 ## Included
