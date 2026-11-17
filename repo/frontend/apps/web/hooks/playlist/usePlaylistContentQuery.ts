@@ -19,6 +19,8 @@ import {
   type RawNeteasePlaylist,
 } from "@/types/playlist/api";
 
+const TRACK_PAGE_SIZE = 1000;
+
 function getHistoricalSongs(
   response: HistoricalDailyRecommendationDetailResponse,
 ): RawSongDetail[] {
@@ -26,12 +28,10 @@ function getHistoricalSongs(
   return Array.isArray(songs) ? songs : [];
 }
 
-async function fetchPlaylistContent({
-  dailyDate,
-  isDailyRecommendation,
-  isRecommend,
-  playlistId,
-}: PlaylistContentRequest): Promise<PlaylistContent> {
+async function fetchPlaylistContent(
+  { dailyDate, isDailyRecommendation, isRecommend, playlistId }: PlaylistContentRequest,
+  signal?: AbortSignal,
+): Promise<PlaylistContent> {
   if (isDailyRecommendation) {
     const dailySongs = dailyDate
       ? getHistoricalSongs((await getHistoricalDailyRecommendationDetail(dailyDate)).data)
@@ -51,20 +51,26 @@ async function fetchPlaylistContent({
 
   const [detailResponse, trackResponse] = await Promise.all([
     getPlaylsitDetail({ id: playlistId, requiresMusicSession: isRecommend }),
-    getPlaylistAllTracks({ id: playlistId, limit: 1000, requiresMusicSession: isRecommend }),
+    getPlaylistAllTracks(
+      { id: playlistId, limit: TRACK_PAGE_SIZE, requiresMusicSession: isRecommend },
+      signal,
+    ),
   ]);
   const rawDetail = detailResponse.data.playlist;
   if (!rawDetail) throw new Error("Playlist detail is missing.");
-  const tracks = prunePlaylistTracks(trackResponse.data);
+  let page = prunePlaylistTracks(trackResponse.data);
+  const tracks = [...page];
   const trackCount = rawDetail.trackIds?.length ?? rawDetail.trackCount ?? 0;
-  if (trackCount > 1000) {
-    const remainder = await getPlaylistAllTracks({
-      id: playlistId,
-      offset: 1000,
-      limit: trackCount - 1000,
-      requiresMusicSession: isRecommend,
-    });
-    tracks.push(...prunePlaylistTracks(remainder.data));
+  let offset = TRACK_PAGE_SIZE;
+  // A full page can have a successor even when the playlist's count is stale.
+  while (page.length === TRACK_PAGE_SIZE || (page.length > 0 && offset < trackCount)) {
+    const next = await getPlaylistAllTracks(
+      { id: playlistId, offset, limit: TRACK_PAGE_SIZE, requiresMusicSession: isRecommend },
+      signal,
+    );
+    page = prunePlaylistTracks(next.data);
+    tracks.push(...page);
+    offset += TRACK_PAGE_SIZE;
   }
 
   return {
@@ -89,7 +95,7 @@ export function usePlaylistContentQuery(request: PlaylistContentRequest) {
       persist: true,
       scope: "account",
     },
-    queryFn: () => fetchPlaylistContent(request),
+    queryFn: ({ signal }) => fetchPlaylistContent(request, signal),
     queryKey,
   });
 
