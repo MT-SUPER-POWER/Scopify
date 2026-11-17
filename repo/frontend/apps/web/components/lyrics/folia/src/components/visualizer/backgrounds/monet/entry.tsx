@@ -4,6 +4,7 @@ import {
 } from "@scopify/ui/scopify/components/folia-panel/controls";
 import type { MonetBackgroundSource, MonetBackgroundTuning } from "../../../../types";
 import type { TranslationKey } from "@/lib/i18n";
+import { getOriginalCoverUrl } from "@/lib/music/imageUrl";
 import React, { lazy } from "react";
 import { Columns3, Wind } from "lucide-react";
 import { DEFAULT_MONET_BACKGROUND_TUNING } from "../../../../types";
@@ -27,7 +28,7 @@ export default defineVisualizerBackground({
   labelFallback: "Monet",
   render: ({ config, coverUrl, theme, isDaylight, staticMode }) => (
     <MonetBackgroundLayer
-      coverUrl={coverUrl}
+      coverUrl={getOriginalCoverUrl(coverUrl)}
       monetBackgroundImage={config?.customImage}
       theme={theme}
       isDaylight={isDaylight}
