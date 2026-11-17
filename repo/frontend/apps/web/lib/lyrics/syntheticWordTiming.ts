@@ -1,3 +1,4 @@
+import { splitLyricGraphemes } from "@/components/lyrics/folia/src/utils/lyrics/graphemeTiming";
 import type { LyricWord } from "@/types/lyrics/model";
 
 const MINIMUM_LINE_DURATION_MS = 100;
@@ -15,6 +16,7 @@ export function buildSyntheticTimedWords(
   text: string,
   startTimeMs: number,
   endTimeMs: number,
+  fillSpan = false,
 ): LyricWord[] {
   const durationMs = Math.max(endTimeMs - startTimeMs, MINIMUM_LINE_DURATION_MS);
   const tokens: SyntheticWordToken[] = [];
@@ -22,7 +24,7 @@ export function buildSyntheticTimedWords(
 
   for (const rawToken of text.split(/\s+/).filter(Boolean)) {
     if (CJK_CHARACTER.test(rawToken)) {
-      for (const character of Array.from(rawToken)) {
+      for (const character of splitLyricGraphemes(rawToken)) {
         const weight = ZERO_WEIGHT_PUNCTUATION.test(character) ? 0 : 1;
         tokens.push({ text: character, weight });
         totalWeight += weight;
@@ -50,7 +52,7 @@ export function buildSyntheticTimedWords(
   });
 
   const finalWord = words.at(-1);
-  if (finalWord && finalWord.endTimeMs > endTimeMs) {
+  if (finalWord && (fillSpan || finalWord.endTimeMs > endTimeMs)) {
     const scale = (endTimeMs - startTimeMs) / (finalWord.endTimeMs - startTimeMs);
     return words.map((word) => ({
       ...word,

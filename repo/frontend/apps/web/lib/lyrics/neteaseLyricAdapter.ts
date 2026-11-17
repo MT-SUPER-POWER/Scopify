@@ -25,8 +25,8 @@ interface TimedText {
 
 /**
  * Converts a lossless NetEase lyric response to the renderer's shared model.
- * YRC is preferred whenever it contains timed word data; LRC remains the
- * fallback for tracks without word-level timing.
+ * A parsed YRC track takes priority over LRC. Lines with only a line timestamp
+ * use estimated word timings.
  */
 export function adaptNeteaseLyric(lyric: LyricSource): LyricData {
   const metadata = createMetadata();
@@ -269,7 +269,7 @@ function parseYrcText(input: string, metadata: LyricMetadata): LyricDisplayLine[
       endTimeMs,
       startTimeMs,
       text,
-      words: words.length > 0 ? words : [{ endTimeMs, startTimeMs, text }],
+      words: words.length > 0 ? words : buildSyntheticTimedWords(text, startTimeMs, endTimeMs),
     });
   }
 

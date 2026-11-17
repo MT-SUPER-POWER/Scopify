@@ -4,7 +4,8 @@ import {
   prepareRichInline,
   type RichInlineItem,
 } from "@chenglou/pretext/rich-inline";
-import type { Line, SubtitleContentMode } from "../../../types";
+import { buildSyntheticTimedWords } from "@/lib/lyrics/syntheticWordTiming";
+import type { Line, SubtitleContentMode, Word } from "../../../types";
 import type { MonetSubtitleTrackLayout } from "@/types/lyrics/folia/monetSubtitle";
 import type { SubtitleTrack } from "@/types/lyrics/folia/subtitleTrack";
 import {
@@ -102,6 +103,7 @@ interface MeasureMonetLineLayoutOptions {
 }
 
 const ROOT_FONT_PX = 16;
+const MILLISECONDS_PER_SECOND = 1_000;
 const VIEWPORT_WIDTH_FALLBACK_PX = 1280;
 const MONET_ACTIVE_TEXT_LINE_LIMIT = 14;
 const MONET_INACTIVE_TEXT_LINE_LIMIT = 2;
@@ -278,26 +280,44 @@ export const resolveMonetWordStatus = (
   return "passed";
 };
 
-/** Builds a stable display-token list so fullText punctuation and spaces survive around timed lyric words. */
-export const buildMonetDisplayTokens = (line: Line): MonetDisplayToken[] => {
-  if (line.words.length === 0) {
-    return [
-      {
-        text: line.fullText,
-        startTime: line.startTime,
-        endTime: getLineRenderEndTime(line),
-        key: `${line.startTime}-full`,
-        timed: true,
-        startOffset: 0,
-        endOffset: line.fullText.length,
-        graphemeTimings: buildLineGraphemeTimeline(line),
-      },
-    ];
+// A whole line in one timed box shares one sweep mask across all its wrapped rows.
+const resolveMonetSweepWords = (line: Line): Word[] => {
+  const [onlyWord] = line.words;
+  if (
+    line.words.length > 1 ||
+    (onlyWord &&
+      (onlyWord.syllables?.length ||
+        onlyWord.text.trim() !== line.fullText.trim() ||
+        onlyWord.endTime <= onlyWord.startTime))
+  ) {
+    return line.words;
   }
 
+  const startTime = onlyWord?.startTime ?? line.startTime;
+  const endTime = onlyWord?.endTime ?? getLineRenderEndTime(line);
+  // When a source supplies one timed word for the whole line, finish at its exact end.
+  const estimated = buildSyntheticTimedWords(
+    line.fullText,
+    startTime * MILLISECONDS_PER_SECOND,
+    endTime * MILLISECONDS_PER_SECOND,
+    Boolean(onlyWord),
+  );
+  if (onlyWord && estimated.length <= 1) {
+    return line.words;
+  }
+
+  return estimated.map((word) => ({
+    text: word.text,
+    startTime: word.startTimeMs / MILLISECONDS_PER_SECOND,
+    endTime: word.endTimeMs / MILLISECONDS_PER_SECOND,
+  }));
+};
+
+/** Builds a stable display-token list so fullText punctuation and spaces survive around timed lyric words. */
+export const buildMonetDisplayTokens = (line: Line): MonetDisplayToken[] => {
   const tokens: MonetDisplayToken[] = [];
   let cursor = 0;
-  line.words.forEach((word, index) => {
+  resolveMonetSweepWords(line).forEach((word, index) => {
     const matchIndex = line.fullText.indexOf(word.text, cursor);
     if (matchIndex < 0) {
       return;
