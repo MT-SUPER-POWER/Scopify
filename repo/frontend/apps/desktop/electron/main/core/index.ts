@@ -20,7 +20,6 @@ import { loadDesktopHostConfig } from "@main/store";
 import { restoreMusicSessionCookies } from "@main/utils/musicCookieStore";
 import { applyElectronProxy } from "@main/utils/proxy";
 import { startProcessMemoryMonitor } from "@main/utils/processMemory";
-import { initThumbarButtons } from "@main/utils/thumbarButtons";
 import { registerLoggingIpc } from "@main/ipc/logging";
 import { disposeAppCloseWindow } from "@main/window/appCloseWindow";
 import { createMainWindow, notifyMainWindowVisibility } from "@main/window/mainWindow";
@@ -141,7 +140,6 @@ async function releaseMainWindow(window: BrowserWindow) {
   notifyMainWindowVisibility(window);
   if (services.isWallpaperActive()) splash.dismiss();
   else await splash.reveal(window);
-  if (process.platform === "win32" && !window.isDestroyed()) initThumbarButtons(window);
   stopProcessMemoryMonitor ??= startProcessMemoryMonitor(() => mainWindow);
 }
 
