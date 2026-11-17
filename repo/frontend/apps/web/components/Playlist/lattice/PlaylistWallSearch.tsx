@@ -9,6 +9,7 @@ import {
   normalizeCommandSearchText,
   tokenizeCommandSearchQuery,
 } from "@/lib/commandWorkspace/commandSearch";
+import { getLatticeTrackCopy } from "@/lib/playlist/lattice/trackCopy";
 import type { PlaylistLatticeProps } from "@/types/playlist/latticeComponents";
 
 interface PlaylistWallSearchProps {
@@ -37,7 +38,7 @@ export function PlaylistWallSearch({
     () =>
       open
         ? tracks.map((track) => {
-            const { title, artist, album } = trackCopy(track);
+            const { title, artist, album } = getLatticeTrackCopy(track);
             return normalizeCommandSearchText([title, artist, album].join(" "));
           })
         : [],
@@ -136,7 +137,7 @@ export function PlaylistWallSearch({
           <ul className="relative" style={{ height: list.getTotalSize() }}>
             {list.getVirtualItems().map((row) => {
               const position = matches[row.index];
-              const { title, artist, album } = trackCopy(tracks[position]);
+              const { title, artist, album } = getLatticeTrackCopy(tracks[position]);
               return (
                 <li
                   key={row.key}
@@ -185,12 +186,4 @@ export function PlaylistWallSearch({
       )}
     </div>
   );
-}
-
-function trackCopy(track: PlaylistLatticeProps["tracks"][number]) {
-  return {
-    title: track.name,
-    artist: track.ar.map((item) => item.name).join(" / "),
-    album: track.al.name,
-  };
 }

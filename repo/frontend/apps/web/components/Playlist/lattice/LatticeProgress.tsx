@@ -16,7 +16,7 @@ const time = (milliseconds: number) => {
 export function LatticeProgress({ current, durationMs, trackId }: LatticeProgressProps) {
   const { t } = useTranslation();
   const playback = usePlaybackProjection();
-  const positionMs = usePlaybackPosition();
+  const positionMs = usePlaybackPosition(current);
   const commands = usePlaybackCommands();
   const seekRevision = useRef(0);
   const [previewMs, setPreviewMs] = useState<number | null>(null);

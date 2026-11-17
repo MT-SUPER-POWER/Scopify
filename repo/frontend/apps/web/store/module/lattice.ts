@@ -2,6 +2,7 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { LATTICE_PREFERENCES_STORAGE_KEY, PLAYLIST_VIEW_MODES } from "@/constants/playlistViews";
 import type { LatticePreferences, LatticeViewState } from "@/types/playlist/lattice";
+import { useUiStore } from "@/store/module/ui";
 
 export const useLatticePreferences = create<LatticePreferences>()(
   persist(
@@ -9,11 +10,13 @@ export const useLatticePreferences = create<LatticePreferences>()(
       followCurrent: false,
       lightsOff: false,
       currentNumberOnly: false,
+      radioHideUpcoming: false,
       viewMode: "lattice",
       immersive: false,
       setFollowCurrent: (followCurrent) => set({ followCurrent }),
       setLightsOff: (lightsOff) => set({ lightsOff }),
       setCurrentNumberOnly: (currentNumberOnly) => set({ currentNumberOnly }),
+      setRadioHideUpcoming: (radioHideUpcoming) => set({ radioHideUpcoming }),
       setViewMode: (viewMode) => set({ viewMode }),
       setImmersive: (immersive) => set({ immersive }),
     }),
@@ -31,6 +34,7 @@ export const useLatticePreferences = create<LatticePreferences>()(
         followCurrent: state.followCurrent,
         lightsOff: state.lightsOff,
         currentNumberOnly: state.currentNumberOnly,
+        radioHideUpcoming: state.radioHideUpcoming,
         viewMode: state.viewMode,
         immersive: state.immersive,
       }),
@@ -50,3 +54,13 @@ export const useLatticeView = create<LatticeViewState>()((set, get) => ({
     };
   },
 }));
+
+export const useQueueRadioWall = create(() => ({ open: false }));
+
+export function openQueueRadioWall() {
+  const ui = useUiStore.getState();
+  ui.setIsLyricsOpen(false);
+  ui.setIsCenterLyricsOpen(false);
+  ui.setIsQueueOpen(false);
+  useQueueRadioWall.setState({ open: true });
+}

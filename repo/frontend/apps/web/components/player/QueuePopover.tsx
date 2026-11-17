@@ -4,6 +4,7 @@ import { ListMusic, LocateFixed } from "lucide-react";
 import { useRef } from "react";
 
 import { PlayerQueueList } from "@/components/player/PlayerQueueList";
+import { QueueRadioWallButton } from "@/components/Playlist/lattice/QueueRadioWallButton";
 import { ShortcutHint } from "@/components/shortcuts/ShortcutHint";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { useNowPlayingPanelVisibility } from "@/hooks/ui/useNowPlayingPanelVisibility";
@@ -90,14 +91,17 @@ export const QueuePopover = () => {
               {t("queue.totalSongs", { count: queue.length })}
             </p>
           </div>
-          <button
-            type="button"
-            onClick={() => queueListRef.current?.scrollToCurrent()}
-            className="rounded-full p-2 text-content-muted transition-colors hover:bg-content/10 hover:text-content"
-            title={t("queue.locateCurrent")}
-          >
-            <LocateFixed className="size-4" />
-          </button>
+          <div className="flex items-center gap-1">
+            {queue.length > 0 && <QueueRadioWallButton />}
+            <button
+              type="button"
+              onClick={() => queueListRef.current?.scrollToCurrent()}
+              className="rounded-full p-2 text-content-muted transition-colors hover:bg-content/10 hover:text-content"
+              title={t("queue.locateCurrent")}
+            >
+              <LocateFixed className="size-4" />
+            </button>
+          </div>
         </div>
         <PlayerQueueList ref={queueListRef} isOpen={open} />
       </PopoverContent>

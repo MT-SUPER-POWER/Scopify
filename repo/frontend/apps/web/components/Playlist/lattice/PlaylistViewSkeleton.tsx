@@ -166,7 +166,13 @@ export function PlaylistViewSkeleton({
       data-lights-off={mode === "grid" && lightsOff}
       className="group/grid absolute inset-0 isolate z-15 overflow-hidden bg-card"
     >
-      {view && (mode === "grid" ? <CardsSkeleton view={view} /> : <WallSkeleton view={view} />)}
+      {mode === "radio" ? (
+        <div className="absolute inset-0 grid place-items-center">
+          <div className="aspect-square w-[min(54%,52vh,420px)] rounded-lg border border-border/70 bg-secondary" />
+        </div>
+      ) : (
+        view && (mode === "grid" ? <CardsSkeleton view={view} /> : <WallSkeleton view={view} />)
+      )}
     </section>
   );
 }

@@ -17,6 +17,7 @@ export default function PlaylistLattice({
   tracks,
   title,
   sourceId,
+  playbackQueue,
   onTrackPlay,
   onDislikeTrack,
   onClose,
@@ -29,7 +30,12 @@ export default function PlaylistLattice({
   const followCurrent = useLatticePreferences((state) => state.followCurrent);
   const lightsOff = useLatticePreferences((state) => state.lightsOff);
   const currentNumberOnly = useLatticePreferences((state) => state.currentNumberOnly);
-  const { currentIndex, play } = usePlaylistViewPlayback({ tracks, sourceId, onTrackPlay });
+  const { currentIndex, playAt } = usePlaylistViewPlayback({
+    tracks,
+    sourceId,
+    onTrackPlay,
+    playbackQueue,
+  });
   const doubleClick = useWallDoubleClick();
   const { bounds, locate } = wall;
   const flip = useFlipReveal(wall.fieldRef, wall.instances, tracks.length > 0, (instance) => {
@@ -94,8 +100,7 @@ export default function PlaylistLattice({
         onDoubleClick={(event) => {
           const poster = doubleClick.take(event);
           if (!poster) return;
-          const track = tracks[Number(poster.dataset.wallTrack)];
-          if (track) play(track, true);
+          playAt(Number(poster.dataset.wallTrack), true);
         }}
       >
         <div ref={wall.worldRef} className="absolute inset-0 origin-top-left will-change-transform">
@@ -114,7 +119,7 @@ export default function PlaylistLattice({
                 expanded={wall.selected?.instanceId === instance.instanceId}
                 current={instance.queueIndex === currentIndex}
                 onSelect={wall.select}
-                onPlay={play}
+                onPlay={playAt}
                 onDislikeTrack={onDislikeTrack}
                 flipPlan={flip.plan}
               />

@@ -99,12 +99,13 @@ export type Axis = {
   sign: 1 | -1;
 };
 /** Immersive alternatives to the track table; each one takes over the whole content pane. */
-export type PlaylistViewMode = "lattice" | "grid";
+export type PlaylistViewMode = "lattice" | "grid" | "radio";
 
 export interface LatticePreferences {
   followCurrent: boolean;
   lightsOff: boolean;
   currentNumberOnly: boolean;
+  radioHideUpcoming: boolean;
   /** The immersive view the header button and shortcuts open. */
   viewMode: PlaylistViewMode;
   /** Whether the page was last left in an immersive view; the next page then opens straight into it. */
@@ -112,6 +113,7 @@ export interface LatticePreferences {
   setFollowCurrent: (value: boolean) => void;
   setLightsOff: (value: boolean) => void;
   setCurrentNumberOnly: (value: boolean) => void;
+  setRadioHideUpcoming: (value: boolean) => void;
   setViewMode: (value: PlaylistViewMode) => void;
   setImmersive: (value: boolean) => void;
 }

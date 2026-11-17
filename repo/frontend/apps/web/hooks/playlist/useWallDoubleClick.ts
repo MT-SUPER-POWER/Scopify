@@ -5,7 +5,10 @@ import type { MouseEvent } from "react";
 
 function trackTarget(event: MouseEvent<HTMLElement>) {
   const target = event.target;
-  if (!(target instanceof Element) || target.closest("button, input, a, [role='slider']")) {
+  if (
+    !(target instanceof Element) ||
+    target.closest("button:not([data-wall-track]), input, a, [role='slider']")
+  ) {
     return null;
   }
   return target.closest<HTMLElement>("[data-wall-track]");

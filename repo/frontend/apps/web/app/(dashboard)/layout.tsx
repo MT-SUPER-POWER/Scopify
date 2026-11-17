@@ -1,5 +1,6 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import { usePathname } from "next/navigation";
 import { type ReactNode, useEffect, useRef, useState } from "react";
 import { useDefaultLayout, usePanelRef } from "react-resizable-panels";
@@ -43,7 +44,12 @@ import { useAnimatedPanelCollapse } from "@/hooks/ui/useAnimatedPanelCollapse";
 import { useDashboardEffects } from "@/hooks/ui/useDashboardEffects";
 import { useNowPlayingPanelVisibility } from "@/hooks/ui/useNowPlayingPanelVisibility";
 import { cn } from "@/lib/utils";
+import { useQueueRadioWall } from "@/store/module/lattice";
 import { useUiStore } from "@/store/module/ui";
+
+const PlaybackQueueWall = dynamic(() => import("@/components/Playlist/lattice/PlaybackQueueWall"), {
+  ssr: false,
+});
 
 const RESIZE_HANDLE_CLASS = cn(
   "relative flex w-2 items-center justify-center bg-transparent transition-colors",
@@ -89,6 +95,7 @@ function DashboardShell({ children }: { children: ReactNode }) {
   const setIsCollapsed = useUiStore((s) => s.setIsCollapsed);
   const isPlayerBarHidden = useUiStore((s) => s.isPlayerBarHidden);
   const isSearchOpen = useUiStore((s) => s.isSearchOpen);
+  const isQueueWallOpen = useQueueRadioWall((state) => state.open);
   const setIsSearchOpen = useUiStore((s) => s.setIsSearchOpen);
   const setIsNowPlayingPanelOpen = useUiStore((s) => s.setIsNowPlayingPanelOpen);
 
@@ -143,6 +150,7 @@ function DashboardShell({ children }: { children: ReactNode }) {
         <FoliaVisualizerPrewarm />
         <LyricStageMount />
         <FoliaSettingsMount />
+        {isQueueWallOpen && <PlaybackQueueWall />}
 
         {/* 顶栏行连同外边距一起作为桌面端窗口拖拽区（系统标题栏已隐藏） */}
         <div

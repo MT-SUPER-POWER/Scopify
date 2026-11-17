@@ -1,11 +1,12 @@
 "use client";
 
-import { ListEnd, ListPlus, Shuffle, Trash2 } from "lucide-react";
+import { ListEnd, ListPlus, Radio, Shuffle, Trash2 } from "lucide-react";
 import { useLayoutEffect, useRef, useState } from "react";
 import { FoliaIconButton } from "@scopify/ui/scopify/components/folia-panel/controls";
 
 import { isPersonalFmPlaybackSource } from "@/constants/personalFm";
 import { useTranslation } from "react-i18next";
+import { openQueueRadioWall } from "@/store/module/lattice";
 
 import { usePlayerStore } from "@/store/module/player";
 
@@ -48,6 +49,11 @@ export function FoliaPanelQueue() {
           {isPersonalFm ? t("personalFm.queue.dynamic") : t("folia.queue.title")}
           <span className="ml-1.5 font-normal text-[color:var(--st-t3)]">{queue.length}</span>
         </span>
+        {queue.length > 0 && (
+          <FoliaIconButton size="s" label={t("playlist.view.radio")} onClick={openQueueRadioWall}>
+            <Radio size={15} />
+          </FoliaIconButton>
+        )}
         {!isPersonalFm ? (
           <FoliaIconButton
             size="s"

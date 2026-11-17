@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
 import { usePlaybackCommands } from "@/hooks/player/usePlaybackCommands";
 import {
   usePlaybackProjection,
@@ -14,24 +14,38 @@ export function usePlaylistViewPlayback({
   tracks,
   sourceId,
   onTrackPlay,
+  playbackQueue,
 }: PlaylistViewPlaybackOptions) {
   const playback = usePlaybackProjection();
   const projectionStore = usePlaybackProjectionStore();
   const commands = usePlaybackCommands();
   const queueSource = usePlayerStore((state) => state.playlistId);
-  const currentIndex =
-    queueSource === sourceId ? tracks.findIndex((track) => track.id === playback.track?.id) : -1;
-  const play = useCallback(
-    (track: (typeof tracks)[number], resumeOnly = false) => {
+  const liveIndex = usePlayerStore((state) => (state.queue === tracks ? state.queueIndex : null));
+  const trackId = playback.track?.id;
+  const currentIndex = useMemo(() => {
+    if (liveIndex !== null) return liveIndex;
+    if (playbackQueue || queueSource !== sourceId || trackId === undefined) return -1;
+    return tracks.findIndex((track) => track.id === trackId);
+  }, [liveIndex, playbackQueue, queueSource, sourceId, trackId, tracks]);
+  const playAt = useCallback(
+    (index: number, resumeOnly = false) => {
+      const track = tracks[index];
+      if (!track) return;
       const latest = projectionStore.getSnapshot();
       const player = usePlayerStore.getState();
-      if (player.playlistId === sourceId && track.id === latest.track?.id) {
+      const liveQueue = player.queue === tracks;
+      if (playbackQueue && !liveQueue) return;
+      const current = liveQueue
+        ? index === player.queueIndex
+        : player.playlistId === sourceId && track.id === latest.track?.id;
+      if (current) {
         if (!resumeOnly) void commands.toggle();
         else if (!latest.isPlaying) void commands.play();
-      } else if (onTrackPlay) onTrackPlay(track);
+      } else if (liveQueue) void commands.playQueueIndex(index);
+      else if (onTrackPlay) onTrackPlay(track);
       else void player.playFromSong(track, tracks, sourceId);
     },
-    [commands, onTrackPlay, projectionStore, sourceId, tracks],
+    [commands, onTrackPlay, playbackQueue, projectionStore, sourceId, tracks],
   );
-  return { currentIndex, isPlaying: playback.isPlaying, play };
+  return { currentIndex, isPlaying: playback.isPlaying, playAt };
 }

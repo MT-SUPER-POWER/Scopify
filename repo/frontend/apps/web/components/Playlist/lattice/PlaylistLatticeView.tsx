@@ -20,21 +20,34 @@ const PlaylistGrid = dynamic(() => import("../grid/PlaylistGrid"), {
   ssr: false,
   loading: () => <PlaylistViewSkeleton mode="grid" arm={false} />,
 });
+const RadioWall = dynamic(() => import("./RadioWall"), {
+  ssr: false,
+  loading: () => <PlaylistViewSkeleton mode="radio" arm={false} />,
+});
 
 const VIEWS: Record<PlaylistViewMode, ComponentType<PlaylistLatticeProps>> = {
   lattice: PlaylistLattice,
   grid: PlaylistGrid,
+  radio: RadioWall,
 };
+
+export function PlaylistWallSurface({
+  mode,
+  ...props
+}: PlaylistLatticeProps & { mode: PlaylistViewMode }) {
+  const View = VIEWS[mode];
+  return <View key={mode} {...props} />;
+}
 
 export function PlaylistLatticeView({ children, loading, ...props }: PlaylistLatticeViewProps) {
   const { contentRef, container, mode, open, close } = usePlaylistLatticeView();
-  const View = VIEWS[mode];
-  // Fetched while the skeleton is up, so the flip starts when the songs land rather than a chunk later.
+  // Only warm the selected layout while data is loading.
   useEffect(() => {
-    if (!container) return;
-    void import("./PlaylistLattice");
-    void import("../grid/PlaylistGrid");
-  }, [container]);
+    if (!container || !loading) return;
+    if (mode === "radio") void import("./RadioWall");
+    else if (mode === "grid") void import("../grid/PlaylistGrid");
+    else void import("./PlaylistLattice");
+  }, [container, loading, mode]);
   return (
     <>
       <div
@@ -49,7 +62,7 @@ export function PlaylistLatticeView({ children, loading, ...props }: PlaylistLat
           loading ? (
             <PlaylistViewSkeleton mode={mode} />
           ) : (
-            <View key={mode} {...props} onClose={close} onModeChange={open} />
+            <PlaylistWallSurface {...props} mode={mode} onClose={close} onModeChange={open} />
           ),
           container,
         )}
