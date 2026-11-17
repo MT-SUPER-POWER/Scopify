@@ -146,6 +146,7 @@ export interface MachiTuning {
   tiltShift: number;
   focus: MachiFocusMode;
   focusOffset: number;
+  simulatedBeat: boolean;
   quality: MachiQuality;
 }
 
@@ -177,5 +178,6 @@ export const DEFAULT_MACHI_TUNING: MachiTuning = {
   tiltShift: 0.3,
   focus: "center",
   focusOffset: 0,
+  simulatedBeat: true,
   quality: DEFAULT_MACHI_QUALITY,
 };

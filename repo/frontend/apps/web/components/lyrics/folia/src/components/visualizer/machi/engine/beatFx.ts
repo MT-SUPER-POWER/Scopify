@@ -9,7 +9,7 @@
 //   大屏闪拍 machi.screenFlash <- htdemucs 分出的军鼓：每下够响的军鼓在歌词屏的一处慢慢亮起、再慢慢暗下，先后几下落在不同的
 //                                位置；军鼓再密也只是亮着起伏（叠起来有上限），不频闪。
 // @note Scopify: 上游的三个效果读 beat_this 的节拍表与 htdemucs 分离出的鼓点（services/beatFx、services/analysis），
-// Scopify 没有这两套数据，所以这里只留下一帧的量（常态值）、调好的参数与曲线；场景照常按它取值，画面就是效果关着的样子。
+// Scopify 可用固定的模拟节拍驱动相同的灯光与大屏效果。
 
 /** 霓虹分几组轮流。 */
 export const MACHI_NEON_GROUPS = 3;
@@ -102,6 +102,47 @@ export const machiSwell = (age: number, attack: number, fall: number) => {
   }
   const u = (age - attack) / fall;
   return 1 - u * u * (3 - 2 * u);
+};
+
+/** Drives the light envelopes from a fixed four-beat bar on the ambient clock. */
+export const applyMachiSimulatedBeat = (time: number, out: MachiBeatFrame) => {
+  const period = 0.75;
+  const { neon, warm, screen } = MACHI_BEAT;
+  const life = Math.max(neon.attack + neon.fall, warm.attack + warm.fall);
+  const pulses = out.neonGroups;
+  pulses.fill(0);
+
+  let downbeatSwell = 0;
+  for (let index = Math.floor(time / period); index >= 0; index -= 1) {
+    const age = time - index * period;
+    if (age >= life) break;
+    const downbeat = index % 4 === 0;
+    const group = index % MACHI_NEON_GROUPS;
+    const glow = machiSwell(age, neon.attack, neon.fall) * (downbeat ? neon.downbeat : 1);
+    pulses[group] = Math.max(pulses[group]!, glow);
+    if (downbeat) downbeatSwell = Math.max(downbeatSwell, machiSwell(age, warm.attack, warm.fall));
+  }
+
+  const mean = pulses.reduce((sum, value) => sum + value, 0) / pulses.length;
+  const neonStrength = 0.8;
+  for (let group = 0; group < pulses.length; group += 1) {
+    const glow = pulses[group]!;
+    pulses[group] = 1 + neonStrength * (neon.lift * glow + neon.contrast * (glow - mean));
+  }
+  out.neon = 1 + neonStrength * neon.lift * mean;
+  out.warm = 1 + neonStrength * warm.lift * downbeatSwell;
+  out.bloom = 1 + neonStrength * MACHI_BEAT.bloom * mean;
+
+  // The screen swells on the second and fourth beats. Golden-ratio spacing spreads them across it.
+  const interval = 2 * period;
+  const latestIndex = Math.floor((time - period) / interval);
+  for (let slot = 0; slot < screen.max && slot <= latestIndex; slot += 1) {
+    const index = latestIndex - slot;
+    const age = time - (index * interval + period);
+    if (age >= screen.attack + screen.fall) break;
+    out.swellAt[slot] = 0.15 + 0.7 * ((index * 0.618034) % 1);
+    out.swellAmp[slot] = 0.6 * machiSwell(age, screen.attack, screen.fall);
+  }
 };
 
 /** 路面有多湿就有多少涟漪（0..1，与地面着色器里的 smoothstep 一样）；剩下的给光斑的一跳。 */

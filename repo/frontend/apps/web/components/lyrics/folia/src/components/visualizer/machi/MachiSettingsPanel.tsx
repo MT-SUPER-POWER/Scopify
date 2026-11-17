@@ -69,6 +69,10 @@ const SKY_GROUP: SettingsGroupDef = {
   id: "vis-machi-sky",
   titleKey: "folia.options.machiSkySection",
 };
+const LIGHTS_GROUP: SettingsGroupDef = {
+  id: "vis-machi-lights",
+  titleKey: "folia.options.machiLightsSection",
+};
 const CAMERA_GROUP: SettingsGroupDef = {
   id: "vis-machi-camera",
   titleKey: "folia.options.machiCameraSection",
@@ -270,6 +274,15 @@ const MachiSettingsPanel: React.FC<VisualizerSettingsPanelProps> = ({
         </Row>
       </Group>
 
+      <Group def={LIGHTS_GROUP}>
+        <ToggleRow
+          label={t("folia.options.machiSimulatedBeat")}
+          note={t("folia.options.machiSimulatedBeatHint")}
+          checked={tuning.simulatedBeat}
+          onChange={(simulatedBeat) => onTuningChange?.({ simulatedBeat })}
+        />
+      </Group>
+
       <Group
         def={CAMERA_GROUP}
         action={
@@ -445,7 +458,7 @@ const MachiSettingsPanel: React.FC<VisualizerSettingsPanelProps> = ({
           <Segmented<string>
             value={String(quality.renderScale)}
             options={[
-              { value: MACHI_FOLLOW_GLOBAL, label: t("folia.options.machiFollowGlobal") },
+              { value: MACHI_FOLLOW_GLOBAL, label: t("folia.options.lyricRenderFollowGlobal") },
               ...MACHI_RENDER_SCALES.map((scale) => ({
                 value: String(scale),
                 label: `${Math.round(scale * 100)}%`,
@@ -466,7 +479,7 @@ const MachiSettingsPanel: React.FC<VisualizerSettingsPanelProps> = ({
           <Segmented<MachiQuality["antialias"]>
             value={quality.antialias}
             options={[
-              { value: MACHI_FOLLOW_GLOBAL, label: t("folia.options.machiFollowGlobal") },
+              { value: MACHI_FOLLOW_GLOBAL, label: t("folia.options.lyricRenderFollowGlobal") },
               ...MACHI_ANTIALIAS_MODES.map((mode) => ({
                 value: mode,
                 label: t(ANTIALIAS_LABEL_KEYS[mode]),

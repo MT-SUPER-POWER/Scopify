@@ -4,6 +4,7 @@ import type { AudioBands, Line, LyricRenderQuality, Theme } from "../../../types
 import { resolveLucideIconNames } from "../../../services/lucideIconResolver";
 import { resolveThemeFontStack, resolveThemeFontWeight } from "../../../utils/fontStacks";
 import {
+  applyMachiSimulatedBeat,
   createMachiBeatFrame,
   MACHI_BEAT,
   resetMachiBeatFrame,
@@ -904,7 +905,7 @@ export class MachiRuntime {
   /** 按歌曲时间决定牌面、副歌、闪电；按氛围时钟决定闪烁；音频包络平滑；场景推一步。 */
   private direct() {
     const songTime = this.options.currentTime.get();
-    const beat = this.stepBeat(songTime);
+    const beat = this.stepBeat();
     const lines = this.song.lines;
     const target: MachiBoardTarget = this.showText
       ? resolveMachiBoardTarget(lines, songTime)
@@ -1001,11 +1002,13 @@ export class MachiRuntime {
   }
 
   /**
-   * 智能动感模式的一帧（engine/beatFx.ts）。Scopify 没有节拍表与鼓点分离，所以始终是常态值：
-   * 霓虹、灯光、bloom 倍数为 1，涟漪与闪拍为 0，画面和关掉智能动感模式时一样。
+   * 模拟节拍使用氛围时钟驱动灯光。暂停和关闭时恢复常态。
    */
-  private stepBeat(_songTime: number): MachiBeatFrame {
+  private stepBeat(): MachiBeatFrame {
     const beat = resetMachiBeatFrame(this.beat);
+    if (this.tuning.simulatedBeat && !this.clock.paused) {
+      applyMachiSimulatedBeat(this.clock.elapsed, beat);
+    }
     this.kickRings.fill(0);
     for (let slot = 0; slot < MACHI_BEAT.ripple.max; slot += 1) this.kickRings[slot * 2] = -1;
     const focus = this.stage.focusPoint;
