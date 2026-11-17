@@ -46,9 +46,17 @@ export const NEBBIA_FADE_LABEL_KEYS: Record<NebbiaFadeStyle, TranslationKey> = {
   fog: "folia.options.nebbiaFadeFog",
   fingers: "folia.options.nebbiaFadeFingers",
 };
-const LAYOUT_LABEL_KEYS = Object.fromEntries(
-  NEBBIA_LAYOUTS.map((l) => [l, `folia.options.nebbiaLayout_${l}`]),
-) as Record<NebbiaLayout, TranslationKey>;
+const LAYOUT_LABEL_KEYS: Record<NebbiaLayout, TranslationKey> = {
+  ribbon: "folia.options.nebbiaLayout_ribbon",
+  lines2: "folia.options.nebbiaLayout_lines2",
+  lines3: "folia.options.nebbiaLayout_lines3",
+  cross: "folia.options.nebbiaLayout_cross",
+  pillar: "folia.options.nebbiaLayout_pillar",
+  header: "folia.options.nebbiaLayout_header",
+  badge: "folia.options.nebbiaLayout_badge",
+  columns: "folia.options.nebbiaLayout_columns",
+  orbit: "folia.options.nebbiaLayout_orbit",
+};
 
 const seconds = (value: number) => `${value.toFixed(1)}s`;
 const count = (value: number) => String(Math.round(value));

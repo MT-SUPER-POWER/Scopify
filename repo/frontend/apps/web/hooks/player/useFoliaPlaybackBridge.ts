@@ -28,7 +28,8 @@ export function useFoliaPlaybackBridge(active = true): FoliaPlaybackBridge {
   const currentSongId = playback.track?.id ?? null;
   const lyricOffsetMs = useLyricStageStore((state) => state.lyricOffsetMs);
   const isHanabi = useLyricStageStore((state) => state.mode === "hanabi");
-  const segmentation = useLyricSegmentation(currentSongId, isHanabi && !!rawLyric);
+  const segmentationTrackId = currentSongId === null ? null : String(currentSongId);
+  const segmentation = useLyricSegmentation(segmentationTrackId, isHanabi && !!rawLyric);
   const automatic = segmentation.automatic.data ?? false;
   const overrides = segmentation.overrides.data;
   const initialPositionSeconds = playbackStore.samplePositionMs() / 1_000;
