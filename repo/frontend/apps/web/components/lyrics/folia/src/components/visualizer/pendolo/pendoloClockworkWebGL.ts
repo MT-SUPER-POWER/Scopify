@@ -697,6 +697,12 @@ export class PendoloClockworkRenderer {
     gl.uniform1f(this.meshUniformDpr, dpr);
     gl.uniform2fv(this.meshUniformOrigins, this.originTable);
     gl.uniform1fv(this.meshUniformRotations, this.rotationTable);
+    setProjectionUniforms(gl, this.meshProjection, input);
+    const heightScale = input.projection ? (input.parallaxScalePx ?? 0) : 0;
+    for (let index = 0; index < scene.parts.length; index += 1) {
+      this.heightTable[index] = scene.parts[index].height * heightScale;
+    }
+    gl.uniform1fv(this.meshUniformHeights, this.heightTable);
     gl.uniform1f(this.meshUniformDepthBias, 0);
     const occluding =
       this.canOcclude &&
