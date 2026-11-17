@@ -49,6 +49,8 @@ export function FoliaVisualizerQuickControl({
     onMachiTuningChange: (patch) => settings.patchTuning("machi", patch),
     nebbiaTuning: settings.tunings.nebbia,
     onNebbiaTuningChange: (patch) => settings.patchTuning("nebbia", patch),
+    metaphorTuning: settings.tunings.metaphor,
+    onMetaphorTuningChange: (patch) => settings.patchTuning("metaphor", patch),
     prismaTuning: settings.tunings.prisma,
     onPrismaTuningChange: (patch) => settings.patchTuning("prisma", patch),
     onClosePanel,

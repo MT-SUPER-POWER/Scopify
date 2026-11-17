@@ -1341,3 +1341,4 @@ export interface AudioBands {
 // renderer code (types only), so the settings store can still read them from here.
 export * from "./components/visualizer/machi/types";
 export * from "./components/visualizer/nebbia/types";
+export type { MetaphorTuning } from "@/types/lyrics/folia/metaphor";
