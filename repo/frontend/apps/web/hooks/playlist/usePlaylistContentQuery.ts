@@ -10,8 +10,7 @@ import { musicQueryKeys } from "@/lib/query/queryKeys";
 import type { PlayerTrack } from "@/types/player/model";
 import type { PlaylistContent, PlaylistContentRequest } from "@/types/playlist/model";
 
-/** Tracks asked for in the first request; a longer playlist reads the rest in one more. */
-const FIRST_PAGE_SIZE = 1000;
+const TRACK_PAGE_SIZE = 1000;
 
 /** Daily recommendations are the account's own list, not a playlist on any platform. */
 async function fetchDailyRecommendations(
@@ -41,16 +40,17 @@ async function fetchPlaylist(
   const options = { personal, signal };
   const [detail, firstPage] = await Promise.all([
     provider.getPlaylist(ref, options),
-    provider.getPlaylistTracks(ref, { offset: 0, limit: FIRST_PAGE_SIZE }, options),
+    provider.getPlaylistTracks(ref, { offset: 0, limit: TRACK_PAGE_SIZE }, options),
   ]);
-  const tracks: PlayerTrack[] = [...firstPage.tracks];
-  if (detail.trackCount > FIRST_PAGE_SIZE) {
-    const remainder = await provider.getPlaylistTracks(
-      ref,
-      { offset: FIRST_PAGE_SIZE, limit: detail.trackCount - FIRST_PAGE_SIZE },
-      options,
-    );
-    tracks.push(...remainder.tracks);
+  let page = firstPage.tracks;
+  const tracks: PlayerTrack[] = [...page];
+  let offset = TRACK_PAGE_SIZE;
+  // A full page can have a successor even when the playlist's count is stale.
+  while (page.length === TRACK_PAGE_SIZE || (page.length > 0 && offset < detail.trackCount)) {
+    const next = await provider.getPlaylistTracks(ref, { offset, limit: TRACK_PAGE_SIZE }, options);
+    page = next.tracks;
+    tracks.push(...page);
+    offset += TRACK_PAGE_SIZE;
   }
   return { detail, tracks };
 }

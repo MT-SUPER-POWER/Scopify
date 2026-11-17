@@ -78,15 +78,13 @@ export function getUserPlaylistByID(uid: number, limit = 30, offset = 0) {
  * @param offset 偏移量，默认 0
  * @returns 歌曲列表数据
  */
-export function getPlaylistAllTracks({
-  id,
-  limit,
-  offset,
-  requiresMusicSession,
-}: NeteasePlaylistTracksParams) {
+export function getPlaylistAllTracks(
+  { id, limit, offset, requiresMusicSession }: NeteasePlaylistTracksParams,
+  signal?: AbortSignal,
+) {
   return request.get<NeteasePlaylistTracksDto>(
     "/playlist/track/all",
-    requestConfig({ params: { id, limit, offset }, requiresMusicSession }),
+    requestConfig({ params: { id, limit, offset }, requiresMusicSession, signal }),
   );
 }
 

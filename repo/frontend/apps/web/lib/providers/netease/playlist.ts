@@ -18,13 +18,16 @@ export const neteasePlaylistSource: MusicPlaylistSource = {
   },
 
   async getPlaylistTracks(playlist, { offset, limit }, options) {
-    const { data } = await getPlaylistAllTracks({
-      id: playlist.id,
-      // The first page has always been requested without an offset.
-      offset: offset === 0 ? undefined : offset,
-      limit,
-      requiresMusicSession: options?.personal,
-    });
+    const { data } = await getPlaylistAllTracks(
+      {
+        id: playlist.id,
+        // The first page has always been requested without an offset.
+        offset: offset === 0 ? undefined : offset,
+        limit,
+        requiresMusicSession: options?.personal,
+      },
+      options?.signal,
+    );
     return { offset, tracks: adaptNeteasePlaylistTracks(data) };
   },
 
