@@ -211,7 +211,7 @@ export const ClassicSettingsPanel: React.FC<VisualizerSettingsPanelProps> = ({
       </div>
 
       {!resolvedClassicTuning.useLegacyLayout && (
-        <div className="space-y-2">
+        <div className="space-y-4">
           <div
             className="flex items-center justify-between text-sm"
             style={{ color: "var(--text-primary)" }}
@@ -223,6 +223,7 @@ export const ClassicSettingsPanel: React.FC<VisualizerSettingsPanelProps> = ({
           </div>
           <input
             type="range"
+            aria-label={t("folia.options.classicWordSpacing")}
             min="0"
             max="2"
             step="0.05"
