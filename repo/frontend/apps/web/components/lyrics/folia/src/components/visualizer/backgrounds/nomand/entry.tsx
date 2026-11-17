@@ -5,6 +5,7 @@ import {
 import { getSteppedMode } from "@scopify/ui/scopify/components/folia-panel/mode-stepper-row";
 import type { NomandBackgroundSource, NomandBackgroundTuning } from "../../../../types";
 import type { TranslationKey } from "@/lib/i18n";
+import { getOriginalCoverUrl } from "@/lib/music/imageUrl";
 import { EFFECT_LABEL_KEYS, EFFECTS } from "./NomandBackgroundEffectSettings";
 import React, { lazy } from "react";
 import { Layers } from "lucide-react";
@@ -29,7 +30,7 @@ export default defineVisualizerBackground({
   labelFallback: "Nomand",
   render: ({ config, coverUrl, theme, isDaylight }) => (
     <NomandBackgroundLayer
-      coverUrl={coverUrl}
+      coverUrl={getOriginalCoverUrl(coverUrl)}
       monetBackgroundImage={config?.customImage}
       tuning={config?.nomand?.tuning}
       theme={theme}
