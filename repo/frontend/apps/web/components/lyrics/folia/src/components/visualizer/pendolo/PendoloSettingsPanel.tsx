@@ -87,7 +87,7 @@ const PendoloSettingsPanel: React.FC<VisualizerSettingsPanelProps> = ({
 
   return (
     <PanelFrame
-      title={t("folia.options.pendoloSettings")}
+      title={t("folia.ui.visualizerPendolo")}
       t={t}
       isDaylight={isDaylight}
       theme={theme}

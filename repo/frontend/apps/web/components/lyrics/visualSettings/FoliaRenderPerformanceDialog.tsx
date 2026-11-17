@@ -79,7 +79,7 @@ export function FoliaRenderPerformanceDialog({
             role="status"
             className="absolute top-3 right-3 rounded-lg bg-black/75 px-3 py-2 text-sm text-white"
           >
-            {state.step
+            {state.step !== undefined && state.total !== undefined
               ? t("folia.perfCheck.progress", { step: state.step, total: state.total })
               : t("folia.perfCheck.measuringDisplay")}
           </p>

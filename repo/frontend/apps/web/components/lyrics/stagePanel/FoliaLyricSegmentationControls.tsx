@@ -26,7 +26,8 @@ import type { LyricSegmentationLineEditorProps } from "@/types/lyrics/segmentati
 export function FoliaLyricSegmentationControls() {
   const { t } = useTranslation();
   const playback = usePlaybackProjection<LyricData>();
-  const trackId = playback.track?.id ?? null;
+  const projectedTrackId = playback.track?.id ?? null;
+  const trackId = projectedTrackId === null ? null : String(projectedTrackId);
   const { automatic, overrides } = useLyricSegmentation(trackId);
   const { saveAutomatic, saveOverride } = useSaveLyricSegmentation();
   const automaticLabelId = useId();
@@ -78,7 +79,7 @@ export function FoliaLyricSegmentationControls() {
           <p role="status" className="px-1 text-xs text-[color:var(--st-t3)]">
             {t("common.status.loading")}
           </p>
-        ) : trackId && selectedLine ? (
+        ) : trackId !== null && selectedLine ? (
           <>
             <label className="grid gap-1 px-1 text-xs">
               <span>{t("lyrics.segmentation.line")}</span>

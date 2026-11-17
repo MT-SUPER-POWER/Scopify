@@ -8,14 +8,14 @@ import { FoliaPartitaSettingsSection } from "@/components/lyrics/visualSettings/
 import { FoliaRandomSettingsSection } from "@/components/lyrics/visualSettings/FoliaRandomSettingsSection";
 import { useLyricStageStore } from "@/store/module/lyrics";
 
+const SHARED_QUALITY_MODES = ["cadenza", "fume", "diorama", "hanabi", "sonnet", "tempera"] as const;
+
 export function FoliaVisualizerSettingsSection({ model: m }: FoliaVisualSettingsSectionProps) {
   const random = useLyricStageStore((state) => state.randomVisualizerMode);
-  const mode = m.visualizerMode;
-  const scaleOnly = mode === "cadenza" || mode === "fume";
-  const hasSharedQualityPanel =
-    scaleOnly || mode === "diorama" || mode === "hanabi" || mode === "sonnet" || mode === "tempera";
+  const qualityMode = SHARED_QUALITY_MODES.find((mode) => mode === m.visualizerMode);
+  const scaleOnly = qualityMode === "cadenza" || qualityMode === "fume";
   const render = useLyricStageStore((state) =>
-    hasSharedQualityPanel ? state.tunings[mode]?.render : undefined,
+    qualityMode ? state.tunings[qualityMode]?.render : undefined,
   );
   if (random) return <FoliaRandomSettingsSection />;
   if (m.visualizerMode === "partita") return <FoliaPartitaSettingsSection model={m} />;
@@ -29,18 +29,22 @@ export function FoliaVisualizerSettingsSection({ model: m }: FoliaVisualSettings
         hasCappellaCustomAvatar: m.cappellaCustomAvatarImages.length > 0,
         isCappellaCustomAvatarLoading: m.isLoadingCappellaCustomAvatarPack,
       }) ??
-        (!hasSharedQualityPanel && (
+        (!qualityMode && (
           <p className="text-sm text-[color:var(--st-t2)]">{m.visualizerEntry.labelFallback}</p>
         ))}
-      {hasSharedQualityPanel && (
+      {qualityMode && (
         <FoliaSettingsGroup title={m.t("folia.options.lyricRenderSection")}>
           <LyricRenderQualityRows
             value={render ?? DEFAULT_LYRIC_RENDER_OVERRIDE}
             antialias={!scaleOnly}
             onChange={(patch) => {
               const { tunings, patchTuning } = useLyricStageStore.getState();
-              patchTuning(mode, {
-                render: { ...DEFAULT_LYRIC_RENDER_OVERRIDE, ...tunings[mode]?.render, ...patch },
+              patchTuning(qualityMode, {
+                render: {
+                  ...DEFAULT_LYRIC_RENDER_OVERRIDE,
+                  ...tunings[qualityMode]?.render,
+                  ...patch,
+                },
               });
             }}
           />
