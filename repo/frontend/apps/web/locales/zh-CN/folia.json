@@ -824,5 +824,8 @@
   "options.metaphorGrain": "颗粒",
   "options.lyricRenderSection": "渲染",
   "options.lyricRenderScale": "画布分辨率",
-  "options.lyricRenderFollowGlobal": "跟随全局"
+  "options.lyricRenderFollowGlobal": "跟随全局",
+  "options.machiLightsSection": "灯光",
+  "options.machiSimulatedBeat": "模拟节拍",
+  "options.machiSimulatedBeatHint": "让霓虹招牌与大屏随固定节奏起伏。"
 }

@@ -678,6 +678,7 @@ export default interface Resources {
     "options.machiLevelHigh": "高";
     "options.machiLevelLow": "低";
     "options.machiLevelOff": "关";
+    "options.machiLightsSection": "灯光";
     "options.machiQuality": "预设";
     "options.machiQualityBalanced": "平衡";
     "options.machiQualityCustom": "自定义";
@@ -698,6 +699,8 @@ export default interface Resources {
     "options.machiSceneStation": "加油站";
     "options.machiShadows": "阴影";
     "options.machiShadowsHint": "月光和太阳的投影。";
+    "options.machiSimulatedBeat": "模拟节拍";
+    "options.machiSimulatedBeatHint": "让霓虹招牌与大屏随固定节奏起伏。";
     "options.machiSkySection": "时间与天气";
     "options.machiTiltShift": "移轴";
     "options.machiTiltShiftHint": "画面上下两头虚掉，像微缩模型的照片。";

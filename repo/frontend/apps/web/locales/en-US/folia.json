@@ -824,5 +824,8 @@
   "options.metaphorGrain": "Grain",
   "options.lyricRenderSection": "Rendering",
   "options.lyricRenderScale": "Canvas resolution",
-  "options.lyricRenderFollowGlobal": "Follow global"
+  "options.lyricRenderFollowGlobal": "Follow global",
+  "options.machiLightsSection": "Lighting",
+  "options.machiSimulatedBeat": "Simulated beat",
+  "options.machiSimulatedBeatHint": "Pulse neon signs and the screen in a fixed rhythm."
 }
