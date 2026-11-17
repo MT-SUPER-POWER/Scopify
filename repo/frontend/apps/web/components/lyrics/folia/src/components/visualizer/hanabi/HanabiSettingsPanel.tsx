@@ -10,10 +10,10 @@ import { TemperaRangeControl, TemperaSettingsSection } from "../tempera/TemperaS
 // (hanabi/HanabiSettingsPanel.tsx). Sliders follow the host's draft / commit-on-release contract.
 
 type NumberKey = {
-  [K in keyof HanabiTuning]: HanabiTuning[K] extends number ? K : never;
+  [K in keyof HanabiTuning]-?: HanabiTuning[K] extends number ? K : never;
 }[keyof HanabiTuning];
 type BooleanKey = {
-  [K in keyof HanabiTuning]: HanabiTuning[K] extends boolean ? K : never;
+  [K in keyof HanabiTuning]-?: HanabiTuning[K] extends boolean ? K : never;
 }[keyof HanabiTuning];
 
 interface SliderSpec {

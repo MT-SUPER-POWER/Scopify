@@ -262,7 +262,7 @@ export const CadenzaSettingsPanel: React.FC<VisualizerSettingsPanelProps> = ({
   cadenzaTuning = DEFAULT_CADENZA_TUNING,
   onCadenzaTuningChange,
 }) => {
-  const resolvedTuning: Required<CadenzaTuning> = {
+  const resolvedTuning: Required<Omit<CadenzaTuning, "render">> = {
     fontScale: clampCadenzaFontScale(cadenzaTuning.fontScale ?? DEFAULT_CADENZA_TUNING.fontScale),
     widthRatio: clampCadenzaWidthRatio(
       cadenzaTuning.widthRatio ?? DEFAULT_CADENZA_TUNING.widthRatio,
