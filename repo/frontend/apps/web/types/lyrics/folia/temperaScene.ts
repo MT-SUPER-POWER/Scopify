@@ -1,4 +1,8 @@
-import type { TemperaTuning, Theme } from "../../../components/lyrics/folia/src/types";
+import type {
+  LyricAntialias,
+  TemperaTuning,
+  Theme,
+} from "../../../components/lyrics/folia/src/types";
 import type {
   TemperaParagraph,
   TemperaShot,
@@ -47,6 +51,7 @@ export interface TemperaSceneBuildOptions {
   tuning: TemperaTuning;
   /** Actual renderer scale after the texture-pool budget is applied. */
   renderResolution: number;
+  antialiasMode: LyricAntialias;
   lyricsFontScale: number;
   staticMode: boolean;
   /** Cover-art colours for the gradient colour mode; empty falls back to the theme hues. */

@@ -108,7 +108,7 @@ export type VisualizerFrameRate = "off" | 120 | 90 | 60;
 export type LyricRenderScale = 0.5 | 0.75 | 1 | 1.5 | 2;
 /** 歌词画布的抗锯齿：auto 是各样式自己的默认（有的开 MSAA，有的靠后处理）。 */
 export type LyricAntialias = "auto" | "on" | "off";
-/** 歌词画布的全局挡位：各样式默认跟随它。Scopify 暂无设置入口，固定是默认值（见 renderQuality/lyricRenderQualityPin.ts）。 */
+/** 默认由支持画质设置的歌词样式共用，样式可以分别覆盖分辨率和抗锯齿。 */
 export interface LyricRenderQuality {
   scale: LyricRenderScale;
   antialias: LyricAntialias;
@@ -400,6 +400,7 @@ export const DEFAULT_CLASSIC_TUNING: ClassicTuning = {
 };
 
 export interface CadenzaTuning {
+  render?: LyricRenderOverride;
   fontScale: number;
   widthRatio: number;
   motionAmount: number;
@@ -408,6 +409,7 @@ export interface CadenzaTuning {
 }
 
 export const DEFAULT_CADENZA_TUNING: CadenzaTuning = {
+  render: { scale: "global", antialias: "global" },
   fontScale: 1.12,
   widthRatio: 0.72,
   motionAmount: 1,
@@ -430,6 +432,7 @@ export const DEFAULT_PARTITA_TUNING: PartitaTuning = {
 };
 
 export interface FumeTuning {
+  render?: LyricRenderOverride;
   hidePrintSymbols: boolean;
   disableGeometricBackground: boolean;
   backgroundObjectOpacity: number;
@@ -441,6 +444,7 @@ export interface FumeTuning {
 }
 
 export const DEFAULT_FUME_TUNING: FumeTuning = {
+  render: { scale: "global", antialias: "global" },
   hidePrintSymbols: false,
   disableGeometricBackground: true,
   backgroundObjectOpacity: 0.5,
@@ -525,6 +529,7 @@ export const DEFAULT_PENDOLO_TUNING: PendoloTuning = {
 export type SonnetOuterFrameMode = "none" | "frame" | "full";
 
 export interface SonnetTuning {
+  render?: LyricRenderOverride;
   cameraIntensity: number;
   typographyMotion: number;
   mgDensity: number;
@@ -555,6 +560,7 @@ export interface SonnetTuning {
 }
 
 export const DEFAULT_SONNET_TUNING: SonnetTuning = {
+  render: { scale: "global", antialias: "global" },
   cameraIntensity: 1,
   typographyMotion: 1,
   mgDensity: 1,
@@ -600,6 +606,7 @@ export const DEFAULT_TEMPERA_LAYER_IMAGE: Omit<TemperaLayerImage, "id" | "name">
 };
 
 export interface TemperaTuning {
+  render?: LyricRenderOverride;
   cameraIntensity: number;
   glyphMotion: number;
   /** Keep each source lyric line in one shot instead of slicing it into half-phrases. */
@@ -626,6 +633,7 @@ export interface TemperaTuning {
 }
 
 export const DEFAULT_TEMPERA_TUNING: TemperaTuning = {
+  render: { scale: "global", antialias: "global" },
   cameraIntensity: 1,
   glyphMotion: 1,
   wholeLineLyrics: false,
@@ -685,6 +693,7 @@ export interface HanabiTuning {
   collage: number;
   /** 画质：均衡 / 省电降低烟花辉光的分辨率（字与全屏辉光仍按满分辨率），省电再少画一些环境粒子。 */
   renderQuality: HanabiRenderQuality;
+  render?: LyricRenderOverride;
 }
 
 export type HanabiRenderQuality = "full" | "balanced" | "low";
@@ -707,6 +716,7 @@ export const DEFAULT_HANABI_TUNING: HanabiTuning = {
   sky: 0.85,
   collage: 1,
   renderQuality: "full",
+  render: { scale: "global", antialias: "global" },
 };
 
 // Diorama's camera STYLE (calm/standard/chaotic) is not part of its tuning: like every other
@@ -769,6 +779,7 @@ export const DIORAMA_PARTICLE_GLOW_INTENSITY_MAX = 1.5;
 export const DIORAMA_PARTICLE_GLOW_INTENSITY_STEP = 0.05;
 
 export interface DioramaTuning {
+  render?: LyricRenderOverride;
   cameraSpeed: number;
   motionAmount: number;
   audioReactivity: number;
@@ -806,6 +817,7 @@ export interface DioramaTuning {
 }
 
 export const DEFAULT_DIORAMA_TUNING: DioramaTuning = {
+  render: { scale: "global", antialias: "global" },
   cameraSpeed: 1,
   motionAmount: 1,
   audioReactivity: 1,

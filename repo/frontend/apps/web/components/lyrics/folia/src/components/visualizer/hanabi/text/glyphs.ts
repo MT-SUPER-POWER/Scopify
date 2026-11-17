@@ -1,5 +1,6 @@
 // Copyright (c) 2026 chthollyphile
 import type { Texture } from "pixi.js";
+import { resolveHanabiBaseResolution } from "../hanabiTuning";
 import type { PixiModule } from "../types";
 
 // src/components/visualizer/hanabi/text/glyphs.ts
@@ -103,6 +104,14 @@ export interface GlyphAtlas {
 
 export type BuildGlyphAtlas = (pixi: PixiModule, options: GlyphAtlasOptions) => GlyphAtlas;
 
+let glyphTextureLimit = 4096;
+
+export const setHanabiGlyphTextureLimit = (limit: unknown) => {
+  if (typeof limit === "number" && Number.isFinite(limit) && limit > 0) {
+    glyphTextureLimit = Math.floor(limit);
+  }
+};
+
 type Variant = "fill" | "fat" | "glow";
 
 interface Cell {
@@ -158,7 +167,11 @@ export const buildGlyphAtlas: BuildGlyphAtlas = (pixi, options) => {
     width = Math.max(width, x);
   });
   const height = Math.max(1, y + shelf);
-  const limit = options.maxCanvasPx ?? 4096;
+  const supersampling = Math.max(
+    1,
+    options.resolution / resolveHanabiBaseResolution(window.devicePixelRatio),
+  );
+  const limit = options.maxCanvasPx ?? Math.min(4096 * supersampling, 8192, glyphTextureLimit);
   const resolution = Math.max(0.1, Math.min(options.resolution, limit / width, limit / height));
 
   const canvas = document.createElement("canvas");

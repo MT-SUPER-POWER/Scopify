@@ -561,6 +561,11 @@ export const buildTemperaScene = (
     if (sceneFilters.length > 0) {
       // Keep full-scene shaders in viewport space even when visible bounds are smaller.
       container.filterArea = new pixi.Rectangle(0, 0, width, height);
+      if (options.antialiasMode === "off") {
+        sceneFilters.forEach((filter) => {
+          filter.antialias = "off";
+        });
+      }
       baseFilters.push(...sceneFilters);
       postProcessFilters.push(...sceneFilters);
     }
@@ -576,6 +581,7 @@ export const buildTemperaScene = (
         })
       : null;
   if (transitionBlurFilter) {
+    if (options.antialiasMode === "on") transitionBlurFilter.antialias = "inherit";
     // Pins padding at 0 so ramping blur never rescales the shared vignette pass.
     transitionBlurFilter.repeatEdgePixels = true;
     // Left attached-but-disabled it becomes a skipped stack entry that misplaces the

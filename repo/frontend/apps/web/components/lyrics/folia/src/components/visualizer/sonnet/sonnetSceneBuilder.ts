@@ -306,14 +306,30 @@ export const buildSonnetScene = (
     if (sceneFilters.length > 0) {
       // Keep full-scene shaders in viewport space even when visible lyric/decor bounds are smaller.
       container.filterArea = new pixi.Rectangle(0, 0, width, height);
+      sceneFilters.forEach((filter) => {
+        filter.resolution = "inherit";
+        if (options.antialiasMode === "off") filter.antialias = "off";
+      });
       postProcessFilters.push(...sceneFilters);
     }
   }
+  // Pixi gives a container one shared target. An enabled filter with AA disabled
+  // disables MSAA for the whole stack. Auto keeps standalone transition passes cheap.
+  const filterAntialias = resolveSonnetSceneFilterAntialias(
+    options.antialiasMode,
+    postProcessFilters.length > 0,
+  );
   const transitionBlurFilter =
     options.tuning.enableTransitions && !options.staticMode
-      ? new pixi.BlurFilter({ strength: 0, quality: 1, kernelSize: 5, resolution: 0.5 })
+      ? new pixi.BlurFilter({
+          strength: 0,
+          quality: 1,
+          kernelSize: 5,
+          resolution: options.renderResolution * 0.5,
+        })
       : null;
   if (transitionBlurFilter) {
+    transitionBlurFilter.antialias = filterAntialias;
     // BlurFilter's padding is strength * 2, and Pixi pads the chain's shared render frame
     // (already clipped to the viewport) by the sum of all enabled filters' padding. A growing
     // frame rescales the vignette pass's screen coordinates, so ramping the blur brightened the
@@ -327,6 +343,7 @@ export const buildSonnetScene = (
   const transitionGlitchEffect =
     options.tuning.enableTransitions && !options.staticMode ? createSonnetGlitchEffect(pixi) : null;
   if (transitionGlitchEffect) {
+    transitionGlitchEffect.filter.antialias = filterAntialias;
     container.filters = [...(container.filters ?? []), transitionGlitchEffect.filter];
     postProcessFilters.push(transitionGlitchEffect.filter);
   }
@@ -344,8 +361,18 @@ export const buildSonnetScene = (
     shots,
     shotTimeline: shots.map((shot) => shot.shot),
     postProcessFilters,
+    filterAntialias,
     transitionBlurFilter,
     transitionGlitchEffect,
     activeShotIndex: -1,
   };
 };
+
+export function resolveSonnetSceneFilterAntialias(
+  mode: SonnetSceneBuildOptions["antialiasMode"],
+  hasPostProcess: boolean,
+): SceneView["filterAntialias"] {
+  if (mode === "off") return "off";
+  if (hasPostProcess) return "on";
+  return mode === "on" ? "inherit" : "off";
+}

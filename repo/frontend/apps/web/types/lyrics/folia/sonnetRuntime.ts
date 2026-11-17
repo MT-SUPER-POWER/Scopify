@@ -1,6 +1,12 @@
 import type { SceneView } from "./sonnetScene";
 import type { MotionValue } from "framer-motion";
-import type { AudioBands, SonnetTuning, Theme } from "../../../components/lyrics/folia/src/types";
+import type {
+  AudioBands,
+  LyricAntialias,
+  LyricRenderScale,
+  SonnetTuning,
+  Theme,
+} from "../../../components/lyrics/folia/src/types";
 import type { SonnetProgram } from "../../../components/lyrics/folia/src/components/visualizer/sonnet/types";
 
 // src/components/visualizer/sonnet/createSonnetPixiRuntime.ts
@@ -19,6 +25,8 @@ export interface SonnetRuntimeOptions {
   program: SonnetProgram;
   theme: Theme;
   tuning: SonnetTuning;
+  renderScale: LyricRenderScale;
+  antialiasMode: LyricAntialias;
   currentTime: MotionValue<number>;
   audioPower?: MotionValue<number>;
   audioBands?: AudioBands;

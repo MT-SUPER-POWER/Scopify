@@ -10,6 +10,7 @@ import { getLineRenderEndTime } from "../../../utils/lyrics/renderHints";
 import type { VisualizerSharedProps } from "../definition";
 import { useVisualizerPixiHost } from "../../../../../../../hooks/lyrics/useVisualizerPixiHost";
 import { useVisualizerRuntime } from "../runtime";
+import { useLyricRenderQuality } from "../renderQuality/useLyricRenderQuality";
 import { useVisualizerSongCommit } from "../../../../../../../hooks/lyrics/useVisualizerSongCommit";
 import VisualizerShell from "../VisualizerShell";
 import VisualizerSubtitleOverlay from "../VisualizerSubtitleOverlay";
@@ -50,6 +51,7 @@ const VisualizerTempera: React.FC<VisualizerSharedProps> = (props) => {
     subtitleFontScale,
     subtitleOverlayOpacity,
     subtitleOverlayBackground,
+    isPreviewMode,
     temperaTuning = DEFAULT_TEMPERA_TUNING,
   } = props;
   const { t } = useTranslation();
@@ -58,6 +60,12 @@ const VisualizerTempera: React.FC<VisualizerSharedProps> = (props) => {
   pausedRef.current = paused;
   const temperaTuningRef = useRef(temperaTuning);
   temperaTuningRef.current = temperaTuning;
+  const { scale: renderScale, antialias: antialiasMode } = useLyricRenderQuality(
+    temperaTuning.render,
+    isPreviewMode,
+  );
+  const renderScaleRef = useRef(renderScale);
+  renderScaleRef.current = renderScale;
   const latestSongMetadataRef = useRef<TemperaSongMetadata>({
     title: songTitle,
     artist: songArtist,
@@ -192,7 +200,7 @@ const VisualizerTempera: React.FC<VisualizerSharedProps> = (props) => {
     label: "Tempera",
     // Only inputs that genuinely need a new WebGL context and texture pool. The song is
     // handed to the live runtime instead - see TemperaPixiRuntime.swapSong.
-    rebuildKey: [currentTime, imageBlobs, lyricsFontScale, staticMode],
+    rebuildKey: [currentTime, imageBlobs, lyricsFontScale, staticMode, antialiasMode],
     song: songContext,
     create: async (host, song, signal) => {
       const { TemperaPixiRuntime } = await import("./createTemperaPixiRuntime");
@@ -203,6 +211,8 @@ const VisualizerTempera: React.FC<VisualizerSharedProps> = (props) => {
         program: song.program,
         theme: song.theme,
         tuning: temperaTuningRef.current,
+        renderScale: renderScaleRef.current,
+        antialiasMode,
         currentTime,
         lyricsFontScale,
         staticMode,
@@ -217,6 +227,7 @@ const VisualizerTempera: React.FC<VisualizerSharedProps> = (props) => {
       runtime.setSongMetadata(latestSongMetadataRef.current);
       // The tuning may have moved on while Pixi was importing or initializing.
       runtime.setTuning(temperaTuningRef.current);
+      runtime.setRenderScale(renderScaleRef.current);
       // The pause state may have changed while Pixi was importing or initializing.
       runtime.setPaused(pausedRef.current);
       return runtime;
@@ -231,6 +242,10 @@ const VisualizerTempera: React.FC<VisualizerSharedProps> = (props) => {
   useEffect(() => {
     runtimeRef.current?.setTuning(temperaTuning);
   }, [temperaTuning, runtimeRef]);
+
+  useEffect(() => {
+    runtimeRef.current?.setRenderScale(renderScale);
+  }, [renderScale, runtimeRef]);
 
   useEffect(() => {
     runtimeRef.current?.setSongMetadata(latestSongMetadataRef.current);

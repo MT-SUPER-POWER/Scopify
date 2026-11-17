@@ -16,7 +16,8 @@ export type {
 import { loadPixi } from "../../../../../../../lib/lyrics/folia/loadPixi";
 import { snapResolutionToTexturePool } from "../../../../../../../lib/lyrics/folia/pixiTextureBudget";
 
-import type { TemperaTuning, Theme } from "../../../types";
+import type { LyricRenderScale, TemperaTuning, Theme } from "../../../types";
+import { resolveLyricPixelRatio } from "../../../utils/lyricRenderQuality";
 import {
   destroyPixiContainerChildren,
   destroyPixiDisplayTree,
@@ -176,13 +177,18 @@ export class TemperaPixiRuntime {
     const app = new pixi.Application();
     const width = Math.max(options.host.clientWidth, 320);
     const height = Math.max(options.host.clientHeight, 240);
+    const resolution = snapResolutionToTexturePool(
+      width,
+      height,
+      resolveLyricPixelRatio(options.tuning.textureResolution, options.renderScale),
+    );
     await app.init({
       width,
       height,
       backgroundAlpha: 0,
-      antialias: true,
+      antialias: options.antialiasMode !== "off",
       autoDensity: true,
-      resolution: snapResolutionToTexturePool(width, height, options.tuning.textureResolution),
+      resolution,
       autoStart: false,
       sharedTicker: false,
       preference: "webgl",
@@ -192,11 +198,7 @@ export class TemperaPixiRuntime {
       useBackBuffer: true,
     });
     const runtime = new TemperaPixiRuntime(pixi, options, app);
-    runtime.renderResolution = snapResolutionToTexturePool(
-      width,
-      height,
-      options.tuning.textureResolution,
-    );
+    runtime.renderResolution = resolution;
     runtime.sceneContainer = new pixi.Container();
     // Paragraph scenes overlap during a boundary, so they must stack by paragraph order.
     runtime.sceneContainer.sortableChildren = true;
@@ -234,17 +236,31 @@ export class TemperaPixiRuntime {
   private resolveRenderResolution(tuning: TemperaTuning) {
     const width = this.lastWidth || Math.max(this.options.host.clientWidth, 320);
     const height = this.lastHeight || Math.max(this.options.host.clientHeight, 240);
-    return snapResolutionToTexturePool(width, height, tuning.textureResolution);
+    return snapResolutionToTexturePool(
+      width,
+      height,
+      resolveLyricPixelRatio(tuning.textureResolution, this.options.renderScale),
+    );
   }
 
   private resizeToHost() {
     if (this.destroyed) return false;
     const width = Math.max(this.options.host.clientWidth, 320);
     const height = Math.max(this.options.host.clientHeight, 240);
-    if (width === this.lastWidth && height === this.lastHeight) return false;
+    const resolution = snapResolutionToTexturePool(
+      width,
+      height,
+      resolveLyricPixelRatio(this.options.tuning.textureResolution, this.options.renderScale),
+    );
+    if (
+      width === this.lastWidth &&
+      height === this.lastHeight &&
+      resolution === this.renderResolution
+    )
+      return false;
     this.lastWidth = width;
     this.lastHeight = height;
-    this.renderResolution = this.resolveRenderResolution(this.options.tuning);
+    this.renderResolution = resolution;
     this.app.renderer.resize(width, height, this.renderResolution);
     // Staged against the old viewport, so its layout no longer fits.
     if (this.songSwap?.staged) {
@@ -465,6 +481,7 @@ export class TemperaPixiRuntime {
         theme: song.theme,
         tuning: this.options.tuning,
         renderResolution: this.renderResolution,
+        antialiasMode: this.options.antialiasMode,
         lyricsFontScale: this.options.lyricsFontScale,
         staticMode: this.options.staticMode,
         coverColors: song.coverColors,
@@ -984,6 +1001,12 @@ export class TemperaPixiRuntime {
       }
     }
     if (this.options.paused) this.renderOnce();
+  }
+
+  setRenderScale(renderScale: LyricRenderScale) {
+    if (this.destroyed || this.options.renderScale === renderScale) return;
+    this.options.renderScale = renderScale;
+    if (this.resizeToHost() && this.options.paused) this.renderOnce();
   }
 
   setPaused(paused: boolean) {

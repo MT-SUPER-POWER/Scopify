@@ -633,8 +633,16 @@ export default interface Resources {
     "options.latentMeshGroup": "流体背景";
     "options.latentMeshSwirl": "流体旋涡";
     "options.lightTheme": "亮色主题";
+    "options.lyricRenderAntialias": "抗锯齿";
+    "options.lyricRenderAntialiasAuto": "自动";
+    "options.lyricRenderAntialiasHint": "自动使用各样式的默认值。";
+    "options.lyricRenderAntialiasOff": "关";
+    "options.lyricRenderAntialiasOn": "开";
+    "options.lyricRenderAntialiasStyleHint": "全局抗锯齿：{{value}}";
     "options.lyricRenderFollowGlobal": "跟随全局";
     "options.lyricRenderScale": "画布分辨率";
+    "options.lyricRenderScaleHint": "调整支持此设置的歌词样式的像素密度。";
+    "options.lyricRenderScaleStyleHint": "全局分辨率：{{value}}";
     "options.lyricRenderSection": "渲染";
     "options.lyricsGlobalSettings": "歌词全局设置";
     "options.lyricsRenderer": "歌词动画";

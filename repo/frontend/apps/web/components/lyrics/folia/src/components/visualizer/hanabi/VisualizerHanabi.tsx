@@ -6,9 +6,11 @@ import { DEFAULT_HANABI_TUNING, type Line, type Theme } from "../../../types";
 import { loadLucideIcons } from "../../../services/lucideIconResolver";
 import { resolveThemeFontStack, resolveThemeFontWeight } from "../../../utils/fontStacks";
 import { getLineRenderEndTime } from "../../../utils/lyrics/renderHints";
+import { resolveLyricAntialias } from "../../../utils/lyricRenderQuality";
 import type { VisualizerSharedProps } from "../definition";
 import { useVisualizerPixiHost } from "@/hooks/lyrics/useVisualizerPixiHost";
 import { useVisualizerRuntime } from "../runtime";
+import { useLyricRenderQuality } from "../renderQuality/useLyricRenderQuality";
 import { useVisualizerSongCommit } from "@/hooks/lyrics/useVisualizerSongCommit";
 import { resolveSubtitleFontSizes } from "../subtitleFontSizes";
 import VisualizerShell from "../VisualizerShell";
@@ -52,17 +54,23 @@ const VisualizerHanabi: React.FC<VisualizerSharedProps> = (props) => {
     subtitleFontScale,
     subtitleOverlayOpacity,
     subtitleOverlayBackground,
+    isPreviewMode,
     hanabiTuning: storedTuning = DEFAULT_HANABI_TUNING,
   } = props;
   const { t } = useTranslation();
   // The store clamps what it saves; this also fills fields an older saved tuning lacks.
   const hanabiTuning = useMemo(() => normalizeHanabiTuning(storedTuning), [storedTuning]);
+  const { scale: renderScale, antialias: antialiasMode } = useLyricRenderQuality(
+    hanabiTuning.render,
+    isPreviewMode,
+  );
+  const antialias = resolveLyricAntialias(antialiasMode, false);
   const hostRef = useRef<HTMLDivElement>(null);
   const [runtimeFailed, setRuntimeFailed] = useState(false);
 
   // 运行时创建期间这些输入可能已经变了；create 完成后按最新值补一次。
-  const latestRef = useRef({ tuning: hanabiTuning, paused, showText, staticMode });
-  latestRef.current = { tuning: hanabiTuning, paused, showText, staticMode };
+  const latestRef = useRef({ tuning: hanabiTuning, renderScale, paused, showText, staticMode });
+  latestRef.current = { tuning: hanabiTuning, renderScale, paused, showText, staticMode };
   const metadataRef = useRef<HanabiCreditsMetadata>({
     title: songTitle,
     artist: songArtist,
@@ -102,7 +110,7 @@ const VisualizerHanabi: React.FC<VisualizerSharedProps> = (props) => {
     hostRef,
     label: "Hanabi",
     // 只有真正需要新 WebGL 上下文的输入；歌、tuning、暂停、静态模式都就地推给运行时。
-    rebuildKey: [currentTime],
+    rebuildKey: [currentTime, antialias],
     song: songContext,
     create: async (host, song, signal) => {
       const [{ HanabiPixiRuntime }] = await Promise.all([
@@ -114,6 +122,8 @@ const VisualizerHanabi: React.FC<VisualizerSharedProps> = (props) => {
         host,
         song,
         tuning: latest.tuning,
+        renderScale: latest.renderScale,
+        antialias,
         currentTime,
         staticMode: latest.staticMode,
         showText: latest.showText,
@@ -124,6 +134,7 @@ const VisualizerHanabi: React.FC<VisualizerSharedProps> = (props) => {
       const current = latestRef.current;
       runtime.setSongMetadata(metadataRef.current);
       runtime.setTuning(current.tuning);
+      runtime.setRenderScale(current.renderScale);
       runtime.setShowText(current.showText);
       runtime.setStaticMode(current.staticMode);
       runtime.setPaused(current.paused);
@@ -140,6 +151,10 @@ const VisualizerHanabi: React.FC<VisualizerSharedProps> = (props) => {
   useEffect(() => {
     runtimeRef.current?.setTuning(hanabiTuning);
   }, [hanabiTuning, runtimeRef]);
+
+  useEffect(() => {
+    runtimeRef.current?.setRenderScale(renderScale);
+  }, [renderScale, runtimeRef]);
 
   useEffect(() => {
     runtimeRef.current?.setShowText(showText);

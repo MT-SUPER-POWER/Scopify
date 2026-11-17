@@ -27,10 +27,12 @@ import {
   type LineTransitionTiming,
 } from "../../../utils/lyrics/renderHints";
 import { resolveThemeFontStack } from "../../../utils/fontStacks";
+import { resolveLyricPixelRatio } from "../../../utils/lyricRenderQuality";
 import { colorWithAlpha, mixColors } from "../colorMix";
 import { prepareActiveAndUpcoming, useVisualizerRuntime } from "../runtime";
 import { type VisualizerSharedProps } from "../definition";
 import VisualizerShell from "../VisualizerShell";
+import { useLyricRenderQuality } from "../renderQuality/useLyricRenderQuality";
 import VisualizerSubtitleOverlay from "../VisualizerSubtitleOverlay";
 import { resolveWordColor } from "../wordColoring";
 import type {
@@ -1396,8 +1398,12 @@ const VisualizerCadenza: React.FC<VisualizerProps> = (props) => {
     hideTranslationSubtitle = false,
     showSubtitleTranslation = true,
     subtitleContentMode,
+    isPreviewMode,
   } = props;
   const { t } = useTranslation();
+  const { scale } = useLyricRenderQuality(cadenzaTuning.render, isPreviewMode);
+  const renderScale = useRef(scale);
+  renderScale.current = scale;
   const [viewport, setViewport] = useState({ width: 0, height: 0 });
   const containerRef = useRef<HTMLDivElement>(null);
   const lineLayerRef = useRef<HTMLDivElement>(null);
@@ -1581,7 +1587,7 @@ const VisualizerCadenza: React.FC<VisualizerProps> = (props) => {
       lastFrameTimeRef.current = now;
       const width = Math.max(Math.floor(viewport.width), 1);
       const height = Math.max(Math.floor(viewport.height), 1);
-      const dpr = window.devicePixelRatio || 1;
+      const dpr = resolveLyricPixelRatio(window.devicePixelRatio || 1, renderScale.current);
 
       if (
         textCanvas.width !== Math.floor(width * dpr) ||

@@ -21,6 +21,11 @@ import {
   TEMPERA_MAX_LAYER_IMAGES,
   type TemperaLayerImage,
 } from "@/components/lyrics/folia/src/types";
+import {
+  DEFAULT_LYRIC_RENDER_QUALITY,
+  normalizeLyricRenderOverride,
+  normalizeLyricRenderQuality,
+} from "@/components/lyrics/folia/src/utils/lyricRenderQuality";
 import { normalizeMachiTuning } from "@/components/lyrics/folia/src/components/visualizer/machi/machiTuning";
 import { DEFAULT_METAPHOR_TUNING, normalizeMetaphorTuning } from "@/lib/lyrics/metaphorTuning";
 import { normalizePrismaTuning } from "@/lib/lyrics/prisma/tuning";
@@ -241,6 +246,7 @@ export function createDefaultFoliaStageSettings(): FoliaStageSettings {
     themeRecentIds: [],
     themes: createBuiltinFoliaStageThemes(),
     themeVariant: "dark",
+    lyricRenderQuality: { ...DEFAULT_LYRIC_RENDER_QUALITY },
     tunings: {
       cadenza: structuredClone(DEFAULT_CADENZA_TUNING),
       cappella: structuredClone(DEFAULT_CAPPELLA_TUNING),
@@ -362,6 +368,14 @@ function normalizeAgainstSchema<T>(candidate: unknown, schema: T, path: string):
 
   if (path === "tunings.prisma") {
     return (candidate === undefined ? schema : normalizePrismaTuning(candidate)) as T;
+  }
+
+  if (path === "lyricRenderQuality") {
+    return (candidate === undefined ? schema : normalizeLyricRenderQuality(candidate)) as T;
+  }
+
+  if (path.startsWith("tunings.") && path.endsWith(".render")) {
+    return (candidate === undefined ? schema : normalizeLyricRenderOverride(candidate)) as T;
   }
 
   if (path === "tunings.tempera.layerImages") {
