@@ -850,5 +850,17 @@
   "options.lyricRenderAntialiasStyleHint": "Global anti-aliasing: {{value}}",
   "options.lyricRenderAntialiasAuto": "Auto",
   "options.lyricRenderAntialiasOn": "On",
-  "options.lyricRenderAntialiasOff": "Off"
+  "options.lyricRenderAntialiasOff": "Off",
+  "perfCheck.title": "Lyric renderer performance check",
+  "perfCheck.description": "Compare canvas settings using a timed Sonnet sample. The result reflects this window’s size and current workload.",
+  "perfCheck.start": "Run check",
+  "perfCheck.retry": "Run again",
+  "perfCheck.measuringDisplay": "Measuring display frame timing…",
+  "perfCheck.progress": "Measuring {{step}} of {{total}}…",
+  "perfCheck.failed": "The renderer could not be measured. Keep this window visible and try again.",
+  "perfCheck.averageFps": "Average FPS",
+  "perfCheck.lowFps": "1% low",
+  "perfCheck.lateFrames": "Late frames",
+  "perfCheck.recommended": "Recommended",
+  "perfCheck.apply": "Apply recommendation"
 }
