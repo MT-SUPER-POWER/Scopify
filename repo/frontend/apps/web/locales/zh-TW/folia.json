@@ -827,5 +827,20 @@
   "options.lyricRenderFollowGlobal": "跟隨全域",
   "options.machiLightsSection": "燈光",
   "options.machiSimulatedBeat": "模擬節拍",
-  "options.machiSimulatedBeatHint": "讓霓虹招牌與大螢幕隨固定節奏起伏。"
+  "options.machiSimulatedBeatHint": "讓霓虹招牌與大螢幕隨固定節奏起伏。",
+  "scene.title": "場景",
+  "scene.cinema": "影廳（Beta）",
+  "scene.houseLights": "廳燈",
+  "scene.curtains": "暫停時關閉布幕",
+  "scene.quality": "影廳畫質",
+  "scene.qualityLow": "低",
+  "scene.qualityMedium": "中",
+  "scene.qualityHigh": "高",
+  "scene.seat": "座位",
+  "scene.seatLabel": "{{row}} 排 {{number}} 座",
+  "scene.recenter": "對準銀幕",
+  "scene.unavailable": "影廳暫時無法顯示",
+  "scene.retry": "重試進入影廳",
+  "scene.lookAround": "拖曳或按方向鍵轉頭",
+  "scene.screen": "銀幕"
 }
