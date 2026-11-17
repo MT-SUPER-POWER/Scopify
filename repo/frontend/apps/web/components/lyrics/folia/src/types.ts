@@ -505,6 +505,7 @@ export const DEFAULT_TILT_TUNING: TiltTuning = {
 };
 
 export interface PendoloTuning {
+  render?: LyricRenderOverride;
   arcRadius: number;
   arcAngleDeg: number;
   wheelCenterX: number;
@@ -515,9 +516,17 @@ export interface PendoloTuning {
   showCenterGradient?: boolean;
   showCoverOnWatchFace?: boolean;
   enableLineGlow?: boolean;
+  mirrorLayout?: boolean;
+  tiltDeg?: number;
+  tiltAxisDeg?: number;
+  parallaxDepth?: number;
+  hubView?: boolean;
+  hubViewHeight?: number;
+  hubViewBack?: number;
 }
 
 export const DEFAULT_PENDOLO_TUNING: PendoloTuning = {
+  render: { scale: "global", antialias: "global" },
   arcRadius: 0.42,
   arcAngleDeg: 100,
   wheelCenterX: 0,
@@ -528,6 +537,13 @@ export const DEFAULT_PENDOLO_TUNING: PendoloTuning = {
   showCenterGradient: true,
   showCoverOnWatchFace: false,
   enableLineGlow: false,
+  mirrorLayout: false,
+  tiltDeg: 0,
+  tiltAxisDeg: 0,
+  parallaxDepth: 1,
+  hubView: false,
+  hubViewHeight: 1.4,
+  hubViewBack: 1.2,
 };
 
 export type SonnetOuterFrameMode = "none" | "frame" | "full";

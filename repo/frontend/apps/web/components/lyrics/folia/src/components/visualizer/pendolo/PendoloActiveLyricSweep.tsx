@@ -36,6 +36,10 @@ interface PendoloActiveLyricSweepProps {
   isChorus?: boolean;
   accentMix?: number;
   chorusGlowMultiplier?: number;
+  /** 歌词左右镜像：每一行贴右边排。 */
+  alignRight?: boolean;
+  /** 轮心视角下句子立起来：每一行居中排，中点对着刻度针。优先于 alignRight。 */
+  alignCenter?: boolean;
 }
 
 interface PendoloSweepLineProps {
@@ -153,6 +157,8 @@ const PendoloActiveLyricSweep: React.FC<PendoloActiveLyricSweepProps> = ({
   isChorus = false,
   accentMix = 0.32,
   chorusGlowMultiplier = 0,
+  alignRight = false,
+  alignCenter = false,
 }) => {
   const text = line.fullText;
   const fontSpec = `${fontWeight} ${fontPx}px ${fontFamily}`;
@@ -193,6 +199,13 @@ const PendoloActiveLyricSweep: React.FC<PendoloActiveLyricSweepProps> = ({
     fontSize: `${fontPx}px`,
     lineHeight: `${lineHeight}px`,
     width: `${maxWidth}px`,
+    ...(alignCenter || alignRight
+      ? {
+          display: "flex",
+          flexDirection: "column" as const,
+          alignItems: alignCenter ? "center" : "flex-end",
+        }
+      : null),
   };
 
   return (

@@ -11,7 +11,20 @@ import {
   resolveThemeFontStack,
   resolveThemeTranslationFontStack,
 } from "@/components/lyrics/folia/src/utils/fontStacks";
-import { calculatePendoloWheelLayout } from "@/components/lyrics/folia/src/components/visualizer/pendolo/pendoloGeometry";
+import { calculatePendoloWheelLayout, resolvePendoloWheelCenterX } from "./pendoloGeometry";
+import {
+  buildPendoloDialProjection,
+  buildPendoloHubViewProjection,
+  buildPendoloLayerProjection,
+  buildPendoloTiltProjection,
+  resolvePendoloPlaneCssTransform,
+  resolvePendoloSpaceCssTransform,
+} from "./pendoloDialProjection";
+import { PENDOLO_BALANCE_ICON_HEIGHT, PENDOLO_LYRIC_LAYER_HEIGHT } from "./pendoloParallax";
+import type { PendoloStandUp } from "@/types/lyrics/folia/pendoloClockwork";
+import PendoloRotatingLine from "./PendoloRotatingLine";
+import { resolveLyricAntialias } from "../../../utils/lyricRenderQuality";
+import { useLyricRenderQuality } from "../renderQuality/useLyricRenderQuality";
 import PendoloActiveLyricSweep from "@/components/lyrics/folia/src/components/visualizer/pendolo/PendoloActiveLyricSweep";
 import { buildPendoloTextLayout } from "@/components/lyrics/folia/src/components/visualizer/pendolo/pendoloTextLayout";
 import {
@@ -50,6 +63,18 @@ const clampScrollSteps = (steps: number) => {
  * Renders lyrics arranged in an adjustable circular arc on the left side of the screen.
  * Advance of song lines triggers a springy mechanical escapement ratchet step and subtle balance wheel motion.
  */
+/** Keep neighbouring lyrics legible behind the focal line in hub view. */
+const PENDOLO_STAND_SIDE_LINE_ALPHA_MIN = 0.18;
+const PENDOLO_STAND_SIDE_LINE_FULL_DISTANCE = 4;
+const resolvePendoloStandSideLineAlpha = (distance: number) =>
+  Math.min(
+    1,
+    // 间奏时没有焦点句，最近的两句离刻度针只有半档：按紧挨着的一句算，不再往下压
+    PENDOLO_STAND_SIDE_LINE_ALPHA_MIN +
+      ((1 - PENDOLO_STAND_SIDE_LINE_ALPHA_MIN) * (Math.max(1, distance) - 1)) /
+        (PENDOLO_STAND_SIDE_LINE_FULL_DISTANCE - 1),
+  );
+
 const VisualizerPendolo: React.FC<VisualizerSharedProps> = (props) => {
   const {
     currentTime,
@@ -66,7 +91,9 @@ const VisualizerPendolo: React.FC<VisualizerSharedProps> = (props) => {
     subtitleTheme,
     hideTranslationSubtitle = false,
     subtitleContentMode,
+    isPreviewMode,
   } = props;
+  const renderQuality = useLyricRenderQuality(pendoloTuning.render, isPreviewMode);
   // Pendolo lays its subtitles out inside the clockwork layout, not the shared bottom overlay;
   // 'both' stacks romanization above translation under each lyric (Folia 5809e8e8). The rows come
   // from resolvePendoloSubtitleTracks, which the height pre-measurement and the rendering both
@@ -341,16 +368,72 @@ const VisualizerPendolo: React.FC<VisualizerSharedProps> = (props) => {
   const fontFamily = useMemo(() => resolveThemeFontStack(theme), [theme]);
   const fontWeight = 400;
 
-  const centerX = viewportSize.width * pendoloTuning.wheelCenterX;
+  // 歌词左右镜像（#1124）：表盘在右、弧线朝左；关着时 sideSign 是 1，一切和原来一样
+  const mirrored = pendoloTuning.mirrorLayout === true;
+  const sideSign = mirrored ? -1 : 1;
+  const centerX = resolvePendoloWheelCenterX(viewportSize.width, pendoloTuning);
   const centerY = viewportSize.height * pendoloTuning.wheelCenterY;
   const baseRadius = Math.min(viewportSize.width, viewportSize.height) * pendoloTuning.arcRadius;
   const lyricRadiusOffset = Math.min(viewportSize.width, viewportSize.height) * 0.06;
   const lyricRingRadius = baseRadius + lyricRadiusOffset;
 
-  const maxItemX = centerX + baseRadius;
+  const outerEdge = mirrored ? centerX - baseRadius : centerX + baseRadius;
   const availableTextWidth = Math.max(
     140,
-    Math.min(viewportSize.width * 0.46, viewportSize.width - maxItemX - 48),
+    Math.min(
+      viewportSize.width * 0.46,
+      (mirrored ? outerEdge : viewportSize.width - outerEdge) - 48,
+    ),
+  );
+  // 表盘倾斜：歌词和摆轮图标放在一层里整体按倾斜投影（它们已经按镜像排过），表盘画布还要先镜像
+  // Canvas2D 回退画不了透视，歌词层却是 matrix3d 透视加视差，两边会对不上：回退时整体不倾斜
+  const [clockworkWebgl, setClockworkWebgl] = useState(true);
+  const requestedTiltDeg = pendoloTuning.tiltDeg ?? 0;
+  const tiltDeg = clockworkWebgl ? requestedTiltDeg : 0;
+  const tiltAxisDeg = pendoloTuning.tiltAxisDeg ?? 0;
+  // 轮心视角：相机在轮心后上方，顺着刻度针看向焦点句；代替倾斜，同样只在 WebGL 下生效
+  const requestedHubView = pendoloTuning.hubView === true;
+  const hubView = clockworkWebgl && requestedHubView;
+  // 相机至少要比最高的一层（摆轮图标）高一截，不然那几层会跑到相机上面、从底下被看到
+  const hubCameraHeightPx =
+    baseRadius *
+    Math.max(
+      pendoloTuning.hubViewHeight ?? DEFAULT_PENDOLO_TUNING.hubViewHeight ?? 1.4,
+      PENDOLO_BALANCE_ICON_HEIGHT * (pendoloTuning.parallaxDepth ?? 1) + 0.15,
+    );
+  // 相机从轮心沿刻度针反方向后退这么远，越过轮心看向焦点句，整套齿轮在近处
+  const hubCameraBackPx = baseRadius * (pendoloTuning.hubViewBack ?? 1.2);
+  const tiltProjection = useMemo(
+    () =>
+      hubView
+        ? buildPendoloHubViewProjection(
+            hubCameraHeightPx,
+            hubCameraBackPx,
+            lyricRingRadius,
+            sideSign,
+            centerX,
+            centerY,
+            viewportSize.width,
+            viewportSize.height,
+          )
+        : buildPendoloTiltProjection(tiltDeg, tiltAxisDeg, viewportSize.width, viewportSize.height),
+    [
+      centerX,
+      centerY,
+      hubCameraBackPx,
+      hubCameraHeightPx,
+      hubView,
+      lyricRingRadius,
+      sideSign,
+      tiltAxisDeg,
+      tiltDeg,
+      viewportSize.height,
+      viewportSize.width,
+    ],
+  );
+  const dialProjection = useMemo(
+    () => buildPendoloDialProjection(tiltProjection, mirrored),
+    [mirrored, tiltProjection],
   );
 
   // Escapement angular shift calculation
@@ -363,7 +446,11 @@ const VisualizerPendolo: React.FC<VisualizerSharedProps> = (props) => {
     tickSpring,
     (value) => -(value - targetLineIndex) * angleStepRad * (180 / Math.PI),
   );
-  const textRotationCorrectionDeg = useTransform(wheelRotationDeg, (value) => -value * 0.65);
+  // 镜像时轨道反着转，弧线在屏幕上才和原版对称地走
+  const railRotationDeg = useTransform(wheelRotationDeg, (value) => value * sideSign);
+  const textRotationCorrectionDeg = useTransform(railRotationDeg, (value) => -value * 0.65);
+  // 轮心视角下句子立起来：抵掉轨道的转角，字的横向朝相机的右手（布局里是 (0, sideSign)）
+  const standUpRotationDeg = useTransform(railRotationDeg, (value) => sideSign * 90 - value);
   const gearRotationAngleRad = useTransform(tickSpring, (value) => value * angleStepRad);
 
   const lineBlockHeights = useMemo(() => {
@@ -439,8 +526,37 @@ const VisualizerPendolo: React.FC<VisualizerSharedProps> = (props) => {
         LucideIcon | undefined) ?? Star
     );
   }, [theme.lyricsIcons]);
-  const balanceGearX = centerX + baseRadius * 0.2;
+  const balanceGearX = centerX + sideSign * baseRadius * 0.2;
   const balanceGearY = centerY - baseRadius * 0.75;
+  const parallaxScalePx = tiltProjection.flat ? 0 : (pendoloTuning.parallaxDepth ?? 1) * baseRadius;
+  const resolveLayerStyle = (
+    heightRatio: number,
+    zIndex: number,
+    standUp = false,
+  ): React.CSSProperties | undefined => {
+    if (tiltProjection.flat) return undefined;
+    const layer = buildPendoloLayerProjection(tiltProjection, heightRatio * parallaxScalePx);
+    return {
+      transform: standUp
+        ? resolvePendoloSpaceCssTransform(layer)
+        : resolvePendoloPlaneCssTransform(layer),
+      transformOrigin: `${centerX}px ${centerY}px`,
+      transformStyle: standUp ? "preserve-3d" : undefined,
+      zIndex,
+    };
+  };
+  const iconLayerStyle = resolveLayerStyle(PENDOLO_BALANCE_ICON_HEIGHT, 1);
+  // 轮心视角下歌词立起来：图层带上高度方向（z），轨道层也保留 3D，句子各自绕底边转起来
+  const standLyrics = hubView;
+  // 字面正对相机：上方取相机的上方 (s·H, 0, D')，绕底边转 -atan2(D', H)；相机越高、字越往后仰
+  const standUpTiltDeg =
+    (-Math.atan2(lyricRingRadius + hubCameraBackPx, hubCameraHeightPx) * 180) / Math.PI;
+  const lyricStandUp = useMemo<PendoloStandUp | undefined>(
+    () => (standLyrics ? { rotationDeg: standUpRotationDeg, tiltDeg: standUpTiltDeg } : undefined),
+    [standLyrics, standUpRotationDeg, standUpTiltDeg],
+  );
+  const lyricLayerStyle = resolveLayerStyle(PENDOLO_LYRIC_LAYER_HEIGHT, 2, standLyrics);
+  const textOrigin = standLyrics ? "center center" : mirrored ? "right center" : "left center";
 
   return (
     <VisualizerShell
@@ -473,179 +589,210 @@ const VisualizerPendolo: React.FC<VisualizerSharedProps> = (props) => {
           enableLineGlow={pendoloTuning.enableLineGlow ?? false}
           paused={props.paused}
           motionProfile={motionProfile}
+          renderScale={renderQuality.scale}
+          antialias={resolveLyricAntialias(renderQuality.antialias, true)}
+          mirrored={mirrored}
+          projection={dialProjection}
+          parallaxScalePx={parallaxScalePx}
+          depthStencil={
+            (requestedTiltDeg !== 0 || requestedHubView) && (pendoloTuning.parallaxDepth ?? 1) > 0
+          }
+          onBackendChange={setClockworkWebgl}
         />
-        {pendoloTuning.showGearDecor !== "none" && (
-          <div
-            className="pointer-events-none absolute"
-            style={{
-              left: `${balanceGearX}px`,
-              top: `${balanceGearY}px`,
-              zIndex: 1,
-              transform: "translate(-50%, -50%)",
-            }}
-          >
-            <BalanceIcon
-              size={Math.max(14, baseRadius * 0.13)}
-              strokeWidth={1.2}
-              absoluteStrokeWidth
-              color={colorWithAlpha(accentTextColor, 0.62)}
-            />
-          </div>
-        )}
+        <div className="pointer-events-none absolute inset-0" style={iconLayerStyle}>
+          {pendoloTuning.showGearDecor !== "none" && (
+            <div
+              className="pointer-events-none absolute"
+              style={{
+                left: `${balanceGearX}px`,
+                top: `${balanceGearY}px`,
+                zIndex: 1,
+                transform: "translate(-50%, -50%)",
+              }}
+            >
+              <BalanceIcon
+                size={Math.max(14, baseRadius * 0.13)}
+                strokeWidth={1.2}
+                absoluteStrokeWidth
+                color={colorWithAlpha(accentTextColor, 0.62)}
+              />
+            </div>
+          )}
+        </div>
+        <div className="pointer-events-none absolute inset-0" style={lyricLayerStyle}>
+          {/* Lyric Wheel Arc Items */}
+          {showText && (
+            <motion.div
+              ref={wheelRailRef}
+              className="pointer-events-auto absolute inset-0 size-full"
+              style={{
+                zIndex: 2,
+                rotate: railRotationDeg,
+                transformStyle: standLyrics ? "preserve-3d" : undefined,
+                transformOrigin: `${centerX}px ${centerY}px`,
+                WebkitTransform: "translateZ(0)",
+              }}
+            >
+              {lineItems.map((item) => {
+                const isFocal = item.isActive;
+                const chorusPresentation = resolvePendoloChorusPresentation(
+                  item.line.isChorus,
+                  isFocal && item.index === currentLineIndex,
+                  motionProfile,
+                );
+                const maxTextWidth = availableTextWidth / item.scale;
+                const fontPx = Math.round((isFocal ? 28 : 22) * lyricsFontScale);
+                const subtitleTracks = resolvePendoloSubtitleTracks(item.line, {
+                  mode: resolvedSubtitleMode,
+                  hidden: hideTranslationSubtitle,
+                  focal: isFocal,
+                  fontScale: lyricsFontScale,
+                });
 
-        {/* Lyric Wheel Arc Items */}
-        {showText && (
-          <motion.div
-            ref={wheelRailRef}
-            className="pointer-events-auto absolute inset-0 size-full"
-            style={{
-              zIndex: 2,
-              rotate: wheelRotationDeg,
-              transformOrigin: `${centerX}px ${centerY}px`,
-              WebkitTransform: "translateZ(0)",
-            }}
-          >
-            {lineItems.map((item) => {
-              const isFocal = item.isActive;
-              const chorusPresentation = resolvePendoloChorusPresentation(
-                item.line.isChorus,
-                isFocal && item.index === currentLineIndex,
-                motionProfile,
-              );
-              const maxTextWidth = availableTextWidth / item.scale;
-              const fontPx = Math.round((isFocal ? 28 : 22) * lyricsFontScale);
-              const subtitleTracks = resolvePendoloSubtitleTracks(item.line, {
-                mode: resolvedSubtitleMode,
-                hidden: hideTranslationSubtitle,
-                focal: isFocal,
-                fontScale: lyricsFontScale,
-              });
-
-              return (
-                <div
-                  key={item.line.id ?? `pendolo-line-${item.index}`}
-                  className={`pointer-events-auto absolute transition-opacity duration-300 ${onLyricLineSeek ? "cursor-pointer hover:opacity-100" : ""}`}
-                  style={{
-                    left: `${item.x}px`,
-                    top: `${item.y}px`,
-                    transformOrigin: "left center",
-                    opacity: item.alpha,
-                    fontFamily,
-                    fontWeight,
-                  }}
-                  onClick={(e) => {
-                    if (onLyricLineSeek) {
-                      e.stopPropagation();
-                      onLyricLineSeek(item.line.startTime);
+                return (
+                  <PendoloRotatingLine
+                    key={item.line.id ?? `pendolo-line-${item.index}`}
+                    wheelRotationDeg={railRotationDeg}
+                    mirrored={mirrored}
+                    railWidth={viewportSize.width}
+                    baseAngleDeg={item.angleDeg}
+                    baseOpacity={
+                      standLyrics && !isFocal
+                        ? item.alpha * resolvePendoloStandSideLineAlpha(item.distanceFromActive)
+                        : item.alpha
                     }
-                  }}
-                >
-                  <motion.div
-                    className="inline-block"
-                    style={{
-                      rotate: textRotationCorrectionDeg,
-                      transformOrigin: "left center",
-                      WebkitTransform: "translateZ(0)",
-                    }}
+                    left={item.x}
+                    top={item.y}
+                    standUp={lyricStandUp}
+                    fontFamily={fontFamily}
+                    fontWeight={fontWeight}
+                    onClick={
+                      onLyricLineSeek
+                        ? (event) => {
+                            event.stopPropagation();
+                            onLyricLineSeek(item.line.startTime);
+                          }
+                        : undefined
+                    }
                   >
                     <motion.div
-                      className="relative inline-block"
-                      initial={false}
-                      animate={{ scale: chorusPresentation.haloScale }}
-                      transition={{
-                        duration: chorusPresentation.transitionDuration,
-                        ease: "easeOut",
-                      }}
+                      className="inline-block"
                       style={{
-                        transform: `rotate(${item.angleDeg * 0.35}deg) scale(${item.scale}) translateZ(0)`,
-                        transformOrigin: "left center",
-                        isolation: "isolate",
+                        rotate: standLyrics ? 0 : textRotationCorrectionDeg,
+                        x: standLyrics ? (mirrored ? "50%" : "-50%") : 0,
+                        transformOrigin: textOrigin,
+                        WebkitTransform: "translateZ(0)",
                       }}
                     >
-                      {chorusPresentation.isActive && (
-                        <motion.div
-                          aria-hidden
-                          className="pointer-events-none absolute -z-10 rounded-2xl"
-                          initial={{ opacity: 0, scale: 0.96 }}
-                          animate={{ opacity: chorusPresentation.haloOpacity, scale: 1 }}
-                          transition={{
-                            duration: chorusPresentation.transitionDuration,
-                            ease: "easeOut",
-                          }}
+                      <motion.div
+                        className="relative inline-block"
+                        initial={false}
+                        animate={{ scale: chorusPresentation.haloScale }}
+                        transition={{
+                          duration: chorusPresentation.transitionDuration,
+                          ease: "easeOut",
+                        }}
+                        style={{
+                          transform: `rotate(${standLyrics ? 0 : sideSign * item.angleDeg * 0.35}deg) scale(${item.scale}) translateZ(0)`,
+                          transformOrigin: textOrigin,
+                          textAlign: standLyrics ? "center" : mirrored ? "right" : undefined,
+                          isolation: "isolate",
+                        }}
+                      >
+                        {chorusPresentation.isActive && (
+                          <motion.div
+                            aria-hidden
+                            className="pointer-events-none absolute -z-10 rounded-2xl"
+                            initial={{ opacity: 0, scale: 0.96 }}
+                            animate={{ opacity: chorusPresentation.haloOpacity, scale: 1 }}
+                            transition={{
+                              duration: chorusPresentation.transitionDuration,
+                              ease: "easeOut",
+                            }}
+                            style={{
+                              inset: "-0.7em -1.1em",
+                              background: `radial-gradient(circle at ${mirrored ? 58 : 42}% 50%, ${colorWithAlpha(accentTextColor, 0.14 * chorusPresentation.haloOpacity)} 0%, ${colorWithAlpha(accentTextColor, 0.035 * chorusPresentation.haloOpacity)} 55%, transparent 82%)`,
+                              filter: `blur(${Math.round(10 * motionProfile.chorusGlowMultiplier)}px)`,
+                            }}
+                          />
+                        )}
+                        <div
                           style={{
-                            inset: "-0.7em -1.1em",
-                            background: `radial-gradient(circle at 42% 50%, ${colorWithAlpha(accentTextColor, 0.14 * chorusPresentation.haloOpacity)} 0%, ${colorWithAlpha(accentTextColor, 0.035 * chorusPresentation.haloOpacity)} 55%, transparent 82%)`,
-                            filter: `blur(${Math.round(10 * motionProfile.chorusGlowMultiplier)}px)`,
+                            transform: standLyrics ? "translateY(-100%)" : "translateY(-50%)",
                           }}
-                        />
-                      )}
-                      <div style={{ transform: "translateY(-50%)" }}>
-                        <div>
-                          {isFocal ? (
-                            <PendoloActiveLyricSweep
-                              line={item.line}
-                              currentTime={currentTime}
-                              fontFamily={fontFamily}
-                              fontWeight={fontWeight}
-                              maxWidth={maxTextWidth}
-                              primaryTextColor={primaryTextColor}
-                              accentTextColor={accentTextColor}
-                              fontPx={fontPx}
-                              wordColors={theme.wordColors}
-                              isChorus={chorusPresentation.isActive}
-                              accentMix={chorusPresentation.accentMix}
-                              chorusGlowMultiplier={chorusPresentation.glowMultiplier}
-                            />
-                          ) : (
+                        >
+                          <div>
+                            {isFocal ? (
+                              <PendoloActiveLyricSweep
+                                line={item.line}
+                                currentTime={currentTime}
+                                fontFamily={fontFamily}
+                                fontWeight={fontWeight}
+                                maxWidth={maxTextWidth}
+                                primaryTextColor={primaryTextColor}
+                                accentTextColor={accentTextColor}
+                                fontPx={fontPx}
+                                wordColors={theme.wordColors}
+                                isChorus={chorusPresentation.isActive}
+                                accentMix={chorusPresentation.accentMix}
+                                chorusGlowMultiplier={chorusPresentation.glowMultiplier}
+                                alignRight={mirrored}
+                                alignCenter={standLyrics}
+                              />
+                            ) : (
+                              <div
+                                className="whitespace-pre-wrap transition-all duration-200"
+                                style={{
+                                  fontSize: `${fontPx}px`,
+                                  maxWidth: `${maxTextWidth}px`,
+                                  color: colorWithAlpha(primaryTextColor, 0.75),
+                                  letterSpacing: "0.01em",
+                                  whiteSpace: "pre-wrap",
+                                  overflowWrap: "anywhere",
+                                  wordBreak: "break-word",
+                                }}
+                              >
+                                {item.line.fullText}
+                              </div>
+                            )}
+                          </div>
+                          {/* Romanization / translation rows (a second row steps down in size and opacity) */}
+                          {subtitleTracks.map((track) => (
                             <div
-                              className="whitespace-pre-wrap transition-all duration-200"
+                              key={track.role}
+                              data-pendolo-subtitle-track={track.role}
+                              className="whitespace-pre-wrap transition-opacity duration-200"
                               style={{
-                                fontSize: `${fontPx}px`,
+                                fontFamily: resolveThemeTranslationFontStack(
+                                  subtitleTheme ?? theme,
+                                ),
+                                fontWeight: track.fontWeight,
+                                fontSize: `${track.fontPx}px`,
                                 maxWidth: `${maxTextWidth}px`,
-                                color: colorWithAlpha(primaryTextColor, 0.75),
+                                color: isFocal
+                                  ? secondaryTextColor
+                                  : colorWithAlpha(secondaryTextColor, 0.6),
+                                opacity:
+                                  track.opacityFactor === 1 ? undefined : track.opacityFactor,
                                 letterSpacing: "0.01em",
                                 whiteSpace: "pre-wrap",
                                 overflowWrap: "anywhere",
                                 wordBreak: "break-word",
+                                marginTop: `${track.gapEm}em`,
                               }}
                             >
-                              {item.line.fullText}
+                              {track.text}
                             </div>
-                          )}
+                          ))}
                         </div>
-                        {/* Romanization / translation rows (a second row steps down in size and opacity) */}
-                        {subtitleTracks.map((track) => (
-                          <div
-                            key={track.role}
-                            data-pendolo-subtitle-track={track.role}
-                            className="whitespace-pre-wrap transition-opacity duration-200"
-                            style={{
-                              fontFamily: resolveThemeTranslationFontStack(subtitleTheme ?? theme),
-                              fontWeight: track.fontWeight,
-                              fontSize: `${track.fontPx}px`,
-                              maxWidth: `${maxTextWidth}px`,
-                              color: isFocal
-                                ? secondaryTextColor
-                                : colorWithAlpha(secondaryTextColor, 0.6),
-                              opacity: track.opacityFactor === 1 ? undefined : track.opacityFactor,
-                              letterSpacing: "0.01em",
-                              whiteSpace: "pre-wrap",
-                              overflowWrap: "anywhere",
-                              wordBreak: "break-word",
-                              marginTop: `${track.gapEm}em`,
-                            }}
-                          >
-                            {track.text}
-                          </div>
-                        ))}
-                      </div>
+                      </motion.div>
                     </motion.div>
-                  </motion.div>
-                </div>
-              );
-            })}
-          </motion.div>
-        )}
+                  </PendoloRotatingLine>
+                );
+              })}
+            </motion.div>
+          )}
+        </div>
       </div>
     </VisualizerShell>
   );

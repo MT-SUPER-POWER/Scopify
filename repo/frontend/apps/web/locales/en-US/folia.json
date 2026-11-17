@@ -923,5 +923,17 @@
   "options.subtitleOverlayUpcomingFallback": "Preview upcoming lyrics when content is missing",
   "options.subtitleUpcomingLyricsBlur": "Blur upcoming lyrics",
   "options.avoidOverlap": "Prevent Overlap",
-  "options.avoidOverlapHint": "Space words by their size when scaled and turned"
+  "options.avoidOverlapHint": "Space words by their size when scaled and turned",
+  "options.pendoloWheelCenterXMirrored": "Wheel Center X (0 = Right Edge)",
+  "options.pendoloMirrorLayout": "Mirror Lyrics Left/Right",
+  "options.pendoloTiltDeg": "Dial Tilt",
+  "options.pendoloTiltAxisDeg": "Tilt Axis (0 = horizontal)",
+  "options.pendoloParallaxDepth": "Layer Parallax (when tilted or in hub view)",
+  "options.pendoloHubView": "Hub View (look along the pointer)",
+  "options.pendoloHubViewHeight": "View Height",
+  "options.pendoloHubViewBack": "View Distance Behind Hub",
+  "options.pendoloPresetDefault": "Default",
+  "options.pendoloPreset1": "Preset 1",
+  "options.pendoloPreset2": "Preset 2",
+  "options.pendoloPreset3": "Preset 3"
 }

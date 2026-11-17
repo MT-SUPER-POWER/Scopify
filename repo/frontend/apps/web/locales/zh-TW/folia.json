@@ -923,5 +923,17 @@
   "options.subtitleOverlayUpcomingFallback": "沒有所選內容時預覽後續歌詞",
   "options.subtitleUpcomingLyricsBlur": "模糊後續歌詞",
   "options.avoidOverlap": "防止文字重疊",
-  "options.avoidOverlapHint": "按字放大、旋轉後的大小留出間距"
+  "options.avoidOverlapHint": "按字放大、旋轉後的大小留出間距",
+  "options.pendoloWheelCenterXMirrored": "輪盤水平位置（0 = 右邊緣）",
+  "options.pendoloMirrorLayout": "歌詞左右鏡像",
+  "options.pendoloTiltDeg": "錶盤傾斜",
+  "options.pendoloTiltAxisDeg": "傾斜軸方向（0 = 水平）",
+  "options.pendoloParallaxDepth": "分層視差（傾斜或輪心視角時生效）",
+  "options.pendoloHubView": "輪心視角（順著刻度針看）",
+  "options.pendoloHubViewHeight": "視角高度",
+  "options.pendoloHubViewBack": "視角後退距離",
+  "options.pendoloPresetDefault": "預設",
+  "options.pendoloPreset1": "預設 1",
+  "options.pendoloPreset2": "預設 2",
+  "options.pendoloPreset3": "預設 3"
 }
