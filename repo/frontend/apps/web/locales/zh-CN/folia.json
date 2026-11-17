@@ -923,5 +923,17 @@
   "options.subtitleOverlayUpcomingFallback": "没有所选内容时预览后续歌词",
   "options.subtitleUpcomingLyricsBlur": "模糊后续歌词",
   "options.avoidOverlap": "防止文字重叠",
-  "options.avoidOverlapHint": "按字放大、旋转后的大小留出间距"
+  "options.avoidOverlapHint": "按字放大、旋转后的大小留出间距",
+  "options.pendoloWheelCenterXMirrored": "轮盘水平位置 (0 = 右边缘)",
+  "options.pendoloMirrorLayout": "歌词左右镜像",
+  "options.pendoloTiltDeg": "表盘倾斜",
+  "options.pendoloTiltAxisDeg": "倾斜轴方向 (0 = 水平)",
+  "options.pendoloParallaxDepth": "分层视差（倾斜或轮心视角时生效）",
+  "options.pendoloHubView": "轮心视角（顺着刻度针看）",
+  "options.pendoloHubViewHeight": "视角高度",
+  "options.pendoloHubViewBack": "视角后退距离",
+  "options.pendoloPresetDefault": "默认",
+  "options.pendoloPreset1": "预设 1",
+  "options.pendoloPreset2": "预设 2",
+  "options.pendoloPreset3": "预设 3"
 }
