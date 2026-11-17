@@ -1,5 +1,6 @@
 "use client";
 
+import { DEFAULT_METAPHOR_TUNING } from "@/lib/lyrics/metaphorTuning";
 import { useMemo } from "react";
 
 import { DEFAULT_PRISMA_TUNING } from "@/types/lyrics/prisma/model";
@@ -180,6 +181,7 @@ export function useFoliaStageSettingsPanel(
     hanabiTuning: settings.tunings.hanabi ?? DEFAULT_HANABI_TUNING,
     machiTuning: settings.tunings.machi ?? DEFAULT_MACHI_TUNING,
     nebbiaTuning: settings.tunings.nebbia ?? DEFAULT_NEBBIA_TUNING,
+    metaphorTuning: settings.tunings.metaphor ?? DEFAULT_METAPHOR_TUNING,
     prismaTuning: settings.tunings.prisma ?? DEFAULT_PRISMA_TUNING,
     hideTranslationSubtitle: settings.hideTranslationSubtitle,
     isDaylight,
@@ -221,6 +223,8 @@ export function useFoliaStageSettingsPanel(
       settings.patchTuning("machi", patch),
     onNebbiaTuningChange: (patch: Partial<typeof DEFAULT_NEBBIA_TUNING>) =>
       settings.patchTuning("nebbia", patch),
+    onMetaphorTuningChange: (patch: Partial<typeof DEFAULT_METAPHOR_TUNING>) =>
+      settings.patchTuning("metaphor", patch),
     onPrismaTuningChange: (patch: Partial<typeof DEFAULT_PRISMA_TUNING>) =>
       settings.patchTuning("prisma", patch),
     onImportCappellaCustomAvatar: assets.importCappellaCustomAvatar,

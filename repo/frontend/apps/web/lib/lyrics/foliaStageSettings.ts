@@ -22,6 +22,7 @@ import {
   type TemperaLayerImage,
 } from "@/components/lyrics/folia/src/types";
 import { normalizeMachiTuning } from "@/components/lyrics/folia/src/components/visualizer/machi/machiTuning";
+import { DEFAULT_METAPHOR_TUNING, normalizeMetaphorTuning } from "@/lib/lyrics/metaphorTuning";
 import { normalizePrismaTuning } from "@/lib/lyrics/prisma/tuning";
 import { DEFAULT_PRISMA_TUNING } from "@/types/lyrics/prisma/model";
 import { normalizeNebbiaTuning } from "@/components/lyrics/folia/src/components/visualizer/nebbia/nebbiaTuning";
@@ -167,6 +168,7 @@ const STRING_ENUMS = {
     "fume",
     "hanabi",
     "machi",
+    "metaphor",
     "monet",
     "nebbia",
     "partita",
@@ -248,6 +250,7 @@ export function createDefaultFoliaStageSettings(): FoliaStageSettings {
       fume: structuredClone(DEFAULT_FUME_TUNING),
       hanabi: structuredClone(DEFAULT_HANABI_TUNING),
       machi: structuredClone(DEFAULT_MACHI_TUNING),
+      metaphor: structuredClone(DEFAULT_METAPHOR_TUNING),
       monet: structuredClone(DEFAULT_MONET_TUNING),
       nebbia: structuredClone(DEFAULT_NEBBIA_TUNING),
       partita: structuredClone(DEFAULT_PARTITA_TUNING),
@@ -351,6 +354,10 @@ function normalizeAgainstSchema<T>(candidate: unknown, schema: T, path: string):
 
   if (path === "tunings.nebbia") {
     return (candidate === undefined ? schema : normalizeNebbiaTuning(candidate)) as T;
+  }
+
+  if (path === "tunings.metaphor") {
+    return (candidate === undefined ? schema : normalizeMetaphorTuning(candidate)) as T;
   }
 
   if (path === "tunings.prisma") {

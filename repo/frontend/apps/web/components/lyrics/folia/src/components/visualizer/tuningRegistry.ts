@@ -16,6 +16,7 @@ import type {
   TiltTuning,
   VisualizerMode,
 } from "../../types";
+import type { MetaphorTuning } from "@/types/lyrics/folia/metaphor";
 import type { VisualizerSharedProps } from "./definition";
 import cadenzaTuning from "./cadenza/tuning";
 import cappellaTuning from "./cappella/tuning";
@@ -25,6 +26,7 @@ import dioramaTuning from "./diorama/tuning";
 import fumeTuning from "./fume/tuning";
 import hanabiTuning from "./hanabi/tuning";
 import machiTuning from "./machi/tuning";
+import metaphorTuning from "./metaphor/tuning";
 import monetTuning from "./monet/tuning";
 import nebbiaTuning from "./nebbia/tuning";
 import prismaTuning from "./prisma/tuning";
@@ -52,6 +54,7 @@ export interface VisualizerTuningMap {
   tempera: TemperaTuning;
   hanabi: HanabiTuning;
   machi: MachiTuning;
+  metaphor: MetaphorTuning;
   nebbia: NebbiaTuning;
   prisma: PrismaTuning;
 }
@@ -92,6 +95,7 @@ const tuningModules: Record<string, VisualizerTuningModule> = {
   "./fume/tuning.ts": { default: fumeTuning as VisualizerTuningAdapter },
   "./hanabi/tuning.ts": { default: hanabiTuning as VisualizerTuningAdapter },
   "./machi/tuning.ts": { default: machiTuning as VisualizerTuningAdapter },
+  "./metaphor/tuning.ts": { default: metaphorTuning as VisualizerTuningAdapter },
   "./monet/tuning.ts": { default: monetTuning as VisualizerTuningAdapter },
   "./nebbia/tuning.ts": { default: nebbiaTuning as VisualizerTuningAdapter },
   "./partita/tuning.ts": { default: partitaTuning as VisualizerTuningAdapter },

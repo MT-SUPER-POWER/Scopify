@@ -8,6 +8,7 @@ import dioramaEntry from "./diorama/entry";
 import fumeEntry from "./fume/entry";
 import hanabiEntry from "./hanabi/entry";
 import machiEntry from "./machi/entry";
+import metaphorEntry from "./metaphor/entry";
 import monetEntry from "./monet/entry";
 import nebbiaEntry from "./nebbia/entry";
 import partitaEntry from "./partita/entry";
@@ -38,6 +39,7 @@ const visualizerEntryModules: Record<string, VisualizerEntryModule> = {
   "./fume/entry.tsx": { default: fumeEntry },
   "./hanabi/entry.tsx": { default: hanabiEntry },
   "./machi/entry.tsx": { default: machiEntry },
+  "./metaphor/entry.tsx": { default: metaphorEntry },
   "./monet/entry.tsx": { default: monetEntry },
   "./nebbia/entry.tsx": { default: nebbiaEntry },
   "./partita/entry.tsx": { default: partitaEntry },

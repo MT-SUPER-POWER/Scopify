@@ -110,6 +110,8 @@ Selected upstream presentation updates are reviewed and recorded separately from
   - Local fix, not upstream: the runtime's `wake()` no longer calls `clock.resync()` from inside `frame()`. OrbitControls fires `change` during the frame, while `raf` is 0, so upstream's `wake()` zeroes the next frame's delta on every frame the camera moves, and the rain, snow, traffic and signs freeze during a drag and its damping. Measured in the page with a 3 s drag: the ambient clock ran at 0.006 s per second before and 1.003 after.
   - Not taken: the global "Animation & performance" resolution / anti-aliasing setting and the "render" group of the other styles, mod tuning keys (`modKeys`), the GPU-analysis exclusion from the degrade check (`services/analysis/gpuActivity.ts`; Scopify has no beat or stem analysis), the global frame-rate cap in the screen key, and the degrade-count line in the panel. The panel, entry and tuning definition keep Scopify's host adaptations (`panelRows` controls and `defineVisualizerTuning` from `tuningRegistry`).
 
+- `fa164a54` (Folia #1269), `dc80ecaa`, `8006b40f` and `0a84c516` add Metaphor and its word-tracking cuts. Scopify uses its existing lyric clock and audio level for motion, retains its own settings and quality controls, and uses lyric onsets for collisions.
+
 The copied source remains licensed under AGPL-3.0. See [LICENSE](./LICENSE). Scopify is also distributed under AGPL-3.0.
 
 ## Included

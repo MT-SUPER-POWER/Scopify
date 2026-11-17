@@ -15,6 +15,7 @@ import {
   type HanabiTuning,
   type MachiTuning,
   type NebbiaTuning,
+  type MetaphorTuning,
   type Line,
   type MonetPortraitImage,
   type MonetTuning,
@@ -50,6 +51,7 @@ export type VisualizerTuningKind =
   | "hanabi"
   | "machi"
   | "nebbia"
+  | "metaphor"
   | "prisma";
 
 export interface VisualizerSharedProps {
@@ -114,6 +116,8 @@ export interface VisualizerSharedProps {
   onMachiTuningChange?: (patch: Partial<MachiTuning>) => void;
   nebbiaTuning?: NebbiaTuning;
   onNebbiaTuningChange?: (patch: Partial<NebbiaTuning>) => void;
+  metaphorTuning?: MetaphorTuning;
+  onMetaphorTuningChange?: (patch: Partial<MetaphorTuning>) => void;
   prismaTuning?: PrismaTuning;
   onPrismaTuningChange?: (patch: Partial<PrismaTuning>) => void;
 }
@@ -169,6 +173,8 @@ export interface VisualizerSettingsPanelProps {
   onMachiTuningChange?: (patch: Partial<MachiTuning>) => void;
   nebbiaTuning?: NebbiaTuning;
   onNebbiaTuningChange?: (patch: Partial<NebbiaTuning>) => void;
+  metaphorTuning?: MetaphorTuning;
+  onMetaphorTuningChange?: (patch: Partial<MetaphorTuning>) => void;
   prismaTuning?: PrismaTuning;
   onPrismaTuningChange?: (patch: Partial<PrismaTuning>) => void;
   /** Closes the player panel the controls sit in: for a control that opens something on the player page itself (Machi's viewfinder bar). */
