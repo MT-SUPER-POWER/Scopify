@@ -8,10 +8,12 @@ export const useLatticePreferences = create<LatticePreferences>()(
     (set) => ({
       followCurrent: false,
       lightsOff: false,
+      currentNumberOnly: false,
       viewMode: "lattice",
       immersive: false,
       setFollowCurrent: (followCurrent) => set({ followCurrent }),
       setLightsOff: (lightsOff) => set({ lightsOff }),
+      setCurrentNumberOnly: (currentNumberOnly) => set({ currentNumberOnly }),
       setViewMode: (viewMode) => set({ viewMode }),
       setImmersive: (immersive) => set({ immersive }),
     }),
@@ -28,6 +30,7 @@ export const useLatticePreferences = create<LatticePreferences>()(
       partialize: (state) => ({
         followCurrent: state.followCurrent,
         lightsOff: state.lightsOff,
+        currentNumberOnly: state.currentNumberOnly,
         viewMode: state.viewMode,
         immersive: state.immersive,
       }),

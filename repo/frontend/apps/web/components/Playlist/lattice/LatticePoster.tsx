@@ -64,6 +64,7 @@ export const LatticePoster = memo(
       <motion.article
         className={cn(posterClass, currentFrameClass)}
         data-instance={instance.instanceId}
+        data-wall-track={instance.queueIndex}
         role={expanded ? "group" : "button"}
         tabIndex={focused ? 0 : -1}
         aria-label={t("playlist.lattice.select", { name: track.name })}
@@ -82,6 +83,7 @@ export const LatticePoster = memo(
         onPointerLeave={() => setHovered(false)}
         onClick={(event) => {
           if (event.target instanceof Element && event.target.closest("button, input")) return;
+          if (event.detail > 1) return;
           if (!expanded) onSelect(instance);
           else setRevealed((value) => !value);
         }}

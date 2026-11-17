@@ -157,7 +157,10 @@ export function useLatticePointer({
     onPointerMove,
     onPointerUp,
     onPointerCancel,
-    onLostPointerCapture: onPointerCancel,
+    onLostPointerCapture: (event: PointerEvent<HTMLDivElement>) => {
+      // A touch can lose implicit capture on the poster as the wall takes over the drag.
+      if (event.target === event.currentTarget) onPointerCancel(event);
+    },
     onClickCapture,
   };
 }

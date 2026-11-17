@@ -78,6 +78,7 @@ export function createLatticeLineView(
       piece.translation ? type.translationFont : type.font,
       px,
       resolution,
+      piece.rtl,
     );
     const color = piece.translation
       ? (input.subtitleTheme ?? input.theme).primaryColor
@@ -93,6 +94,7 @@ export function createLatticeLineView(
       (image.pad - piece.tokenOffset) / image.width,
       (piece.offsets.at(-1) ?? piece.width) / image.width,
     ];
+    sweep.uniforms.uRtl = piece.rtl ? 1 : 0;
     const sprite = new pixi.Mesh({ geometry: quad, shader: sweep.shader, texture: image.texture });
     sprite.scale.set(image.width, image.height);
     sprite.position.set(piece.x - image.pad, piece.y - image.pad);

@@ -1930,11 +1930,13 @@ export default interface Resources {
     "grid.hint": "拖动或滚轮浏览 · Ctrl + 滚轮或 + / - 缩放 · 点击卡片居中，再点播放 · 方向键移动 · Enter 播放 · Esc 返回";
     "grid.select": "定位 {{name}}";
     "lattice.back": "返回列表";
+    "lattice.currentNumberOnly": "只显示当前歌曲序号";
     "lattice.follow": "自动跟随当前歌曲";
-    "lattice.hint": "拖动或滚轮浏览 · Shift 横向滚动 · Ctrl + 滚轮或 + / - 缩放 · 方向键选图 · Enter 展开 / 播放 · Esc 收起，再按返回";
+    "lattice.hint": "拖动或滚轮浏览 · Shift 横向滚动 · Ctrl + 滚轮或 + / - 缩放 · 方向键选图 · Enter 展开 / 播放 · 双击播放 · Esc 收起，再按返回";
     "lattice.lightsOff": "暗场";
     "lattice.locate": "定位当前歌曲";
     "lattice.options": "浏览选项";
+    "lattice.searchTracks": "搜索墙面上的歌曲";
     "lattice.select": "展开 {{name}}";
     "meta.dailyTag": "每日";
     "meta.dailyTitle": "每日推荐";

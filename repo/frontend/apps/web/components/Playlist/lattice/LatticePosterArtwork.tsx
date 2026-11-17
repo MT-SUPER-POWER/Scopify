@@ -33,7 +33,12 @@ export function LatticePosterArtwork({
       {/* The expanded current poster darkens further so the lyric canvas stays legible. */}
       <span className="absolute inset-0 bg-[linear-gradient(180deg,#0001,transparent_30%,#0002_55%,#000b_100%)] group-data-[expanded=true]/poster:group-data-[current=true]/poster:bg-[linear-gradient(180deg,#0004,#0008_42%,#000b)]" />
       <span className="absolute top-[18px] left-5 flex items-center gap-[9px] px-1.5 py-1 text-[12px] font-semibold tracking-widest tabular-nums opacity-55 text-shadow-[0_1px_6px_#000] group-focus-within/poster:opacity-100 group-hover/poster:opacity-100">
-        {String(instance.queueIndex + 1).padStart(2, "0")}
+        <span
+          data-current={current}
+          className="group-data-[current-number-only=true]/lattice:not-data-[current=true]:hidden"
+        >
+          {String(instance.queueIndex + 1).padStart(2, "0")}
+        </span>
         {current && (
           <span className="size-[7px] rounded-full bg-primary shadow-[0_0_12px_var(--primary)]" />
         )}

@@ -250,7 +250,10 @@ function attachRuntime(
           continue;
         }
         moving ||= !quiet && (!sy.settled || !ss.settled || track.elapsed < 0.32);
-        track.view.container.position.set(typography.padding, track.y);
+        const { rtl, width: columnWidth } = track.view.layout;
+        const pivotX = rtl ? columnWidth : 0;
+        track.view.container.pivot.x = pivotX;
+        track.view.container.position.set(typography.padding + pivotX, track.y);
         track.view.container.scale.set(track.scale);
         track.view.container.alpha = track.alpha;
         track.view.container.zIndex =

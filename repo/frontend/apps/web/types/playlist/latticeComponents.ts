@@ -62,7 +62,14 @@ export interface PlaylistViewToolsProps {
   canLocate: boolean;
   onLocate: () => void;
   onClose: () => void;
+  tracks?: PlaylistLatticeProps["tracks"];
+  onLocateTrack?: (index: number) => void;
 }
+
+export type PlaylistViewPlaybackOptions = Pick<
+  PlaylistLatticeProps,
+  "tracks" | "sourceId" | "onTrackPlay"
+>;
 export interface LatticeProgressProps {
   current: boolean;
   durationMs: number;

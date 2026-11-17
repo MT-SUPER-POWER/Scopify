@@ -46,6 +46,7 @@ export interface LyricPiece {
   offsets: number[];
   tokenOffset: number;
   translation: boolean;
+  rtl: boolean;
 }
 
 export type LatticeLineLayout = ReturnType<typeof layoutLatticeLine>;
