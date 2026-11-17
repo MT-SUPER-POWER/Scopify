@@ -3,6 +3,12 @@
 import { getPersonalFmCommandSelection } from "@/lib/commandWorkspace/personalFmCommands";
 import { usePersonalFmStore } from "@/store/module/personalFm";
 import { useMemo } from "react";
+import { toast } from "sonner";
+import {
+  DEFAULT_NEBBIA_TUNING,
+  NEBBIA_BEHIND,
+  NEBBIA_GLASS,
+} from "@/components/lyrics/folia/src/components/visualizer/nebbia/types";
 import { buildFoliaCommands, filterFoliaCommands } from "@/lib/commandWorkspace/foliaCommands";
 import { useFoliaSettingsStore } from "@/store/module/foliaSettings";
 import { useLyricStageStore } from "@/store/module/lyrics";
@@ -11,9 +17,14 @@ import { useTranslation } from "react-i18next";
 
 import type { FoliaCommandEntry, FoliaCommandGroup } from "@/types/lyrics/folia/commands";
 
+function cycleOption<Element extends string>(choices: readonly Element[], current: Element) {
+  return choices[(choices.indexOf(current) + 1) % choices.length] ?? current;
+}
+
 export function useFoliaCommands(group: FoliaCommandGroup | null, query: string) {
   const { t } = useTranslation();
-  const catalog = useMemo(() => buildFoliaCommands(t), [t]);
+  const nebbiaControls = useLyricStageStore((state) => state.mode === "nebbia");
+  const catalog = useMemo(() => buildFoliaCommands(t, { nebbiaControls }), [t, nebbiaControls]);
   const entries = useMemo(
     () => filterFoliaCommands(catalog, group, query),
     [catalog, group, query],
@@ -46,6 +57,22 @@ export function useFoliaCommands(group: FoliaCommandGroup | null, query: string)
         showSubtitleTranslation: action.mode !== "none",
         hideTranslationSubtitle: false,
       });
+      return;
+    }
+    if (action.kind === "nebbia-cycle") {
+      const lyrics = useLyricStageStore.getState();
+      if (lyrics.mode !== "nebbia") return;
+      const tuning = lyrics.tunings.nebbia ?? DEFAULT_NEBBIA_TUNING;
+      if (action.control === "behind") {
+        const behind = cycleOption(NEBBIA_BEHIND, tuning.behind);
+        lyrics.patchTuning("nebbia", { behind });
+        toast.success(t(`folia.options.nebbiaBehind_${behind}`));
+      } else {
+        const glass = cycleOption(NEBBIA_GLASS, tuning.glass);
+        lyrics.patchTuning("nebbia", { glass });
+        toast.success(t(`folia.options.nebbiaGlass_${glass}`));
+      }
+      close();
       return;
     }
     close();

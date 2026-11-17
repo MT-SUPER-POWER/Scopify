@@ -28,6 +28,7 @@ export type FoliaCommandAction =
   | { kind: "lyric-content"; mode: SubtitleContentMode }
   | { kind: "theme" }
   | { kind: "visualizer"; mode: LyricVisualizerMode }
+  | { kind: "nebbia-cycle"; control: "behind" | "glass" }
   | { kind: "stage-panel" };
 
 export interface FoliaCommandEntry {

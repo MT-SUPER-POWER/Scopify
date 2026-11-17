@@ -66,6 +66,39 @@ describe("町景 / 雾笺 stage settings", () => {
     expect(nebbia?.mist).toBe(NEBBIA_LIMITS.mist.min);
   });
 
+  it("keeps all Nebbia street layers off when the stored scenery is empty", () => {
+    const { nebbia } = normalizeFoliaStageSettings({
+      tunings: { nebbia: { behind: "backdrop", scenery: [], rain: "straight" } },
+    }).tunings;
+    expect(nebbia?.behind).toBe("backdrop");
+    expect(nebbia?.scenery).toEqual([]);
+    expect(nebbia?.rain).toBe("straight");
+  });
+
+  it("migrates a saved Nebbia resolution before using the current render fallback", () => {
+    const current = createDefaultFoliaStageSettings();
+    current.tunings.nebbia = {
+      ...DEFAULT_NEBBIA_TUNING,
+      render: { scale: 0.5, antialias: "global" },
+    };
+    const { nebbia } = normalizeFoliaStageSettings(
+      { tunings: { nebbia: { behind: "aquarium", resolution: 1.25 } } },
+      current,
+    ).tunings;
+    expect(nebbia?.render.scale).toBe(1.5);
+    expect(nebbia?.glass).toBe("dew");
+  });
+
+  it("keeps the saved glass and render override when normalizing Nebbia options", () => {
+    const { nebbia } = normalizeFoliaStageSettings({
+      tunings: {
+        nebbia: { behind: "aquarium", glass: "rain", resolution: 2, render: { scale: 0.75 } },
+      },
+    }).tunings;
+    expect(nebbia?.glass).toBe("rain");
+    expect(nebbia?.render.scale).toBe(0.75);
+  });
+
   it("picks the same Machi scene for the same song", () => {
     const tuning = { scene: "auto" as const };
     expect(resolveMachiSceneId(tuning, "song-1")).toBe(resolveMachiSceneId(tuning, "song-1"));

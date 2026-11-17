@@ -11,7 +11,9 @@ import { useFirstFrameDrawn } from "../styleTransition/firstFrame";
 import { resolveSubtitleFontSizes } from "../subtitleFontSizes";
 import VisualizerShell from "../VisualizerShell";
 import VisualizerSubtitleOverlay from "../VisualizerSubtitleOverlay";
+import { useLyricRenderQuality } from "../renderQuality/useLyricRenderQuality";
 import { NebbiaRuntime } from "./createNebbiaRuntime";
+import { nebbiaSeesThrough } from "./nebbiaBehind";
 import { DEFAULT_NEBBIA_TUNING, type NebbiaTuning } from "./types";
 
 // src/components/visualizer/nebbia/VisualizerNebbia.tsx
@@ -44,6 +46,7 @@ const VisualizerNebbia: React.FC<Props> = (props) => {
     subtitleFontScale,
     subtitleOverlayOpacity,
     subtitleOverlayBackground,
+    isDaylight = false,
     nebbiaTuning = DEFAULT_NEBBIA_TUNING,
   } = props;
   const { t } = useTranslation();
@@ -53,6 +56,10 @@ const VisualizerNebbia: React.FC<Props> = (props) => {
   // WebGL 上下文丢了又回来时加一，重建运行时
   const [generation, setGeneration] = useState(0);
   const firstFrameDrawn = useFirstFrameDrawn();
+  const { scale: renderScale } = useLyricRenderQuality(nebbiaTuning.render, props.isPreviewMode);
+  const seeThrough = nebbiaSeesThrough(nebbiaTuning, props.background, props.isPreviewMode);
+  const scene = nebbiaTuning.behind === "aquarium" ? "aquarium" : "night";
+  const glass = nebbiaTuning.glass;
 
   // 真正在画的歌：切歌时滞后于 props，免得对着还没到的歌词排版（songHandover.ts）
   const committed = useVisualizerSongCommit({ seed, lines, currentTime, readyGraceMs: 3000 });
@@ -70,9 +77,11 @@ const VisualizerNebbia: React.FC<Props> = (props) => {
   const latest = useRef({
     theme,
     tuning: nebbiaTuning,
+    renderScale,
     song,
     lyricsFontScale,
     showText,
+    isDaylight,
     paused,
     staticMode,
     firstFrameDrawn,
@@ -80,9 +89,11 @@ const VisualizerNebbia: React.FC<Props> = (props) => {
   latest.current = {
     theme,
     tuning: nebbiaTuning,
+    renderScale,
     song,
     lyricsFontScale,
     showText,
+    isDaylight,
     paused,
     staticMode,
     firstFrameDrawn,
@@ -97,6 +108,9 @@ const VisualizerNebbia: React.FC<Props> = (props) => {
       runtime = new NebbiaRuntime(
         {
           host,
+          seeThrough,
+          scene,
+          glass,
           currentTime,
           vocal: audioBands.vocal,
           onFirstFrame: () => latest.current.firstFrameDrawn(),
@@ -108,9 +122,11 @@ const VisualizerNebbia: React.FC<Props> = (props) => {
         },
         l.theme,
         l.tuning,
+        l.renderScale,
       );
       runtime.setFontScale(l.lyricsFontScale);
       runtime.setShowText(l.showText);
+      runtime.setDaylight(l.isDaylight);
       runtime.setPlayback(l.paused, l.staticMode);
       runtime.setSong(l.song);
     } catch (error) {
@@ -125,7 +141,7 @@ const VisualizerNebbia: React.FC<Props> = (props) => {
       runtimeRef.current = null;
       runtime.destroy();
     };
-  }, [audioBands.vocal, currentTime, generation]);
+  }, [audioBands.vocal, currentTime, generation, glass, scene, seeThrough]);
 
   useEffect(() => {
     runtimeRef.current?.setSong(song);
@@ -133,6 +149,9 @@ const VisualizerNebbia: React.FC<Props> = (props) => {
   useEffect(() => {
     runtimeRef.current?.setTuning(nebbiaTuning);
   }, [nebbiaTuning]);
+  useEffect(() => {
+    runtimeRef.current?.setRenderScale(renderScale);
+  }, [renderScale]);
   useEffect(() => {
     runtimeRef.current?.setTheme(theme);
   }, [theme]);
@@ -142,6 +161,9 @@ const VisualizerNebbia: React.FC<Props> = (props) => {
   useEffect(() => {
     runtimeRef.current?.setShowText(showText);
   }, [showText]);
+  useEffect(() => {
+    runtimeRef.current?.setDaylight(isDaylight);
+  }, [isDaylight]);
   useEffect(() => {
     runtimeRef.current?.setPlayback(paused, staticMode);
   }, [paused, staticMode]);
@@ -168,11 +190,11 @@ const VisualizerNebbia: React.FC<Props> = (props) => {
       audioPower={audioPower}
       audioBands={audioBands}
       sharedProps={props}
-      renderBackground={false}
+      renderBackground={seeThrough}
     >
       <div
         className="pointer-events-none absolute inset-0 z-10 overflow-hidden"
-        style={{ background: "#05070a" }}
+        style={{ background: seeThrough ? undefined : "#05070a" }}
       >
         <div ref={hostRef} className="absolute inset-0" aria-hidden="true" />
         {failed && (

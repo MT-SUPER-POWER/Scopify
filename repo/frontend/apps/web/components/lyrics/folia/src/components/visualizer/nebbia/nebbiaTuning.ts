@@ -1,17 +1,25 @@
+import type { LyricRenderOverride, LyricRenderScale } from "../../../types";
+import {
+  LYRIC_RENDER_SCALES,
+  normalizeLyricRenderOverride,
+} from "../../../utils/lyricRenderQuality";
 import { numberWithin } from "../tuningRegistry";
 import {
   DEFAULT_NEBBIA_TUNING,
   NEBBIA_APPEAR_STYLES,
+  NEBBIA_BEHIND,
   NEBBIA_FADE_STYLES,
   NEBBIA_LAYOUTS,
+  NEBBIA_GLASS,
+  NEBBIA_GLASS_FOR,
   NEBBIA_LIMITS,
+  NEBBIA_RAIN,
+  NEBBIA_SCENERY,
   type NebbiaNumberKey,
   type NebbiaTuning,
 } from "./types";
 
-// src/components/visualizer/nebbia/nebbiaTuning.ts
-// 雾笺 tuning 的归一化（上游放在 tuning.ts 里）：存档、导入、同步、设置面板都经 normalizeNebbiaTuning 补齐字段、
-// 认不得的值回默认、数值夹进范围。独立成文件，设置的 store 才能读它而不碰注册表。
+// Scopify normalizes the stage settings on restore, import and sync.
 
 /** 一组开关：只留认得的、按固定顺序排，一个都没有就用默认。 */
 const subsetOf = <T extends string>(choices: readonly T[], value: unknown, fallback: T[]): T[] => {
@@ -31,10 +39,28 @@ const LEGACY_FADE: Record<string, NebbiaTuning["fade"]> = {
   mix: ["fog", "fingers"],
 };
 
+/**
+ * 分辨率与抗锯齿（#929）。以前雾笺自己有一个分辨率滑块（`resolution`，0.5–2 倍，1 是原样），现在换成了共用的
+ * 「跟随全局 / 指定倍数」：存档里有 `render` 就只看它；只有旧的 `resolution`、又不是 1 时，换成最接近的倍数
+ * （两边一样近取大的那个，老用户调高是想要更清楚），这样调过的值保留下来；是 1 或没有就跟随全局。
+ */
+const readRender = (render: unknown, legacyResolution: unknown): LyricRenderOverride => {
+  if (render !== undefined) return normalizeLyricRenderOverride(render);
+  const override = normalizeLyricRenderOverride(null);
+  if (legacyResolution === undefined) return override;
+  const resolution = numberWithin(legacyResolution, 1, 0.5, 2);
+  if (resolution === 1) return override;
+  const scale = LYRIC_RENDER_SCALES.reduce<LyricRenderScale>(
+    (best, next) => (Math.abs(next - resolution) <= Math.abs(best - resolution) ? next : best),
+    LYRIC_RENDER_SCALES[0],
+  );
+  return { ...override, scale };
+};
+
 /** 存着的值、导入或同步来的值，读成一份完整合法的 tuning：缺的、类型不对的用默认，数值夹进范围。 */
 export const normalizeNebbiaTuning = (stored: unknown): NebbiaTuning => {
   const values = (stored && typeof stored === "object" ? stored : {}) as Partial<
-    Record<keyof NebbiaTuning | "appearMode" | "fadeMode", unknown>
+    Record<keyof NebbiaTuning | "appearMode" | "fadeMode" | "resolution", unknown>
   >;
   const base = DEFAULT_NEBBIA_TUNING;
   const numbers = Object.fromEntries(
@@ -45,11 +71,23 @@ export const normalizeNebbiaTuning = (stored: unknown): NebbiaTuning => {
   ) as Pick<NebbiaTuning, NebbiaNumberKey>;
   const appear = values.appear ?? LEGACY_APPEAR[String(values.appearMode)];
   const fade = values.fade ?? LEGACY_FADE[String(values.fadeMode)];
+  const scenery = values.scenery;
+  const behind = NEBBIA_BEHIND.find((b) => b === values.behind) ?? base.behind;
   return {
+    render: readRender(values.render, values.resolution),
     appear: subsetOf(NEBBIA_APPEAR_STYLES, appear, base.appear),
     fade: subsetOf(NEBBIA_FADE_STYLES, fade, base.fade),
     layouts: subsetOf(NEBBIA_LAYOUTS, values.layouts, base.layouts),
+    behind,
+    // 没存过玻璃（旧的 tuning）时按窗外的默认搭配
+    glass: NEBBIA_GLASS.find((g) => g === values.glass) ?? NEBBIA_GLASS_FOR[behind] ?? base.glass,
+    // 窗外可以全关：只有没存过（旧的 tuning）才用默认
+    scenery: Array.isArray(scenery)
+      ? NEBBIA_SCENERY.filter((c) => scenery.includes(c))
+      : [...base.scenery],
+    rain: NEBBIA_RAIN.find((r) => r === values.rain) ?? base.rain,
     credits: typeof values.credits === "boolean" ? values.credits : base.credits,
     ...numbers,
+    jellies: Math.round(numbers.jellies),
   };
 };
