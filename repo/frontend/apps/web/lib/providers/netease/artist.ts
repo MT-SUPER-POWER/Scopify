@@ -8,6 +8,7 @@ import { adaptNeteaseTrack } from "@/lib/providers/netease/adapters/track";
 import {
   getAritstDetail,
   getArtistAlbums,
+  getArtistSongs,
   getArtistTopSongs,
   getFansCnt,
   subscribeArtist,
@@ -34,6 +35,16 @@ export const neteaseArtistSource: MusicArtistSource = {
   async getArtistTopTracks(artist, signal) {
     const { data } = await getArtistTopSongs(artist.id, 200, signal);
     return (data.songs ?? []).map((song) => adaptNeteaseTrack(pruneSongDetail(song)));
+  },
+
+  async getArtistTracks(artist, { offset, limit }, signal) {
+    const { data } = await getArtistSongs(artist.id, offset, limit, signal);
+    if (!Array.isArray(data.songs)) throw new Error("Artist tracks are missing.");
+    const tracks = data.songs.map((song) => adaptNeteaseTrack(pruneSongDetail(song)));
+    return {
+      tracks,
+      nextOffset: data.more && tracks.length > 0 ? offset + tracks.length : null,
+    };
   },
 
   async getArtistAlbums(artist, { offset, limit }, signal) {

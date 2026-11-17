@@ -24,6 +24,8 @@ export const musicQueryKeys = {
       [...musicQueryKeys.artist.followStateAll(provider), accountId, artistId] as const,
     topTracks: (provider: MusicProvider, artistId: string) =>
       providerQueryKey(provider, "artist", "top-tracks", artistId),
+    tracks: (provider: MusicProvider, artistId: string) =>
+      providerQueryKey(provider, "artist", "tracks", artistId),
     fansGroup: (artistId: string | number) => ["fans-group", "artist", String(artistId)] as const,
   },
   fansGroup: {

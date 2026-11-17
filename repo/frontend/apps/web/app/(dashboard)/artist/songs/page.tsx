@@ -1,80 +1,108 @@
 "use client";
 
+import { Button } from "@scopify/ui/shadcn/components/button";
 import { useSearchParams } from "next/navigation";
 import { useMemo } from "react";
-import { PlaylistContent } from "@/components/Playlist/PlaylistContent";
-import { NetworkRetryState } from "@/components/shared/NetworkRetryState";
-import { useArtistData } from "@/hooks/artist/useArtistData";
-import { useArtistPopularSongsTheme } from "@/hooks/artist/useArtistPopularSongsTheme";
 import { useTranslation } from "react-i18next";
 
+import { PlaylistContent } from "@/components/Playlist/PlaylistContent";
+import { QueryBoundary } from "@/components/shared/QueryBoundary";
+import { QueryConnectionWait } from "@/components/shared/QueryConnectionWait";
+import { QueryFailure } from "@/components/shared/QueryFailure";
+import { useArtistPopularSongsTheme } from "@/hooks/artist/useArtistPopularSongsTheme";
+import { useArtistDetailQuery, useArtistTracksQuery } from "@/hooks/artist/useArtistQueries";
+import { useActiveProvider } from "@/hooks/provider/useActiveProvider";
+import type { ArtistSongsContentProps } from "@/types/artist/components";
 import type { PlaylistInfo } from "@/types/playlist/model";
-import { ArtistInvalidId } from "../_components/ArtistInvalidId";
-import { ArtistLoading } from "../_components/ArtistLoading";
-import { ArtistRefetchError } from "../_components/ArtistRefetchError";
 
-export default function ArtistPopularSongsPage() {
+function ArtistSongsContent({ artistId }: ArtistSongsContentProps) {
   const { t } = useTranslation();
-  const artistId = useSearchParams().get("id");
-  const {
-    artist,
-    isError,
-    isLoading,
-    isPopularTracksLoading,
-    isRefreshing,
-    popularTracks,
-    refetch,
-  } = useArtistData(artistId);
+  const artistQuery = useArtistDetailQuery(artistId, true);
+  const tracksQuery = useArtistTracksQuery(artistId);
+  const artist = artistQuery.data;
+  const title = t("artist.songs.title");
+  const tracks = useMemo(
+    () => tracksQuery.data?.pages.flatMap((page) => page.tracks) ?? [],
+    [tracksQuery.data],
+  );
   const playlistInfo = useMemo<PlaylistInfo | null>(() => {
     if (!artist) return null;
-
     return {
-      cover: artist.headerImageUrl || artist.avatar,
+      cover: artist.coverUrl ?? artist.avatarUrl,
       createTime: "",
       creator: artist.name,
-      creatorAvatar: artist.avatar,
+      creatorAvatar: artist.avatarUrl ?? "",
       isSpecial: true,
       likes: "",
-      privacy: t("artist.popular.title"),
+      privacy: title,
       tags: [],
-      title: `${artist.name} · ${t("artist.popular.title")}`,
-      totalSongs: popularTracks.length,
+      title: `${artist.name} · ${title}`,
+      totalSongs: tracks.length,
     };
-  }, [artist, popularTracks.length, t]);
+  }, [artist, title, tracks.length]);
   const themeColor = useArtistPopularSongsTheme(playlistInfo?.cover);
+  const loadNextPage = () => {
+    if (tracksQuery.fetchStatus === "idle") void tracksQuery.fetchNextPage();
+  };
 
-  if (!artistId) return <ArtistInvalidId />;
-
-  if (isLoading) return <ArtistLoading />;
-
-  if (!artist)
+  if (
+    (artistQuery.isPending && artistQuery.fetchStatus === "paused") ||
+    (tracksQuery.isPending && tracksQuery.fetchStatus === "paused")
+  ) {
     return (
-      <main className="px-6 pt-8 pb-28 md:px-10">
-        <NetworkRetryState
-          title={t("network.offline.title")}
-          subtitle={t("network.offline.subtitle")}
-          actionLabel={t("network.action.refresh")}
-          isRetrying={isRefreshing}
-          onRetry={() => void refetch()}
-        />
-      </main>
+      <div className="px-6 py-8">
+        <QueryConnectionWait title={title} />
+      </div>
     );
+  }
 
   return (
     <>
-      {isError && <ArtistRefetchError isRefreshing={isRefreshing} onRetry={() => void refetch()} />}
       <PlaylistContent
         dailyDate={null}
         isDailyRecommend={false}
-        isLoading={isPopularTracksLoading}
+        isLoading={artistQuery.isPending || tracksQuery.isPending}
         playlistId={null}
         playlistInfo={playlistInfo}
-        playSourceId={`artist:${artist.id}:popular`}
+        playSourceId={`artist:${artist?.ref.provider ?? ""}:${artistId}:songs`}
         readonly
-        refetchTracks={refetch}
+        refetchTracks={tracksQuery.refetch}
         themeColor={themeColor}
-        tracks={popularTracks}
+        tracks={tracks}
       />
+      {tracksQuery.hasNextPage && (
+        <div className="px-6 pb-24">
+          {tracksQuery.isFetchNextPageError && tracksQuery.error ? (
+            <QueryFailure compact error={tracksQuery.error} onRetry={loadNextPage} />
+          ) : (
+            <Button
+              variant="outline"
+              disabled={tracksQuery.fetchStatus !== "idle"}
+              onClick={loadNextPage}
+            >
+              {tracksQuery.fetchStatus === "paused"
+                ? t("network.recovery.waiting")
+                : tracksQuery.isFetchingNextPage
+                  ? t("common.status.loading")
+                  : t("artist.songs.loadMore")}
+            </Button>
+          )}
+        </div>
+      )}
     </>
+  );
+}
+
+export default function ArtistSongsPage() {
+  const { t } = useTranslation();
+  const artistId = useSearchParams().get("id");
+  const { provider } = useActiveProvider();
+  if (!artistId) {
+    return <div className="p-8 text-content-muted">{t("artist.page.invalidId")}</div>;
+  }
+  return (
+    <QueryBoundary resetKey={`artist:songs:${provider}:${artistId}`}>
+      <ArtistSongsContent artistId={artistId} />
+    </QueryBoundary>
   );
 }

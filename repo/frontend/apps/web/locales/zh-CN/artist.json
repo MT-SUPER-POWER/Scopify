@@ -1,4 +1,6 @@
 {
+  "songs.title": "全部歌曲",
+  "songs.loadMore": "加载更多歌曲",
   "page.invalidId": "无效的歌手 ID",
   "hero.verified": "已认证歌手",
   "hero.listeners": "{{count}} 位听众",

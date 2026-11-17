@@ -1,15 +1,17 @@
 "use client";
 
 import type { MusicResourceRef } from "@scopify/music-domain/identity";
-import { useQuery } from "@tanstack/react-query";
+import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import { useMemo } from "react";
 
 import { useLibraryAccount } from "@/hooks/library/useLibraryAccount";
 import { useActiveProvider } from "@/hooks/provider/useActiveProvider";
+import { throwQueryErrorWithoutData } from "@/lib/query/errorPolicy";
 import { musicQueryKeys } from "@/lib/query/queryKeys";
 
 /** Discography entries the artist page shows. */
 export const ARTIST_ALBUMS_LIMIT = 10;
+const ARTIST_TRACKS_PAGE_SIZE = 30;
 
 function isEnabled(artistId: null | string): artistId is string {
   return artistId !== null && artistId.length > 0;
@@ -24,17 +26,34 @@ function useArtistRef(artistId: null | string): MusicResourceRef<"artist"> | nul
   );
 }
 
-export function useArtistDetailQuery(artistId: null | string) {
+export function useArtistDetailQuery(artistId: null | string, throwOnError = false) {
   const provider = useActiveProvider();
   const artist = useArtistRef(artistId);
   return useQuery({
     enabled: artist !== null,
+    throwOnError: throwOnError ? throwQueryErrorWithoutData : false,
     meta: { persist: true, scope: "public" },
     queryFn: ({ signal }) => {
       if (!artist) throw new Error("Artist ID is required.");
       return provider.getArtist(artist, signal);
     },
     queryKey: musicQueryKeys.artist.detail(provider.provider, artistId ?? ""),
+  });
+}
+
+export function useArtistTracksQuery(artistId: string) {
+  const provider = useActiveProvider();
+  return useInfiniteQuery({
+    queryKey: musicQueryKeys.artist.tracks(provider.provider, artistId),
+    initialPageParam: 0,
+    queryFn: ({ pageParam, signal }) =>
+      provider.getArtistTracks(
+        { provider: provider.provider, kind: "artist", id: artistId },
+        { offset: pageParam, limit: ARTIST_TRACKS_PAGE_SIZE },
+        signal,
+      ),
+    getNextPageParam: (page) => page.nextOffset ?? undefined,
+    throwOnError: throwQueryErrorWithoutData,
   });
 }
 

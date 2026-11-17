@@ -113,6 +113,8 @@ export default interface Resources {
     "page.invalidId": "无效的歌手 ID";
     "popular.noTracks": "暂无热门歌曲";
     "popular.title": "热门歌曲";
+    "songs.loadMore": "加载更多歌曲";
+    "songs.title": "全部歌曲";
     "toast.albumEmpty": "专辑为空";
     "toast.loadAlbumFailed": "加载专辑失败";
     "track.addToPlaylistFailed": "添加到歌单失败";

@@ -4,6 +4,7 @@ import type { MusicTrack } from "@scopify/music-domain/track";
 import { adaptQqArtistAlbum, adaptQqArtistDetail } from "@/lib/providers/qq/adapters/artist";
 import { adaptQqPlaylistSong } from "@/lib/providers/qq/adapters/playlist";
 import {
+  QQ_SINGER_SONGS_PAGE_LIMIT,
   getQqSingerAlbums,
   getQqSingerDetail,
   getQqSingerFans,
@@ -29,11 +30,25 @@ export const qqArtistSource: MusicArtistSource = {
   async getArtistTopTracks(artist, signal) {
     const tracks: MusicTrack[] = [];
     for (let round = 0; round < TOP_TRACK_REQUESTS; round += 1) {
-      const data = await getQqSingerSongs(artist.id, tracks.length, signal);
+      const data = await getQqSingerSongs(
+        artist.id,
+        tracks.length,
+        QQ_SINGER_SONGS_PAGE_LIMIT,
+        signal,
+      );
       tracks.push(...data.songs.map(adaptQqPlaylistSong));
       if (!data.more || data.songs.length === 0) break;
     }
     return tracks;
+  },
+
+  async getArtistTracks(artist, { offset, limit }, signal) {
+    const data = await getQqSingerSongs(artist.id, offset, limit, signal);
+    const tracks = data.songs.map(adaptQqPlaylistSong);
+    return {
+      tracks,
+      nextOffset: data.more && tracks.length > 0 ? offset + tracks.length : null,
+    };
   },
 
   async getArtistAlbums(artist, { offset, limit }, signal) {

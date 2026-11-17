@@ -44,6 +44,17 @@ export interface MusicArtistAlbumPage {
   nextOffset: number | null;
 }
 
+export interface MusicArtistTrackPageRequest {
+  offset: number;
+  limit: number;
+}
+
+/** A page of the artist's catalog, with the next offset when there are more tracks. */
+export interface MusicArtistTrackPage {
+  tracks: MusicTrack[];
+  nextOffset: number | null;
+}
+
 /**
  * Artist reading, implemented by every platform with `artist.read`. Following is optional and
  * present with `artist.follow`.
@@ -55,6 +66,11 @@ export interface MusicArtistSource {
     artist: MusicResourceRef<"artist">,
     signal?: AbortSignal,
   ): Promise<MusicTrack[]>;
+  getArtistTracks(
+    artist: MusicResourceRef<"artist">,
+    page: MusicArtistTrackPageRequest,
+    signal?: AbortSignal,
+  ): Promise<MusicArtistTrackPage>;
   getArtistAlbums(
     artist: MusicResourceRef<"artist">,
     page: MusicArtistAlbumPageRequest,

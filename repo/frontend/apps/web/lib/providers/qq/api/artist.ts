@@ -22,11 +22,11 @@ export function getQqSingerDetail(mid: string, signal?: AbortSignal) {
 }
 
 /** One request of a singer's songs; `offset` counts songs. */
-export function getQqSingerSongs(mid: string, offset: number, signal?: AbortSignal) {
+export function getQqSingerSongs(mid: string, offset: number, limit: number, signal?: AbortSignal) {
   return qqClient.requestData<QqSingerSongsResponseDto>({
     method: "GET",
     url: "/singer/songs",
-    params: { mid, offset, limit: QQ_SINGER_SONGS_PAGE_LIMIT },
+    params: { mid, offset, limit: Math.min(limit, QQ_SINGER_SONGS_PAGE_LIMIT) },
     signal,
     errorContext: { operation: "qq.singer.songs", mid, offset },
   });

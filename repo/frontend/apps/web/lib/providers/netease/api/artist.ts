@@ -2,7 +2,7 @@ import type {
   ArtistAlbumsResponse,
   ArtistDetailResponse,
   ArtistFollowCountResponse,
-  ArtistTopSongsResponse,
+  ArtistSongsResponse,
   FollowedArtistsResponse,
   HotArtistsResponse,
 } from "@/types/providers/netease/artistApi";
@@ -51,8 +51,21 @@ export function getFansCnt(id: number | string, signal?: AbortSignal) {
  * 获取歌手热门歌曲
  */
 export function getArtistTopSongs(id: number | string, limit = 200, signal?: AbortSignal) {
-  return request.get<ArtistTopSongsResponse>("/artist/songs/v2", {
+  return request.get<ArtistSongsResponse>("/artist/songs/v2", {
     params: { id, limit },
+    signal,
+  });
+}
+
+/** The artist's catalog, paged independently of the popular tracks. */
+export function getArtistSongs(
+  id: number | string,
+  offset: number,
+  limit: number,
+  signal?: AbortSignal,
+) {
+  return request.get<ArtistSongsResponse>("/artist/songs", {
+    params: { id, offset, limit },
     signal,
   });
 }

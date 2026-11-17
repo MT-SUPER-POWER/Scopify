@@ -2,16 +2,10 @@ import { musicResourceKey } from "@scopify/music-domain/identity";
 import Link from "next/link";
 import { useTranslation } from "react-i18next";
 
-import type { ArtistInfo } from "@/types/artist/model";
-import type { PlayerTrack } from "@/types/player/model";
+import type { PopularTracksProps } from "@/types/artist/components";
 import { PopularTrackItem } from "./PopularTrackItem";
 
-interface Props {
-  tracks: readonly PlayerTrack[];
-  artist: ArtistInfo;
-}
-
-export function PopularTracks({ tracks, artist }: Props) {
+export function PopularTracks({ tracks, artist }: PopularTracksProps) {
   const { t } = useTranslation();
   const visibleTracks = tracks.slice(0, 10);
 
@@ -28,18 +22,16 @@ export function PopularTracks({ tracks, artist }: Props) {
               queue={tracks}
             />
           ))}
-          {tracks.length > 10 && (
-            <Link
-              href={`/artist/songs?id=${artist.id}`}
-              className="mt-4 w-fit rounded-full border border-content/10 px-4 py-2 text-sm font-semibold text-content-muted transition hover:border-content/30 hover:text-content"
-            >
-              {t("common.action.showAll")}
-            </Link>
-          )}
         </div>
       ) : (
         <div className="py-4 text-sm text-content-subtle">{t("artist.popular.noTracks")}</div>
       )}
+      <Link
+        href={`/artist/songs?id=${encodeURIComponent(String(artist.id))}`}
+        className="mt-4 inline-block w-fit rounded-full border border-content/10 px-4 py-2 text-sm font-semibold text-content-muted transition hover:border-content/30 hover:text-content"
+      >
+        {t("artist.songs.title")}
+      </Link>
     </div>
   );
 }
