@@ -1,18 +1,33 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useMemo, useRef, useState } from "react";
 import { motion } from "framer-motion";
-import { Play, Pause, Repeat, Repeat1, RepeatOff, ChartBar } from "lucide-react";
-import { MotionValue } from "framer-motion";
+import { Command, Play, Pause } from "lucide-react";
 import { useSongChorus } from "@/hooks/lyrics/useSongChorus";
 import { getChorusProgressRanges } from "@/lib/player/chorusMarkers";
 import { useTranslation } from "react-i18next";
+import {
+  FOLIA_CAPSULE_BUTTON_CLASS,
+  FoliaCapsuleActionContents,
+  FoliaCapsuleSlotControl,
+} from "@/components/lyrics/stage/FoliaCapsuleActions";
+import { FOLIA_CAPSULE_QUICK_ACTIONS } from "@/constants/foliaCapsule";
+import { FoliaCapsuleVolume } from "@/components/lyrics/stage/FoliaCapsuleVolume";
+import { useFoliaCapsuleActions } from "@/hooks/player/useFoliaCapsuleActions";
+import { useFoliaCapsuleActivation } from "@/hooks/player/useFoliaCapsuleActivation";
+import { useFoliaPlaybackControlsStore } from "@/store/module/foliaPlaybackControls";
+import { useUiStore } from "@/store/module/ui";
+import type { CommandWorkspacePage } from "@/types/commandWorkspace/model";
 
 import { FoliaTrackTitleNavigator } from "@/components/lyrics/stage/FoliaTrackTitleNavigator";
 import { usePlayerStore } from "@/store/module/player";
-import type { ProgressRangeMarker } from "@/types/shared/sliderComponents";
-import ProgressBar from "./ProgressBar";
-import { PlayerState, LyricData, Theme } from "../types";
-import LyricsTimelineModal from "./modal/LyricsTimelineModal";
 import { getNeteaseTrackId } from "@/lib/providers/netease/adapters/track";
+import type {
+  CollapsedFoliaCapsuleProps,
+  ExpandedFoliaCapsuleProps,
+  FloatingPlayerControlsProps,
+} from "@/types/player/foliaControls";
+import ProgressBar from "./ProgressBar";
+import { PlayerState } from "../types";
+import LyricsTimelineModal from "./modal/LyricsTimelineModal";
 
 const CONTROL_LAYOUT_SPRING = {
   type: "spring" as const,
@@ -20,34 +35,7 @@ const CONTROL_LAYOUT_SPRING = {
   damping: 24,
 };
 
-const HOVER_EXPAND_DELAY_MS = 20;
-const HOVER_COLLAPSE_DELAY_MS = 100;
 const HOVER_HITBOX_BOTTOM_BUFFER_PX = 32;
-
-interface FloatingPlayerControlsProps {
-  currentSong: { name: string } | null;
-  playerState: PlayerState;
-  currentTime: MotionValue<number>;
-  lyricCurrentTime?: MotionValue<number>;
-  duration: number;
-  loopMode: "off" | "all" | "one";
-  currentView: "home" | "player";
-  audioSrc: string | null;
-  canTogglePlay?: boolean;
-  lyrics: LyricData | null;
-  onSeek: (time: number) => void;
-  onTogglePlay: () => void;
-  onToggleLoop: () => void;
-  onNavigateToPlayer: () => void;
-  noTrackText?: string;
-  primaryColor?: string;
-  secondaryColor?: string;
-  theme?: Theme;
-  isDaylight: boolean;
-  isHidden?: boolean;
-  hideControlBar?: boolean;
-  controlsDisabled?: boolean;
-}
 
 const FloatingPlayerControls: React.FC<FloatingPlayerControlsProps> = ({
   currentSong,
@@ -57,7 +45,6 @@ const FloatingPlayerControls: React.FC<FloatingPlayerControlsProps> = ({
   duration,
   loopMode,
   currentView,
-  audioSrc,
   canTogglePlay = false,
   lyrics,
   onSeek,
@@ -89,74 +76,56 @@ const FloatingPlayerControls: React.FC<FloatingPlayerControlsProps> = ({
     ? "bg-white/40 border border-white/20 shadow-lg hover:bg-white/50"
     : "bg-black/20 border border-white/5 hover:bg-black/30";
   const trackColor = isDaylight ? "rgba(0,0,0,0.05)" : "rgba(255,255,255,0.1)";
-  // Button bg logic
-  const _buttonBg = isDaylight
-    ? { backgroundColor: primaryColor, color: "var(--bg-color)" }
-    : { backgroundColor: primaryColor, color: "var(--bg-color)" }; // Keep primary for play button, looks good
 
-  // Other buttons hover
-  const _iconBtnExpandedClass = isDaylight ? "hover:bg-black/5" : "bg-white/20"; // Wait, loop button has logic
-  const _iconBtnClass = isDaylight
-    ? "hover:bg-black/5 text-black/60"
-    : "hover:bg-white/10 opacity-40 hover:opacity-100";
-
-  const [isHovered, setIsHovered] = useState(false);
   const [isTimelineOpen, setIsTimelineOpen] = useState(false);
-  const expandTimeoutRef = useRef<number | null>(null);
-  const collapseTimeoutRef = useRef<number | null>(null);
-
+  const [isSlotMenuOpen, setIsSlotMenuOpen] = useState(false);
+  const [hasFocus, setHasFocus] = useState(false);
+  const controlsRef = useRef<HTMLDivElement>(null);
+  const capsuleRef = useRef<HTMLDivElement>(null);
+  const isWorkspaceOpen = useUiStore((state) => state.isSearchOpen);
+  const launch = useFoliaPlaybackControlsStore((state) => state.commandWorkspaceLaunch);
+  const capsuleSlots = useFoliaPlaybackControlsStore((state) => state.capsuleSlots);
+  const isPlayerView = currentView === "player";
   const canAutoExpand = canTogglePlay && duration > 0;
+  const isPaused = canAutoExpand && playerState !== PlayerState.PLAYING;
+  const openWorkspace = (page: CommandWorkspacePage) => {
+    const rect = capsuleRef.current?.getBoundingClientRect();
+    const frame =
+      rect && rect.width && page !== "folia-subtitles"
+        ? {
+            centerX: rect.left + rect.width / 2,
+            bottom: Math.max(0, window.innerHeight - rect.bottom),
+            width: rect.width,
+            height: rect.height,
+          }
+        : undefined;
+    useFoliaPlaybackControlsStore.getState().openCommandWorkspace(page, frame);
+  };
+  const { actions, volumeAnchor, closeVolume, onMute } = useFoliaCapsuleActions({
+    controlsDisabled,
+    currentView,
+    hasLyrics: !!lyrics,
+    loopMode,
+    onToggleLoop,
+    onToggleTimeline: () => setIsTimelineOpen(true),
+    openWorkspace,
+  });
+  const { hoverExpanded, hoverActions, touchActions, mayOpenOnClick, handlers } =
+    useFoliaCapsuleActivation({ controlsRef, isPaused, isPlayerView });
+  const attachedWorkspaceOpen = isWorkspaceOpen && !!launch?.frame;
+  const pinned = hasFocus || hoverExpanded || isSlotMenuOpen || !!volumeAnchor || touchActions;
+  const hidden = attachedWorkspaceOpen || (isHidden && !pinned);
   const showExpanded =
-    isHovered || (canAutoExpand && playerState !== PlayerState.PLAYING && currentView !== "home");
-
-  useEffect(() => {
-    return () => {
-      if (expandTimeoutRef.current !== null) {
-        window.clearTimeout(expandTimeoutRef.current);
-      }
-      if (collapseTimeoutRef.current !== null) {
-        window.clearTimeout(collapseTimeoutRef.current);
-      }
-    };
-  }, []);
-
-  const handleMouseEnter = () => {
-    if (collapseTimeoutRef.current !== null) {
-      window.clearTimeout(collapseTimeoutRef.current);
-      collapseTimeoutRef.current = null;
-    }
-
-    if (expandTimeoutRef.current !== null) {
-      return;
-    }
-
-    expandTimeoutRef.current = window.setTimeout(() => {
-      setIsHovered(true);
-      expandTimeoutRef.current = null;
-    }, HOVER_EXPAND_DELAY_MS);
-  };
-
-  const handleMouseLeave = () => {
-    if (expandTimeoutRef.current !== null) {
-      window.clearTimeout(expandTimeoutRef.current);
-      expandTimeoutRef.current = null;
-    }
-
-    if (!isHovered || collapseTimeoutRef.current !== null) {
-      return;
-    }
-
-    collapseTimeoutRef.current = window.setTimeout(() => {
-      setIsHovered(false);
-      collapseTimeoutRef.current = null;
-    }, HOVER_COLLAPSE_DELAY_MS);
-  };
-
-  const handleClick = () => {
-    if (currentView === "home") {
-      onNavigateToPlayer();
-    }
-  };
+    hoverExpanded || isSlotMenuOpen || !!volumeAnchor || touchActions || (isPaused && isPlayerView);
+  const showQuickActions =
+    isPlayerView && !isSlotMenuOpen && (hoverActions || touchActions || hasFocus);
+  const quickActions = FOLIA_CAPSULE_QUICK_ACTIONS.filter(
+    (id) =>
+      !capsuleSlots.includes(id) &&
+      actions[id].enabled !== false &&
+      (id !== "volume" || !touchActions),
+  );
+  const commandLabel = t("shortcuts.command.openCommandPalette");
 
   if (hideControlBar) {
     return null;
@@ -165,35 +134,89 @@ const FloatingPlayerControls: React.FC<FloatingPlayerControlsProps> = ({
   return (
     <>
       <motion.div
+        inert={hidden}
         className={`pointer-events-none absolute bottom-8 left-1/2 z-60 flex w-full -translate-x-1/2 justify-center transition-all duration-300 ${currentView === "home" ? "max-w-[calc(100vw-120px)] md:max-w-lg" : "max-w-lg px-4"}`}
         initial={false}
         // Once faded out, nothing here paints: the glass blur is costly and the progress keeps writing behind it.
         animate={
-          isHidden
+          hidden
             ? { opacity: 0, y: 24, scale: 0.97, transitionEnd: { visibility: "hidden" } }
             : { opacity: 1, y: 0, scale: 1, visibility: "visible" }
         }
         transition={{ duration: 0.26, ease: "easeOut" }}
-        style={{ pointerEvents: isHidden ? "none" : "auto" }}
+        style={{ pointerEvents: hidden ? "none" : "auto" }}
         onClick={(e) => e.stopPropagation()}
       >
         <div
-          className="pointer-events-auto flex w-full justify-center"
-          onMouseEnter={handleMouseEnter}
-          onMouseLeave={handleMouseLeave}
+          ref={controlsRef}
+          className="pointer-events-auto relative flex w-full justify-center"
+          {...handlers}
+          onFocusCapture={(event) => setHasFocus(event.target.matches(":focus-visible"))}
+          onBlurCapture={(event) => {
+            if (!event.currentTarget.contains(event.relatedTarget)) setHasFocus(false);
+          }}
           style={{
             paddingBottom: `${HOVER_HITBOX_BOTTOM_BUFFER_PX}px`,
             marginBottom: `${-HOVER_HITBOX_BOTTOM_BUFFER_PX}px`,
           }}
         >
+          {showQuickActions && (
+            <div className="absolute bottom-full left-1/2 z-10 w-max max-w-full -translate-x-1/2 pb-2">
+              <div
+                aria-label={t("folia.floatingControls.quickActions")}
+                role="group"
+                className={`flex items-center justify-center gap-0.5 rounded-full p-1.5 shadow-xl backdrop-blur-3xl ${glassBgExpanded}`}
+                style={{ color: primaryColor }}
+              >
+                {quickActions.map((id) => {
+                  const action = actions[id];
+                  return (
+                    <button
+                      key={id}
+                      type="button"
+                      aria-label={action.label}
+                      aria-pressed={action.pressed}
+                      title={action.label}
+                      onClick={action.run}
+                      className={FOLIA_CAPSULE_BUTTON_CLASS}
+                    >
+                      <FoliaCapsuleActionContents {...action} />
+                    </button>
+                  );
+                })}
+                <button
+                  type="button"
+                  aria-label={commandLabel}
+                  title={commandLabel}
+                  onClick={() => openWorkspace("root")}
+                  className={FOLIA_CAPSULE_BUTTON_CLASS}
+                >
+                  <Command className="size-4.5" aria-hidden="true" />
+                </button>
+              </div>
+            </div>
+          )}
           <motion.div
-            layout={!isHidden}
+            ref={capsuleRef}
+            layout={!hidden}
             transition={{ layout: CONTROL_LAYOUT_SPRING }}
-            onClick={handleClick}
+            onClick={(event) => {
+              if (!mayOpenOnClick(event)) return;
+              if (!isPlayerView) {
+                onNavigateToPlayer();
+                return;
+              }
+              if (
+                event.target instanceof Element &&
+                !event.target.closest('button, input, a, [role="button"]')
+              ) {
+                openWorkspace("root");
+              }
+            }}
             className={`relative cursor-pointer overflow-hidden rounded-full shadow-2xl backdrop-blur-3xl transition-colors duration-300 ${showExpanded ? `p-3 ${glassBgExpanded} w-full` : `px-4 py-2 ${glassBgCollapsed} w-[80%] md:w-[60%]`}`}
           >
             <motion.div
-              layout={!isHidden}
+              layout={!hidden}
               transition={{ layout: CONTROL_LAYOUT_SPRING }}
               className="w-full"
             >
@@ -202,19 +225,22 @@ const FloatingPlayerControls: React.FC<FloatingPlayerControlsProps> = ({
                   currentSong={currentSong}
                   playerState={playerState}
                   currentTime={currentTime}
-                  lyricCurrentTime={lyricCurrentTime}
                   duration={duration}
-                  loopMode={loopMode}
                   canTogglePlay={canTogglePlay}
                   onSeek={onSeek}
                   onTogglePlay={onTogglePlay}
-                  onToggleLoop={onToggleLoop}
-                  onToggleTimeline={() => setIsTimelineOpen(true)}
+                  slots={capsuleSlots.map((_, index) => (
+                    <FoliaCapsuleSlotControl
+                      key={index}
+                      actions={actions}
+                      slot={index === 0 ? 0 : 1}
+                      onMenuOpenChange={setIsSlotMenuOpen}
+                    />
+                  ))}
                   noTrackText={resolvedNoTrackText}
                   primaryColor={primaryColor}
                   secondaryColor={secondaryColor}
                   trackColor={trackColor}
-                  hasLyrics={!!lyrics}
                   isDaylight={isDaylight}
                   controlsDisabled={controlsDisabled}
                   rangeMarkers={chorusRanges}
@@ -222,6 +248,23 @@ const FloatingPlayerControls: React.FC<FloatingPlayerControlsProps> = ({
                 />
               ) : (
                 <CollapsedView
+                  commandButton={
+                    isPlayerView ? (
+                      <button
+                        type="button"
+                        aria-label={commandLabel}
+                        title={commandLabel}
+                        style={{ color: primaryColor }}
+                        className={FOLIA_CAPSULE_BUTTON_CLASS}
+                        onClick={(event) => {
+                          event.stopPropagation();
+                          if (mayOpenOnClick(event)) openWorkspace("root");
+                        }}
+                      >
+                        <Command className="size-4.5" aria-hidden="true" />
+                      </button>
+                    ) : null
+                  }
                   currentTime={currentTime}
                   duration={duration}
                   onSeek={onSeek}
@@ -237,6 +280,10 @@ const FloatingPlayerControls: React.FC<FloatingPlayerControlsProps> = ({
           </motion.div>
         </div>
       </motion.div>
+
+      {volumeAnchor && (
+        <FoliaCapsuleVolume anchor={volumeAnchor} onClose={closeVolume} onToggleMute={onMute} />
+      )}
 
       <LyricsTimelineModal
         isOpen={isTimelineOpen}
@@ -260,45 +307,18 @@ const FloatingPlayerControls: React.FC<FloatingPlayerControlsProps> = ({
 };
 
 // 展开视图组件
-interface ExpandedViewProps {
-  currentSong: { name: string } | null;
-  playerState: PlayerState;
-  currentTime: MotionValue<number>;
-  lyricCurrentTime?: MotionValue<number>;
-  duration: number;
-  loopMode: "off" | "all" | "one";
-  canTogglePlay: boolean;
-  onSeek: (time: number) => void;
-  onTogglePlay: () => void;
-  onToggleLoop: () => void;
-  onToggleTimeline: () => void;
-  noTrackText: string;
-  primaryColor: string;
-  secondaryColor: string;
-  hasLyrics: boolean;
-  trackColor?: string;
-  isDaylight?: boolean;
-  controlsDisabled?: boolean;
-  rangeMarkers?: readonly ProgressRangeMarker[];
-  markerColor?: string;
-}
-
-const ExpandedView: React.FC<ExpandedViewProps> = ({
+const ExpandedView: React.FC<ExpandedFoliaCapsuleProps> = ({
   currentSong,
   playerState,
   currentTime,
-  lyricCurrentTime,
   duration,
-  loopMode,
   canTogglePlay,
   onSeek,
   onTogglePlay,
-  onToggleLoop,
-  onToggleTimeline,
+  slots,
   noTrackText,
   primaryColor,
   secondaryColor,
-  hasLyrics,
   trackColor,
   isDaylight,
   controlsDisabled = false,
@@ -320,6 +340,8 @@ const ExpandedView: React.FC<ExpandedViewProps> = ({
 
       {/* Row 3: Loop Button, Play Button, Lyrics Button */}
       <button
+        type="button"
+        aria-label={t(playerState === PlayerState.PLAYING ? "ui.pause" : "ui.play")}
         onClick={(e) => {
           e.stopPropagation();
           onTogglePlay();
@@ -335,37 +357,12 @@ const ExpandedView: React.FC<ExpandedViewProps> = ({
         )}
       </button>
 
-      <div className="contents sm:col-start-3 sm:row-span-2 sm:row-start-1 sm:flex sm:items-center sm:gap-1">
-        <button
-          onClick={(e) => {
-            e.stopPropagation();
-            onToggleLoop();
-          }}
-          disabled={controlsDisabled}
-          className={`col-start-1 row-start-2 justify-self-end rounded-full p-2 transition-colors sm:justify-self-auto ${loopMode !== "off" ? (isDaylight ? "bg-black/10 text-black" : "bg-white/20") : "opacity-40 hover:opacity-100"} ${controlsDisabled ? "cursor-not-allowed opacity-35" : ""}`}
-          style={{ color: primaryColor }}
-        >
-          {loopMode === "off" ? (
-            <RepeatOff size={20} className="sm:size-4.5" />
-          ) : loopMode === "one" ? (
-            <Repeat1 size={20} className="sm:size-4.5" />
-          ) : (
-            <Repeat size={20} className="sm:size-4.5" />
-          )}
-        </button>
-
-        <button
-          onClick={(e) => {
-            e.stopPropagation();
-            onToggleTimeline();
-          }}
-          disabled={!hasLyrics}
-          className={`col-start-3 row-start-2 justify-self-start rounded-full p-2 transition-colors sm:justify-self-auto ${!hasLyrics ? "cursor-not-allowed opacity-20" : `opacity-40 hover:opacity-100 ${isDaylight ? "hover:bg-black/5" : "hover:bg-white/10"}`}`}
-          style={{ color: primaryColor }}
-          title={t("folia.floatingControls.viewTimeline")}
-        >
-          <ChartBar size={20} className="sm:size-4.5" />
-        </button>
+      <div
+        className="contents sm:col-start-3 sm:row-span-2 sm:row-start-1 sm:flex sm:items-center sm:gap-1"
+        style={{ color: primaryColor }}
+      >
+        <div className="col-start-1 row-start-2 justify-self-end">{slots[0]}</div>
+        <div className="col-start-3 row-start-2 justify-self-start">{slots[1]}</div>
       </div>
 
       {/* Row 2: Current Time, Progress Bar, Duration */}
@@ -387,19 +384,8 @@ const ExpandedView: React.FC<ExpandedViewProps> = ({
 };
 
 // 折叠视图组件
-interface CollapsedViewProps {
-  currentTime: MotionValue<number>;
-  duration: number;
-  onSeek: (time: number) => void;
-  primaryColor: string;
-  secondaryColor: string;
-  trackColor?: string;
-  controlsDisabled?: boolean;
-  rangeMarkers?: readonly ProgressRangeMarker[];
-  markerColor?: string;
-}
-
-const CollapsedView: React.FC<CollapsedViewProps> = ({
+const CollapsedView: React.FC<CollapsedFoliaCapsuleProps> = ({
+  commandButton,
   currentTime,
   duration,
   onSeek,
@@ -411,7 +397,7 @@ const CollapsedView: React.FC<CollapsedViewProps> = ({
   markerColor,
 }) => {
   return (
-    <div className="flex h-8 w-full items-center justify-center px-4">
+    <div className="flex h-8 w-full items-center justify-center gap-1 px-2">
       <ProgressBar
         currentTime={currentTime}
         duration={duration}
@@ -423,6 +409,7 @@ const CollapsedView: React.FC<CollapsedViewProps> = ({
         rangeMarkers={rangeMarkers}
         markerColor={markerColor}
       />
+      {commandButton}
     </div>
   );
 };

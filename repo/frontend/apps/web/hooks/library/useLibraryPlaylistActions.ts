@@ -98,6 +98,26 @@ export function useLibraryPlaylistActions() {
     onSettled: (_data, _error, playlist) => refresh(playlist),
   });
 
+  const addTracks = useMutation({
+    retry: false,
+    meta: { operation: "library.playlist.add-tracks" },
+    mutationFn: async ({
+      playlist,
+      tracks,
+    }: {
+      playlist: MusicResourceRef<"playlist">;
+      tracks: readonly MusicResourceRef<"track">[];
+    }) => {
+      requireManage();
+      if (!provider.addPlaylistTracks) {
+        throw new Error(`${provider.provider} cannot add tracks to playlists.`);
+      }
+      await provider.addPlaylistTracks(playlist, tracks);
+    },
+    onError: (error) => reportActionFailure("library.playlist.add-tracks", error),
+    onSuccess: (_data, { playlist }) => refresh(playlist),
+  });
+
   const rename = useMutation({
     retry: false,
     meta: { operation: "library.playlist.rename" },
@@ -125,5 +145,5 @@ export function useLibraryPlaylistActions() {
     onSettled: (_data, _error, { playlist }) => refresh(playlist),
   });
 
-  return { create, remove, rename, subscribe };
+  return { addTracks, create, remove, rename, subscribe };
 }
