@@ -14,14 +14,16 @@ export function CommandWorkspaceNowPlaying({ onClose }: CommandWorkspaceNowPlayi
   const commands = usePlaybackCommands();
   const positionMs = usePlaybackPosition();
   const projection = usePlaybackProjection();
-  const currentSong = usePlayerStore((state) => state.currentSongDetail);
+  const currentSong = usePlayerStore((state) => state.currentTrack);
   if (!currentSong) {
     return (
       <p className="px-5 py-16 text-center text-sm text-content-muted">当前没有正在播放的曲目。</p>
     );
   }
-  const durationMs = projection.durationMs || currentSong.dt;
-  const coverUrl = currentSong.al?.picUrl ? `${currentSong.al.picUrl}?param=400y400` : null;
+  const durationMs = projection.durationMs || currentSong.durationMs;
+  const coverUrl = currentSong.album?.coverUrl
+    ? `${currentSong.album?.coverUrl}?param=400y400`
+    : null;
   return (
     <div className="relative overflow-hidden p-5 sm:p-6">
       {coverUrl ? (

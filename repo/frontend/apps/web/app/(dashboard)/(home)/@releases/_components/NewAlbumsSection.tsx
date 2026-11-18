@@ -9,6 +9,7 @@ import { SectionPagination } from "../../_components/SectionPagination";
 import { GridCard } from "@/components/home/GridCard";
 import { useNewAlbumsQuery } from "@/hooks/home/useHomeQueries";
 import { useSmartRouter } from "@/hooks/core/useSmartRouter";
+import { getSizedImageUrl } from "@/lib/music/imageUrl";
 import { useTranslation } from "react-i18next";
 
 const PAGE_SIZE = 10;
@@ -18,7 +19,7 @@ export function NewAlbumsSection() {
   const { actions } = useHome();
   const smartRouter = useSmartRouter();
   const query = useNewAlbumsQuery();
-  const albums = (query.data.albums ?? []).filter((album) => Boolean(album?.id && album.name));
+  const albums = query.data;
   const [isOpen, setIsOpen] = useState(false);
   const [page, setPage] = useState(0);
   const [direction, setDirection] = useState<1 | -1>(1);
@@ -61,7 +62,7 @@ export function NewAlbumsSection() {
           ) : null
         }
         collapsedRows={1}
-        collapsedHeight="280px"
+        collapsedHeight="310px"
       >
         <div className="relative overflow-hidden">
           <AnimatePresence mode="wait" initial={false}>
@@ -71,29 +72,29 @@ export function NewAlbumsSection() {
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -direction * 16 }}
               transition={{ duration: 0.22, ease: "easeOut" }}
-              className="grid w-full min-w-0 grid-cols-[repeat(auto-fill,minmax(min(100%,176px),1fr))] gap-x-2 gap-y-4"
+              className="grid w-full min-w-0 grid-cols-[repeat(auto-fill,minmax(min(100%,200px),1fr))] gap-x-2 gap-y-4"
             >
               {visibleAlbums.map((album) => {
-                if (!album.id) return null;
-                const albumId = album.id;
-                const year = album.publishTime
-                  ? new Date(album.publishTime).getFullYear()
+                const albumId = album.ref.id;
+                const year = album.publishedAt
+                  ? new Date(album.publishedAt).getFullYear()
                   : undefined;
+                const artistName = album.artists[0]?.name;
                 const subtitle =
-                  year && album.artist?.name
+                  year && artistName
                     ? t("home.albumSummary", {
-                        artist: album.artist.name,
+                        artist: artistName,
                         year,
                       })
-                    : album.artist?.name || "";
+                    : artistName || "";
 
                 return (
                   <GridCard
                     key={albumId}
                     appearance="home"
                     id={albumId}
-                    name={album.name || ""}
-                    coverUrl={album.picUrl ? `${album.picUrl}?param=300y300` : ""}
+                    name={album.title}
+                    coverUrl={getSizedImageUrl(album.coverUrl, 300)}
                     subtitle={subtitle}
                     isLoading={actions.loadingPlayId === `album-${albumId}`}
                     onPlay={(event) => actions.handlePlayAlbum(albumId, event)}

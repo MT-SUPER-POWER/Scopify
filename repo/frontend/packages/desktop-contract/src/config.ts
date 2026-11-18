@@ -4,6 +4,11 @@ export type DesktopCloseAction = 0 | 1 | 2;
 export type DesktopLogLevel = "debug" | "error" | "info" | "warn";
 export type DesktopProxyMode = "custom" | "direct" | "system";
 
+export interface DesktopBackendConfig {
+  autoStart: boolean;
+  port: number;
+}
+
 /**
  * Desktop-owned settings exposed to the Renderer settings UI.
  * Web request, locale and backend settings deliberately do not cross this boundary.
@@ -14,9 +19,11 @@ export interface DesktopHostConfig {
     devTools: boolean;
     gpuAcceleration: boolean;
   };
+  /** Local music APIs hosted by Desktop, one entry per platform. */
   backend: {
-    autoStart: boolean;
-    port: number;
+    netease: DesktopBackendConfig;
+    /** Runs in its own utility process because the API listens as an import side effect. */
+    qq: DesktopBackendConfig;
   };
   cache: {
     dir: string;

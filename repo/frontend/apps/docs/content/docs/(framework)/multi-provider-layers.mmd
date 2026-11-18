@@ -1,0 +1,21 @@
+flowchart TB
+  factory["createApiClient<br/>地址 · 超时 · trace · 错误上报"]
+  factory --> nClient
+  factory --> qClient
+  subgraph netease["lib/providers/netease"]
+    direction TB
+    nClient["client<br/>会话 · 默认参数 · code 250"] --> nApi["api/<br/>只发请求"]
+    nApi --> nDto["网易云 DTO"] --> nAdapter["adapters/<br/>DTO → 界面类型"]
+  end
+  subgraph qq["lib/providers/qq"]
+    direction TB
+    qClient["client<br/>qqmusic_session"] --> qApi["api/<br/>只发请求"]
+    qApi --> qDto["QQ DTO"] --> qAdapter["adapters/<br/>DTO → 界面类型"]
+  end
+  nAdapter --> nProvider["neteaseProvider<br/>按区域组合 · 声明能力"]
+  qAdapter --> qProvider["qqProvider<br/>按区域组合 · 声明能力"]
+  nProvider --> registry{"activeProvider"}
+  qProvider --> registry
+  registry --> domain["界面类型 @scopify/music-domain"]
+  domain --> hooks["hooks · useActiveProvider()"]
+  hooks --> ui["组件 / 页面"]

@@ -22,7 +22,7 @@ import { APP_LOCALES, type AppLocale } from "@/types/settings/config";
 import type { GeneralSettingsTabProps } from "@/types/settings/components";
 import type { PlaybackProgressRefreshRate } from "@/types/core/performance";
 import { AudioDeviceSettingsSection } from "./AudioDeviceSettingsSection";
-import { SettingInput, SettingRow, SettingSection, Toggle } from "./SettingsUI";
+import { SettingInput, SettingPortInput, SettingRow, SettingSection, Toggle } from "./SettingsUI";
 
 export function GeneralSettingsTab({
   config,
@@ -211,10 +211,9 @@ export function GeneralSettingsTab({
               isDebug
               requiresRestart
               control={
-                <SettingInput
-                  type="number"
+                <SettingPortInput
                   value={config.desktop.frontend.devPort}
-                  onChange={(value) => onDesktopChange("frontend", "devPort", Number(value))}
+                  onChange={(port) => onDesktopChange("frontend", "devPort", port)}
                 />
               }
             />

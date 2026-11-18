@@ -2,7 +2,7 @@
 
 import { useIsMutating, useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import * as api from "@/lib/api/social";
+import * as api from "@/lib/providers/netease/api/social";
 import { patchEvent, patchFollow, socialKey } from "@/lib/social/cache";
 import { getSocialPublishErrorMessage } from "@/lib/social/publishError";
 import { useSocialAccount } from "./useSocialQueries";

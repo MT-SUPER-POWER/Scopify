@@ -2,10 +2,13 @@
 
 import { useSearchParams } from "next/navigation";
 import { DailyCategoryPage } from "@/components/Playlist/DailyCategoryPage";
+import { CapabilityGate } from "@/components/provider/CapabilityGate";
+import { UnsupportedPlatformState } from "@/components/provider/UnsupportedPlatformState";
 import { DailyRecommendationSwitch } from "@/components/Playlist/DailyRecommendationSwitch";
 import { PlaylistContent } from "@/components/Playlist/PlaylistContent";
 import { useSmartRouter } from "@/hooks/core/useSmartRouter";
 import { usePlaylist } from "@/hooks/playlist/usePlaylistData";
+import { useProviderCapability } from "@/hooks/provider/useActiveProvider";
 import { useTranslation } from "react-i18next";
 import { useI18nStore } from "@/store/module/i18n";
 
@@ -15,6 +18,8 @@ function PlaylistDetail() {
     locale = useI18nStore((state) => state.locale);
   const playlist = usePlaylist();
   const router = useSmartRouter();
+  const canReadComments = useProviderCapability("comments.read");
+  const canBrowseDailyStyles = useProviderCapability("recommend.daily.styles");
   const categoryLabel =
     locale === "en-US" ? "Style recommendations" : locale === "zh-TW" ? "風格推薦" : "风格推荐";
   const categoryUrl = playlist.dailyDate
@@ -28,14 +33,14 @@ function PlaylistDetail() {
     <PlaylistContent
       {...playlist}
       trailingActionSlot={
-        playlist.isDailyRecommend ? (
+        playlist.isDailyRecommend && canBrowseDailyStyles ? (
           <DailyRecommendationSwitch
             label={categoryLabel}
             onClick={() => router.push(categoryUrl)}
           />
         ) : undefined
       }
-      commentResourceId={playlist.playlistId}
+      commentResourceId={canReadComments ? playlist.playlistId : null}
       commentResourceKind="playlist"
     />
   );
@@ -43,6 +48,21 @@ function PlaylistDetail() {
 
 export default function PlaylistPage() {
   const params = useSearchParams();
-  if (params.get("dailyCategory") === "true") return <DailyCategoryPage />;
-  return <PlaylistDetail />;
+  const isDailyCategory = params.get("dailyCategory") === "true";
+  const page = isDailyCategory ? <DailyCategoryPage /> : <PlaylistDetail />;
+  if (!isDailyCategory && params.get("isDailyRecommend") !== "true") return page;
+  // Style recommendations are a NetEase feature of the daily list.
+  if (isDailyCategory) {
+    return (
+      <CapabilityGate requires="recommend.daily.styles" fallback={<UnsupportedPlatformState />}>
+        {page}
+      </CapabilityGate>
+    );
+  }
+  // Daily recommendations reuse this page, but they are a recommendation list, not a playlist.
+  return (
+    <CapabilityGate requires="recommend.daily" fallback={<UnsupportedPlatformState />}>
+      {page}
+    </CapabilityGate>
+  );
 }

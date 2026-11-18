@@ -14,7 +14,9 @@ import { DASHBOARD_MAIN_STICKY_TOP } from "@/constants/layout";
 import { usePlaylistContentPresentation } from "@/hooks/playlist/usePlaylistContentPresentation";
 import { useTranslation } from "react-i18next";
 
-import type { SongDetail } from "@/types/song/api";
+import { useActiveProvider } from "@/hooks/provider/useActiveProvider";
+import { toNeteaseSongDetail } from "@/lib/providers/netease/adapters/track";
+import type { PlayerTrack } from "@/types/player/model";
 import type { PlaylistContentProps } from "@/types/playlist/components";
 
 export function PlaylistContent({
@@ -64,16 +66,22 @@ export function PlaylistContent({
     refetchTracks,
   });
   const isLoggedIn = useLoginStatus();
-  const canDislikeDaily = isLoggedIn && isDailyRecommend && !dailyDate && !!setTracks;
+  const provider = useActiveProvider();
+  const canDislikeDaily =
+    isLoggedIn && isDailyRecommend && !dailyDate && !!setTracks && provider.provider === "netease";
   const dislikeDaily = useDailyRecommendationDislike(tracks, setTracks);
   const dislikeTrack = useCallback(
-    (song: SongDetail) => {
+    (track: PlayerTrack) => {
+      const song = toNeteaseSongDetail(track);
+      if (!song) return;
       if (onDislikePersonalFm) onDislikePersonalFm(song);
       else if (canDislikeDaily) void dislikeDaily(song.id);
     },
     [canDislikeDaily, dislikeDaily, onDislikePersonalFm],
   );
   const sourceId = playSourceId ?? playlistId ?? (dailyDate ? `daily:${dailyDate}` : "daily");
+  // The immersive views read NetEase songs (lyrics, song fields), so only NetEase lists open them.
+  const canOpenLattice = tracks.length > 0;
   return (
     <PlaylistLatticeView
       key={sourceId}
@@ -108,7 +116,7 @@ export function PlaylistContent({
                   isDaily={isDailyRecommend}
                   dailyDate={dailyDate}
                   onPlayToggle={onPlayToggle}
-                  onOpenLattice={tracks.length > 0 ? openLattice : undefined}
+                  onOpenLattice={canOpenLattice ? openLattice : undefined}
                   searchOpen={searchOpen}
                   searchQuery={searchQuery}
                   showShuffle={showShuffle}

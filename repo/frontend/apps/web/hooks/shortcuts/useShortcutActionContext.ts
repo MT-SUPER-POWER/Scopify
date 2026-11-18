@@ -22,6 +22,7 @@ import type {
   ShortcutActionContext,
   ShortcutCommandExecutorOptions,
 } from "@/types/shortcuts/model";
+import { toNeteaseSongDetail } from "@/lib/providers/netease/adapters/track";
 
 let muteRestoreLevel: number | null = null;
 
@@ -188,12 +189,13 @@ export function useShortcutActionContext(
       playlist: { focusSearch: () => focusPlaylistSearch?.() },
       track: {
         openCurrentComments: () => {
-          const track = usePlayerStore.getState().currentSongDetail;
-          if (track)
+          // Comments are NetEase-only; other platforms have no comment page.
+          const song = toNeteaseSongDetail(usePlayerStore.getState().currentTrack);
+          if (song)
             navigateTo(
               getCommentHref(
-                track.voiceId === undefined ? "song" : "voice",
-                track.voiceId ?? track.id,
+                song.voiceId === undefined ? "song" : "voice",
+                song.voiceId ?? song.id,
               ),
             );
         },

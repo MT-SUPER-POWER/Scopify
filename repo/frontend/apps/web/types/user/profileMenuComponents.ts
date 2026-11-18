@@ -6,7 +6,6 @@ export interface ProfileMenuProps {
 
 export interface ProfileMenuIdentityProps {
   isLoggedIn: boolean;
-  onLogin: () => void;
 }
 
 export interface ProfileMenuNavigationProps {

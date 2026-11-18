@@ -16,7 +16,9 @@ hooks/<domain>/             数据获取、缓存、状态同步与副作用
       ↓
 lib/api/<domain>.ts         纯请求函数，只负责发请求
       ↓
-lib/web/request.ts          Axios 实例、base URL 与通用请求能力
+lib/providers/<平台>/client.ts  平台 Axios 实例（网易云 / QQ 音乐）
+      ↓
+lib/web/http/createApiClient.ts  共用的 base URL、超时、trace、错误上报
 
 types/api/<domain>.ts        独立的请求、响应和领域类型
 ```
@@ -113,11 +115,11 @@ export interface VipSignInfoResponse {
 
 ## 4. 请求层：`lib/api/`
 
-`lib/api/` 是薄封装层，只负责调用 `@/lib/web/request`。一个领域的请求放在同一个文件中：
+`lib/api/` 是网易云接口的薄封装层，只负责调用 `@/lib/providers/netease/client`。QQ 音乐接口调用 `@/lib/providers/qq/client`，不混用；网易云专属的会话凭据、默认参数和 `code: 250` 只在网易云客户端里处理。一个领域的请求放在同一个文件中：
 
 ```ts
 // lib/api/user.ts
-import request from "@/lib/web/request";
+import request from "@/lib/providers/netease/client";
 import type { VipSignInfoResponse, VipSignParams } from "@/types/api/vipSign";
 
 /** POST /vip/sign */

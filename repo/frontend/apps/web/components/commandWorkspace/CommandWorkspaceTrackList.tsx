@@ -5,7 +5,8 @@ import { PlayingAnimation } from "@/components/shared/PlayingAnimation";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn, formatDuration } from "@/lib/utils";
 import { usePlayerStore } from "@/store";
-import type { SongDetail } from "@/types/song/api";
+import { musicResourceKey } from "@scopify/music-domain/identity";
+import type { PlayerTrack } from "@/types/player/model";
 import type { CommandWorkspaceTrackListProps } from "@/types/commandWorkspace/model";
 
 export function CommandWorkspaceTrackList({
@@ -14,12 +15,12 @@ export function CommandWorkspaceTrackList({
   onPlay,
   trackList,
 }: CommandWorkspaceTrackListProps) {
-  const currentSong = usePlayerStore((state) => state.currentSongDetail);
+  const currentSong = usePlayerStore((state) => state.currentTrack);
   const isPlaying = usePlayerStore((state) => state.isPlaying);
   const setIsPlaying = usePlayerStore((state) => state.setIsPlaying);
 
-  const handleTrackClick = (track: SongDetail, index: number) => {
-    if (currentSong && currentSong.id === track.id) {
+  const handleTrackClick = (track: PlayerTrack, index: number) => {
+    if (currentSong && musicResourceKey(currentSong.ref) === musicResourceKey(track.ref)) {
       setIsPlaying(!isPlaying);
     } else {
       onPlay(index);
@@ -49,12 +50,13 @@ export function CommandWorkspaceTrackList({
           </button>
         </div>
         {trackList.tracks.map((track, index) => {
-          const isCurrent = currentSong && track.id === currentSong.id;
+          const isCurrent =
+            currentSong && musicResourceKey(track.ref) === musicResourceKey(currentSong.ref);
           const isCurrentPlaying = isCurrent && isPlaying;
 
           return (
             <div
-              key={`${track.voiceId ?? "song"}-${track.id}-${index}`}
+              key={`${track.netease?.voiceId ?? "song"}-${musicResourceKey(track.ref)}-${index}`}
               className={cn(
                 "group flex items-center gap-3 rounded-lg px-3.5 py-2 transition-colors",
                 isCurrent ? "bg-content/10" : "hover:bg-content/6",
@@ -88,14 +90,14 @@ export function CommandWorkspaceTrackList({
                     isCurrent ? "font-semibold text-brand" : "text-content hover:text-brand",
                   )}
                 >
-                  {track.name}
+                  {track.title}
                 </span>
                 <span className="block truncate text-xs text-content-muted">
-                  {track.ar.map((artist) => artist.name).join(" / ")}
+                  {track.artists.map((artist) => artist.name).join(" / ")}
                 </span>
               </button>
               <span className="text-xs text-content-muted tabular-nums">
-                {formatDuration(track.dt)}
+                {formatDuration(track.durationMs)}
               </span>
               <div className="flex shrink-0 items-center gap-1 opacity-0 transition group-focus-within:opacity-100 group-hover:opacity-100">
                 <button

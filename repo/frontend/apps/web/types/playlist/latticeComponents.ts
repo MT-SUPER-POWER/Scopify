@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import type { SongDetail } from "@/types/song/api";
+import type { PlayerTrack } from "@/types/player/model";
 import type { PlaylistViewMode, QueueInstance, ReflowTile } from "@/types/playlist/lattice";
 
 /** Which cards of a wall flip from skeleton to content, and the gate they all wait on. */
@@ -10,13 +10,13 @@ export interface CardFlipPlan {
 }
 
 export interface PlaylistLatticeProps {
-  tracks: SongDetail[];
+  tracks: PlayerTrack[];
   title: string;
   sourceId: number | string | null;
   /** When following the live queue, ignore a card action if that queue has been replaced. */
   playbackQueue?: boolean;
-  onDislikeTrack?: (track: SongDetail) => void;
-  onTrackPlay?: (track: SongDetail) => void;
+  onDislikeTrack?: (track: PlayerTrack) => void;
+  onTrackPlay?: (track: PlayerTrack) => void;
   onClose: () => void;
   /** Jumps to another immersive view without going back to the list first. */
   onModeChange: (mode: PlaylistViewMode) => void;
@@ -39,11 +39,11 @@ export interface PlaylistViewButtonProps {
 export interface LatticePosterProps {
   instance: QueueInstance;
   rect: Omit<ReflowTile, "instanceId">;
-  track: SongDetail;
+  track: PlayerTrack;
   expanded: boolean;
   current: boolean;
   focused: boolean;
-  onDislikeTrack?: (track: SongDetail) => void;
+  onDislikeTrack?: (track: PlayerTrack) => void;
   onFocus: (instance: QueueInstance) => void;
   onSelect: (instance: QueueInstance) => void;
   onPlay: (index: number) => void;
@@ -76,14 +76,14 @@ export type PlaylistViewPlaybackOptions = Pick<
 export interface LatticeProgressProps {
   current: boolean;
   durationMs: number;
-  trackId: number;
+  trackId: number | string;
 }
 
 export interface LatticePlaybackControlsProps {
-  track: SongDetail;
+  track: PlayerTrack;
   current: boolean;
   revealed: boolean;
-  onPlay: (track: SongDetail) => void;
+  onPlay: (track: PlayerTrack) => void;
   className?: string;
   onDislikeTrack?: () => void;
 }
@@ -93,6 +93,6 @@ export type LatticePosterArtworkProps = Pick<
   "track" | "instance" | "current" | "expanded"
 >;
 export interface LatticeLyricsProps {
-  track: SongDetail;
+  track: PlayerTrack;
   compact?: boolean;
 }

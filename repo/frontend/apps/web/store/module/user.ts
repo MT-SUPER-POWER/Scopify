@@ -1,11 +1,12 @@
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
-import { logout } from "@/lib/api/login";
+import { logout } from "@/lib/providers/netease/api/login";
 import { runtime } from "@/lib/runtime";
 import { clearLoginStatus } from "@/lib/web/auth";
-import { getBackendBaseUrl } from "@/lib/web/request";
+import { getNeteaseBaseUrl } from "@/lib/providers/netease/client";
 import { pruneSongDetail, type RawSongDetail, type SongDetail } from "@/types/song/api";
-import { type NeteasePlaylist, type RawNeteasePlaylist, prunePlaylist } from "@/types/playlist/api";
+import { type NeteasePlaylist, prunePlaylist } from "@/types/playlist/api";
+import type { RawNeteasePlaylist } from "@/types/providers/netease/playlistApi";
 import type { NeteaseUserAlbum } from "@/types/album/releaseApi";
 import { type NeteaseUser, type NeteaseUserSource, pruneUser } from "@/types/user/api";
 import type { FollowedArtist } from "@/types/artist/model";
@@ -128,7 +129,7 @@ export const useUserStore = create<UserStore>()(
         } catch (error) {
           console.error("登出失败:", error);
         } finally {
-          await runtime.auth.clearMusicSession(getBackendBaseUrl());
+          await runtime.auth.clearMusicSession(getNeteaseBaseUrl());
           useUserStore.getState().clearSession();
           window.location.reload();
         }

@@ -1,7 +1,7 @@
-import type { BackendProtocol, WebConfig } from "@/types/settings/config";
+import type { BackendAddress, BackendProtocol } from "@/types/settings/config";
 
 export type BackendConfigResolution =
-  { backend: WebConfig["backend"]; ok: true; url: string } | { message: string; ok: false };
+  { backend: BackendAddress; ok: true; url: string } | { message: string; ok: false };
 
 export type BackendBaseUrlResolution = { ok: true; url: string } | { message: string; ok: false };
 
@@ -169,7 +169,7 @@ export function isBackendHostInputValid(input: string): boolean {
 /**
  * Normalizes backend config into a canonical protocol, host, and port tuple.
  */
-export function normalizeBackendConfig(backend: WebConfig["backend"]): BackendConfigResolution {
+export function normalizeBackendConfig(backend: BackendAddress): BackendConfigResolution {
   const cleaned = cleanBackendHostInput(backend.host);
   const host = cleaned.host;
   if (!host) return { message: "Backend host cannot be empty.", ok: false };
@@ -196,12 +196,12 @@ export function normalizeBackendConfig(backend: WebConfig["backend"]): BackendCo
   };
 }
 
-export function resolveBackendBaseUrl(backend: WebConfig["backend"]): BackendBaseUrlResolution {
+export function resolveBackendBaseUrl(backend: BackendAddress): BackendBaseUrlResolution {
   const resolved = normalizeBackendConfig(backend);
   return resolved.ok ? { ok: true, url: resolved.url } : resolved;
 }
 
-export function buildBackendBaseUrl(backend: WebConfig["backend"]): string {
+export function buildBackendBaseUrl(backend: BackendAddress): string {
   const resolved = resolveBackendBaseUrl(backend);
   if (resolved.ok) return resolved.url;
 

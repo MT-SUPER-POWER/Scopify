@@ -1,8 +1,8 @@
 import { afterEach, expect, test } from "bun:test";
-import request from "@/lib/web/request";
+import request from "@/lib/providers/netease/client";
 import { getYidunErrorMessage } from "@/lib/auth/yidunError";
-import { loginWithYidun, sendYidunCaptcha } from "@/lib/api/yidun";
-import type { ScopifyRequestConfig } from "@/types/network/model";
+import { loginWithYidun, sendYidunCaptcha } from "@/lib/providers/netease/api/yidun";
+import type { NeteaseRequestConfig } from "@/types/providers/netease/request";
 
 const originalAdapter = request.defaults.adapter;
 afterEach(() => {
@@ -20,7 +20,7 @@ test("risk responses survive HTTP errors and both steps keep the same isolated s
     };
     calls.push({ url: config.url, sid: body.sid });
     expect(config.method).toBe("post");
-    expect((config as ScopifyRequestConfig).noLogin).toBe(true);
+    expect((config as NeteaseRequestConfig).noLogin).toBe(true);
     expect(config.params).toEqual({});
     expect(config.withCredentials).toBe(false);
     expect(body.countrycode).toBe("852");

@@ -1,25 +1,23 @@
 "use client";
 
-import { queryOptions, useQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { useEffect } from "react";
-import { fetchUserPlaylists } from "@/hooks/library/fetchUserPlaylists";
-import { getUserAlbumSublist } from "@/lib/api/album";
-import { getFollowedArtists } from "@/lib/api/artist";
+import { getFollowedArtists } from "@/lib/providers/netease/api/artist";
 import {
   getCreatedVoiceLists,
   getLikedVoices,
   getRecommendedPodcasts,
   getSubscribedVoiceLists,
-} from "@/lib/api/voicelist";
-import { getUserLikeLists, getUserPlaylist } from "@/lib/api/playlist";
-import { getRecentSongs } from "@/lib/api/user";
+} from "@/lib/providers/netease/api/voicelist";
+import { fetchNeteaseUserPlaylists } from "@/lib/providers/netease/library";
+import { getRecentSongs } from "@/lib/providers/netease/api/user";
 import { toLikedVoice } from "@/lib/library/likedVoice";
 import { useLoginStatus } from "@/hooks/auth/useLoginStatus";
+import { useProviderCapability } from "@/hooks/provider/useActiveProvider";
 import { musicQueryKeys } from "@/lib/query/queryKeys";
 import { throwQueryErrorWithoutData } from "@/lib/query/errorPolicy";
-import { getMusicSessionCredential } from "@/lib/web/musicSessionCredential";
 import { useUserStore } from "@/store";
-import { prunePlaylist, type NeteasePlaylist, type RawNeteasePlaylist } from "@/types/playlist/api";
+import { prunePlaylist, type NeteasePlaylist } from "@/types/playlist/api";
 import { pruneSongDetail, type SongDetail } from "@/types/song/api";
 import type {
   CreatedVoiceList,
@@ -31,17 +29,6 @@ import type { RadioDetail } from "@/types/radio/api";
 import { getRecentSong, getRecentSongEntries } from "@/types/user/api";
 import type { LibraryMediaItem } from "@/types/library/model";
 import type { Voice } from "@/types/search/model";
-
-function findLikedPlaylist(playlists: RawNeteasePlaylist[], userId: number) {
-  return (
-    playlists.find((playlist) => playlist.specialType === 5) ??
-    playlists.find(
-      (playlist) => playlist.name?.includes("喜欢") && playlist.name?.includes("音乐"),
-    ) ??
-    playlists.find((playlist) => playlist.creator?.userId === userId) ??
-    playlists[0]
-  );
-}
 
 function toCreatedPodcastItem(voiceList: CreatedVoiceList): LibraryMediaItem {
   return {
@@ -126,22 +113,6 @@ function useLibrarySession() {
   return { isLoggedIn, userId };
 }
 
-export function useLikedPlaylistQuery() {
-  const { isLoggedIn, userId } = useLibrarySession();
-
-  return useQuery({
-    enabled: isLoggedIn && Boolean(userId),
-    queryKey: musicQueryKeys.library.likedPlaylist(userId ?? 0),
-    queryFn: async (): Promise<RawNeteasePlaylist | null> => {
-      if (!userId) return null;
-
-      const playlistResponse = await getUserPlaylist(userId, 100);
-      const likedPlaylist = findLikedPlaylist(playlistResponse.data.playlist ?? [], userId);
-      return likedPlaylist ?? null;
-    },
-  });
-}
-
 export function useRecentSongsQuery() {
   const { isLoggedIn, userId } = useLibrarySession();
 
@@ -159,32 +130,21 @@ export function useRecentSongsQuery() {
   });
 }
 
-export function useCollectionQuery() {
+/** The artists the account follows; following is NetEase's, so other platforms stay idle. */
+export function useFollowedArtistsQuery() {
   const { isLoggedIn, userId } = useLibrarySession();
+  const canFollow = useProviderCapability("artist.follow");
 
   return useQuery({
-    enabled: isLoggedIn && Boolean(userId),
+    enabled: canFollow && isLoggedIn && Boolean(userId),
     queryKey: musicQueryKeys.library.collection(userId ?? 0),
     queryFn: async () => {
-      const [albumsResponse, artistsResponse] = await Promise.all([
-        getUserAlbumSublist({ limit: 100 }),
-        getFollowedArtists(100),
-      ]);
+      const artistsResponse = await getFollowedArtists(100);
 
       if (artistsResponse.data.data) {
         useUserStore.getState().setFollowedArtists(artistsResponse.data.data);
       }
 
-      const albums: LibraryMediaItem[] = (albumsResponse.data.data ?? []).map((album) => ({
-        coverUrl: album.picUrl,
-        date: album.subTime,
-        href: `/album?id=${album.id}`,
-        id: album.id,
-        subtitle: (album as { size?: number }).size
-          ? `${(album as { size?: number }).size} 首歌曲`
-          : undefined,
-        title: album.name,
-      }));
       const artists: LibraryMediaItem[] = (artistsResponse.data.data ?? []).map((artist) => ({
         coverUrl: artist.picUrl ?? artist.img1v1Url ?? artist.avatarUrl,
         date: (artist as { followedTime?: number }).followedTime,
@@ -194,7 +154,7 @@ export function useCollectionQuery() {
         title: artist.name,
       }));
 
-      return { albums, artists };
+      return { artists };
     },
   });
 }
@@ -254,23 +214,18 @@ export function useCreatedPodcastsQuery() {
   });
 }
 
-export function userPlaylistsOptions(userId: number | undefined) {
-  return queryOptions({
-    queryKey: musicQueryKeys.library.playlists(userId ?? 0),
+export function useUserPlaylistsQuery(throwOnError = false) {
+  const { isLoggedIn, userId } = useLibrarySession();
+
+  const query = useQuery({
+    enabled: isLoggedIn && Boolean(userId),
+    queryKey: musicQueryKeys.library.neteasePlaylists(userId ?? 0),
+    throwOnError: throwOnError ? throwQueryErrorWithoutData : false,
     meta: { persist: true, scope: "account" },
     queryFn: async (): Promise<NeteasePlaylist[]> => {
       if (!userId) throw new Error("Missing user ID.");
-      return (await fetchUserPlaylists(userId)).map(prunePlaylist);
+      return (await fetchNeteaseUserPlaylists(userId)).map(prunePlaylist);
     },
-  });
-}
-
-export function useUserPlaylistsQuery(throwOnError = false) {
-  const { isLoggedIn, userId } = useLibrarySession();
-  const query = useQuery({
-    ...userPlaylistsOptions(userId),
-    enabled: isLoggedIn && Boolean(userId),
-    throwOnError: throwOnError ? throwQueryErrorWithoutData : false,
   });
   useEffect(() => {
     if (!isLoggedIn || !userId || query.data === undefined) return;
@@ -278,34 +233,4 @@ export function useUserPlaylistsQuery(throwOnError = false) {
     useUserStore.setState({ playlist: query.data });
   }, [isLoggedIn, query.data, userId]);
   return query;
-}
-
-export function userLikedSongIdsOptions(userId: number | undefined) {
-  return queryOptions({
-    queryKey: musicQueryKeys.library.likedSongIds(userId ?? 0),
-    meta: { scope: "account" },
-    queryFn: async ({ signal }) => {
-      if (!userId) throw new Error("Missing user ID.");
-      const credential = getMusicSessionCredential();
-      const response = await getUserLikeLists(userId);
-      if (!Array.isArray(response.data.ids)) throw new Error("Unable to load liked songs.");
-      if (
-        credential &&
-        getMusicSessionCredential() === credential &&
-        !signal.aborted &&
-        Number(useUserStore.getState().user?.userId) === userId
-      ) {
-        useUserStore.getState().setLikeListIDs(response.data.ids);
-      }
-      return response.data.ids;
-    },
-  });
-}
-
-export function useUserLikedSongIdsQuery() {
-  const { isLoggedIn, userId } = useLibrarySession();
-  return useQuery({
-    ...userLikedSongIdsOptions(userId),
-    enabled: isLoggedIn && Boolean(userId),
-  });
 }

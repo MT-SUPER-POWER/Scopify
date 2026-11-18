@@ -2,6 +2,7 @@ import { LoaderCircle } from "lucide-react";
 import { AlbumCard } from "@/components/search/AlbumCard";
 import { ArtistCard } from "@/components/search/ArtistCard";
 import { PlaylistCard } from "@/components/search/PlaylistCard";
+import { useProviderCapability } from "@/hooks/provider/useActiveProvider";
 import { useInfiniteScrollTrigger } from "@/hooks/search/useInfiniteScrollTrigger";
 import { useTranslation } from "react-i18next";
 
@@ -22,6 +23,9 @@ export function GridCategoryView({
   onLoadMore,
 }: GridCategoryViewProps) {
   const { t } = useTranslation();
+  const canOpenArtist = useProviderCapability("artist.read");
+  const canOpenAlbum = useProviderCapability("album.read");
+  const canOpenPlaylist = useProviderCapability("playlist.read");
   const isEmpty =
     (activeCategory === "Albums" && albums.length === 0) ||
     (activeCategory === "Playlists" && playlists.length === 0) ||
@@ -45,31 +49,33 @@ export function GridCategoryView({
         {activeCategory === "Albums" &&
           albums.map((album) => (
             <AlbumCard
-              key={album.id}
+              key={album.ref.id}
               album={album}
               isPlaying={false}
-              isLoading={loadingPlayId === `album-${album.id}`}
-              onTogglePlay={(e) => onPlayAlbum(album, e)}
-              onClick={() => onNavigate(`/album?id=${album.id}`)}
+              isLoading={loadingPlayId === `album-${album.ref.id}`}
+              onTogglePlay={canOpenAlbum ? (e) => onPlayAlbum(album, e) : undefined}
+              onClick={canOpenAlbum ? () => onNavigate(`/album?id=${album.ref.id}`) : undefined}
             />
           ))}
         {activeCategory === "Playlists" &&
           playlists.map((playlist) => (
             <PlaylistCard
-              key={playlist.id}
+              key={playlist.ref.id}
               playlist={playlist}
               isPlaying={false}
-              isLoading={loadingPlayId === `playlist-${playlist.id}`}
+              isLoading={loadingPlayId === `playlist-${playlist.ref.id}`}
               onTogglePlay={(e) => onPlayPlaylist(playlist, e)}
-              onClick={() => onNavigate(`/playlist?id=${playlist.id}`)}
+              onClick={
+                canOpenPlaylist ? () => onNavigate(`/playlist?id=${playlist.ref.id}`) : undefined
+              }
             />
           ))}
         {activeCategory === "Artists" &&
           artists.map((artist) => (
             <ArtistCard
-              key={artist.id}
+              key={artist.ref.id}
               artist={artist}
-              onClick={() => onNavigate(`/artist?id=${artist.id}`)}
+              onClick={canOpenArtist ? () => onNavigate(`/artist?id=${artist.ref.id}`) : undefined}
             />
           ))}
       </div>

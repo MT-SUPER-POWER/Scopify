@@ -70,7 +70,7 @@ React components use `useTranslation` from `react-i18next`. Translation keys kee
 pnpm run i18n:audit # List hard-coded text candidates with x18n
 ```
 
-From the repository root, `pnpm i18n:x18n check` also checks translation resources and usage. Its configuration recognizes literal keys stored in tables or passed through state, in addition to direct translation calls. When adding a locale namespace, add it to the `usage.regex` namespace alternatives in `x18n.config.json`. Add a narrow `usage.keysInUse` pattern for keys constructed dynamically outside translation calls.
+From the repository root, `pnpm run check:i18n` also checks translation resources and usage. Its configuration recognizes literal keys stored in tables or passed through state, in addition to direct translation calls. When adding a locale namespace, add it to the `usage.regex` namespace alternatives in `x18n.config.json`. Add a narrow `usage.keysInUse` pattern for keys constructed dynamically outside translation calls.
 
 The literal-key scan is conservative: a matching string can count as usage even if it is not translated, and a reported unused key may still be used dynamically. Review references before removing translations; type declarations and tests are excluded from usage scans.
 

@@ -25,6 +25,8 @@
   "pagination.previous": "上一页",
   "pagination.next": "下一页",
   "newSongs": "新歌速递",
+  "feed": "为你推荐",
+  "feedKind.guessYouLike": "猜你喜欢",
   "playAll": "播放全部",
   "toplists": "官方排行榜",
   "newAlbums": "新碟上架",

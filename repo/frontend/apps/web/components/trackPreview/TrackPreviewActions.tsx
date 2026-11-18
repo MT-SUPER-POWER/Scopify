@@ -5,7 +5,7 @@ import { toast } from "sonner";
 import { useSongLikeMutation } from "@/hooks/playlist/useSongLikeMutation";
 import { useSmartRouter } from "@/hooks/core/useSmartRouter";
 import { cn } from "@/lib/utils";
-import { usePlayerStore, useUserStore } from "@/store";
+import { usePlayerStore } from "@/store";
 import { useTranslation } from "react-i18next";
 
 import type { TrackPreviewActionsProps } from "@/types/player/trackPreviewComponents";
@@ -15,6 +15,9 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@scopify/ui/shadcn/components/tooltip";
+import { musicResourceKey } from "@scopify/music-domain/identity";
+import { useTrackLikes } from "@/hooks/library/useLikedTracks";
+import { trackMvRef } from "@/lib/player/trackMv";
 
 const ACTION_BTN =
   "flex size-11 items-center justify-center rounded-full text-content/85 transition-all hover:scale-110 hover:bg-content/10 hover:text-content";
@@ -29,7 +32,9 @@ export function TrackPreviewActions({
   const { t } = useTranslation();
   const smartRouter = useSmartRouter();
   const likeMutation = useSongLikeMutation();
-  const isLiked = useUserStore((state) => state.likeListIDs.includes(song.id));
+  const { isLiked: isTrackLiked } = useTrackLikes();
+  const isLiked = isTrackLiked(song.ref);
+  const mvRef = trackMvRef(song);
 
   const actions = [
     {
@@ -37,7 +42,9 @@ export function TrackPreviewActions({
       icon: <Play className="size-5 fill-current" />,
       label: t("trackPreview.playSong"),
       onClick: () => {
-        void usePlayerStore.getState().playFromSong(song, songs, playlistId);
+        void usePlayerStore
+          .getState()
+          .playFromSong(song, songs, playlistId === null ? null : String(playlistId));
         onClose();
       },
     },
@@ -47,7 +54,9 @@ export function TrackPreviewActions({
       label: t("contextMenu.addToQueue"),
       onClick: () => {
         const player = usePlayerStore.getState();
-        if (player.queue.some((item) => item.id === song.id)) {
+        if (
+          player.queue.some((item) => musicResourceKey(item.ref) === musicResourceKey(song.ref))
+        ) {
           toast.info(t("trackPreview.queueExists"));
           return;
         }
@@ -59,7 +68,7 @@ export function TrackPreviewActions({
       key: "like",
       icon: <Heart className={cn("size-5", isLiked && "fill-current text-brand")} />,
       label: t(isLiked ? "common.action.unlike" : "common.action.like"),
-      onClick: () => likeMutation.mutate({ like: !isLiked, songId: song.id }),
+      onClick: () => likeMutation.mutate({ like: !isLiked, track: song.ref }),
     },
     {
       key: "link",
@@ -67,7 +76,7 @@ export function TrackPreviewActions({
       label: t("mv.action.copyLink"),
       onClick: async () => {
         try {
-          await navigator.clipboard.writeText(`${window.location.origin}/mv?id=${song.mv}`);
+          await navigator.clipboard.writeText(`${window.location.origin}/mv?id=${mvRef?.id ?? ""}`);
           toast.success(t("mv.toast.linkCopied"));
         } catch {
           toast.error(t("common.message.requestFailed", { message: "" }));
@@ -80,7 +89,7 @@ export function TrackPreviewActions({
       label: t("trackPreview.openMv"),
       onClick: () => {
         onClose();
-        void smartRouter.push(`/mv?id=${song.mv}`);
+        void smartRouter.push(`/mv?id=${mvRef?.id ?? ""}`);
       },
     },
   ];

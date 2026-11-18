@@ -99,6 +99,7 @@ repo/
 2. [Netease Cloud Music API Enhanced](https://github.com/neteasecloudmusicapienhanced/api-enhanced)
 3. [SPlayer-Next](https://github.com/SPlayer-Dev/SPlayer-Next)
 4. [Rhine](https://github.com/LBEILC/RhineLabUI)
+5. [QQ Music API](https://github.com/yakult-green-tea/qq-music-api)
 
 ### 参考文档
 

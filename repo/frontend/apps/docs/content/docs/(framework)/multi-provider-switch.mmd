@@ -1,0 +1,15 @@
+sequenceDiagram
+  actor User as 用户
+  participant Menu as 账号菜单 / 登录页
+  participant Switch as switchProvider
+  participant Player as 播放器
+  participant Query as Query 缓存
+  participant Router as 路由
+  participant Store as activeProvider
+  User->>Menu: 选择另一个平台的账号，或完成扫码登录
+  Menu->>Switch: 请求切换到该平台
+  Switch->>Player: 停止播放、清空队列（保留音量）
+  Switch->>Query: 取消并清空缓存，删除持久化缓存
+  Switch->>Router: 回到首页
+  Switch->>Store: 设置新的激活平台
+  Note over Player,Store: 另一个平台的登录会话保留，切回来不用重新扫码

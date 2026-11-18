@@ -1,56 +1,85 @@
 "use client";
 
 import { Bookmark } from "lucide-react";
+import { useMemo } from "react";
 import { LibraryContentState } from "@/components/library/LibraryContentState";
 import { QuietState } from "@/components/shared/QuietState";
-import { useLoginStatus } from "@/hooks/auth/useLoginStatus";
+import { useActiveAccount } from "@/hooks/auth/useProviderAccounts";
 import { useHomePlaybackActions } from "@/hooks/home/useHomePlaybackActions";
-import { useCollectionQuery, useUserPlaylistsQuery } from "@/hooks/library/useLibraryQueries";
+import { useLibraryAlbumsQuery } from "@/hooks/library/useLibraryAlbums";
+import { useLibraryPlaylistsQuery } from "@/hooks/library/useLibraryPlaylists";
+import { useFollowedArtistsQuery } from "@/hooks/library/useLibraryQueries";
 import { getSizedImageUrl } from "@/lib/music/imageUrl";
-import { useUserStore } from "@/store";
+import type { CollectionShelfItem } from "@/types/library/components";
 import { useTranslation } from "react-i18next";
+
 import { CollectionShelf } from "./_components/CollectionShelf";
 
 export default function CollectionPage() {
   const { t } = useTranslation();
-  const isLoggedIn = useLoginStatus();
-  const userId = useUserStore((state) => state.user?.userId);
+  const { isLoggedIn, profile } = useActiveAccount();
   const actions = useHomePlaybackActions();
-  const playlistsQuery = useUserPlaylistsQuery();
-  const collectionQuery = useCollectionQuery();
+  const playlistsQuery = useLibraryPlaylistsQuery();
+  const albumsQuery = useLibraryAlbumsQuery();
+  const artistsQuery = useFollowedArtistsQuery();
 
-  const playlists = (playlistsQuery.data ?? [])
-    .filter((playlist) => playlist.specialType !== 5 && playlist.creator.userId !== userId)
-    .map((playlist) => ({
-      id: String(playlist.id),
-      title: playlist.name,
-      coverUrl: getSizedImageUrl(playlist.coverImgUrl, 300),
-      subtitle: [
-        t("home.playlistSummary", { count: playlist.trackCount }),
-        playlist.creator.nickname,
-      ]
-        .filter(Boolean)
-        .join(" · "),
-      href: `/playlist?id=${playlist.id}`,
-      isLoading: actions.loadingPlayId === `playlist-${playlist.id}`,
-      onPlay: (event: React.MouseEvent) => void actions.handlePlayPlaylist(playlist.id, event),
-    }));
-  const albums = (collectionQuery.data?.albums ?? []).map((album) => ({
-    ...album,
-    id: String(album.id),
-    coverUrl: album.coverUrl ?? "",
-    isLoading: actions.loadingPlayId === `album-${album.id}`,
-    onPlay: (event: React.MouseEvent) => void actions.handlePlayAlbum(Number(album.id), event),
-  }));
-  const artists = (collectionQuery.data?.artists ?? []).map((artist) => ({
-    ...artist,
-    id: String(artist.id),
-    coverUrl: artist.coverUrl ?? "",
-  }));
+  const playlists = useMemo<CollectionShelfItem[]>(
+    () =>
+      (playlistsQuery.data ?? [])
+        .filter((item) => item.relation === "subscribed")
+        .map((item) => {
+          const id = item.playlist.ref.id;
+          return {
+            id,
+            title: item.playlist.title,
+            coverUrl: getSizedImageUrl(item.playlist.coverUrl, 300),
+            subtitle: [
+              t("home.playlistSummary", { count: item.playlist.trackCount }),
+              item.playlist.creator?.name,
+            ]
+              .filter(Boolean)
+              .join(" · "),
+            href: `/playlist?id=${encodeURIComponent(id)}`,
+            isLoading: actions.loadingPlayId === `playlist-${id}`,
+            onPlay: (event: React.MouseEvent) => void actions.handlePlayPlaylist(id, event),
+          };
+        }),
+    [actions, playlistsQuery.data, t],
+  );
+  const albums = useMemo<CollectionShelfItem[]>(
+    () =>
+      (albumsQuery.data ?? []).map((album) => ({
+        id: String(album.id),
+        title: album.title,
+        coverUrl: album.coverUrl ?? "",
+        subtitle: album.subtitle,
+        href: album.href,
+        isLoading: actions.loadingPlayId === `album-${album.id}`,
+        onPlay: album.href
+          ? (event: React.MouseEvent) => void actions.handlePlayAlbum(album.id, event)
+          : undefined,
+      })),
+    [actions, albumsQuery.data],
+  );
+  const artists = useMemo<CollectionShelfItem[]>(
+    () =>
+      (artistsQuery.data?.artists ?? []).map((artist) => ({
+        id: String(artist.id),
+        title: artist.title,
+        coverUrl: artist.coverUrl ?? "",
+        href: artist.href,
+        isArtist: true,
+      })),
+    [artistsQuery.data],
+  );
+
   const isEmpty =
-    playlistsQuery.isSuccess &&
-    collectionQuery.isSuccess &&
-    playlists.length + albums.length + artists.length === 0;
+    profile !== undefined &&
+    [playlistsQuery, albumsQuery, artistsQuery].every(
+      ({ data, isEnabled }) => !isEnabled || data !== undefined,
+    ) &&
+    playlists.length + albums.length === 0 &&
+    (!artistsQuery.isEnabled || artists.length === 0);
 
   return (
     <>
@@ -80,16 +109,27 @@ export default function CollectionPage() {
             <CollectionShelf title={t("library.collection.tab.playlists")} items={playlists} />
           </LibraryContentState>
           <LibraryContentState
-            hasItems={albums.length + artists.length > 0}
-            isError={collectionQuery.isError && collectionQuery.data === undefined}
-            isLoading={collectionQuery.isLoading}
-            isRetrying={collectionQuery.isRefetching}
+            hasItems={albums.length > 0}
+            isError={albumsQuery.isError && albumsQuery.data === undefined}
+            isLoading={albumsQuery.isLoading}
+            isRetrying={albumsQuery.isRefetching}
             emptyState={null}
-            onRetry={() => void collectionQuery.refetch()}
+            onRetry={() => void albumsQuery.refetch()}
           >
             <CollectionShelf title={t("library.collection.tab.albums")} items={albums} />
-            <CollectionShelf title={t("library.collection.tab.artists")} items={artists} />
           </LibraryContentState>
+          {artistsQuery.isEnabled ? (
+            <LibraryContentState
+              hasItems={artists.length > 0}
+              isError={artistsQuery.isError && artistsQuery.data === undefined}
+              isLoading={artistsQuery.isLoading}
+              isRetrying={artistsQuery.isRefetching}
+              emptyState={null}
+              onRetry={() => void artistsQuery.refetch()}
+            >
+              <CollectionShelf title={t("library.collection.tab.artists")} items={artists} />
+            </LibraryContentState>
+          ) : null}
         </div>
       )}
     </>

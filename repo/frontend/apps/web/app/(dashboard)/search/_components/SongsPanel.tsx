@@ -1,10 +1,11 @@
+import { musicResourceKey } from "@scopify/music-domain/identity";
 import { useTranslation } from "react-i18next";
 
-import type { Song } from "@/types/search/model";
+import type { PlayerTrack } from "@/types/player/model";
 import { SongItem } from "./SongItem";
 
 interface Props {
-  songs: Song[];
+  songs: PlayerTrack[];
   /** 截断显示前 N 首，undefined 表示全部显示 */
   limit?: number;
   onViewAll?: () => void;
@@ -29,7 +30,7 @@ export function SongsPanel({ songs, limit, onViewAll }: Props) {
       </div>
       <div className="flex flex-col">
         {displayed.map((song, i) => (
-          <SongItem key={song.id} song={song} index={i} songs={songs} />
+          <SongItem key={musicResourceKey(song.ref)} track={song} index={i} tracks={songs} />
         ))}
         {songs.length === 0 && (
           <p className="py-4 text-sm text-content-subtle">{t("search.section.noSongResults")}</p>

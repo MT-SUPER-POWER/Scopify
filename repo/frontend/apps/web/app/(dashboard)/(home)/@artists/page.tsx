@@ -6,6 +6,7 @@ import { FollowedAlbumsSection } from "./_components/FollowedAlbumsSection";
 import { SuggestedArtists } from "./_components/SuggestedArtists";
 import { useHome } from "../_components/HomeProvider";
 import { HomeSectionPending } from "../_components/HomeSectionPending";
+import { CapabilityGate } from "@/components/provider/CapabilityGate";
 import { QueryBoundary } from "@/components/shared/QueryBoundary";
 import { useTranslation } from "react-i18next";
 
@@ -22,21 +23,40 @@ export default function HomeArtistsSlot() {
         resetKey={`home:artist-songs:${accountId}`}
         title={t("home.artistTopSongs")}
         compact
+        renderWaiting={() => (
+          <HomeSectionPending kind="grid" titleKey="home.artistTopSongs" waitingForConnection />
+        )}
       >
         <ArtistTopSongsSection />
       </QueryBoundary>
-      <QueryBoundary resetKey="home:artists" title={t("home.suggestedArtists")} compact>
+      <QueryBoundary
+        resetKey="home:artists"
+        title={t("home.suggestedArtists")}
+        compact
+        renderWaiting={() => (
+          <HomeSectionPending kind="artist" titleKey="home.suggestedArtists" waitingForConnection />
+        )}
+      >
         <Suspense fallback={<HomeSectionPending kind="artist" titleKey="home.suggestedArtists" />}>
           <SuggestedArtists />
         </Suspense>
       </QueryBoundary>
-      <QueryBoundary
-        resetKey={`home:followed-albums:${accountId}`}
-        title={t("home.followedArtistsAlbums")}
-        compact
-      >
-        <FollowedAlbumsSection />
-      </QueryBoundary>
+      <CapabilityGate requires="artist.follow">
+        <QueryBoundary
+          resetKey={`home:followed-albums:${accountId}`}
+          title={t("home.followedArtistsAlbums")}
+          compact
+          renderWaiting={() => (
+            <HomeSectionPending
+              kind="grid"
+              titleKey="home.followedArtistsAlbums"
+              waitingForConnection
+            />
+          )}
+        >
+          <FollowedAlbumsSection />
+        </QueryBoundary>
+      </CapabilityGate>
     </>
   );
 }

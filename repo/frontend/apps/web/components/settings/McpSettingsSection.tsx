@@ -10,7 +10,7 @@ import type { McpSettingsSectionProps } from "@/types/settings/components";
 import { McpCapabilitiesModal } from "./McpCapabilitiesModal";
 import { McpCredentialControls } from "./McpCredentialControls";
 import { McpRuntimeControls } from "./McpRuntimeControls";
-import { SettingInput, SettingRow, SettingSection, Toggle } from "./SettingsUI";
+import { SettingPortInput, SettingRow, SettingSection, Toggle } from "./SettingsUI";
 
 /**
  * Controls the public local MCP policy and its deliberately limited runtime
@@ -58,10 +58,9 @@ export function McpSettingsSection({
         label={t("settings.mcp.port.label")}
         sublabel={t("settings.mcp.port.sublabel")}
         control={
-          <SettingInput
-            type="number"
+          <SettingPortInput
             value={config.port}
-            onChange={(value) => onChange("mcp", "port", Number(value))}
+            onChange={(port) => onChange("mcp", "port", port)}
           />
         }
       />

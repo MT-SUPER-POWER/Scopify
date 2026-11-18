@@ -11,6 +11,6 @@ export function useSocialPickerPlaylists() {
   const userId = useUserStore((state) => state.user?.userId);
   return useQuery<NeteasePlaylist[]>({
     enabled: false,
-    queryKey: musicQueryKeys.library.playlists(userId ?? 0),
+    queryKey: musicQueryKeys.library.neteasePlaylists(userId ?? 0),
   });
 }

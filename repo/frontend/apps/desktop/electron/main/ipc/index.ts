@@ -27,10 +27,11 @@ export function registerIpcHandlers(
   mainWindow: BrowserWindow | null,
   discordPresence: ReturnType<typeof createDiscordPresenceController>,
   backendController: DesktopBackendController,
+  qqBackendController: DesktopBackendController,
   mcpRuntime: McpRuntime,
 ) {
   registerBridgeIpc();
-  registerBackendIpc(mainWindow, backendController);
+  registerBackendIpc(mainWindow, backendController, qqBackendController);
   registerLoggingIpc(mainWindow);
   registerApplicationIpc(mainWindow);
   registerMediaIpc(mainWindow);
@@ -38,7 +39,13 @@ export function registerIpcHandlers(
   registerUpdaterIpc();
   registerDialogIpc(mainWindow);
   registerVideoExportIpc(mainWindow);
-  registerConfigurationIpc(mainWindow, backendController, discordPresence, mcpRuntime);
+  registerConfigurationIpc(
+    mainWindow,
+    backendController,
+    qqBackendController,
+    discordPresence,
+    mcpRuntime,
+  );
   registerMcpIpc(mainWindow, mcpRuntime);
   registerCacheIpc(mainWindow);
   registerWindowIpc(mainWindow);

@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { CapabilityGate } from "@/components/provider/CapabilityGate";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useSidebarNarrow } from "@/hooks/sidebar/useSidebarNarrow";
 import { LibraryNavigation } from "./LibraryNavigation";
@@ -25,7 +26,9 @@ function SidebarImpl() {
             isCollapsed={isCollapsed}
             headerAction={!isCollapsed && <SidebarMenuMemo />}
           />
-          <SidebarPlaylistLibrary isCollapsed={isCollapsed} />
+          <CapabilityGate requires="library.playlists">
+            <SidebarPlaylistLibrary isCollapsed={isCollapsed} />
+          </CapabilityGate>
         </ScrollArea>
         {isCollapsed && (
           <footer className="flex h-14 shrink-0 items-center justify-center border-t border-content/5 px-2">

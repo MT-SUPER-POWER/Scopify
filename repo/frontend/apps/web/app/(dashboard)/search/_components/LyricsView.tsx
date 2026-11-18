@@ -11,6 +11,7 @@ import type { SongDetail } from "@/types/song/api";
 import type { LyricsViewProps } from "@/types/search/components";
 import { LyricCard } from "./LyricCard";
 import { SearchCategoryHeader } from "./SearchCategoryHeader";
+import { adaptNeteaseTrack, getNeteaseTrackId } from "@/lib/providers/netease/adapters/track";
 
 export function LyricsView({
   hasNextPage,
@@ -20,7 +21,7 @@ export function LyricsView({
   onLoadMore,
 }: LyricsViewProps) {
   const { t } = useTranslation();
-  const currentSongId = usePlayerStore((s) => s.currentSongDetail?.id);
+  const currentSongId = usePlayerStore((s) => getNeteaseTrackId(s.currentTrack));
   const isPlaying = usePlayerStore((s) => s.isPlaying);
 
   const loadMoreRef = useInfiniteScrollTrigger({
@@ -33,10 +34,14 @@ export function LyricsView({
   const handlePlaySong = useCallback(
     (targetSong: SongDetail) => {
       const player = usePlayerStore.getState();
-      if (player.currentSongDetail?.id === targetSong.id) {
+      if (getNeteaseTrackId(player.currentTrack) === targetSong.id) {
         void player.togglePlaying();
       } else {
-        void player.playFromSong(targetSong, allSongDetails, "search-lyrics");
+        void player.playFromSong(
+          adaptNeteaseTrack(targetSong),
+          allSongDetails.map(adaptNeteaseTrack),
+          "search-lyrics",
+        );
       }
     },
     [allSongDetails],
@@ -58,7 +63,7 @@ export function LyricsView({
               key={`${item.song.id}-${item.highlightText || ""}`}
               item={item}
               highlightKeyword={keyword}
-              currentSongId={currentSongId}
+              currentSongId={currentSongId ?? undefined}
               isPlaying={isPlaying}
               onPlay={handlePlaySong}
             />

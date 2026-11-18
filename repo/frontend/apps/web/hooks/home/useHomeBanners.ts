@@ -3,7 +3,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { throwQueryErrorWithoutData } from "@/lib/query/errorPolicy";
 
-import { getBanners } from "@/lib/api/banner";
+import { getBanners } from "@/lib/providers/netease/api/banner";
 import { musicQueryKeys } from "@/lib/query/queryKeys";
 
 export function useHomeBanners() {

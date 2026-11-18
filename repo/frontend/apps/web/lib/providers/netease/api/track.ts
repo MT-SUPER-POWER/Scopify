@@ -1,0 +1,85 @@
+// 歌曲评论接口
+import type { SongDynamicCoverResponse, SongRedCountResponse } from "@/types/song/api";
+import type {
+  PlaylistTrackMutationVariables,
+  PlaylistTrackUpdateResponse,
+  PlaylistTrackResponsePayload,
+} from "@/types/playlist/api";
+
+import request, { requestConfig, requestData } from "@/lib/providers/netease/client";
+import { ApiError } from "@/lib/web/apiError";
+
+export async function getSongDetail(ids: number | string) {
+  return request.get("/song/detail", {
+    params: {
+      ids,
+    },
+  });
+}
+
+/** 歌曲红心（喜欢）数量 */
+export function getSongRedCount(id: number | string) {
+  return request.get<SongRedCountResponse>("/song/red/count", {
+    params: { id },
+  });
+}
+
+/**
+ *
+ * @param op: 从歌单增加单曲为 add, 删除为 del
+ * @param pid: 歌单 id
+ * @param track 歌曲 id,可多个,用逗号隔开
+ */
+export async function updatePlaylistTrack({
+  operation,
+  playlistId,
+  trackId,
+}: PlaylistTrackMutationVariables): Promise<PlaylistTrackUpdateResponse> {
+  const response = await requestData<PlaylistTrackResponsePayload>(
+    requestConfig({
+      errorContext: {
+        action: `playlist.track.${operation}`,
+        playlistId,
+        trackId,
+      },
+      expectedBusinessCodes: [200],
+      requiresMusicSession: true,
+      method: "get",
+      params: { op: operation, pid: playlistId, tracks: trackId },
+      url: "/playlist/tracks",
+    }),
+  );
+  const payload = response.body ?? response;
+  if (payload.code !== 200) {
+    throw new ApiError({
+      kind: "business",
+      data: payload,
+      message: payload.message || payload.msg || "Playlist update failed",
+    });
+  }
+  return { code: 200 };
+}
+
+/**
+ * 获取推荐歌曲
+ */
+export function getRecommendedSongs() {
+  return request.get("/recommend/songs", requestConfig({ requiresMusicSession: true }));
+}
+
+/**
+ * 歌曲动态封面
+ * 登录后调用此接口, 传入歌曲 id, 获取歌曲动态封面
+ * @param id - 歌曲 id
+ * @param signal - AbortSignal
+ */
+export function getSongDynamicCover(id: number | string, signal?: AbortSignal) {
+  return request.get<SongDynamicCoverResponse>(
+    "/song/dynamic/cover",
+    requestConfig({
+      params: { id },
+      requiresMusicSession: true,
+      signal,
+    }),
+  );
+}

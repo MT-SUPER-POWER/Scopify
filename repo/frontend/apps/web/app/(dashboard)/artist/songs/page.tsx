@@ -11,6 +11,7 @@ import { QueryConnectionWait } from "@/components/shared/QueryConnectionWait";
 import { QueryFailure } from "@/components/shared/QueryFailure";
 import { useArtistPopularSongsTheme } from "@/hooks/artist/useArtistPopularSongsTheme";
 import { useArtistDetailQuery, useArtistTracksQuery } from "@/hooks/artist/useArtistQueries";
+import { useActiveProvider } from "@/hooks/provider/useActiveProvider";
 import type { ArtistSongsContentProps } from "@/types/artist/components";
 import type { PlaylistInfo } from "@/types/playlist/model";
 
@@ -18,7 +19,7 @@ function ArtistSongsContent({ artistId }: ArtistSongsContentProps) {
   const { t } = useTranslation();
   const artistQuery = useArtistDetailQuery(artistId, true);
   const tracksQuery = useArtistTracksQuery(artistId);
-  const artist = artistQuery.data?.data.artist;
+  const artist = artistQuery.data;
   const title = t("artist.songs.title");
   const tracks = useMemo(
     () => tracksQuery.data?.pages.flatMap((page) => page.tracks) ?? [],
@@ -27,10 +28,10 @@ function ArtistSongsContent({ artistId }: ArtistSongsContentProps) {
   const playlistInfo = useMemo<PlaylistInfo | null>(() => {
     if (!artist) return null;
     return {
-      cover: artist.cover || artist.avatar,
+      cover: artist.coverUrl ?? artist.avatarUrl,
       createTime: "",
       creator: artist.name,
-      creatorAvatar: artist.avatar,
+      creatorAvatar: artist.avatarUrl ?? "",
       isSpecial: true,
       likes: "",
       privacy: title,
@@ -63,7 +64,7 @@ function ArtistSongsContent({ artistId }: ArtistSongsContentProps) {
         isLoading={artistQuery.isPending || tracksQuery.isPending}
         playlistId={null}
         playlistInfo={playlistInfo}
-        playSourceId={`artist:${artistId}:songs`}
+        playSourceId={`artist:${artist?.ref.provider ?? ""}:${artistId}:songs`}
         readonly
         refetchTracks={tracksQuery.refetch}
         themeColor={themeColor}
@@ -95,11 +96,12 @@ function ArtistSongsContent({ artistId }: ArtistSongsContentProps) {
 export default function ArtistSongsPage() {
   const { t } = useTranslation();
   const artistId = useSearchParams().get("id");
+  const { provider } = useActiveProvider();
   if (!artistId) {
     return <div className="p-8 text-content-muted">{t("artist.page.invalidId")}</div>;
   }
   return (
-    <QueryBoundary resetKey={`artist:songs:${artistId}`}>
+    <QueryBoundary resetKey={`artist:songs:${provider}:${artistId}`}>
       <ArtistSongsContent artistId={artistId} />
     </QueryBoundary>
   );

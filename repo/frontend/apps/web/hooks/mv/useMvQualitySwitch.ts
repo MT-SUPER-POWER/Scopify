@@ -4,17 +4,15 @@ import { useRef, useState, type RefObject, type SyntheticEvent } from "react";
 import type { MvQualityPlaybackSnapshot } from "@/types/mv/model";
 import { restoreMvQualityPlayback } from "@/lib/music/mvQuality";
 import { useMvPlaybackStore } from "@/store/module/mvPlayback";
-import type { MvResolution } from "@/types/mv/api";
 
 /** 换源前保存媒体状态，在新源元数据就绪时恢复。 */
 export function useMvQualitySwitch(
   videoRef: RefObject<HTMLVideoElement | null>,
-  resolutions: MvResolution[],
+  resolutions: readonly number[],
 ) {
   const quality = useMvPlaybackStore((state) => state.quality);
   const setQuality = useMvPlaybackStore((state) => state.setQuality);
-  const available = resolutions
-    .map(({ br }) => br)
+  const available = [...resolutions]
     .filter((br) => Number.isFinite(br) && br > 0)
     .sort((a, b) => b - a);
   const resolution =

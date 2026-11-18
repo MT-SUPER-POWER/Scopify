@@ -18,13 +18,11 @@ import type { DesktopSettingsTabProps } from "@/types/settings/components";
 import { AppUpdaterSection } from "./AppUpdaterSection";
 import { DesktopLyricSection } from "./DesktopLyricSection";
 import { DynamicIslandSection } from "./DynamicIslandSection";
-import { LocalBackendSettingsSection } from "./LocalBackendSettingsSection";
 import { McpSettingsSection } from "./McpSettingsSection";
 import { SettingInput, SettingRow, SettingSection, Toggle } from "./SettingsUI";
 import { TaskbarLyricSection } from "./TaskbarLyricSection";
 
 export function DesktopSettingsTab({
-  backendStatus,
   config,
   discordStatus,
   isTestingDiscord,
@@ -47,11 +45,6 @@ export function DesktopSettingsTab({
 
   return (
     <div className="grid grid-cols-1 items-start gap-x-16 gap-y-10 lg:grid-cols-2">
-      <LocalBackendSettingsSection
-        backendStatus={backendStatus}
-        config={config}
-        onChange={onChange}
-      />
       <SettingSection title={t("settings.section.logging")}>
         <SettingRow
           label={t("settings.logLevel.label")}

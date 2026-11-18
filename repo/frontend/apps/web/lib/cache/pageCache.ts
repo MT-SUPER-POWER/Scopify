@@ -1,3 +1,5 @@
+import type { MusicProvider } from "@scopify/music-domain/identity";
+
 import { runtime } from "@/lib/runtime";
 
 const MINUTE = 60 * 1000;
@@ -10,11 +12,17 @@ export async function clearPageCache() {
   return runtime.cache.clear();
 }
 
+/**
+ * `<namespace>:<platform>:<parts...>`, e.g. `playlist:qq:123`. The namespace stays first, so the
+ * category, TTL and per-category clearing (all read from the first segment) work as before, and
+ * the same native ID on two platforms never shares an entry.
+ */
 export function createPageCacheKey(
   namespace: PageCacheNamespace,
+  provider: MusicProvider,
   parts: (boolean | null | number | string | undefined)[],
 ) {
-  return [namespace, ...parts.filter((part) => part !== null && part !== undefined)]
+  return [namespace, provider, ...parts.filter((part) => part !== null && part !== undefined)]
     .map((part) => encodeURIComponent(String(part)))
     .join(":");
 }

@@ -1,7 +1,9 @@
 "use client";
 
 import { ListPlus, Pause, Play, Plus } from "lucide-react";
+import { musicResourceKey } from "@scopify/music-domain/identity";
 import { PlayingAnimation } from "@/components/shared/PlayingAnimation";
+import { getCommandWorkspaceSearchItemKey } from "@/lib/commandWorkspace/search";
 import {
   getCommandSearchKindLabel,
   getCommandSearchTitle,
@@ -10,6 +12,7 @@ import {
 import { cn } from "@/lib/utils";
 import { usePlayerStore } from "@/store";
 import type { CommandWorkspaceSearchResultListProps } from "@/types/commandWorkspace/model";
+import { getNeteaseTrackId } from "@/lib/providers/netease/adapters/track";
 
 export function CommandWorkspaceSearchResultList({
   items,
@@ -18,7 +21,7 @@ export function CommandWorkspaceSearchResultList({
   onSelect,
   selectedIndex,
 }: CommandWorkspaceSearchResultListProps) {
-  const currentSong = usePlayerStore((state) => state.currentSongDetail);
+  const currentSong = usePlayerStore((state) => state.currentTrack);
   const isPlaying = usePlayerStore((state) => state.isPlaying);
   const setIsPlaying = usePlayerStore((state) => state.setIsPlaying);
 
@@ -34,8 +37,9 @@ export function CommandWorkspaceSearchResultList({
           (item.kind === "voice" && !!item.entity.mainSong && item.entity.isPlayable !== false);
         const isCurrent =
           !!currentSong &&
-          ((item.kind === "song" && item.entity.id === currentSong.id) ||
-            (item.kind === "voice" && item.entity.mainSong?.id === currentSong.id));
+          ((item.kind === "song" &&
+            musicResourceKey(item.entity.ref) === musicResourceKey(currentSong.ref)) ||
+            (item.kind === "voice" && item.entity.mainSong?.id === getNeteaseTrackId(currentSong)));
         const isCurrentPlaying = isCurrent && isPlaying;
 
         const handleToggleOrSelect = () => {
@@ -48,7 +52,7 @@ export function CommandWorkspaceSearchResultList({
 
         return (
           <div
-            key={`${item.kind}-${item.entity.id}`}
+            key={getCommandWorkspaceSearchItemKey(item)}
             className={cn(
               "group flex items-center gap-3 rounded-lg px-3.5 py-2 transition-colors",
               isCurrent

@@ -3,8 +3,12 @@ app:
   devTools: false
   closeAction: 2
 backend:
-  autoStart: true
-  port: 3838
+  netease:
+    autoStart: true
+    port: 3838
+  qq:
+    autoStart: true
+    port: 3200
 frontend:
   devPort: 3000
   host: 127.0.0.1

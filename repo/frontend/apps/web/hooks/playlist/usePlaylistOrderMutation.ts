@@ -3,35 +3,42 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { arrayMove } from "@dnd-kit/sortable";
 import { toast } from "sonner";
-import { fetchUserPlaylists } from "@/hooks/library/fetchUserPlaylists";
-import { getPlaylsitDetail, updatePlaylistOrder, updateSongOrder } from "@/lib/api/playlist";
+import { fetchNeteaseUserPlaylists } from "@/lib/providers/netease/library";
+import {
+  getPlaylsitDetail,
+  updatePlaylistOrder,
+  updateSongOrder,
+} from "@/lib/providers/netease/api/playlist";
 import { getPlaylistOrderIds } from "@/lib/playlist/playlistOrder";
 import { clearPageCache } from "@/lib/cache/pageCache";
 import { musicQueryKeys } from "@/lib/query/queryKeys";
 import { useUserStore } from "@/store";
 import { useTranslation } from "react-i18next";
 
-import { prunePlaylist, type PlaylistContent } from "@/types/playlist/api";
+import { prunePlaylist } from "@/types/playlist/api";
+import type { PlaylistContent } from "@/types/playlist/model";
 import type { InlineOrderMove } from "@/types/playlist/order";
 
 export function usePlaylistOrderMutation() {
   const queryClient = useQueryClient();
   const userId = useUserStore((state) => state.user?.userId);
   const { t } = useTranslation();
-  const contentKey = (playlistId: string) => ["playlist", "content", "playlist", playlistId];
+  // Reordering is NetEase's; the tracks are NetEase tracks.
+  const contentKey = (playlistId: string) =>
+    musicQueryKeys.playlist.contentOf("netease", playlistId);
   return useMutation({
     retry: false,
     onMutate: (move: InlineOrderMove) =>
       queryClient.cancelQueries({
         queryKey: move.playlistId
           ? contentKey(move.playlistId)
-          : musicQueryKeys.library.playlists(userId ?? 0),
+          : musicQueryKeys.library.neteasePlaylists(userId ?? 0),
       }),
     mutationFn: async ({ playlistId, fromId, toId, expectedIds }: InlineOrderMove) => {
       if (!userId || useUserStore.getState().user?.userId !== userId)
         throw new Error(t("sidebar.card.loginTitle"));
       let ids: number[];
-      const playlists = playlistId ? undefined : await fetchUserPlaylists(userId);
+      const playlists = playlistId ? undefined : await fetchNeteaseUserPlaylists(userId);
       if (playlistId) {
         const { data } = await getPlaylsitDetail({ id: playlistId, requiresMusicSession: true });
         if (data.code !== 200 || data.playlist?.creator?.userId !== userId)
@@ -93,7 +100,7 @@ export function usePlaylistOrderMutation() {
       const rank = (id: number) => ranks.get(id) ?? Number.MAX_SAFE_INTEGER;
       const queryKey = playlistId
         ? contentKey(playlistId)
-        : musicQueryKeys.library.playlists(userId);
+        : musicQueryKeys.library.neteasePlaylists(userId);
       await queryClient.cancelQueries({ queryKey });
       if (useUserStore.getState().user?.userId !== userId) return;
       if (playlistId) {
@@ -101,8 +108,9 @@ export function usePlaylistOrderMutation() {
           content
             ? {
                 ...content,
-                rawDetail: { ...content.rawDetail, trackIds: orderedIds.map((id) => ({ id })) },
-                tracks: [...content.tracks].sort((a, b) => rank(a.id) - rank(b.id)),
+                tracks: [...content.tracks].sort(
+                  (a, b) => rank(Number(a.ref.id)) - rank(Number(b.ref.id)),
+                ),
               }
             : content,
         );

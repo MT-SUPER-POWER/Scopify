@@ -1,7 +1,8 @@
 "use client";
 
 import { type KeyboardEvent, useMemo, useRef, useState } from "react";
-import { COMMAND_WORKSPACE_SEARCH_FILTERS } from "@/constants/commandWorkspace";
+import { useActiveProvider } from "@/hooks/provider/useActiveProvider";
+import { getAvailableCommandWorkspaceSearchFilters } from "@/lib/commandWorkspace/search";
 import type {
   CommandWorkspaceQueryInputProps,
   CommandWorkspaceSearchFilter,
@@ -14,6 +15,7 @@ export function useCommandWorkspaceQueryInput({
   onKeyDown,
   query,
 }: CommandWorkspaceQueryInputProps) {
+  const { capabilities } = useActiveProvider();
   const localInputRef = useRef<HTMLInputElement>(null);
   const resolvedInputRef = inputRef ?? localInputRef;
   const [isPickerOpen, setIsPickerOpen] = useState(false);
@@ -21,10 +23,10 @@ export function useCommandWorkspaceQueryInput({
   const [pickerQuery, setPickerQuery] = useState("");
   const filters = useMemo(
     () =>
-      COMMAND_WORKSPACE_SEARCH_FILTERS.filter((candidate) =>
+      getAvailableCommandWorkspaceSearchFilters(capabilities).filter((candidate) =>
         `${candidate.token} ${candidate.label}`.includes(pickerQuery.toLowerCase()),
       ),
-    [pickerQuery],
+    [capabilities, pickerQuery],
   );
 
   const closePicker = () => {

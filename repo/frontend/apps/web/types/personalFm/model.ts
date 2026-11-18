@@ -1,5 +1,4 @@
-import type { PlaybackNextSource } from "@/types/player/model";
-import type { SongDetail } from "@/types/song/api";
+import type { PlaybackNextSource, PlayerTrack } from "@/types/player/model";
 
 export type PersonalFmModeId =
   "DEFAULT" | "FAMILIAR" | "EXPLORE" | "SCENE_RCMD" | "PUZZLE_MODE_RCMD";
@@ -19,7 +18,7 @@ export interface PersonalFmRefreshButtonProps {
 }
 
 export interface PersonalFmStore {
-  removeDislikedTrack: (track: SongDetail) => Promise<void>;
+  removeDislikedTrack: (track: PlayerTrack) => Promise<void>;
   advance: (source?: PlaybackNextSource) => Promise<void>;
   ensureReady: () => Promise<boolean>;
   error: string | null;
@@ -27,5 +26,5 @@ export interface PersonalFmStore {
   setSelection: (selection: PersonalFmSelection) => Promise<boolean>;
   start: () => Promise<boolean>;
   status: PersonalFmStatus;
-  tracks: SongDetail[];
+  tracks: PlayerTrack[];
 }

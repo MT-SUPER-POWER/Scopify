@@ -28,7 +28,7 @@
   "section.searchLyrics": "搜索歌词",
   "section.artistLabel": "歌手",
   "playlist.byCreator": "来自 {{name}}",
-  "playlist.neteaseUser": "网易云用户",
+  "playlist.unknownCreator": "未知用户",
   "category.all": "全部",
   "category.songs": "歌曲",
   "category.artists": "歌手",

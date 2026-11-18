@@ -28,7 +28,7 @@
   "section.searchLyrics": "Search Lyrics",
   "section.artistLabel": "Artist",
   "playlist.byCreator": "By {{name}}",
-  "playlist.neteaseUser": "NetEase User",
+  "playlist.unknownCreator": "Unknown user",
   "category.all": "All",
   "category.songs": "Songs",
   "category.artists": "Artists",

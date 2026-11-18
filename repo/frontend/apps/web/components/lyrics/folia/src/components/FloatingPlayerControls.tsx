@@ -19,6 +19,7 @@ import type { CommandWorkspacePage } from "@/types/commandWorkspace/model";
 
 import { FoliaTrackTitleNavigator } from "@/components/lyrics/stage/FoliaTrackTitleNavigator";
 import { usePlayerStore } from "@/store/module/player";
+import { getNeteaseTrackId } from "@/lib/providers/netease/adapters/track";
 import type {
   CollapsedFoliaCapsuleProps,
   ExpandedFoliaCapsuleProps,
@@ -60,7 +61,7 @@ const FloatingPlayerControls: React.FC<FloatingPlayerControlsProps> = ({
   controlsDisabled = false,
 }) => {
   const { t } = useTranslation();
-  const currentSongId = usePlayerStore((state) => state.currentSongDetail?.id ?? null);
+  const currentSongId = usePlayerStore((state) => getNeteaseTrackId(state.currentTrack) ?? null);
   const chorusQuery = useSongChorus(currentSongId);
   const chorusRanges = useMemo(
     () => getChorusProgressRanges(chorusQuery.data ?? [], duration * 1000),

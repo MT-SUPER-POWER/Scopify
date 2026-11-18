@@ -12,7 +12,8 @@ import type {
   LyricSourceSelection,
 } from "@/types/lyrics/model";
 import type { MusicQuality } from "@/types/player/model";
-import type { ImmerseType, NeteaseLyric } from "@/types/song/api";
+import type { LyricSource } from "@/types/lyrics/model";
+import type { ImmerseType } from "@/types/song/api";
 
 const URL_TTL_MS = 30 * 60 * 1000; // 30 分钟
 const LYRIC_TTL_MS = 24 * 60 * 60 * 1000; // 24 小时
@@ -94,11 +95,11 @@ export async function clearCachedPlayUrl(
 
 // ── Public API: Lyric ──────────────────────────────────────────────────────────
 
-export async function getCachedLyric(songId: number): Promise<NeteaseLyric | null> {
-  return storageGet<NeteaseLyric>(`${KEY_PREFIX_ONLINE_LYRIC}:${songId}`);
+export async function getCachedLyric(songId: number): Promise<LyricSource | null> {
+  return storageGet<LyricSource>(`${KEY_PREFIX_ONLINE_LYRIC}:${songId}`);
 }
 
-export async function setCachedLyric(songId: number, lyric: NeteaseLyric): Promise<void> {
+export async function setCachedLyric(songId: number, lyric: LyricSource): Promise<void> {
   await storageSet(`${KEY_PREFIX_ONLINE_LYRIC}:${songId}`, lyric, LYRIC_TTL_MS, "online-lyric");
 }
 

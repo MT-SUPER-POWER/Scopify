@@ -7,7 +7,6 @@ import {
   Info,
   LogOut,
   MonitorSmartphone,
-  RefreshCw,
   Settings,
   MessagesSquare,
 } from "lucide-react";
@@ -16,8 +15,9 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
+import { useQqLogout } from "@/hooks/auth/useQqLogout";
 import { useSmartRouter } from "@/hooks/core/useSmartRouter";
-import { useSyncAccountData } from "@/hooks/auth/useSyncAccountData";
+import { useActiveProvider } from "@/hooks/provider/useActiveProvider";
 import { runtime } from "@/lib/runtime";
 import { usePlayerStore, useUserStore } from "@/store";
 import { useFriendsStore } from "@/store/module/friends";
@@ -33,8 +33,13 @@ const arrowClassName = "ml-auto size-4 text-content-muted";
 export function ProfileMenuNavigation({ isLoggedIn }: ProfileMenuNavigationProps) {
   const { t } = useTranslation();
   const smartRouter = useSmartRouter();
-  const { isSyncing, syncAccountData } = useSyncAccountData();
+  const { capabilities, provider } = useActiveProvider();
+  const logoutQq = useQqLogout();
   const logout = () => {
+    if (provider === "qq") {
+      void logoutQq();
+      return;
+    }
     useUserStore.getState().handleLogout();
     usePlayerStore.getState().cleanCache();
     smartRouter.replace("/");
@@ -43,33 +48,39 @@ export function ProfileMenuNavigation({ isLoggedIn }: ProfileMenuNavigationProps
   return (
     <>
       <DropdownMenuGroup className="px-3 py-2">
-        <DropdownMenuItem
-          onSelect={() =>
-            smartRouter.push(runtime.isDesktop ? "/setting?tab=desktop#app-updater" : "/setting")
-          }
-          className={`${itemClassName} md:hidden`}
-        >
-          <Bell className={iconClassName} />
-          <span>{t("profile.menu.notifications")}</span>
-          <ChevronRight className={arrowClassName} />
-        </DropdownMenuItem>
-        <DropdownMenuItem
-          className={`${itemClassName} md:hidden`}
-          onSelect={() => requestAnimationFrame(() => useFriendsStore.getState().setOpen(true))}
-        >
-          <MessagesSquare className={iconClassName} />
-          <span>{t("profile.menu.friends")}</span>
-          <ChevronRight className={arrowClassName} />
-        </DropdownMenuItem>
-        <DropdownMenuItem
-          className={`${itemClassName} md:hidden`}
-          onSelect={() => smartRouter.push("/social")}
-        >
-          <Activity className={iconClassName} />
-          <span>{t("social.title")}</span>
-          <ChevronRight className={arrowClassName} />
-        </DropdownMenuItem>
-        {isLoggedIn && (
+        {capabilities.has("messages") && (
+          <DropdownMenuItem
+            onSelect={() =>
+              smartRouter.push(runtime.isDesktop ? "/setting?tab=desktop#app-updater" : "/setting")
+            }
+            className={`${itemClassName} md:hidden`}
+          >
+            <Bell className={iconClassName} />
+            <span>{t("profile.menu.notifications")}</span>
+            <ChevronRight className={arrowClassName} />
+          </DropdownMenuItem>
+        )}
+        {capabilities.has("messages") && (
+          <DropdownMenuItem
+            className={`${itemClassName} md:hidden`}
+            onSelect={() => requestAnimationFrame(() => useFriendsStore.getState().setOpen(true))}
+          >
+            <MessagesSquare className={iconClassName} />
+            <span>{t("profile.menu.friends")}</span>
+            <ChevronRight className={arrowClassName} />
+          </DropdownMenuItem>
+        )}
+        {capabilities.has("social") && (
+          <DropdownMenuItem
+            className={`${itemClassName} md:hidden`}
+            onSelect={() => smartRouter.push("/social")}
+          >
+            <Activity className={iconClassName} />
+            <span>{t("social.title")}</span>
+            <ChevronRight className={arrowClassName} />
+          </DropdownMenuItem>
+        )}
+        {isLoggedIn && capabilities.has("history") && (
           <DropdownMenuItem
             onSelect={() => smartRouter.push("/recent/report")}
             className={itemClassName}
@@ -79,7 +90,7 @@ export function ProfileMenuNavigation({ isLoggedIn }: ProfileMenuNavigationProps
             <ChevronRight className={arrowClassName} />
           </DropdownMenuItem>
         )}
-        {isLoggedIn && (
+        {isLoggedIn && capabilities.has("devices") && (
           <DropdownMenuItem
             onSelect={() => smartRouter.push("/setting/devices")}
             className={itemClassName}
@@ -116,20 +127,6 @@ export function ProfileMenuNavigation({ isLoggedIn }: ProfileMenuNavigationProps
         <>
           <DropdownMenuSeparator className="mx-6 my-0 bg-content/10" />
           <div className="px-3 py-2">
-            <DropdownMenuItem
-              className={itemClassName}
-              disabled={isSyncing}
-              onSelect={(event) => {
-                event.preventDefault();
-                syncAccountData();
-              }}
-            >
-              <RefreshCw
-                aria-hidden
-                className={`${iconClassName}${isSyncing ? "animate-spin" : ""}`}
-              />
-              <span>{t(isSyncing ? "profile.menu.syncing" : "profile.menu.syncData")}</span>
-            </DropdownMenuItem>
             <DropdownMenuItem
               onSelect={logout}
               variant="destructive"

@@ -1,5 +1,5 @@
 import type { MouseEventHandler, ReactNode } from "react";
-import type { SongDetail } from "@/types/song/api";
+import type { PlayerTrack } from "@/types/player/model";
 import type { ProgressRangeMarker } from "@/types/shared/sliderComponents";
 import type { SongStatsEnrichmentStatus } from "@/types/song/stats";
 import type { ShortcutCommandId } from "@/types/shortcuts/model";
@@ -15,7 +15,7 @@ export interface PlaybackProgressBarProps {
 }
 
 export interface QueueItemProps {
-  song: SongDetail;
+  song: PlayerTrack;
   index: number;
   isActive: boolean;
   isPlaying: boolean;
@@ -43,7 +43,7 @@ export interface PlayerQueueItemCoverProps {
   index: number;
   isActive: boolean;
   isPlaying: boolean;
-  song: SongDetail;
+  song: PlayerTrack;
 }
 
 export interface PlayerBarStatActionProps {

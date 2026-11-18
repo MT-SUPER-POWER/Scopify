@@ -7,6 +7,7 @@ import {
   usePlaybackProjectionStore,
 } from "@/hooks/player/usePlaybackProjection";
 import { usePlayerStore } from "@/store";
+import { playbackTrackId } from "@/lib/player/trackIdentity";
 import type { PlaylistViewPlaybackOptions } from "@/types/playlist/latticeComponents";
 
 /** Playback bindings shared by the immersive playlist views: which card is current, and what playing it does. */
@@ -25,7 +26,7 @@ export function usePlaylistViewPlayback({
   const currentIndex = useMemo(() => {
     if (liveIndex !== null) return liveIndex;
     if (playbackQueue || queueSource !== sourceId || trackId === undefined) return -1;
-    return tracks.findIndex((track) => track.id === trackId);
+    return tracks.findIndex((track) => playbackTrackId(track) === trackId);
   }, [liveIndex, playbackQueue, queueSource, sourceId, trackId, tracks]);
   const playAt = useCallback(
     (index: number, resumeOnly = false) => {
@@ -37,7 +38,7 @@ export function usePlaylistViewPlayback({
       if (playbackQueue && !liveQueue) return;
       const current = liveQueue
         ? index === player.queueIndex
-        : player.playlistId === sourceId && track.id === latest.track?.id;
+        : player.playlistId === sourceId && playbackTrackId(track) === latest.track?.id;
       if (current) {
         if (!resumeOnly) void commands.toggle();
         else if (!latest.isPlaying) void commands.play();

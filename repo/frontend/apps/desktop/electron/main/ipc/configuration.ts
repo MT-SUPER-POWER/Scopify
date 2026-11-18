@@ -24,6 +24,7 @@ import { isMainRenderer } from "./sender";
 export function registerConfigurationIpc(
   mainWindow: BrowserWindow | null,
   backendController: DesktopBackendController,
+  qqBackendController: DesktopBackendController,
   discordPresence: ReturnType<typeof createDiscordPresenceController>,
   mcpRuntime: McpRuntime,
 ) {
@@ -57,7 +58,8 @@ export function registerConfigurationIpc(
     }
     configureUpdater(savedConfig.updater);
     await mcpRuntime.configure(savedConfig.mcp);
-    await backendController.reconcile(savedConfig.backend);
+    await backendController.reconcile(savedConfig.backend.netease);
+    await qqBackendController.reconcile(savedConfig.backend.qq);
     void discordPresence.refresh();
     await applyElectronProxy(savedConfig).catch((error) => {
       ipcLog.error("[IPC] failed to apply proxy after config update:", error);

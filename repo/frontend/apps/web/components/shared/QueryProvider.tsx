@@ -13,15 +13,19 @@ import { useEffect, useState } from "react";
 import { pageTtlMs } from "@/lib/cache/pageCache";
 import { QueryDevtools } from "@/components/shared/QueryDevtools";
 import { useRendererErrorReporting } from "@/hooks/core/useRendererErrorReporting";
+import { useProviderSwitchRequests } from "@/hooks/provider/useProviderSwitchRequests";
 import { queryPersister } from "@/lib/query/persister";
-import { MUSIC_SESSION_EXPIRED_EVENT } from "@/lib/query/session";
+import { openLoginForPlatform } from "@/lib/auth/loginPlatform";
+import { clearQqSessionToken } from "@/lib/providers/qq/session";
+import { MUSIC_SESSION_EXPIRED_EVENT, QQ_SESSION_EXPIRED_EVENT } from "@/lib/query/session";
 import { runtime } from "@/lib/runtime";
 import { openLoginWindowOrFallback } from "@/lib/runtime/login";
 import { reportFailure } from "@/lib/web/errorTracking";
 import { getMusicSessionCredential } from "@/lib/web/musicSessionCredential";
 import { syncUserSessionFromCookie } from "@/lib/web/sessionHydration";
-import { getBackendBaseUrl } from "@/lib/web/request";
+import { getNeteaseBaseUrl } from "@/lib/providers/netease/client";
 import { usePlayerStore, useUserStore } from "@/store";
+import { useActiveProviderStore } from "@/store/module/provider";
 
 const QUERY_CACHE_BUSTER = "scopify-query-v1";
 const QUERY_STALE_TIME_MS = 5 * 60 * 1000;
@@ -30,13 +34,14 @@ export function QueryProvider({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const [queryClient] = useState(createQueryClient);
   useRendererErrorReporting();
+  const handleCacheRestored = useProviderSwitchRequests(queryClient);
 
   useEffect(() => {
     const credential = getMusicSessionCredential();
     if (credential) {
       if (runtime.isDesktop) {
         void runtime.auth
-          .importMusicSession(credential, getBackendBaseUrl())
+          .importMusicSession(credential, getNeteaseBaseUrl())
           .catch(() => undefined);
       }
       void syncUserSessionFromCookie();
@@ -46,10 +51,12 @@ export function QueryProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     const handleExpiredSession = () => {
       useUserStore.getState().clearSession();
-      usePlayerStore.getState().cleanCache();
+      // The QQ account keeps its own session, queue and data.
       queryClient.removeQueries({
-        predicate: (query) => query.meta?.scope === "account",
+        predicate: (query) => query.meta?.scope === "account" && query.queryKey[0] !== "qq",
       });
+      if (useActiveProviderStore.getState().activeProvider !== "netease") return;
+      usePlayerStore.getState().cleanCache();
       openLoginWindowOrFallback(runtime.auth, () => router.replace("/login"));
     };
 
@@ -57,9 +64,28 @@ export function QueryProvider({ children }: { children: React.ReactNode }) {
     return () => window.removeEventListener(MUSIC_SESSION_EXPIRED_EVENT, handleExpiredSession);
   }, [queryClient, router]);
 
+  useEffect(() => {
+    // Only the QQ account is signed out; NetEase's session and data stay untouched.
+    const handleExpiredQqSession = () => {
+      clearQqSessionToken();
+      queryClient.removeQueries({
+        queryKey: ["qq"],
+        predicate: (query) => query.meta?.scope === "account",
+      });
+      // Like NetEase: QQ stays the active platform and its login opens.
+      if (useActiveProviderStore.getState().activeProvider !== "qq") return;
+      openLoginForPlatform("qq", (url) => router.replace(url));
+    };
+
+    window.addEventListener(QQ_SESSION_EXPIRED_EVENT, handleExpiredQqSession);
+    return () => window.removeEventListener(QQ_SESSION_EXPIRED_EVENT, handleExpiredQqSession);
+  }, [queryClient, router]);
+
   return (
     <PersistQueryClientProvider
       client={queryClient}
+      onSuccess={handleCacheRestored}
+      onError={handleCacheRestored}
       persistOptions={{
         buster: QUERY_CACHE_BUSTER,
         dehydrateOptions: {

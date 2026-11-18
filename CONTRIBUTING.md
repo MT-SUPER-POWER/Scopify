@@ -33,6 +33,22 @@ pnpm run dev:full       # Web + Electron + 后端联调
 - **同时只开一个 Web dev server。** 第二个会共用 `.next` 并破坏路由（Electron 里表现为莫名其妙的 404）。
 - 后端是独立部署的，首次克隆后运行 `git submodule update --init --recursive`，再用 `pnpm run dev:backend` 启动。
 
+## 项目 Skills
+
+项目 Skills 统一维护在根目录的 [`skills/`](./skills/)。安装依赖后，在需要链接的工作副本中运行：
+
+```bash
+pnpm run skills
+# 或 bun scripts/link-skills.ts
+```
+
+- **链接项目 Skills**。选择 Skills 和 AI 工具，查看预览后确认。Windows 创建目录联接（junction），macOS 和 Linux 创建相对符号链接。遇到同名项，可以保留它，或选择备份并替换。备份保存在目标目录旁的 `skills-backup-*`。
+- **创建项目 Skill**。填写名称和描述，即可创建 `skills/<名称>/SKILL.md`。可以只创建，也可以在这次运行中选中并链接。创建后在源文件补充具体说明。
+- **取消链接项目 Skills**。选择工具和链接，查看预览后批量移除。源 Skill 已删除或改名时，旧链接仍会列出。取消链接会保留源文件、独立安装的 Skills 和外部链接。
+- **添加 AI 工具**。输入工具名和项目内的 Skill 目录，例如 `.my-ai/skills`。确认后保存到当前工作副本忽略的 `.skill-tool-targets.json`，工具会立即出现在选择列表。自定义目录的 Git 忽略规则由使用者按项目需要管理。
+
+每个多选菜单都支持方向键移动、Space 切换单项、`a` 全选或清空、`i` 反选，以及 Enter 继续。
+
 ## 提交
 
 - **提交信息**用 [Conventional Commits](https://www.conventionalcommits.org/)：`type(scope): subject`，由 commitlint 在 `commit-msg` 钩子和 PR CI 里检查。

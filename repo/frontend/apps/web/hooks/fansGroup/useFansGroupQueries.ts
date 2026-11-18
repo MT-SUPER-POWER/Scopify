@@ -1,7 +1,7 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { getFansGroupDetail, getUserFansGroups } from "@/lib/api/fansGroup";
+import { getFansGroupDetail, getUserFansGroups } from "@/lib/providers/netease/api/fansGroup";
 import { musicQueryKeys } from "@/lib/query/queryKeys";
 import { useUserStore } from "@/store/module/user";
 import type { UserFansGroupItem } from "@/types/fansGroup/api";

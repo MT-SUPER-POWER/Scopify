@@ -32,4 +32,5 @@ export interface QueryFailureProps {
 export interface QueryConnectionWaitProps {
   title?: string;
   compact?: boolean;
+  children?: ReactNode;
 }

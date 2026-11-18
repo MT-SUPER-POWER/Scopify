@@ -1,9 +1,9 @@
-import type { NeteaseLyric } from "@/types/song/api";
 import type {
   LyricCreditEntry,
   LyricData,
   LyricDisplayLine,
   LyricMetadata,
+  LyricSource,
   LyricTimedCredit,
   LyricWord,
 } from "@/types/lyrics/model";
@@ -28,7 +28,7 @@ interface TimedText {
  * A parsed YRC track takes priority over LRC. Lines with only a line timestamp
  * use estimated word timings.
  */
-export function adaptNeteaseLyric(lyric: NeteaseLyric): LyricData {
+export function adaptNeteaseLyric(lyric: LyricSource): LyricData {
   const metadata = createMetadata();
   const yrc = lyricText(lyric.yrc?.lyric);
   const lrc = lyricText(lyric.lrc?.lyric);
@@ -142,7 +142,7 @@ function firstLyricText(...values: (null | string | undefined)[]): string {
   return values.map(lyricText).find((value) => value.length > 0) ?? "";
 }
 
-function isPureMusic(lyric: NeteaseLyric, lrc = "", yrc = ""): boolean {
+function isPureMusic(lyric: LyricSource, lrc = "", yrc = ""): boolean {
   return hasNeteasePureMusicFlag(lyric) || isPureMusicLyricText(lrc) || isPureMusicLyricText(yrc);
 }
 

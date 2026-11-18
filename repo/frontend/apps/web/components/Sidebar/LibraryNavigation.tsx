@@ -1,35 +1,65 @@
 "use client";
 
-import { Bookmark, Cloud, History, Home, Podcast, Users } from "lucide-react";
+import { BarChart3, Bookmark, Cloud, History, Home, Podcast, Users } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { useTranslation } from "react-i18next";
 
-import type { LibraryNavigationProps } from "@/types/sidebar/components";
+import { useActiveProvider } from "@/hooks/provider/useActiveProvider";
+import type { LibraryNavigationProps, LibraryNavigationSection } from "@/types/sidebar/components";
 
 const sections = [
   {
     title: "social.browse",
     items: [
-      { href: "/", icon: Home, labelKey: "social.home" },
-      { href: "/social", icon: Users, labelKey: "social.title" },
+      { href: "/", icon: Home, labelKey: "social.home", requires: "home" },
+      { href: "/social", icon: Users, labelKey: "social.title", requires: "social" },
     ],
   },
   {
     title: "sidebar.library.title",
     items: [
-      { href: "/recent", icon: History, labelKey: "sidebar.library.recentPlayback" },
-      { href: "/podcasts", icon: Podcast, labelKey: "sidebar.library.podcasts" },
-      { href: "/collection", icon: Bookmark, labelKey: "sidebar.library.collection" },
-      { href: "/cloud", icon: Cloud, labelKey: "sidebar.library.cloud" },
+      {
+        href: "/recent",
+        icon: History,
+        labelKey: "sidebar.library.recentPlayback",
+        requires: "history",
+      },
+      {
+        href: "/rank",
+        icon: BarChart3,
+        labelKey: "sidebar.library.listeningRank",
+        requires: "library.rank",
+      },
+      {
+        href: "/podcasts",
+        icon: Podcast,
+        labelKey: "sidebar.library.podcasts",
+        requires: "podcast",
+      },
+      {
+        href: "/collection",
+        icon: Bookmark,
+        labelKey: "sidebar.library.collection",
+        requires: "library.playlists",
+      },
+      { href: "/cloud", icon: Cloud, labelKey: "sidebar.library.cloud", requires: "cloud" },
     ],
   },
-] as const;
+] as const satisfies readonly LibraryNavigationSection[];
 
 export function LibraryNavigation({ isCollapsed, headerAction }: LibraryNavigationProps) {
   const pathname = usePathname();
   const { t } = useTranslation();
+  const { capabilities } = useActiveProvider();
+  const visibleSections = sections
+    .map((section) => ({
+      ...section,
+      items: section.items.filter((item) => !item.requires || capabilities.has(item.requires)),
+    }))
+    // The first section stays even when empty: its title row carries the sidebar menu.
+    .filter((section, index) => index === 0 || section.items.length > 0);
   return (
     <nav
       className={cn(
@@ -38,7 +68,7 @@ export function LibraryNavigation({ isCollapsed, headerAction }: LibraryNavigati
       )}
       aria-label={t("social.browse")}
     >
-      {sections.map((section, sectionIndex) => (
+      {visibleSections.map((section, sectionIndex) => (
         <div
           key={section.title}
           className={cn("flex flex-col gap-1", isCollapsed && "items-center")}

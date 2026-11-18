@@ -2,10 +2,36 @@ import { describe, expect, it } from "bun:test";
 import { COMMAND_WORKSPACE_SEARCH_FILTERS } from "@/constants/commandWorkspace";
 import {
   buildCommandWorkspaceSearchHref,
+  getAvailableCommandWorkspaceSearchFilters,
   getCommandWorkspaceSearchFilterForCategory,
   resolveCommandWorkspaceSearchEntry,
 } from "@/lib/commandWorkspace/search";
+import type { MusicCapability } from "@scopify/music-domain/capability";
+import { getAvailableSearchCategories, resolveSearchCategory } from "@/lib/search/searchCategory";
 import { CATEGORIES } from "@/types/search/model";
+
+describe("search tabs by platform capability", () => {
+  it("keeps the four shared kinds and hides NetEase-only tabs without their capability", () => {
+    const capabilities = new Set<MusicCapability>(["search"]);
+    expect(getAvailableSearchCategories(capabilities)).toEqual([
+      "All",
+      "Songs",
+      "Artists",
+      "Playlists",
+      "Albums",
+    ]);
+    expect(
+      getAvailableCommandWorkspaceSearchFilters(capabilities).map((filter) => filter.token),
+    ).toEqual(["@song", "@artist", "@playlist", "@album"]);
+    expect(resolveSearchCategory("Lyrics", capabilities)).toBe("All");
+  });
+
+  it("offers a NetEase-only tab when the capability is declared", () => {
+    const capabilities = new Set<MusicCapability>(["search", "mv", "podcast"]);
+    expect(resolveSearchCategory("MVs", capabilities)).toBe("MVs");
+    expect(getAvailableSearchCategories(capabilities)).toContain("Voices");
+  });
+});
 
 describe("command workspace search constraints", () => {
   it("covers every search-page tab in the same order", () => {

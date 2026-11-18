@@ -2,17 +2,23 @@
 
 import { useSearchParams } from "next/navigation";
 import { useSmartRouter } from "@/hooks/core/useSmartRouter";
-import { buildSearchCategoryUrl, getSearchCategory } from "@/lib/search/searchCategory";
+import { useActiveProvider } from "@/hooks/provider/useActiveProvider";
+import {
+  buildSearchCategoryUrl,
+  getAvailableSearchCategories,
+  resolveSearchCategory,
+} from "@/lib/search/searchCategory";
 import { cn } from "@/lib/utils";
 import { useTranslation } from "react-i18next";
 
-import { CATEGORIES, type Category } from "@/types/search/model";
+import type { Category } from "@/types/search/model";
 
 export function CategoryTabs() {
   const { t } = useTranslation();
   const router = useSmartRouter();
   const searchParams = useSearchParams();
-  const active = getSearchCategory(searchParams.get("tab"));
+  const { capabilities } = useActiveProvider();
+  const active = resolveSearchCategory(searchParams.get("tab"), capabilities);
   const onChange = (category: Category) => {
     router.replace(buildSearchCategoryUrl(searchParams.toString(), category));
   };
@@ -40,7 +46,7 @@ export function CategoryTabs() {
       onWheel={handleWheel}
       className="mb-8 scrollbar-thin flex items-center gap-2 overflow-x-auto pb-2"
     >
-      {CATEGORIES.map((cat) => (
+      {getAvailableSearchCategories(capabilities).map((cat) => (
         <button
           key={cat}
           onClick={(e) => {

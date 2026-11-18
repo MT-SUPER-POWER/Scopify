@@ -1,7 +1,7 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { getSongDetail } from "@/lib/api/track";
+import { getSongDetail } from "@/lib/providers/netease/api/track";
 import { musicQueryKeys } from "@/lib/query/queryKeys";
 import type { RawSongDetail, SongDetail } from "@/types/song/api";
 

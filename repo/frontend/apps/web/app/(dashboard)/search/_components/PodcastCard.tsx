@@ -20,12 +20,14 @@ export function PodcastCard({ podcast }: PodcastCardProps) {
   const { t } = useTranslation();
   const router = useSmartRouter();
   const { handlePlayPodcast, loadingPodcastId } = usePodcastPlay();
-  const currentSongDetail = usePlayerStore((state) => state.currentSongDetail);
+  const currentTrack = usePlayerStore((state) => state.currentTrack);
   const isPlaying = usePlayerStore((state) => state.isPlaying);
   const playlistId = usePlayerStore((state) => state.playlistId);
   const setIsPlaying = usePlayerStore((state) => state.setIsPlaying);
   const isActive =
-    currentSongDetail?.al?.id === podcast.id || String(playlistId) === `radio:${podcast.id}`;
+    (currentTrack?.ref.provider === "netease" &&
+      currentTrack.album?.ref.id === String(podcast.id)) ||
+    String(playlistId) === `radio:${podcast.id}`;
   const categoryLabel = podcast.category;
 
   const handleNavigate = () => router.push(getPodcastDestination(podcast));

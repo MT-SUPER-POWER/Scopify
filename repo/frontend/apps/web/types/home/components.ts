@@ -1,6 +1,5 @@
 import type { MouseEvent, ReactNode } from "react";
 import type { NeteaseBanner } from "@/types/home/bannerApi";
-import type { SongDetail } from "@/types/song/api";
 import type { CarouselDirection, HomeContextValue } from "@/types/home/model";
 import type { TranslationKey } from "@/lib/i18n";
 
@@ -10,6 +9,7 @@ export interface HomeSectionPendingProps {
   kind: "greeting" | "grid" | "artist" | "songs" | "voices" | "toplists";
   title?: string;
   titleKey?: TranslationKey;
+  waitingForConnection?: boolean;
 }
 
 export interface ActivityBannerCardProps {
@@ -54,7 +54,7 @@ export interface GridCardProps {
   onClick?: () => void;
 }
 
-export interface GridCardSkeletonProps {
+export interface HomeCardSkeletonGridProps {
   isArtist?: boolean;
 }
 
@@ -74,8 +74,7 @@ export interface CollapsibleSectionProps {
 export interface ToplistCarouselItem {
   artist: string;
   coverUrl: string;
-  id: number;
+  id: string;
   name: string;
   rank: number;
-  song?: SongDetail;
 }

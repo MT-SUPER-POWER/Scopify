@@ -3,15 +3,27 @@
 import { X } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import type { CommandWorkspaceNowPlayingProps } from "@/types/commandWorkspace/model";
-import { useSongContextMenuActions } from "@/hooks/song/useSongContextMenuActions";
+import { QueryBoundary } from "@/components/shared/QueryBoundary";
+import { useActiveAccount } from "@/hooks/auth/useProviderAccounts";
+import { useLibraryPlaylistsQuery } from "@/hooks/library/useLibraryPlaylists";
+import { useLibraryPlaylistActions } from "@/hooks/library/useLibraryPlaylistActions";
+import { useActiveProvider } from "@/hooks/provider/useActiveProvider";
 import { usePlayerStore } from "@/store/module/player";
-import type { SongDetail } from "@/types/song/api";
+import { toast } from "sonner";
 
 export function CommandWorkspaceAddToPlaylist({ onClose }: CommandWorkspaceNowPlayingProps) {
   const { t } = useTranslation();
-  const song = usePlayerStore((state) => state.currentSongDetail);
-  if (!song || song.voiceId !== undefined) return null;
-  const track = { title: song.name };
+  const track = usePlayerStore((state) => state.currentTrack);
+  const { isLoggedIn, profile } = useActiveAccount();
+  const provider = useActiveProvider();
+  if (
+    !track ||
+    track.netease?.voiceId !== undefined ||
+    !isLoggedIn ||
+    track.ref.provider !== provider.provider
+  ) {
+    return null;
+  }
 
   return (
     <div className="text-content">
@@ -30,37 +42,58 @@ export function CommandWorkspaceAddToPlaylist({ onClose }: CommandWorkspaceNowPl
           <X className="size-4" />
         </button>
       </header>
-      <PlaylistChoices song={song} />
+      <QueryBoundary
+        resetKey={`capsule-playlist:${provider.provider}:${profile?.accountId ?? ""}:${track.ref.id}`}
+        compact
+      >
+        <PlaylistChoices />
+      </QueryBoundary>
     </div>
   );
 }
 
-function PlaylistChoices({ song }: { song: SongDetail }) {
-  const { t, filteredPlaylists, handleAddToPlaylist, isLogin, isPlaylistPending } =
-    useSongContextMenuActions({
-      song,
-      isActive: true,
-      isPlaying: false,
-      isContextMenuOpen: false,
-      isCreateDialogOpen: false,
-      setIsCreateDialogOpen: () => undefined,
-      onPlay: () => undefined,
-    });
+function PlaylistChoices() {
+  const { t } = useTranslation();
+  const track = usePlayerStore((state) => state.currentTrack);
+  const library = useLibraryPlaylistsQuery(true);
+  const { addTracks } = useLibraryPlaylistActions();
 
-  if (!isLogin || !filteredPlaylists.length) {
+  if (!library.data) {
+    return (
+      <p className="px-4 py-6 text-sm text-content-muted">
+        {library.fetchStatus === "paused"
+          ? t("network.recovery.waiting")
+          : t("common.status.loading")}
+      </p>
+    );
+  }
+
+  const ownPlaylists = library.data.filter(
+    (item) => item.relation === "created" && !item.isLikedList,
+  );
+  if (!ownPlaylists.length) {
     return <p className="px-4 py-6 text-sm text-content-muted">{t("song.similar.noPlaylists")}</p>;
   }
   return (
     <div className="scrollbar-thin max-h-[min(50vh,24rem)] space-y-0.5 overflow-y-auto p-2">
-      {filteredPlaylists.map((playlist) => (
+      {ownPlaylists.map(({ playlist }) => (
         <button
-          key={playlist.id}
+          key={playlist.ref.id}
           type="button"
           className="block w-full truncate rounded-lg px-3 py-2 text-left text-sm hover:bg-content/10 disabled:opacity-40"
-          disabled={isPlaylistPending}
-          onClick={() => void handleAddToPlaylist(playlist)}
+          disabled={!track || addTracks.isPending}
+          onClick={() => {
+            if (!track) return;
+            addTracks.mutate(
+              { playlist: playlist.ref, tracks: [track.ref] },
+              {
+                onSuccess: () => toast.success(t("playlist.table.addToPlaylistSuccess")),
+                onError: () => toast.error(t("playlist.table.addToPlaylistFailed")),
+              },
+            );
+          }}
         >
-          {playlist.name}
+          {playlist.title}
         </button>
       ))}
     </div>

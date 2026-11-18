@@ -4,8 +4,11 @@ import { Music2, PanelRightClose } from "lucide-react";
 import { useState } from "react";
 import { NowPlayingLyricsView } from "./NowPlayingLyricsView";
 import { NowPlayingOverview } from "./NowPlayingOverview";
+import { NowPlayingProviderOverview } from "./NowPlayingProviderOverview";
 import { NowPlayingPanelTabs } from "./NowPlayingPanelTabs";
 import { NowPlayingQueueView } from "./NowPlayingQueueView";
+import { useCurrentNeteaseSong } from "@/hooks/player/useCurrentNeteaseSong";
+import { resolveCoverUrl } from "@/lib/music/resolveCoverUrl";
 import { cn } from "@/lib/utils";
 import { usePlayerStore } from "@/store";
 import { useTranslation } from "react-i18next";
@@ -19,7 +22,9 @@ import type { NowPlayingPanelView } from "@/types/player/nowPlayingComponents";
  */
 export function NowPlayingPanel() {
   const { t } = useTranslation();
-  const song = usePlayerStore((s) => s.currentSongDetail);
+  const track = usePlayerStore((s) => s.currentTrack);
+  // The overview and lyrics views are NetEase-only; other platforms get title and artists.
+  const song = useCurrentNeteaseSong();
   const isQueueOpen = useUiStore((s) => s.isQueueOpen);
   const tab = useUiStore((s) => s.nowPlayingPanelTab);
   const setIsOpen = useUiStore((s) => s.setIsNowPlayingPanelOpen);
@@ -64,9 +69,15 @@ export function NowPlayingPanel() {
         <NowPlayingQueueView />
       ) : song ? (
         view === "lyrics" ? (
-          <NowPlayingLyricsView song={song} />
+          <NowPlayingLyricsView artworkUrl={resolveCoverUrl(song.al?.picUrl, song.al?.coverUrl)} />
         ) : (
           <NowPlayingOverview song={song} onCoverVisibleChange={setIsOverCover} />
+        )
+      ) : track ? (
+        view === "lyrics" ? (
+          <NowPlayingLyricsView artworkUrl={resolveCoverUrl(track.album?.coverUrl ?? undefined)} />
+        ) : (
+          <NowPlayingProviderOverview track={track} />
         )
       ) : (
         <div className="flex min-h-0 flex-1 flex-col items-center justify-center gap-3 px-6 py-8 text-center">

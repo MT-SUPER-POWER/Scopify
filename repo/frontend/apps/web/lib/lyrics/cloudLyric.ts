@@ -1,20 +1,27 @@
-import { getCloudLyric } from "@/lib/api/cloud";
-import { getLyric } from "@/lib/api/music";
+import { musicLyricsToSource } from "@/lib/lyrics/musicLyrics";
+import { getMusicProvider } from "@/lib/providers";
+import { getCloudLyric } from "@/lib/providers/netease/api/cloud";
 import { useUserStore } from "@/store/module/user";
-import { getCloudLyricText, getCloudSongId } from "@/types/library/cloudApi";
-import type { NeteaseLyric, SongDetail } from "@/types/song/api";
+import { getCloudLyricText } from "@/types/library/cloudApi";
+import type { LyricSource } from "@/types/lyrics/model";
+import type { PlayerTrack } from "@/types/player/model";
 
-function hasLyricText(lyric: NeteaseLyric) {
+function hasLyricText(lyric: LyricSource) {
   return Boolean(lyric.lrc?.lyric?.trim() || lyric.yrc?.lyric?.trim());
 }
 
 /**
- * Loads the NetEase lyric and, for cloud uploads without one, falls back to the
- * LYRICS tag embedded in the uploaded file.
+ * Loads a track's lyric from its platform. For a NetEase cloud upload without one, falls back
+ * to the LYRICS tag embedded in the uploaded file.
  */
-export async function getSongLyric(song: SongDetail): Promise<NeteaseLyric> {
-  const { data } = await getLyric(song.id);
-  const cloudSongId = getCloudSongId(song);
+export async function getTrackLyric(
+  track: PlayerTrack,
+  signal?: AbortSignal,
+): Promise<LyricSource> {
+  const data = musicLyricsToSource(
+    await getMusicProvider(track.ref.provider).getLyrics(track.ref, signal),
+  );
+  const cloudSongId = track.netease?.pc?.privateCloud?.songId ?? null;
   const userId = useUserStore.getState().user?.userId;
   if (hasLyricText(data) || !cloudSongId || !userId) return data;
 

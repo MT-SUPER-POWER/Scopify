@@ -8,6 +8,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { getLinkableAlbumId, toArtistLinks } from "@/lib/player/trackDisplay";
 import type { CommandWorkspaceQueueItemMenuProps } from "@/types/commandWorkspace/model";
 
 export function CommandWorkspaceQueueItemMenu({
@@ -17,6 +18,8 @@ export function CommandWorkspaceQueueItemMenu({
   onRemove,
   track,
 }: CommandWorkspaceQueueItemMenuProps) {
+  const albumId = getLinkableAlbumId(track);
+  const artistId = toArtistLinks(track)[0]?.id;
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -25,7 +28,7 @@ export function CommandWorkspaceQueueItemMenu({
           onClick={(event) => event.stopPropagation()}
           className="flex size-7 items-center justify-center rounded-md text-content-muted opacity-0 transition-all group-focus-within:opacity-100 group-hover:opacity-100 hover:bg-content/10 hover:text-content data-[state=open]:bg-content/10 data-[state=open]:text-content data-[state=open]:opacity-100"
           title="更多选项"
-          aria-label={`更多选项: ${track.name}`}
+          aria-label={`更多选项: ${track.title}`}
         >
           <MoreHorizontal className="size-4" />
         </button>
@@ -38,14 +41,14 @@ export function CommandWorkspaceQueueItemMenu({
           <Trash2 className="size-4" />
           <span>从队列移除</span>
         </DropdownMenuItem>
-        {track.al?.id ? (
-          <DropdownMenuItem onClick={() => onNavigateAlbum(track.al.id)}>
+        {albumId ? (
+          <DropdownMenuItem onClick={() => onNavigateAlbum(albumId)}>
             <Disc className="size-4" />
             <span>查看专辑</span>
           </DropdownMenuItem>
         ) : null}
-        {track.ar?.[0]?.id ? (
-          <DropdownMenuItem onClick={() => onNavigateArtist(track.ar[0].id)}>
+        {artistId ? (
+          <DropdownMenuItem onClick={() => onNavigateArtist(String(artistId))}>
             <User className="size-4" />
             <span>查看歌手</span>
           </DropdownMenuItem>

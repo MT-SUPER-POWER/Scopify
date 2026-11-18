@@ -1,7 +1,7 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { getRecentSongsByID } from "@/lib/api/user";
+import { getRecentSongsByID } from "@/lib/providers/netease/api/user";
 import { toListeningRank } from "@/lib/profile/listeningRank";
 import { socialKey } from "@/lib/social/cache";
 import { useSocialAccount } from "@/hooks/social/useSocialQueries";

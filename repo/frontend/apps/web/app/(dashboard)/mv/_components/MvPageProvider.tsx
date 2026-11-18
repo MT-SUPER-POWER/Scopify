@@ -10,8 +10,8 @@ import {
   type ReactNode,
 } from "react";
 import { QueryBoundary } from "@/components/shared/QueryBoundary";
-import { useMVDetailQuery } from "@/hooks/mv/useMVQueries";
-import { useMvId } from "@/hooks/mv/useMvId";
+import { useMvDetailQuery } from "@/hooks/mv/useMVQueries";
+import { useMvId, useMvRef } from "@/hooks/mv/useMvId";
 import { useTranslation } from "react-i18next";
 
 import { useUiStore } from "@/store/module/ui";
@@ -46,12 +46,12 @@ export function MvPageProvider({ children }: { children: ReactNode }) {
  * MV 页各区域共用的状态：剧场模式与「下一首」。剧场模式只通过 data-theater 切换 layout 的栅格，
  * 保持播放器实例和进度；详情请求失败时由外层 QueryBoundary 接住整页，各区域再自己读同一份缓存。
  */
-function MvPageState({ mvid, children }: { mvid: number; children: ReactNode }) {
-  useMVDetailQuery(mvid, { boundary: true });
+function MvPageState({ mvid, children }: { mvid: string; children: ReactNode }) {
+  useMvDetailQuery(useMvRef(), { boundary: true });
   const [isTheater, setIsTheater] = useState(false);
-  const [next, setNext] = useState<readonly [number, number | null] | null>(null);
+  const [next, setNext] = useState<readonly [string, string | null] | null>(null);
   const nextId = next?.[0] === mvid ? next[1] : null;
-  const onNextChange = useCallback((id: number | null) => setNext([mvid, id]), [mvid]);
+  const onNextChange = useCallback((id: string | null) => setNext([mvid, id]), [mvid]);
   const setIsPlayerBarHidden = useUiStore((state) => state.setIsPlayerBarHidden);
   const toggleTheater = useCallback(() => {
     setIsTheater(!isTheater);

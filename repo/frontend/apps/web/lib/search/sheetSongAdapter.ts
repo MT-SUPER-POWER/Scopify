@@ -1,4 +1,4 @@
-import type { SongSearchResource } from "@/types/search/api";
+import type { SongSearchResource } from "@/types/providers/netease/searchApi";
 import type { SongDetail } from "@/types/song/api";
 
 export function mapSheetSearchSong(

@@ -1,0 +1,14 @@
+flowchart TD
+  need["界面要展示某个功能"] --> place{"出现在哪里？"}
+  place -->|"侧栏 · 菜单 · 右键菜单 · 命令面板"| entryCfg["配置项带 requires<br/>按当前平台过滤"]
+  place -->|"页面里的一块"| sectionGate["CapabilityGate / useProviderCapability<br/>不渲染，也不发请求"]
+  place -->|"直接打开的路由"| routeGate["PROVIDER_ROUTE_REQUIREMENTS<br/>RouteCapabilityGate"]
+  routeGate --> unsupportedState["显示「当前平台不支持」<br/>在错误边界之外，不算请求失败"]
+  entryCfg --> declared{"当前平台声明了该能力？"}
+  sectionGate --> declared
+  declared -->|"是"| invokeProvider["调用平台对象的方法"]
+  declared -->|"否"| hiddenUi["不出现"]
+  invokeProvider --> outcome{"请求结果"}
+  outcome -->|"成功"| renderUi["渲染界面类型"]
+  outcome -->|"缺字段"| nullField["字段为 null，显示占位"]
+  outcome -->|"失败"| errorBoundary["抛出 ApiError<br/>交给 Query 与错误边界"]

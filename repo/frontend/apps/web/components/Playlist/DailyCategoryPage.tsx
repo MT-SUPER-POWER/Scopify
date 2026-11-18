@@ -13,6 +13,7 @@ import { useSmartRouter } from "@/hooks/core/useSmartRouter";
 import { useUserStore } from "@/store";
 import { useTranslation } from "react-i18next";
 import { useI18nStore } from "@/store/module/i18n";
+import { adaptNeteaseTrack } from "@/lib/providers/netease/adapters/track";
 import { pruneSongDetail } from "@/types/song/api";
 import type { DailyCategoryPageBodyProps } from "@/types/playlist/components";
 
@@ -42,7 +43,10 @@ function DailyCategoryPageBody({ accountId }: DailyCategoryPageBodyProps) {
     : "/playlist/?isDailyRecommend=true";
   const date = new Date().toISOString().slice(0, 10);
   const query = useDailyCategorySongs(accountId, date);
-  const tracks = useMemo(() => query.data?.dailySongs.map(pruneSongDetail) ?? [], [query.data]);
+  const tracks = useMemo(
+    () => query.data?.dailySongs.map((song) => adaptNeteaseTrack(pruneSongDetail(song))) ?? [],
+    [query.data],
+  );
   if (!query.data)
     return (
       <>

@@ -1,0 +1,17 @@
+import request from "@/lib/providers/netease/client";
+import type {
+  SheetPreviewResponse,
+  SongSheetListResponse,
+  SongWikiResponse,
+} from "@/types/songResources/api";
+
+export async function getSongWiki(id: number, signal?: AbortSignal) {
+  return (await request.get<SongWikiResponse>("/song/wiki/info", { params: { id }, signal })).data;
+}
+export async function getSongSheets(id: number, signal?: AbortSignal) {
+  return (await request.get<SongSheetListResponse>("/sheet/list", { params: { id }, signal })).data;
+}
+export async function getSheetPreview(id: number, signal?: AbortSignal) {
+  return (await request.get<SheetPreviewResponse>("/sheet/preview", { params: { id }, signal }))
+    .data;
+}

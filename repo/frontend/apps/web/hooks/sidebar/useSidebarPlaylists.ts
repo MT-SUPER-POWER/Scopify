@@ -1,8 +1,9 @@
-import { useUserLikedSongIdsQuery, useUserPlaylistsQuery } from "@/hooks/library/useLibraryQueries";
+import { useUserPlaylistsQuery } from "@/hooks/library/useLibraryQueries";
+import { useLikedTrackIdsQuery } from "@/hooks/library/useLikedTracks";
 
 export function useSidebarPlaylists() {
   const query = useUserPlaylistsQuery(true);
-  useUserLikedSongIdsQuery();
+  useLikedTrackIdsQuery();
 
   return {
     error: query.data === undefined ? query.error : null,

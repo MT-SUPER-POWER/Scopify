@@ -46,6 +46,13 @@ export function createElectronRuntime(bridge: ScopifyDesktopBridge): WebRuntime 
       getStatus: () => bridge.getBackendStatus(),
       onStatusChanged: (callback) => bridge.onBackendStatusChanged(callback),
       restart: () => bridge.restartBackend(),
+      stop: () => bridge.stopBackend(),
+    },
+    qqBackend: {
+      getStatus: () => bridge.getQqBackendStatus(),
+      onStatusChanged: (callback) => bridge.onQqBackendStatusChanged(callback),
+      restart: () => bridge.restartQqBackend(),
+      stop: () => bridge.stopQqBackend(),
     },
     cache: {
       clear: () => bridge.clearPageCache(),

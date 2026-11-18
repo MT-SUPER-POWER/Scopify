@@ -7,19 +7,20 @@ import { useDailyRecommendationMutation } from "@/hooks/playlist/useDailyRecomme
 import { clearPageCache } from "@/lib/cache/pageCache";
 import { reportActionFailure } from "@/lib/web/errorTracking";
 import { usePlayerStore } from "@/store/module/player";
-
-import { pruneSongDetail, type SongDetail } from "@/types/song/api";
+import { adaptNeteaseTrack, getNeteaseTrackId } from "@/lib/providers/netease/adapters/track";
+import type { PlayerTrack } from "@/types/player/model";
+import { pruneSongDetail } from "@/types/song/api";
 
 export function useDailyRecommendationDislike(
-  tracks: SongDetail[],
-  onTracksChange?: (tracks: SongDetail[]) => void,
+  tracks: PlayerTrack[],
+  onTracksChange?: (tracks: PlayerTrack[]) => void,
 ) {
   const { t } = useTranslation();
   const { mutateAsync: dislikeDailyRecommend } = useDailyRecommendationMutation();
   const inFlight = useRef(false);
 
   const dislikeDailyTrack = useCallback(
-    async (trackId: number | string) => {
+    async (trackId: number) => {
       if (!onTracksChange || inFlight.current) return;
       inFlight.current = true;
       try {
@@ -28,22 +29,28 @@ export function useDailyRecommendationDislike(
           throw new Error("The daily recommendation endpoint did not provide a replacement track.");
         }
         const replaceSong = pruneSongDetail(dislikeResult.data);
+        const replaceTrack = adaptNeteaseTrack(replaceSong);
 
-        const nextTracks = tracks.map((track) => (track.id === trackId ? replaceSong : track));
+        const nextTracks = tracks.map((track) =>
+          getNeteaseTrackId(track) === trackId ? replaceTrack : track,
+        );
 
         onTracksChange(nextTracks);
 
         const playerState = usePlayerStore.getState();
         const isCurrentPlaying =
-          playerState.playlistId === "daily" && playerState.currentSongDetail?.id === trackId;
+          playerState.playlistId === "daily" &&
+          getNeteaseTrackId(playerState.currentTrack) === trackId;
 
         // 如果该歌曲已在播放队列中，静默将队列和原始队列中的对应曲目替换为新推荐歌曲
-        const inQueue = playerState.queue.some((s) => s.id === trackId);
+        const inQueue = playerState.queue.some((s) => getNeteaseTrackId(s) === trackId);
         if (playerState.playlistId === "daily" && inQueue) {
           usePlayerStore.setState({
-            queue: playerState.queue.map((s) => (s.id === trackId ? replaceSong : s)),
+            queue: playerState.queue.map((s) =>
+              getNeteaseTrackId(s) === trackId ? replaceTrack : s,
+            ),
             originalQueue: playerState.originalQueue.map((s) =>
-              s.id === trackId ? replaceSong : s,
+              getNeteaseTrackId(s) === trackId ? replaceTrack : s,
             ),
           });
         }

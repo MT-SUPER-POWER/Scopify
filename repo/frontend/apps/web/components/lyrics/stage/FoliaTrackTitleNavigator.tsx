@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 
 import { usePlaybackCommands } from "@/hooks/player/usePlaybackCommands";
 import { usePlayerStore } from "@/store/module/player";
+import { playerTrackKey } from "@/lib/player/trackIdentity";
 
 interface FoliaTrackTitleNavigatorProps {
   color: string;
@@ -21,7 +22,7 @@ export function FoliaTrackTitleNavigator({
   isDaylight = false,
 }: FoliaTrackTitleNavigatorProps) {
   const commands = usePlaybackCommands();
-  const currentSong = usePlayerStore((state) => state.currentSongDetail);
+  const currentSong = usePlayerStore((state) => state.currentTrack);
   const queue = usePlayerStore((state) => state.queue);
   const queueIndex = usePlayerStore((state) => state.queueIndex);
   const [hoverSide, setHoverSide] = useState<"prev" | "next" | null>(null);
@@ -31,13 +32,15 @@ export function FoliaTrackTitleNavigator({
   const [direction, setDirection] = useState<"prev" | "next">("next");
   const previous = queueIndex > 0 ? queue[queueIndex - 1] : null;
   const next = queueIndex >= 0 && queueIndex < queue.length - 1 ? queue[queueIndex + 1] : null;
-  const preview = hoverSide === "prev" ? previous?.name : hoverSide === "next" ? next?.name : null;
+  const preview =
+    hoverSide === "prev" ? previous?.title : hoverSide === "next" ? next?.title : null;
   const displayTitle =
-    pendingTitle ?? (!confirming ? preview : null) ?? currentSong?.name ?? fallback;
+    pendingTitle ?? (!confirming ? preview : null) ?? currentSong?.title ?? fallback;
 
+  const currentKey = currentSong ? playerTrackKey(currentSong) : null;
   useEffect(() => {
     setPendingTitle(null);
-  }, [currentSong?.id]);
+  }, [currentKey]);
 
   useEffect(() => {
     if (!confirming) return;
@@ -48,7 +51,7 @@ export function FoliaTrackTitleNavigator({
   const switchTrack = (side: "prev" | "next") => {
     const target = side === "prev" ? previous : next;
     if (!target) return;
-    setPendingTitle(target.name);
+    setPendingTitle(target.title);
     setDirection(side);
     setConfirming(true);
     setConfirmSequence((sequence) => sequence + 1);
@@ -61,7 +64,7 @@ export function FoliaTrackTitleNavigator({
     <div className="group/title relative col-span-3 row-start-1 min-w-0 px-9 text-center text-sm font-bold select-none sm:col-span-1 sm:col-start-2">
       {!disabled && previous ? (
         <button
-          aria-label={previous.name}
+          aria-label={previous.title}
           className={`${arrowClass} absolute inset-y-0 left-1 my-auto`}
           onClick={(event) => {
             event.stopPropagation();
@@ -70,7 +73,7 @@ export function FoliaTrackTitleNavigator({
           onMouseEnter={() => setHoverSide("prev")}
           onMouseLeave={() => setHoverSide(null)}
           style={{ color }}
-          title={previous.name}
+          title={previous.title}
           type="button"
         >
           <ChevronLeft size={16} />
@@ -90,7 +93,7 @@ export function FoliaTrackTitleNavigator({
       </AnimatePresence>
       {!disabled && next ? (
         <button
-          aria-label={next.name}
+          aria-label={next.title}
           className={`${arrowClass} absolute inset-y-0 right-1 my-auto`}
           onClick={(event) => {
             event.stopPropagation();
@@ -99,7 +102,7 @@ export function FoliaTrackTitleNavigator({
           onMouseEnter={() => setHoverSide("next")}
           onMouseLeave={() => setHoverSide(null)}
           style={{ color }}
-          title={next.name}
+          title={next.title}
           type="button"
         >
           <ChevronRight size={16} />

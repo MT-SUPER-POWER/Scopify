@@ -14,7 +14,8 @@ export function createBrowserNotifications(): NotificationClient {
         localStorage.setItem(`scopify-notifications:${account}`, JSON.stringify(state));
       },
       async request(path, params, signal) {
-        const { requestNotificationSource } = await import("@/lib/api/notifications");
+        const { requestNotificationSource } =
+          await import("@/lib/providers/netease/api/notifications");
         return requestNotificationSource({
           path,
           params,

@@ -1,15 +1,15 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import type { SongDetail } from "@/types/song/api";
+import type { PlayerTrack } from "@/types/player/model";
 
-export function useTrackSelection(tracks: SongDetail[]) {
-  const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set());
-  const lastFocusedIdRef = useRef<number | null>(null);
+export function useTrackSelection(tracks: PlayerTrack[]) {
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const lastFocusedIdRef = useRef<string | null>(null);
 
   // 按列表当前顺序获取已选中的歌曲数组
   const selectedTracks = useMemo(
-    () => tracks.filter((track) => selectedIds.has(track.id)),
+    () => tracks.filter((track) => selectedIds.has(track.ref.id)),
     [tracks, selectedIds],
   );
 
@@ -19,11 +19,11 @@ export function useTrackSelection(tracks: SongDetail[]) {
   }, []);
 
   const selectAll = useCallback(() => {
-    setSelectedIds(new Set(tracks.map((t) => t.id)));
+    setSelectedIds(new Set(tracks.map((t) => t.ref.id)));
   }, [tracks]);
 
   const handleRowClick = useCallback(
-    (trackId: number, event: React.MouseEvent) => {
+    (trackId: string, event: React.MouseEvent) => {
       // 忽略右键点击（右键由 contextmenu 处理）
       if (event.button !== 0) return;
 
@@ -46,13 +46,13 @@ export function useTrackSelection(tracks: SongDetail[]) {
         // Shift: 区间连选
         if (lastFocusedIdRef.current !== null) {
           const lastId = lastFocusedIdRef.current;
-          const lastIdx = tracks.findIndex((t) => t.id === lastId);
-          const currIdx = tracks.findIndex((t) => t.id === trackId);
+          const lastIdx = tracks.findIndex((t) => t.ref.id === lastId);
+          const currIdx = tracks.findIndex((t) => t.ref.id === trackId);
 
           if (lastIdx !== -1 && currIdx !== -1) {
             const start = Math.min(lastIdx, currIdx);
             const end = Math.max(lastIdx, currIdx);
-            const rangeIds = tracks.slice(start, end + 1).map((t) => t.id);
+            const rangeIds = tracks.slice(start, end + 1).map((t) => t.ref.id);
 
             setSelectedIds((prev) => {
               const next = new Set(prev);
@@ -74,7 +74,7 @@ export function useTrackSelection(tracks: SongDetail[]) {
     [tracks],
   );
 
-  const handleRowContextMenu = useCallback((trackId: number) => {
+  const handleRowContextMenu = useCallback((trackId: string) => {
     setSelectedIds((prev) => {
       // 如果右键点击的歌曲已经处于多选集合中，保留多选状态以便右键批量操作
       if (prev.has(trackId)) {
@@ -117,7 +117,7 @@ export function useTrackSelection(tracks: SongDetail[]) {
   return {
     selectedIds,
     selectedTracks,
-    isSelected: useCallback((id: number) => selectedIds.has(id), [selectedIds]),
+    isSelected: useCallback((id: string) => selectedIds.has(id), [selectedIds]),
     handleRowClick,
     handleRowContextMenu,
     clearSelection,

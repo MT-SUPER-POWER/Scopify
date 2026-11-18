@@ -7,17 +7,17 @@ import { PlaylistContent } from "@/components/Playlist/PlaylistContent";
 import { PlaylistViewLoading } from "@/components/Playlist/lattice/PlaylistViewLoading";
 import { PlaylistPageSkeleton } from "@/components/Playlist/PlaylistPageSkeleton";
 import { QuietState } from "@/components/shared/QuietState";
-import { useLikedPlaylistQuery } from "@/hooks/library/useLibraryQueries";
+import { useLikedPlaylistQuery } from "@/hooks/library/useLibraryPlaylists";
 import { usePlaylist } from "@/hooks/playlist/usePlaylistData";
-import { useLoginStatus } from "@/hooks/auth/useLoginStatus";
+import { useActiveAccount } from "@/hooks/auth/useProviderAccounts";
 import { useTranslation } from "react-i18next";
 
 export default function LikedSongsPage() {
   const { t } = useTranslation();
-  const isLoggedIn = useLoginStatus();
+  const { isLoggedIn } = useActiveAccount();
   const likedPlaylistQuery = useLikedPlaylistQuery();
-  const likedPlaylistId = likedPlaylistQuery.data?.id;
-  const playlist = usePlaylist(likedPlaylistId ? String(likedPlaylistId) : null);
+  const likedPlaylistId = likedPlaylistQuery.data?.playlist.ref.id;
+  const playlist = usePlaylist(likedPlaylistId ?? null);
 
   if (!isLoggedIn) {
     return (

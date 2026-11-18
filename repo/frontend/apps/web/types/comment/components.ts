@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
-import type { CommentResource } from "@/types/comment/api";
-import type { NeteaseComment } from "@/types/song/api";
+import type { MusicComment } from "@scopify/music-domain/comment";
+import type { CommentResource } from "@/types/comment/model";
 
 export interface CommentSectionProps {
   resource: CommentResource;
@@ -23,14 +23,16 @@ export interface CommentComposerProps {
 }
 
 export interface CommentRowProps {
-  comment: NeteaseComment;
+  comment: MusicComment;
   isOwn: boolean;
   isReplying: boolean;
   canReply: boolean;
+  /** 平台允许点赞、删除（comments.write）；否则只读显示点赞数。 */
+  canWrite: boolean;
   /** 楼中楼里的回复：小头像，回复楼主的引用不再重复显示。 */
   compact?: boolean;
   /** 所在楼的根评论 id，用来判断一条回复是回复楼主还是回复别的回复。 */
-  rootId?: number;
+  rootId?: string;
   /** 有回复时，头像下方画一条通向「N 条回复」的引导线。 */
   hasReplies?: boolean;
   onLike: () => void;
@@ -44,9 +46,9 @@ export interface CommentRowProps {
 
 export interface CommentRepliesProps {
   resource: CommentResource;
-  parentId: number;
+  parentId: string;
   replyCount: number;
-  renderReply: (reply: NeteaseComment) => ReactNode;
+  renderReply: (reply: MusicComment) => ReactNode;
 }
 
 export interface CommentHeaderArtist {

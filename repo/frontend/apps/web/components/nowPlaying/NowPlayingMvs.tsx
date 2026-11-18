@@ -2,12 +2,15 @@
 
 import { NowPlayingCard } from "./NowPlayingCard";
 import { MvListItem } from "@/components/mv/MvListItem";
-import { useArtistMVsQuery, useMVDetailQuery } from "@/hooks/mv/useMVQueries";
+import { useArtistMVsQuery, useMvDetailQuery } from "@/hooks/mv/useMVQueries";
+import { adaptNeteaseMv } from "@/lib/providers/netease/adapters/mv";
 import { useSongMvId } from "@/hooks/song/useSongMvId";
 import { useNowPlayingMv } from "@/hooks/ui/useNowPlayingMv";
+import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
-import type { MvSummary } from "@/types/mv/api";
+import type { MusicMv } from "@scopify/music-domain/mv";
+
 import type { NowPlayingSectionProps } from "@/types/player/nowPlayingComponents";
 
 const MV_LIMIT = 4;
@@ -18,26 +21,32 @@ export function NowPlayingMvs({ song }: NowPlayingSectionProps) {
   const { t } = useTranslation();
   const songMvId = useSongMvId(song);
   const artistId = song.ar?.[0]?.id;
-  const artistMvs = useArtistMVsQuery(artistId || null, ARTIST_MV_PARAMS).data?.mvs ?? [];
-  const songMvInList = artistMvs.some((item) => item.id === songMvId);
+  const artistMvsData = useArtistMVsQuery(artistId || null, ARTIST_MV_PARAMS).data?.mvs;
+  const artistMvs = useMemo(() => (artistMvsData ?? []).map(adaptNeteaseMv), [artistMvsData]);
+  const songMvKey = String(songMvId);
+  const songMvInList = artistMvs.some((item) => item.ref.id === songMvKey);
   // 本曲 MV 不在艺人列表前几条时，单独取详情补到最前
-  const songMvDetail = useMVDetailQuery(songMvId || null, {
+  const songMvRef = useMemo(
+    () => (songMvId > 0 ? ({ provider: "netease", kind: "mv", id: songMvKey } as const) : null),
+    [songMvId, songMvKey],
+  );
+  const songMvDetail = useMvDetailQuery(songMvRef, {
     enabled: songMvId > 0 && !songMvInList,
-  }).data?.data;
+  }).data;
   const mv = useNowPlayingMv(song.id);
 
-  const songMv: MvSummary | undefined = songMvInList
-    ? artistMvs.find((item) => item.id === songMvId)
+  const songMv: MusicMv | undefined = songMvInList
+    ? artistMvs.find((item) => item.ref.id === songMvKey)
     : songMvDetail;
   const items = [
     ...(songMv ? [songMv] : []),
-    ...artistMvs.filter((item) => item.id !== songMvId),
+    ...artistMvs.filter((item) => item.ref.id !== songMvKey),
   ].slice(0, MV_LIMIT);
 
   if (items.length === 0) return null;
 
-  const select = (mvId: number) => {
-    mv.open(mvId);
+  const select = (mvId: string) => {
+    mv.open(Number(mvId));
     // 播放器在面板顶部，滚回去让用户看到画面
     document
       .querySelector("[data-now-playing-media]")
@@ -48,13 +57,13 @@ export function NowPlayingMvs({ song }: NowPlayingSectionProps) {
     <NowPlayingCard title={t("nowPlaying.mvs")} className="pb-2">
       <ul className="mt-2 flex flex-col px-2">
         {items.map((item) => (
-          <li key={item.id}>
+          <li key={item.ref.id}>
             <MvListItem
               mv={item}
-              isActive={item.id === mv.activeMvId}
+              isActive={Number(item.ref.id) === mv.activeMvId}
               onSelect={select}
               badge={
-                item.id === songMvId ? (
+                item.ref.id === songMvKey ? (
                   <span className="shrink-0 rounded-sm bg-content/10 px-1 text-[10px] leading-4 font-bold text-content">
                     {t("nowPlaying.songMv")}
                   </span>

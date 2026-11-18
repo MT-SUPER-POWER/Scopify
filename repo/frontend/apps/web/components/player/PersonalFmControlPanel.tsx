@@ -10,6 +10,7 @@ import {
   getPersonalFmSelectionLabel,
   isPersonalFmPlaybackSource,
 } from "@/constants/personalFm";
+import { useProviderCapability } from "@/hooks/provider/useActiveProvider";
 import { cn } from "@/lib/utils";
 import { useTranslation } from "react-i18next";
 
@@ -34,7 +35,10 @@ export function PersonalFmControlPanel({ placement = "playbar" }: PersonalFmCont
   const selection = usePersonalFmStore((state) => state.selection);
   const isLoading = usePersonalFmStore((state) => state.status === "loading");
   const selectionLabel = getPersonalFmSelectionLabel(selection, t);
+  const hasModes = useProviderCapability("recommend.fm.modes");
 
+  // Platforms whose FM is a single stream have no modes to pick.
+  if (!hasModes) return null;
   if (placement === "playbar" && !isPersonalFm) return null;
 
   const selectMode = (mode: PersonalFmModeId) =>

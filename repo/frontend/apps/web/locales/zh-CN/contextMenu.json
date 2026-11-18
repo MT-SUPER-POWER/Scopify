@@ -14,6 +14,7 @@
   "removeFromQueue": "从播放队列中移除",
   "recommendLess": "减少推荐",
   "goToArtist": "查看歌手",
+  "goToAlbum": "查看专辑",
   "view": "查看",
   "updatePlaylist": "更新歌单",
   "deletePlaylist": "删除歌单",

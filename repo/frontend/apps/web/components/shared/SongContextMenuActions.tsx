@@ -1,5 +1,5 @@
 "use client";
-import { Heart, ListMusic, ListPlus, Pause, Play } from "lucide-react";
+import { Heart, HeartOff, ListMusic, ListPlus, Pause, Play } from "lucide-react";
 import {
   ContextMenuContent,
   ContextMenuGroup,
@@ -10,6 +10,7 @@ import { CreatePlaylistFromTracksDialog } from "@/components/shared/CreatePlayli
 import { SongNavigationMenuItems } from "@/components/shared/SongNavigationMenuItems";
 import { SongPlaylistMenuItems } from "@/components/shared/SongPlaylistMenuItems";
 import { SongRemovalMenuItems } from "@/components/shared/SongRemovalMenuItems";
+import { useActiveProvider } from "@/hooks/provider/useActiveProvider";
 import { useSongContextMenuActions } from "@/hooks/song/useSongContextMenuActions";
 import type { SongContextMenuActionsProps } from "@/types/song/contextMenuComponents";
 
@@ -36,6 +37,11 @@ export function SongContextMenuActions(actions: SongContextMenuActionsProps) {
     onSimilarSongs,
     song,
   } = actions;
+  const { capabilities } = useActiveProvider();
+  const canLike = isLogin && capabilities.has("track.like");
+  const canManagePlaylists = isLogin && capabilities.has("playlist.manage");
+  const removeFromLiked = isMulti ? allTargetLiked : isLiked;
+  const LikeIcon = removeFromLiked ? HeartOff : Heart;
   return (
     <>
       {isContextMenuOpen && (
@@ -65,18 +71,18 @@ export function SongContextMenuActions(actions: SongContextMenuActionsProps) {
                 {t("song.similar.action")}
               </ContextMenuItem>
             )}
-            {isLogin && (
+            {canLike && (
               <ContextMenuItem onClick={handleLike}>
-                <Heart className="mr-2 size-4" />
+                <LikeIcon className="mr-2 size-4" />
                 {isMulti
-                  ? `${allTargetLiked ? "取消喜欢" : "喜欢"} (${targetSongs.length} 首)`
-                  : t(isLiked ? "contextMenu.removeFromLiked" : "contextMenu.addToLiked")}
+                  ? `${removeFromLiked ? "取消喜欢" : "喜欢"} (${targetSongs.length} 首)`
+                  : t(removeFromLiked ? "contextMenu.removeFromLiked" : "contextMenu.addToLiked")}
               </ContextMenuItem>
             )}
           </ContextMenuGroup>
-          {(isLogin || !isMulti) && <ContextMenuSeparator />}
+          {(canManagePlaylists || !isMulti) && <ContextMenuSeparator />}
           <ContextMenuGroup>
-            {isLogin && <SongPlaylistMenuItems actions={actions} model={model} />}
+            {canManagePlaylists && <SongPlaylistMenuItems actions={actions} model={model} />}
             {!isMulti && <SongNavigationMenuItems actions={actions} model={model} />}
           </ContextMenuGroup>
           {!isMulti && <SongRemovalMenuItems actions={actions} model={model} />}

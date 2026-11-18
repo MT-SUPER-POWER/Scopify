@@ -2,7 +2,7 @@
 
 import { useCallback } from "react";
 import { toast } from "sonner";
-import { useLoginStatus } from "@/hooks/auth/useLoginStatus";
+import { useActiveAccount } from "@/hooks/auth/useProviderAccounts";
 import { useSmartRouter } from "@/hooks/core/useSmartRouter";
 import { runtime } from "@/lib/runtime";
 import { useTranslation } from "react-i18next";
@@ -15,7 +15,8 @@ function getCurrentPath() {
 }
 
 export function useRequireLoginAction() {
-  const isLoggedIn = useLoginStatus();
+  // Signed in on the platform the page is showing, not on NetEase alone.
+  const { isLoggedIn } = useActiveAccount();
   const smartRouter = useSmartRouter();
   const { t } = useTranslation();
 

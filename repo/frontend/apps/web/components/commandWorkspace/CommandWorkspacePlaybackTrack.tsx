@@ -12,15 +12,21 @@ export function CommandWorkspacePlaybackTrack({ onClose }: CommandWorkspaceNowPl
   const router = useRouter();
   const commands = usePlaybackCommands();
   const projection = usePlaybackProjection();
-  const currentSong = usePlayerStore((state) => state.currentSongDetail);
+  const currentSong = usePlayerStore((state) => state.currentTrack);
   if (!currentSong) return null;
   const isPlaying = projection.isPlaying;
-  const coverUrl = currentSong.al?.picUrl ? `${currentSong.al.picUrl}?param=400y400` : null;
-  const navigateToArtist = (artistId: number) => {
+  const coverUrl = currentSong.album?.coverUrl
+    ? `${currentSong.album?.coverUrl}?param=400y400`
+    : null;
+  // Artist and album pages are NetEase-only; other platforms show plain names.
+  const canNavigate = currentSong.ref.provider === "netease";
+  const albumId =
+    canNavigate && currentSong.album?.ref.id !== "0" ? currentSong.album?.ref.id : null;
+  const navigateToArtist = (artistId: string) => {
     router.push(`/artist?id=${artistId}`, { scroll: false });
     onClose?.();
   };
-  const navigateToAlbum = (albumId: number) => {
+  const navigateToAlbum = (albumId: string) => {
     router.push(`/album?id=${albumId}`, { scroll: false });
     onClose?.();
   };
@@ -36,7 +42,7 @@ export function CommandWorkspacePlaybackTrack({ onClose }: CommandWorkspaceNowPl
         {coverUrl ? (
           <img
             src={coverUrl}
-            alt={currentSong.name}
+            alt={currentSong.title}
             loading="eager"
             className="size-full object-cover"
           />
@@ -77,18 +83,18 @@ export function CommandWorkspacePlaybackTrack({ onClose }: CommandWorkspaceNowPl
         </div>
 
         <h3 className="truncate text-base font-bold tracking-tight text-content sm:text-lg">
-          {currentSong.name}
+          {currentSong.title}
         </h3>
 
         <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs text-content-muted">
           {/* 歌手 */}
           <span className="truncate">
-            {currentSong.ar?.map((artist, aIndex) => (
-              <span key={`${artist.id || artist.name}-${aIndex}`}>
-                {artist.id ? (
+            {currentSong.artists?.map((artist, aIndex) => (
+              <span key={`${artist.ref.id || artist.name}-${aIndex}`}>
+                {canNavigate && artist.ref.id !== "0" ? (
                   <button
                     type="button"
-                    onClick={() => navigateToArtist(artist.id)}
+                    onClick={() => navigateToArtist(artist.ref.id)}
                     className="transition-colors hover:text-content hover:underline focus-visible:text-content"
                   >
                     {artist.name}
@@ -96,26 +102,26 @@ export function CommandWorkspacePlaybackTrack({ onClose }: CommandWorkspaceNowPl
                 ) : (
                   <span>{artist.name}</span>
                 )}
-                {aIndex < (currentSong.ar?.length ?? 0) - 1 ? " / " : ""}
+                {aIndex < (currentSong.artists?.length ?? 0) - 1 ? " / " : ""}
               </span>
             ))}
           </span>
 
           {/* 专辑 */}
-          {currentSong.al?.name ? (
+          {currentSong.album?.title ? (
             <>
               <span className="text-content-subtle">·</span>
-              {currentSong.al.id ? (
+              {albumId ? (
                 <button
                   type="button"
-                  onClick={() => navigateToAlbum(currentSong.al.id)}
-                  title={currentSong.al.name}
+                  onClick={() => navigateToAlbum(albumId)}
+                  title={currentSong.album?.title}
                   className="max-w-45 truncate transition-colors hover:text-content hover:underline focus-visible:text-content"
                 >
-                  {currentSong.al.name}
+                  {currentSong.album?.title}
                 </button>
               ) : (
-                <span className="max-w-45 truncate">{currentSong.al.name}</span>
+                <span className="max-w-45 truncate">{currentSong.album?.title}</span>
               )}
             </>
           ) : null}

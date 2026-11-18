@@ -7,7 +7,7 @@ import {
   type TrackLocator,
 } from "@scopify/playback-core";
 
-import { getSongUrlWithQuality, UI_QUALITY_TO_LEVEL } from "@/lib/api/music";
+import { getSongUrlWithQuality, UI_QUALITY_TO_LEVEL } from "@/lib/providers/netease/api/music";
 import {
   clearCachedPlayUrl,
   getCachedPlayUrl,

@@ -21,11 +21,7 @@ function buildArtwork(src: string | null | undefined): MediaImage[] {
  * Bridges audio playback state, track metadata, and media control actions
  * with the browser Media Session API (and OS media transport controls like Windows SMTC).
  */
-export function useMediaSession({
-  audioRef,
-  currentSongDetail,
-  isPlaying,
-}: UseMediaSessionOptions) {
+export function useMediaSession({ audioRef, currentTrack, isPlaying }: UseMediaSessionOptions) {
   // Bind Action Handlers
   useEffect(() => {
     if (typeof window === "undefined" || !("mediaSession" in navigator)) {
@@ -113,7 +109,7 @@ export function useMediaSession({
 
     const mediaSession = navigator.mediaSession;
 
-    if (!currentSongDetail) {
+    if (!currentTrack) {
       try {
         mediaSession.metadata = null;
       } catch (error) {
@@ -123,24 +119,24 @@ export function useMediaSession({
     }
 
     const artistName =
-      currentSongDetail.ar
+      currentTrack.artists
         ?.map((artist) => artist.name)
         .filter(Boolean)
         .join(" / ") || "未知歌手";
-    const albumName = currentSongDetail.al?.name || "";
-    const coverUrl = currentSongDetail.al?.picUrl || "";
+    const albumName = currentTrack.album?.title || "";
+    const coverUrl = currentTrack.album?.coverUrl || "";
 
     try {
       mediaSession.metadata = new MediaMetadata({
         album: albumName,
         artist: artistName,
         artwork: buildArtwork(coverUrl),
-        title: currentSongDetail.name || "未知曲目",
+        title: currentTrack.title || "未知曲目",
       });
     } catch (error) {
       console.warn("[MediaSession] Failed to update metadata", error);
     }
-  }, [currentSongDetail]);
+  }, [currentTrack]);
 
   // Update Playback State
   useEffect(() => {
@@ -149,7 +145,7 @@ export function useMediaSession({
     }
 
     try {
-      navigator.mediaSession.playbackState = currentSongDetail
+      navigator.mediaSession.playbackState = currentTrack
         ? isPlaying
           ? "playing"
           : "paused"
@@ -157,7 +153,7 @@ export function useMediaSession({
     } catch (error) {
       console.warn("[MediaSession] Failed to update playback state", error);
     }
-  }, [currentSongDetail, isPlaying]);
+  }, [currentTrack, isPlaying]);
 
   // Update Position State
   useEffect(() => {
@@ -174,9 +170,9 @@ export function useMediaSession({
     const mediaSession = navigator.mediaSession;
 
     const updatePosition = () => {
-      if (!currentSongDetail) return;
+      if (!currentTrack) return;
       const durationSec =
-        (currentSongDetail.dt ? currentSongDetail.dt / 1_000 : audio.duration) || 0;
+        (currentTrack.durationMs ? currentTrack.durationMs / 1_000 : audio.duration) || 0;
       const positionSec = audio.currentTime || 0;
 
       if (durationSec > 0 && Number.isFinite(durationSec) && positionSec <= durationSec) {
@@ -205,5 +201,5 @@ export function useMediaSession({
       audio.removeEventListener("ratechange", updatePosition);
       audio.removeEventListener("seeked", updatePosition);
     };
-  }, [audioRef, currentSongDetail]);
+  }, [audioRef, currentTrack]);
 }

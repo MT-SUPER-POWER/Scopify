@@ -56,7 +56,13 @@
     "//#lint:architecture": {
       "cache": false
     },
+    "//#check:architecture": {
+      "cache": false
+    },
     "//#lint:packages": {
+      "cache": false
+    },
+    "//#check:packages": {
       "cache": false
     },
     "lint": {

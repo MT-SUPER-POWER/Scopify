@@ -7,14 +7,13 @@ import { cn } from "@/lib/utils";
 import { useTranslation } from "react-i18next";
 
 import { useUiStore } from "@/store/module/ui";
-import type { NowPlayingSectionProps } from "@/types/player/nowPlayingComponents";
 
 const PREVIEW_LINE_COUNT = 3;
 
 /** 「歌词预览」：以封面主色为底，滚动展示当前句及其后两句，点击切到面板的歌词视图（Tab 2）。 */
-export function NowPlayingLyricsPreview({ song }: NowPlayingSectionProps) {
+export function NowPlayingLyricsPreview({ artworkUrl }: { artworkUrl: string | null | undefined }) {
   const { t } = useTranslation();
-  const tint = useNowPlayingTint(song);
+  const tint = useNowPlayingTint(artworkUrl);
   const { lines, lastStartedIndex } = useCompanionLyricLine();
 
   if (lines.length === 0) return null;

@@ -1,13 +1,12 @@
 import type { ArtistInfo } from "@/types/artist/model";
-import type { SongDetail } from "@/types/song/api";
+import type { PlayerTrack } from "@/types/player/model";
 
 export interface ArtistSongsContentProps {
   artistId: string;
 }
 
 export interface PopularTracksProps {
-  tracks: SongDetail[];
-  queue: SongDetail[];
+  tracks: readonly PlayerTrack[];
   artist: ArtistInfo;
 }
 

@@ -2,7 +2,7 @@
 
 import { useMutation } from "@tanstack/react-query";
 
-import { dislikeDailyRecommend } from "@/lib/api/playlist";
+import { dislikeDailyRecommend } from "@/lib/providers/netease/api/playlist";
 
 export function useDailyRecommendationMutation() {
   return useMutation({

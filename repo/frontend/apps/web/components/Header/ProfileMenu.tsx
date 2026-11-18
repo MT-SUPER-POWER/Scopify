@@ -12,9 +12,9 @@ import { ProfileMenuNavigation } from "@/components/Header/ProfileMenuNavigation
 import { VipSignMenuCard } from "@/components/VipSign/VipSignMenuCard";
 import { VipSignModal } from "@/components/VipSign/VipSignModal";
 import { useVipSign } from "@/hooks/vipSign/useVipSign";
-import { useLoginStatus } from "@/hooks/auth/useLoginStatus";
-import { useSmartRouter } from "@/hooks/core/useSmartRouter";
-import { runtime } from "@/lib/runtime";
+import { ProfileMenuAccounts } from "@/components/Header/ProfileMenuAccounts";
+import { useActiveAccount } from "@/hooks/auth/useProviderAccounts";
+import { useProviderCapability } from "@/hooks/provider/useActiveProvider";
 import { useTranslation } from "react-i18next";
 
 import type { VipSignDetail } from "@/types/vipSign/api";
@@ -22,8 +22,9 @@ import type { ProfileMenuProps } from "@/types/user/profileMenuComponents";
 
 export function ProfileMenu({ children }: ProfileMenuProps) {
   const { t } = useTranslation();
-  const smartRouter = useSmartRouter();
-  const isLoggedIn = useLoginStatus();
+  const activeAccount = useActiveAccount();
+  const isLoggedIn = activeAccount.isLoggedIn;
+  const hasVip = useProviderCapability("vip");
 
   const [isProfileMenuOpen, setProfileMenuOpen] = useState(false);
   const [signModalOpen, setSignModalOpen] = useState(false);
@@ -75,10 +76,6 @@ export function ProfileMenu({ children }: ProfileMenuProps) {
     setSignModalOpen(true);
   };
 
-  const handleLoginClick = () => {
-    if (!runtime.auth.openLoginWindow()) smartRouter.push("/login");
-  };
-
   return (
     <>
       <DropdownMenu open={isProfileMenuOpen} onOpenChange={setProfileMenuOpen}>
@@ -98,8 +95,14 @@ export function ProfileMenu({ children }: ProfileMenuProps) {
           side="bottom"
           sideOffset={8}
         >
-          <ProfileMenuIdentity isLoggedIn={isLoggedIn} onLogin={handleLoginClick} />
           {isLoggedIn && (
+            <>
+              <ProfileMenuIdentity isLoggedIn={isLoggedIn} />
+              <DropdownMenuSeparator className="mx-6 my-0 bg-content/10" />
+            </>
+          )}
+          <ProfileMenuAccounts />
+          {isLoggedIn && hasVip && (
             <>
               <DropdownMenuSeparator className="mx-6 my-0 bg-content/10" />
               <VipSignMenuCard

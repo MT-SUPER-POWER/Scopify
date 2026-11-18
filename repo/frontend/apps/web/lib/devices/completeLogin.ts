@@ -1,12 +1,13 @@
-import { getUserAccount, getUserDetail } from "@/lib/api/user";
-import { uploadDeviceName } from "@/lib/api/devices";
+import { getUserAccount, getUserDetail } from "@/lib/providers/netease/api/user";
+import { uploadDeviceName } from "@/lib/providers/netease/api/devices";
 import { bindFreshLoginCookie, rememberDeviceName } from "@/lib/devices/clientIdentity";
 import { runtime } from "@/lib/runtime";
 import {
   saveMusicSessionCredential,
   getMusicSessionCredential,
 } from "@/lib/web/musicSessionCredential";
-import { getBackendBaseUrl } from "@/lib/web/request";
+import { getNeteaseBaseUrl } from "@/lib/providers/netease/client";
+import { requestProviderSwitch } from "@/lib/providers/switchProvider";
 import { useUserStore } from "@/store/module/user";
 import type { NeteaseUserSource } from "@/types/user/api";
 import type { FreshLoginDevice } from "@/types/devices/model";
@@ -17,13 +18,13 @@ export async function completeFreshLogin(
   type: "qr" | "token",
   device: FreshLoginDevice,
 ) {
-  if (device.backend !== getBackendBaseUrl()) throw new Error("Backend changed during login");
+  if (device.backend !== getNeteaseBaseUrl()) throw new Error("Backend changed during login");
   if (!rawCookie) throw new Error("Missing login session");
   const cookie = bindFreshLoginCookie(rawCookie, device).trim();
   saveMusicSessionCredential(cookie);
   if (runtime.isDesktop) await runtime.auth.importMusicSession(cookie, device.backend);
   const isCurrent = () =>
-    device.backend === getBackendBaseUrl() && getMusicSessionCredential()?.trim() === cookie;
+    device.backend === getNeteaseBaseUrl() && getMusicSessionCredential()?.trim() === cookie;
   const account = (await getUserAccount()).data;
   const userId = account.account?.id ?? account.profile?.userId;
   if (account.code !== 200 || !userId || !isCurrent())
@@ -36,6 +37,8 @@ export async function completeFreshLogin(
   }
   if (!profile || !isCurrent()) throw new Error("Unable to confirm login profile");
 
+  // Logging into NetEase makes it the active platform, as a QQ login does for QQ.
+  requestProviderSwitch("netease");
   useUserStore.getState().setLoginType(type);
   useUserStore.getState().setUser(profile);
   useUserStore.getState().setUserId(userId);

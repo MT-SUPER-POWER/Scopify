@@ -49,14 +49,14 @@ export const LatticePoster = memo(
     useEffect(() => {
       setRevealed(false);
     }, [expanded]);
-    const artist = track.ar.map((item) => item.name).join(" / ");
+    const artist = track.artists.map((item) => item.name).join(" / ");
     const copy = (
       <span className={posterCopyClass}>
-        <strong className={posterTitleClass} title={track.name}>
-          {track.name}
+        <strong className={posterTitleClass} title={track.title}>
+          {track.title}
         </strong>
-        <small className={posterSubtitleClass} title={artist || track.al.name}>
-          {artist || track.al.name}
+        <small className={posterSubtitleClass} title={artist || (track.album?.title ?? "")}>
+          {artist || (track.album?.title ?? "")}
         </small>
       </span>
     );
@@ -67,7 +67,7 @@ export const LatticePoster = memo(
         data-wall-track={instance.queueIndex}
         role={expanded ? "group" : "button"}
         tabIndex={focused ? 0 : -1}
-        aria-label={t("playlist.lattice.select", { name: track.name })}
+        aria-label={t("playlist.lattice.select", { name: track.title })}
         aria-expanded={expanded}
         onFocusCapture={() => setFocusWithin(true)}
         onBlurCapture={(event) => {
@@ -130,7 +130,7 @@ export const LatticePoster = memo(
           ) : (
             copy
           )}
-          {expanded && onDislikeTrack && (
+          {expanded && onDislikeTrack && track.ref.provider === "netease" && (
             <button
               type="button"
               aria-label={t("contextMenu.recommendLess")}

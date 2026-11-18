@@ -1,5 +1,5 @@
 import type { MouseEvent } from "react";
-import type { SongDetail } from "@/types/song/api";
+import type { PlayerTrack } from "@/types/player/model";
 
 export interface CarouselSwipeOptions {
   onNext: () => void;
@@ -14,7 +14,7 @@ export interface HomePlaybackActions {
   handlePlayPlaylist: (id: number | string, event: MouseEvent) => Promise<void>;
   handlePlayAlbum: (id: number | string, event: MouseEvent) => Promise<void>;
   handlePlayArtistTopSongs: (id: number | string, event: MouseEvent) => Promise<void>;
-  playSongs: (songs: SongDetail[], index: number) => Promise<void>;
+  playTracks: (tracks: readonly PlayerTrack[], index: number) => Promise<void>;
 }
 
 export interface HomeContextValue {
@@ -25,10 +25,9 @@ export interface HomeContextValue {
 }
 
 export interface ArtistTopListItem {
-  id: number;
+  id: string;
   name: string;
   picUrl: string;
-  musicSize?: number;
 }
 
 export type BannerTargetKind = "album" | "artist" | "playlist" | "radio" | "song";

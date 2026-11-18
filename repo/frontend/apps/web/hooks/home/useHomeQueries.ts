@@ -1,52 +1,65 @@
 "use client";
 
+import type { MusicResourceRef } from "@scopify/music-domain/identity";
 import { queryOptions, useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import { throwQueryErrorWithoutData } from "@/lib/query/errorPolicy";
 
-import { getArtistAlbums, getFollowedArtists, getHotArtists } from "@/lib/api/artist";
-import { getNewestAlbums, getUserAlbumSublist } from "@/lib/api/album";
-import { getPersonalizedNewSongs } from "@/lib/api/music";
-import {
-  getPersonalizePlaylists,
-  getPlaylistAllTracks,
-  getRecommendedPlaylists,
-} from "@/lib/api/playlist";
-import { getToplistDetail } from "@/lib/api/toplist";
-import { getRecentPlaylists, getUserDetail } from "@/lib/api/user";
-import { getRecommendedVoiceLists } from "@/lib/api/voicelist";
+import { getArtistAlbums, getFollowedArtists } from "@/lib/providers/netease/api/artist";
+import { getUserAlbumSublist } from "@/lib/providers/netease/api/album";
+import { getRecentPlaylists, getUserDetail } from "@/lib/providers/netease/api/user";
+import { getRecommendedVoiceLists } from "@/lib/providers/netease/api/voicelist";
+import { useActiveAccount } from "@/hooks/auth/useProviderAccounts";
+import { useActiveProvider } from "@/hooks/provider/useActiveProvider";
+import { providerQueryKey } from "@/lib/query/providerQueryKey";
 import { musicQueryKeys } from "@/lib/query/queryKeys";
 import { useUserStore } from "@/store";
-import type { NeteaseAlbum } from "@/types/album/api";
-import { prunePlaylistTracks } from "@/types/playlist/api";
+import type { NeteaseAlbum } from "@/types/providers/netease/albumApi";
 
-const personalizedPlaylistsOptions = (limit: number) =>
-  queryOptions({
+/** Playlists anyone gets. The reader is the active platform's; one without it never calls this. */
+function useFeaturedPlaylistsOptions(limit: number) {
+  const provider = useActiveProvider();
+  return queryOptions({
     meta: { persist: true, scope: "public" },
-    queryFn: async () => (await getPersonalizePlaylists(limit)).data,
-    queryKey: musicQueryKeys.home.personalizedPlaylists(limit),
+    queryFn: ({ signal }) => {
+      if (!provider.getFeaturedPlaylists) throw new Error("Featured playlists are unsupported.");
+      return provider.getFeaturedPlaylists(limit, { signal });
+    },
+    queryKey: providerQueryKey(
+      provider.provider,
+      ...musicQueryKeys.home.personalizedPlaylists(limit),
+    ),
   });
+}
 
-export function usePersonalizedPlaylistsQuery(limit = 100, boundary = true) {
+export function useFeaturedPlaylistsQuery(limit = 100, boundary = true) {
   return useQuery({
-    ...personalizedPlaylistsOptions(limit),
+    ...useFeaturedPlaylistsOptions(limit),
     throwOnError: boundary ? throwQueryErrorWithoutData : false,
   });
 }
 
 /** 首次加载时挂起，由所在 slot 的 loading.tsx 显示骨架；失败进最近的边界。 */
-export function useSuspensePersonalizedPlaylistsQuery(limit = 100) {
-  return useSuspenseQuery(personalizedPlaylistsOptions(limit));
+export function useSuspenseFeaturedPlaylistsQuery(limit = 100) {
+  return useSuspenseQuery(useFeaturedPlaylistsOptions(limit));
 }
 
 export function useRecommendedPlaylistsQuery(enabled: boolean, boundary = true) {
-  const userId = useUserStore((state) => state.user?.userId);
-  const accountId = enabled ? (userId ?? "authenticated") : "anonymous";
+  const provider = useActiveProvider();
+  const accountId = useHomeAccountKey(enabled);
   return useQuery({
     throwOnError: boundary ? throwQueryErrorWithoutData : false,
-    enabled,
+    enabled: enabled && Boolean(provider.getRecommendedPlaylists),
     meta: { scope: "account" },
-    queryFn: async () => (await getRecommendedPlaylists()).data,
-    queryKey: musicQueryKeys.home.recommendedPlaylists(accountId),
+    queryFn: ({ signal }) => {
+      if (!provider.getRecommendedPlaylists) {
+        throw new Error("Recommended playlists are unsupported.");
+      }
+      return provider.getRecommendedPlaylists({ signal });
+    },
+    queryKey: providerQueryKey(
+      provider.provider,
+      ...musicQueryKeys.home.recommendedPlaylists(accountId),
+    ),
   });
 }
 
@@ -58,23 +71,48 @@ export function useRecommendedVoiceListsQuery(limit = 24) {
   });
 }
 
-const hotArtistsOptions = (limit: number) =>
-  queryOptions({
-    meta: { persist: true, scope: "public" },
-    queryFn: async () => (await getHotArtists(limit)).data,
-    queryKey: musicQueryKeys.home.hotArtists(limit),
-  });
+/** The cache segment for the active account; anonymous reads share one. */
+function useHomeAccountKey(enabled: boolean): string {
+  const account = useActiveAccount();
+  return enabled ? (account.profile?.accountId ?? "authenticated") : "anonymous";
+}
 
-export function useHotArtistsQuery(limit = 50, boundary = true) {
+/** The platform's own home feed; it belongs to the signed-in account. */
+export function useHomeFeedQuery() {
+  const provider = useActiveProvider();
+  const accountId = useHomeAccountKey(true);
+  return useSuspenseQuery({
+    meta: { scope: "account" },
+    queryFn: ({ signal }) => {
+      if (!provider.getHomeFeed) throw new Error("The home feed is unsupported.");
+      return provider.getHomeFeed({ signal });
+    },
+    queryKey: providerQueryKey(provider.provider, "home", "feed", accountId),
+  });
+}
+
+function useFeaturedArtistsOptions(limit: number) {
+  const provider = useActiveProvider();
+  return queryOptions({
+    meta: { persist: true, scope: "public" },
+    queryFn: ({ signal }) => {
+      if (!provider.getFeaturedArtists) throw new Error("Featured artists are unsupported.");
+      return provider.getFeaturedArtists(limit, { signal });
+    },
+    queryKey: providerQueryKey(provider.provider, ...musicQueryKeys.home.hotArtists(limit)),
+  });
+}
+
+export function useFeaturedArtistsQuery(limit = 50, boundary = true) {
   return useQuery({
-    ...hotArtistsOptions(limit),
+    ...useFeaturedArtistsOptions(limit),
     throwOnError: boundary ? throwQueryErrorWithoutData : false,
   });
 }
 
 /** 首次加载时挂起，由所在位置的 Suspense 显示骨架；失败进最近的边界。 */
-export function useSuspenseHotArtistsQuery(limit = 50) {
-  return useSuspenseQuery(hotArtistsOptions(limit));
+export function useSuspenseFeaturedArtistsQuery(limit = 50) {
+  return useSuspenseQuery(useFeaturedArtistsOptions(limit));
 }
 
 export function useHomeUserProfileQuery(userId: null | string) {
@@ -89,39 +127,51 @@ export function useHomeUserProfileQuery(userId: null | string) {
   });
 }
 
-export function useNewSongsQuery(limit = 12) {
+export function useNewTracksQuery(limit = 12) {
+  const provider = useActiveProvider();
   return useSuspenseQuery({
     meta: { persist: true, scope: "public" },
-    queryFn: async () => (await getPersonalizedNewSongs(limit)).data,
-    queryKey: musicQueryKeys.home.newSongs(limit),
+    queryFn: ({ signal }) => {
+      if (!provider.getNewTracks) throw new Error("New tracks are unsupported.");
+      return provider.getNewTracks(limit, { signal });
+    },
+    queryKey: providerQueryKey(provider.provider, ...musicQueryKeys.home.newSongs(limit)),
   });
 }
 
-export function useToplistDetailQuery() {
+export function useToplistsQuery() {
+  const provider = useActiveProvider();
   return useSuspenseQuery({
     meta: { persist: true, scope: "public" },
-    queryFn: async () => (await getToplistDetail()).data,
-    queryKey: musicQueryKeys.home.toplists(),
+    queryFn: ({ signal }) => {
+      if (!provider.getToplists) throw new Error("Toplists are unsupported.");
+      return provider.getToplists({ signal });
+    },
+    queryKey: providerQueryKey(provider.provider, ...musicQueryKeys.home.toplists()),
   });
 }
 
 export function useNewAlbumsQuery() {
+  const provider = useActiveProvider();
   return useSuspenseQuery({
     meta: { persist: true, scope: "public" },
-    queryFn: async () => (await getNewestAlbums()).data,
-    queryKey: musicQueryKeys.home.newAlbums(),
+    queryFn: ({ signal }) => {
+      if (!provider.getNewAlbums) throw new Error("New albums are unsupported.");
+      return provider.getNewAlbums(20, { signal });
+    },
+    queryKey: providerQueryKey(provider.provider, ...musicQueryKeys.home.newAlbums()),
   });
 }
 
-export function useToplistTracksQuery(id: number) {
+/** The first songs of a chart, for the card that previews it. */
+export function useToplistTracksQuery(toplist: MusicResourceRef<"playlist">) {
+  const provider = useActiveProvider();
   return useQuery({
-    enabled: Boolean(id),
+    enabled: Boolean(toplist.id) && toplist.provider === provider.provider,
     meta: { persist: true, scope: "public" },
-    queryFn: async () => {
-      const res = await getPlaylistAllTracks({ id, limit: 3, offset: 0 });
-      return prunePlaylistTracks(res.data);
-    },
-    queryKey: musicQueryKeys.home.toplistTracks(id),
+    queryFn: async ({ signal }) =>
+      (await provider.getPlaylistTracks(toplist, { offset: 0, limit: 3 }, { signal })).tracks,
+    queryKey: providerQueryKey(provider.provider, ...musicQueryKeys.home.toplistTracks(toplist.id)),
     staleTime: 1000 * 60 * 30,
   });
 }

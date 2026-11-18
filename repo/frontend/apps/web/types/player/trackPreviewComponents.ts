@@ -1,8 +1,9 @@
-import type { SongDetail } from "@/types/song/api";
+import type { MusicResourceRef } from "@scopify/music-domain/identity";
+import type { PlayerTrack } from "@/types/player/model";
 
 export interface TrackPreviewButtonProps {
   /** 歌单或专辑的全部曲目；其中带 MV 的歌曲进入预览。 */
-  tracks: SongDetail[];
+  tracks: PlayerTrack[];
   title: string;
   tags?: string[];
   /** 从预览里播放时作为播放来源。 */
@@ -16,28 +17,28 @@ export interface TrackPreviewDialogProps {
   title: string;
   tags: string[];
   /** 带 MV、可预览的歌曲。 */
-  tracks: SongDetail[];
+  tracks: PlayerTrack[];
   /** 全部曲目，「播放这首」时作为播放队列。 */
-  allTracks: SongDetail[];
+  allTracks: PlayerTrack[];
   playlistId: number | string | null;
 }
 
 export interface TrackPreviewVideoProps {
-  mvId: number;
+  mv: MusicResourceRef<"mv">;
   muted: boolean;
   onProgress: (progress: number) => void;
   onEnded: () => void;
 }
 
 export interface TrackPreviewActionsProps {
-  song: SongDetail;
-  songs: SongDetail[];
+  song: PlayerTrack;
+  songs: PlayerTrack[];
   playlistId: number | string | null;
   onClose: () => void;
 }
 
 export interface TrackPreviewDetailsProps {
-  song: SongDetail;
+  song: PlayerTrack;
   title: string;
   tags: string[];
   direction: 1 | -1;

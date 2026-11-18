@@ -7,7 +7,7 @@ import type { SortableTrackRowProps } from "@/types/playlist/components";
 
 export const SortableTrackRow = forwardRef<HTMLTableRowElement, SortableTrackRowProps>(
   function SortableTrackRow({ allowReorder, onRowElementChange, ...props }, ref) {
-    const drag = useSortableListItem(props.track.id, false, allowReorder);
+    const drag = useSortableListItem(props.track.ref.id, false, allowReorder);
     const setDragNodeRef = drag.setNodeRef;
     const index = props.index;
     const setRowRef = useCallback(

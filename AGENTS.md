@@ -41,6 +41,7 @@ pnpm run dev:desktop       # 仅 Electron
 pnpm run dev:full          # Web + Electron + 后端联调
 pnpm run bump              # 统一升级版本（4 个 package.json）
 pnpm run changelog:preview # 预览下个版本的更新说明
+pnpm run skills            # 链接、创建或管理项目 Skills
 ```
 
 i18n 类型生成与文案审计由 Web 工作区维护，命令见 [Web README](repo/frontend/apps/web/README.md#internationalization)。
@@ -177,7 +178,7 @@ Scopify/
 
 ### Backend
 
-NetEase API 服务位于 `repo/backend/api-enhanced/`（git submodule）。前端通过 `repo/frontend/apps/web/lib/web/request.ts` 配置的 base URL 访问，开发时可用 `pnpm run dev:backend` 启动。后端规范见 [backend/api-enhanced/AGENTS.md](./repo/backend/api-enhanced/AGENTS.md)。
+NetEase API 服务位于 `repo/backend/api-enhanced/`（git submodule）。前端通过 `repo/frontend/apps/web/lib/providers/netease/client.ts` 访问（QQ 音乐为 `lib/providers/qq/client.ts`，共用部分在 `lib/web/http/createApiClient.ts`），开发时可用 `pnpm run dev:backend` 启动。QQ 音乐 API 位于 `repo/backend/qq-music-api/`，用 `pnpm run dev:backend:qq` 启动，`pnpm run dev:backend:all` 同时启动两个后端；多平台方案见 [docs 多平台接入方案](<./repo/frontend/apps/docs/content/docs/(framework)/multi-provider.mdx>)。后端规范见 [backend/api-enhanced/AGENTS.md](./repo/backend/api-enhanced/AGENTS.md)。
 
 <!-- CODEGRAPH_START -->
 

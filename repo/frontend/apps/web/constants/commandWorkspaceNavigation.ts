@@ -16,6 +16,7 @@ import {
   Palette,
   Podcast,
   Radio,
+  Server,
   Settings2,
   UserRound,
   Users,
@@ -120,8 +121,8 @@ export const COMMAND_WORKSPACE_NAVIGATION_TARGETS = [
     icon: Network,
     labelKey: "settings.tab.network",
     path: "设置",
-    summary: "后端地址、代理与连接检测",
-    keywords: "设置 設定 网络 網路 代理 后端 後端 端口 接口 api proxy backend network server",
+    summary: "请求超时与代理",
+    keywords: "设置 設定 网络 網路 代理 超时 逾時 proxy timeout network",
   },
   {
     id: "go:/setting?tab=storage",
@@ -167,6 +168,16 @@ export const COMMAND_WORKSPACE_NAVIGATION_TARGETS = [
     path: "设置 › 存储",
     summary: "查看并清理页面、音频与图片缓存",
     keywords: "缓存 快取 清理 清除 释放空间 cache clear storage",
+  },
+  {
+    id: "go:/setting/backend",
+    href: "/setting/backend",
+    icon: Server,
+    labelKey: "settings.backendSettings.title",
+    path: "设置 › 网络",
+    summary: "网易云音乐与 QQ 音乐的后端地址、内置后端与连接检测",
+    keywords:
+      "后端 後端 端口 接口 地址 位址 内置 內建 网易云 網易雲 QQ音乐 QQ音樂 随机IP api backend server port netease qq",
   },
   {
     id: "go:/setting/devices",

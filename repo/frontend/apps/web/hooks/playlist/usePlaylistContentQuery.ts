@@ -1,93 +1,70 @@
 "use client";
 
+import type { MusicResourceRef } from "@scopify/music-domain/identity";
+import type { MusicProviderClient } from "@scopify/music-domain/provider";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useCallback, useMemo } from "react";
 
-import {
-  getHistoricalDailyRecommendationDetail,
-  getPlaylistAllTracks,
-  getPlaylsitDetail,
-} from "@/lib/api/playlist";
-import { getRecommendedSongs } from "@/lib/api/track";
+import { useActiveProvider } from "@/hooks/provider/useActiveProvider";
 import { musicQueryKeys } from "@/lib/query/queryKeys";
-import { pruneSongDetail, type RawSongDetail, type SongDetail } from "@/types/song/api";
-import {
-  prunePlaylistTracks,
-  type HistoricalDailyRecommendationDetailResponse,
-  type PlaylistContent,
-  type PlaylistContentRequest,
-  type RawNeteasePlaylist,
-} from "@/types/playlist/api";
+import type { PlayerTrack } from "@/types/player/model";
+import type { PlaylistContent, PlaylistContentRequest } from "@/types/playlist/model";
 
 const TRACK_PAGE_SIZE = 1000;
 
-function getHistoricalSongs(
-  response: HistoricalDailyRecommendationDetailResponse,
-): RawSongDetail[] {
-  const songs = response.data?.dailySongs ?? response.data?.songs;
-  return Array.isArray(songs) ? songs : [];
+/** Daily recommendations are the account's own list, not a playlist on any platform. */
+async function fetchDailyRecommendations(
+  provider: MusicProviderClient,
+  dailyDate: null | string,
+  signal: AbortSignal,
+): Promise<PlaylistContent> {
+  if (!provider.getDailyTracks) throw new Error("Daily recommendations are unsupported.");
+  const tracks = await provider.getDailyTracks({
+    ...(dailyDate ? { date: dailyDate } : {}),
+    signal,
+  });
+  return { detail: null, tracks };
 }
 
-async function fetchPlaylistContent(
-  { dailyDate, isDailyRecommendation, isRecommend, playlistId }: PlaylistContentRequest,
-  signal?: AbortSignal,
+async function fetchPlaylist(
+  provider: MusicProviderClient,
+  playlistId: string,
+  personal: boolean,
+  signal: AbortSignal,
 ): Promise<PlaylistContent> {
-  if (isDailyRecommendation) {
-    const dailySongs = dailyDate
-      ? getHistoricalSongs((await getHistoricalDailyRecommendationDetail(dailyDate)).data)
-      : ((await getRecommendedSongs()).data?.data?.dailySongs ?? []);
-    const rawDetail: RawNeteasePlaylist = {
-      trackCount: dailySongs.length,
-      tracks: dailySongs,
-    };
-
-    return {
-      rawDetail,
-      tracks: dailySongs.map(pruneSongDetail),
-    };
-  }
-
-  if (!playlistId) throw new Error("Playlist ID is required.");
-
-  const [detailResponse, trackResponse] = await Promise.all([
-    getPlaylsitDetail({ id: playlistId, requiresMusicSession: isRecommend }),
-    getPlaylistAllTracks(
-      { id: playlistId, limit: TRACK_PAGE_SIZE, requiresMusicSession: isRecommend },
-      signal,
-    ),
+  const ref: MusicResourceRef<"playlist"> = {
+    provider: provider.provider,
+    kind: "playlist",
+    id: playlistId,
+  };
+  const options = { personal, signal };
+  const [detail, firstPage] = await Promise.all([
+    provider.getPlaylist(ref, options),
+    provider.getPlaylistTracks(ref, { offset: 0, limit: TRACK_PAGE_SIZE }, options),
   ]);
-  const rawDetail = detailResponse.data.playlist;
-  if (!rawDetail) throw new Error("Playlist detail is missing.");
-  let page = prunePlaylistTracks(trackResponse.data);
-  const tracks = [...page];
-  const trackCount = rawDetail.trackIds?.length ?? rawDetail.trackCount ?? 0;
+  let page = firstPage.tracks;
+  const tracks: PlayerTrack[] = [...page];
   let offset = TRACK_PAGE_SIZE;
   // A full page can have a successor even when the playlist's count is stale.
-  while (page.length === TRACK_PAGE_SIZE || (page.length > 0 && offset < trackCount)) {
-    const next = await getPlaylistAllTracks(
-      { id: playlistId, offset, limit: TRACK_PAGE_SIZE, requiresMusicSession: isRecommend },
-      signal,
-    );
-    page = prunePlaylistTracks(next.data);
+  while (page.length === TRACK_PAGE_SIZE || (page.length > 0 && offset < detail.trackCount)) {
+    const next = await provider.getPlaylistTracks(ref, { offset, limit: TRACK_PAGE_SIZE }, options);
+    page = next.tracks;
     tracks.push(...page);
     offset += TRACK_PAGE_SIZE;
   }
-
-  return {
-    rawDetail,
-    tracks,
-  };
+  return { detail, tracks };
 }
 
 export function usePlaylistContentQuery(request: PlaylistContentRequest) {
   const queryClient = useQueryClient();
-  const { dailyCacheDate, isDailyRecommendation, isRecommend, playlistId } = request;
+  const provider = useActiveProvider();
+  const { dailyCacheDate, dailyDate, isDailyRecommendation, isRecommend, playlistId } = request;
   const queryKey = useMemo(
     () =>
       isDailyRecommendation
-        ? musicQueryKeys.playlist.daily(dailyCacheDate)
-        : musicQueryKeys.playlist.content(playlistId ?? "", isRecommend),
-    [dailyCacheDate, isDailyRecommendation, isRecommend, playlistId],
+        ? musicQueryKeys.playlist.daily(dailyCacheDate, provider.provider)
+        : musicQueryKeys.playlist.content(provider.provider, playlistId ?? "", isRecommend),
+    [dailyCacheDate, isDailyRecommendation, isRecommend, playlistId, provider.provider],
   );
   const query = useQuery({
     enabled: isDailyRecommendation || Boolean(playlistId),
@@ -95,12 +72,16 @@ export function usePlaylistContentQuery(request: PlaylistContentRequest) {
       persist: true,
       scope: "account",
     },
-    queryFn: ({ signal }) => fetchPlaylistContent(request, signal),
+    queryFn: ({ signal }) => {
+      if (isDailyRecommendation) return fetchDailyRecommendations(provider, dailyDate, signal);
+      if (!playlistId) throw new Error("Playlist ID is required.");
+      return fetchPlaylist(provider, playlistId, isRecommend, signal);
+    },
     queryKey,
   });
 
   const setTracks = useCallback(
-    (tracks: SongDetail[]) => {
+    (tracks: PlayerTrack[]) => {
       queryClient.setQueryData<PlaylistContent>(queryKey, (content) =>
         content ? { ...content, tracks } : content,
       );

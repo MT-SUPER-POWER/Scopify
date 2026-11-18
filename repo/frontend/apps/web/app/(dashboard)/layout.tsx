@@ -21,6 +21,7 @@ import { ConnectionBanner } from "@/components/network/ConnectionBanner";
 import { NowPlayingPanel } from "@/components/nowPlaying/NowPlayingPanel";
 import { NotificationRuntime } from "@/components/notifications/NotificationRuntime";
 import { PlaybackMediaRuntimeProvider } from "@/components/player/PlaybackMediaRuntimeProvider";
+import { RouteCapabilityGate } from "@/components/provider/RouteCapabilityGate";
 import { PlayerCommandHandler } from "@/components/player/PlayerCommandHandler";
 import { KeyboardShortcutHelp } from "@/components/shortcuts/KeyboardShortcutHelp";
 import { getDashboardLoadingPlaceholder } from "@/components/shared/DashboardRouteSkeleton";
@@ -137,7 +138,8 @@ function DashboardShell({ children }: { children: ReactNode }) {
     <>
       <PlayerCommandHandler />
       <NotificationRuntime />
-      {children}
+      {/* Outside every request boundary: an unsupported page is a product state, not a failure. */}
+      <RouteCapabilityGate>{children}</RouteCapabilityGate>
     </>
   );
 

@@ -17,59 +17,44 @@ export function SongRemovalMenuItems({ actions, model }: SongContextMenuSectionP
     onDislikePersonalFm,
   } = actions;
   const { t, isLogin } = model;
+  const removeFromPlaylist =
+    isLogin && !readonly && !isDailyRecommend ? onRemoveFromPlaylist : undefined;
+  const dislikeDailyRecommend = isLogin && isDailyRecommend ? onDislikeDailyRecommend : undefined;
+  const dislikePersonalFm = isLogin ? onDislikePersonalFm : undefined;
+
+  if (!onRemoveFromQueue && !removeFromPlaylist && !dislikeDailyRecommend && !dislikePersonalFm) {
+    return null;
+  }
+
   return (
     <>
-      {/* Queue removal */}
-      {onRemoveFromQueue && (
-        <>
-          <ContextMenuSeparator />
-          <ContextMenuGroup>
-            <ContextMenuItem onClick={onRemoveFromQueue} variant="destructive">
-              <Trash className="mr-2 size-4" />
-              {t("contextMenu.removeFromQueue")}
-            </ContextMenuItem>
-          </ContextMenuGroup>
-        </>
-      )}
-
-      {/* Playlist removal */}
-      {isLogin && !readonly && !isDailyRecommend && onRemoveFromPlaylist && (
-        <>
-          <ContextMenuSeparator />
-          <ContextMenuGroup>
-            <ContextMenuItem onClick={onRemoveFromPlaylist} variant="destructive">
-              <Trash className="mr-2 size-4" />
-              {t("contextMenu.removeFromPlaylist")}
-            </ContextMenuItem>
-          </ContextMenuGroup>
-        </>
-      )}
-
-      {/* Daily recommendation dislike */}
-      {isDailyRecommend && isLogin && onDislikeDailyRecommend && (
-        <>
-          <ContextMenuSeparator />
-          <ContextMenuGroup>
-            <ContextMenuItem onClick={onDislikeDailyRecommend} variant="destructive">
-              <Ban className="mr-2 size-4" />
-              {t("contextMenu.recommendLess")}
-            </ContextMenuItem>
-          </ContextMenuGroup>
-        </>
-      )}
-
-      {/* Personal FM dislike */}
-      {isLogin && onDislikePersonalFm && (
-        <>
-          <ContextMenuSeparator />
-          <ContextMenuGroup>
-            <ContextMenuItem onClick={onDislikePersonalFm} variant="destructive">
-              <Ban className="mr-2 size-4" />
-              {t("contextMenu.recommendLess")}
-            </ContextMenuItem>
-          </ContextMenuGroup>
-        </>
-      )}
+      <ContextMenuSeparator />
+      <ContextMenuGroup>
+        {onRemoveFromQueue && (
+          <ContextMenuItem onClick={onRemoveFromQueue} variant="destructive">
+            <Trash className="mr-2 size-4" />
+            {t("contextMenu.removeFromQueue")}
+          </ContextMenuItem>
+        )}
+        {removeFromPlaylist && (
+          <ContextMenuItem onClick={removeFromPlaylist} variant="destructive">
+            <Trash className="mr-2 size-4" />
+            {t("contextMenu.removeFromPlaylist")}
+          </ContextMenuItem>
+        )}
+        {dislikeDailyRecommend && (
+          <ContextMenuItem onClick={dislikeDailyRecommend} variant="destructive">
+            <Ban className="mr-2 size-4" />
+            {t("contextMenu.recommendLess")}
+          </ContextMenuItem>
+        )}
+        {dislikePersonalFm && (
+          <ContextMenuItem onClick={dislikePersonalFm} variant="destructive">
+            <Ban className="mr-2 size-4" />
+            {t("contextMenu.recommendLess")}
+          </ContextMenuItem>
+        )}
+      </ContextMenuGroup>
     </>
   );
 }

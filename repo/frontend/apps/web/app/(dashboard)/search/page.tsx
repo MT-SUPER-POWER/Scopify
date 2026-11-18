@@ -3,10 +3,11 @@
 import { useSearchParams } from "next/navigation";
 import { useCallback } from "react";
 import { NetworkRetryState } from "@/components/shared/NetworkRetryState";
+import { useActiveProvider } from "@/hooks/provider/useActiveProvider";
 import { usePlayActions } from "@/hooks/search/usePlayActions";
 import { useSearchData } from "@/hooks/search/useSearchData";
 import { useSmartRouter } from "@/hooks/core/useSmartRouter";
-import { buildSearchCategoryUrl, getSearchCategory } from "@/lib/search/searchCategory";
+import { buildSearchCategoryUrl, resolveSearchCategory } from "@/lib/search/searchCategory";
 import { useTranslation } from "react-i18next";
 
 import type { Category } from "@/types/search/model";
@@ -25,7 +26,9 @@ export default function SearchPage() {
   const searchParams = useSearchParams();
   const keywords = searchParams.get("keywords") || "";
   const router = useSmartRouter();
-  const activeCategory = getSearchCategory(searchParams.get("tab"));
+  const { capabilities } = useActiveProvider();
+  // A tab the platform cannot search (a link or recent search from another platform) shows All.
+  const activeCategory = resolveSearchCategory(searchParams.get("tab"), capabilities);
   const handleCategoryChange = useCallback(
     (category: Category) => {
       router.replace(buildSearchCategoryUrl(searchParams.toString(), category));
@@ -80,6 +83,7 @@ export default function SearchPage() {
           playlists={search.playlists}
           artists={search.artists}
           bestMatch={search.bestMatch}
+          hasBestMatch={search.hasBestMatch}
           podcasts={search.podcasts}
           loadingPlayId={loadingPlayId}
           mvs={search.mvs}

@@ -29,12 +29,14 @@ export function ArtistHero({ artist }: Props) {
         <h1 className="mb-4 text-5xl font-black tracking-tighter text-content md:text-7xl lg:text-8xl">
           {artist.name}
         </h1>
-        <p className="text-sm font-medium text-content-muted md:text-base">
-          {t("artist.hero.listeners", {
-            count: artist.listeners,
-            replace: { count: formatNumber(artist.listeners) },
-          })}
-        </p>
+        {artist.listeners !== null && (
+          <p className="text-sm font-medium text-content-muted md:text-base">
+            {t("artist.hero.listeners", {
+              count: artist.listeners,
+              replace: { count: formatNumber(artist.listeners) },
+            })}
+          </p>
+        )}
       </div>
     </div>
   );

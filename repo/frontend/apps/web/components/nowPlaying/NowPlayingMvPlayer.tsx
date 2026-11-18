@@ -2,7 +2,7 @@
 
 import { LoaderCircle } from "lucide-react";
 import { useEffect, useRef } from "react";
-import { useMVUrlQuery } from "@/hooks/mv/useMVQueries";
+import { useNeteaseMvStreamQuery } from "@/hooks/mv/useMVQueries";
 import { usePlaybackProjection } from "@/hooks/player/usePlaybackProjection";
 import { useTranslation } from "react-i18next";
 
@@ -12,8 +12,8 @@ import type { NowPlayingMvPlayerProps } from "@/types/player/nowPlayingComponent
 export function NowPlayingMvPlayer({ mvId, onClose }: NowPlayingMvPlayerProps) {
   const { t } = useTranslation();
   const isSongPlaying = usePlaybackProjection().isPlaying;
-  const urlQuery = useMVUrlQuery(mvId);
-  const url = urlQuery.data?.data?.url ?? null;
+  const urlQuery = useNeteaseMvStreamQuery(mvId);
+  const url = urlQuery.data?.url ?? null;
   const wasSongPlayingRef = useRef(isSongPlaying);
 
   // 只响应「暂停 → 播放」的变化：打开 MV 时歌曲的暂停可能还没反映到投影上

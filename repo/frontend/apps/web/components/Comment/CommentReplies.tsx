@@ -42,7 +42,7 @@ export function CommentReplies({
     return () => observer.disconnect();
   }, [isNear]);
 
-  const firstAvatar = thread.replies[0]?.user.avatarUrl;
+  const firstAvatar = thread.replies[0]?.author.avatarUrl;
   const retryClass =
     "-ml-2 h-9 w-fit rounded-full px-3 text-sm font-medium text-brand transition-colors hover:bg-brand/10 disabled:opacity-50";
 

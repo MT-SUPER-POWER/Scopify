@@ -16,6 +16,7 @@ import type {
   WebSettingsChangeHandler,
 } from "@/types/settings/model";
 import type { BackendPingResult } from "@/types/network/model";
+import type { BackendAddress, BackendPlatform } from "@/types/settings/config";
 import type { CacheStats } from "@/types/cache/model";
 import type { CachePreferences } from "@/types/cache/model";
 
@@ -44,6 +45,15 @@ export interface SettingRowProps {
   className?: string;
 }
 
+export interface SaveChangesButtonProps {
+  visible: boolean;
+  onSave?: () => void;
+  onDiscard?: () => void;
+  /** Backward-compatible alias for onSave */
+  onClick?: () => void;
+  isSaving?: boolean;
+}
+
 export interface SettingButtonProps {
   children: ReactNode;
   onClick?: () => void;
@@ -54,24 +64,66 @@ export interface SettingButtonProps {
   "aria-label"?: string;
 }
 
+export interface SettingPortInputProps {
+  value: number;
+  onChange: (port: number) => void;
+  onBlur?: () => void;
+  className?: string;
+  disabled?: boolean;
+  placeholder?: string;
+  align?: "left" | "right";
+  isInvalid?: boolean;
+}
+
 export interface NetworkSettingsTabProps {
-  backendPingResult: BackendPingResult | null;
   config: SettingsConfig;
-  isPingingBackend: boolean;
   onDesktopChange: DesktopSettingsChangeHandler;
-  onPingBackend: () => Promise<void>;
   onWebChange: WebSettingsChangeHandler;
-  onBackendHostBlur?: () => void;
 }
 
 export interface BackendStatusIndicatorProps {
   status: DesktopBackendStatus | null;
 }
 
-export interface LocalBackendSettingsSectionProps {
+/** A custom backend address the card offers instead of the built-in API. */
+export interface BackendCustomAddressProps {
+  address: BackendAddress;
+  pingResult: BackendPingResult | null;
+  isPinging: boolean;
+  onChange: <K extends keyof BackendAddress>(key: K, value: BackendAddress[K]) => void;
+  onPing: () => Promise<void>;
+  onHostBlur?: () => void;
+}
+
+export interface BackendPingBadgeProps {
+  result: BackendPingResult;
+}
+
+export interface BuiltinBackendRowsProps {
+  platform: BackendPlatform;
   backendStatus: DesktopBackendStatus | null;
-  config: DesktopHostConfig;
-  onChange: DesktopSettingsChangeHandler;
+  canRestart: boolean;
+  canStop: boolean;
+  isRunning: boolean;
+  isRestarting: boolean;
+  isStopping: boolean;
+  onPortChange: (port: number) => void;
+  onRestart: () => void;
+  onStop: () => void;
+  port: number;
+}
+
+/** One platform's backend card: built-in Desktop API, or a custom address when one is offered. */
+export interface BackendSourceCardProps {
+  platform: BackendPlatform;
+  /** `null` outside Desktop, where only the custom address exists. */
+  desktopConfig: DesktopHostConfig | null;
+  backendStatus: DesktopBackendStatus | null;
+  onDesktopChange: DesktopSettingsChangeHandler;
+  /** Omitted for a platform that can only run built-in; the alternative is then "off". */
+  custom?: BackendCustomAddressProps;
+  /** Platform-only request options, shown below the address whichever source is chosen. */
+  children?: ReactNode;
 }
 
 export interface SaveConfirmModalProps {
@@ -97,7 +149,6 @@ export interface CacheAdvancedScopeControlsProps<Preferences> {
 }
 
 export interface DesktopSettingsTabProps {
-  backendStatus: DesktopBackendStatus | null;
   config: DesktopHostConfig;
   discordStatus: DiscordPresenceStatus | null;
   isTestingDiscord: boolean;

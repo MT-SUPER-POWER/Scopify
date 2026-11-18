@@ -3,7 +3,11 @@
 import { useCallback, useRef, useState } from "react";
 import { toast } from "sonner";
 
-import { trashPersonalFmSong } from "@/lib/api/personalFm";
+import {
+  adaptNeteaseTrack,
+  getPlayerTrackOfNeteaseSong,
+} from "@/lib/providers/netease/adapters/track";
+import { useActiveProvider } from "@/hooks/provider/useActiveProvider";
 import { useTranslation } from "react-i18next";
 
 import { usePersonalFmStore } from "@/store/module/personalFm";
@@ -16,6 +20,7 @@ import type { SongDetail } from "@/types/song/api";
  */
 export function usePersonalFmDislike() {
   const { t } = useTranslation();
+  const provider = useActiveProvider();
   const [isDisliking, setIsDisliking] = useState(false);
   const isDislikingRef = useRef(false);
 
@@ -26,8 +31,12 @@ export function usePersonalFmDislike() {
       isDislikingRef.current = true;
       setIsDisliking(true);
       try {
-        await trashPersonalFmSong(track.id);
-        await usePersonalFmStore.getState().removeDislikedTrack(track);
+        if (!provider.dislikePersonalFmTrack) {
+          throw new Error("Personal FM dislike is unsupported.");
+        }
+        const queuedTrack = getPlayerTrackOfNeteaseSong(track) ?? adaptNeteaseTrack(track);
+        await provider.dislikePersonalFmTrack(queuedTrack.ref);
+        await usePersonalFmStore.getState().removeDislikedTrack(queuedTrack);
         return true;
       } catch (error) {
         console.error("[personal-fm] failed to dislike song", error);
@@ -38,7 +47,7 @@ export function usePersonalFmDislike() {
         setIsDisliking(false);
       }
     },
-    [t],
+    [provider, t],
   );
 
   return { dislike, isDisliking };

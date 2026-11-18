@@ -29,6 +29,7 @@ export default function AlbumPage() {
     togglePlay,
     tracks,
   } = useAlbumData();
+  const canOpenLattice = tracks.length > 0;
 
   if (!albumId)
     return (
@@ -84,12 +85,12 @@ export default function AlbumPage() {
             <AlbumActions
               albumId={albumId}
               albumTitle={ALBUM_INFO.title}
-              tracks={tracks}
+              previewSongs={tracks}
               isPlaying={isPlaying}
               isAlbumCollected={isAlbumCollected}
               isTogglingAlbumSubscribe={isTogglingAlbumSubscribe}
               onPlay={togglePlay}
-              onOpenLattice={openLattice}
+              onOpenLattice={canOpenLattice ? openLattice : undefined}
               onToggleSubscribe={() => void handleToggleAlbumSubscribe()}
             />
             <div className="min-w-0 flex-1 px-6 pb-10">

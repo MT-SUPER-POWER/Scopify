@@ -4,18 +4,18 @@ import { Fragment } from "react";
 import { Skeleton } from "@scopify/ui/shadcn/components/skeleton";
 import { MvComments } from "./_components/MvComments";
 import { MvInfo } from "./_components/MvInfo";
-import { useMVDetailQuery } from "@/hooks/mv/useMVQueries";
-import { useMvId } from "@/hooks/mv/useMvId";
+import { useMvDetailQuery } from "@/hooks/mv/useMVQueries";
+import { useMvId, useMvRef } from "@/hooks/mv/useMvId";
 
 /** 播放器下方：信息与评论。换 MV 时整块重建，不沿用上一个的展开状态与评论。 */
 export default function MvPage() {
   const mvid = useMvId();
-  const detailQuery = useMVDetailQuery(mvid, { boundary: true });
-  const detail = detailQuery.data?.data;
+  const detailQuery = useMvDetailQuery(useMvRef(), { boundary: true });
+  const detail = detailQuery.data;
   return (
     <Fragment key={mvid}>
       {detail ? (
-        <MvInfo detail={detail} isSubscribed={Boolean(detailQuery.data?.subed)} />
+        <MvInfo detail={detail} />
       ) : (
         <div aria-hidden className="mt-4">
           <Skeleton className="h-7 w-2/3 bg-skeleton" />

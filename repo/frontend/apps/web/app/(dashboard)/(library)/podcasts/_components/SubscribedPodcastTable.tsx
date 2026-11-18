@@ -29,7 +29,7 @@ export function SubscribedPodcastTable({ podcasts }: SubscribedPodcastTableProps
   const { handlePlayPodcast, loadingPodcastId } = usePodcastPlay();
   const [sortState, setSortState] = useState<PodcastSortState>({ key: null, order: null });
 
-  const currentSongDetail = usePlayerStore((s) => s.currentSongDetail);
+  const currentTrack = usePlayerStore((s) => s.currentTrack);
   const isPlaying = usePlayerStore((s) => s.isPlaying);
   const storePlaylistId = usePlayerStore((s) => s.playlistId);
   const setIsPlaying = usePlayerStore((s) => s.setIsPlaying);
@@ -162,7 +162,8 @@ export function SubscribedPodcastTable({ podcasts }: SubscribedPodcastTableProps
           const isLoading = loadingPodcastId === podcast.id;
           const lastUpdatedAt = podcast.lastProgramCreateTime ?? podcast.createTime;
           const isActive =
-            currentSongDetail?.al?.id === podcast.id ||
+            (currentTrack?.ref.provider === "netease" &&
+              currentTrack.album?.ref.id === String(podcast.id)) ||
             String(storePlaylistId) === `radio:${podcast.id}` ||
             String(storePlaylistId) === String(podcast.id);
 

@@ -2,7 +2,7 @@
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { sendMessage } from "@/lib/api/social";
+import { sendMessage } from "@/lib/providers/netease/api/social";
 import { socialKey } from "@/lib/social/cache";
 import { useSocialAccount } from "./useSocialQueries";
 import { useTranslation } from "react-i18next";

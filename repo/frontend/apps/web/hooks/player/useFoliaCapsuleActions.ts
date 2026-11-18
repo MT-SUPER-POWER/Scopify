@@ -16,7 +16,8 @@ import {
 import { useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { isPersonalFmPlaybackSource } from "@/constants/personalFm";
-import { useLoginStatus } from "@/hooks/auth/useLoginStatus";
+import { useActiveAccount } from "@/hooks/auth/useProviderAccounts";
+import { useActiveProvider } from "@/hooks/provider/useActiveProvider";
 import { usePlaybackCommands } from "@/hooks/player/usePlaybackCommands";
 import { usePlaybackProjection } from "@/hooks/player/usePlaybackProjection";
 import { usePlayerStore } from "@/store/module/player";
@@ -43,10 +44,17 @@ export function useFoliaCapsuleActions({
   const previousVolume = useRef(playback.volume || 70);
   const isPersonalFm = usePlayerStore((state) => isPersonalFmPlaybackSource(state.playlistId));
   const shuffle = usePlayerStore((state) => state.isShuffle);
-  const track = usePlayerStore((state) => state.currentSongDetail);
-  const isLoggedIn = useLoginStatus();
-  const canLike = isLoggedIn && !!track;
-  const canAddToPlaylist = isLoggedIn && !!track && track.voiceId === undefined;
+  const track = usePlayerStore((state) => state.currentTrack);
+  const account = useActiveAccount();
+  const provider = useActiveProvider();
+  const hasActiveTrack = account.isLoggedIn && track?.ref.provider === provider.provider;
+  const canLike = hasActiveTrack && provider.capabilities.has("track.like");
+  const canAddToPlaylist =
+    hasActiveTrack &&
+    track?.netease?.voiceId === undefined &&
+    provider.capabilities.has("library.playlists") &&
+    provider.capabilities.has("playlist.manage") &&
+    !!provider.addPlaylistTracks;
   const onMute = () => {
     if (playback.volume > 0) {
       previousVolume.current = playback.volume;

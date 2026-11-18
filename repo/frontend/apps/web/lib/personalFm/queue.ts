@@ -1,5 +1,7 @@
+import { musicResourceKey, type MusicResourceRef } from "@scopify/music-domain/identity";
+
 export interface PersonalFmQueueItem {
-  id: number | string;
+  ref: MusicResourceRef;
 }
 
 export function getPersonalFmRemainingCount(queueLength: number, queueIndex: number) {
@@ -10,10 +12,11 @@ export function selectNewPersonalFmQueueItems<T extends PersonalFmQueueItem>(
   currentQueue: readonly T[],
   incoming: readonly T[],
 ): T[] {
-  const seenIds = new Set(currentQueue.map((item) => item.id));
+  const seenIds = new Set(currentQueue.map((item) => musicResourceKey(item.ref)));
   return incoming.filter((item) => {
-    if (seenIds.has(item.id)) return false;
-    seenIds.add(item.id);
+    const key = musicResourceKey(item.ref);
+    if (seenIds.has(key)) return false;
+    seenIds.add(key);
     return true;
   });
 }

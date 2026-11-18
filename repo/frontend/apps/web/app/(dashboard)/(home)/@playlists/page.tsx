@@ -3,6 +3,8 @@
 import { PersonalizedPlaylists } from "./_components/PersonalizedPlaylists";
 import { RecentlyPlayedPlaylists } from "./_components/RecentlyPlayedPlaylists";
 import { useHome } from "../_components/HomeProvider";
+import { HomeSectionPending } from "../_components/HomeSectionPending";
+import { CapabilityGate } from "@/components/provider/CapabilityGate";
 import { QueryBoundary } from "@/components/shared/QueryBoundary";
 import { useTranslation } from "react-i18next";
 
@@ -12,20 +14,32 @@ export default function HomePlaylistsSlot() {
   const { accountId } = useHome();
   return (
     <>
-      <QueryBoundary
-        resetKey={`home:playlists:${accountId}`}
-        title={t("home.madeFor", { name: t("home.you") })}
-        compact
-      >
-        <PersonalizedPlaylists />
-      </QueryBoundary>
-      <QueryBoundary
-        resetKey={`home:recent:${accountId}`}
-        title={t("home.recentlyPlayedPlaylists")}
-        compact
-      >
-        <RecentlyPlayedPlaylists />
-      </QueryBoundary>
+      <CapabilityGate requires="recommend.playlists">
+        <QueryBoundary
+          resetKey={`home:playlists:${accountId}`}
+          title={t("home.madeFor", { name: t("home.you") })}
+          compact
+          renderWaiting={() => <HomeSectionPending kind="grid" waitingForConnection />}
+        >
+          <PersonalizedPlaylists />
+        </QueryBoundary>
+      </CapabilityGate>
+      <CapabilityGate requires="history">
+        <QueryBoundary
+          resetKey={`home:recent:${accountId}`}
+          title={t("home.recentlyPlayedPlaylists")}
+          compact
+          renderWaiting={() => (
+            <HomeSectionPending
+              kind="grid"
+              titleKey="home.recentlyPlayedPlaylists"
+              waitingForConnection
+            />
+          )}
+        >
+          <RecentlyPlayedPlaylists />
+        </QueryBoundary>
+      </CapabilityGate>
     </>
   );
 }

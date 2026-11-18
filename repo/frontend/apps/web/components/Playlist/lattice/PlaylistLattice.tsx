@@ -5,6 +5,7 @@ import { useFlipReveal } from "@/hooks/playlist/useFlipReveal";
 import { useLatticeWall } from "@/hooks/playlist/useLatticeWall";
 import { usePlaylistViewPlayback } from "@/hooks/playlist/usePlaylistViewPlayback";
 import { useWallDoubleClick } from "@/hooks/playlist/useWallDoubleClick";
+import { playerTrackKey } from "@/lib/player/trackIdentity";
 import { overlaps, toBounds } from "@/lib/playlist/lattice/layout";
 import { useLatticePreferences } from "@/store/module/lattice";
 import { useTranslation } from "react-i18next";
@@ -110,7 +111,7 @@ export default function PlaylistLattice({
             const rect = wall.layout?.get(instance.instanceId) ?? instance;
             return (
               <LatticePoster
-                key={`${instance.instanceId}:${track.id}`}
+                key={`${instance.instanceId}:${playerTrackKey(track)}`}
                 instance={instance}
                 track={track}
                 rect={rect}

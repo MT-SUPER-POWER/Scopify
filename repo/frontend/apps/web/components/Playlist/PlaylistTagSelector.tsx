@@ -3,7 +3,7 @@
 import { RefreshCw } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { getPlaylistHighQualityTags } from "@/lib/api/playlist";
+import { getPlaylistHighQualityTags } from "@/lib/providers/netease/api/playlist";
 import { cn } from "@/lib/utils";
 import { useTranslation } from "react-i18next";
 

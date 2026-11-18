@@ -21,7 +21,7 @@ const buildDependencyFilteredConsole = Object.assign(Object.create(console), {
 
 const config = {
   reactStrictMode: true,
-  transpilePackages: ["@scopify/ui"],
+  transpilePackages: ["@scopify/ui", "@scopify/music-domain"],
   async redirects() {
     return [
       {

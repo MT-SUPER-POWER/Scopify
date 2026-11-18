@@ -1,0 +1,14 @@
+import request, { requestConfig } from "@/lib/providers/netease/client";
+import type { NotificationRequest } from "@/types/notifications/api";
+
+export async function requestNotificationSource({
+  path,
+  params,
+  signal,
+}: NotificationRequest): Promise<unknown> {
+  const response = await request.get<unknown>(
+    path,
+    requestConfig({ params, signal, requiresMusicSession: true, expectedBusinessCodes: [200] }),
+  );
+  return response.data;
+}

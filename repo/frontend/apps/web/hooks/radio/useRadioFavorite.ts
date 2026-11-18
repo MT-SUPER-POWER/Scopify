@@ -3,7 +3,7 @@
 import { useMutation, useQueryClient, type QueryClient } from "@tanstack/react-query";
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
-import { subscribeRadio } from "@/lib/api/radio";
+import { subscribeRadio } from "@/lib/providers/netease/api/radio";
 import { useRequireLoginAction } from "@/hooks/auth/useRequireLoginAction";
 import { musicQueryKeys } from "@/lib/query/queryKeys";
 import { useUserStore } from "@/store";

@@ -1,5 +1,7 @@
 {
   "backendUnavailableTitle": "Local Backend Unavailable",
   "backendUnavailableDescription": "Music services are temporarily unavailable. You can still open settings to adjust or restart the local backend.",
-  "openBackendSettings": "Open Backend Settings"
+  "unsupported.title": "Not available on this platform",
+  "unsupported.description": "{{platform}} does not support this page yet. Switch to another platform from the account menu to use it.",
+  "unsupported.openSettings": "Open settings"
 }

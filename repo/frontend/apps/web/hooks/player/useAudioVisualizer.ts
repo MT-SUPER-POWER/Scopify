@@ -23,18 +23,17 @@ import {
 import { useAudioEqualizerStore } from "@/store/module/audioEqualizer";
 import { usePlayerStore } from "@/store/module/player";
 import type { AudioFeatureSource } from "@/types/audio/featurePublisher";
-import type { SongDetail } from "@/types/song/api";
+import type { MusicReplayGain } from "@scopify/music-domain/playback";
 import type { ReplayGainMode } from "@/types/player/model";
 
 interface AudioContextWindow extends Window {
   webkitAudioContext?: typeof AudioContext;
 }
 
-function resolveReplayGainRatio(song: SongDetail | null, mode: ReplayGainMode) {
-  if (!song || mode === "off") return 1;
-  const gainDb =
-    mode === "album" ? song.replayGainAlbumGain : (song.replayGainTrackGain ?? song.replayGain);
-  const peak = mode === "album" ? song.replayGainAlbumPeak : song.replayGainTrackPeak;
+function resolveReplayGainRatio(gain: MusicReplayGain | null, mode: ReplayGainMode) {
+  if (!gain || mode === "off") return 1;
+  const gainDb = mode === "album" ? gain.albumGainDb : gain.trackGainDb;
+  const peak = mode === "album" ? gain.albumPeak : gain.trackPeak;
   if (gainDb == null || !Number.isFinite(gainDb)) return 1;
   const ratio = 10 ** (Math.max(-24, Math.min(24, gainDb)) / 20);
   return peak && peak > 0 ? Math.min(ratio, 1 / peak) : ratio;
@@ -53,7 +52,7 @@ export function useAudioVisualizer(audioRef: MutableRefObject<HTMLAudioElement |
   const contextRef = useRef<AudioContext | null>(null);
   const equalizerSettings = useAudioEqualizerStore((state) => state.settings);
   const replayGainMode = usePlayerStore((state) => state.replayGainMode);
-  const currentSongDetail = usePlayerStore((state) => state.currentSongDetail);
+  const currentReplayGain = usePlayerStore((state) => state.currentReplayGain);
 
   useEffect(() => {
     const audio = audioRef.current;
@@ -80,7 +79,7 @@ export function useAudioVisualizer(audioRef: MutableRefObject<HTMLAudioElement |
         if (!analyser) {
           const replayGainNode = context.createGain();
           replayGainNode.gain.value = resolveReplayGainRatio(
-            usePlayerStore.getState().currentSongDetail,
+            usePlayerStore.getState().currentReplayGain,
             usePlayerStore.getState().replayGainMode,
           );
           source.connect(replayGainNode);
@@ -182,8 +181,8 @@ export function useAudioVisualizer(audioRef: MutableRefObject<HTMLAudioElement |
     const context = contextRef.current;
     const gainNode = replayGainNodeRef.current;
     if (!context || !gainNode) return;
-    const ratio = resolveReplayGainRatio(currentSongDetail, replayGainMode);
+    const ratio = resolveReplayGainRatio(currentReplayGain, replayGainMode);
     gainNode.gain.cancelScheduledValues(context.currentTime);
     gainNode.gain.setTargetAtTime(ratio, context.currentTime, 0.02);
-  }, [currentSongDetail, replayGainMode]);
+  }, [currentReplayGain, replayGainMode]);
 }

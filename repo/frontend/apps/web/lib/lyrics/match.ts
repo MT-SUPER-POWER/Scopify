@@ -1,6 +1,6 @@
-import type { SongSearchArtist, SongSearchResource } from "@/types/search/api";
-import type { NeteaseLyric, SongDetail } from "@/types/song/api";
-import type { LyricMatchCandidate } from "@/types/lyrics/model";
+import type { SongSearchArtist, SongSearchResource } from "@/types/providers/netease/searchApi";
+import type { LyricMatchCandidate, LyricSource } from "@/types/lyrics/model";
+import type { SongDetail } from "@/types/song/api";
 
 export function buildLyricMatchQuery(song: SongDetail): string {
   return [song.name, ...song.ar.map((artist) => artist.name)].filter(Boolean).join(" ").trim();
@@ -109,7 +109,7 @@ export function getLyricMatchScore(song: SongDetail, candidate: LyricMatchCandid
   return titleScore + (artistMatched ? 25 : 0) + (durationMatched ? 15 : 0);
 }
 
-export function hasUsableNeteaseLyric(lyric: NeteaseLyric): boolean {
+export function hasUsableNeteaseLyric(lyric: LyricSource): boolean {
   return [lyric.yrc?.lyric, lyric.lrc?.lyric].some(
     (value) => typeof value === "string" && value.trim().length > 0,
   );

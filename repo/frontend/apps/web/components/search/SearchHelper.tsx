@@ -1,27 +1,20 @@
+import type { MusicSearchHighlight, MusicSearchSuggestionTag } from "@scopify/music-domain/search";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
-import type { HighLightSegment, SuggestItem } from "@/types/search/components";
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ COMPONENTS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-export function HighlightText({ raw }: { raw: string }) {
-  let segments: HighLightSegment[] = [];
-  try {
-    segments = JSON.parse(raw);
-  } catch {
-    return <span>{raw}</span>;
-  }
-
+export function HighlightText({ highlights }: { highlights: readonly MusicSearchHighlight[] }) {
   return (
     <>
-      {segments.map((seg, i) =>
-        seg.highLighted ? (
+      {highlights.map((segment, i) =>
+        segment.matched ? (
           <span key={i} className="font-semibold text-content">
-            {seg.text}
+            {segment.text}
           </span>
         ) : (
           <span key={i} className="text-content-muted">
-            {seg.text}
+            {segment.text}
           </span>
         ),
       )}
@@ -29,29 +22,30 @@ export function HighlightText({ raw }: { raw: string }) {
   );
 }
 
-export function SuggestTag({ item }: { item: SuggestItem }) {
-  if (item.tagUrl) {
+export function SuggestTag({ tag }: { tag: MusicSearchSuggestionTag | null }) {
+  if (!tag) return null;
+  if (tag.imageUrl) {
     return (
       <Image
         width={16}
         height={16}
-        src={item.tagUrl}
-        alt={item.tag ?? ""}
+        src={tag.imageUrl}
+        alt={tag.label ?? ""}
         className="h-4 shrink-0 object-contain"
       />
     );
   }
-  if (item.tag) {
+  if (tag.label) {
     return (
       <span
         className={cn(
           "shrink-0 rounded-full px-1.5 py-0.5 text-[10px] font-semibold sm:px-2 sm:text-[11px]",
-          item.skinType === "colorPrimary1"
+          tag.emphasized
             ? "border border-brand/40 bg-brand/10 text-brand"
             : "border border-content-subtle text-content-muted",
         )}
       >
-        {item.tag}
+        {tag.label}
       </span>
     );
   }

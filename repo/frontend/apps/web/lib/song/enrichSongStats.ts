@@ -1,9 +1,11 @@
-import { getMusicComments, getVoiceComments } from "@/lib/api/comment";
-import { getRadioProgramDetail } from "@/lib/api/radio";
-import { getSongRedCount } from "@/lib/api/track";
-import { getVoiceDetail } from "@/lib/api/voicelist";
+import { getMusicComments, getVoiceComments } from "@/lib/providers/netease/api/comment";
+import { getRadioProgramDetail } from "@/lib/providers/netease/api/radio";
+import { getSongRedCount } from "@/lib/providers/netease/api/track";
+import { getVoiceDetail } from "@/lib/providers/netease/api/voicelist";
 import { usePlayerStore, useUserStore } from "@/store";
-import type { SongDetail, SongStats } from "@/types/song/api";
+import { getNeteaseTrackId } from "@/lib/providers/netease/adapters/track";
+import type { PlayerTrack } from "@/types/player/model";
+import type { SongStats } from "@/types/song/api";
 import { reportFailure } from "@/lib/web/errorTracking";
 import { createSongStatsEnricher, type SongStatsResource } from "@/lib/song/enrichSongStatsCore";
 
@@ -55,17 +57,21 @@ function propagateSongStats(songId: number, stats: SongStats) {
 
   useUserStore.getState().mergeSongStats(songId, stats);
 
+  // Stats are NetEase-only and travel in the track's NetEase fields.
+  const isSong = (track: PlayerTrack | null) => getNeteaseTrackId(track) === songId;
+  const patch = (track: PlayerTrack): PlayerTrack => ({
+    ...track,
+    netease: { ...track.netease, ...stats },
+  });
   const player = usePlayerStore.getState();
-  if (player.currentSongDetail?.id === songId) {
-    usePlayerStore.setState({
-      currentSongDetail: { ...player.currentSongDetail, ...stats },
-    });
+  if (player.currentTrack && isSong(player.currentTrack)) {
+    usePlayerStore.setState({ currentTrack: patch(player.currentTrack) });
   }
 
-  const patchQueue = (list: SongDetail[]) =>
-    list.map((song) => (song.id === songId ? { ...song, ...stats } : song));
+  const patchQueue = (list: PlayerTrack[]) =>
+    list.map((track) => (isSong(track) ? patch(track) : track));
 
-  if (player.queue.some((song) => song.id === songId)) {
+  if (player.queue.some(isSong)) {
     usePlayerStore.setState({
       queue: patchQueue(player.queue),
       originalQueue: patchQueue(player.originalQueue),

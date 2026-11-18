@@ -9,6 +9,7 @@ import {
   NEBBIA_BEHIND,
   NEBBIA_GLASS,
 } from "@/components/lyrics/folia/src/components/visualizer/nebbia/types";
+import { useProviderCapability } from "@/hooks/provider/useActiveProvider";
 import { buildFoliaCommands, filterFoliaCommands } from "@/lib/commandWorkspace/foliaCommands";
 import { useFoliaSettingsStore } from "@/store/module/foliaSettings";
 import { useLyricStageStore } from "@/store/module/lyrics";
@@ -24,7 +25,11 @@ function cycleOption<Element extends string>(choices: readonly Element[], curren
 export function useFoliaCommands(group: FoliaCommandGroup | null, query: string) {
   const { t } = useTranslation();
   const nebbiaControls = useLyricStageStore((state) => state.mode === "nebbia");
-  const catalog = useMemo(() => buildFoliaCommands(t, { nebbiaControls }), [t, nebbiaControls]);
+  const hasFmModes = useProviderCapability("recommend.fm.modes");
+  const catalog = useMemo(
+    () => buildFoliaCommands(t, { personalFmModes: hasFmModes, nebbiaControls }),
+    [t, hasFmModes, nebbiaControls],
+  );
   const entries = useMemo(
     () => filterFoliaCommands(catalog, group, query),
     [catalog, group, query],

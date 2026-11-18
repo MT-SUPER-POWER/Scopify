@@ -28,7 +28,7 @@
   "section.searchLyrics": "搜尋歌詞",
   "section.artistLabel": "歌手",
   "playlist.byCreator": "來自 {{name}}",
-  "playlist.neteaseUser": "網易雲使用者",
+  "playlist.unknownCreator": "未知使用者",
   "category.all": "全部",
   "category.songs": "歌曲",
   "category.artists": "歌手",

@@ -6,7 +6,7 @@ import {
   subscribePlaylist,
   updatePlaylist,
   updatePlaylistCover,
-} from "@/lib/api/playlist";
+} from "@/lib/providers/netease/api/playlist";
 import { clearPageCache } from "@/lib/cache/pageCache";
 import { isRealUser } from "@/lib/web/auth";
 import { getPlaylistManagementPermissions } from "@/lib/playlist/playlistManagementPermissions";
@@ -15,7 +15,7 @@ import { useUserStore } from "@/store";
 import { useTranslation } from "react-i18next";
 
 import type { PlaylistUpdateInput } from "@/types/playlist/model";
-import type { RawNeteasePlaylist } from "@/types/playlist/api";
+import type { RawNeteasePlaylist } from "@/types/providers/netease/playlistApi";
 
 export function usePlaylistManagement(playlistId: number | string, detail?: RawNeteasePlaylist) {
   const { t } = useTranslation();
@@ -38,9 +38,11 @@ export function usePlaylistManagement(playlistId: number | string, detail?: RawN
   const refresh = () => {
     void clearPageCache();
     if (userId)
-      void queryClient.invalidateQueries({ queryKey: musicQueryKeys.library.playlists(userId) });
+      void queryClient.invalidateQueries({
+        queryKey: musicQueryKeys.library.neteasePlaylists(userId),
+      });
     void queryClient.invalidateQueries({
-      queryKey: ["playlist", "content", "playlist", String(playlistId)],
+      queryKey: musicQueryKeys.playlist.contentOf("netease", String(playlistId)),
     });
   };
 
@@ -61,7 +63,7 @@ export function usePlaylistManagement(playlistId: number | string, detail?: RawN
       // Remove the entry immediately, then reconcile the subscribed query with the server.
       if (userId)
         queryClient.setQueryData(
-          musicQueryKeys.library.playlists(userId),
+          musicQueryKeys.library.neteasePlaylists(userId),
           (items: typeof playlists | undefined) =>
             items?.filter((item) => String(item.id) !== String(playlistId)),
         );
