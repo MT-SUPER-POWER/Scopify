@@ -14,14 +14,28 @@ export default function HomeReleasesSlot() {
   return (
     <>
       <CapabilityGate requires="recommend.newAlbums">
-        <QueryBoundary resetKey="home:albums" title={t("home.newAlbums")} compact>
+        <QueryBoundary
+          resetKey="home:albums"
+          title={t("home.newAlbums")}
+          compact
+          renderWaiting={() => (
+            <HomeSectionPending kind="grid" titleKey="home.newAlbums" waitingForConnection />
+          )}
+        >
           <Suspense fallback={<HomeSectionPending kind="grid" titleKey="home.newAlbums" />}>
             <NewAlbumsSection />
           </Suspense>
         </QueryBoundary>
       </CapabilityGate>
       <CapabilityGate requires="recommend.newSongs">
-        <QueryBoundary resetKey="home:songs" title={t("home.newSongs")} compact>
+        <QueryBoundary
+          resetKey="home:songs"
+          title={t("home.newSongs")}
+          compact
+          renderWaiting={() => (
+            <HomeSectionPending kind="songs" titleKey="home.newSongs" waitingForConnection />
+          )}
+        >
           <Suspense fallback={<HomeSectionPending kind="songs" titleKey="home.newSongs" />}>
             <NewSongsSection />
           </Suspense>

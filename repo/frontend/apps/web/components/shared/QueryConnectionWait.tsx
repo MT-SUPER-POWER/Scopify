@@ -11,7 +11,7 @@ import type { QueryConnectionWaitProps } from "@/types/query/boundaryComponents"
 const COMPACT_TILES = 4;
 
 /** 连接失败的区域保持骨架等待恢复；原因与重试入口统一在顶部连接横条。 */
-export function QueryConnectionWait({ title, compact }: QueryConnectionWaitProps) {
+export function QueryConnectionWait({ title, compact, children }: QueryConnectionWaitProps) {
   const { t } = useTranslation();
   const { phase } = useConnectionStatus();
   const isNoticeVisible = isConnectionNoticeVisible(phase);
@@ -21,18 +21,19 @@ export function QueryConnectionWait({ title, compact }: QueryConnectionWaitProps
       {title ? <h2 className="text-xl font-bold text-content">{title}</h2> : null}
       <div className="relative">
         <div className={cn("transition-opacity duration-500", isNoticeVisible && "opacity-60")}>
-          {compact ? (
-            <div className="grid grid-cols-2 gap-4 sm:grid-cols-4" aria-hidden>
-              {Array.from({ length: COMPACT_TILES }).map((_, index) => (
-                <div key={index} className="space-y-2">
-                  <Skeleton className="aspect-square w-full rounded-lg bg-skeleton" />
-                  <Skeleton className="h-3 w-2/3 bg-skeleton-subtle" />
-                </div>
-              ))}
-            </div>
-          ) : (
-            <Skeleton className="h-72 w-full rounded-xl bg-skeleton" aria-hidden />
-          )}
+          {children ??
+            (compact ? (
+              <div className="grid grid-cols-2 gap-4 sm:grid-cols-4" aria-hidden>
+                {Array.from({ length: COMPACT_TILES }).map((_, index) => (
+                  <div key={index} className="space-y-2">
+                    <Skeleton className="aspect-square w-full rounded-lg bg-skeleton" />
+                    <Skeleton className="h-3 w-2/3 bg-skeleton-subtle" />
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <Skeleton className="h-72 w-full rounded-xl bg-skeleton" aria-hidden />
+            ))}
         </div>
         <div
           role="status"

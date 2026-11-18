@@ -9,6 +9,7 @@ export interface HomeSectionPendingProps {
   kind: "greeting" | "grid" | "artist" | "songs" | "voices" | "toplists";
   title?: string;
   titleKey?: TranslationKey;
+  waitingForConnection?: boolean;
 }
 
 export interface ActivityBannerCardProps {
@@ -53,7 +54,7 @@ export interface GridCardProps {
   onClick?: () => void;
 }
 
-export interface GridCardSkeletonProps {
+export interface HomeCardSkeletonGridProps {
   isArtist?: boolean;
 }
 

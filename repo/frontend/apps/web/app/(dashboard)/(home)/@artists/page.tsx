@@ -23,10 +23,20 @@ export default function HomeArtistsSlot() {
         resetKey={`home:artist-songs:${accountId}`}
         title={t("home.artistTopSongs")}
         compact
+        renderWaiting={() => (
+          <HomeSectionPending kind="grid" titleKey="home.artistTopSongs" waitingForConnection />
+        )}
       >
         <ArtistTopSongsSection />
       </QueryBoundary>
-      <QueryBoundary resetKey="home:artists" title={t("home.suggestedArtists")} compact>
+      <QueryBoundary
+        resetKey="home:artists"
+        title={t("home.suggestedArtists")}
+        compact
+        renderWaiting={() => (
+          <HomeSectionPending kind="artist" titleKey="home.suggestedArtists" waitingForConnection />
+        )}
+      >
         <Suspense fallback={<HomeSectionPending kind="artist" titleKey="home.suggestedArtists" />}>
           <SuggestedArtists />
         </Suspense>
@@ -36,6 +46,13 @@ export default function HomeArtistsSlot() {
           resetKey={`home:followed-albums:${accountId}`}
           title={t("home.followedArtistsAlbums")}
           compact
+          renderWaiting={() => (
+            <HomeSectionPending
+              kind="grid"
+              titleKey="home.followedArtistsAlbums"
+              waitingForConnection
+            />
+          )}
         >
           <FollowedAlbumsSection />
         </QueryBoundary>
