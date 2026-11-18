@@ -178,7 +178,7 @@ export function McpCapabilitiesModal({
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 z-120 flex items-center justify-center bg-black/75 p-4 backdrop-blur-sm"
+          className="fixed inset-0 z-120 flex items-center justify-center bg-overlay p-4 backdrop-blur-sm"
           onMouseDown={onClose}
         >
           <motion.div
@@ -186,15 +186,15 @@ export function McpCapabilitiesModal({
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 8 }}
             transition={{ duration: 0.16, ease: [0.16, 1, 0.3, 1] }}
-            className="relative h-[min(78dvh,720px)] max-h-[calc(100dvh-2rem)] w-full max-w-[806px] [scrollbar-color:#4a4a4a_transparent] [scrollbar-gutter:stable] overflow-y-auto rounded-2xl border border-white/8 bg-[#111] px-5 pt-[18px] pb-10 text-[#d2d2d2] shadow-[0_28px_80px_rgba(0,0,0,0.52)] sm:px-18 [&::-webkit-scrollbar]:w-4 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:border-[5px] [&::-webkit-scrollbar-thumb]:border-[#111] [&::-webkit-scrollbar-thumb]:bg-[#4a4a4a]"
+            className="relative scrollbar-thin h-[min(78dvh,720px)] max-h-[calc(100dvh-2rem)] w-full max-w-[806px] [scrollbar-gutter:stable] overflow-y-auto rounded-2xl border border-border bg-surface-overlay px-5 pt-[18px] pb-10 text-content shadow-floating sm:px-18"
             onMouseDown={(event) => event.stopPropagation()}
           >
             <header>
               <div>
-                <h2 className="text-[22px] leading-7 font-semibold tracking-[-0.02em] text-[#d2d2d2]">
+                <h2 className="text-[22px] leading-7 font-semibold tracking-[-0.02em]">
                   {t("settings.mcp.modal.title")}
                 </h2>
-                <p className="mt-1 text-[15px] leading-5 text-[#7f7f7f]">
+                <p className="mt-1 text-[15px] leading-5 text-content-muted">
                   {t("settings.mcp.modal.description")}
                 </p>
               </div>
@@ -203,18 +203,18 @@ export function McpCapabilitiesModal({
                 title={t("common.action.close") || "关闭"}
                 aria-label={t("common.action.close") || "关闭"}
                 onClick={onClose}
-                className="absolute top-4 right-6 flex size-8 items-center justify-center rounded text-[#bababa] transition-colors hover:bg-white/8 hover:text-white"
+                className="absolute top-4 right-6 flex size-8 items-center justify-center rounded text-content-muted transition-colors hover:bg-surface-sunken hover:text-content"
               >
                 <X className="stroke-1.5 size-[18px]" />
               </button>
             </header>
 
             {/* 快捷操作：全部开启 / 全部关闭 */}
-            <div className="mt-4 flex max-w-155 items-center justify-end gap-2 border-b border-white/8 pb-3">
+            <div className="mt-4 flex max-w-155 items-center justify-end gap-2 border-b border-border pb-3">
               <button
                 type="button"
                 onClick={handleEnableAll}
-                className="inline-flex items-center gap-1.5 rounded border border-white/10 bg-white/5 px-2.5 py-1 text-xs font-medium text-[#d2d2d2] transition-colors hover:border-white/20 hover:bg-white/10"
+                className="inline-flex items-center gap-1.5 rounded border border-border bg-surface-elevated px-2.5 py-1 text-xs font-medium transition-colors hover:bg-surface-sunken"
               >
                 <CheckCheck className="size-3.5 text-brand" />
                 {t("settings.mcp.modal.enableAll")}
@@ -222,7 +222,7 @@ export function McpCapabilitiesModal({
               <button
                 type="button"
                 onClick={handleDisableAll}
-                className="inline-flex items-center gap-1.5 rounded border border-white/10 bg-white/5 px-2.5 py-1 text-xs font-medium text-[#d2d2d2] transition-colors hover:border-white/20 hover:bg-white/10"
+                className="inline-flex items-center gap-1.5 rounded border border-border bg-surface-elevated px-2.5 py-1 text-xs font-medium transition-colors hover:bg-surface-sunken"
               >
                 <XCircle className="size-3.5 text-danger" />
                 {t("settings.mcp.modal.disableAll")}
@@ -232,10 +232,10 @@ export function McpCapabilitiesModal({
             {/* 内容区：单一受控音频播放工具列表 */}
             <div className="mt-6 max-w-155 space-y-6">
               <section>
-                <h3 className="mb-2 text-[13px] font-semibold tracking-normal text-[#7d7d7d] uppercase">
+                <h3 className="mb-2 text-[13px] font-semibold tracking-normal text-content-muted uppercase">
                   {t("settings.mcp.modal.group.playback")}
                 </h3>
-                <div className="divide-y divide-white/5">
+                <div className="divide-y divide-border">
                   {PLAYBACK_CAPABILITY_ITEMS.map((item) => {
                     const Icon = item.icon;
                     const isEnabled = activeSet.has(item.capability);
@@ -245,11 +245,11 @@ export function McpCapabilitiesModal({
                         className="grid min-h-10 grid-cols-[minmax(0,1fr)_auto] items-center gap-6 px-1 py-2"
                       >
                         <div className="flex min-w-0 items-center gap-2.5">
-                          <Icon className="size-3.5 shrink-0 text-[#8b8b8b]" />
-                          <span className="truncate text-[15px] leading-5 text-[#d2d2d2]">
-                            {t(item.labelKey)}
+                          <Icon className="size-3.5 shrink-0 text-content-muted" />
+                          <span className="truncate text-[15px] leading-5">{t(item.labelKey)}</span>
+                          <span className="font-mono text-xs text-content-muted">
+                            ({item.toolName})
                           </span>
-                          <span className="font-mono text-xs text-[#666]">({item.toolName})</span>
                         </div>
                         <Toggle enabled={isEnabled} onChange={() => toggleItem(item.capability)} />
                       </div>
