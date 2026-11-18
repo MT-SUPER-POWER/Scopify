@@ -2,6 +2,87 @@
 
 > 根据 commit 自动生成，请勿手动编辑；推送版本 tag 后由 CI 更新。v2.0.3 及更早版本见[历史更新记录](archive/CHANGELOG-legacy.md)。
 
+## v4.0.1 — 2026-11-18
+
+### 新增
+
+- Lattice 加入电台墙 ([f17f29e1](https://github.com/MT-SUPER-POWER/Scopify/commit/f17f29e17b11d65647e2f1fa2a226fd9f9ec9746))
+- 歌曲墙可搜索和双击播放 ([f3f4c0d1](https://github.com/MT-SUPER-POWER/Scopify/commit/f3f4c0d176525d669954eba4d6654098bf60287e))
+- 歌词舞台可自定义播放快捷操作 ([1587e40a](https://github.com/MT-SUPER-POWER/Scopify/commit/1587e40a805d49e96611d8e3740975e4f3be56be))
+- 回环支持位置和沿环翻译 ([dcd40de8](https://github.com/MT-SUPER-POWER/Scopify/commit/dcd40de80065639cc1cfcb30b54a254d2e64f023))
+- 莫奈支持镜像和自定义肖像描述 ([dd44b862](https://github.com/MT-SUPER-POWER/Scopify/commit/dd44b8626f8a0fa00d68c6335698f0470a507b9e))
+- 时计支持表盘倾斜和轮心视角 ([0619301a](https://github.com/MT-SUPER-POWER/Scopify/commit/0619301ab8fe2b15833f357614c7d9a4338f69df))
+- 支持多行字幕和后续歌词预览 ([106b6ffd](https://github.com/MT-SUPER-POWER/Scopify/commit/106b6ffdb282b5faabe942af67af85bf4a675f11))
+- 雾笺加入水族箱和多种玻璃 ([0eec714d](https://github.com/MT-SUPER-POWER/Scopify/commit/0eec714df64efb10f767dacdb3efdbc2a32ad662))
+- 可实测歌词动画的画质性能 ([d4c6322c](https://github.com/MT-SUPER-POWER/Scopify/commit/d4c6322cf9551a3a1cce1dbcdeefca4451104604))
+- 支持全局和单样式画布画质 ([add24d31](https://github.com/MT-SUPER-POWER/Scopify/commit/add24d313e67baf7ceee7ce7fd339de6396dde95))
+- 花火支持本地分词和手动调整 ([c9629bc2](https://github.com/MT-SUPER-POWER/Scopify/commit/c9629bc28fa05dd7667925438b4b666ab77bd509))
+- 新增影厅歌词场景 ([dc5cfb12](https://github.com/MT-SUPER-POWER/Scopify/commit/dc5cfb122d6b7c7e6654a644b266b20b83b957d8))
+- 支持手动同步账号资料与歌单 ([e0edf18f](https://github.com/MT-SUPER-POWER/Scopify/commit/e0edf18f2290f47755e83595616d24b1db3a8a7b))
+- 展示歌手的完整歌曲目录 ([3dcdb51f](https://github.com/MT-SUPER-POWER/Scopify/commit/3dcdb51f0d5be19fc6fd6d4a15603bb878e2e66f))
+- 支持打开专辑的全部署名歌手 ([55687648](https://github.com/MT-SUPER-POWER/Scopify/commit/55687648bdea9793e4008066599d780a0d9c65c3))
+- 町景灯光可跟随模拟节拍 ([8d15ea9a](https://github.com/MT-SUPER-POWER/Scopify/commit/8d15ea9a0e5db0746c4c7d74f746e7d5e6b263ce))
+- 显示增量与完整安装包下载状态 ([ab3da91c](https://github.com/MT-SUPER-POWER/Scopify/commit/ab3da91c4381e4e6a0e5af1a058b3ccbaf59d5d3))
+- 新增隐喻歌词样式 ([d7401b06](https://github.com/MT-SUPER-POWER/Scopify/commit/d7401b0607264ddb1a7ab005f292e98a0173d0ce))
+- worktrees skills ([9a63723a](https://github.com/MT-SUPER-POWER/Scopify/commit/9a63723af314a8ef8402554fd506973f0a31e039))
+- Lattice 加入电台墙 ([292ede96](https://github.com/MT-SUPER-POWER/Scopify/commit/292ede96302cd6c09e63572514581ed3dc6e5426))
+- 歌曲墙可搜索和双击播放 ([15b9b35a](https://github.com/MT-SUPER-POWER/Scopify/commit/15b9b35a4690d441ffee0feba2ac4628c1c61a42))
+- 歌词舞台可自定义播放快捷操作 ([5108dae7](https://github.com/MT-SUPER-POWER/Scopify/commit/5108dae7cf11af982a02f041ec7855edd1e94dd8))
+- 回环支持位置和沿环翻译 ([6ea0d6bf](https://github.com/MT-SUPER-POWER/Scopify/commit/6ea0d6bf0447453043f4fbbc0138285d76eb3520))
+- 莫奈支持镜像和自定义肖像描述 ([7ad733e0](https://github.com/MT-SUPER-POWER/Scopify/commit/7ad733e072ba59c209ff484762e066be0ea8f862))
+- 时计支持表盘倾斜和轮心视角 ([7455b5de](https://github.com/MT-SUPER-POWER/Scopify/commit/7455b5dee91fc099bd083787206d33ce9af94cee))
+- 支持多行字幕和后续歌词预览 ([8a1bdff7](https://github.com/MT-SUPER-POWER/Scopify/commit/8a1bdff741efd568b09ea855efa5c729a735b56e))
+- 雾笺加入水族箱和多种玻璃 ([c353112c](https://github.com/MT-SUPER-POWER/Scopify/commit/c353112c1c2548594cc663256be24d71fcfa4cb2))
+- 可实测歌词动画的画质性能 ([824a9213](https://github.com/MT-SUPER-POWER/Scopify/commit/824a921375a963a653ebd20170b7c57e448353f5))
+- 支持全局和单样式画布画质 ([1ae2440e](https://github.com/MT-SUPER-POWER/Scopify/commit/1ae2440ee24b3abc474e5e2f88cd607fdea10a12))
+- 花火支持本地分词和手动调整 ([7ace0559](https://github.com/MT-SUPER-POWER/Scopify/commit/7ace05594ce42ad98772acdce7d254a2b2c890bc))
+- 新增影厅歌词场景 ([d12a3db2](https://github.com/MT-SUPER-POWER/Scopify/commit/d12a3db285c9ff71a06bc302586011bf9bdbc116))
+- 支持手动同步账号资料与歌单 ([fd0916f1](https://github.com/MT-SUPER-POWER/Scopify/commit/fd0916f1a20e932677b859eefc4c5f948f1c7cce))
+- 展示歌手的完整歌曲目录 ([f2ca120b](https://github.com/MT-SUPER-POWER/Scopify/commit/f2ca120b525d08774bf89b77b9c0651d5d1c9e40))
+- 支持打开专辑的全部署名歌手 ([c4635a73](https://github.com/MT-SUPER-POWER/Scopify/commit/c4635a732b18d914186e2f4935614c022ed9afe1))
+- 町景灯光可跟随模拟节拍 ([e86634a9](https://github.com/MT-SUPER-POWER/Scopify/commit/e86634a9063b01c3b8fe525795851c9464660357))
+- 显示增量与完整安装包下载状态 ([1fb4cf29](https://github.com/MT-SUPER-POWER/Scopify/commit/1fb4cf29e8a894800afcdd48bd6bcf207c67db9d))
+- 新增隐喻歌词样式 ([f8c5cf2b](https://github.com/MT-SUPER-POWER/Scopify/commit/f8c5cf2b7cbc5f5dd4890d8ce2a9afe6fd9f8e62))
+
+### 修复
+
+- 让断线时的首页骨架贴合实际布局 ([b70e86da](https://github.com/MT-SUPER-POWER/Scopify/commit/b70e86da6469b7ced67796aab86460b5933b1cf9))
+- 将红色歌曲操作归为一组 ([9f2202a5](https://github.com/MT-SUPER-POWER/Scopify/commit/9f2202a598c1df09a1a80907201d5a734b74e583))
+- 用斜线爱心表示取消喜欢 ([7361e068](https://github.com/MT-SUPER-POWER/Scopify/commit/7361e06815b2f265413c06501d0b2546d77e3f24))
+- 补齐雾笺构图的翻译 ([a4bd04de](https://github.com/MT-SUPER-POWER/Scopify/commit/a4bd04dee720e20dcee362fcf17e08d25a8f3473))
+- 完善舞台设置与分词类型边界 ([124b4d07](https://github.com/MT-SUPER-POWER/Scopify/commit/124b4d077e80276c92b15ff7c040a160c31781ff))
+- 保留分页错误的边界类型 ([9e0548d6](https://github.com/MT-SUPER-POWER/Scopify/commit/9e0548d6d938fc7d09564b7ae36dd01cda557ff3))
+- 时计使用当前视角的齿轮投影 ([b05d4dc5](https://github.com/MT-SUPER-POWER/Scopify/commit/b05d4dc5b6a59ae78d5edb181bb64fdf0a87f8ea))
+- 修正花火与凝彩画质设置类型 ([6ace87c1](https://github.com/MT-SUPER-POWER/Scopify/commit/6ace87c1e438f918f1f20d760437f89fc7b240ff))
+- 为流光字距滑块补上可读标签 ([41b36718](https://github.com/MT-SUPER-POWER/Scopify/commit/41b3671862b8e0ee1ebfa03600a4577b4a669533))
+- 避免莫奈首曲封面效果卡在原图 ([626d3308](https://github.com/MT-SUPER-POWER/Scopify/commit/626d3308a31000426c0398c795ec328158ae8ea1))
+- 优化从右向左歌词及文字间距 ([fa57099c](https://github.com/MT-SUPER-POWER/Scopify/commit/fa57099c6680cf9c2d435e63cad29222c400ed1c))
+- 用歌曲和歌手别名补充歌词匹配 ([6cf6d53d](https://github.com/MT-SUPER-POWER/Scopify/commit/6cf6d53d778a43f90880a086de9c7d10493e8f31))
+- 避免旧曲目数截断歌单分页 ([e1258860](https://github.com/MT-SUPER-POWER/Scopify/commit/e1258860cd06e74397f1c9933d0658bbfdbac881))
+- 恢复任务栏缩略图播放按钮 ([835a4d31](https://github.com/MT-SUPER-POWER/Scopify/commit/835a4d314eb968a13dabbc4180181d08350eb997))
+- 按封面颜色面积选取主色 ([1c45f0ff](https://github.com/MT-SUPER-POWER/Scopify/commit/1c45f0ff8b5237284f5c8df12a036e949655b7db))
+- 保留含空格歌词的语义分词 ([c259a258](https://github.com/MT-SUPER-POWER/Scopify/commit/c259a25815b82f44f02a57d26e5a2666e601c893))
+- 修复逐行歌词折行同时扫亮 ([7ec2ebb8](https://github.com/MT-SUPER-POWER/Scopify/commit/7ec2ebb8590f28d0a9db2292b82f22cc88b2aeb0))
+- 补齐雾笺构图的翻译 ([8c136164](https://github.com/MT-SUPER-POWER/Scopify/commit/8c136164774e66b38f4e7460427d20c4a8369cf0))
+- 完善舞台设置与分词类型边界 ([0bb3fef6](https://github.com/MT-SUPER-POWER/Scopify/commit/0bb3fef65913be5c15c048137ee57ada2884a978))
+- 保留分页错误的边界类型 ([6161bfc5](https://github.com/MT-SUPER-POWER/Scopify/commit/6161bfc57108eddf167ba0a51fa36d5de03585d5))
+- 时计使用当前视角的齿轮投影 ([71938880](https://github.com/MT-SUPER-POWER/Scopify/commit/71938880d447b8074653cbe9fd30be6bc2dcd5ec))
+- 修正花火与凝彩画质设置类型 ([3a5147ae](https://github.com/MT-SUPER-POWER/Scopify/commit/3a5147aeb06226b1bcc47dd2b39065316cab98ba))
+- 为流光字距滑块补上可读标签 ([d1355ad0](https://github.com/MT-SUPER-POWER/Scopify/commit/d1355ad015330c493a0789fa63a61bb29d5a45bd))
+- 避免莫奈首曲封面效果卡在原图 ([900e7a73](https://github.com/MT-SUPER-POWER/Scopify/commit/900e7a73a98a7b139645aca5664017075eb31aaa))
+- 优化从右向左歌词及文字间距 ([2a02c535](https://github.com/MT-SUPER-POWER/Scopify/commit/2a02c53536ab19e162459a8a76b86d7aca00f478))
+- 用歌曲和歌手别名补充歌词匹配 ([923a39e5](https://github.com/MT-SUPER-POWER/Scopify/commit/923a39e531f58f017ebf8007950d2f7d4685cc0f))
+- 避免旧曲目数截断歌单分页 ([0be55333](https://github.com/MT-SUPER-POWER/Scopify/commit/0be5533325e306e35afc6d5c5d9c42fd635c25b0))
+- 恢复任务栏缩略图播放按钮 ([2d5f353a](https://github.com/MT-SUPER-POWER/Scopify/commit/2d5f353abf80315faf9d619b8363bca6ecf4963a))
+- 按封面颜色面积选取主色 ([7ac56929](https://github.com/MT-SUPER-POWER/Scopify/commit/7ac56929ff01dd6ae798476f9a8fd0d838c8e7e5))
+- 保留含空格歌词的语义分词 ([b684dcdd](https://github.com/MT-SUPER-POWER/Scopify/commit/b684dcddf6926227b0404ee0fbb1517367dc48d2))
+- 修复逐行歌词折行同时扫亮 ([9f64c85c](https://github.com/MT-SUPER-POWER/Scopify/commit/9f64c85cdace90f1c8a2bfe7bc59afbdf88f7451))
+
+### 优化
+
+- 为 QQ 封面选择显示尺寸 ([8d492fd1](https://github.com/MT-SUPER-POWER/Scopify/commit/8d492fd144477e6e75b0a60f42c5c5b4cb66f7e0))
+- 为 QQ 封面选择显示尺寸 ([3c85b28b](https://github.com/MT-SUPER-POWER/Scopify/commit/3c85b28be65bf7aeb5aba4c19319d180eec3a690))
+
 ## v3.4.5 — 2026-11-14
 
 ### 修复
@@ -21,6 +102,27 @@
 - Grid 和 Lattice 支持标记不感兴趣 ([3aa880d6](https://github.com/MT-SUPER-POWER/Scopify/commit/3aa880d664020e2ebd49d44d2460a32ca983591f))
 - 不感兴趣的歌曲从电台队列移除 ([03b1a7f5](https://github.com/MT-SUPER-POWER/Scopify/commit/03b1a7f58f69d9636cce62da07fd2780304cb9ce))
 
+## v4.0.1-beta.1 — 2026-11-14
+
+### 修复
+
+- 支持配置桌面更新仓库 ([5114dd65](https://github.com/MT-SUPER-POWER/Scopify/commit/5114dd65e418e0cec6d0834e914c2760339caeaf))
+- 按版本号选择正式版和 Beta 更新 ([eea5366c](https://github.com/MT-SUPER-POWER/Scopify/commit/eea5366cdd0f24b255fe73b081f3771c5abce148))
+- 用划线爱心标示不感兴趣 ([1093c022](https://github.com/MT-SUPER-POWER/Scopify/commit/1093c022f9a2acf0436a35bc8e5c459e5ecdd8f3))
+- 移除灰色声音行的重复状态标签 ([0f88d25e](https://github.com/MT-SUPER-POWER/Scopify/commit/0f88d25e84a3e4980c682c3d4664efb21a6c9e11))
+- 整行置灰并禁用不可播放的声音 ([10cd0496](https://github.com/MT-SUPER-POWER/Scopify/commit/10cd049633a64b0fe2ac7ebd515d179e27f5eae3))
+- 去掉播客标签的绿色焦点框 ([fddbec4e](https://github.com/MT-SUPER-POWER/Scopify/commit/fddbec4ece6b11e72de48aeffcb0c3e95713b6d3))
+- 灰色标示不可播放的声音 ([b226d129](https://github.com/MT-SUPER-POWER/Scopify/commit/b226d129f6593d3ee11bfb4e437349e9da30a5fa))
+- 禁止播放已删除的收藏声音 ([4211e11a](https://github.com/MT-SUPER-POWER/Scopify/commit/4211e11a92fbf95eb0269fe8f1db610c5570faf8))
+- 输满短信验证码后才能验证登录 ([d350bdfd](https://github.com/MT-SUPER-POWER/Scopify/commit/d350bdfdb197c25fa3d6cc970316b13b65964538))
+- 放大 Windows 登录窗口 ([7d5a7f92](https://github.com/MT-SUPER-POWER/Scopify/commit/7d5a7f9273b64707e78b8ac3be244955fa52eb20))
+- 平台菜单只保留整行高亮 ([21e0cede](https://github.com/MT-SUPER-POWER/Scopify/commit/21e0cedeed9cfe060dea278619eaea5d95f72fa4))
+- 未登录也能切换音乐平台 ([750217f7](https://github.com/MT-SUPER-POWER/Scopify/commit/750217f7dbfe9fb992c8bcb320dee47cc4f6ff1b))
+- 优化喜欢的声音列表布局 ([af0f6ea1](https://github.com/MT-SUPER-POWER/Scopify/commit/af0f6ea1df7a147447bb4e6179a8243d533f6cfc))
+- 修复喜欢的声音被误判为下架 ([8d99aa72](https://github.com/MT-SUPER-POWER/Scopify/commit/8d99aa72b0cc53df564f7165f05f2c72ee808e5d))
+- Grid 和 Lattice 支持标记不感兴趣 ([1c38660e](https://github.com/MT-SUPER-POWER/Scopify/commit/1c38660e48dca6beb4fbc622de7ff6eb7b353339))
+- 不感兴趣的歌曲从电台队列移除 ([02b527e4](https://github.com/MT-SUPER-POWER/Scopify/commit/02b527e45ccf9cf5a4bcf3ac3ec7f6686d0eba8b))
+
 ## v3.4.4 — 2026-11-10
 
 ### 新增
@@ -31,6 +133,59 @@
 
 - Beta 更新开关改用设置页统一的开关样式 ([6012b980](https://github.com/MT-SUPER-POWER/Scopify/commit/6012b980278dd973a62da316605dbac32e55174f))
 - 修复命令工作区滚动列表右侧边距缺失与内容溢出 ([2b832a48](https://github.com/MT-SUPER-POWER/Scopify/commit/2b832a4886dd9b34280f94087f9b6c63332cecc3))
+
+## v4.0.0-beta.2 — 2026-11-10
+
+### 修复
+
+- 修复命令工作区滚动列表右侧边距缺失与内容溢出 ([773aab61](https://github.com/MT-SUPER-POWER/Scopify/commit/773aab61391badf3adacb11af610659d0c906152))
+- Beta 更新开关改用设置页统一的开关样式 ([5922fb1c](https://github.com/MT-SUPER-POWER/Scopify/commit/5922fb1ca6aa31fd370aae70f62e772f09254ac0))
+
+## v4.0.0-beta.1 — 2026-11-09
+
+### 新增
+
+- QQ 的正在播放面板与 MV 预览补齐 ([31524e52](https://github.com/MT-SUPER-POWER/Scopify/commit/31524e525b747410346bf1fa4fe61aee180ef562))
+- 补齐 QQ 的右键菜单、歌单收藏、播放页和歌单视图等能力 ([ca761810](https://github.com/MT-SUPER-POWER/Scopify/commit/ca761810ba2d10d271394bc1690d2c394e6e7a19))
+- 播放栏与歌曲行支持喜欢、评论和 MV ([fd82f41f](https://github.com/MT-SUPER-POWER/Scopify/commit/fd82f41fe097f5ea189134c796bb1c351c8866f2))
+- 重做我的收藏页，改为喜欢的音乐加分类货架 ([918493c5](https://github.com/MT-SUPER-POWER/Scopify/commit/918493c53b92d96674f46d7cfa185f7fe0534698))
+- 我的收藏改为按类别分页签 ([bc0f1e7c](https://github.com/MT-SUPER-POWER/Scopify/commit/bc0f1e7c05c7d5b9f0f10e4ae7ad10e212fc9689))
+- QQ 歌单页支持重命名、删除、收藏和复制链接 ([185e6380](https://github.com/MT-SUPER-POWER/Scopify/commit/185e63808e693e8b500897f8102d4bd19aca1d1d))
+- 歌曲显示 VIP 与音质标记，听歌排行可按日历切换时间 ([6bfcfdd1](https://github.com/MT-SUPER-POWER/Scopify/commit/6bfcfdd14a6971bafa23efec77ead1f1ac8fb66c))
+- QQ 音乐侧栏新增云盘与听歌排行 ([23d0111a](https://github.com/MT-SUPER-POWER/Scopify/commit/23d0111acd0bea48d38ba924c89dbbb32c4d3f2f))
+- QQ 首页保留原布局并接入每日30首等独有栏目 ([99b44292](https://github.com/MT-SUPER-POWER/Scopify/commit/99b44292df914819d60dd827732057c1871728fa))
+- QQ 音乐首页使用官方推荐 feed ([58ba898e](https://github.com/MT-SUPER-POWER/Scopify/commit/58ba898e5ee54122b2ff7a7a58a587cde5661cd2))
+- 账号菜单按平台展示登录状态，未登录头像使用平台图标 ([25c77f53](https://github.com/MT-SUPER-POWER/Scopify/commit/25c77f53bf257c0534cf3f67527b2fb0df589f7a))
+- QQ 音乐可查看歌曲评论页和 MV 播放页 ([e350cbfc](https://github.com/MT-SUPER-POWER/Scopify/commit/e350cbfc8f6ad31fa6a0d061e45279dc82ea5b66))
+- QQ 音乐支持歌曲评论和 MV 播放 ([a0533a6e](https://github.com/MT-SUPER-POWER/Scopify/commit/a0533a6e6dd060040b3871cb57fadf958b7dde60))
+- QQ 音乐歌曲在歌词页、桌面歌词和任务栏歌词中显示歌词 ([3cfccf9e](https://github.com/MT-SUPER-POWER/Scopify/commit/3cfccf9ee385ad9d5ca3517c3f0d182b2703697e))
+- QQ 音乐歌曲支持歌词和翻译 ([8664363d](https://github.com/MT-SUPER-POWER/Scopify/commit/8664363d56ac0e9e38f49edfe47e8dabc9bb6e70))
+- QQ 音乐支持歌手页、专辑页和首页新碟上架 ([f35d4ea1](https://github.com/MT-SUPER-POWER/Scopify/commit/f35d4ea18738baa31c15881b876c1481ac1da4c1))
+- 侧边栏、我喜欢与收藏页支持 QQ 音乐账号的歌单库 ([12d852a4](https://github.com/MT-SUPER-POWER/Scopify/commit/12d852a46db0b5dcf875a03a50e3880c8a14d880))
+- 喜欢状态按平台与账号隔离，QQ 音乐歌曲可以喜欢与取消喜欢 ([0ec06320](https://github.com/MT-SUPER-POWER/Scopify/commit/0ec06320b0f592d7f47ebedf424a0d3cba70a986))
+- 支持 QQ 音乐的我的歌单、喜欢的歌曲与歌单管理 ([a5c6bd6c](https://github.com/MT-SUPER-POWER/Scopify/commit/a5c6bd6c90400f86b50c083e25fcb79124298b35))
+- QQ 音乐有了自己的首页，日推页面同样支持 QQ ([b6c8f3bc](https://github.com/MT-SUPER-POWER/Scopify/commit/b6c8f3bc8915efa90ffebd838b27c03eee473297))
+- 私人漫游改走当前平台，QQ 音乐也能使用 ([ff64bf79](https://github.com/MT-SUPER-POWER/Scopify/commit/ff64bf790ab34472489b5eab9f798e881cd42132))
+- QQ 音乐支持搜索歌曲、歌手、专辑和歌单 ([286bc4db](https://github.com/MT-SUPER-POWER/Scopify/commit/286bc4dbef27a166a0cccac4d11ef9bc18450ef8))
+- 优化 Mermaid 流程图尺寸渲染与全屏自适应交互 ([3eda8df8](https://github.com/MT-SUPER-POWER/Scopify/commit/3eda8df88cf6d318c585f883d5996b399ced4cc0))
+- 切换到 QQ 音乐后可以打开歌单，查看曲目并播放 ([5a9dc716](https://github.com/MT-SUPER-POWER/Scopify/commit/5a9dc7162c2d72b2fd27c73ea3031751211b34db))
+- 按当前平台隐藏不支持的入口，直接打开时提示当前平台不支持 ([58773420](https://github.com/MT-SUPER-POWER/Scopify/commit/587734205208bee79d59520003983ac968559703))
+- 账号菜单可同时查看网易云与 QQ 音乐的登录状态并一键切换平台 ([bb273dcf](https://github.com/MT-SUPER-POWER/Scopify/commit/bb273dcfd707ab83498bfe893d76e32961c032e6))
+- 支持扫码登录 QQ 音乐，登录页可选择网易云或 QQ 音乐 ([9ce4a383](https://github.com/MT-SUPER-POWER/Scopify/commit/9ce4a3833d28726d8efed69bd4e0111449bbe249))
+- 后端服务设置移至独立页面，按平台分别配置网易云音乐与 QQ 音乐 ([39cb0c21](https://github.com/MT-SUPER-POWER/Scopify/commit/39cb0c2118bea86cdd1c0b61e7ef05484ba77023))
+- 支持停止本地后端并优化端口输入与未保存放弃体验 ([b99e8033](https://github.com/MT-SUPER-POWER/Scopify/commit/b99e803333130dfbd4befeb7e12129f769d5fb83))
+- 网络设置中可为每个平台选择内置后端或自定义地址 ([1b32e8a4](https://github.com/MT-SUPER-POWER/Scopify/commit/1b32e8a4cd054c397242ab9b9e19257c983640fd))
+
+### 修复
+
+- 歌单没有封面时用第一首歌，并让 QQ 封面能取主题色 ([47bd881e](https://github.com/MT-SUPER-POWER/Scopify/commit/47bd881e1d0c8189879702da3f3fc4254ed40d6c))
+- 首页官方歌曲货架补上封面 ([31788e4c](https://github.com/MT-SUPER-POWER/Scopify/commit/31788e4c6ac74f9b0cbaa54d7bf4f5abdff1127d))
+- 首页去掉刷歌栏目 ([abce64aa](https://github.com/MT-SUPER-POWER/Scopify/commit/abce64aaccb176fc269470e173fd63dd8d8d7654))
+- 首页不再重复展示每日推荐与推荐歌单 ([6ce15849](https://github.com/MT-SUPER-POWER/Scopify/commit/6ce15849b2f2445ec0d0b3193e7ea98c1013f4e7))
+- QQ 音乐侧栏补上私人电台，收藏页不再混入网易云歌手 ([88d774e7](https://github.com/MT-SUPER-POWER/Scopify/commit/88d774e7b2949d0efce5cb5fdf2149dc18a5b86f))
+- QQ 首页歌手栏目改用 QQ 数据 ([6fc04a2e](https://github.com/MT-SUPER-POWER/Scopify/commit/6fc04a2e5f51c1d4e11ab6dc92a577b4320ecc75))
+- 修复能力名被误判为翻译键的检查报错 ([6321f856](https://github.com/MT-SUPER-POWER/Scopify/commit/6321f85677e7724198e4abf973721530660ea099))
+- 修复命令工作区滚动列表右侧边距缺失与内容溢出 ([df4ab815](https://github.com/MT-SUPER-POWER/Scopify/commit/df4ab8152f99a710b005f0ec533584d356891d6d))
 
 ## v3.4.3 — 2026-11-09
 
