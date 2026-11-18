@@ -1,7 +1,7 @@
 import { describe, expect, it } from "bun:test";
 import { existsSync } from "node:fs";
 import path from "node:path";
-import { calculateNextVersion, TARGET_PACKAGES } from "./bump-version";
+import { calculateNextVersion, TARGET_PACKAGES } from "../bump-version";
 
 describe("bump-version script", () => {
   it("bumps the core version separately from the Beta counter", () => {

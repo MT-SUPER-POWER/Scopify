@@ -82,7 +82,7 @@ jobs:
         uses: ./.github/actions/setup-workspace
 
       - name: Run Format Check
-        run: pnpm run format:check
+        run: pnpm run check:format
 
   lint:
     name: Lint

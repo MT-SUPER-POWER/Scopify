@@ -1,5 +1,5 @@
 import { describe, expect, it } from "bun:test";
-import { collectPushedFiles, selectTypecheckPackages } from "./pre-push-typecheck";
+import { collectPushedFiles, selectTypecheckPackages } from "../pre-push-typecheck";
 
 describe("pre-push-typecheck script", () => {
   it("forces full typecheck (null) when pushing a git tag", () => {

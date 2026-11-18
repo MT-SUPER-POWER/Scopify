@@ -38,7 +38,8 @@ pnpm run dev:full       # Web + Electron + 后端联调
 项目 Skills 统一维护在根目录的 [`skills/`](./skills/)。安装依赖后，在需要链接的工作副本中运行：
 
 ```bash
-bun scripts/link-skills.ts
+pnpm run skills
+# 或 bun scripts/link-skills.ts
 ```
 
 - **链接项目 Skills**。选择 Skills 和 AI 工具，查看预览后确认。Windows 创建目录联接（junction），macOS 和 Linux 创建相对符号链接。遇到同名项，可以保留它，或选择备份并替换。备份保存在目标目录旁的 `skills-backup-*`。

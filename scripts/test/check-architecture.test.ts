@@ -1,6 +1,6 @@
 import { describe, expect, test } from "bun:test";
 import { resolve } from "node:path";
-import { findForbiddenDesktopImports, findForbiddenWebRuntimeUsage } from "./check-architecture";
+import { findForbiddenDesktopImports, findForbiddenWebRuntimeUsage } from "../check-architecture";
 
 const repositoryRoot = resolve("D:/workspace/Scopify");
 

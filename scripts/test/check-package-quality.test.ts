@@ -1,9 +1,9 @@
 import { afterEach, expect, test } from "bun:test";
 import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { resolve, sep } from "node:path";
-import { checkPackageQuality } from "./check-package-quality";
+import { checkPackageQuality } from "../check-package-quality";
 
-const temporaryRoot = resolve(import.meta.dir, "../.tmp");
+const temporaryRoot = resolve(import.meta.dir, "../../.tmp");
 const fixtures: string[] = [];
 
 function createPackage(scripts: Record<string, string>, withTests = false) {
@@ -38,8 +38,9 @@ test("requires a test script when test files exist", () => {
 });
 
 test("accepts a package without tests without inventing an empty test command", () => {
-  const root = createPackage({ lint: "eslint .", typecheck: "tsc --noEmit" });
-  expect(checkPackageQuality(root)).toEqual([]);
+  expect(
+    checkPackageQuality(createPackage({ lint: "eslint .", typecheck: "tsc --noEmit" })),
+  ).toEqual([]);
 });
 
 test("requires a TypeScript project for the typecheck entry", () => {
