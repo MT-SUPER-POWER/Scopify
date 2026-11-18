@@ -1,5 +1,5 @@
 "use client";
-import { Heart, ListMusic, ListPlus, Pause, Play } from "lucide-react";
+import { Heart, HeartOff, ListMusic, ListPlus, Pause, Play } from "lucide-react";
 import {
   ContextMenuContent,
   ContextMenuGroup,
@@ -40,6 +40,8 @@ export function SongContextMenuActions(actions: SongContextMenuActionsProps) {
   const { capabilities } = useActiveProvider();
   const canLike = isLogin && capabilities.has("track.like");
   const canManagePlaylists = isLogin && capabilities.has("playlist.manage");
+  const removeFromLiked = isMulti ? allTargetLiked : isLiked;
+  const LikeIcon = removeFromLiked ? HeartOff : Heart;
   return (
     <>
       {isContextMenuOpen && (
@@ -71,10 +73,10 @@ export function SongContextMenuActions(actions: SongContextMenuActionsProps) {
             )}
             {canLike && (
               <ContextMenuItem onClick={handleLike}>
-                <Heart className="mr-2 size-4" />
+                <LikeIcon className="mr-2 size-4" />
                 {isMulti
-                  ? `${allTargetLiked ? "取消喜欢" : "喜欢"} (${targetSongs.length} 首)`
-                  : t(isLiked ? "contextMenu.removeFromLiked" : "contextMenu.addToLiked")}
+                  ? `${removeFromLiked ? "取消喜欢" : "喜欢"} (${targetSongs.length} 首)`
+                  : t(removeFromLiked ? "contextMenu.removeFromLiked" : "contextMenu.addToLiked")}
               </ContextMenuItem>
             )}
           </ContextMenuGroup>

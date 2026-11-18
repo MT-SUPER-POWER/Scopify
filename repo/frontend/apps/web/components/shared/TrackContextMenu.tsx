@@ -5,6 +5,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import {
   Disc3,
   Heart,
+  HeartOff,
   ListPlus,
   MonitorPlay,
   MessageCircle,
@@ -115,6 +116,7 @@ function TrackContextMenuContent({
   const canManage = isLoggedIn && capabilities.has("playlist.manage");
   const canComment = capabilities.has("comments.read") && provider.commentTargetKinds.has("track");
   const liked = isLiked(track.ref);
+  const LikeIcon = liked ? HeartOff : Heart;
   const ownPlaylists = (library.data ?? []).filter(
     (item) =>
       item.relation === "created" && !item.isLikedList && item.playlist.ref.id !== playlistId,
@@ -183,7 +185,7 @@ function TrackContextMenuContent({
         )}
         {canLike && (
           <ContextMenuItem onSelect={() => void toggleLike()}>
-            <Heart className="mr-2 size-4" />
+            <LikeIcon className="mr-2 size-4" />
             {t(liked ? "contextMenu.removeFromLiked" : "contextMenu.addToLiked")}
           </ContextMenuItem>
         )}

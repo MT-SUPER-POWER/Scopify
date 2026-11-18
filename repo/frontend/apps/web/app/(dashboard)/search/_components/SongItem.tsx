@@ -3,7 +3,17 @@
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ PACKAGE ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 import { musicResourceKey } from "@scopify/music-domain/identity";
-import { Disc3, Heart, Link2, ListPlus, Pause, Play, PlusCircle, User } from "lucide-react";
+import {
+  Disc3,
+  Heart,
+  HeartOff,
+  Link2,
+  ListPlus,
+  Pause,
+  Play,
+  PlusCircle,
+  User,
+} from "lucide-react";
 import { motion } from "motion/react";
 import Image from "next/image";
 import Link from "next/link";
@@ -315,7 +325,7 @@ export const SongItem = memo(
             {/* 取消喜欢或者喜欢 */}
             {isLogin && canLike && neteaseId !== null && (
               <ContextMenuItem onClick={() => handleLike(!isLiked)}>
-                <Heart className="mr-2 size-4" />
+                {isLiked ? <HeartOff className="mr-2 size-4" /> : <Heart className="mr-2 size-4" />}
                 {isLiked ? t("contextMenu.removeFromLiked") : t("contextMenu.addToLiked")}
               </ContextMenuItem>
             )}

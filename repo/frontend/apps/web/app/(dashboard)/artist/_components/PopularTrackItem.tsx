@@ -1,6 +1,6 @@
 "use client";
 
-import { Heart, Link2, ListPlus, Pause, Play, PlusCircle, User } from "lucide-react";
+import { Heart, HeartOff, Link2, ListPlus, Pause, Play, PlusCircle, User } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { memo, useCallback, useState } from "react";
@@ -258,7 +258,7 @@ export const PopularTrackItem = memo(
 
             {canLike && (
               <ContextMenuItem onClick={() => void handleLike(!isLiked)}>
-                <Heart className="mr-2 size-4" />
+                {isLiked ? <HeartOff className="mr-2 size-4" /> : <Heart className="mr-2 size-4" />}
                 {isLiked ? t("contextMenu.removeFromLiked") : t("contextMenu.addToLiked")}
               </ContextMenuItem>
             )}
