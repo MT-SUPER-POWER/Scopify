@@ -1,7 +1,7 @@
 import { existsSync, readFileSync } from "node:fs";
 import path from "node:path";
 
-// 与 Turbo 使用同一份工作区脚本声明，不再维护第二份 ESLint 工作区名单。
+// 与 Turbo 使用同一份工作区脚本声明，不再维护第二份 Lint 工作区名单。
 const lintWorkspaces = new Map();
 const LINTABLE = /\.(js|jsx|ts|tsx|mjs)$/;
 
@@ -28,7 +28,7 @@ export default {
     // 1. Format all staged files with Prettier
     const commands = [`prettier --write ${quote(filenames)}`];
 
-    // 2. ESLint each workspace's staged JS/TS files with that workspace's own config
+    // 2. Oxlint each workspace's staged JS/TS files with that workspace's own config
     const byWorkspace = new Map();
     for (const file of filenames.filter((name) => LINTABLE.test(name))) {
       const workspace = workspaceOf(file);
@@ -39,12 +39,12 @@ export default {
       const workspaceDir = path.resolve(process.cwd(), workspace);
       const relFiles = files.map((file) => path.relative(workspaceDir, file));
       commands.push(
-        `pnpm --dir ${workspace} exec eslint --fix --max-warnings 0 --no-warn-ignored ${quote(relFiles)}`,
+        `pnpm --dir ${workspace} exec oxlint --fix --deny-warnings --no-error-on-unmatched-pattern ${quote(relFiles)}`,
       );
     }
 
-    // 3. ESLint --fix 会改写类名（如 leading-[1.7] → leading-1.7），行变短后需要 Prettier 重新排版，
-    //    否则 CI 的 check:format 会失败。
+    // 3. Oxlint --fix 可能会修改文件，完成后由 Prettier 重新排版，
+    //    确保格式符合规范。
     if (byWorkspace.size) {
       commands.push(`prettier --write ${quote([...byWorkspace.values()].flat())}`);
     }

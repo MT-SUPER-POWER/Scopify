@@ -1,6 +1,6 @@
 {
   "name": "scopify-workspace",
-  "version": "4.0.1",
+  "version": "4.0.2",
   "private": true,
   "packageManager": "pnpm@12.8.1",
   "scripts": {
@@ -52,19 +52,16 @@
     "@clack/prompts": "1.8.1",
     "@commitlint/cli": "^21.2.4",
     "@commitlint/config-conventional": "^21.2.4",
-    "@eslint/js": "^9.39.5",
     "@x18n/cli": "^0.1.14",
     "concurrently": "^9.2.4",
-    "eslint": "^9.39.5",
-    "eslint-plugin-react-hooks": "^7.1.1",
     "git-cliff": "^2.14.2",
     "husky": "^9.1.7",
     "lint-staged": "^15.5.2",
+    "oxlint": "^1.94.0",
     "prettier": "^3.9.9",
     "prettier-plugin-markdown-compact-tables": "^1.0.0",
     "prettier-plugin-tailwindcss": "^0.8.1",
     "turbo": "^2.11.10",
-    "typescript": "^5.9.3",
-    "typescript-eslint": "^8.65.0"
+    "typescript": "^5.9.3"
   }
 }

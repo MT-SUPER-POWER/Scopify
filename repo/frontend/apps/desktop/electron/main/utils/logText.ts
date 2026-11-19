@@ -1,3 +1,4 @@
+/* oxlint-disable no-control-regex */
 const ANSI_ESCAPE_SEQUENCE_PATTERN =
   /(?:\u001B\][\s\S]*?(?:\u0007|\u001B\\)|\u001B\[[0-?]*[ -/]*[@-~]|\u001B[@-_])/g;
 

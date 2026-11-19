@@ -98,7 +98,7 @@ jobs:
       - name: Setup workspace
         uses: ./.github/actions/setup-workspace
 
-      # `pnpm run lint` 由 Turbo 统一编排 ESLint、架构、主题和共享包覆盖检查。
+      # `pnpm run lint` 由 Turbo 统一编排 Oxlint、架构、主题和共享包覆盖检查。
       - name: Run Lint
         run: pnpm run lint
 

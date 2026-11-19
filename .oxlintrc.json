@@ -1,0 +1,60 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": ["typescript", "unicorn", "oxc", "react"],
+  "categories": {
+    "correctness": "warn"
+  },
+  "rules": {
+    "typescript/no-explicit-any": "error",
+    "unicorn/no-new-array": "off",
+    "unicorn/no-useless-spread": "off",
+    "unicorn/no-useless-fallback-in-spread": "off",
+    "react/set-state-in-effect": "off",
+    "react/refs": "off",
+    "react/purity": "off",
+    "react/static-components": "off",
+    "react/immutability": "off",
+    "react/preserve-manual-memoization": "off",
+    "react/globals": "off",
+    "react/incompatible-library": "off"
+  },
+  "ignorePatterns": [
+    "**/node_modules/**",
+    "**/.next/**",
+    "**/.next-dev/**",
+    "**/out/**",
+    "**/dist/**",
+    "**/build/**",
+    "**/.turbo/**",
+    "**/logs/**",
+    "**/coverage/**",
+    "**/repo/backend/**",
+    "**/ui/shadcn/**",
+    "**/public/data/**"
+  ],
+  "overrides": [
+    {
+      "files": [
+        "**/folia/**",
+        "**/components/lyrics/folia/**",
+        "repo/frontend/apps/web/components/lyrics/folia/**",
+        "components/lyrics/folia/**"
+      ],
+      "rules": {
+        "no-unused-vars": "off",
+        "typescript/no-explicit-any": "off",
+        "typescript/no-unused-expressions": "off",
+        "typescript/no-unused-vars": "off",
+        "typescript/no-non-null-assertion": "off",
+        "no-unused-expressions": "off",
+        "no-useless-escape": "off",
+        "no-empty": "off",
+        "prefer-const": "off",
+        "oxc/erasing-op": "off",
+        "react/exhaustive-deps": "off",
+        "react/preserve-manual-memoization": "off",
+        "react/no-unknown-property": "off"
+      }
+    }
+  ]
+}

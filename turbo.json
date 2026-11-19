@@ -67,11 +67,7 @@
     },
     "lint": {
       "dependsOn": ["^lint", "//#lint:architecture", "//#lint:packages"],
-      "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/repo/frontend/packages/eslint.config.mjs"]
-    },
-    "@scopify/web#lint": {
-      "dependsOn": ["^lint", "//#lint:architecture", "//#lint:packages"],
-      "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/repo/frontend/packages/eslint.config.mjs"]
+      "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/.oxlintrc.json"]
     },
     "@scopify/desktop#lint": {
       "dependsOn": [
@@ -79,7 +75,8 @@
         "//#lint:packages",
         "@scopify/desktop-contract#lint",
         "@scopify/notification-core#lint"
-      ]
+      ],
+      "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/.oxlintrc.json"]
     },
     "test": {
       "dependsOn": ["^build"]

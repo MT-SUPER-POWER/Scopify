@@ -40,7 +40,7 @@ import {
 import { getTaskbarLyricWindow, initializeTaskbarLyricCompanion } from "@main/window/taskbarLyric";
 import { initializeLoginWindow } from "@main/window/login";
 import { keepMainWindowRendering } from "@main/window/mainWindow";
-import { getTrayWindow, initTray, trayWindow } from "@main/window/tray";
+import { getTrayWindow, initTray } from "@main/window/tray";
 import { initMacTray } from "@main/window/macTray";
 
 /** Owns every capability whose lifetime is attached to the main BrowserWindow. */

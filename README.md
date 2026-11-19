@@ -32,15 +32,6 @@
 
 ## 客户端下载与安装
 
-前往 [GitHub Releases](https://github.com/MT-SUPER-POWER/Scopify/releases) 获取适合当前系统的安装包：
-
-| 平台 | 架构 | 安装包格式 | 适用机型 |
-| :-- | :-- | :-- | :-- |
-| <img src="docs/img/platforms/apple.png" width="16" height="16" alt="macOS" /> **macOS** | Apple Silicon (`arm64`) | `.dmg` / `.zip` | Apple Silicon Mac（推荐） |
-| <img src="docs/img/platforms/apple.png" width="16" height="16" alt="macOS" /> **macOS** | Intel (`x64`) | `.dmg` / `.zip` | Intel 处理器 Mac |
-| <img src="docs/img/platforms/windows.png" width="16" height="16" alt="Windows" /> **Windows** | 64 位 (`x64`) | `.exe` | Intel / AMD 处理器（绝大多数用户推荐） |
-| <img src="docs/img/platforms/windows.png" width="16" height="16" alt="Windows" /> **Windows** | ARM64 | `.exe` | ARM 架构 Windows 设备 |
-
 > [!NOTE] **macOS 首次安装提示“对系统有害”或“已损坏”的处理方法：**
 >
 > Scopify 为个人开源项目，未向 Apple 购买付费商业开发者证书公证。从网络下载未公证的应用时，macOS Gatekeeper 安全机制会自动打上隔离标志并弹出警告，**这并非应用存在恶意行为或真正损坏**。
@@ -62,7 +53,7 @@
 5. Docker: 部署部分
 6. Axios + TanStack Query: 后端通讯统一管理部分
 7. Zustand: 前端状态管理
-8. Eslint + Prettier + Husky: 代码格式化约束 + Git 提交规范
+8. Oxlint + Prettier + Husky: 代码格式化约束 + Git 提交规范
 9. Framer-Motion: 动画框架
 10. TanStack-Virtual: 虚拟列表
 11. WebGL: 歌词舞台可视化

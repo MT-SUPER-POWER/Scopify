@@ -33,26 +33,23 @@ test("requires lint and typecheck instead of silently skipping a package", () =>
 });
 
 test("requires a test script when test files exist", () => {
-  const root = createPackage({ lint: "eslint .", typecheck: "tsc --noEmit" }, true);
+  const root = createPackage({ lint: "oxlint", typecheck: "tsc --noEmit" }, true);
   expect(checkPackageQuality(root)).toEqual(["example: missing test script"]);
 });
 
 test("accepts a package without tests without inventing an empty test command", () => {
-  expect(
-    checkPackageQuality(createPackage({ lint: "eslint .", typecheck: "tsc --noEmit" })),
-  ).toEqual([]);
+  expect(checkPackageQuality(createPackage({ lint: "oxlint", typecheck: "tsc --noEmit" }))).toEqual(
+    [],
+  );
 });
 
 test("requires a TypeScript project for the typecheck entry", () => {
-  const root = createPackage({ lint: "eslint .", typecheck: "tsc --noEmit" });
+  const root = createPackage({ lint: "oxlint", typecheck: "tsc --noEmit" });
   rmSync(resolve(root, "example/tsconfig.json"));
   expect(checkPackageQuality(root)).toEqual(["example: missing tsconfig.json"]);
 });
 
 test("accepts a package with its existing tests connected", () => {
-  const root = createPackage(
-    { lint: "eslint .", typecheck: "tsc --noEmit", test: "bun test" },
-    true,
-  );
+  const root = createPackage({ lint: "oxlint", typecheck: "tsc --noEmit", test: "bun test" }, true);
   expect(checkPackageQuality(root)).toEqual([]);
 });

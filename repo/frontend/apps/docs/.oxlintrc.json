@@ -1,0 +1,11 @@
+{
+  "$schema": "../../../../node_modules/oxlint/configuration_schema.json",
+  "extends": ["../../../../.oxlintrc.json"],
+  "ignorePatterns": [
+    "**/node_modules/**",
+    "**/.next/**",
+    "**/.source/**",
+    "docs/references/**",
+    "next-env.d.ts"
+  ]
+}

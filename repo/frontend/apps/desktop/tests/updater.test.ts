@@ -28,6 +28,7 @@ class TestNsisUpdater extends EventEmitter {
 
   constructor() {
     super();
+    // oxlint-disable-next-line typescript/no-this-alias
     nativeUpdater = this;
   }
 

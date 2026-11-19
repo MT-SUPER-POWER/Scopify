@@ -4,7 +4,7 @@ import { loadDesktopHostConfig, saveDesktopHostConfig } from "@main/store";
 import { ipcLog } from "@main/utils/logger";
 import { getRememberedAppCloseAction, isAppCloseAction } from "@main/window/appCloseAction";
 import { isAppCloseWindowSender } from "@main/window/appCloseWindow";
-import { getTrayWindow, trayWindow } from "@main/window/tray";
+import { getTrayWindow } from "@main/window/tray";
 
 /** 注册应用重启、退出、主机信息以及“关闭窗口”决策的命令接口。 */
 export function registerApplicationIpc(mainWindow: BrowserWindow | null) {

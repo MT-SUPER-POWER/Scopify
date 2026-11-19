@@ -14,7 +14,7 @@ import type {
 
 import { parseDesktopPlaybackWallpaperPreferencesUpdate } from "@/types/desktopPlaybackWallpaper";
 import { wallpaperLog } from "@main/utils/logger";
-import { getTrayWindow, trayWindow } from "@main/window/tray";
+import { getTrayWindow } from "@main/window/tray";
 import {
   isDesktopPlaybackWallpaperControlSender,
   isDesktopPlaybackWallpaperModelReader,

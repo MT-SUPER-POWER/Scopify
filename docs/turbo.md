@@ -51,10 +51,10 @@ Turbo 负责跨包编排；只有能完整恢复产物的任务才缓存。
 
 ## Lint 统一编排
 
-- `pnpm run lint` 是全仓前端 lint 的统一入口，只调用 `turbo run lint --filter="@scopify/*"`。架构、共享包脚本覆盖检查、各工作区 ESLint 的关系都在 `turbo.json` 声明，不在根脚本或 Web 脚本中串联多套检查。
+- `pnpm run lint` 是全仓前端 lint 的统一入口，只调用 `turbo run lint --filter="@scopify/*"`。架构、共享包脚本覆盖检查、各工作区 Oxlint 的关系都在 `turbo.json` 声明，不在根脚本或 Web 脚本中串联多套检查。
 - 工作区 lint 依赖 `^lint`，并依赖根任务 `//#lint:architecture` 与 `//#lint:packages`。这两个轻量扫描不缓存，每次按当前仓库结构检查，避免新增文件或包被历史结果掩盖。
-- Desktop 尚未接入 ESLint，保留虚拟 lint 节点，显式依赖 desktop-contract、notification-core 和根检查；不沿独立部署的后端依赖执行后端 lint。未来接入 Desktop ESLint 时沿用这个边界。
-- pre-commit 通过 `pnpm exec turbo run lint:staged` 运行根任务：先做轻量架构检查，再执行 lint-staged。暂存文件按工作区自身的 lint 声明识别。该路径不运行全仓 ESLint。
+- Desktop 接入 Oxlint 检查自身宿主与测试代码，并通过 `turbo.json` 显式依赖前端契约包与根检查，避免级联引入独立部署的后端 lint。
+- pre-commit 通过 `pnpm exec turbo run lint:staged` 运行根任务：先做轻量架构检查，再执行 lint-staged。暂存文件按工作区自身的 lint 声明识别。该路径不运行全仓 Oxlint。
 - pre-push 运行 `scripts/pre-push-typecheck.ts`：按推送范围（新分支取与 origin 默认分支的 merge-base）收集改动文件，对含 TS/JSON 改动的工作区运行 `turbo run typecheck --filter=...<pkg>`，即该工作区及所有依赖它的工作区；docs 经路径别名编译 Web 源码而不在包依赖图里，Web 有改动时脚本显式加上 docs；根 `tsconfig.json`、`package.json`、锁文件变化或推送 tag 时检查全部。沿用增量 tsbuildinfo 与 Turbo 缓存。提交时不做类型检查。
 - 全仓类型检查保留增量和并行优化，供手动命令及 CI 使用。
 

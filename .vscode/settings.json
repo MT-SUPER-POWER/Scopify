@@ -3,7 +3,7 @@
     "*.css": "tailwindcss"
   },
   "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": "explicit"
+    "source.fixAll.oxc": "explicit"
   },
   "[javascript]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"

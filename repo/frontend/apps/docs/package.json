@@ -1,6 +1,6 @@
 {
   "name": "@scopify/docs",
-  "version": "4.0.1",
+  "version": "4.0.2",
   "private": true,
   "type": "module",
   "scripts": {
@@ -15,7 +15,7 @@
     "start": "next start --port 9191",
     "test": "bun test ./tests",
     "typecheck": "next typegen && tsc --noEmit --incremental --tsBuildInfoFile .cache/typecheck.tsbuildinfo",
-    "lint": "eslint . --max-warnings 0 --no-warn-ignored"
+    "lint": "oxlint --deny-warnings"
   },
   "dependencies": {
     "@chenglou/pretext": "^0.0.8",
@@ -47,8 +47,6 @@
     "@types/react": "^19.2.17",
     "@types/react-dom": "^19.2.3",
     "@types/three": "^0.185.1",
-    "eslint": "^9.39.5",
-    "eslint-config-next": "16.1.6",
     "lucide-react": "^1.58.0",
     "next": "16.1.6",
     "prettier": "^3.9.6",
