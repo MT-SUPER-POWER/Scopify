@@ -21,7 +21,7 @@
       "cache": false
     },
     "prepare:app": {
-      "dependsOn": ["build:host"],
+      "dependsOn": ["build:host", "@yakult-green-tea/qq-music-api#build:js"],
       "cache": false
     },
     "sync:renderer": {

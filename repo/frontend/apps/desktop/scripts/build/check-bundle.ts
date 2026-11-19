@@ -1,4 +1,5 @@
 import { existsSync, readFileSync, statSync } from "node:fs";
+import { createRequire } from "node:module";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -53,6 +54,13 @@ if (sandboxViolations.length > 0) {
   process.exit(1);
 }
 
+try {
+  createRequire(import.meta.url).resolve("@yakult-green-tea/qq-music-api");
+} catch (error) {
+  console.error("Could not resolve the compiled QQ Music API entry for packaging:", error);
+  process.exit(1);
+}
+
 const rendererVerification = verifyRendererArtifact(rendererRoot);
 if (!rendererVerification.ok) {
   console.error(`Desktop renderer artifact validation failed: ${rendererVerification.message}`);
@@ -60,5 +68,5 @@ if (!rendererVerification.ok) {
 }
 
 console.log(
-  "Electron runtime bundles and the static renderer artifact passed production validation.",
+  "Electron runtime bundles, QQ Music API entry, and static renderer passed production validation.",
 );

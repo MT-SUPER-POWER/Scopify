@@ -1,4 +1,4 @@
-import { existsSync } from "node:fs";
+import { existsSync, mkdirSync } from "node:fs";
 import { request as httpRequest } from "node:http";
 import { createRequire } from "node:module";
 import { dirname, join } from "node:path";
@@ -24,7 +24,6 @@ const STARTUP_POLL_MS = 250;
 
 const nodeRequire = createRequire(import.meta.url);
 
-/** Installers do not ship the QQ Music API yet; that is a missing feature, not a failure. */
 class QqBackendUnavailableError extends Error {}
 
 interface QqLaunch {
@@ -95,8 +94,7 @@ function probeQqBackend(port: number): Promise<BackendProbeResult> {
 }
 
 /**
- * Prefer the published build; a source checkout without `dist` runs the TypeScript entry through
- * ts-node, exactly like the package's own `npm start`. Installers do not ship the API yet.
+ * Use the compiled API in installers and allow ts-node for source checkouts without a build.
  */
 function resolveQqLaunch(): QqLaunch {
   let packageJson: string;
@@ -109,6 +107,14 @@ function resolveQqLaunch(): QqLaunch {
   const host = publicAsset("backend", "qq-music-host.cjs");
 
   const built = join(root, "dist", "src", "app.js");
+  if (app.isPackaged) {
+    if (!existsSync(built))
+      throw new Error("The packaged QQ Music API is missing its compiled entry.");
+    // ASAR directories can be read by Electron but cannot be used as a process cwd.
+    const cwd = join(app.getPath("userData"), "qq-music-api");
+    mkdirSync(cwd, { recursive: true });
+    return { args: [host, built], cwd };
+  }
   if (existsSync(built)) return { args: [host, built], cwd: root };
 
   const source = join(root, "src", "app.ts");

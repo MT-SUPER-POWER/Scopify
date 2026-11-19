@@ -15,6 +15,9 @@
     "build": {
       "dependsOn": ["^build"]
     },
+    "@yakult-green-tea/qq-music-api#build:js": {
+      "cache": false
+    },
     "@scopify/web#build": {
       "dependsOn": ["^build"],
       "inputs": ["$TURBO_DEFAULT$", ".env*", "$TURBO_ROOT$/docs/CHANGELOG.md"],
