@@ -2,6 +2,18 @@
 
 > 根据 commit 自动生成，请勿手动编辑；推送版本 tag 后由 CI 更新。v2.0.3 及更早版本见[历史更新记录](archive/CHANGELOG-legacy.md)。
 
+## v4.0.2 — 2026-11-19
+
+### 新增
+
+- 为 desktop 接入 oxlint 并统一 vscode 与编排配置 ([64be6326](https://github.com/MT-SUPER-POWER/Scopify/commit/64be632609b4cd858bc36f609b74472ac0abcd72))
+- 切换工作区代码检查至 oxlint ([de380c88](https://github.com/MT-SUPER-POWER/Scopify/commit/de380c882cf4648b77cde68bf8b2be5c4d10992e))
+
+### 修复
+
+- 修复安装版 QQ 音乐后端启动失败 ([92c87aa3](https://github.com/MT-SUPER-POWER/Scopify/commit/92c87aa37673db463537c6b2c8db8a02acc09b83))
+- mcp 界面浅色主题适配 ([32699cce](https://github.com/MT-SUPER-POWER/Scopify/commit/32699cced966d3f484f3b2233a3e58d579041115))
+
 ## v4.0.1 — 2026-11-18
 
 ### 新增
