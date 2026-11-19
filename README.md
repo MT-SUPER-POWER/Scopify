@@ -62,7 +62,7 @@
 5. Docker: 部署部分
 6. Axios + TanStack Query: 后端通讯统一管理部分
 7. Zustand: 前端状态管理
-8. Eslint + Prettier + Husky: 代码格式化约束 + Git 提交规范
+8. Oxlint + Prettier + Husky: 代码格式化约束 + Git 提交规范
 9. Framer-Motion: 动画框架
 10. TanStack-Virtual: 虚拟列表
 11. WebGL: 歌词舞台可视化
