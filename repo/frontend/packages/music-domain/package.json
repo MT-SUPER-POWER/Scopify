@@ -24,7 +24,7 @@
     "./track": "./src/track.ts"
   },
   "scripts": {
-    "lint": "eslint . --max-warnings 0 --no-warn-ignored",
+    "lint": "oxlint --deny-warnings",
     "typecheck": "tsc --noEmit --incremental --tsBuildInfoFile .cache/typecheck.tsbuildinfo"
   },
   "devDependencies": {

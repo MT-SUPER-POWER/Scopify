@@ -28,7 +28,7 @@
     "start": "next start",
     "typecheck": "pnpm run i18n:types && next typegen && tsc --noEmit --incremental --tsBuildInfoFile .cache/typecheck.tsbuildinfo",
     "test": "bun test --isolate",
-    "lint": "eslint . --max-warnings 0 --no-warn-ignored",
+    "lint": "oxlint --deny-warnings",
     "format": "prettier --write .",
     "i18n:audit": "x18n extract --list",
     "i18n:types": "i18next-cli types --quiet && prettier --write types/i18n/resources.generated.d.ts",

@@ -67,11 +67,11 @@
     },
     "lint": {
       "dependsOn": ["^lint", "//#lint:architecture", "//#lint:packages"],
-      "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/repo/frontend/packages/eslint.config.mjs"]
+      "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/.oxlintrc.json"]
     },
     "@scopify/web#lint": {
       "dependsOn": ["^lint", "//#lint:architecture", "//#lint:packages"],
-      "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/repo/frontend/packages/eslint.config.mjs"]
+      "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/.oxlintrc.json"]
     },
     "@scopify/desktop#lint": {
       "dependsOn": [

@@ -31,7 +31,7 @@
     "./theme.css": "./theme.css"
   },
   "scripts": {
-    "lint": "eslint . --max-warnings 0 --no-warn-ignored",
+    "lint": "oxlint --deny-warnings",
     "test": "bun test tests",
     "typecheck": "tsc --noEmit --incremental --tsBuildInfoFile .cache/typecheck.tsbuildinfo"
   },

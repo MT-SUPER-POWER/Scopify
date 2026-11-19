@@ -60,6 +60,7 @@
     "git-cliff": "^2.14.2",
     "husky": "^9.1.7",
     "lint-staged": "^15.5.2",
+    "oxlint": "^1.94.0",
     "prettier": "^3.9.9",
     "prettier-plugin-markdown-compact-tables": "^1.0.0",
     "prettier-plugin-tailwindcss": "^0.8.1",
