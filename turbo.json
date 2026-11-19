@@ -69,17 +69,14 @@
       "dependsOn": ["^lint", "//#lint:architecture", "//#lint:packages"],
       "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/.oxlintrc.json"]
     },
-    "@scopify/web#lint": {
-      "dependsOn": ["^lint", "//#lint:architecture", "//#lint:packages"],
-      "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/.oxlintrc.json"]
-    },
     "@scopify/desktop#lint": {
       "dependsOn": [
         "//#lint:architecture",
         "//#lint:packages",
         "@scopify/desktop-contract#lint",
         "@scopify/notification-core#lint"
-      ]
+      ],
+      "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/.oxlintrc.json"]
     },
     "test": {
       "dependsOn": ["^build"]

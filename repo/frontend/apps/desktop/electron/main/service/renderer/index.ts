@@ -1,6 +1,6 @@
 import { join } from "node:path";
 
-import { app, type BrowserWindow } from "electron";
+import { app } from "electron";
 import serve from "electron-serve";
 
 import { verifyRendererArtifact } from "@/lib/rendererArtifact";

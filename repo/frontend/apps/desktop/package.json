@@ -33,6 +33,7 @@
     "check:runtime-bundle:prebuilt": "bun scripts/build/check-bundle.ts",
     "build": "bun scripts/native/build.ts && pnpm run build:host && bun scripts/build/prepare-app.ts",
     "typecheck": "tsc --noEmit --incremental --tsBuildInfoFile .cache/typecheck.tsbuildinfo",
+    "lint": "oxlint --deny-warnings",
     "test": "bun test",
     "package:win": "electron-builder --config electron-builder.config.ts --win --x64 --publish never",
     "package:win:prebuilt": "electron-builder --config electron-builder.config.ts --win --publish never",
