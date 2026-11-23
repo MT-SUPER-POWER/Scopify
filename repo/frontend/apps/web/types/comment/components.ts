@@ -4,6 +4,8 @@ import type { CommentResource } from "@/types/comment/model";
 
 export interface CommentSectionProps {
   resource: CommentResource;
+  focusCommentId?: string | null;
+  focusParentCommentId?: string | null;
 }
 
 export interface CommentPageHeaderProps {
@@ -35,6 +37,8 @@ export interface CommentRowProps {
   rootId?: string;
   /** 有回复时，头像下方画一条通向「N 条回复」的引导线。 */
   hasReplies?: boolean;
+  /** 从通知定位到该条评论时高亮显示。 */
+  highlighted?: boolean;
   onLike: () => void;
   onDelete: () => void;
   onReplyOpen: () => void;
@@ -48,6 +52,7 @@ export interface CommentRepliesProps {
   resource: CommentResource;
   parentId: string;
   replyCount: number;
+  defaultExpanded?: boolean;
   renderReply: (reply: MusicComment) => ReactNode;
 }
 

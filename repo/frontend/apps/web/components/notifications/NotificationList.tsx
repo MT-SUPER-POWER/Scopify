@@ -5,7 +5,10 @@ import { useTranslation } from "react-i18next";
 import { useI18nStore } from "@/store/module/i18n";
 import type { NotificationPanelProps } from "@/types/notifications/components";
 import { NotificationRow } from "./NotificationRow";
-import { socialNotificationHref } from "@/lib/social/notificationTarget";
+import {
+  notificationActorProfileHref,
+  socialNotificationHref,
+} from "@/lib/social/notificationTarget";
 
 export function NotificationList({
   items,
@@ -15,6 +18,7 @@ export function NotificationList({
   onRead,
   onUpdateAction,
   onSocialAction,
+  onActorOpen,
   onReportOpen,
 }: Pick<
   NotificationPanelProps,
@@ -25,6 +29,7 @@ export function NotificationList({
   | "onRead"
   | "onUpdateAction"
   | "onSocialAction"
+  | "onActorOpen"
   | "onReportOpen"
 >) {
   const { t } = useTranslation(),
@@ -104,6 +109,9 @@ export function NotificationList({
                       : socialNotificationHref(item.target)
                         ? () => onSocialAction(item)
                         : undefined
+                  }
+                  onActorOpen={
+                    notificationActorProfileHref(item) ? () => onActorOpen(item) : undefined
                   }
                 />
               ))}

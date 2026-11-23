@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import type { ReactNode } from "react";
+import { useEffect, useRef, type ReactNode } from "react";
 import { EllipsisVertical, Flag, ThumbsUp, Trash2 } from "lucide-react";
 import { CommentComposer } from "@/components/Comment/CommentComposer";
 import { renderEmojiContent } from "@/components/Comment/renderEmojiContent";
@@ -52,6 +52,7 @@ export function CommentRow({
   compact = false,
   rootId,
   hasReplies = false,
+  highlighted = false,
   onLike,
   onDelete,
   onReplyOpen,
@@ -61,7 +62,14 @@ export function CommentRow({
 }: CommentRowProps) {
   const { t } = useTranslation();
   const locale = useI18nStore((state) => state.locale);
+  const rowRef = useRef<HTMLDivElement>(null);
   const hasProfiles = useProviderCapability("social");
+
+  useEffect(() => {
+    if (highlighted) {
+      rowRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+  }, [highlighted]);
   const profileHref =
     hasProfiles && comment.author.id ? `/profile?userId=${comment.author.id}` : null;
   const ipLocation = comment.location ?? undefined;
@@ -81,9 +89,12 @@ export function CommentRow({
 
   return (
     <div
+      ref={rowRef}
+      data-comment-id={comment.id}
       className={cn(
         "group/comment grid grid-cols-[auto_minmax(0,1fr)]",
         compact ? "gap-x-3" : "gap-x-4",
+        highlighted && "-mx-3 rounded-xl bg-brand/10 px-3 py-2 ring-1 ring-brand/30",
       )}
     >
       <div className="row-span-2 flex flex-col items-center">

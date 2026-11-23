@@ -16,6 +16,11 @@ function text(value: unknown) {
   return typeof value === "string" ? value.trim().slice(0, 2000) : "";
 }
 
+function identifier(value: unknown) {
+  const result = typeof value === "number" || typeof value === "string" ? String(value) : "";
+  return /^\d+$/.test(result) ? result : "";
+}
+
 const actions = {
   "zh-CN": {
     private: "发来私信",
@@ -60,6 +65,7 @@ export function socialPresentation(
   const copy = actions[locale];
   const forwarded = source === "mentions" ? readForwardContent(row) : null;
   const actor = text(user.nickname);
+  const actorId = identifier(user.userId);
   const comment = decodeSocial(payload.comment);
   const event = decodeSocial(payload.event);
   const eventContent = decodeSocial(event.json);
@@ -107,6 +113,7 @@ export function socialPresentation(
     avatarUrl: text(user.avatarUrl) || undefined,
     social: {
       actor,
+      ...(actorId ? { actorId } : {}),
       action,
       quote: quote || undefined,
       quoteAuthor: quoteAuthor || undefined,

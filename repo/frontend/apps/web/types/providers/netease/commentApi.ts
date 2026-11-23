@@ -43,6 +43,7 @@ export interface FloorCommentResponse {
   data?: {
     comments?: NeteaseComment[];
     hasMore?: boolean;
+    ownerComment?: NeteaseComment;
     time?: number;
     totalCount?: number;
   };

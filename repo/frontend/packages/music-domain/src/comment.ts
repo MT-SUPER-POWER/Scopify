@@ -73,6 +73,8 @@ export interface MusicCommentPage {
   hasMore: boolean;
   /** Passed back as `cursor` to read the next page. */
   nextCursor: string | null;
+  /** Floor queries may include the root comment that owns the replies. */
+  ownerComment?: MusicComment | null;
 }
 
 export interface MusicCommentRepliesRequest {

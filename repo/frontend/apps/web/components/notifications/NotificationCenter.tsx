@@ -9,7 +9,10 @@ import { useTranslation } from "react-i18next";
 import { NotificationPanel } from "./NotificationPanel";
 import { UpdateProgressRing } from "./UpdateProgressRing";
 import { reportNotificationHref } from "@/lib/notifications/reportTarget";
-import { socialNotificationHref } from "@/lib/social/notificationTarget";
+import {
+  notificationActorProfileHref,
+  socialNotificationHref,
+} from "@/lib/social/notificationTarget";
 
 export function NotificationCenter() {
   const center = useNotificationCenter();
@@ -64,6 +67,13 @@ export function NotificationCenter() {
         }}
         onSocialAction={(item) => {
           const href = socialNotificationHref(item.target);
+          if (!href) return;
+          center.markRead(item);
+          center.setOpen(false);
+          router.push(href);
+        }}
+        onActorOpen={(item) => {
+          const href = notificationActorProfileHref(item);
           if (!href) return;
           center.markRead(item);
           center.setOpen(false);

@@ -5,15 +5,26 @@ export type NotificationLocale = "zh-CN" | "zh-TW" | "en-US";
 
 export interface NotificationSocialContext {
   actor: string;
+  actorId?: string;
   action: string;
   quote?: string;
   quoteAuthor?: string;
   resource?: string;
 }
 
+export type NotificationCommentResourceKind =
+  "song" | "mv" | "playlist" | "album" | "voice" | "voice-list";
+
 export type NotificationSocialTarget =
   | { kind: "profile" | "message"; userId: string }
-  | { kind: "event"; eventId: string; userId: string; threadId?: string };
+  | { kind: "event"; eventId: string; userId: string; threadId?: string }
+  | {
+      kind: "comment";
+      resource: NotificationCommentResourceKind;
+      resourceId: string;
+      commentId?: string;
+      parentCommentId?: string;
+    };
 
 export interface InboxNotification {
   id: string;

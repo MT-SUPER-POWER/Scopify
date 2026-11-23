@@ -57,6 +57,8 @@ export function useCommentReplies(resource: CommentResource, rootId: string, ena
 
   return {
     replies,
+    ownerComment: query.data?.pages[0]?.ownerComment ?? null,
+    totalCount: query.data?.pages[0]?.total ?? 0,
     hasResult: query.data !== undefined,
     /** 一条都还没取到就失败了；已经有回复时，翻页失败另见 isLoadMoreError。 */
     isError: query.data === undefined && query.isError,

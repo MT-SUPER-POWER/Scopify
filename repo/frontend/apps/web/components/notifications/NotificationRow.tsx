@@ -16,6 +16,7 @@ export function NotificationRow({
   onExpand,
   onRead,
   onAction,
+  onActorOpen,
 }: NotificationRowProps) {
   const { t } = useTranslation(),
     locale = useI18nStore((state) => state.locale);
@@ -47,16 +48,28 @@ export function NotificationRow({
         unread && "bg-foreground/7",
       )}
     >
-      <div className="relative">
+      <div className="relative flex items-start gap-3.5 px-3 py-4 pr-9">
+        {onActorOpen ? (
+          <button
+            type="button"
+            onClick={onActorOpen}
+            title={title}
+            aria-label={title}
+            className="shrink-0 cursor-pointer rounded-full transition-opacity outline-none hover:opacity-85 focus-visible:ring-2 focus-visible:ring-ring"
+          >
+            <NotificationAvatar item={item} />
+          </button>
+        ) : (
+          <NotificationAvatar item={item} />
+        )}
         <button
           type="button"
           onClick={onExpand}
           aria-expanded={report ? undefined : expanded}
           aria-controls={report ? undefined : detailId}
-          className="flex w-full items-start gap-3.5 rounded-xl px-3 py-4 pr-9 text-left outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          className="min-w-0 flex-1 rounded-xl text-left outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
-          <NotificationAvatar item={item} />
-          <span className="min-w-0 flex-1">
+          <span className="block min-w-0">
             <span className="flex items-center justify-between gap-3">
               <span className="flex min-w-0 flex-wrap items-center gap-x-1.5 gap-y-0.5">
                 <span

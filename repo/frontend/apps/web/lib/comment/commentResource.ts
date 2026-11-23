@@ -59,13 +59,21 @@ export function toggleCommentLiked(comment: MusicComment): MusicComment {
 }
 
 /** 改写评论列表或楼中楼缓存（InfiniteData，每页带 comments）里的每一页。 */
-export function mapCommentPages<TPage extends { comments: MusicComment[] }>(
+export function mapCommentPages<
+  TPage extends { comments: MusicComment[]; ownerComment?: MusicComment | null },
+>(
   data: InfiniteData<TPage> | undefined,
   update: (comments: MusicComment[]) => MusicComment[],
 ): InfiniteData<TPage> | undefined {
   if (!data) return data;
   return {
     ...data,
-    pages: data.pages.map((page) => ({ ...page, comments: update(page.comments) })),
+    pages: data.pages.map((page) => ({
+      ...page,
+      comments: update(page.comments),
+      ...(page.ownerComment !== undefined
+        ? { ownerComment: page.ownerComment ? (update([page.ownerComment])[0] ?? null) : null }
+        : {}),
+    })),
   };
 }

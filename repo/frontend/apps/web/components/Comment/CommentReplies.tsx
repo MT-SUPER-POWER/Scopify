@@ -21,13 +21,21 @@ export function CommentReplies({
   resource,
   parentId,
   replyCount,
+  defaultExpanded = false,
   renderReply,
 }: CommentRepliesProps) {
   const { t } = useTranslation();
-  const [expanded, setExpanded] = useState(false);
-  const [isNear, setIsNear] = useState(false);
+  const [expanded, setExpanded] = useState(defaultExpanded);
+  const [isNear, setIsNear] = useState(defaultExpanded);
   const toggleRef = useRef<HTMLButtonElement>(null);
   const thread = useCommentReplies(resource, parentId, isNear || expanded);
+
+  useEffect(() => {
+    if (defaultExpanded) {
+      setExpanded(true);
+      setIsNear(true);
+    }
+  }, [defaultExpanded]);
 
   useEffect(() => {
     const node = toggleRef.current;

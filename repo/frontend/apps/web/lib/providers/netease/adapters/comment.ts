@@ -72,6 +72,7 @@ export function adaptNeteaseFloorComments(response: FloorCommentResponse): Music
     total: data?.totalCount ?? 0,
     hasMore: data?.hasMore ?? false,
     nextCursor: data?.time === undefined ? null : String(data.time),
+    ownerComment: data?.ownerComment ? adaptNeteaseComment(data.ownerComment) : null,
   };
 }
 

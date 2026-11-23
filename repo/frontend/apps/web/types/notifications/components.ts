@@ -21,6 +21,7 @@ export interface NotificationRowProps {
   onExpand(): void;
   onRead(): void;
   onAction?(): void;
+  onActorOpen?(): void;
 }
 
 export type NotificationAvatarProps = Pick<NotificationRowProps, "item">;
@@ -40,6 +41,7 @@ export interface NotificationPanelProps {
   onSettings(): void;
   onUpdateAction(): void;
   onSocialAction(item: NotificationListItem): void;
+  onActorOpen(item: NotificationListItem): void;
   onReportOpen(item: NotificationListItem): void;
 }
 

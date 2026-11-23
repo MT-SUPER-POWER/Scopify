@@ -15,6 +15,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useCommentReplies } from "@/hooks/comment/useCommentReplies";
 import { useCommentThread } from "@/hooks/comment/useCommentThread";
 import { useActiveAccount } from "@/hooks/auth/useProviderAccounts";
 import { useProviderCapability } from "@/hooks/provider/useActiveProvider";
@@ -35,7 +36,11 @@ const SORT_LABEL_KEY = {
  * 评论条目内联回复与「N 条回复」楼中楼；滚动到底自动加载下一页。
  * 自己请求评论数据，调用方需要在外面套一层 QueryBoundary：首页评论取不到时只有这一块失败。
  */
-export function CommentSection({ resource }: CommentSectionProps) {
+export function CommentSection({
+  resource,
+  focusCommentId,
+  focusParentCommentId,
+}: CommentSectionProps) {
   const { t } = useTranslation();
   const account = useActiveAccount();
   const isLogin = account.isLoggedIn;
@@ -61,6 +66,24 @@ export function CommentSection({ resource }: CommentSectionProps) {
   } = useCommentThread(resource);
   const loadMoreRef = useRef<HTMLDivElement>(null);
 
+  const focusRootId = focusParentCommentId || focusCommentId || null;
+  const hasFocusRootInList = Boolean(
+    focusRootId && comments.some((comment) => comment.id === focusRootId),
+  );
+  const focusedThread = useCommentReplies(
+    resource,
+    focusRootId ?? "",
+    Boolean(focusRootId && canReplies && !isPending && !hasFocusRootInList),
+  );
+  const pinnedComment =
+    !hasFocusRootInList && focusedThread.ownerComment ? focusedThread.ownerComment : null;
+  const pinnedReplyCount = pinnedComment
+    ? Math.max(pinnedComment.replyCount, focusedThread.totalCount, focusedThread.replies.length)
+    : 0;
+  const visibleComments = pinnedComment
+    ? comments.filter((comment) => comment.id !== pinnedComment.id)
+    : comments;
+
   useEffect(() => {
     const target = loadMoreRef.current;
     if (!target) return;
@@ -77,14 +100,20 @@ export function CommentSection({ resource }: CommentSectionProps) {
 
   const renderRow = (
     comment: MusicComment,
-    options: { rootId?: string; compact?: boolean; children?: ReactNode } = {},
+    options: {
+      rootId?: string;
+      compact?: boolean;
+      hasReplies?: boolean;
+      children?: ReactNode;
+    } = {},
   ) => (
     <CommentRow
       key={comment.id}
       comment={comment}
       compact={options.compact}
       rootId={options.rootId}
-      hasReplies={canReplies && !options.compact && comment.replyCount > 0}
+      hasReplies={options.hasReplies ?? (canReplies && !options.compact && comment.replyCount > 0)}
+      highlighted={Boolean(focusCommentId && comment.id === focusCommentId)}
       isOwn={comment.author.id !== null && comment.author.id === currentUserId}
       isReplying={replyTarget?.id === comment.id}
       canReply={isLogin && canWrite}
@@ -155,7 +184,26 @@ export function CommentSection({ resource }: CommentSectionProps) {
       ) : (
         <>
           <div className="mt-8 flex flex-col gap-6">
-            {comments.map((comment) =>
+            {pinnedComment &&
+              renderRow(pinnedComment, {
+                hasReplies: canReplies && pinnedReplyCount > 0,
+                children:
+                  canReplies && pinnedReplyCount > 0 ? (
+                    <CommentReplies
+                      resource={resource}
+                      parentId={pinnedComment.id}
+                      replyCount={pinnedReplyCount}
+                      defaultExpanded={Boolean(
+                        focusParentCommentId ||
+                        (focusCommentId && focusCommentId !== pinnedComment.id),
+                      )}
+                      renderReply={(reply) =>
+                        renderRow(reply, { compact: true, rootId: pinnedComment.id })
+                      }
+                    />
+                  ) : undefined,
+              })}
+            {visibleComments.map((comment) =>
               renderRow(comment, {
                 children:
                   canReplies && comment.replyCount > 0 ? (
@@ -163,6 +211,12 @@ export function CommentSection({ resource }: CommentSectionProps) {
                       resource={resource}
                       parentId={comment.id}
                       replyCount={comment.replyCount}
+                      defaultExpanded={
+                        comment.id === focusRootId &&
+                        Boolean(
+                          focusParentCommentId || (focusCommentId && focusCommentId !== comment.id),
+                        )
+                      }
                       renderReply={(reply) =>
                         renderRow(reply, { compact: true, rootId: comment.id })
                       }
@@ -170,7 +224,7 @@ export function CommentSection({ resource }: CommentSectionProps) {
                   ) : undefined,
               }),
             )}
-            {comments.length === 0 && (
+            {!pinnedComment && visibleComments.length === 0 && (
               <p className="py-10 text-center text-sm text-content-subtle">
                 {t("comments.page.noComments")}
               </p>
