@@ -1,8 +1,8 @@
 "use client";
 
-import { Button } from "@scopify/ui/shadcn/components/button";
+import { LoaderCircle } from "lucide-react";
 import { useSearchParams } from "next/navigation";
-import { useMemo } from "react";
+import { useCallback, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
 import { PlaylistContent } from "@/components/Playlist/PlaylistContent";
@@ -12,6 +12,7 @@ import { QueryFailure } from "@/components/shared/QueryFailure";
 import { useArtistPopularSongsTheme } from "@/hooks/artist/useArtistPopularSongsTheme";
 import { useArtistDetailQuery, useArtistTracksQuery } from "@/hooks/artist/useArtistQueries";
 import { useActiveProvider } from "@/hooks/provider/useActiveProvider";
+import { useInfiniteScrollTrigger } from "@/hooks/search/useInfiniteScrollTrigger";
 import type { ArtistSongsContentProps } from "@/types/artist/components";
 import type { PlaylistInfo } from "@/types/playlist/model";
 
@@ -41,9 +42,20 @@ function ArtistSongsContent({ artistId }: ArtistSongsContentProps) {
     };
   }, [artist, title, tracks.length]);
   const themeColor = useArtistPopularSongsTheme(playlistInfo?.cover);
-  const loadNextPage = () => {
-    if (tracksQuery.fetchStatus === "idle") void tracksQuery.fetchNextPage();
-  };
+  const { fetchNextPage, fetchStatus } = tracksQuery;
+  const loadNextPage = useCallback(() => {
+    if (fetchStatus === "idle") void fetchNextPage();
+  }, [fetchNextPage, fetchStatus]);
+  const loadMoreRef = useInfiniteScrollTrigger({
+    enabled:
+      !artistQuery.isPending &&
+      !tracksQuery.isPending &&
+      tracksQuery.hasNextPage &&
+      !tracksQuery.isFetchingNextPage &&
+      tracksQuery.fetchStatus === "idle" &&
+      !tracksQuery.isFetchNextPageError,
+    onIntersect: loadNextPage,
+  });
 
   if (
     (artistQuery.isPending && artistQuery.fetchStatus === "paused") ||
@@ -72,21 +84,22 @@ function ArtistSongsContent({ artistId }: ArtistSongsContentProps) {
       />
       {tracksQuery.hasNextPage && (
         <div className="px-6 pb-24">
+          <div ref={loadMoreRef} aria-hidden className="h-px" />
           {tracksQuery.isFetchNextPageError && tracksQuery.error ? (
             <QueryFailure compact error={tracksQuery.error} onRetry={loadNextPage} />
-          ) : (
-            <Button
-              variant="outline"
-              disabled={tracksQuery.fetchStatus !== "idle"}
-              onClick={loadNextPage}
+          ) : tracksQuery.fetchStatus === "paused" ? (
+            <div className="flex justify-center py-4 text-sm text-content-muted" role="status">
+              {t("network.recovery.waiting")}
+            </div>
+          ) : tracksQuery.isFetchingNextPage ? (
+            <div
+              role="status"
+              aria-label={t("common.status.loading")}
+              className="flex justify-center py-4 text-content-muted"
             >
-              {tracksQuery.fetchStatus === "paused"
-                ? t("network.recovery.waiting")
-                : tracksQuery.isFetchingNextPage
-                  ? t("common.status.loading")
-                  : t("artist.songs.loadMore")}
-            </Button>
-          )}
+              <LoaderCircle aria-hidden className="size-5 animate-spin" />
+            </div>
+          ) : null}
         </div>
       )}
     </>
