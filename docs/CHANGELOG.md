@@ -2,6 +2,17 @@
 
 > 根据 commit 自动生成，请勿手动编辑；推送版本 tag 后由 CI 更新。v2.0.3 及更早版本见[历史更新记录](archive/CHANGELOG-legacy.md)。
 
+## v4.0.3 — 2026-11-23
+
+### 新增
+
+- 歌手热门歌曲页面滚动到底部自动加载更多 ([50195678](https://github.com/MT-SUPER-POWER/Scopify/commit/50195678791a26e99577a16581f603dea344b57a))
+
+### 修复
+
+- 修复播放栏封面偶发缺失的问题 ([e4e567e7](https://github.com/MT-SUPER-POWER/Scopify/commit/e4e567e7b79ac8578a8001482ba0e9108af9b286))
+- 歌单搜索过滤后仅播放过滤结果 ([89c2324c](https://github.com/MT-SUPER-POWER/Scopify/commit/89c2324c3fd9fb298a0ff2581a2b0b5954308e25))
+
 ## v4.0.2 — 2026-11-19
 
 ### 新增
