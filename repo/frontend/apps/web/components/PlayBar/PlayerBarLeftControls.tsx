@@ -2,6 +2,7 @@
 
 import { ChevronDown, ChevronUp } from "lucide-react";
 import Image from "next/image";
+import { useState } from "react";
 import { PiChatCircleDotsBold, PiHeartBold, PiHeartFill } from "react-icons/pi";
 import { PlayerBarProviderActions } from "@/components/PlayBar/PlayerBarProviderActions";
 import { PlayerBarStatAction } from "@/components/PlayBar/PlayerBarStatAction";
@@ -34,6 +35,23 @@ export interface PlayerBarLeftControlsProps {
   isLyricStageBar?: boolean;
 }
 
+function PlayerBarArtwork({ alt, src }: { alt: string; src: string }) {
+  const [failed, setFailed] = useState(false);
+
+  if (failed) return <Skeleton className="size-full" />;
+
+  return (
+    <Image
+      width={56}
+      height={56}
+      src={src}
+      alt={alt}
+      className="size-full object-cover"
+      onError={() => setFailed(true)}
+    />
+  );
+}
+
 export function PlayerBarLeftControls({
   onCloseLyricStage,
   isLyricStageBar = false,
@@ -52,6 +70,7 @@ export function PlayerBarLeftControls({
   // Likes, comments, stats and artist pages are NetEase-only; other platforms show names only.
   const neteaseSong = useCurrentNeteaseSong();
   const artworkUrl = resolveCoverUrl(currentSong?.album?.coverUrl ?? undefined);
+  const coverSrc = artworkUrl ? getSizedImageUrl(artworkUrl, 160) : null;
   const isLiked = playback.liked;
   const isLyricOpen = useUiStore((s) => s.isLyricsOpen);
   const songStats = useSongStatsEnrichment(neteaseSong);
@@ -81,16 +100,11 @@ export function PlayerBarLeftControls({
               : "ml-4 lg:ml-3"),
         )}
       >
-        {currentSong && artworkUrl ? (
-          <Image
-            width={56}
-            height={56}
-            src={getSizedImageUrl(artworkUrl, 160)}
+        {currentSong && coverSrc ? (
+          <PlayerBarArtwork
+            key={coverSrc}
+            src={coverSrc}
             alt={currentSong.album?.title ?? currentSong.title}
-            className="size-full object-cover"
-            onError={(e) => {
-              e.currentTarget.style.display = "none";
-            }}
           />
         ) : (
           <Skeleton className="size-full" />
