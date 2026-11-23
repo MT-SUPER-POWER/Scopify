@@ -39,6 +39,10 @@ import { subscribePlaylist } from "@/lib/providers/netease/api/playlist";
 import { useRequireLoginAction } from "@/hooks/auth/useRequireLoginAction";
 import { useSmartRouter } from "@/hooks/core/useSmartRouter";
 import { getCommentHref } from "@/lib/comment/commentResource";
+import {
+  filterPlaylistTracks,
+  resolvePlaylistPlaySourceId,
+} from "@/lib/playlist/filterPlaylistTracks";
 import { cn, formatCompactCount } from "@/lib/utils";
 import { usePlayerStore, useUserStore } from "@/store";
 import { useTranslation } from "react-i18next";
@@ -156,15 +160,19 @@ export default function PlaylistActions(props: PlaylistActionsProps) {
   const calendarLocale = locale === "zh-CN" ? zhCN : locale === "zh-TW" ? zhTW : enUS;
   const isShuffle = usePlayerStore((s) => s.isShuffle);
   const toggleShuffle = usePlayerStore((s) => s.toggleShuffle);
-  const currentTrack = usePlayerStore((s) => s.currentTrack);
   const { data: commentCount } = useCommentCountQuery(
     commentResourceKind,
     commentResourceId ?? null,
   );
   const commentsSupported = useCommentKindSupported(commentResourceKind);
   const storePlaylistId = usePlayerStore((s) => s.playlistId);
-  const currentPageId =
+  const playableTracks = useMemo(
+    () => filterPlaylistTracks(tracks, searchQuery),
+    [tracks, searchQuery],
+  );
+  const basePageId =
     playSourceId ?? playlistId ?? (isDaily ? (dailyDate ? `daily:${dailyDate}` : "daily") : null);
+  const currentPageId = resolvePlaylistPlaySourceId(basePageId, searchQuery);
   const isCurrentQueue = Boolean(storePlaylistId) && storePlaylistId === currentPageId;
   const showPause = isCurrentQueue && isPlaying; // 只有“是当前歌单”且“正在播放”时，才显示暂停键
 
@@ -193,13 +201,13 @@ export default function PlaylistActions(props: PlaylistActionsProps) {
 
   const handlePlayToggle = () => {
     const state = usePlayerStore.getState();
-    if (!tracks.length) return;
+    if (!playableTracks.length) return;
 
     if (isCurrentQueue) {
       state.setIsPlaying(!state.isPlaying); // 如果已经是当前歌单，直接切换 播放/暂停 状态
     } else {
-      // 否则，用当前页面的歌单替换播放队列，并从头播放 (复用 currentPageId)
-      state.setQueue(tracks, 0, currentPageId);
+      // 否则，用当前页面的歌单（或其搜索过滤结果）替换播放队列，并从头播放
+      state.setQueue(playableTracks, 0, currentPageId);
       state.playQueueIndex(0);
     }
   };
@@ -247,7 +255,7 @@ export default function PlaylistActions(props: PlaylistActionsProps) {
                 type="button"
                 aria-label={playbackActionLabel}
                 onClick={onPlayToggle ?? handlePlayToggle}
-                disabled={!onPlayToggle && !currentTrack && !tracks.length}
+                disabled={!onPlayToggle && !isCurrentQueue && !playableTracks.length}
                 className={cn(
                   "flex size-14 items-center justify-center rounded-full bg-brand text-brand-foreground shadow-brand transition-all hover:scale-105 hover:bg-brand-hover disabled:cursor-not-allowed disabled:opacity-50",
                   isSticky && "size-12",
@@ -267,10 +275,10 @@ export default function PlaylistActions(props: PlaylistActionsProps) {
 
           {!isSticky && (
             <TrackPreviewButton
-              tracks={tracks}
+              tracks={playableTracks}
               title={playlistInfo?.title ?? ""}
               tags={playlistInfo?.tags}
-              playlistId={playSourceId ?? playlistId}
+              playlistId={currentPageId}
             />
           )}
 

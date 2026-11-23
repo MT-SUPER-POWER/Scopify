@@ -50,6 +50,11 @@ import type { PlayerTrack } from "@/types/player/model";
 import type { NavigationScrollRestorationAdapter } from "@/types/core/navigationScroll";
 
 import { ConfirmDialogShandCN } from "./TableConfirmDialog";
+import {
+  filterPlaylistTracks,
+  normalizePlaylistSearchQuery,
+  resolvePlaylistPlaySourceId,
+} from "@/lib/playlist/filterPlaylistTracks";
 import { toNeteaseSongDetails } from "@/lib/providers/netease/adapters/track";
 
 const NO_TRACKS: PlayerTrack[] = [];
@@ -119,11 +124,16 @@ export default function TracklistTable({
   const pathname = usePathname();
   const storePlaylistId = usePlayerStore((s) => s.playlistId);
 
-  const currentPageId = useMemo(() => {
+  const basePageId = useMemo(() => {
     const isPlaylistOrAlbum = pathname.includes("/playlist") || pathname.includes("/album");
     if (!isPlaylistOrAlbum && playSourceId === undefined) return null;
     return playSourceId ?? playlistID ?? (isDailyRecommendationPage ? dailyQueueId : null);
   }, [pathname, playSourceId, playlistID, isDailyRecommendationPage, dailyQueueId]);
+
+  const currentPageId = useMemo(
+    () => resolvePlaylistPlaySourceId(basePageId, searchQuery),
+    [basePageId, searchQuery],
+  );
 
   const isCurrentQueue = useMemo(() => {
     if (currentPageId === null) return true;
@@ -142,17 +152,11 @@ export default function TracklistTable({
   onPlayTrackRef.current = onPlayTrack;
   const isPlaying = usePlayerStore((s) => s.isPlaying);
 
-  const filteredTracks = useMemo(() => {
-    if (!searchQuery?.trim()) return tracks;
-    const q = searchQuery.toLowerCase();
-    return tracks.filter(
-      (track) =>
-        track.title.toLowerCase().includes(q) ||
-        track.artists.some((artist) => artist.name.toLowerCase().includes(q)) ||
-        (track.album?.title.toLowerCase() ?? "").includes(q),
-    );
-  }, [tracks, searchQuery]);
-  const hasSearchQuery = Boolean(searchQuery?.trim());
+  const filteredTracks = useMemo(
+    () => filterPlaylistTracks(tracks, searchQuery),
+    [tracks, searchQuery],
+  );
+  const hasSearchQuery = Boolean(normalizePlaylistSearchQuery(searchQuery));
 
   const columns = useMemo<ColumnDef<PlayerTrack>[]>(
     () => [
@@ -374,13 +378,17 @@ export default function TracklistTable({
       const isCurrent = currentTrackKey === musicResourceKey(track.ref) && isCurrentQueue;
       if (isCurrent) setIsPlaying(!isPlaying);
       else {
-        const sourceId =
+        const baseSourceId =
           playSourceId ?? (isDailyRecommendationPage ? dailyQueueId : (playlistID ?? null));
-        void playFromSong(track, tracks, sourceId);
+        const sourceId = resolvePlaylistPlaySourceId(baseSourceId, searchQuery);
+        void playFromSong(track, hasSearchQuery ? sortedTracks : tracks, sourceId);
       }
     },
     [
       tracks,
+      sortedTracks,
+      hasSearchQuery,
+      searchQuery,
       currentTrackKey,
       isPlaying,
       setIsPlaying,

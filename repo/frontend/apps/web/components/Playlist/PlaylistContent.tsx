@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
 import { useLoginStatus } from "@/hooks/auth/useLoginStatus";
 import { useDailyRecommendationDislike } from "@/hooks/playlist/useDailyRecommendationDislike";
 import PlaylistActions from "@/components/Playlist/ActionStation";
@@ -15,6 +15,10 @@ import { usePlaylistContentPresentation } from "@/hooks/playlist/usePlaylistCont
 import { useTranslation } from "react-i18next";
 
 import { useActiveProvider } from "@/hooks/provider/useActiveProvider";
+import {
+  filterPlaylistTracks,
+  resolvePlaylistPlaySourceId,
+} from "@/lib/playlist/filterPlaylistTracks";
 import { toNeteaseSongDetail } from "@/lib/providers/netease/adapters/track";
 import type { PlayerTrack } from "@/types/player/model";
 import type { PlaylistContentProps } from "@/types/playlist/components";
@@ -80,15 +84,20 @@ export function PlaylistContent({
     [canDislikeDaily, dislikeDaily, onDislikePersonalFm],
   );
   const sourceId = playSourceId ?? playlistId ?? (dailyDate ? `daily:${dailyDate}` : "daily");
+  const filteredTracks = useMemo(
+    () => filterPlaylistTracks(tracks, searchQuery),
+    [tracks, searchQuery],
+  );
+  const playbackSourceId = resolvePlaylistPlaySourceId(sourceId, searchQuery) ?? sourceId;
   // The immersive views read NetEase songs (lyrics, song fields), so only NetEase lists open them.
-  const canOpenLattice = tracks.length > 0;
+  const canOpenLattice = filteredTracks.length > 0;
   return (
     <PlaylistLatticeView
       key={sourceId}
       loading={isLoading}
-      tracks={tracks}
+      tracks={filteredTracks}
       title={dynamicPlaylistInfo?.title ?? t("playlist.actions.listLabel")}
-      sourceId={sourceId}
+      sourceId={playbackSourceId}
       onTrackPlay={onTrackPlay}
       onDislikeTrack={
         isLoggedIn && (onDislikePersonalFm || canDislikeDaily) ? dislikeTrack : undefined
