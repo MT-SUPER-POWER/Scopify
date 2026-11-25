@@ -98,9 +98,26 @@ jobs:
       - name: Setup workspace
         uses: ./.github/actions/setup-workspace
 
-      # `pnpm run lint` 由 Turbo 统一编排 Oxlint、架构、主题和共享包覆盖检查。
+      # `pnpm run lint` 由 Turbo 统一编排 Oxlint、架构、i18n 和共享包覆盖检查。
       - name: Run Lint
         run: pnpm run lint
+
+  i18n:
+    name: i18n
+    if: github.event.pull_request.draft == false
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          submodules: false
+
+      - name: Setup workspace
+        uses: ./.github/actions/setup-workspace
+
+      - name: Run i18n Check
+        run: pnpm run check:i18n
 
   test:
     name: Test
@@ -125,7 +142,7 @@ jobs:
   quality-gate:
     name: Typecheck, Format, Lint and Test
     if: always() && github.event.pull_request.draft == false
-    needs: [commitlint, typecheck, format, lint, test]
+    needs: [commitlint, typecheck, format, lint, i18n, test]
     runs-on: ubuntu-latest
 
     steps:

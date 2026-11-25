@@ -57,4 +57,7 @@ export default {
     if (!filenames.length) return [];
     return [`prettier --write ${quote(filenames)}`];
   },
+  // i18n: run x18n check when translation files, config, or scanned TS/TSX sources change.
+  "{repo/frontend/apps/web/**/*.{ts,tsx},repo/frontend/packages/ui/folia/**/*.{ts,tsx},repo/frontend/apps/web/locales/*/*.json,x18n.config.ts}":
+    () => ["pnpm run check:i18n"],
 };

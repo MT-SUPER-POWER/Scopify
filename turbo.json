@@ -65,11 +65,19 @@
     "//#lint:packages": {
       "cache": false
     },
+    "//#lint:i18n": {
+      "inputs": [
+        "$TURBO_ROOT$/x18n.config.ts",
+        "$TURBO_ROOT$/repo/frontend/apps/web/locales/**/*.json",
+        "$TURBO_ROOT$/repo/frontend/apps/web/**/*.{ts,tsx}",
+        "$TURBO_ROOT$/repo/frontend/packages/ui/folia/**/*.{ts,tsx}"
+      ]
+    },
     "//#check:packages": {
       "cache": false
     },
     "lint": {
-      "dependsOn": ["^lint", "//#lint:architecture", "//#lint:packages"],
+      "dependsOn": ["^lint", "//#lint:architecture", "//#lint:packages", "//#lint:i18n"],
       "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/.oxlintrc.json"]
     },
     "@scopify/desktop#lint": {
