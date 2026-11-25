@@ -4,8 +4,10 @@ import { MonitorSpeaker } from "lucide-react";
 import { AudioOutputDevicePanel } from "@/components/player/AudioOutputDevicePanel";
 import { ShortcutHint } from "@/components/shortcuts/ShortcutHint";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { PLAYBAR_POPOVER_PLACEMENT } from "@/constants/playerBar";
 import { useAudioOutputStore } from "@/store/module/audioOutput";
 import { useTranslation } from "react-i18next";
+import { PopoverArrow } from "@scopify/ui/scopify/components/popover-arrow";
 
 import {
   Tooltip,
@@ -45,13 +47,12 @@ export function AudioOutputDeviceControl() {
         </Tooltip>
       </TooltipProvider>
       <PopoverContent
-        side="top"
-        align="end"
-        sideOffset={10}
-        className="z-2000 w-80 space-y-3 p-4 shadow-floating"
+        {...PLAYBAR_POPOVER_PLACEMENT}
+        className="z-2000 flex w-80 flex-col gap-3 p-4 shadow-floating"
       >
         <h3 className="text-sm font-semibold">{t("audioSettings.outputTitle")}</h3>
         <AudioOutputDevicePanel />
+        <PopoverArrow />
       </PopoverContent>
     </Popover>
   );

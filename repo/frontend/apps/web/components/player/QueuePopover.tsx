@@ -2,11 +2,13 @@
 
 import { ListMusic, LocateFixed } from "lucide-react";
 import { useRef } from "react";
+import { PopoverArrow } from "@scopify/ui/scopify/components/popover-arrow";
 
 import { PlayerQueueList } from "@/components/player/PlayerQueueList";
 import { QueueRadioWallButton } from "@/components/Playlist/lattice/QueueRadioWallButton";
 import { ShortcutHint } from "@/components/shortcuts/ShortcutHint";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { PLAYBAR_POPOVER_PLACEMENT } from "@/constants/playerBar";
 import { useNowPlayingPanelVisibility } from "@/hooks/ui/useNowPlayingPanelVisibility";
 import { cn } from "@/lib/utils";
 import {
@@ -78,8 +80,8 @@ export const QueuePopover = () => {
         </Tooltip>
       </TooltipProvider>
       <PopoverContent
-        align="end"
-        className="w-96 border border-content/10 bg-surface-elevated p-0 text-content shadow-2xl"
+        {...PLAYBAR_POPOVER_PLACEMENT}
+        className="w-96 border border-content/10 bg-surface-elevated p-0 text-content shadow-2xl [--popover-arrow-border:color-mix(in_srgb,var(--foreground)_10%,transparent)] [--popover-arrow-fill:var(--secondary)]"
       >
         <div
           data-track-drag-chrome
@@ -104,6 +106,7 @@ export const QueuePopover = () => {
           </div>
         </div>
         <PlayerQueueList ref={queueListRef} isOpen={open} />
+        <PopoverArrow />
       </PopoverContent>
     </Popover>
   );

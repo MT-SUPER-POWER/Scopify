@@ -11,6 +11,15 @@ import {
 } from "lucide-react";
 import type { QualityOption } from "@/types/player/bar";
 
+export const PLAYBAR_POPOVER_PLACEMENT = {
+  side: "top",
+  align: "end",
+  alignOffset: -10,
+  arrowPadding: 6,
+  sideOffset: 4,
+  collisionPadding: 12,
+} as const;
+
 // ── Quality Options ───────────────────────────────────────────────────────────
 
 export const QUALITY_OPTIONS: QualityOption[] = [

@@ -3,6 +3,7 @@
 import { Captions } from "lucide-react";
 import Link from "next/link";
 import { toast } from "sonner";
+import { PopoverArrow } from "@scopify/ui/scopify/components/popover-arrow";
 import { Button } from "@scopify/ui/shadcn/components/button";
 import { Switch } from "@scopify/ui/shadcn/components/switch";
 import { Popover, PopoverTrigger, PopoverContent } from "@scopify/ui/shadcn/components/popover";
@@ -13,6 +14,7 @@ import {
   TooltipProvider,
 } from "@scopify/ui/shadcn/components/tooltip";
 import { ShortcutHint } from "@/components/shortcuts/ShortcutHint";
+import { PLAYBAR_POPOVER_PLACEMENT } from "@/constants/playerBar";
 import { useDesktopPlaybackWallpaperController } from "@/hooks/desktopWallpaper/useDesktopPlaybackWallpaperController";
 import { useDesktopSubtitleControlSync } from "@/hooks/player/useDesktopSubtitleControlSync";
 import { getDesktopPlaybackWallpaperToggleUpdate } from "@/lib/desktopPlaybackWallpaper/toggle";
@@ -85,7 +87,7 @@ export function DesktopControlPopover() {
           </TooltipContent>
         </Tooltip>
       </TooltipProvider>
-      <PopoverContent side="top" align="end" sideOffset={12} className="z-2000 w-80 space-y-4">
+      <PopoverContent {...PLAYBAR_POPOVER_PLACEMENT} className="z-2000 flex w-80 flex-col gap-4">
         <section className="space-y-4">
           <h3 className="text-base font-semibold">{t("subtitleControl.title")}</h3>
           <div className="flex items-center justify-between gap-3">
@@ -181,6 +183,7 @@ export function DesktopControlPopover() {
             />
           </Button>
         </section>
+        <PopoverArrow />
       </PopoverContent>
     </Popover>
   );

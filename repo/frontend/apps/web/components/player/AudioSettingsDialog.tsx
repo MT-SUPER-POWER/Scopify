@@ -4,11 +4,13 @@ import { SlidersHorizontal, Waves, X } from "lucide-react";
 import { useTheme } from "next-themes";
 import { useRef } from "react";
 import { useTranslation } from "react-i18next";
+import { PopoverArrow } from "@scopify/ui/scopify/components/popover-arrow";
 
 import { AudioEffectsModal } from "@/components/player/AudioEffectsModal";
 import { AudioQualityDialog } from "@/components/player/AudioQualityDialog";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { PLAYBAR_POPOVER_PLACEMENT } from "@/constants/playerBar";
 import { useAudioEqualizerStore } from "@/store/module/audioEqualizer";
 import type { AudioSettingsDialogProps } from "@/types/audio/settingsDialogComponents";
 
@@ -33,12 +35,9 @@ export function AudioSettingsDialog({ children }: AudioSettingsDialogProps) {
           {children}
         </PopoverTrigger>
         <PopoverContent
-          align="end"
-          side="top"
-          sideOffset={10}
-          collisionPadding={16}
+          {...PLAYBAR_POPOVER_PLACEMENT}
           aria-label={t("audioSettings.title")}
-          className="w-md max-w-[calc(100vw-2rem)] overflow-hidden border bg-popover p-0 text-popover-foreground shadow-floating"
+          className="w-md max-w-[calc(100vw-2rem)] border bg-popover p-0 text-popover-foreground shadow-floating"
           onCloseAutoFocus={(event) => {
             if (useAudioEqualizerStore.getState().settingsSurface === "equalizer") {
               event.preventDefault();
@@ -77,6 +76,7 @@ export function AudioSettingsDialog({ children }: AudioSettingsDialogProps) {
             <div className="min-w-0 px-4 py-3">
               <AudioQualityDialog />
             </div>
+            <PopoverArrow />
           </ScrollArea>
         </PopoverContent>
       </Popover>

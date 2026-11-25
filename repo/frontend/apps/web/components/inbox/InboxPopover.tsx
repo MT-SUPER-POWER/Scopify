@@ -1,7 +1,7 @@
 "use client";
 
 import { X } from "lucide-react";
-import { Popover as PopoverPrimitive } from "radix-ui";
+import { PopoverArrow } from "@scopify/ui/scopify/components/popover-arrow";
 import { Popover, PopoverContent, PopoverTrigger } from "@scopify/ui/shadcn/components/popover";
 import {
   Sheet,
@@ -67,16 +67,7 @@ export function InboxPopover({
         className="w-[min(440px,calc(100vw-24px))] rounded-2xl border-border bg-popover p-0 shadow-floating"
       >
         <div className="overflow-hidden rounded-[inherit]">{children}</div>
-        <PopoverPrimitive.Arrow asChild width={20} height={10}>
-          <svg viewBox="0 0 20 10" className="overflow-visible" aria-hidden="true">
-            <path
-              d="M0 0 10 10 20 0"
-              className="fill-popover stroke-border"
-              strokeLinejoin="round"
-            />
-            <path d="M0 0H20" className="stroke-popover" strokeWidth={2} />
-          </svg>
-        </PopoverPrimitive.Arrow>
+        <PopoverArrow width={20} height={10} />
       </PopoverContent>
     </Popover>
   );
