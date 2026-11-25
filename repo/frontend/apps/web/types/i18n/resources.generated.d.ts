@@ -125,12 +125,14 @@ export default interface Resources {
   };
   audioEqualizer: {
     bandGain: "频段增益";
-    builtinPresets: "内置预设";
+    chain: "效果链";
+    chainHint: "在频段之后处理";
     close: "完成";
     copyName: "{{name}} 副本";
     createPreset: "从当前声音新建预设";
     deletePreset: "删除预设";
-    disabled: "均衡器已关闭";
+    description: "频段均衡与音频效果";
+    disabled: "音频处理已关闭";
     duplicatePreset: "复制预设";
     "effect.crush": "颗粒";
     "effect.drive": "驱动";
@@ -141,14 +143,10 @@ export default interface Resources {
     "effect.space": "空间混响";
     "effect.width": "立体声宽度";
     "effect.wow": "磁带摆动";
-    effects: "音色效果";
-    enabled: "均衡器已开启";
-    "group.filter": "滤波";
-    "group.space": "空间";
-    "group.texture": "质感";
-    headroom: "自动余量 −{{db}} dB";
-    myPresets: "我的预设";
+    enabled: "音频处理已开启";
     newPresetName: "我的预设 {{index}}";
+    noiseHint: "这个滑块本身会产生噪声，音乐越安静越明显";
+    noiseTag: "噪声";
     "preset.bass": "低音";
     "preset.custom-1": "自定义 1";
     "preset.custom-2": "自定义 2";
@@ -160,17 +158,14 @@ export default interface Resources {
     "preset.vocal": "人声";
     presetLabel: "声音预设";
     presetName: "预设名称";
-    resetBands: "频段归零";
-    resetEffect: "点击恢复默认值";
-    resetEffects: "效果复位";
-    title: "10 段音频均衡器";
+    resetPreset: "重置当前自定义预设";
+    title: "音频效果器";
   };
   audioSettings: {
-    close: "完成";
     devicesRefresh: "设备列表";
     devicesRefreshDescription: "重新扫描新连接或已移除的音频设备。";
     devicesTitle: "音频输入与输出";
-    equalizerTab: "均衡器";
+    equalizerTab: "音频效果器";
     inputAccess: "输入设备权限";
     inputAccessDescription: "仅在你主动检测时访问麦克风，并会立即释放设备。";
     inputAccessFailed: "无法访问所选输入设备，请检查系统权限或设备状态。";

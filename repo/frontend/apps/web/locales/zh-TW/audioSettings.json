@@ -2,7 +2,7 @@
   "open": "開啟音訊設定",
   "title": "音訊設定",
   "qualityTab": "播放音質",
-  "equalizerTab": "等化器",
+  "equalizerTab": "音訊效果器",
   "outputTitle": "音訊輸出裝置",
   "outputDescription": "選擇耳機、喇叭或虛擬音效卡作為目前播放器的輸出。",
   "outputDefault": "系統預設裝置",
@@ -25,6 +25,5 @@
   "inputAccessFailed": "無法存取所選輸入裝置，請檢查系統權限或裝置狀態。",
   "devicesRefresh": "裝置清單",
   "devicesRefreshDescription": "重新掃描新連接或已移除的音訊裝置。",
-  "replayGain": "音訊增益",
-  "close": "完成"
+  "replayGain": "音訊增益"
 }

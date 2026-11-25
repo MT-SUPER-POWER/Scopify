@@ -37,12 +37,6 @@ export interface FoliaPanelControlsProps {
   theme: Theme;
 }
 
-export interface FoliaAudioEqualizerDialogProps {
-  isOpen: boolean;
-  onClose: () => void;
-  theme: Theme;
-}
-
 export interface FoliaVideoExportDialogProps {
   isOpen: boolean;
   onClose: () => void;

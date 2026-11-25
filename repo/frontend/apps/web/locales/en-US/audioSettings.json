@@ -2,7 +2,7 @@
   "open": "Open audio settings",
   "title": "Audio settings",
   "qualityTab": "Playback quality",
-  "equalizerTab": "Equalizer",
+  "equalizerTab": "Audio Effects",
   "outputTitle": "Audio output device",
   "outputDescription": "Choose headphones, speakers, or a virtual audio device for playback.",
   "outputDefault": "System default",
@@ -25,6 +25,5 @@
   "inputAccessFailed": "Could not access the selected input. Check system permissions and device status.",
   "devicesRefresh": "Device list",
   "devicesRefreshDescription": "Scan again for newly connected or removed audio devices.",
-  "replayGain": "Audio gain",
-  "close": "Done"
+  "replayGain": "Audio gain"
 }

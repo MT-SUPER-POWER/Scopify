@@ -2,7 +2,7 @@
   "open": "打开音频设置",
   "title": "音频设置",
   "qualityTab": "播放音质",
-  "equalizerTab": "均衡器",
+  "equalizerTab": "音频效果器",
   "outputTitle": "音频输出设备",
   "outputDescription": "选择耳机、音箱或虚拟声卡作为当前播放器的输出。",
   "outputDefault": "系统默认设备",
@@ -25,6 +25,5 @@
   "inputAccessFailed": "无法访问所选输入设备，请检查系统权限或设备状态。",
   "devicesRefresh": "设备列表",
   "devicesRefreshDescription": "重新扫描新连接或已移除的音频设备。",
-  "replayGain": "音频增益",
-  "close": "完成"
+  "replayGain": "音频增益"
 }
