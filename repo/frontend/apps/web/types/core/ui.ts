@@ -5,7 +5,7 @@ export interface HistoryNavigationState {
 }
 
 /** 右侧面板中与队列并列的视图；队列沿用 isQueueOpen，以便快捷键与窄窗口浮层共用同一状态。 */
-export type NowPlayingPanelTab = "overview" | "lyrics";
+export type NowPlayingPanelTab = "overview" | "lyrics" | "scratchpad";
 
 /** 右侧面板封面位正在播放的 MV；记录所属歌曲，切歌后自然失效。 */
 export interface NowPlayingMvSelection {

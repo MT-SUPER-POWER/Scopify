@@ -29,6 +29,7 @@ import zhCN_playlist from "./zh-CN/playlist.json";
 import zhCN_privateMessages from "./zh-CN/privateMessages.json";
 import zhCN_profile from "./zh-CN/profile.json";
 import zhCN_queue from "./zh-CN/queue.json";
+import zhCN_scratchpad from "./zh-CN/scratchpad.json";
 import zhCN_search from "./zh-CN/search.json";
 import zhCN_settings from "./zh-CN/settings.json";
 import zhCN_shortcuts from "./zh-CN/shortcuts.json";
@@ -78,6 +79,7 @@ import zhTW_playlist from "./zh-TW/playlist.json";
 import zhTW_privateMessages from "./zh-TW/privateMessages.json";
 import zhTW_profile from "./zh-TW/profile.json";
 import zhTW_queue from "./zh-TW/queue.json";
+import zhTW_scratchpad from "./zh-TW/scratchpad.json";
 import zhTW_search from "./zh-TW/search.json";
 import zhTW_settings from "./zh-TW/settings.json";
 import zhTW_shortcuts from "./zh-TW/shortcuts.json";
@@ -127,6 +129,7 @@ import enUS_playlist from "./en-US/playlist.json";
 import enUS_privateMessages from "./en-US/privateMessages.json";
 import enUS_profile from "./en-US/profile.json";
 import enUS_queue from "./en-US/queue.json";
+import enUS_scratchpad from "./en-US/scratchpad.json";
 import enUS_search from "./en-US/search.json";
 import enUS_settings from "./en-US/settings.json";
 import enUS_shortcuts from "./en-US/shortcuts.json";
@@ -180,6 +183,7 @@ export const resources = {
     privateMessages: zhCN_privateMessages,
     profile: zhCN_profile,
     queue: zhCN_queue,
+    scratchpad: zhCN_scratchpad,
     search: zhCN_search,
     settings: zhCN_settings,
     shortcuts: zhCN_shortcuts,
@@ -231,6 +235,7 @@ export const resources = {
     privateMessages: zhTW_privateMessages,
     profile: zhTW_profile,
     queue: zhTW_queue,
+    scratchpad: zhTW_scratchpad,
     search: zhTW_search,
     settings: zhTW_settings,
     shortcuts: zhTW_shortcuts,
@@ -282,6 +287,7 @@ export const resources = {
     privateMessages: enUS_privateMessages,
     profile: enUS_profile,
     queue: enUS_queue,
+    scratchpad: enUS_scratchpad,
     search: enUS_search,
     settings: enUS_settings,
     shortcuts: enUS_shortcuts,

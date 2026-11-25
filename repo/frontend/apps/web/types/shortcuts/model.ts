@@ -102,6 +102,8 @@ export interface ShortcutActionContext {
     toggleSidebar(): void;
     toggleQueue(): void;
     toggleNowPlayingPanel(): void;
+    toggleScratchpad(): void;
+    openScratchpadWorkspace(): void;
     toggleShortcutHelp(): void;
   };
   folia: {
@@ -133,6 +135,9 @@ export interface ShortcutActionContext {
     toggleLightsOff(): void;
   };
   playlist: { focusSearch(): void };
-  track: { openCurrentComments(): void };
+  track: {
+    openCurrentComments(): void;
+    collectCurrentToScratchpad(): void;
+  };
   updates: { openWhatsNew(): void };
 }

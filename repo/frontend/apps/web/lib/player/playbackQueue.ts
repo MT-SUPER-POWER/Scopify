@@ -339,6 +339,91 @@ export function createPlaybackQueue<T>(
 
     playQueueIndex,
 
+    playTrackInQueue(
+      snapshot: PlaybackQueueSnapshot<T>,
+      context: PlaybackQueueRuntimeContext<T>,
+      track: T,
+    ): PlaybackQueueTransition<T> {
+      const existingIndex = snapshot.queue.findIndex((candidate) => sameItem(candidate, track));
+      if (existingIndex >= 0) {
+        return playQueueIndex(snapshot, existingIndex);
+      }
+
+      const insertAt =
+        snapshot.queueIndex >= 0 && snapshot.queueIndex < snapshot.queue.length
+          ? snapshot.queueIndex + 1
+          : snapshot.queue.length;
+      const queue = [...snapshot.queue];
+      queue.splice(insertAt, 0, track);
+
+      const currentInOriginal = context.currentTrack
+        ? snapshot.originalQueue.findIndex((candidate) => sameItem(candidate, context.currentTrack))
+        : -1;
+      const originalInsertAt =
+        currentInOriginal >= 0 ? currentInOriginal + 1 : snapshot.originalQueue.length;
+      const originalQueue = [...snapshot.originalQueue];
+      originalQueue.splice(originalInsertAt, 0, track);
+
+      let historyStack =
+        snapshot.historyIndex < snapshot.historyStack.length - 1
+          ? snapshot.historyStack.slice(0, snapshot.historyIndex + 1)
+          : [...snapshot.historyStack];
+      historyStack = historyStack.map((item) => (item >= insertAt ? item + 1 : item));
+      historyStack.push(insertAt);
+
+      return {
+        effect: { track, type: "play" },
+        snapshot: {
+          ...snapshot,
+          historyIndex: historyStack.length - 1,
+          historyStack,
+          originalQueue,
+          queue,
+          queueIndex: insertAt,
+        },
+      };
+    },
+
+    replaceQueueOrder(
+      snapshot: PlaybackQueueSnapshot<T>,
+      context: PlaybackQueueRuntimeContext<T>,
+      nextQueue: readonly T[],
+    ): PlaybackQueueTransition<T> {
+      if (nextQueue.length === 0) {
+        return {
+          effect: { type: "clear" },
+          snapshot: {
+            ...snapshot,
+            historyIndex: -1,
+            historyStack: [],
+            originalQueue: [],
+            queue: [],
+            queueIndex: -1,
+          },
+        };
+      }
+
+      const queue = [...nextQueue];
+      const currentTrack = context.currentTrack;
+      const queueIndex = currentTrack
+        ? queue.findIndex(
+            (candidate) => candidate === currentTrack || sameItem(candidate, currentTrack),
+          )
+        : -1;
+
+      return {
+        effect: NO_EFFECT,
+        snapshot: {
+          ...snapshot,
+          historyIndex: queueIndex >= 0 ? 0 : -1,
+          historyStack: queueIndex >= 0 ? [queueIndex] : [],
+          originalQueue: [...queue],
+          queue,
+          queueIndex,
+        },
+      };
+    },
+
     removeQueueItem(
       snapshot: PlaybackQueueSnapshot<T>,
       context: PlaybackQueueRuntimeContext<T>,

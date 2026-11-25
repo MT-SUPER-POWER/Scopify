@@ -27,6 +27,7 @@ import { KeyboardShortcutHelp } from "@/components/shortcuts/KeyboardShortcutHel
 import { getDashboardLoadingPlaceholder } from "@/components/shared/DashboardRouteSkeleton";
 import { NavigationScrollProvider } from "@/components/shared/NavigationScrollProvider";
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
+import { ScratchpadSaveToPlaylistDialog } from "@/components/scratchpad/ScratchpadSaveToPlaylistDialog";
 import { WhatsNewModal } from "@/components/updates/WhatsNewModal";
 import {
   DASHBOARD_LAYOUT_GROUP_ID,
@@ -46,9 +47,13 @@ import { useDashboardEffects } from "@/hooks/ui/useDashboardEffects";
 import { useNowPlayingPanelVisibility } from "@/hooks/ui/useNowPlayingPanelVisibility";
 import { cn } from "@/lib/utils";
 import { useQueueRadioWall } from "@/store/module/lattice";
+import { useScratchpadStore } from "@/store/module/scratchpad";
 import { useUiStore } from "@/store/module/ui";
 
 const PlaybackQueueWall = dynamic(() => import("@/components/Playlist/lattice/PlaybackQueueWall"), {
+  ssr: false,
+});
+const ScratchpadWorkspace = dynamic(() => import("@/components/scratchpad/ScratchpadWorkspace"), {
   ssr: false,
 });
 
@@ -97,6 +102,7 @@ function DashboardShell({ children }: { children: ReactNode }) {
   const isPlayerBarHidden = useUiStore((s) => s.isPlayerBarHidden);
   const isSearchOpen = useUiStore((s) => s.isSearchOpen);
   const isQueueWallOpen = useQueueRadioWall((state) => state.open);
+  const isScratchpadWorkspaceOpen = useScratchpadStore((state) => state.workspaceOpen);
   const setIsSearchOpen = useUiStore((s) => s.setIsSearchOpen);
   const setIsNowPlayingPanelOpen = useUiStore((s) => s.setIsNowPlayingPanelOpen);
 
@@ -153,6 +159,8 @@ function DashboardShell({ children }: { children: ReactNode }) {
         <LyricStageMount />
         <FoliaSettingsMount />
         {isQueueWallOpen && <PlaybackQueueWall />}
+        {isScratchpadWorkspaceOpen && <ScratchpadWorkspace />}
+        <ScratchpadSaveToPlaylistDialog />
 
         {/* 顶栏行连同外边距一起作为桌面端窗口拖拽区（系统标题栏已隐藏） */}
         <div

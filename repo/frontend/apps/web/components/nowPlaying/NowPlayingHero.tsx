@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { Ban, ImageIcon, MessageCircle, MonitorPlay } from "lucide-react";
+import { Ban, Check, ImageIcon, MessageCircle, MonitorPlay, NotebookPen } from "lucide-react";
 import { PiHeartBold, PiHeartFill } from "react-icons/pi";
 import { NowPlayingDynamicCover } from "./NowPlayingDynamicCover";
 import { NowPlayingMvPlayer } from "./NowPlayingMvPlayer";
@@ -14,9 +14,12 @@ import { useSongMvId } from "@/hooks/song/useSongMvId";
 import { useNowPlayingMv } from "@/hooks/ui/useNowPlayingMv";
 import { getSizedImageUrl } from "@/lib/music/imageUrl";
 import { resolveCoverUrl } from "@/lib/music/resolveCoverUrl";
+import { playerTrackKey } from "@/lib/player/trackIdentity";
+import { adaptNeteaseTrack } from "@/lib/providers/netease/adapters/track";
 import { cn } from "@/lib/utils";
 import { useTranslation } from "react-i18next";
 
+import { collectTracksToScratchpad, useScratchpadStore } from "@/store/module/scratchpad";
 import { useUiStore } from "@/store/module/ui";
 import type { NowPlayingSectionProps } from "@/types/player/nowPlayingComponents";
 
@@ -38,6 +41,12 @@ export function NowPlayingHero({ song }: NowPlayingSectionProps) {
   const isLiked = playback.liked;
   const likeLabel = isLiked ? t("common.action.unlike") : t("common.action.like");
   const { canDislike, dislike, isDisliking } = useNowPlayingDislike(song);
+  const adaptedTrack = adaptNeteaseTrack(song);
+  const trackKey = playerTrackKey(adaptedTrack);
+  const isInScratchpad = useScratchpadStore((s) =>
+    s.entries.some((entry) => entry.key === trackKey),
+  );
+  const scratchpadLabel = isInScratchpad ? t("scratchpad.open") : t("contextMenu.addToScratchpad");
 
   return (
     <section className="relative -mx-4">
@@ -122,6 +131,21 @@ export function NowPlayingHero({ song }: NowPlayingSectionProps) {
         >
           <MessageCircle className="size-5" />
         </Link>
+        <button
+          type="button"
+          onClick={() => {
+            if (isInScratchpad) useUiStore.getState().setNowPlayingPanelTab("scratchpad");
+            else collectTracksToScratchpad([adaptedTrack], { label: t("nowPlaying.title") });
+          }}
+          aria-label={scratchpadLabel}
+          title={scratchpadLabel}
+          className={cn(
+            ACTION_BTN,
+            isInScratchpad ? "text-brand" : "text-content-muted hover:text-content",
+          )}
+        >
+          {isInScratchpad ? <Check className="size-5" /> : <NotebookPen className="size-5" />}
+        </button>
         {canDislike && (
           <button
             type="button"

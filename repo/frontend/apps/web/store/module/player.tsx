@@ -553,6 +553,43 @@ export const usePlayerStore = create<PlayerStore>()(
         }
       },
 
+      playTrackInQueue: async (track) => {
+        const state = get();
+        const snapshot = createPlayerQueueSnapshot(state);
+        const transition = playbackQueue.playTrackInQueue(
+          snapshot,
+          { currentTrack: state.currentTrack },
+          track,
+        );
+        set(selectPlayerQueueState(transition.snapshot));
+        if (transition.effect.type === "play") {
+          await get().playTrack(transition.effect.track);
+        }
+      },
+
+      replaceQueueOrder: (nextQueue) => {
+        const state = get();
+        const snapshot = createPlayerQueueSnapshot(state);
+        const transition = playbackQueue.replaceQueueOrder(
+          snapshot,
+          { currentTrack: state.currentTrack },
+          nextQueue,
+        );
+        if (transition.effect.type === "clear") {
+          set({
+            ...selectPlayerQueueState(transition.snapshot),
+            currentTrack: null,
+            currentReplayGain: null,
+            currentSongUrl: null,
+            isPlaying: false,
+            lyric: null,
+            playbackLoadRevision: state.playbackLoadRevision + 1,
+          });
+          return;
+        }
+        set(selectPlayerQueueState(transition.snapshot));
+      },
+
       playNext: async (source = "manual") => {
         const state = get();
         const snapshot = createPlayerQueueSnapshot(state);

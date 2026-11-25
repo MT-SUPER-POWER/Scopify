@@ -7,6 +7,7 @@ import {
   DESKTOP_PLAYBACK_CONTROLLER_THEME_EDITOR_PATH,
 } from "@/constants/desktopPlaybackController";
 import { useNowPlayingDocumentTitle } from "@/hooks/player/useNowPlayingDocumentTitle";
+import { useTrackLocalHistory } from "@/hooks/scratchpad/useTrackLocalHistory";
 import { useTitleBarSymbolColor } from "@/hooks/ui/useTitleBarSymbolColor";
 import { runtime } from "@/lib/runtime";
 import { useSearchStore } from "@/store/module/search";
@@ -21,6 +22,7 @@ export function useDashboardEffects() {
   const setIsFullscreen = useUiStore((s) => s.setIsFullscreen);
 
   useNowPlayingDocumentTitle();
+  useTrackLocalHistory();
   useTitleBarSymbolColor();
 
   // 回到首页清空搜索词；路由切换时关闭中心歌词视图
