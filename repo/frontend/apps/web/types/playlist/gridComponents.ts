@@ -12,6 +12,8 @@ export interface GridCardProps {
   /** Click on a card: pan to it, or play it when it is already the focused one. */
   onSelect: (cell: GridCell, centered: boolean) => void;
   flipPlan: CardFlipPlan | null;
+  playlistId?: number | string | null;
+  onRemoveFromQueue?: (index: number) => void;
   onDislikeTrack?: (track: PlayerTrack) => void;
   onPlay: (index: number) => void;
 }

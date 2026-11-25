@@ -42,7 +42,10 @@ export interface LatticePosterProps {
   track: PlayerTrack;
   expanded: boolean;
   current: boolean;
+  playing: boolean;
   focused: boolean;
+  playlistId?: number | string | null;
+  onRemoveFromQueue?: (index: number) => void;
   onDislikeTrack?: (track: PlayerTrack) => void;
   onFocus: (instance: QueueInstance) => void;
   onSelect: (instance: QueueInstance) => void;

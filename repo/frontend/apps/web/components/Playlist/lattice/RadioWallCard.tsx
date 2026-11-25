@@ -5,6 +5,7 @@ import { Disc3, Radio } from "lucide-react";
 import { motion, useTransform } from "framer-motion";
 import { useTranslation } from "react-i18next";
 
+import { PlayerTrackContextMenu } from "@/components/shared/PlayerTrackContextMenu";
 import { getSizedImageUrl } from "@/lib/music/imageUrl";
 import { radioCardPose, radioRedactionWidths } from "@/lib/playlist/lattice/radioWall";
 import { getLatticeTrackCopy } from "@/lib/playlist/lattice/trackCopy";
@@ -27,9 +28,14 @@ export const RadioWallCard = memo(function RadioWallCard({
   track,
   centered,
   current,
+  playing,
   faceDown,
   reducedMotion,
   showLyrics,
+  playlistId,
+  onPlay,
+  onRemoveFromQueue,
+  onDislikeTrack,
 }: RadioWallCardProps) {
   const { t } = useTranslation();
   const { cardSize } = metrics;
@@ -185,45 +191,62 @@ export const RadioWallCard = memo(function RadioWallCard({
     </span>
   );
 
+  const cardButton =
+    track && slot.trackIndex !== null ? (
+      <button
+        type="button"
+        data-wall-track={slot.trackIndex}
+        data-radio-position={slot.position}
+        tabIndex={centered ? 0 : -1}
+        aria-label={label}
+        aria-current={current ? "true" : undefined}
+        className={cn(
+          cardClass,
+          "cursor-pointer overflow-visible border-0 bg-transparent shadow-none [perspective:1400px]",
+        )}
+      >
+        <motion.span
+          className={cn(
+            "relative block size-full rounded-lg border border-white/20 shadow-[0_14px_30px_#0005] [transform-style:preserve-3d]",
+            current && "border-primary",
+          )}
+          initial={false}
+          animate={{ rotateY: flipAngle }}
+          transition={reducedMotion ? { duration: 0 } : FLIP_TRANSITION}
+        >
+          {front}
+          {trackBack}
+        </motion.span>
+        <span
+          aria-hidden
+          data-current={current}
+          className="absolute top-[6%] left-[6%] z-2 rounded bg-black/45 px-1.5 text-xs font-medium tabular-nums group-data-[current-number-only=true]/radio:not-data-[current=true]:hidden"
+        >
+          {String(slot.trackIndex + 1).padStart(2, "0")}
+        </span>
+      </button>
+    ) : null;
+
   return (
     <motion.div
       className="absolute top-0 left-0"
       style={{ width: cardSize, height: cardSize, transform, zIndex }}
     >
       <div className="[container-type:size] relative size-full motion-safe:animate-in motion-safe:duration-400 motion-safe:fade-in motion-safe:slide-in-from-bottom-3">
-        {track && slot.trackIndex !== null ? (
-          <button
-            type="button"
-            data-wall-track={slot.trackIndex}
-            data-radio-position={slot.position}
-            tabIndex={centered ? 0 : -1}
-            aria-label={label}
-            aria-current={current ? "true" : undefined}
-            className={cn(
-              cardClass,
-              "cursor-pointer overflow-visible border-0 bg-transparent shadow-none [perspective:1400px]",
-            )}
+        {track && cardButton && !faceDown ? (
+          <PlayerTrackContextMenu
+            track={track}
+            isActive={current}
+            isPlaying={playing}
+            onPlay={() => onPlay?.()}
+            playlistId={playlistId}
+            onRemoveFromQueue={onRemoveFromQueue}
+            onDislikeTrack={onDislikeTrack}
           >
-            <motion.span
-              className={cn(
-                "relative block size-full rounded-lg border border-white/20 shadow-[0_14px_30px_#0005] [transform-style:preserve-3d]",
-                current && "border-primary",
-              )}
-              initial={false}
-              animate={{ rotateY: flipAngle }}
-              transition={reducedMotion ? { duration: 0 } : FLIP_TRANSITION}
-            >
-              {front}
-              {trackBack}
-            </motion.span>
-            <span
-              aria-hidden
-              data-current={current}
-              className="absolute top-[6%] left-[6%] z-2 rounded bg-black/45 px-1.5 text-xs font-medium tabular-nums group-data-[current-number-only=true]/radio:not-data-[current=true]:hidden"
-            >
-              {String(slot.trackIndex + 1).padStart(2, "0")}
-            </span>
-          </button>
+            {cardButton}
+          </PlayerTrackContextMenu>
+        ) : cardButton ? (
+          cardButton
         ) : (
           <div className={cn(cardClass, "opacity-65")} role="img" aria-label={label}>
             {unknownBack}

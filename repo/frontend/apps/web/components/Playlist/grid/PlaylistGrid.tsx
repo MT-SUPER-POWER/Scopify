@@ -6,6 +6,7 @@ import { useGridWall } from "@/hooks/playlist/useGridWall";
 import { usePlaylistViewPlayback } from "@/hooks/playlist/usePlaylistViewPlayback";
 import { computeGridPlacement } from "@/lib/playlist/grid/falloff";
 import { useLatticePreferences } from "@/store/module/lattice";
+import { usePlayerStore } from "@/store/module/player";
 import { useTranslation } from "react-i18next";
 
 import type { GridCell } from "@/types/playlist/grid";
@@ -56,11 +57,11 @@ export default function PlaylistGrid({
     },
     [panToCell, playAt, tracks],
   );
-  const activate = useCallback(
+  const removeFromQueue = useCallback(
     (index: number) => {
-      playAt(index);
+      if (playbackQueue) usePlayerStore.getState().removeQueueItem(index);
     },
-    [playAt],
+    [playbackQueue],
   );
   useEffect(() => {
     fieldRef.current?.focus({ preventScroll: true });
@@ -83,7 +84,7 @@ export default function PlaylistGrid({
       data-lights-off={lightsOff}
       aria-label={t("playlist.view.grid")}
       aria-describedby={hintId}
-      onKeyDown={(event) => wall.onKeyDown(event, onClose, activate)}
+      onKeyDown={(event) => wall.onKeyDown(event, onClose, playAt)}
     >
       <PlaylistViewTools
         revealing={flip.toolsFade}
@@ -126,6 +127,8 @@ export default function PlaylistGrid({
                 register={wall.register}
                 onSelect={select}
                 onPlay={playAt}
+                playlistId={playbackQueue ? null : sourceId}
+                onRemoveFromQueue={playbackQueue ? removeFromQueue : undefined}
                 onDislikeTrack={onDislikeTrack}
                 flipPlan={flip.plan}
               />
