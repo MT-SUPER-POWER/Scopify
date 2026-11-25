@@ -1,6 +1,6 @@
 {
   "name": "scopify-workspace",
-  "version": "4.0.3",
+  "version": "4.1.0",
   "private": true,
   "packageManager": "pnpm@12.8.1",
   "scripts": {
