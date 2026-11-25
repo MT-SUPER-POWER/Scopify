@@ -249,6 +249,7 @@ export function createDefaultFoliaStageSettings(): FoliaStageSettings {
     hideTranslationSubtitle: false,
     lyricOffsetMs: 0,
     mode: "classic",
+    progressBarChorusMarker: true,
     showSubtitleTranslation: true,
     sonnetPerformanceWarningDismissed: false,
     subtitleContentMode: "translation",

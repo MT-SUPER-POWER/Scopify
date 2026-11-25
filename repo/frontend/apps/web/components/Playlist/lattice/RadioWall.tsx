@@ -53,7 +53,7 @@ export default function RadioWall({
   const wrap = usePlayerStore(
     (state) => !isFm && tracks === state.queue && !state.isShuffle && state.repeatMode === "all",
   );
-  const { currentIndex, playAt } = usePlaylistViewPlayback({
+  const { currentIndex, isPlaying, playAt } = usePlaylistViewPlayback({
     tracks,
     sourceId,
     onTrackPlay,
@@ -191,6 +191,7 @@ export default function RadioWall({
           const current = slot.trackIndex === currentIndex;
           const centered = slot.position === selected;
           const faceDown = slot.trackIndex === null || isHidden(slot.position);
+          const trackIndex = slot.trackIndex;
           return (
             <RadioWallCard
               key={`${slot.position}:${track ? getLatticeTrackCopy(track).key : "unknown"}`}
@@ -200,7 +201,9 @@ export default function RadioWall({
               track={track}
               centered={centered}
               current={current}
+              playing={current && isPlaying}
               faceDown={faceDown}
+              reducedMotion={Boolean(reducedMotion)}
               showLyrics={Boolean(
                 current &&
                 centered &&
@@ -208,6 +211,14 @@ export default function RadioWall({
                 (reducedMotion || entrySettled) &&
                 metrics.cardSize >= 170,
               )}
+              playlistId={playbackQueue ? null : sourceId}
+              onPlay={trackIndex !== null ? () => playAt(trackIndex, true) : undefined}
+              onRemoveFromQueue={
+                playbackQueue && !isFm && trackIndex !== null
+                  ? () => usePlayerStore.getState().removeQueueItem(trackIndex)
+                  : undefined
+              }
+              onDislikeTrack={onDislikeTrack}
             />
           );
         })}

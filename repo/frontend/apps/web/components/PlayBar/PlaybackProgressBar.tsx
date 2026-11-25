@@ -14,6 +14,7 @@ function normalizeTime(value: number, durationMs: number) {
 export function PlaybackProgressBar({
   ariaLabel,
   bufferedPositionMs = 0,
+  chorusMarkerFraction = null,
   durationMs,
   onSeek,
   positionMs,
@@ -41,6 +42,7 @@ export function PlaybackProgressBar({
       ariaValueText={`${formatDuration(safePositionMs)} / ${formatDuration(safeDurationMs)}`}
       bufferedColor={isFolia ? "var(--desktop-controller-soft-hover)" : undefined}
       bufferedValue={bufferedPercent}
+      chorusMarkerFraction={chorusMarkerFraction}
       className="flex-1"
       disabled={safeDurationMs <= 0}
       fillColor={isFolia ? "var(--desktop-controller-primary)" : undefined}

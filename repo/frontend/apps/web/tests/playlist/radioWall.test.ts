@@ -1,6 +1,10 @@
 import { describe, expect, it } from "bun:test";
 
-import { radioBrowseRange, radioWallSlots } from "@/lib/playlist/lattice/radioWall";
+import {
+  radioBrowseRange,
+  radioRedactionWidths,
+  radioWallSlots,
+} from "@/lib/playlist/lattice/radioWall";
 
 describe("radio wall slots", () => {
   it("leaves an FM card for the next unknown track without letting browse select it", () => {
@@ -28,5 +32,15 @@ describe("radio wall slots", () => {
     const slots = radioWallSlots(42_000, 4, 100_000, range, false);
     expect(slots).toHaveLength(9);
     expect(slots[4]).toEqual({ position: 42_000, trackIndex: 42_000 });
+  });
+
+  it("derives deterministic bounded redaction widths per track key", () => {
+    const first = radioRedactionWidths("netease:123456");
+    const second = radioRedactionWidths("netease:123456");
+    expect(first).toEqual(second);
+    expect(first.title).toBeGreaterThanOrEqual(52);
+    expect(first.title).toBeLessThanOrEqual(78);
+    expect(first.artist).toBeGreaterThanOrEqual(34);
+    expect(first.artist).toBeLessThanOrEqual(56);
   });
 });

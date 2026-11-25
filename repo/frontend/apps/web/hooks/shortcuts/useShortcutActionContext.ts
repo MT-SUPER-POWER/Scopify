@@ -2,14 +2,19 @@
 
 import { useMemo } from "react";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+import { NOW_PLAYING_PANEL_MEDIA_QUERY } from "@/constants/layout";
 import { usePlaybackCommands } from "@/hooks/player/usePlaybackCommands";
 import { usePlaybackProjectionStore } from "@/hooks/player/usePlaybackProjection";
 import { toggleApplicationDeveloperTools } from "@/lib/shortcuts/developerTools";
 import { toggleApplicationFullscreen } from "@/lib/shortcuts/fullscreen";
 import { getCommentHref } from "@/lib/comment/commentResource";
 import { getDesktopPlaybackWallpaperToggleUpdate } from "@/lib/desktopPlaybackWallpaper/toggle";
+import { translate } from "@/lib/i18n";
 import { runtime } from "@/lib/runtime";
+import { useI18nStore } from "@/store/module/i18n";
 import { usePlayerStore } from "@/store/module/player";
+import { collectTracksToScratchpad, useScratchpadStore } from "@/store/module/scratchpad";
 import { useUiStore } from "@/store/module/ui";
 import { useSearchStore } from "@/store/module/search";
 import { useUpdatesStore } from "@/store/module/updates";
@@ -106,6 +111,33 @@ export function useShortcutActionContext(
         toggleSidebar: () => useUiStore.getState().toggleSidebar(),
         toggleQueue: () => useUiStore.getState().toggleQueue(),
         toggleNowPlayingPanel: () => useUiStore.getState().toggleNowPlayingPanel(),
+        toggleScratchpad: () => {
+          const ui = useUiStore.getState();
+          const scratchpad = useScratchpadStore.getState();
+          const canShowPanel =
+            typeof window !== "undefined" &&
+            window.matchMedia(NOW_PLAYING_PANEL_MEDIA_QUERY).matches;
+          if (!canShowPanel) {
+            if (scratchpad.workspaceOpen) scratchpad.closeWorkspace();
+            else scratchpad.openWorkspace("notes");
+            return;
+          }
+          if (
+            ui.isNowPlayingPanelOpen &&
+            !ui.isQueueOpen &&
+            ui.nowPlayingPanelTab === "scratchpad"
+          ) {
+            ui.setNowPlayingPanelTab("overview");
+            return;
+          }
+          ui.setIsNowPlayingPanelOpen(true);
+          ui.setNowPlayingPanelTab("scratchpad");
+        },
+        openScratchpadWorkspace: () => {
+          const scratchpad = useScratchpadStore.getState();
+          if (scratchpad.workspaceOpen) scratchpad.closeWorkspace();
+          else scratchpad.openWorkspace("overview");
+        },
         toggleShortcutHelp: () => {
           const ui = useUiStore.getState();
           ui.setIsShortcutHelpOpen(!ui.isShortcutHelpOpen);
@@ -127,9 +159,8 @@ export function useShortcutActionContext(
       },
       audio: {
         toggleAudioSettings: () => {
-          const eq = useAudioEqualizerStore.getState();
-          if (eq.isDialogOpen) eq.closeDialog();
-          else eq.openDialog("quality");
+          const { settingsSurface, setSettingsSurface } = useAudioEqualizerStore.getState();
+          setSettingsSurface(settingsSurface === null ? "quality" : null);
         },
         toggleAudioOutputDevice: () => useAudioOutputStore.getState().togglePopover(),
       },
@@ -198,6 +229,15 @@ export function useShortcutActionContext(
                 song.voiceId ?? song.id,
               ),
             );
+        },
+        collectCurrentToScratchpad: () => {
+          const current = usePlayerStore.getState().currentTrack;
+          const locale = useI18nStore.getState().locale;
+          if (!current) {
+            toast.info(translate(locale, "nowPlaying.empty.title"));
+            return;
+          }
+          collectTracksToScratchpad([current], { label: translate(locale, "nowPlaying.title") });
         },
       },
       updates: { openWhatsNew: () => useUpdatesStore.getState().open() },

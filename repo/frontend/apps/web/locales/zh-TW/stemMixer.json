@@ -1,0 +1,22 @@
+{
+  "title": "分軌調音台",
+  "hint": "鼓、貝斯、其他、人聲可分別調整音量",
+  "stem.drums": "鼓",
+  "stem.bass": "貝斯",
+  "stem.other": "其他",
+  "stem.vocals": "人聲",
+  "preset.reset": "原樣",
+  "preset.karaoke": "伴奏",
+  "preset.vocals": "只聽人聲",
+  "status.off": "開啟後用 GPU 即時分離正在播放的歌曲，尚未分離的地方播放原曲。",
+  "status.waiting": "等待播放",
+  "status.loadingModel": "正在載入分軌模型",
+  "status.separating": "正在分離",
+  "status.ready": "分軌已生效",
+  "status.failed": "無法分離這首歌，正在播放原曲",
+  "status.notFollowing": "分軌目前無法跟隨播放，正在播放原曲",
+  "status.tooLong": "這首歌超過 20 分鐘，不分離",
+  "block.noGpu": "這台裝置需要支援 WebGPU 和 AudioWorklet。",
+  "block.tooSlow": "這台裝置的 GPU 分離過慢，本次執行已停用。",
+  "toggle": "分軌調音台"
+}

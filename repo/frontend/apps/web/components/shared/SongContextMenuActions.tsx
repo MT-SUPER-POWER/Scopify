@@ -1,5 +1,5 @@
 "use client";
-import { Heart, HeartOff, ListMusic, ListPlus, Pause, Play } from "lucide-react";
+import { Heart, HeartOff, ListMusic, ListPlus, NotebookPen, Pause, Play } from "lucide-react";
 import {
   ContextMenuContent,
   ContextMenuGroup,
@@ -26,6 +26,7 @@ export function SongContextMenuActions(actions: SongContextMenuActionsProps) {
     handlePlay,
     handleLike,
     handleAddToQueue,
+    handleAddToScratchpad,
   } = model;
   const {
     isContextMenuOpen,
@@ -65,6 +66,12 @@ export function SongContextMenuActions(actions: SongContextMenuActionsProps) {
                   : t("contextMenu.addToQueue")}
               </ContextMenuItem>
             )}
+            <ContextMenuItem onSelect={handleAddToScratchpad}>
+              <NotebookPen className="mr-2 size-4" />
+              {isMulti
+                ? t("contextMenu.addSelectedToScratchpad", { count: targetSongs.length })
+                : t("contextMenu.addToScratchpad")}
+            </ContextMenuItem>
             {!isMulti && song.voiceId === undefined && onSimilarSongs && (
               <ContextMenuItem onSelect={() => requestAnimationFrame(onSimilarSongs)}>
                 <ListMusic className="mr-2 size-4" />

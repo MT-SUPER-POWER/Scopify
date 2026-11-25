@@ -1,6 +1,7 @@
 import type { MotionValue } from "framer-motion";
 import type { RefObject } from "react";
 
+import type { PlayerTrack } from "@/types/player/model";
 import type { PlaylistLatticeProps } from "@/types/playlist/latticeComponents";
 
 export type RadioBrowseRange = {
@@ -42,6 +43,11 @@ export interface RadioWallDrag {
   horizontal: boolean;
 }
 
+export interface RadioRedactionWidths {
+  artist: number;
+  title: number;
+}
+
 export interface RadioWallCardProps {
   slot: RadioWallSlot;
   metrics: RadioWallMetrics;
@@ -49,6 +55,12 @@ export interface RadioWallCardProps {
   track: PlaylistLatticeProps["tracks"][number] | null;
   centered: boolean;
   current: boolean;
+  playing: boolean;
   faceDown: boolean;
+  reducedMotion: boolean;
   showLyrics: boolean;
+  playlistId?: number | string | null;
+  onPlay?: () => void;
+  onRemoveFromQueue?: () => void;
+  onDislikeTrack?: (track: PlayerTrack) => void;
 }

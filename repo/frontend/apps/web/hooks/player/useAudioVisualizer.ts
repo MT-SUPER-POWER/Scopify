@@ -2,6 +2,7 @@
 
 import { type MutableRefObject, useEffect, useRef } from "react";
 
+import { useStemMixer } from "@/hooks/player/useStemMixer";
 import {
   applyAudioEqualizerSettings,
   connectAudioEqualizerGraph,
@@ -23,6 +24,7 @@ import {
 import { useAudioEqualizerStore } from "@/store/module/audioEqualizer";
 import { usePlayerStore } from "@/store/module/player";
 import type { AudioFeatureSource } from "@/types/audio/featurePublisher";
+import type { StemMixerAudioGraph } from "@/types/audio/stemMixer";
 import type { MusicReplayGain } from "@scopify/music-domain/playback";
 import type { ReplayGainMode } from "@/types/player/model";
 
@@ -50,6 +52,8 @@ export function useAudioVisualizer(audioRef: MutableRefObject<HTMLAudioElement |
   const replayGainNodeRef = useRef<GainNode | null>(null);
   const mediaSourceRef = useRef<MediaElementAudioSourceNode | null>(null);
   const contextRef = useRef<AudioContext | null>(null);
+  const stemMixerGraphRef = useRef<StemMixerAudioGraph | null>(null);
+  useStemMixer(audioRef, contextRef, stemMixerGraphRef);
   const equalizerSettings = useAudioEqualizerStore((state) => state.settings);
   const replayGainMode = usePlayerStore((state) => state.replayGainMode);
   const currentReplayGain = usePlayerStore((state) => state.currentReplayGain);
@@ -102,6 +106,7 @@ export function useAudioVisualizer(audioRef: MutableRefObject<HTMLAudioElement |
           );
           analyser.connect(context.destination);
           analyserRef.current = analyser;
+          stemMixerGraphRef.current = { source, replayGain: replayGainNode };
           audioFeatureSource = createAnalyserAudioFeatureSource({
             analyser,
             isPaused: () => audio.paused,

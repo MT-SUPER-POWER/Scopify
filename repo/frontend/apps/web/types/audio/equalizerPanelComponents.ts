@@ -1,30 +1,41 @@
-import type { CSSProperties, ReactNode } from "react";
+import type { ReactNode } from "react";
 
-import type { AudioEffectControl } from "@/types/audio/equalizer";
-
-export interface AudioEqualizerPanelProps {
-  /** Overrides the theme's --primary as the accent (Folia themes). */
-  accentColor?: string;
-  className?: string;
-  /** Styles the preset menu, which portals out of the panel's surface. */
-  selectContentClassName?: string;
-  selectContentStyle?: CSSProperties;
-  style?: CSSProperties;
-}
+import type { AudioEffectId, AudioEffectSettings } from "./equalizer";
 
 export interface AudioEqualizerPanelSectionProps {
-  action?: ReactNode;
+  hint?: string;
+  announceHint?: boolean;
+  grow?: boolean;
   children: ReactNode;
-  /** Quiet text before the action, e.g. the auto headroom. */
-  meta?: ReactNode;
   title: string;
 }
 
-export interface AudioEffectSliderProps {
-  control: AudioEffectControl;
-  label: string;
-  resetLabel: string;
-  value: number;
-  onChange: (value: number) => void;
+export interface AudioEqualizerBandsProps {
+  gains: number[];
+  onBandChange: (index: number, value: number) => void;
   onCommit: () => void;
+}
+
+export interface AudioEqualizerEffectsProps {
+  effects: AudioEffectSettings;
+  onEffectChange: (id: AudioEffectId, value: number) => void;
+  onCommit: () => void;
+}
+
+export interface AudioFaderScale {
+  min: number;
+  max: number;
+  step: number;
+}
+
+export interface AudioFaderProps {
+  value: number;
+  min: number;
+  max: number;
+  step?: number;
+  label: string;
+  valueText: string;
+  onPreview: (value: number) => void;
+  onCommit: () => void;
+  glide?: boolean;
 }

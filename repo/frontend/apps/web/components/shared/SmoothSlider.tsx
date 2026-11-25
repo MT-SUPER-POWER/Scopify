@@ -23,6 +23,7 @@ export const SmoothSlider = ({
   trackThickness = 4,
   thumbSize = 12,
   rangeMarkers = [],
+  chorusMarkerFraction = null,
   markerAppearance = "pin",
   markerColor = "var(--primary)",
   className = "",
@@ -236,6 +237,17 @@ export const SmoothSlider = ({
           orientation={orientation}
           ranges={rangeMarkers}
         />
+        {!isVertical && chorusMarkerFraction !== null && chorusMarkerFraction !== undefined && (
+          <span
+            aria-hidden
+            data-chorus-marker=""
+            className="pointer-events-none absolute top-1/2 z-10 h-2.5 w-0.5 -translate-x-1/2 -translate-y-1/2 rounded-full opacity-55"
+            style={{
+              backgroundColor: currentFillColor,
+              left: `${(chorusMarkerFraction * 100).toFixed(3)}%`,
+            }}
+          />
+        )}
       </div>
 
       {/* 滑块：可拖动，体验与轨道一致 */}

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useId, useRef } from "react";
+import { useCallback, useEffect, useId, useRef } from "react";
 import { useFlipReveal } from "@/hooks/playlist/useFlipReveal";
 import { useLatticeWall } from "@/hooks/playlist/useLatticeWall";
 import { usePlaylistViewPlayback } from "@/hooks/playlist/usePlaylistViewPlayback";
@@ -8,6 +8,7 @@ import { useWallDoubleClick } from "@/hooks/playlist/useWallDoubleClick";
 import { playerTrackKey } from "@/lib/player/trackIdentity";
 import { overlaps, toBounds } from "@/lib/playlist/lattice/layout";
 import { useLatticePreferences } from "@/store/module/lattice";
+import { usePlayerStore } from "@/store/module/player";
 import { useTranslation } from "react-i18next";
 
 import type { PlaylistLatticeProps } from "@/types/playlist/latticeComponents";
@@ -31,12 +32,18 @@ export default function PlaylistLattice({
   const followCurrent = useLatticePreferences((state) => state.followCurrent);
   const lightsOff = useLatticePreferences((state) => state.lightsOff);
   const currentNumberOnly = useLatticePreferences((state) => state.currentNumberOnly);
-  const { currentIndex, playAt } = usePlaylistViewPlayback({
+  const { currentIndex, isPlaying, playAt } = usePlaylistViewPlayback({
     tracks,
     sourceId,
     onTrackPlay,
     playbackQueue,
   });
+  const removeFromQueue = useCallback(
+    (index: number) => {
+      if (playbackQueue) usePlayerStore.getState().removeQueueItem(index);
+    },
+    [playbackQueue],
+  );
   const doubleClick = useWallDoubleClick();
   const { bounds, locate } = wall;
   const flip = useFlipReveal(wall.fieldRef, wall.instances, tracks.length > 0, (instance) => {
@@ -64,7 +71,7 @@ export default function PlaylistLattice({
       data-playlist-view=""
       ref={rootRef}
       tabIndex={-1}
-      className="group/lattice @container absolute inset-0 isolate z-15 overflow-hidden bg-card text-foreground outline-none motion-reduce:**:transition-none"
+      className="group/lattice @container absolute inset-0 isolate z-15 overflow-hidden bg-card text-foreground transition-[box-shadow] duration-[260ms] ease-out outline-none data-[lights-off=true]:shadow-[inset_0_0_0_100vmax_rgb(0_0_0/92%)] motion-reduce:transition-none motion-reduce:**:transition-none"
       data-lights-off={lightsOff && currentIndex >= 0}
       data-current-number-only={currentNumberOnly}
       aria-label={t("playlist.view.lattice")}
@@ -119,6 +126,9 @@ export default function PlaylistLattice({
                 onFocus={wall.focus}
                 expanded={wall.selected?.instanceId === instance.instanceId}
                 current={instance.queueIndex === currentIndex}
+                playing={instance.queueIndex === currentIndex && isPlaying}
+                playlistId={playbackQueue ? null : sourceId}
+                onRemoveFromQueue={playbackQueue ? removeFromQueue : undefined}
                 onSelect={wall.select}
                 onPlay={playAt}
                 onDislikeTrack={onDislikeTrack}

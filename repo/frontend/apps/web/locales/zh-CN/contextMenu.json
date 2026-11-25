@@ -2,6 +2,8 @@
   "play": "播放",
   "pause": "暂停",
   "addToQueue": "添加到播放队列",
+  "addToScratchpad": "加入速记簿",
+  "addSelectedToScratchpad": "将所选 ({{count}} 首) 加入速记簿",
   "addToLiked": "添加到喜欢",
   "removeFromLiked": "从喜欢中移除",
   "addToPlaylist": "添加到歌单",

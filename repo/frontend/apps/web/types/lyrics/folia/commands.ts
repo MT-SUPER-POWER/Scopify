@@ -13,6 +13,7 @@ export type FoliaLyricToggleSetting =
   | "hideTranslationSubtitle"
   | "showHarmonySubtitle"
   | "harmonySubtitleBackground"
+  | "progressBarChorusMarker"
   | "subtitleOverlayBackground";
 
 export type FoliaCommandAction =

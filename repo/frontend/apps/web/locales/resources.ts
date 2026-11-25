@@ -29,6 +29,7 @@ import zhCN_playlist from "./zh-CN/playlist.json";
 import zhCN_privateMessages from "./zh-CN/privateMessages.json";
 import zhCN_profile from "./zh-CN/profile.json";
 import zhCN_queue from "./zh-CN/queue.json";
+import zhCN_scratchpad from "./zh-CN/scratchpad.json";
 import zhCN_search from "./zh-CN/search.json";
 import zhCN_settings from "./zh-CN/settings.json";
 import zhCN_shortcuts from "./zh-CN/shortcuts.json";
@@ -36,6 +37,7 @@ import zhCN_sidebar from "./zh-CN/sidebar.json";
 import zhCN_social from "./zh-CN/social.json";
 import zhCN_song from "./zh-CN/song.json";
 import zhCN_songResources from "./zh-CN/songResources.json";
+import zhCN_stemMixer from "./zh-CN/stemMixer.json";
 import zhCN_subtitleControl from "./zh-CN/subtitleControl.json";
 import zhCN_subtitlePalette from "./zh-CN/subtitlePalette.json";
 import zhCN_subtitlePreview from "./zh-CN/subtitlePreview.json";
@@ -78,6 +80,7 @@ import zhTW_playlist from "./zh-TW/playlist.json";
 import zhTW_privateMessages from "./zh-TW/privateMessages.json";
 import zhTW_profile from "./zh-TW/profile.json";
 import zhTW_queue from "./zh-TW/queue.json";
+import zhTW_scratchpad from "./zh-TW/scratchpad.json";
 import zhTW_search from "./zh-TW/search.json";
 import zhTW_settings from "./zh-TW/settings.json";
 import zhTW_shortcuts from "./zh-TW/shortcuts.json";
@@ -85,6 +88,7 @@ import zhTW_sidebar from "./zh-TW/sidebar.json";
 import zhTW_social from "./zh-TW/social.json";
 import zhTW_song from "./zh-TW/song.json";
 import zhTW_songResources from "./zh-TW/songResources.json";
+import zhTW_stemMixer from "./zh-TW/stemMixer.json";
 import zhTW_subtitleControl from "./zh-TW/subtitleControl.json";
 import zhTW_subtitlePalette from "./zh-TW/subtitlePalette.json";
 import zhTW_subtitlePreview from "./zh-TW/subtitlePreview.json";
@@ -127,6 +131,7 @@ import enUS_playlist from "./en-US/playlist.json";
 import enUS_privateMessages from "./en-US/privateMessages.json";
 import enUS_profile from "./en-US/profile.json";
 import enUS_queue from "./en-US/queue.json";
+import enUS_scratchpad from "./en-US/scratchpad.json";
 import enUS_search from "./en-US/search.json";
 import enUS_settings from "./en-US/settings.json";
 import enUS_shortcuts from "./en-US/shortcuts.json";
@@ -134,6 +139,7 @@ import enUS_sidebar from "./en-US/sidebar.json";
 import enUS_social from "./en-US/social.json";
 import enUS_song from "./en-US/song.json";
 import enUS_songResources from "./en-US/songResources.json";
+import enUS_stemMixer from "./en-US/stemMixer.json";
 import enUS_subtitleControl from "./en-US/subtitleControl.json";
 import enUS_subtitlePalette from "./en-US/subtitlePalette.json";
 import enUS_subtitlePreview from "./en-US/subtitlePreview.json";
@@ -180,6 +186,7 @@ export const resources = {
     privateMessages: zhCN_privateMessages,
     profile: zhCN_profile,
     queue: zhCN_queue,
+    scratchpad: zhCN_scratchpad,
     search: zhCN_search,
     settings: zhCN_settings,
     shortcuts: zhCN_shortcuts,
@@ -187,6 +194,7 @@ export const resources = {
     social: zhCN_social,
     song: zhCN_song,
     songResources: zhCN_songResources,
+    stemMixer: zhCN_stemMixer,
     subtitleControl: zhCN_subtitleControl,
     subtitlePalette: zhCN_subtitlePalette,
     subtitlePreview: zhCN_subtitlePreview,
@@ -231,6 +239,7 @@ export const resources = {
     privateMessages: zhTW_privateMessages,
     profile: zhTW_profile,
     queue: zhTW_queue,
+    scratchpad: zhTW_scratchpad,
     search: zhTW_search,
     settings: zhTW_settings,
     shortcuts: zhTW_shortcuts,
@@ -238,6 +247,7 @@ export const resources = {
     social: zhTW_social,
     song: zhTW_song,
     songResources: zhTW_songResources,
+    stemMixer: zhTW_stemMixer,
     subtitleControl: zhTW_subtitleControl,
     subtitlePalette: zhTW_subtitlePalette,
     subtitlePreview: zhTW_subtitlePreview,
@@ -282,6 +292,7 @@ export const resources = {
     privateMessages: enUS_privateMessages,
     profile: enUS_profile,
     queue: enUS_queue,
+    scratchpad: enUS_scratchpad,
     search: enUS_search,
     settings: enUS_settings,
     shortcuts: enUS_shortcuts,
@@ -289,6 +300,7 @@ export const resources = {
     social: enUS_social,
     song: enUS_song,
     songResources: enUS_songResources,
+    stemMixer: enUS_stemMixer,
     subtitleControl: enUS_subtitleControl,
     subtitlePalette: enUS_subtitlePalette,
     subtitlePreview: enUS_subtitlePreview,

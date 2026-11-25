@@ -21,7 +21,7 @@ import {
   type FoliaSongLike,
 } from "@scopify/ui/scopify/components/folia-panel/panel-shell";
 
-import { FoliaAudioEqualizerDialog } from "@/components/lyrics/stagePanel/FoliaAudioEqualizerDialog";
+import { AudioEffectsModal } from "@/components/player/AudioEffectsModal";
 import { FoliaLyricMatchDialog } from "@/components/lyrics/lyricMatch/FoliaLyricMatchDialog";
 import { ShortcutHint } from "@/components/shortcuts/ShortcutHint";
 import {
@@ -204,10 +204,11 @@ export function FoliaStageSettings({
         {activeTab === "quality" ? <FoliaPanelQuality /> : null}
       </FoliaPanelShell>
 
-      <FoliaAudioEqualizerDialog
-        isOpen={isEqualizerOpen}
-        onClose={() => setIsEqualizerOpen(false)}
-        theme={theme}
+      <AudioEffectsModal
+        open={isEqualizerOpen}
+        onOpenChange={setIsEqualizerOpen}
+        daylight={isDaylight}
+        colors={theme}
       />
 
       <FoliaLyricMatchDialog

@@ -38,6 +38,13 @@ const ui = {
   toggleSidebar: mock(() => {}),
   toggleQueue: mock(() => {}),
   toggleNowPlayingPanel: mock(() => {}),
+  setIsNowPlayingPanelOpen: mock(() => {}),
+  setNowPlayingPanelTab: mock(() => {}),
+};
+const scratchpad = {
+  workspaceOpen: false,
+  openWorkspace: mock(() => {}),
+  closeWorkspace: mock(() => {}),
 };
 const folia = {
   stagePanelOpen: false,
@@ -93,6 +100,13 @@ mock.module("@/store/module/lattice", () => ({
   useLatticePreferences: { getState: () => ({}) },
 }));
 mock.module("@/lib/runtime", () => ({ runtime: desktop }));
+mock.module("@/store/module/scratchpad", () => ({
+  useScratchpadStore: { getState: () => scratchpad },
+  collectTracksToScratchpad: mock(() => ({ added: 0, skipped: 0, addedKeys: [] })),
+}));
+mock.module("@/store/module/i18n", () => ({
+  useI18nStore: { getState: () => ({ locale: "zh-CN" }) },
+}));
 mock.module("@/lib/shortcuts/fullscreen", () => ({ toggleApplicationFullscreen() {} }));
 mock.module("@/lib/shortcuts/developerTools", () => ({ toggleApplicationDeveloperTools() {} }));
 

@@ -1,102 +1,95 @@
 "use client";
 
 import { SlidersHorizontal, Waves, X } from "lucide-react";
+import { useTheme } from "next-themes";
+import { useRef } from "react";
+import { useTranslation } from "react-i18next";
+import { PopoverArrow } from "@scopify/ui/scopify/components/popover-arrow";
 
-import { AudioEqualizerPanel } from "@/components/player/AudioEqualizerPanel";
+import { AudioEffectsModal } from "@/components/player/AudioEffectsModal";
 import { AudioQualityDialog } from "@/components/player/AudioQualityDialog";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { cn } from "@/lib/utils";
+import { PLAYBAR_POPOVER_PLACEMENT } from "@/constants/playerBar";
 import { useAudioEqualizerStore } from "@/store/module/audioEqualizer";
-import { useTranslation } from "react-i18next";
-
-import type {
-  AudioSettingsDialogProps,
-  AudioSettingsTabButtonProps,
-} from "@/types/audio/settingsDialogComponents";
+import type { AudioSettingsDialogProps } from "@/types/audio/settingsDialogComponents";
 
 export function AudioSettingsDialog({ children }: AudioSettingsDialogProps) {
   const { t } = useTranslation();
-  const isOpen = useAudioEqualizerStore((state) => state.isDialogOpen);
-  const activeTab = useAudioEqualizerStore((state) => state.dialogTab);
-  const closeDialog = useAudioEqualizerStore((state) => state.closeDialog);
-  const openDialog = useAudioEqualizerStore((state) => state.openDialog);
-  const setActiveTab = useAudioEqualizerStore((state) => state.setDialogTab);
+  const { resolvedTheme } = useTheme();
+  const surface = useAudioEqualizerStore((state) => state.settingsSurface);
+  const setSurface = useAudioEqualizerStore((state) => state.setSettingsSurface);
+  const trigger = useRef<HTMLButtonElement>(null);
 
   return (
-    <Popover
-      open={isOpen}
-      onOpenChange={(nextOpen) => {
-        if (nextOpen) openDialog("quality");
-        else closeDialog();
-      }}
-    >
-      <PopoverTrigger asChild>{children}</PopoverTrigger>
-      <PopoverContent
-        align="end"
-        side="top"
-        sideOffset={10}
-        collisionPadding={16}
-        className="w-md max-w-[calc(100vw-2rem)] overflow-hidden border bg-popover p-0 text-popover-foreground shadow-floating"
-        onOpenAutoFocus={(event) => event.preventDefault()}
+    <>
+      <Popover
+        open={surface === "quality"}
+        onOpenChange={(open) => {
+          if (open) setSurface("quality");
+          else if (useAudioEqualizerStore.getState().settingsSurface === "quality")
+            setSurface(null);
+        }}
       >
-        <div className="flex items-center gap-2 px-4 pt-3">
-          <div className="grid flex-1 grid-cols-2 rounded-lg bg-muted/60 p-0.5" role="tablist">
-            <AudioSettingsTabButton
-              active={activeTab === "quality"}
-              icon={<Waves className="size-3.5" />}
-              label={t("audioSettings.qualityTab")}
-              onClick={() => setActiveTab("quality")}
-            />
-            <AudioSettingsTabButton
-              active={activeTab === "equalizer"}
-              icon={<SlidersHorizontal className="size-3.5" />}
-              label={t("audioSettings.equalizerTab")}
-              onClick={() => setActiveTab("equalizer")}
-            />
-          </div>
-          <button
-            aria-label={t("audioSettings.close")}
-            className="shrink-0 rounded-full p-1.5 text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
-            onClick={closeDialog}
-            type="button"
-          >
-            <X className="size-4" />
-          </button>
-        </div>
-
-        <ScrollArea
-          className="min-h-0 overflow-hidden"
-          viewportClassName="h-auto max-h-[min(34rem,calc(80dvh-3rem),calc(var(--radix-popover-content-available-height)-3rem))] overscroll-contain"
+        <PopoverTrigger ref={trigger} asChild>
+          {children}
+        </PopoverTrigger>
+        <PopoverContent
+          {...PLAYBAR_POPOVER_PLACEMENT}
+          aria-label={t("audioSettings.title")}
+          className="w-md max-w-[calc(100vw-2rem)] border bg-popover p-0 text-popover-foreground shadow-floating"
+          onCloseAutoFocus={(event) => {
+            if (useAudioEqualizerStore.getState().settingsSurface === "equalizer") {
+              event.preventDefault();
+            }
+          }}
         >
-          <div className="min-w-0 px-4 py-3" role="tabpanel">
-            {activeTab === "quality" ? <AudioQualityDialog /> : null}
-            {activeTab === "equalizer" ? (
-              <AudioEqualizerPanel selectContentStyle={{ zIndex: 2100 }} />
-            ) : null}
+          <div className="flex items-center gap-2 px-4 pt-3">
+            <div className="grid flex-1 grid-cols-2 rounded-lg bg-muted/60 p-0.5">
+              <span className="flex h-8 items-center justify-center gap-1.5 rounded-md bg-popover text-xs font-medium text-foreground shadow-sm">
+                <Waves className="size-3.5" />
+                {t("audioSettings.qualityTab")}
+              </span>
+              <button
+                type="button"
+                aria-haspopup="dialog"
+                className="flex h-8 items-center justify-center gap-1.5 rounded-md text-xs font-medium text-muted-foreground transition-colors hover:text-foreground"
+                onClick={() => setSurface("equalizer")}
+              >
+                <SlidersHorizontal className="size-3.5" />
+                {t("audioSettings.equalizerTab")}
+              </button>
+            </div>
+            <button
+              type="button"
+              aria-label={t("ui.close")}
+              className="shrink-0 rounded-full p-1.5 text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
+              onClick={() => setSurface(null)}
+            >
+              <X className="size-4" />
+            </button>
           </div>
-        </ScrollArea>
-      </PopoverContent>
-    </Popover>
-  );
-}
-
-function AudioSettingsTabButton({ active, icon, label, onClick }: AudioSettingsTabButtonProps) {
-  return (
-    <button
-      type="button"
-      aria-selected={active}
-      className={cn(
-        "flex h-8 items-center justify-center gap-1.5 rounded-md text-xs font-medium transition-all",
-        active
-          ? "bg-popover text-foreground shadow-sm"
-          : "text-muted-foreground hover:text-foreground",
-      )}
-      onClick={onClick}
-      role="tab"
-    >
-      {icon}
-      {label}
-    </button>
+          <ScrollArea
+            className="min-h-0 overflow-hidden"
+            viewportClassName="h-auto max-h-[min(34rem,calc(80dvh-3rem),calc(var(--radix-popover-content-available-height)-3rem))] overscroll-contain"
+          >
+            <div className="min-w-0 px-4 py-3">
+              <AudioQualityDialog />
+            </div>
+            <PopoverArrow />
+          </ScrollArea>
+        </PopoverContent>
+      </Popover>
+      <AudioEffectsModal
+        open={surface === "equalizer"}
+        onOpenChange={(open) => {
+          if (!open && useAudioEqualizerStore.getState().settingsSurface === "equalizer") {
+            setSurface(null);
+          }
+        }}
+        daylight={resolvedTheme === "light"}
+        returnFocusRef={trigger}
+      />
+    </>
   );
 }

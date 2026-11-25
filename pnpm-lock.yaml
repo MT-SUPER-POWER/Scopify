@@ -753,6 +753,9 @@ importers:
       '@types/three':
         specifier: ^0.185.1
         version: 0.185.4
+      '@webgpu/types':
+        specifier: 0.1.74
+        version: 0.1.74
       chokidar-cli:
         specifier: 3.0.0
         version: 3.0.0

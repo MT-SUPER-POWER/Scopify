@@ -1,6 +1,15 @@
 "use client";
 
-import { CloudOff, Download, Link2, Link2Off, ListPlus, Pause, Play } from "lucide-react";
+import {
+  CloudOff,
+  Download,
+  Link2,
+  Link2Off,
+  ListPlus,
+  NotebookPen,
+  Pause,
+  Play,
+} from "lucide-react";
 import { useState } from "react";
 import { CreatePlaylistFromTracksDialog } from "@/components/shared/CreatePlaylistFromTracksDialog";
 import { SongPlaylistMenuItems } from "@/components/shared/SongPlaylistMenuItems";
@@ -52,7 +61,8 @@ function CloudSongContextMenuContent({
   ...actions
 }: SongContextMenuActionsProps & Pick<CloudSongContextMenuProps, "cloudActions">) {
   const model = useSongContextMenuActions(actions);
-  const { t, isMulti, targetSongs, isLogin, handlePlay, handleAddToQueue } = model;
+  const { t, isMulti, targetSongs, isLogin, handlePlay, handleAddToQueue, handleAddToScratchpad } =
+    model;
   const { isActive, isPlaying, song, isContextMenuOpen, isCreateDialogOpen } = actions;
   const isMatched = isCloudSongMatched(song);
 
@@ -74,6 +84,12 @@ function CloudSongContextMenuContent({
             <ContextMenuItem onSelect={handleAddToQueue}>
               <ListPlus className="mr-2 size-4" />
               {isMulti ? `添加所选 (${targetSongs.length} 首) 到队列` : t("contextMenu.addToQueue")}
+            </ContextMenuItem>
+            <ContextMenuItem onSelect={handleAddToScratchpad}>
+              <NotebookPen className="mr-2 size-4" />
+              {isMulti
+                ? t("contextMenu.addSelectedToScratchpad", { count: targetSongs.length })
+                : t("contextMenu.addToScratchpad")}
             </ContextMenuItem>
           </ContextMenuGroup>
           {isLogin && (

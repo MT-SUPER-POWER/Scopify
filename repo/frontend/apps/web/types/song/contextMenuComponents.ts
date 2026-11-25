@@ -1,6 +1,18 @@
 import type { ReactNode } from "react";
 
+import type { PlayerTrack } from "@/types/player/model";
 import type { SongDetail } from "@/types/song/api";
+
+export interface PlayerTrackContextMenuProps {
+  children: ReactNode;
+  track: PlayerTrack;
+  isActive: boolean;
+  isPlaying: boolean;
+  onPlay: () => void;
+  playlistId?: number | string | null;
+  onRemoveFromQueue?: () => void;
+  onDislikeTrack?: (track: PlayerTrack) => void;
+}
 
 export interface SongContextMenuProps {
   children: ReactNode;

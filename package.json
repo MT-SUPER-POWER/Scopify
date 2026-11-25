@@ -36,7 +36,7 @@
     "check:format": "prettier --check .",
     "check:architecture": "bun scripts/check-architecture.ts",
     "check:packages": "bun scripts/check-package-quality.ts",
-    "check:i18n": "x18n check",
+    "check:i18n": "x18n check --strict",
     "check:types": "turbo run typecheck",
     "typecheck": "turbo run typecheck",
     "lint:packages": "bun scripts/check-package-quality.ts",
@@ -44,6 +44,7 @@
     "test:architecture": "bun test scripts/test/check-architecture.test.ts",
     "test": "bun test scripts/test",
     "lint:architecture": "bun scripts/check-architecture.ts",
+    "lint:i18n": "x18n check --strict",
     "lint:staged": "lint-staged",
     "lint": "turbo run lint --filter=\"@scopify/*\"",
     "format": "prettier --write ."

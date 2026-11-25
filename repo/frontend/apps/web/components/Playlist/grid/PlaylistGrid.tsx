@@ -6,6 +6,7 @@ import { useGridWall } from "@/hooks/playlist/useGridWall";
 import { usePlaylistViewPlayback } from "@/hooks/playlist/usePlaylistViewPlayback";
 import { computeGridPlacement } from "@/lib/playlist/grid/falloff";
 import { useLatticePreferences } from "@/store/module/lattice";
+import { usePlayerStore } from "@/store/module/player";
 import { useTranslation } from "react-i18next";
 
 import type { GridCell } from "@/types/playlist/grid";
@@ -56,11 +57,11 @@ export default function PlaylistGrid({
     },
     [panToCell, playAt, tracks],
   );
-  const activate = useCallback(
+  const removeFromQueue = useCallback(
     (index: number) => {
-      playAt(index);
+      if (playbackQueue) usePlayerStore.getState().removeQueueItem(index);
     },
-    [playAt],
+    [playbackQueue],
   );
   useEffect(() => {
     fieldRef.current?.focus({ preventScroll: true });
@@ -79,11 +80,11 @@ export default function PlaylistGrid({
     <section
       data-playlist-view=""
       tabIndex={-1}
-      className="group/grid @container absolute inset-0 isolate z-15 overflow-hidden bg-card text-foreground outline-none motion-reduce:**:transition-none"
+      className="group/grid @container absolute inset-0 isolate z-15 overflow-hidden bg-card text-foreground transition-[box-shadow] duration-[260ms] ease-out outline-none data-[lights-off=true]:shadow-[inset_0_0_0_100vmax_rgb(0_0_0/92%)] motion-reduce:transition-none motion-reduce:**:transition-none"
       data-lights-off={lightsOff}
       aria-label={t("playlist.view.grid")}
       aria-describedby={hintId}
-      onKeyDown={(event) => wall.onKeyDown(event, onClose, activate)}
+      onKeyDown={(event) => wall.onKeyDown(event, onClose, playAt)}
     >
       <PlaylistViewTools
         revealing={flip.toolsFade}
@@ -126,6 +127,8 @@ export default function PlaylistGrid({
                 register={wall.register}
                 onSelect={select}
                 onPlay={playAt}
+                playlistId={playbackQueue ? null : sourceId}
+                onRemoveFromQueue={playbackQueue ? removeFromQueue : undefined}
                 onDislikeTrack={onDislikeTrack}
                 flipPlan={flip.plan}
               />
@@ -136,7 +139,7 @@ export default function PlaylistGrid({
       {/* Vignette that sells the concave screen: the sides fall into shadow, the middle stays lit. */}
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-0 z-1 bg-[radial-gradient(ellipse_70%_75%_at_50%_50%,transparent_45%,color-mix(in_oklab,var(--card)_85%,transparent)_100%)]"
+        className="pointer-events-none absolute inset-0 z-1 bg-[radial-gradient(ellipse_70%_75%_at_50%_50%,transparent_45%,color-mix(in_oklab,var(--card)_85%,transparent)_100%)] group-data-[lights-off=true]/grid:bg-[radial-gradient(ellipse_70%_75%_at_50%_50%,transparent_45%,rgb(0_0_0/85%)_100%)]"
       />
       {tracks.length === 0 && (
         <div className="absolute inset-x-0 top-14 bottom-0 grid place-content-center text-muted-foreground">

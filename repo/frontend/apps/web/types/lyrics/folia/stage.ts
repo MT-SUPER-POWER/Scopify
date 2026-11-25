@@ -48,6 +48,7 @@ export interface FoliaStageSettings {
   hideTranslationSubtitle: boolean;
   lyricOffsetMs: number;
   mode: LyricVisualizerMode;
+  progressBarChorusMarker: boolean;
   showSubtitleTranslation: boolean;
   sonnetPerformanceWarningDismissed: boolean;
   subtitleContentMode: SubtitleContentMode;

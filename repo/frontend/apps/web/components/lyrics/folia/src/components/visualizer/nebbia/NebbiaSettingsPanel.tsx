@@ -27,6 +27,8 @@ import {
   type NebbiaFadeStyle,
   type NebbiaLayout,
   type NebbiaNumberKey,
+  type NebbiaRain,
+  type NebbiaSceneryPart,
   type NebbiaTuning,
 } from "./types";
 
@@ -56,6 +58,30 @@ const LAYOUT_LABEL_KEYS: Record<NebbiaLayout, TranslationKey> = {
   badge: "folia.options.nebbiaLayout_badge",
   columns: "folia.options.nebbiaLayout_columns",
   orbit: "folia.options.nebbiaLayout_orbit",
+};
+const SCENERY_LABEL_KEYS: Record<NebbiaSceneryPart, TranslationKey> = {
+  spot: "folia.options.nebbiaScenery_spot",
+  buildings: "folia.options.nebbiaScenery_buildings",
+  lights: "folia.options.nebbiaScenery_lights",
+  cars: "folia.options.nebbiaScenery_cars",
+  road: "folia.options.nebbiaScenery_road",
+};
+const AQUA_SCENERY_LABEL_KEYS: Record<NebbiaSceneryPart, TranslationKey> = {
+  spot: "folia.options.nebbiaAquaScenery_spot",
+  buildings: "folia.options.nebbiaAquaScenery_buildings",
+  lights: "folia.options.nebbiaAquaScenery_lights",
+  cars: "folia.options.nebbiaAquaScenery_cars",
+  road: "folia.options.nebbiaAquaScenery_road",
+};
+const RAIN_LABEL_KEYS: Record<NebbiaRain, TranslationKey> = {
+  slant: "folia.options.nebbiaRain_slant",
+  straight: "folia.options.nebbiaRain_straight",
+  off: "folia.options.nebbiaRain_off",
+};
+const AQUA_RAIN_LABEL_KEYS: Record<NebbiaRain, TranslationKey> = {
+  slant: "folia.options.nebbiaAquaRain_slant",
+  straight: "folia.options.nebbiaAquaRain_straight",
+  off: "folia.options.nebbiaAquaRain_off",
 };
 
 const seconds = (value: number) => `${value.toFixed(1)}s`;
@@ -164,8 +190,17 @@ const NebbiaSettingsPanel: React.FC<VisualizerSettingsPanelProps> = ({
   const drag = { onDragStart: onSliderPointerDown, onDragEnd: onSliderCommit };
   const aquarium = resolved.behind === "aquarium";
   // 开关和雨的文案：水族箱换一套说法
-  const sceneryKey = aquarium ? "folia.options.nebbiaAquaScenery" : "folia.options.nebbiaScenery";
-  const rainKey = aquarium ? "folia.options.nebbiaAquaRain" : "folia.options.nebbiaRain";
+  const sceneryHintKey: TranslationKey = aquarium
+    ? "folia.options.nebbiaAquaSceneryHint"
+    : "folia.options.nebbiaSceneryHint";
+  const sceneryLabelKeys = aquarium ? AQUA_SCENERY_LABEL_KEYS : SCENERY_LABEL_KEYS;
+  const rainLabelKey: TranslationKey = aquarium
+    ? "folia.options.nebbiaAquaRain"
+    : "folia.options.nebbiaRain";
+  const rainHintKey: TranslationKey = aquarium
+    ? "folia.options.nebbiaAquaRainHint"
+    : "folia.options.nebbiaRainHint";
+  const rainOptionLabelKeys = aquarium ? AQUA_RAIN_LABEL_KEYS : RAIN_LABEL_KEYS;
   const sliders = (specs: SliderSpec[]) =>
     specs.map(([key, labelKey, step, format]) => (
       <SliderRow
@@ -209,7 +244,7 @@ const NebbiaSettingsPanel: React.FC<VisualizerSettingsPanelProps> = ({
       controlCardBg={controlCardBg}
       rangeInputClass={rangeInputClass}
     >
-      <Group def={SCENERY_GROUP} foot={t(`${sceneryKey}Hint`)}>
+      <Group def={SCENERY_GROUP} foot={t(sceneryHintKey)}>
         <Row label={t("folia.options.nebbiaBehind")} note={t("folia.options.nebbiaBehindHint")}>
           <Segmented<NebbiaTuning["behind"]>
             value={resolved.behind}
@@ -226,7 +261,7 @@ const NebbiaSettingsPanel: React.FC<VisualizerSettingsPanelProps> = ({
           <ToggleRow
             key={part}
             disabled={resolved.behind === "backdrop" && part !== "spot"}
-            label={t(`${sceneryKey}_${part}`)}
+            label={t(sceneryLabelKeys[part])}
             checked={resolved.scenery.includes(part)}
             onChange={(next) =>
               onTuningChange({
@@ -238,7 +273,7 @@ const NebbiaSettingsPanel: React.FC<VisualizerSettingsPanelProps> = ({
           />
         ))}
         {/* 街景的雨只画在聚光灯光柱里（被照亮的雨丝），聚光灯关着或强度为 0 时这项看不出来；水族箱的细气泡不看聚光灯；雪窗时街景窗外不下雨，这项不管用 */}
-        <Row label={t(rainKey)} note={t(`${rainKey}Hint`)}>
+        <Row label={t(rainLabelKey)} note={t(rainHintKey)}>
           <fieldset
             disabled={
               resolved.behind === "backdrop" ||
@@ -251,7 +286,10 @@ const NebbiaSettingsPanel: React.FC<VisualizerSettingsPanelProps> = ({
           >
             <Segmented<NebbiaTuning["rain"]>
               value={resolved.rain}
-              options={NEBBIA_RAIN.map((rain) => ({ value: rain, label: t(`${rainKey}_${rain}`) }))}
+              options={NEBBIA_RAIN.map((rain) => ({
+                value: rain,
+                label: t(rainOptionLabelKeys[rain]),
+              }))}
               onChange={(rain) => onTuningChange({ rain })}
             />
           </fieldset>

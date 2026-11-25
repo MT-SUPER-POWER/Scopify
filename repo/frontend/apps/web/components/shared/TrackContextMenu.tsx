@@ -9,6 +9,7 @@ import {
   ListPlus,
   MonitorPlay,
   MessageCircle,
+  NotebookPen,
   Pause,
   Play,
   PlusCircle,
@@ -38,6 +39,7 @@ import { getCommentHref } from "@/lib/comment/commentResource";
 import { getSizedImageUrl } from "@/lib/music/imageUrl";
 import { musicQueryKeys } from "@/lib/query/queryKeys";
 import { usePlayerStore } from "@/store";
+import { collectTracksToScratchpad } from "@/store/module/scratchpad";
 import { useTranslation } from "react-i18next";
 
 import type { PlayerTrack } from "@/types/player/model";
@@ -177,6 +179,10 @@ function TrackContextMenuContent({
             {t("contextMenu.addToQueue")}
           </ContextMenuItem>
         )}
+        <ContextMenuItem onSelect={() => collectTracksToScratchpad([track])}>
+          <NotebookPen className="mr-2 size-4" />
+          {t("contextMenu.addToScratchpad")}
+        </ContextMenuItem>
         {onRemoveFromQueue && (
           <ContextMenuItem onSelect={onRemoveFromQueue}>
             <Trash2 className="mr-2 size-4" />

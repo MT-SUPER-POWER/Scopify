@@ -4,6 +4,7 @@ import { lazy, memo, Suspense, useEffect, useState } from "react";
 import { HeartOff } from "lucide-react";
 import { motion, useReducedMotion } from "framer-motion";
 import { cn } from "@/lib/utils";
+import { PlayerTrackContextMenu } from "@/components/shared/PlayerTrackContextMenu";
 import { useCardFlip } from "@/hooks/playlist/useFlipReveal";
 import { useLatticeExpansionSettled } from "@/hooks/playlist/useLatticeExpansionSettled";
 import { useTranslation } from "react-i18next";
@@ -32,7 +33,10 @@ export const LatticePoster = memo(
     track,
     expanded,
     current,
+    playing,
     focused,
+    playlistId,
+    onRemoveFromQueue,
     onFocus,
     onSelect,
     onPlay,
@@ -61,101 +65,113 @@ export const LatticePoster = memo(
       </span>
     );
     return (
-      <motion.article
-        className={cn(posterClass, currentFrameClass)}
-        data-instance={instance.instanceId}
-        data-wall-track={instance.queueIndex}
-        role={expanded ? "group" : "button"}
-        tabIndex={focused ? 0 : -1}
-        aria-label={t("playlist.lattice.select", { name: track.title })}
-        aria-expanded={expanded}
-        onFocusCapture={() => setFocusWithin(true)}
-        onBlurCapture={(event) => {
-          if (!event.currentTarget.contains(event.relatedTarget)) setFocusWithin(false);
-        }}
-        onPointerDownCapture={() => setFocusWithin(false)}
-        onFocus={(event) => {
-          if (event.target === event.currentTarget) onFocus(instance);
-        }}
-        onPointerEnter={(event) => {
-          if (event.pointerType === "mouse") setHovered(true);
-        }}
-        onPointerLeave={() => setHovered(false)}
-        onClick={(event) => {
-          if (event.target instanceof Element && event.target.closest("button, input")) return;
-          if (event.detail > 1) return;
-          if (!expanded) onSelect(instance);
-          else setRevealed((value) => !value);
-        }}
-        onKeyDown={(event) => {
-          if (event.target !== event.currentTarget) return;
-          if (event.key === "Enter" || event.key === " ") {
-            event.preventDefault();
-            if (!expanded) onSelect(instance);
-            else if (event.key === "Enter") onPlay(instance.queueIndex);
-            else setRevealed((value) => !value);
-          }
-        }}
-        onAnimationComplete={onExpansionComplete}
-        data-expanded={expanded}
-        data-current={current}
-        data-flipping={flipping}
-        data-compact={!expanded && rect.width < 300}
-        initial={false}
-        animate={{
-          x: rect.x,
-          y: rect.y,
-          width: rect.width,
-          height: rect.height,
-          scaleX: !expanded && (hovered || focused) ? (rect.width + 8) / rect.width : 1,
-          scaleY: !expanded && (hovered || focused) ? (rect.height + 8) / rect.height : 1,
-        }}
-        transition={{ duration: reducedMotion ? 0 : 0.42, ease: [0.22, 1, 0.36, 1] }}
+      <PlayerTrackContextMenu
+        track={track}
+        isActive={current}
+        isPlaying={playing}
+        onPlay={() => onPlay(instance.queueIndex)}
+        playlistId={playlistId}
+        onRemoveFromQueue={
+          onRemoveFromQueue ? () => onRemoveFromQueue(instance.queueIndex) : undefined
+        }
+        onDislikeTrack={onDislikeTrack}
       >
-        <div
-          ref={backRef}
-          className="absolute inset-0 overflow-hidden bg-secondary backface-hidden"
-          style={flipping ? { transform: "rotateY(180deg)" } : undefined}
+        <motion.article
+          className={cn(posterClass, currentFrameClass)}
+          data-instance={instance.instanceId}
+          data-wall-track={instance.queueIndex}
+          role={expanded ? "group" : "button"}
+          tabIndex={focused ? 0 : -1}
+          aria-label={t("playlist.lattice.select", { name: track.title })}
+          aria-expanded={expanded}
+          onFocusCapture={() => setFocusWithin(true)}
+          onBlurCapture={(event) => {
+            if (!event.currentTarget.contains(event.relatedTarget)) setFocusWithin(false);
+          }}
+          onPointerDownCapture={() => setFocusWithin(false)}
+          onFocus={(event) => {
+            if (event.target === event.currentTarget) onFocus(instance);
+          }}
+          onPointerEnter={(event) => {
+            if (event.pointerType === "mouse") setHovered(true);
+          }}
+          onPointerLeave={() => setHovered(false)}
+          onClick={(event) => {
+            if (event.target instanceof Element && event.target.closest("button, input")) return;
+            if (event.detail > 1) return;
+            if (!expanded) onSelect(instance);
+            else setRevealed((value) => !value);
+          }}
+          onKeyDown={(event) => {
+            if (event.target !== event.currentTarget) return;
+            if (event.key === "Enter" || event.key === " ") {
+              event.preventDefault();
+              if (!expanded) onSelect(instance);
+              else if (event.key === "Enter") onPlay(instance.queueIndex);
+              else setRevealed((value) => !value);
+            }
+          }}
+          onAnimationComplete={onExpansionComplete}
+          data-expanded={expanded}
+          data-current={current}
+          data-flipping={flipping}
+          data-compact={!expanded && rect.width < 300}
+          initial={false}
+          animate={{
+            x: rect.x,
+            y: rect.y,
+            width: rect.width,
+            height: rect.height,
+            scaleX: !expanded && (hovered || focused) ? (rect.width + 8) / rect.width : 1,
+            scaleY: !expanded && (hovered || focused) ? (rect.height + 8) / rect.height : 1,
+          }}
+          transition={{ duration: reducedMotion ? 0 : 0.42, ease: [0.22, 1, 0.36, 1] }}
         >
-          <LatticePosterArtwork
-            track={track}
-            instance={instance}
-            current={current}
-            expanded={expanded}
-          />
-          {expanded && current && settled ? (
-            <Suspense fallback={copy}>
-              <LatticeLyrics track={track} />
-            </Suspense>
-          ) : (
-            copy
-          )}
-          {expanded && onDislikeTrack && track.ref.provider === "netease" && (
-            <button
-              type="button"
-              aria-label={t("contextMenu.recommendLess")}
-              title={t("contextMenu.recommendLess")}
-              onClick={() => onDislikeTrack(track)}
-              className="absolute top-3 right-3 z-2 grid size-10 place-items-center rounded-full bg-black/65 text-white hover:bg-black/85 focus-visible:outline-2 focus-visible:outline-white"
-            >
-              <HeartOff className="size-5" />
-            </button>
-          )}
-          {expanded && (
-            <LatticePlaybackControls
+          <div
+            ref={backRef}
+            className="absolute inset-0 overflow-hidden bg-secondary backface-hidden"
+            style={flipping ? { transform: "rotateY(180deg)" } : undefined}
+          >
+            <LatticePosterArtwork
               track={track}
+              instance={instance}
               current={current}
-              revealed={revealed || hovered || focusWithin}
-              onPlay={() => onPlay(instance.queueIndex)}
+              expanded={expanded}
             />
-          )}
-        </div>
-        {flipping && (
-          <div ref={frontRef} aria-hidden className="absolute inset-0 backface-hidden">
-            <LatticeTileFace />
+            {expanded && current && settled ? (
+              <Suspense fallback={copy}>
+                <LatticeLyrics track={track} />
+              </Suspense>
+            ) : (
+              copy
+            )}
+            {expanded && onDislikeTrack && track.ref.provider === "netease" && (
+              <button
+                type="button"
+                aria-label={t("contextMenu.recommendLess")}
+                title={t("contextMenu.recommendLess")}
+                onClick={() => onDislikeTrack(track)}
+                className="absolute top-3 right-3 z-2 grid size-10 place-items-center rounded-full bg-black/65 text-white hover:bg-black/85 focus-visible:outline-2 focus-visible:outline-white"
+              >
+                <HeartOff className="size-5" />
+              </button>
+            )}
+            {expanded && (
+              <LatticePlaybackControls
+                track={track}
+                current={current}
+                revealed={revealed || hovered || focusWithin}
+                onPlay={() => onPlay(instance.queueIndex)}
+              />
+            )}
           </div>
-        )}
-      </motion.article>
+          {flipping && (
+            <div ref={frontRef} aria-hidden className="absolute inset-0 backface-hidden">
+              <LatticeTileFace />
+            </div>
+          )}
+        </motion.article>
+      </PlayerTrackContextMenu>
     );
   },
   (a, b) =>
@@ -167,7 +183,10 @@ export const LatticePoster = memo(
     a.rect.height === b.rect.height &&
     a.expanded === b.expanded &&
     a.current === b.current &&
+    a.playing === b.playing &&
     a.focused === b.focused &&
+    a.playlistId === b.playlistId &&
+    a.onRemoveFromQueue === b.onRemoveFromQueue &&
     a.onFocus === b.onFocus &&
     a.onSelect === b.onSelect &&
     a.onPlay === b.onPlay &&

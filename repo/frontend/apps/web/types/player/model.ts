@@ -75,6 +75,7 @@ export interface PlayerStore {
     addToHistory?: boolean,
     options?: PlayQueueIndexOptions,
   ) => Promise<void>;
+  playTrackInQueue: (track: PlayerTrack) => Promise<void>;
   playTrack: (song: PlayerTrack, options?: PlayTrackOptions) => Promise<boolean>;
   playlistId: number | string | null;
   queue: PlayerTrack[];
@@ -82,6 +83,7 @@ export interface PlayerStore {
   refreshCurrentTrackUrl: () => Promise<PlaybackSourceRefreshResult>;
   cleanCache: () => void;
   removeQueueItem: (index: number, playFollowingOnly?: boolean) => void;
+  replaceQueueOrder: (nextQueue: PlayerTrack[]) => void;
   reshuffleQueue: () => void;
   repeatMode: RepeatMode;
   replayGainMode: ReplayGainMode;

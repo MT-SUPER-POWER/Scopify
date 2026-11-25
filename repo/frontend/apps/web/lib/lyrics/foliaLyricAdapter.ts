@@ -43,11 +43,20 @@ export function adaptLyricDataToFolia(
     chorusRanges.length === 0 ? detectRepeatedChorusTexts(lyrics.lines) : new Set<string>();
   const decoratedLyricLines = applyChorusEffects(lyricLines, chorusRanges, repeatedChorusTexts);
   const creditLines = adaptTimedCredits(lyrics.metadata.timedCredits, decoratedLyricLines);
+  const hasSourceChorus = decoratedLyricLines.some((line) => line.chorusOrigin === "source");
 
   return {
     artist: lyrics.metadata.artist,
     isWordByWord: lyrics.isWordByWord,
     lines: attachInterludes([...creditLines, ...decoratedLyricLines]),
+    ...(hasSourceChorus && chorusRanges.length > 0
+      ? {
+          sourceChorusRanges: chorusRanges.map((range) => ({
+            endTime: range.endTimeMs / MILLISECONDS_PER_SECOND,
+            startTime: range.startTimeMs / MILLISECONDS_PER_SECOND,
+          })),
+        }
+      : {}),
     title: lyrics.metadata.title,
   };
 }
@@ -195,6 +204,7 @@ function applyChorusEffects(
         matchedRangeIndex >= 0
           ? CHORUS_EFFECTS[matchedRangeIndex % CHORUS_EFFECTS.length]
           : repeatedTextEffect,
+      chorusOrigin: matchedRangeIndex >= 0 ? ("source" as const) : ("text" as const),
       isChorus: true,
     };
   });

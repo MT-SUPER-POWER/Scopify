@@ -114,6 +114,8 @@ Selected upstream presentation updates are reviewed and recorded separately from
 
 - `c82aeb70` (Folia #1174) and cinema source at `bbbe74df` add the Cinema geometry, materials, and scene renderer. Scopify projects its existing lyric stage onto the screen and uses its cover palette for hall lighting.
 
+- `3b91924f` (Folia v0.8.0) — selectively syncs `ab852b02` (Monet title outer `drop-shadow` so `line-clamp-2` no longer clips soft edges), `33b831a8` (daylight lights-off wall darkening on Lattice and Grid), `e16cf2ed`..`97beabc3` (RadioWall card two-phase back-reveal, cover unveil, 3D flip, and front focus settle), and `64feb29b` / `1d764aff` (progress bar chorus-start tick marker, source-attributed `chorusOrigin`, and `progressBarChorusMarker` toggle).
+
 The copied source remains licensed under AGPL-3.0. See [LICENSE](./LICENSE). Scopify is also distributed under AGPL-3.0.
 
 ## Included

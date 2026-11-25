@@ -3,7 +3,7 @@ export type AudioEqualizerCustomSlotId = "custom-1" | "custom-2" | "custom-3";
 export type AudioEqualizerUserPresetId = `user:${string}`;
 export type AudioEqualizerModeId =
   AudioEqualizerPresetId | AudioEqualizerCustomSlotId | AudioEqualizerUserPresetId;
-export type AudioSettingsTab = "equalizer" | "quality";
+export type AudioSettingsSurface = "equalizer" | "quality" | null;
 export type AudioEffectId =
   "highpass" | "lowpass" | "drive" | "crush" | "wow" | "noise" | "width" | "space" | "punch";
 export type AudioEffectSettings = Record<AudioEffectId, number>;
@@ -55,18 +55,15 @@ export interface AudioEqualizerCustomSlot {
 }
 
 export interface AudioEqualizerStore {
-  dialogTab: AudioSettingsTab;
-  isDialogOpen: boolean;
+  settingsSurface: AudioSettingsSurface;
   settings: AudioEqualizerSettings;
   applyPreset: (preset: AudioEqualizerModeId) => void;
   commitSettings: (settings: AudioEqualizerSettings) => void;
   createCustomPreset: (name?: string) => AudioEqualizerUserPresetId;
   deleteCustomPreset: (id: AudioEqualizerUserPresetId) => void;
   duplicateCustomPreset: (id: AudioEqualizerUserPresetId) => AudioEqualizerUserPresetId | null;
-  closeDialog: () => void;
-  openDialog: (tab?: AudioSettingsTab) => void;
   setBandGain: (index: number, gain: number) => void;
-  setDialogTab: (tab: AudioSettingsTab) => void;
+  setSettingsSurface: (surface: AudioSettingsSurface) => void;
   setEnabled: (enabled: boolean) => void;
   setEffect: (id: AudioEffectId, value: number) => void;
   resetCustomSlot: (slot: AudioEqualizerCustomSlotId) => void;

@@ -20,6 +20,7 @@ export function FoliaGlobalSettingsCard({ theme }: FoliaGlobalSettingsCardProps)
   const [isVideoExportOpen, setIsVideoExportOpen] = useState(false);
   const [isOffsetDialogOpen, setIsOffsetDialogOpen] = useState(false);
   const autoHideCursorWithChrome = useLyricStageStore((state) => state.autoHideCursorWithChrome);
+  const progressBarChorusMarker = useLyricStageStore((state) => state.progressBarChorusMarker);
   const patchSettings = useLyricStageStore((state) => state.patchSettings);
   return (
     <>
@@ -54,6 +55,12 @@ export function FoliaGlobalSettingsCard({ theme }: FoliaGlobalSettingsCardProps)
           description={t("folia.options.autoHideCursorWithChromeDesc")}
           checked={autoHideCursorWithChrome}
           onChange={(autoHideCursorWithChrome) => patchSettings({ autoHideCursorWithChrome })}
+        />
+        <FoliaSettingsToggle
+          label={t("folia.options.progressBarChorusMarker")}
+          description={t("folia.options.progressBarChorusMarkerDesc")}
+          checked={progressBarChorusMarker}
+          onChange={(progressBarChorusMarker) => patchSettings({ progressBarChorusMarker })}
         />
       </FoliaSettingsGroup>
       <FoliaRenderQualitySettings />

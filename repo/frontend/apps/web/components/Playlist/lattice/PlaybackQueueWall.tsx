@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { X } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
@@ -18,33 +19,39 @@ function closeWall() {
 
 export default function PlaybackQueueWall() {
   const { t } = useTranslation();
-  const dialogRef = useRef<HTMLDialogElement>(null);
+  const [mounted, setMounted] = useState(false);
   const tracks = usePlayerStore((state) => state.queue);
   const sourceId = usePlayerStore((state) => state.playlistId);
   const lyricsOpen = useUiStore((state) => state.isLyricsOpen || state.isCenterLyricsOpen);
   const [mode, setMode] = useState<PlaylistViewMode>("radio");
   const title = t(isPersonalFmPlaybackSource(sourceId) ? "personalFm.title" : "queue.title");
 
-  useLayoutEffect(() => {
-    const dialog = dialogRef.current;
-    if (!dialog) return;
-    dialog.showModal();
-    return () => dialog.close();
+  useEffect(() => {
+    setMounted(true);
   }, []);
 
   useEffect(() => {
     if (lyricsOpen) closeWall();
   }, [lyricsOpen]);
 
-  return (
-    <dialog
-      ref={dialogRef}
+  useEffect(() => {
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key !== "Escape" || event.defaultPrevented) return;
+      event.preventDefault();
+      closeWall();
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, []);
+
+  if (!mounted || typeof document === "undefined") return null;
+
+  return createPortal(
+    <div
+      role="dialog"
+      aria-modal="true"
       aria-label={title}
-      onCancel={(event) => {
-        event.preventDefault();
-        closeWall();
-      }}
-      className="fixed inset-0 m-0 h-dvh max-h-none w-dvw max-w-none overflow-hidden border-0 bg-card p-0 text-content"
+      className="fixed inset-0 z-40 h-dvh w-dvw overflow-hidden bg-card text-content"
     >
       <PlaylistWallSurface
         mode={mode}
@@ -63,6 +70,7 @@ export default function PlaybackQueueWall() {
       >
         <X className="size-5" />
       </button>
-    </dialog>
+    </div>,
+    document.body,
   );
 }

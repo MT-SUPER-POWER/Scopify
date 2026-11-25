@@ -1,12 +1,11 @@
-import { memo, useCallback, useMemo, useState } from "react";
+import { memo, useCallback, useState } from "react";
 import { PlaybackProgressBar } from "@/components/PlayBar/PlaybackProgressBar";
-import { useSongChorus } from "@/hooks/lyrics/useSongChorus";
 import { usePlaybackCommands } from "@/hooks/player/usePlaybackCommands";
 import {
   usePlaybackPosition as usePlaybackPositionMs,
   usePlaybackProjection,
 } from "@/hooks/player/usePlaybackProjection";
-import { getChorusProgressRanges } from "@/lib/player/chorusMarkers";
+import { useProgressChorusMarker } from "@/hooks/player/useProgressChorusMarker";
 import { useTimeStore } from "@/store/module/time";
 
 export const PlayerProgressBar = memo(() => {
@@ -16,11 +15,10 @@ export const PlayerProgressBar = memo(() => {
   const bufferedTime = useTimeStore((s) => s.bufferedTime);
   const [previewPositionMs, setPreviewPositionMs] = useState<number | null>(null);
   const currentSongId = playback.track?.id ?? null;
-  const chorusQuery = useSongChorus(currentSongId);
-  const chorusRanges = useMemo(
-    () => getChorusProgressRanges(chorusQuery.data ?? [], playback.durationMs),
-    [chorusQuery.data, playback.durationMs],
-  );
+  const { chorusMarkerFraction, chorusRanges } = useProgressChorusMarker({
+    durationMs: playback.durationMs,
+    songId: currentSongId,
+  });
 
   const handleSeek = useCallback(
     (newTimeMs: number, isCommit: boolean) => {
@@ -38,6 +36,7 @@ export const PlayerProgressBar = memo(() => {
   return (
     <PlaybackProgressBar
       bufferedPositionMs={bufferedTime}
+      chorusMarkerFraction={chorusMarkerFraction}
       durationMs={playback.durationMs}
       onSeek={handleSeek}
       positionMs={previewPositionMs ?? positionMs}

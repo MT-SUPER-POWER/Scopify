@@ -74,6 +74,14 @@ export const FOLIA_LYRIC_COMMANDS: Omit<FoliaCommandEntry, "path">[] = [
     action: { kind: "lyric-toggle", setting: "harmonySubtitleBackground" },
   },
   {
+    id: "folia-progress-chorus-marker",
+    parentId: "folia-lyric-controls",
+    label: "进度条副歌标记",
+    summary: "在进度条上标出歌词来源给出的副歌起点",
+    keywords: "progress chorus marker 进度条 副歌 标记 高潮",
+    action: { kind: "lyric-toggle", setting: "progressBarChorusMarker" },
+  },
+  {
     id: "folia-lyric-fonts",
     parentId: "folia-lyric-controls",
     label: "歌词字体与显示",

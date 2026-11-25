@@ -7,6 +7,7 @@ import { NowPlayingOverview } from "./NowPlayingOverview";
 import { NowPlayingProviderOverview } from "./NowPlayingProviderOverview";
 import { NowPlayingPanelTabs } from "./NowPlayingPanelTabs";
 import { NowPlayingQueueView } from "./NowPlayingQueueView";
+import { NowPlayingScratchpadView } from "@/components/scratchpad/NowPlayingScratchpadView";
 import { useCurrentNeteaseSong } from "@/hooks/player/useCurrentNeteaseSong";
 import { resolveCoverUrl } from "@/lib/music/resolveCoverUrl";
 import { cn } from "@/lib/utils";
@@ -67,6 +68,8 @@ export function NowPlayingPanel() {
 
       {view === "queue" ? (
         <NowPlayingQueueView />
+      ) : view === "scratchpad" ? (
+        <NowPlayingScratchpadView />
       ) : song ? (
         view === "lyrics" ? (
           <NowPlayingLyricsView artworkUrl={resolveCoverUrl(song.al?.picUrl, song.al?.coverUrl)} />
