@@ -2787,6 +2787,7 @@
 
 .scratchpad-comments-tag {
   display: flex;
+  max-width: 100%;
   height: 24px;
   align-items: center;
   gap: 2px;
@@ -2797,8 +2798,15 @@
   font-weight: 800;
 }
 
+.scratchpad-comments-tag > span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .scratchpad-comments-tag button {
   display: grid;
+  flex-shrink: 0;
   width: 20px;
   height: 20px;
   place-items: center;
@@ -2912,21 +2920,15 @@
   outline-offset: 1px;
 }
 
-.scratchpad-comments-timeline-carrier {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  will-change: transform;
-}
-
 .scratchpad-comments-timeline-now {
   position: absolute;
   top: 5px;
-  left: -4px;
+  left: 0;
   width: 8px;
   height: 8px;
   background: var(--scratchpad-text);
-  transform: rotate(45deg);
+  pointer-events: none;
+  transform: translateX(-50%) rotate(45deg);
 }
 
 .scratchpad-comments-sort {
@@ -3678,7 +3680,8 @@ button.scratchpad-comment-at:focus-visible {
   min-height: 0;
   flex: 1;
   flex-direction: column;
-  overflow: auto;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 .scratchpad-comments-scroll-body .scratchpad-comment-scroll {
   flex: 1 0 auto;

@@ -20,18 +20,14 @@ const PlayingDiamond: React.FC<{ duration: number }> = ({ duration }) => {
       const permille = Math.round(ratio * 1000);
       if (permille === last || !ref.current) return;
       last = permille;
-      ref.current.style.transform = `translateX(${(permille / 10).toFixed(1)}%)`;
+      ref.current.style.left = `${permille / 10}%`;
     };
     const update = () => place(playback.samplePositionMs() / 1000);
     update();
     const timer = window.setInterval(update, 250);
     return () => window.clearInterval(timer);
   }, [duration, playback]);
-  return (
-    <span ref={ref} className="scratchpad-comments-timeline-carrier" aria-hidden="true">
-      <span className="scratchpad-comments-timeline-now" />
-    </span>
-  );
+  return <span ref={ref} className="scratchpad-comments-timeline-now" aria-hidden="true" />;
 };
 
 const ScratchpadCommentsHead: React.FC<ScratchpadCommentsHeadProps> = ({
@@ -127,7 +123,7 @@ const ScratchpadCommentsHead: React.FC<ScratchpadCommentsHeadProps> = ({
       <ul className="scratchpad-comments-tags" aria-label={t("scratchpad.foliaMoment.tags")}>
         {tags.map((key) => (
           <li key={key} className="scratchpad-comments-tag">
-            <span>#{tagNames.get(key)?.name ?? key}</span>
+            <span title={tagNames.get(key)?.name ?? key}>#{tagNames.get(key)?.name ?? key}</span>
             <button
               type="button"
               title={t("scratchpad.foliaMoment.removeTag", { tag: tagNames.get(key)?.name ?? key })}
