@@ -2,6 +2,28 @@
 
 > 根据 commit 自动生成，请勿手动编辑；推送版本 tag 后由 CI 更新。v2.0.3 及更早版本见[历史更新记录](archive/CHANGELOG-legacy.md)。
 
+## v4.10.0 — 2026-11-25
+
+### 新增
+
+- 在正在播放面板用 Folia 速记簿记录听歌时刻 ([993d798c](https://github.com/MT-SUPER-POWER/Scopify/commit/993d798c7d83b57510acc36df60f0e0348a8a115))
+- 移植 Folia 四轨调音台 ([a648e6c9](https://github.com/MT-SUPER-POWER/Scopify/commit/a648e6c9c318e3c60739656f308b74b782a15675))
+- 音频效果器改用 Folia 模态窗口 ([77836e0e](https://github.com/MT-SUPER-POWER/Scopify/commit/77836e0e677fbb2dc897f00331d59942cf028fa8))
+- 为网格、拼贴墙、电台墙与云盘菜单接入完整右键操作 ([175e1019](https://github.com/MT-SUPER-POWER/Scopify/commit/175e1019d51c9d658d83039e0c3e5e5dcec1bb81))
+- 接入速记簿至正在播放面板并新增全屏展开工作区 ([f0d13f18](https://github.com/MT-SUPER-POWER/Scopify/commit/f0d13f183e410c77b926fbd7af928c55e3067c42))
+- 进度条标出歌词来源给出的副歌起点并支持开关 ([12680481](https://github.com/MT-SUPER-POWER/Scopify/commit/126804818ca5b425d4908fb765e667744ad3a17e))
+- 电台墙卡片新增揭晓显字、封面淡入与翻面对焦动画 ([810daf33](https://github.com/MT-SUPER-POWER/Scopify/commit/810daf33f8c5674a02b1dd0973fcb8cb421b8c3a))
+- update the submodule of qq-music-api ([121aba0f](https://github.com/MT-SUPER-POWER/Scopify/commit/121aba0f8f7fdeb5eb988b462ea17e03fecff5e5))
+
+### 修复
+
+- 给播放栏浮层添加指向按钮的箭头 ([63b4fb76](https://github.com/MT-SUPER-POWER/Scopify/commit/63b4fb76e87e0366e5bd43a4543349e924512014))
+- 恢复播放栏音质选择浮层 ([06029469](https://github.com/MT-SUPER-POWER/Scopify/commit/06029469eaac896fa0a3ac1480828e2c3126f64b))
+- 修复播放时「时刻」侧栏横向滚动的问题 ([7e435860](https://github.com/MT-SUPER-POWER/Scopify/commit/7e435860659411eceed5ecf85a3461dcc4d39aa8))
+- 浅色主题下熄灯时同步压暗墙面背景 ([24a77904](https://github.com/MT-SUPER-POWER/Scopify/commit/24a77904e660a65e894ed5420ef65dbd96ffd6c3))
+- 修复莫奈歌名阴影在裁切框边缘被切方的问题 ([932487e7](https://github.com/MT-SUPER-POWER/Scopify/commit/932487e79d815f729820306e532b3e85a19bc884))
+- 通知查看互动跳转对应评论定位，点击头像进入个人主页 ([824fe7d3](https://github.com/MT-SUPER-POWER/Scopify/commit/824fe7d391d2b59f77a4c1e587c17b1f7ffc911e))
+
 ## v4.0.3 — 2026-11-23
 
 ### 新增
