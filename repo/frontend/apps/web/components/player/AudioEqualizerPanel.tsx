@@ -6,6 +6,7 @@ import { FoliaIconButton } from "@scopify/ui/scopify/components/folia-panel/cont
 
 import { AudioEqualizerBands } from "@/components/player/AudioEqualizerBands";
 import { AudioEqualizerEffects } from "@/components/player/AudioEqualizerEffects";
+import { StemMixerSection } from "@/components/player/StemMixerSection";
 import { AUDIO_EQUALIZER_PRESETS } from "@/constants/audioEqualizer";
 import { useAudioEqualizerDraft } from "@/hooks/player/useAudioEqualizerDraft";
 import { cn } from "@/lib/utils";
@@ -119,6 +120,7 @@ export function AudioEqualizerPanel() {
           onCommit={commit}
         />
       </div>
+      <StemMixerSection />
     </div>
   );
 }

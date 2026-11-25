@@ -20,6 +20,7 @@
 /repo/frontend/apps/web/.next/
 /repo/frontend/apps/web/.next-dev/
 /repo/frontend/apps/web/out/
+/repo/frontend/apps/web/public/stem-mixer/
 /repo/frontend/apps/desktop/out/
 /repo/frontend/apps/desktop/dist/
 /repo/frontend/apps/desktop/dist*/

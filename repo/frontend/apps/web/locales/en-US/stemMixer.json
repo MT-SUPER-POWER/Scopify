@@ -1,0 +1,22 @@
+{
+  "title": "Stem Mixer",
+  "hint": "Adjust drums, bass, other and vocals separately",
+  "stem.drums": "Drums",
+  "stem.bass": "Bass",
+  "stem.other": "Other",
+  "stem.vocals": "Vocals",
+  "preset.reset": "Original",
+  "preset.karaoke": "Karaoke",
+  "preset.vocals": "Vocals Only",
+  "status.off": "Separates the current track in real time on your GPU. Unprocessed sections play the original mix.",
+  "status.waiting": "Waiting for playback",
+  "status.loadingModel": "Loading the stem model",
+  "status.separating": "Separating",
+  "status.ready": "Stems ready",
+  "status.failed": "Could not separate this track. Playing the original mix.",
+  "status.notFollowing": "The mixer is out of sync with playback. Playing the original mix.",
+  "status.tooLong": "Tracks longer than 20 minutes are skipped",
+  "block.noGpu": "Stem mixing requires WebGPU and AudioWorklet.",
+  "block.tooSlow": "GPU separation is too slow on this device. Stem mixing is disabled for this session.",
+  "toggle": "Stem Mixer"
+}

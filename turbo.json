@@ -28,7 +28,7 @@
         "BACKEND_*",
         "FRONTEND_*"
       ],
-      "outputs": [".next/**", "!.next/cache/**", "!.next/dev/**"]
+      "outputs": [".next/**", "!.next/cache/**", "!.next/dev/**", "public/stem-mixer/**"]
     },
     "@scopify/docs#build": {
       "dependsOn": ["^build"],

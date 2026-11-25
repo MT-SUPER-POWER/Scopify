@@ -37,6 +37,7 @@ import zhCN_sidebar from "./zh-CN/sidebar.json";
 import zhCN_social from "./zh-CN/social.json";
 import zhCN_song from "./zh-CN/song.json";
 import zhCN_songResources from "./zh-CN/songResources.json";
+import zhCN_stemMixer from "./zh-CN/stemMixer.json";
 import zhCN_subtitleControl from "./zh-CN/subtitleControl.json";
 import zhCN_subtitlePalette from "./zh-CN/subtitlePalette.json";
 import zhCN_subtitlePreview from "./zh-CN/subtitlePreview.json";
@@ -87,6 +88,7 @@ import zhTW_sidebar from "./zh-TW/sidebar.json";
 import zhTW_social from "./zh-TW/social.json";
 import zhTW_song from "./zh-TW/song.json";
 import zhTW_songResources from "./zh-TW/songResources.json";
+import zhTW_stemMixer from "./zh-TW/stemMixer.json";
 import zhTW_subtitleControl from "./zh-TW/subtitleControl.json";
 import zhTW_subtitlePalette from "./zh-TW/subtitlePalette.json";
 import zhTW_subtitlePreview from "./zh-TW/subtitlePreview.json";
@@ -137,6 +139,7 @@ import enUS_sidebar from "./en-US/sidebar.json";
 import enUS_social from "./en-US/social.json";
 import enUS_song from "./en-US/song.json";
 import enUS_songResources from "./en-US/songResources.json";
+import enUS_stemMixer from "./en-US/stemMixer.json";
 import enUS_subtitleControl from "./en-US/subtitleControl.json";
 import enUS_subtitlePalette from "./en-US/subtitlePalette.json";
 import enUS_subtitlePreview from "./en-US/subtitlePreview.json";
@@ -191,6 +194,7 @@ export const resources = {
     social: zhCN_social,
     song: zhCN_song,
     songResources: zhCN_songResources,
+    stemMixer: zhCN_stemMixer,
     subtitleControl: zhCN_subtitleControl,
     subtitlePalette: zhCN_subtitlePalette,
     subtitlePreview: zhCN_subtitlePreview,
@@ -243,6 +247,7 @@ export const resources = {
     social: zhTW_social,
     song: zhTW_song,
     songResources: zhTW_songResources,
+    stemMixer: zhTW_stemMixer,
     subtitleControl: zhTW_subtitleControl,
     subtitlePalette: zhTW_subtitlePalette,
     subtitlePreview: zhTW_subtitlePreview,
@@ -295,6 +300,7 @@ export const resources = {
     social: enUS_social,
     song: enUS_song,
     songResources: enUS_songResources,
+    stemMixer: enUS_stemMixer,
     subtitleControl: enUS_subtitleControl,
     subtitlePalette: enUS_subtitlePalette,
     subtitlePreview: enUS_subtitlePreview,

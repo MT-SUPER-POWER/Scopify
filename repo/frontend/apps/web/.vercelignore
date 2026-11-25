@@ -7,3 +7,4 @@ logs
 *.tsbuildinfo
 coverage
 .env*.local
+public/stem-mixer/

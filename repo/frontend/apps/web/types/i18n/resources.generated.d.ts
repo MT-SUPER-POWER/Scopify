@@ -2798,6 +2798,28 @@ export default interface Resources {
     sheets: "乐谱";
     wiki: "音乐百科";
   };
+  stemMixer: {
+    "block.noGpu": "这台设备用不了：需要支持 WebGPU 与 AudioWorklet。";
+    "block.tooSlow": "这台设备的 GPU 分离太慢，本次运行已停用。";
+    hint: "鼓、贝斯、其他、人声各自调强度";
+    "preset.karaoke": "伴奏";
+    "preset.reset": "原样";
+    "preset.vocals": "只听人声";
+    "status.failed": "这首无法分离，正在放原曲";
+    "status.loadingModel": "正在加载分轨模型";
+    "status.notFollowing": "分轨暂未跟随当前播放，正在放原曲";
+    "status.off": "开启后在 GPU 上实时分离正在放的歌，没分到的地方放原曲。";
+    "status.ready": "分轨已生效";
+    "status.separating": "正在分离";
+    "status.tooLong": "这首超过 20 分钟，不分离";
+    "status.waiting": "等待播放";
+    "stem.bass": "贝斯";
+    "stem.drums": "鼓";
+    "stem.other": "其他";
+    "stem.vocals": "人声";
+    title: "分轨调音台";
+    toggle: "分轨调音台";
+  };
   subtitleControl: {
     enabled: "显示桌面小歌词";
     failed: "桌面歌词操作失败，请重试。";
