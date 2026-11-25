@@ -67,6 +67,7 @@ export interface Line {
   renderHints?: LineRenderHints;
   isChorus?: boolean;
   chorusEffect?: "bars" | "circles" | "beams";
+  chorusOrigin?: LyricChorusOrigin;
   // Folia: user-saved fine word boundaries for fullText, baked in upstream by the lyric setter.
   // join('') must equal fullText. When present it wins over every automatic segmentation.
   // Scopify's lyric pipeline does not set it yet, so segmentLyricWords uses Intl.Segmenter.
@@ -75,11 +76,14 @@ export interface Line {
   autoWordSegments?: string[];
 }
 
+export type LyricChorusOrigin = "source" | "text";
+
 export interface LyricData {
   lines: Line[];
   title?: string;
   artist?: string;
   isWordByWord?: boolean;
+  sourceChorusRanges?: Array<{ startTime: number; endTime: number }>;
   ttml?: {
     timingMode?: "Word" | "Line";
     agents?: Record<string, LyricAgent>;

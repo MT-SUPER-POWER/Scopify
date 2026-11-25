@@ -1,8 +1,7 @@
-import React, { useMemo, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { Command, Play, Pause } from "lucide-react";
-import { useSongChorus } from "@/hooks/lyrics/useSongChorus";
-import { getChorusProgressRanges } from "@/lib/player/chorusMarkers";
+import { useProgressChorusMarker } from "@/hooks/player/useProgressChorusMarker";
 import { useTranslation } from "react-i18next";
 import {
   FOLIA_CAPSULE_BUTTON_CLASS,
@@ -62,11 +61,11 @@ const FloatingPlayerControls: React.FC<FloatingPlayerControlsProps> = ({
 }) => {
   const { t } = useTranslation();
   const currentSongId = usePlayerStore((state) => getNeteaseTrackId(state.currentTrack) ?? null);
-  const chorusQuery = useSongChorus(currentSongId);
-  const chorusRanges = useMemo(
-    () => getChorusProgressRanges(chorusQuery.data ?? [], duration * 1000),
-    [chorusQuery.data, duration],
-  );
+  const { chorusMarkerFraction, chorusRanges } = useProgressChorusMarker({
+    durationMs: duration * 1_000,
+    lyrics,
+    songId: currentSongId,
+  });
   const resolvedNoTrackText = noTrackText ?? t("folia.ui.noTrack");
   const themeMarkerColor = theme?.accentColor || theme?.primaryColor || primaryColor;
   const glassBgExpanded = isDaylight
@@ -244,6 +243,7 @@ const FloatingPlayerControls: React.FC<FloatingPlayerControlsProps> = ({
                   isDaylight={isDaylight}
                   controlsDisabled={controlsDisabled}
                   rangeMarkers={chorusRanges}
+                  chorusMarkerFraction={chorusMarkerFraction}
                   markerColor={themeMarkerColor}
                 />
               ) : (
@@ -273,6 +273,7 @@ const FloatingPlayerControls: React.FC<FloatingPlayerControlsProps> = ({
                   trackColor={trackColor}
                   controlsDisabled={controlsDisabled}
                   rangeMarkers={chorusRanges}
+                  chorusMarkerFraction={chorusMarkerFraction}
                   markerColor={themeMarkerColor}
                 />
               )}
@@ -323,6 +324,7 @@ const ExpandedView: React.FC<ExpandedFoliaCapsuleProps> = ({
   isDaylight,
   controlsDisabled = false,
   rangeMarkers = [],
+  chorusMarkerFraction = null,
   markerColor,
 }) => {
   const { t } = useTranslation();
@@ -376,6 +378,7 @@ const ExpandedView: React.FC<ExpandedFoliaCapsuleProps> = ({
           trackColor={trackColor}
           disabled={controlsDisabled}
           rangeMarkers={rangeMarkers}
+          chorusMarkerFraction={chorusMarkerFraction}
           markerColor={markerColor}
         />
       </div>
@@ -394,6 +397,7 @@ const CollapsedView: React.FC<CollapsedFoliaCapsuleProps> = ({
   trackColor,
   controlsDisabled = false,
   rangeMarkers = [],
+  chorusMarkerFraction = null,
   markerColor,
 }) => {
   return (
@@ -407,6 +411,7 @@ const CollapsedView: React.FC<CollapsedFoliaCapsuleProps> = ({
         trackColor={trackColor}
         disabled={controlsDisabled}
         rangeMarkers={rangeMarkers}
+        chorusMarkerFraction={chorusMarkerFraction}
         markerColor={markerColor}
       />
       {commandButton}

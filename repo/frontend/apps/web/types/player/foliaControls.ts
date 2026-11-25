@@ -41,7 +41,20 @@ export interface CollapsedFoliaCapsuleProps {
   trackColor?: string;
   controlsDisabled?: boolean;
   rangeMarkers?: readonly ProgressRangeMarker[];
+  chorusMarkerFraction?: number | null;
   markerColor?: string;
+}
+
+export interface UseProgressChorusMarkerOptions {
+  durationMs: number;
+  enabled?: boolean;
+  lyrics?: LyricData | null;
+  songId: number | string | null;
+}
+
+export interface UseProgressChorusMarkerResult {
+  chorusMarkerFraction: number | null;
+  chorusRanges: ProgressRangeMarker[];
 }
 
 export interface ExpandedFoliaCapsuleProps extends Omit<

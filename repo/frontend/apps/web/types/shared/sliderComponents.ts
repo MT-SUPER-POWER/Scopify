@@ -31,6 +31,7 @@ export interface SmoothSliderProps {
   trackThickness?: number;
   thumbSize?: number;
   rangeMarkers?: readonly ProgressRangeMarker[];
+  chorusMarkerFraction?: number | null;
   markerAppearance?: ProgressRangeMarkerAppearance;
   markerColor?: string;
   className?: string;

@@ -7,6 +7,7 @@ import type { ShortcutCommandId } from "@/types/shortcuts/model";
 export interface PlaybackProgressBarProps {
   ariaLabel?: string;
   bufferedPositionMs?: number;
+  chorusMarkerFraction?: number | null;
   durationMs: number;
   onSeek(positionMs: number, isCommit: boolean): void;
   positionMs: number;
