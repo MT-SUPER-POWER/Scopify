@@ -113,7 +113,6 @@ export default interface Resources {
     "page.invalidId": "无效的歌手 ID";
     "popular.noTracks": "暂无热门歌曲";
     "popular.title": "热门歌曲";
-    "songs.loadMore": "加载更多歌曲";
     "songs.title": "全部歌曲";
     "toast.albumEmpty": "专辑为空";
     "toast.loadAlbumFailed": "加载专辑失败";
@@ -690,7 +689,6 @@ export default interface Resources {
     "options.machiFocusLyrics": "歌词屏";
     "options.machiFocusManual": "手动";
     "options.machiFocusOffset": "对焦前后";
-    "options.machiFollowGlobal": "默认";
     "options.machiFontSizeAutoNotice": "町景会按场景里屏幕和招牌的大小自动排歌词字号；通用字体尺寸设置在此模式下只影响底部字幕。";
     "options.machiGlow": "辉光与光条";
     "options.machiGlowHint": "夜里灯和招牌晕开的光，以及横向的镜头光条。";
@@ -894,7 +892,6 @@ export default interface Resources {
     "options.nebbiaRain_slant": "斜着";
     "options.nebbiaRain_straight": "竖直";
     "options.nebbiaRefog": "重新起雾用时";
-    "options.nebbiaResolution": "渲染分辨率";
     "options.nebbiaScenery": "窗外显示";
     "options.nebbiaSceneryHint": "窗外的聚光灯、楼群、光斑、车灯和马路都可单独开关。光斑来自霓虹、路灯和招牌。关掉马路后，车灯和光斑的倒影也会消失。";
     "options.nebbiaScenery_buildings": "楼群";
@@ -958,16 +955,10 @@ export default interface Resources {
     "options.pendoloActiveScale": "聚焦句缩放";
     "options.pendoloArcAngleDeg": "弧度角度";
     "options.pendoloArcRadius": "轮盘半径";
-    "options.pendoloCenterGradientOff": "关闭";
-    "options.pendoloCenterGradientOn": "开启";
-    "options.pendoloCoverOnWatchFaceOff": "隐藏";
-    "options.pendoloCoverOnWatchFaceOn": "显示";
     "options.pendoloEnableLineGlow": "线条发光效果";
     "options.pendoloHubView": "轮心视角（顺着刻度针看）";
     "options.pendoloHubViewBack": "视角后退距离";
     "options.pendoloHubViewHeight": "视角高度";
-    "options.pendoloLineGlowOff": "关闭";
-    "options.pendoloLineGlowOn": "开启";
     "options.pendoloMirrorLayout": "歌词左右镜像";
     "options.pendoloParallaxDepth": "分层视差（倾斜或轮心视角时生效）";
     "options.pendoloPreset1": "预设 1";
@@ -1001,6 +992,8 @@ export default interface Resources {
     "options.prismaShowTitle": "前奏聚成歌名";
     "options.prismaShowTitleHint": "前奏较长或没有歌词时显示歌名";
     "options.prismaSwarm": "唱到前的显现";
+    "options.progressBarChorusMarker": "进度条副歌标记";
+    "options.progressBarChorusMarkerDesc": "在进度条上标出歌词来源给出的副歌起点";
     "options.randomPool": "随机池";
     "options.randomPoolChoose": "选择随机池";
     "options.randomPoolCount": "已选 {{selected}}/{{total}}";
@@ -1439,14 +1432,9 @@ export default interface Resources {
     "cloud.uploadFailed": "{{name}} 上传失败";
     "cloud.uploadSuccess": "已上传 {{count}} 首歌曲";
     "cloud.uploading": "正在上传 {{current}}/{{total}} · {{percent}}%";
-    "collection.empty.albums": "还没有收藏的专辑";
-    "collection.empty.artists": "还没有关注的歌手";
-    "collection.empty.playlists": "还没有收藏的歌单";
     "collection.tab.albums": "专辑";
     "collection.tab.artists": "歌手";
     "collection.tab.playlists": "歌单";
-    "collection.tab.songs": "歌曲";
-    "collection.viewAllLiked": "查看全部 {{count}} 首";
     "empty.cloud.description": "上传本地歌曲后，它们会显示在这里。";
     "empty.cloud.title": "云盘还是空的";
     "empty.collection.description": "收藏专辑或关注歌手后，它们会显示在这里。";
@@ -1527,8 +1515,6 @@ export default interface Resources {
     "rank.range.week": "本周";
     "rank.range.year": "本年";
     "rank.yearHint": "年排行只看当前这一年。";
-    "section.albums": "收藏的专辑";
-    "section.artists": "关注的歌手";
     "title.cloud": "我的云盘";
     "title.collection": "我的收藏";
     "title.podcasts": "我的播客";
@@ -1536,11 +1522,6 @@ export default interface Resources {
     "title.recent": "最近播放";
     "voice.likeFailed": "声音喜欢状态更新失败";
     "voice.likeSuccess": "已喜欢该声音";
-    "voice.meta.lastPlayedAt": "上次播放 {{date}}";
-    "voice.meta.likedAt": "收藏于 {{date}}";
-    "voice.meta.playCount": "{{count}} 次播放";
-    "voice.meta.publishedAt": "发布于 {{date}}";
-    "voice.status.unavailable": "暂不可播放";
     "voice.unlikeSuccess": "已取消喜欢该声音";
     "voiceTranscript.empty": "该声音暂未提供文字稿。";
     "voiceTranscript.loading": "正在加载文字稿…";
@@ -2059,7 +2040,6 @@ export default interface Resources {
     unsupported: "暂不支持展示此消息";
   };
   profile: {
-    "accounts.active": "当前平台";
     "accounts.notLoggedIn": "未登录";
     "accounts.signedIn": "已登录";
     "accounts.title": "账号与平台";

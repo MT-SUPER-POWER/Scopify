@@ -1,6 +1,5 @@
 {
   "songs.title": "All Songs",
-  "songs.loadMore": "Load more songs",
   "page.invalidId": "Invalid Artist ID",
   "hero.verified": "Verified Artist",
   "hero.listeners": "{{count}} listeners",
