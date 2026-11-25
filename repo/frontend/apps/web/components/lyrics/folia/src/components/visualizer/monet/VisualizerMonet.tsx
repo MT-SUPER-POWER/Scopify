@@ -242,22 +242,29 @@ const VisualizerMonet: React.FC<VisualizerSharedProps> = (props) => {
                 transition={{ duration: 1.3, ease: [0.25, 1, 0.5, 1], delay: 0.3 }}
                 style={{ maxWidth: headerMaxWidth }}
               >
-                {/* Keep tight poster leading without clipping accents or descenders. */}
+                {/* Keep tight poster leading without clipping accents or descenders.
+                    The shadow lives on a non-clipping wrapper so line-clamp-2's overflow-hidden
+                    box does not slice its soft edge into a sharp rectangle (#1301). */}
                 <div className="mb-6 flex flex-col space-y-1">
                   <div
-                    className="leading-1.06 line-clamp-2 font-semibold"
                     style={{
-                      color: theme.primaryColor,
-                      fontSize: `clamp(1.45rem, 3.3vw, ${titleMaxRem}rem)`,
-                      letterSpacing: 0,
-                      overflowWrap: "anywhere",
-                      paddingBlock: "0.25em",
-                      marginTop: "-0.25em",
-                      marginBottom: "-0.12em",
-                      textShadow: `0 14px 36px ${colorWithAlpha(theme.backgroundColor, 0.28)}`,
+                      filter: `drop-shadow(0 14px 18px ${colorWithAlpha(theme.backgroundColor, 0.28)})`,
                     }}
                   >
-                    {songTitle || "Monet"}
+                    <div
+                      className="leading-1.06 line-clamp-2 font-semibold"
+                      style={{
+                        color: theme.primaryColor,
+                        fontSize: `clamp(1.45rem, 3.3vw, ${titleMaxRem}rem)`,
+                        letterSpacing: 0,
+                        overflowWrap: "anywhere",
+                        paddingBlock: "0.25em",
+                        marginTop: "-0.25em",
+                        marginBottom: "-0.12em",
+                      }}
+                    >
+                      {songTitle || "Monet"}
+                    </div>
                   </div>
                   <div
                     className="truncate text-sm uppercase"
