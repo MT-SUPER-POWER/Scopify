@@ -29,8 +29,7 @@ const resolvePresetGains = (preset: AudioEqualizerModeId, customGains: number[])
 export const useAudioEqualizerStore = create<AudioEqualizerStore>()(
   persist(
     (set) => ({
-      dialogTab: "quality",
-      isDialogOpen: false,
+      settingsSurface: null,
       settings: resolveAudioEqualizerSettings(DEFAULT_AUDIO_EQUALIZER_SETTINGS),
       applyPreset: (preset) =>
         set((state) => {
@@ -167,8 +166,6 @@ export const useAudioEqualizerStore = create<AudioEqualizerStore>()(
             }),
           };
         }),
-      closeDialog: () => set({ isDialogOpen: false }),
-      openDialog: (dialogTab = "quality") => set({ dialogTab, isDialogOpen: true }),
       setBandGain: (index, gain) =>
         set((state) => {
           if (index < 0 || index >= state.settings.gains.length) return state;
@@ -190,7 +187,7 @@ export const useAudioEqualizerStore = create<AudioEqualizerStore>()(
           });
           return { settings };
         }),
-      setDialogTab: (dialogTab) => set({ dialogTab }),
+      setSettingsSurface: (settingsSurface) => set({ settingsSurface }),
       setEnabled: (enabled) => set((state) => ({ settings: { ...state.settings, enabled } })),
       setEffect: (id, value) =>
         set((state) => {

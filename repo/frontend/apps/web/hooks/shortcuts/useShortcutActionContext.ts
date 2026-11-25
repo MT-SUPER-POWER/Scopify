@@ -159,9 +159,8 @@ export function useShortcutActionContext(
       },
       audio: {
         toggleAudioSettings: () => {
-          const eq = useAudioEqualizerStore.getState();
-          if (eq.isDialogOpen) eq.closeDialog();
-          else eq.openDialog("quality");
+          const { settingsSurface, setSettingsSurface } = useAudioEqualizerStore.getState();
+          setSettingsSurface(settingsSurface === null ? "quality" : null);
         },
         toggleAudioOutputDevice: () => useAudioOutputStore.getState().togglePopover(),
       },
