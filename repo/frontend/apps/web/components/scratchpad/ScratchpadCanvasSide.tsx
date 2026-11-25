@@ -1,8 +1,10 @@
 "use client";
 
-import { LocateFixed } from "lucide-react";
-import { memo, useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
+
+import ScratchpadShape from "./ScratchpadShape";
+import { memo, useEffect, useRef, useState } from "react";
+
 import type { CanvasJumpTarget } from "@/types/scratchpad/canvas";
 import type { ScratchpadCanvasSideProps } from "@/types/scratchpad/components";
 
@@ -23,6 +25,7 @@ export const ScratchpadCanvasSide = memo(function ScratchpadCanvasSide({
   targets,
   scrollRef,
   onLocate,
+  mark,
 }: ScratchpadCanvasSideProps) {
   const [inView, setInView] = useState("");
   const targetsRef = useRef(targets);
@@ -64,73 +67,48 @@ export const ScratchpadCanvasSide = memo(function ScratchpadCanvasSide({
   };
 
   return (
-    <aside className="hidden w-56 shrink-0 flex-col gap-5 overflow-y-auto border-l border-border/60 bg-surface-sunken/40 p-4 lg:flex">
+    <aside className="scratchpad-canvas-side">
       {targets.length > 1 && (
-        <nav aria-label={side.jumpLabel} className="space-y-1.5">
-          <h3 className="px-2 text-[11px] font-semibold tracking-wider text-content-muted uppercase">
-            {side.jumpLabel}
-          </h3>
-          <div className="space-y-0.5">
-            {targets.map((target) => {
-              const isVisible = visible.has(target.id);
-              return (
-                <button
-                  key={target.id}
-                  type="button"
-                  onClick={() => jumpTo(target.top)}
-                  className={cn(
-                    "flex w-full items-center justify-between gap-2 rounded-lg px-2.5 py-1.5 text-left text-xs transition-colors",
-                    isVisible
-                      ? "bg-content/10 font-medium text-content"
-                      : "text-content-muted hover:bg-content/6 hover:text-content",
-                    target.holdsFocus && "ring-1 ring-brand/35",
-                  )}
-                >
-                  <span className="flex min-w-0 items-center gap-1.5">
-                    {target.holdsFocus && (
-                      <span className="size-1.5 shrink-0 rounded-full bg-brand" />
-                    )}
-                    <span className="truncate">{target.label}</span>
-                  </span>
-                  <span className="shrink-0 text-[11px] text-content-muted tabular-nums">
-                    {target.count}
-                  </span>
-                </button>
-              );
-            })}
-          </div>
+        <nav className="scratchpad-jump" aria-label={side.jumpLabel}>
+          <span className="scratchpad-side-title">{side.jumpLabel}</span>
+          {targets.map((target) => (
+            <button
+              key={target.id}
+              type="button"
+              className={cn(
+                "scratchpad-jump-item",
+                visible.has(target.id) && "is-in-view",
+                target.holdsFocus && "is-current",
+              )}
+
+              onClick={() => jumpTo(target.top)}
+            >
+              <ScratchpadShape
+                kind={mark}
+                size={9}
+                fill="currentColor"
+                className="scratchpad-jump-mark"
+              />
+              <span className="scratchpad-jump-label">{target.label}</span>
+              <span className="scratchpad-jump-count">{target.count}</span>
+            </button>
+          ))}
         </nav>
       )}
-
       {onLocate && side.locateLabel && (
-        <button
-          type="button"
-          onClick={onLocate}
-          className="inline-flex w-full items-center justify-center gap-1.5 rounded-lg border border-border/70 bg-surface-raised px-3 py-2 text-xs font-medium text-content shadow-xs transition-colors hover:bg-content/6"
-        >
-          <LocateFixed className="size-3.5 text-brand" />
+        <button type="button" className="scratchpad-pill scratchpad-jump-locate" onClick={onLocate}>
           <span>{side.locateLabel}</span>
         </button>
       )}
-
-      <div
-        role="note"
-        aria-label={side.tipsLabel}
-        className="mt-auto space-y-2 rounded-xl border border-border/60 bg-surface-raised/60 p-3"
-      >
-        <h3 className="text-[11px] font-semibold tracking-wider text-content-muted uppercase">
-          {side.tipsLabel}
-        </h3>
-        <ul className="space-y-2">
-          {side.tips.map((tip) => (
-            <li key={tip.key} className="flex items-start justify-between gap-2 text-xs">
-              <kbd className="shrink-0 rounded-md border border-border/80 bg-surface-sunken px-1.5 py-0.5 font-mono text-[10px] font-medium text-content">
-                {tip.key}
-              </kbd>
-              <span className="text-right leading-tight text-content-muted">{tip.label}</span>
-            </li>
-          ))}
-        </ul>
+      <div className="scratchpad-tips" role="note" aria-label={side.tipsLabel}>
+        <span className="scratchpad-side-title">{side.tipsLabel}</span>
+        {side.tips.map((tip) => (
+          <span key={tip.key} className="scratchpad-tip">
+            <ScratchpadShape kind={mark} size={7} fill="var(--scratchpad-mark-dark)" />
+            <b>{tip.key}</b>
+            <span>{tip.label}</span>
+          </span>
+        ))}
       </div>
     </aside>
   );

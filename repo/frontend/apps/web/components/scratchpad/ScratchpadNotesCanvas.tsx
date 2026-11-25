@@ -175,7 +175,7 @@ export function ScratchpadNotesCanvas({
       onDelete={(selected) => removeKeys(selected.map((item) => item.key))}
       selectionActions={selectionActions}
       onEscape={onEscape}
-      spacing={spacingForDensity(density)}
+      spacing={spacingForDensity(density, "notes")}
       focusKey={currentKey ?? undefined}
       variant="note"
       side={side}

@@ -1,22 +1,17 @@
 "use client";
 
-import { AnimatePresence, motion } from "framer-motion";
-import {
-  Grid3X3,
-  History,
-  LayoutGrid,
-  ListMusic,
-  ListPlus,
-  NotebookPen,
-  Search,
-  Shuffle,
-  Trash2,
-  X,
-} from "lucide-react";
+import { useReducedMotion } from "framer-motion";
+import { Grid3X3, LayoutGrid, ListPlus, Search, Shuffle, Trash2, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { useTranslation } from "react-i18next";
+import ScratchpadSheet, { ScratchpadBandActions } from "./ScratchpadSheet";
+import { SCRATCHPAD_TABS } from "@/lib/scratchpad/scratchpadLook";
+import { useSlimOrder } from "@/hooks/scratchpad/useSlimOrder";
+import { useMediaQuery } from "@/hooks/ui/useMediaQuery";
+import { SCRATCHPAD_TILT_DEG } from "@/lib/scratchpad/scratchpadTilt";
 import { ScratchpadHistoryCanvas } from "@/components/scratchpad/ScratchpadHistoryCanvas";
+import { ScratchpadMomentsCanvas } from "@/components/scratchpad/ScratchpadMomentsCanvas";
 import { ScratchpadNotesCanvas } from "@/components/scratchpad/ScratchpadNotesCanvas";
 import { ScratchpadOverviewView } from "@/components/scratchpad/ScratchpadOverviewView";
 import { ScratchpadQueueCanvas } from "@/components/scratchpad/ScratchpadQueueCanvas";
@@ -27,17 +22,6 @@ import { usePlayerStore } from "@/store/module/player";
 import { useScratchpadStore } from "@/store/module/scratchpad";
 import { useUiStore } from "@/store/module/ui";
 import { Input } from "@scopify/ui/shadcn/components/input";
-import type { ScratchpadWorkspaceTab } from "@/types/scratchpad/model";
-
-const WORKSPACE_TABS: readonly {
-  id: ScratchpadWorkspaceTab;
-  icon: typeof NotebookPen;
-}[] = [
-  { id: "overview", icon: LayoutGrid },
-  { id: "notes", icon: NotebookPen },
-  { id: "queue", icon: ListMusic },
-  { id: "history", icon: History },
-];
 
 const PROVIDER_FILTER_IDS = ["all", "netease", "qq"] as const;
 
@@ -49,6 +33,7 @@ export default function ScratchpadWorkspace() {
   const { t } = useTranslation();
   const entries = useScratchpadStore((s) => s.entries);
   const localHistory = useScratchpadStore((s) => s.localHistory);
+  const momentsByKey = useScratchpadStore((s) => s.momentsByKey);
   const activeTab = useScratchpadStore((s) => s.workspaceTab);
   const density = useScratchpadStore((s) => s.density);
   const setWorkspaceTab = useScratchpadStore((s) => s.setWorkspaceTab);
@@ -99,156 +84,74 @@ export default function ScratchpadWorkspace() {
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [closeWorkspace]);
 
-  const countOf = (tab: ScratchpadWorkspaceTab) => {
-    if (tab === "notes") return entries.length;
-    if (tab === "queue") return queue.length;
-    if (tab === "history") return localHistory.length;
-    return null;
-  };
+  const panelTab = useScratchpadStore((s) => s.panelTab);
+  const sheetTab = activeTab === "overview" ? panelTab : activeTab;
+  const calm = Boolean(useReducedMotion());
+  const narrow = useMediaQuery("(max-width: 640px)");
+  const tilt = calm || narrow ? 0 : SCRATCHPAD_TILT_DEG;
+  const slimOrder = useSlimOrder(SCRATCHPAD_TABS, sheetTab);
 
   if (!mounted || typeof document === "undefined") return null;
 
   return createPortal(
-    <AnimatePresence>
-      <motion.div
+    <div className={cn("scratchpad-root fixed inset-0 z-40", calm && "is-calm")}>
+      <div
+        className={cn("scratchpad-drawer is-expanded", activeTab === "overview" && "is-overview")}
         role="dialog"
         aria-modal="true"
         aria-label={t("scratchpad.workspaceTitle")}
-        initial={{ opacity: 0, scale: 0.99 }}
-        animate={{ opacity: 1, scale: 1 }}
-        exit={{ opacity: 0, scale: 0.99 }}
-        transition={{ duration: 0.18, ease: [0.22, 1, 0.36, 1] }}
-        className="fixed inset-0 z-40 flex flex-col overflow-hidden bg-surface text-content"
       >
-        <header className="flex h-15 shrink-0 items-center justify-between gap-4 border-b border-border/70 bg-surface-raised/85 px-5 backdrop-blur-md">
-          <div className="flex min-w-0 items-center gap-4">
-            <div className="hidden items-center gap-2 sm:flex">
-              <span className="flex size-8 items-center justify-center rounded-lg bg-brand/12 text-brand">
-                <NotebookPen className="size-4" />
-              </span>
-              <h1 className="text-sm font-bold tracking-tight text-content">
-                {t("scratchpad.workspaceTitle")}
-              </h1>
-            </div>
-
-            <nav
-              role="tablist"
-              aria-label={t("scratchpad.workspaceTitle")}
-              className="flex items-center gap-1 rounded-full bg-surface-sunken p-1"
-            >
-              {WORKSPACE_TABS.map(({ id, icon: Icon }) => {
-                const isActive = activeTab === id;
-                const count = countOf(id);
-                const label =
-                  id === "overview"
-                    ? t("scratchpad.tabOverview")
-                    : id === "notes"
-                      ? t("scratchpad.title")
-                      : id === "queue"
-                        ? t("scratchpad.tabQueue")
-                        : t("scratchpad.tabHistory");
-                return (
-                  <button
-                    key={id}
-                    type="button"
-                    role="tab"
-                    aria-selected={isActive}
-                    onClick={() => setWorkspaceTab(id)}
-                    className={cn(
-                      "inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold transition-colors",
-                      isActive
-                        ? "bg-surface-raised text-content shadow-xs"
-                        : "text-content-muted hover:text-content",
-                    )}
-                  >
-                    <Icon className="size-3.5" />
-                    <span>{label}</span>
-                    {count !== null && count > 0 && (
-                      <span className="rounded-full bg-content/8 px-1.5 text-[10px] leading-4 text-content-muted tabular-nums">
-                        {count}
-                      </span>
-                    )}
-                  </button>
-                );
-              })}
-            </nav>
-          </div>
-
-          <div className="flex items-center gap-2">
-            {activeTab !== "overview" && (
-              <>
-                <div className="relative hidden w-48 md:block lg:w-60">
-                  <Search className="pointer-events-none absolute top-1/2 left-2.5 size-3.5 -translate-y-1/2 text-content-muted" />
-                  <Input
-                    value={searchQuery}
-                    onChange={(event) => setSearchQuery(event.target.value)}
-                    placeholder={t("scratchpad.searchPlaceholder")}
-                    className="h-8 rounded-full border-border/70 bg-surface-sunken pr-7 pl-8 text-xs"
+        <ScratchpadSheet
+          tab={sheetTab}
+          tilt={tilt}
+          calm={calm}
+          slimOrder={slimOrder}
+          notesCount={entries.length}
+          queueCount={queue.length}
+          commentsCount={Object.keys(momentsByKey).length}
+          onOpenPage={setWorkspaceTab}
+          onShowOverview={() => setWorkspaceTab("overview")}
+          onCollapse={closeWorkspace}
+          collapseLabel={t("ui.close")}
+          overview={
+            activeTab === "overview"
+              ? (sheetWidth, viewHeight) => (
+                  <ScratchpadOverviewView
+                    sheetWidth={sheetWidth}
+                    viewHeight={viewHeight}
+                    tilt={tilt}
+                    onOpenTab={setWorkspaceTab}
+                    onCloseWorkspace={closeWorkspace}
                   />
-                  {searchQuery && (
-                    <button
-                      type="button"
-                      onClick={() => setSearchQuery("")}
-                      aria-label={t("scratchpad.clearSearch")}
-                      className="absolute top-1/2 right-2 -translate-y-1/2 rounded-full p-0.5 text-content-muted hover:text-content"
-                    >
-                      <X className="size-3" />
-                    </button>
-                  )}
-                </div>
-
-                <div className="hidden items-center gap-1 rounded-full bg-surface-sunken p-0.5 xl:flex">
-                  {PROVIDER_FILTER_IDS.map((filterId) => (
-                    <button
-                      key={filterId}
-                      type="button"
-                      onClick={() => setProviderFilter(filterId)}
-                      className={cn(
-                        "rounded-full px-2.5 py-1 text-[11px] font-medium transition-colors",
-                        providerFilter === filterId
-                          ? "bg-surface-raised text-content shadow-xs"
-                          : "text-content-muted hover:text-content",
-                      )}
-                    >
-                      {filterId === "all"
-                        ? t("scratchpad.filterAll")
-                        : filterId === "netease"
-                          ? t("scratchpad.providerNetease")
-                          : t("scratchpad.providerQq")}
-                    </button>
-                  ))}
-                </div>
-
-                <button
-                  type="button"
-                  onClick={() => setDensity(density === "standard" ? "compact" : "standard")}
-                  title={t(
-                    density === "standard"
-                      ? "scratchpad.densityCompact"
-                      : "scratchpad.densityStandard",
-                  )}
-                  aria-label={t(
-                    density === "standard"
-                      ? "scratchpad.densityCompact"
-                      : "scratchpad.densityStandard",
-                  )}
-                  className="flex size-8 items-center justify-center rounded-full bg-content/8 text-content-muted transition-colors hover:bg-content/14 hover:text-content"
-                >
-                  {density === "standard" ? (
-                    <Grid3X3 className="size-4" />
-                  ) : (
-                    <LayoutGrid className="size-4" />
-                  )}
-                </button>
-              </>
-            )}
+                )
+              : null
+          }
+        >
+          <ScratchpadBandActions>
+            <button
+              type="button"
+              onClick={() => setDensity(density === "standard" ? "compact" : "standard")}
+              title={t(
+                density === "standard" ? "scratchpad.densityCompact" : "scratchpad.densityStandard",
+              )}
+              aria-label={t(
+                density === "standard" ? "scratchpad.densityCompact" : "scratchpad.densityStandard",
+              )}
+              className="scratchpad-pill is-icon"
+            >
+              {density === "standard" ? (
+                <Grid3X3 className="size-4" />
+              ) : (
+                <LayoutGrid className="size-4" />
+              )}
+            </button>
 
             {activeTab === "notes" && entries.length > 0 && (
               <>
                 <button
                   type="button"
                   onClick={() => actions.enqueueTracks(entries.map((entry) => entry.track))}
-                  className="hidden items-center gap-1.5 rounded-full bg-content px-3 py-1.5 text-xs font-semibold text-surface transition-opacity hover:opacity-90 sm:inline-flex"
+                  className="scratchpad-pill is-solid"
                 >
                   <ListPlus className="size-3.5" />
                   <span>{t("scratchpad.enqueueAll")}</span>
@@ -263,7 +166,7 @@ export default function ScratchpadWorkspace() {
                     }
                   }}
                   className={cn(
-                    "inline-flex items-center gap-1 rounded-full px-3 py-1.5 text-xs font-medium transition-colors",
+                    "scratchpad-pill",
                     confirmClear
                       ? "bg-destructive text-white"
                       : "bg-content/8 text-content-muted hover:text-destructive",
@@ -276,11 +179,7 @@ export default function ScratchpadWorkspace() {
             )}
 
             {activeTab === "queue" && queue.length > 1 && !isFm && (
-              <button
-                type="button"
-                onClick={() => reshuffleQueue()}
-                className="inline-flex items-center gap-1.5 rounded-full bg-content/8 px-3 py-1.5 text-xs font-medium text-content transition-colors hover:bg-content/14"
-              >
+              <button type="button" onClick={() => reshuffleQueue()} className="scratchpad-pill">
                 <Shuffle className="size-3.5" />
                 <span>{t("scratchpad.shuffleQueue")}</span>
               </button>
@@ -297,7 +196,7 @@ export default function ScratchpadWorkspace() {
                   }
                 }}
                 className={cn(
-                  "inline-flex items-center gap-1 rounded-full px-3 py-1.5 text-xs font-medium transition-colors",
+                  "scratchpad-pill",
                   confirmClear
                     ? "bg-destructive text-white"
                     : "bg-content/8 text-content-muted hover:text-destructive",
@@ -309,51 +208,87 @@ export default function ScratchpadWorkspace() {
                 </span>
               </button>
             )}
+          </ScratchpadBandActions>
+          <div className="scratchpad-panel">
+            <div className="flex shrink-0 flex-wrap items-center gap-2 px-2 pb-1">
+              <div className="relative min-w-24 flex-1 sm:max-w-60">
+                <Search className="pointer-events-none absolute top-1/2 left-2.5 size-3.5 -translate-y-1/2 text-content-muted" />
+                <Input
+                  value={searchQuery}
+                  onChange={(event) => setSearchQuery(event.target.value)}
+                  placeholder={t("scratchpad.searchPlaceholder")}
+                  className="h-7 rounded-none border-0 bg-surface-raised pr-7 pl-8 text-xs"
+                />
+                {searchQuery && (
+                  <button
+                    type="button"
+                    onClick={() => setSearchQuery("")}
+                    aria-label={t("scratchpad.clearSearch")}
+                    className="absolute top-1/2 right-2 -translate-y-1/2 rounded-full p-0.5 text-content-muted hover:text-content"
+                  >
+                    <X className="size-3" />
+                  </button>
+                )}
+              </div>
 
-            <button
-              type="button"
-              onClick={() => closeWorkspace()}
-              aria-label={t("ui.close")}
-              title={`${t("ui.close")} (Esc)`}
-              className="flex size-8 items-center justify-center rounded-full bg-content/8 text-content transition-colors hover:bg-content/16"
-            >
-              <X className="size-4" />
-            </button>
+              <div className="flex items-center gap-1">
+                {PROVIDER_FILTER_IDS.map((filterId) => (
+                  <button
+                    key={filterId}
+                    type="button"
+                    onClick={() => setProviderFilter(filterId)}
+                    className={cn(
+                      "scratchpad-pill is-small",
+                      providerFilter === filterId
+                        ? "is-solid"
+                        : "text-content-muted hover:text-content",
+                    )}
+                  >
+                    {filterId === "all"
+                      ? t("scratchpad.filterAll")
+                      : filterId === "netease"
+                        ? t("scratchpad.providerNetease")
+                        : t("scratchpad.providerQq")}
+                  </button>
+                ))}
+              </div>
+            </div>
+            {activeTab === "notes" && (
+              <ScratchpadNotesCanvas
+                searchQuery={searchQuery}
+                providerFilter={providerFilter}
+                density={density}
+                onEscape={closeWorkspace}
+              />
+            )}
+            {activeTab === "queue" && (
+              <ScratchpadQueueCanvas
+                searchQuery={searchQuery}
+                providerFilter={providerFilter}
+                density={density}
+                onEscape={closeWorkspace}
+              />
+            )}
+            {activeTab === "history" && (
+              <ScratchpadHistoryCanvas
+                searchQuery={searchQuery}
+                providerFilter={providerFilter}
+                density={density}
+                onEscape={closeWorkspace}
+              />
+            )}
+            {activeTab === "moments" && (
+              <ScratchpadMomentsCanvas
+                searchQuery={searchQuery}
+                providerFilter={providerFilter}
+                density={density}
+                onEscape={closeWorkspace}
+              />
+            )}
           </div>
-        </header>
-
-        {activeTab === "overview" && (
-          <ScratchpadOverviewView
-            onOpenTab={(tab) => setWorkspaceTab(tab)}
-            onCloseWorkspace={closeWorkspace}
-          />
-        )}
-        {activeTab === "notes" && (
-          <ScratchpadNotesCanvas
-            searchQuery={searchQuery}
-            providerFilter={providerFilter}
-            density={density}
-            onEscape={closeWorkspace}
-          />
-        )}
-        {activeTab === "queue" && (
-          <ScratchpadQueueCanvas
-            searchQuery={searchQuery}
-            providerFilter={providerFilter}
-            density={density}
-            onEscape={closeWorkspace}
-          />
-        )}
-        {activeTab === "history" && (
-          <ScratchpadHistoryCanvas
-            searchQuery={searchQuery}
-            providerFilter={providerFilter}
-            density={density}
-            onEscape={closeWorkspace}
-          />
-        )}
-      </motion.div>
-    </AnimatePresence>,
+        </ScratchpadSheet>
+      </div>
+    </div>,
     document.body,
   );
 }

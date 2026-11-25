@@ -237,7 +237,7 @@ export function ScratchpadQueueCanvas({
       onDelete={readOnly ? undefined : (selected) => runBatch("remove", selected)}
       selectionActions={selectionActions}
       onEscape={onEscape}
-      spacing={spacingForDensity(density)}
+      spacing={spacingForDensity(density, "queue")}
       focusKey={focusKey}
       variant="queue"
       side={side}

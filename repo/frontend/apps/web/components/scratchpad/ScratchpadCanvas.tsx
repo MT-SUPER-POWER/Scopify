@@ -1,5 +1,6 @@
 "use client";
 
+import { clientToLocal } from "@/lib/scratchpad/scratchpadTilt";
 import { SquareCheck, X } from "lucide-react";
 import {
   useCallback,
@@ -92,8 +93,11 @@ function bandOf(scrollTop: number, height: number): BandRange {
 }
 
 function clientToElementLocal(element: HTMLElement, clientX: number, clientY: number): CanvasPoint {
-  const rect = element.getBoundingClientRect();
-  return { x: clientX - rect.left, y: clientY - rect.top };
+  const sheet = element.closest(".scratchpad-f-sheet");
+  const matrix = sheet && getComputedStyle(sheet).transform;
+  const transform = matrix && matrix !== "none" ? new DOMMatrixReadOnly(matrix) : null;
+  const deg = transform ? (Math.atan2(transform.b, transform.a) * 180) / Math.PI : 0;
+  return clientToLocal(element, { x: clientX, y: clientY }, deg);
 }
 
 /**
@@ -467,7 +471,10 @@ export function ScratchpadCanvas<E extends CanvasEntry>({
       return;
     }
     const scroller = scrollRef.current;
-    if (scroller && event.clientX - scroller.getBoundingClientRect().left >= scroller.clientWidth) {
+    if (
+      scroller &&
+      clientToElementLocal(scroller, event.clientX, event.clientY).x >= scroller.clientWidth
+    ) {
       return;
     }
     scrollRef.current?.focus({ preventScroll: true });
@@ -609,7 +616,12 @@ export function ScratchpadCanvas<E extends CanvasEntry>({
   }, [focusTop]);
 
   return (
-    <div className="flex min-h-0 flex-1 overflow-hidden">
+    <div
+      className={cn(
+        "flex min-h-0 flex-1 overflow-hidden",
+        spacing.card.height === 102 ? "scratchpad-compact" : "scratchpad-full-cards",
+      )}
+    >
       <div
         ref={scrollRef}
         role="listbox"
@@ -649,17 +661,15 @@ export function ScratchpadCanvas<E extends CanvasEntry>({
 
               return (
                 <section key={group.key} className="space-y-3">
-                  <header className="flex flex-wrap items-center justify-between gap-2">
+                  <header className="scratchpad-group-header flex-wrap">
                     <div className="flex min-w-0 items-baseline gap-2.5">
-                      <h2 className="truncate text-base font-bold text-content">{group.label}</h2>
+                      <h2 className="scratchpad-group-label">{group.label}</h2>
                       {group.sublabel && (
                         <span className="truncate text-xs text-content-muted">
                           {group.sublabel}
                         </span>
                       )}
-                      <span className="rounded-full bg-content/8 px-2 py-0.5 text-xs font-medium text-content-muted tabular-nums">
-                        {group.entries.length}
-                      </span>
+                      <span className="scratchpad-group-count">{group.entries.length}</span>
                     </div>
 
                     <div className="flex flex-wrap items-center gap-1.5">
@@ -805,6 +815,15 @@ export function ScratchpadCanvas<E extends CanvasEntry>({
 
       {side && (
         <ScratchpadCanvasSide
+          mark={
+            variant === "queue"
+              ? "chev"
+              : variant === "history"
+                ? "tri"
+                : variant === "moment"
+                  ? "bracket"
+                  : "circle"
+          }
           side={side}
           targets={jumpTargets}
           scrollRef={scrollRef}

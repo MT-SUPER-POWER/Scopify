@@ -1,4 +1,5 @@
-import type { PointerEvent, RefObject } from "react";
+import type { PointerEvent, ReactNode, RefObject } from "react";
+import type { LucideIcon } from "lucide-react";
 import type {
   CanvasAction,
   CanvasCardVariant,
@@ -9,7 +10,22 @@ import type {
   CanvasSpacing,
   CardMotion,
 } from "@/types/scratchpad/canvas";
-import type { ScratchpadCardDensity, ScratchpadWorkspaceTab } from "@/types/scratchpad/model";
+import type {
+  LocalHistoryEntry,
+  ScratchpadCardDensity,
+  ScratchpadEntry,
+  ScratchpadGroup,
+  ScratchpadWorkspaceTab,
+} from "@/types/scratchpad/model";
+
+export type ScratchpadSection = Exclude<ScratchpadWorkspaceTab, "overview">;
+
+export interface ScratchpadEmptyProps {
+  icon: LucideIcon;
+  title: string;
+  description?: string;
+  children?: ReactNode;
+}
 
 export interface ScratchpadCardProps {
   entry: CanvasEntry;
@@ -30,6 +46,7 @@ export interface ScratchpadCardProps {
 }
 
 export interface ScratchpadCanvasSideProps {
+  mark: import("@/lib/scratchpad/scratchpadLook").ScratchpadShapeKind;
   side: CanvasSideConfig;
   targets: readonly CanvasJumpTarget[];
   scrollRef: RefObject<HTMLDivElement | null>;
@@ -62,6 +79,50 @@ export interface ScratchpadFilterProps {
 }
 
 export interface ScratchpadOverviewViewProps {
+  sheetWidth: number;
+  viewHeight: number;
+  tilt: number;
   onOpenTab: (tab: Exclude<ScratchpadWorkspaceTab, "overview">) => void;
   onCloseWorkspace: () => void;
+}
+
+export interface ScratchpadPanelGroupProps {
+  group: ScratchpadGroup;
+  currentKey: string | null;
+  freshKeys: ReadonlySet<string>;
+  onMove: (fromIndex: number, toIndex: number) => void;
+  onPlay: (entry: ScratchpadEntry) => void;
+  onEnqueueGroup: () => void;
+  onSaveGroup: () => void;
+  onEnqueueEntry: (entry: ScratchpadEntry) => void;
+  onSaveEntry: (entry: ScratchpadEntry) => void;
+  onRemoveEntry: (entry: ScratchpadEntry) => void;
+}
+
+export interface SortableScratchpadRowProps {
+  entry: ScratchpadEntry;
+  isActive: boolean;
+  isFresh: boolean;
+  onPlay: () => void;
+  onEnqueue: () => void;
+  onSave: () => void;
+  onRemove: () => void;
+}
+
+export interface HistoryListRowProps {
+  entry: LocalHistoryEntry;
+  isActive: boolean;
+  isCollected: boolean;
+  timeLabel: string;
+  sourceLabel: string;
+  onPlay: () => void;
+  onEnqueue: () => void;
+  onCollect: () => void;
+  onSave: () => void;
+  onRemove: () => void;
+}
+
+export interface OverviewEntry extends CanvasEntry {
+  row: ScratchpadSection;
+  sourceKey: string;
 }

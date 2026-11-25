@@ -1,0 +1,3765 @@
+/* Folia v0.8.0 scratchpad.css and comments.css, adapted for the Scopify host.
+ * Source: https://github.com/chthollyphile/folia-major/tree/3b91924f1/src/components/app/scratchpad
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+.scratchpad-root {
+  --scratchpad-paper: color-mix(in srgb, #f4f0e6 96%, var(--primary));
+  --scratchpad-ink: #141414;
+  --scratchpad-rail: var(--background);
+  --scratchpad-sheet: var(--card);
+  --scratchpad-raise: var(--secondary);
+  --scratchpad-fresh: color-mix(in srgb, var(--primary) 14%, var(--card));
+  --scratchpad-press: var(--accent);
+  --scratchpad-hollow: var(--scratchpad-rail);
+  --scratchpad-text: var(--foreground);
+  --scratchpad-text-soft: var(--muted-foreground);
+  --scratchpad-rule: color-mix(in srgb, var(--foreground) 8%, transparent);
+  --scratchpad-mark: oklch(from var(--primary) min(l, 0.52) c h);
+  --scratchpad-mark-wall: oklch(from var(--primary) min(l, 0.52) c h);
+  --scratchpad-mark-dark: oklch(from var(--primary) max(l, 0.68) c h);
+  color: var(--scratchpad-text);
+}
+.dark .scratchpad-root {
+  --scratchpad-mark-wall: var(--scratchpad-mark-dark);
+}
+
+.scratchpad-drawer {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 95;
+  display: flex;
+  width: var(--scratchpad-width);
+  background: var(--scratchpad-sheet);
+  box-shadow: 0 24px 64px rgb(0 0 0 / 42%);
+  isolation: isolate;
+  pointer-events: auto;
+}
+
+:root:not(.dark) .scratchpad-root .scratchpad-drawer {
+  box-shadow: 0 24px 64px rgb(42 35 27 / 18%);
+}
+
+.scratchpad-drawer.is-expanded {
+  --scratchpad-scrim: rgb(12 11 16 / 80%);
+  --scratchpad-veil: rgb(12 11 16 / 86%);
+  --scratchpad-text-soft: rgb(244 241 234 / 80%);
+  --scratchpad-wall-shadow: 0 1px 3px rgb(0 0 0 / 70%);
+  right: 0;
+  display: block;
+  width: auto;
+  overflow: hidden;
+
+  background: none;
+  box-shadow: none;
+}
+
+:root:not(.dark) .scratchpad-root .scratchpad-drawer.is-expanded {
+  --scratchpad-scrim: rgb(235 233 228 / 80%);
+  --scratchpad-veil: rgb(235 233 228 / 90%);
+  --scratchpad-text-soft: rgb(20 20 20 / 76%);
+  --scratchpad-wall-shadow: 0 1px 3px rgb(255 255 255 / 80%);
+}
+
+.scratchpad-greeting {
+  margin: 0;
+}
+.scratchpad-greeting svg {
+  width: 13px;
+  height: 13px;
+  flex: none;
+}
+
+.scratchpad-panel:focus {
+  outline: none;
+}
+
+.scratchpad-icon-button {
+  display: grid;
+  width: 32px;
+  height: 32px;
+  flex: none;
+  place-items: center;
+  padding: 0;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  color: inherit;
+  opacity: 0.86;
+  cursor: pointer;
+}
+
+.scratchpad-icon-button:hover {
+  background: var(--scratchpad-press);
+  opacity: 1;
+}
+.scratchpad-icon-button:disabled {
+  opacity: 0.25;
+  cursor: default;
+  background: transparent;
+}
+.scratchpad-icon-button:focus-visible {
+  outline: 2px solid var(--scratchpad-mark-wall);
+  outline-offset: 1px;
+}
+.scratchpad-icon-button svg {
+  width: 15px;
+  height: 15px;
+}
+
+.scratchpad-panel {
+  display: flex;
+  min-height: 0;
+  flex: 1 1 auto;
+  flex-direction: column;
+}
+
+.scratchpad-panel-page {
+  display: flex;
+  min-height: 0;
+  flex: 1 1 auto;
+  flex-direction: column;
+}
+
+.scratchpad-hint {
+  flex: none;
+  margin: 8px 14px 14px 18px;
+  color: var(--scratchpad-text-soft);
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.scratchpad-list {
+  min-height: 0;
+  flex: 1 1 auto;
+  padding: 0 0 6px;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.scratchpad-list::-webkit-scrollbar,
+.scratchpad-canvas::-webkit-scrollbar {
+  width: 10px;
+}
+
+.scratchpad-list::-webkit-scrollbar-track,
+.scratchpad-canvas::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.scratchpad-list::-webkit-scrollbar-button,
+.scratchpad-canvas::-webkit-scrollbar-button {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
+.scratchpad-list::-webkit-scrollbar-thumb,
+.scratchpad-canvas::-webkit-scrollbar-thumb {
+  border: 3px solid transparent;
+  border-radius: 5px;
+  background: rgb(255 255 255 / 20%);
+  background-clip: content-box;
+}
+
+.scratchpad-list::-webkit-scrollbar-thumb:hover,
+.scratchpad-canvas::-webkit-scrollbar-thumb:hover {
+  background: rgb(255 255 255 / 34%);
+  background-clip: content-box;
+}
+
+:root:not(.dark) .scratchpad-root .scratchpad-list::-webkit-scrollbar-thumb,
+:root:not(.dark) .scratchpad-root .scratchpad-canvas::-webkit-scrollbar-thumb {
+  background: rgb(0 0 0 / 20%);
+  background-clip: content-box;
+}
+
+:root:not(.dark) .scratchpad-root .scratchpad-list::-webkit-scrollbar-thumb:hover,
+:root:not(.dark) .scratchpad-root .scratchpad-canvas::-webkit-scrollbar-thumb:hover {
+  background: rgb(0 0 0 / 34%);
+  background-clip: content-box;
+}
+
+.scratchpad-list ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.scratchpad-list-group + .scratchpad-list-group {
+  margin-top: 10px;
+}
+
+.scratchpad-group-header {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  display: flex;
+  height: 34px;
+  align-items: center;
+  gap: 8px;
+  padding: 0 8px 0 18px;
+  background: var(--scratchpad-sheet);
+}
+
+.scratchpad-canvas .scratchpad-group-header {
+  padding: 0 4px 0 10px;
+  border-radius: 10px;
+  background: rgb(255 255 255 / 6%);
+}
+
+:root:not(.dark) .scratchpad-root .scratchpad-canvas .scratchpad-group-header {
+  background: rgb(255 255 255 / 40%);
+}
+
+.scratchpad-group-label {
+  min-width: 0;
+  overflow: hidden;
+  font-size: 14px;
+  font-weight: 900;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.scratchpad-group-count {
+  flex: none;
+  color: var(--scratchpad-text-soft);
+  font-size: 11.5px;
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+}
+
+.scratchpad-canvas .scratchpad-group-label {
+  font-size: 12px;
+  font-weight: 700;
+}
+.scratchpad-canvas .scratchpad-group-count {
+  flex: 1 1 auto;
+  color: inherit;
+  font-weight: 400;
+  opacity: 0.5;
+}
+
+.scratchpad-group-rule {
+  width: 28px;
+  height: 3px;
+  flex: none;
+  background: var(--scratchpad-mark-wall);
+}
+.scratchpad-group-actions {
+  display: flex;
+  flex: none;
+  gap: 2px;
+  margin-left: auto;
+}
+.scratchpad-group-actions .scratchpad-icon-button {
+  width: 30px;
+  height: 30px;
+}
+.scratchpad-group-actions .scratchpad-icon-button svg {
+  width: 15px;
+  height: 15px;
+}
+
+.scratchpad-empty {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 24px 32px 48px;
+  text-align: center;
+}
+
+.scratchpad-empty svg {
+  width: 28px;
+  height: 28px;
+  opacity: 0.35;
+}
+.scratchpad-empty p {
+  margin: 0;
+  color: var(--scratchpad-text-soft);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.scratchpad-row {
+  position: relative;
+  display: flex;
+  height: 52px;
+  align-items: center;
+  gap: 14px;
+  padding: 0 8px 0 18px;
+  content-visibility: auto;
+  contain-intrinsic-size: auto 52px;
+}
+
+.scratchpad-row:hover,
+.scratchpad-row:focus-within {
+  background: var(--scratchpad-raise);
+}
+
+.scratchpad-row.is-fresh {
+  animation: scratchpad-row-fresh 1.4s ease-out;
+}
+
+@keyframes scratchpad-row-fresh {
+  0% {
+    background-color: var(--scratchpad-fresh);
+  }
+  100% {
+    background-color: transparent;
+  }
+}
+
+.scratchpad-cover {
+  width: 40px;
+  height: 40px;
+  flex: none;
+  overflow: hidden;
+  background: rgb(255 255 255 / 8%);
+}
+
+:root:not(.dark) .scratchpad-root .scratchpad-cover {
+  background: rgb(0 0 0 / 6%);
+}
+.scratchpad-cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.scratchpad-song {
+  display: flex;
+  min-width: 0;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: 2px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.scratchpad-song:focus-visible {
+  outline: none;
+}
+.scratchpad-row:has(.scratchpad-song:focus-visible) {
+  box-shadow: inset 0 0 0 2px var(--scratchpad-mark-wall);
+}
+
+.scratchpad-name,
+.scratchpad-meta {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.scratchpad-name {
+  font-size: 14px;
+  font-weight: 800;
+}
+.scratchpad-meta {
+  margin-top: 1px;
+  color: var(--scratchpad-text-soft);
+  font-size: 11.5px;
+}
+
+.scratchpad-row-actions {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 0 8px 0 28px;
+
+  background: linear-gradient(to right, transparent, var(--scratchpad-raise) 28px);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.scratchpad-row:hover .scratchpad-row-actions,
+.scratchpad-row:focus-within .scratchpad-row-actions {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.scratchpad-row-actions .scratchpad-icon-button {
+  width: 30px;
+  height: 30px;
+}
+.scratchpad-row-actions .scratchpad-icon-button svg {
+  width: 15px;
+  height: 15px;
+}
+
+.scratchpad-footer {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 6px;
+  padding: 14px 14px 22px 18px;
+}
+
+.scratchpad-footer-spacer {
+  flex: 1 1 auto;
+}
+
+.scratchpad-footer-hint {
+  color: var(--scratchpad-text-soft);
+  font-size: 11.5px;
+  font-weight: 700;
+  line-height: 1.5;
+}
+
+.scratchpad-pill {
+  display: inline-flex;
+  height: 32px;
+  min-width: 0;
+  flex: 0 1 auto;
+  box-sizing: border-box;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 0 11px;
+  border: 2px solid var(--scratchpad-text);
+  border-radius: 0;
+  background: transparent;
+  color: var(--scratchpad-text);
+  font: inherit;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.scratchpad-pill:hover:not(:disabled),
+.scratchpad-pill.is-solid {
+  background: var(--scratchpad-text);
+  color: var(--scratchpad-sheet);
+}
+.scratchpad-pill.is-solid:hover:not(:disabled) {
+  opacity: 0.86;
+}
+.scratchpad-pill:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+.scratchpad-pill.is-icon {
+  width: 32px;
+  flex: none;
+  padding: 0;
+}
+.scratchpad-pill:focus-visible {
+  outline: 2px solid var(--scratchpad-mark-wall);
+  outline-offset: 2px;
+}
+.scratchpad-pill svg {
+  width: 14px;
+  height: 14px;
+  flex: none;
+}
+.scratchpad-pill span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.scratchpad-pill.is-confirming,
+.scratchpad-pill.is-confirming:hover {
+  border-color: var(--scratchpad-mark-wall);
+  background: var(--scratchpad-mark-wall);
+  color: var(--scratchpad-sheet);
+}
+
+.scratchpad-canvas {
+  position: relative;
+  min-height: 0;
+  flex: 1 1 auto;
+  overflow-x: hidden;
+  overflow-y: auto;
+  outline: none;
+  user-select: none;
+
+  touch-action: pan-y;
+}
+
+.scratchpad-canvas-content {
+  position: relative;
+  min-height: 100%;
+  padding: 0 16px 24px;
+}
+
+.scratchpad-canvas-group + .scratchpad-canvas-group {
+  margin-top: 14px;
+}
+
+.scratchpad-grid {
+  position: relative;
+  margin-top: 10px;
+}
+
+.scratchpad-card {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 6px 6px 8px;
+  border: 1px solid rgb(255 255 255 / 8%);
+  border-radius: 14px;
+
+  background: rgb(34 34 37);
+  cursor: grab;
+
+  touch-action: pan-y;
+  -webkit-touch-callout: none;
+}
+
+:root:not(.dark) .scratchpad-root .scratchpad-card:not(.is-note, .is-photo, .is-film) {
+  border-color: rgb(0 0 0 / 7%);
+  background: rgb(250 249 246);
+}
+.scratchpad-card:hover {
+  background: rgb(44 44 48);
+}
+:root:not(.dark) .scratchpad-root .scratchpad-card:not(.is-note, .is-photo, .is-film):hover {
+  background: rgb(255 255 255);
+}
+
+.scratchpad-card.is-selected {
+  border-color: var(--text-accent, rgb(255 255 255 / 70%));
+  box-shadow: 0 0 0 1px var(--text-accent, rgb(255 255 255 / 70%)) inset;
+}
+
+:root:not(.dark) .scratchpad-root .scratchpad-card.is-selected {
+  border-color: rgb(24 20 16 / 70%);
+  box-shadow: 0 0 0 1px rgb(24 20 16 / 70%) inset;
+}
+
+.scratchpad-card.is-moving {
+  z-index: 10;
+  will-change: transform;
+  cursor: grabbing;
+  box-shadow: 0 18px 40px rgb(0 0 0 / 45%);
+}
+
+.scratchpad-card.is-fresh {
+  animation: scratchpad-row-fresh 1.4s ease-out;
+}
+
+.scratchpad-card-count {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  z-index: 1;
+  min-width: 22px;
+  height: 22px;
+  padding: 0 6px;
+  border-radius: 999px;
+  background: var(--text-accent, rgb(255 255 255 / 92%));
+  color: rgb(0 0 0 / 85%);
+  font-size: 11.5px;
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+  line-height: 22px;
+  text-align: center;
+}
+
+.scratchpad-card-cover {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1;
+  overflow: hidden;
+  border-radius: 9px;
+  background: rgb(255 255 255 / 8%);
+}
+
+:root:not(.dark) .scratchpad-root .scratchpad-card-cover {
+  background: rgb(0 0 0 / 6%);
+}
+.scratchpad-card-cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  pointer-events: none;
+}
+
+.scratchpad-card-placeholder {
+  display: grid;
+  width: 100%;
+  height: 100%;
+  place-items: center;
+  opacity: 0.4;
+}
+
+.scratchpad-card-placeholder svg {
+  width: 28px;
+  height: 28px;
+}
+
+.scratchpad-card-play {
+  position: absolute;
+  right: 6px;
+  bottom: 6px;
+  display: grid;
+  width: 30px;
+  height: 30px;
+  place-items: center;
+  padding: 0;
+  border: none;
+  border-radius: 999px;
+  background: rgb(255 255 255 / 92%);
+  color: rgb(0 0 0 / 85%);
+  opacity: 0;
+  cursor: pointer;
+  transition: opacity 0.12s ease;
+}
+
+.scratchpad-card:hover .scratchpad-card-play,
+.scratchpad-card-play:focus-visible {
+  opacity: 1;
+}
+.scratchpad-card.is-moving .scratchpad-card-play {
+  opacity: 0;
+}
+.scratchpad-card-play svg {
+  width: 13px;
+  height: 13px;
+  margin-left: 1px;
+}
+
+.scratchpad-card-name,
+.scratchpad-card-meta {
+  overflow: hidden;
+  padding: 0 2px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.scratchpad-card-name {
+  margin-top: 3px;
+  font-size: 12.5px;
+  font-weight: 600;
+}
+.scratchpad-card-meta {
+  font-size: 11px;
+  opacity: 0.55;
+}
+
+.scratchpad-marquee {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 20;
+  border: 1px solid var(--text-accent, rgb(255 255 255 / 70%));
+  border-radius: 4px;
+  background: rgb(255 255 255 / 8%);
+  pointer-events: none;
+}
+
+.scratchpad-marquee[hidden] {
+  display: none;
+}
+
+.scratchpad-canvas.is-box-selecting .scratchpad-card,
+.scratchpad-canvas.is-box-selecting .scratchpad-card-cover img,
+.scratchpad-canvas.is-box-selecting .scratchpad-card-name,
+.scratchpad-canvas.is-box-selecting .scratchpad-card-meta {
+  transition: none;
+}
+
+.scratchpad-selection-menu {
+  position: absolute;
+  left: 0;
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 4px;
+  border: 1px solid rgb(255 255 255 / 12%);
+  border-radius: 14px;
+  background: rgb(28 28 31);
+  box-shadow: 0 12px 32px rgb(0 0 0 / 45%);
+  white-space: nowrap;
+  animation: scratchpad-menu-in 0.14s ease-out;
+}
+
+.scratchpad-selection-menu.is-above {
+  transform: translateY(-100%);
+}
+
+@keyframes scratchpad-menu-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+:root:not(.dark) .scratchpad-root .scratchpad-selection-menu {
+  border-color: rgb(0 0 0 / 8%);
+  background: rgb(252 251 249);
+  box-shadow: 0 12px 32px rgb(42 35 27 / 18%);
+}
+
+.scratchpad-selection-count {
+  padding: 0 8px 0 6px;
+  font-size: 12.5px;
+  font-weight: 650;
+  font-variant-numeric: tabular-nums;
+}
+
+.scratchpad-menu-button {
+  display: inline-flex;
+  height: 30px;
+  align-items: center;
+  gap: 6px;
+  padding: 0 10px;
+  border: none;
+  border-radius: 10px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: 12.5px;
+  cursor: pointer;
+}
+
+.scratchpad-menu-button svg {
+  width: 15px;
+  height: 15px;
+  flex: none;
+}
+.scratchpad-menu-button:hover {
+  background: rgb(255 255 255 / 10%);
+}
+:root:not(.dark) .scratchpad-root .scratchpad-menu-button:hover {
+  background: rgb(0 0 0 / 6%);
+}
+.scratchpad-menu-button:disabled {
+  opacity: 0.35;
+  cursor: default;
+  background: transparent;
+}
+.scratchpad-menu-button:focus-visible {
+  outline: 2px solid var(--text-accent, currentColor);
+  outline-offset: 1px;
+}
+
+@media (max-width: 520px) {
+  .scratchpad-menu-button span {
+    display: none;
+  }
+  .scratchpad-menu-button {
+    padding: 0 8px;
+  }
+}
+
+.scratchpad-table {
+  position: relative;
+  display: flex;
+  min-height: 0;
+  flex: 1 1 auto;
+  flex-direction: column;
+}
+
+.scratchpad-table-scroll {
+  flex: 1 1 auto;
+  padding: 0;
+}
+
+.scratchpad-table-row {
+  height: 56px;
+  box-sizing: border-box;
+  contain-intrinsic-size: auto 56px;
+}
+
+.scratchpad-card.is-current .scratchpad-card-name {
+  color: var(--text-accent, inherit);
+}
+
+.scratchpad-card.is-current .scratchpad-card-cover::after {
+  position: absolute;
+  top: 7px;
+  left: 7px;
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: var(--text-accent, rgb(255 255 255 / 90%));
+  box-shadow: 0 0 0 2px rgb(0 0 0 / 35%);
+  content: "";
+}
+
+.scratchpad-card .scratchpad-card-name,
+.scratchpad-card .scratchpad-card-meta {
+  transition: opacity 0.45s ease;
+}
+.scratchpad-card.is-dimmed:not(:hover, .is-selected) .scratchpad-card-cover img {
+  filter: grayscale(1);
+  opacity: 0.55;
+}
+.scratchpad-card.is-dimmed:not(:hover, .is-selected) .scratchpad-card-name,
+.scratchpad-card.is-dimmed:not(:hover, .is-selected) .scratchpad-card-meta {
+  opacity: 0.5;
+}
+
+.scratchpad-root {
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.scratchpad-row {
+  transition:
+    background-color 0.16s ease,
+    translate 0.22s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.scratchpad-row:hover {
+  translate: 2px 0;
+}
+
+.scratchpad-cover img {
+  transition: scale 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.scratchpad-card-cover img {
+  transition:
+    scale 0.28s cubic-bezier(0.22, 1, 0.36, 1),
+    filter 0.45s ease,
+    opacity 0.45s ease;
+}
+
+.scratchpad-row:hover .scratchpad-cover img {
+  scale: 1.07;
+}
+
+.scratchpad-row-actions {
+  translate: 6px 0;
+  transition:
+    opacity 0.16s ease,
+    translate 0.22s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.scratchpad-row:hover .scratchpad-row-actions,
+.scratchpad-row:focus-within .scratchpad-row-actions {
+  translate: 0 0;
+}
+
+.scratchpad-icon-button {
+  transition:
+    background-color 0.14s ease,
+    opacity 0.14s ease,
+    scale 0.14s ease;
+}
+
+.scratchpad-icon-button:hover:not(:disabled) {
+  scale: 1.08;
+}
+.scratchpad-icon-button:active:not(:disabled) {
+  scale: 0.94;
+}
+
+.scratchpad-pill,
+.scratchpad-menu-button {
+  transition:
+    background-color 0.14s ease,
+    scale 0.14s ease,
+    flex 0.2s ease;
+}
+
+.scratchpad-pill:active,
+.scratchpad-menu-button:active:not(:disabled) {
+  scale: 0.97;
+}
+
+.scratchpad-card {
+  transition:
+    background-color 0.16s ease,
+    border-color 0.16s ease,
+    translate 0.22s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.22s ease;
+}
+
+.scratchpad-card:hover:not(.is-moving) {
+  translate: 0 -3px;
+  box-shadow: 0 10px 24px rgb(0 0 0 / 32%);
+}
+
+:root:not(.dark) .scratchpad-root .scratchpad-card:hover:not(.is-moving) {
+  box-shadow: 0 10px 24px rgb(42 35 27 / 14%);
+}
+.scratchpad-card.is-selected:hover:not(.is-moving) {
+  box-shadow:
+    0 0 0 1px var(--text-accent, rgb(255 255 255 / 70%)) inset,
+    0 10px 24px rgb(0 0 0 / 32%);
+}
+.scratchpad-card:hover:not(.is-moving) .scratchpad-card-cover img {
+  scale: 1.05;
+}
+
+.scratchpad-card-play {
+  translate: 0 4px;
+  transition:
+    opacity 0.14s ease,
+    translate 0.2s cubic-bezier(0.22, 1, 0.36, 1),
+    scale 0.14s ease;
+}
+
+.scratchpad-card:hover .scratchpad-card-play,
+.scratchpad-card-play:focus-visible {
+  translate: 0 0;
+}
+.scratchpad-card-play:hover {
+  scale: 1.08;
+}
+
+.scratchpad-root.is-calm .scratchpad-row:hover,
+.scratchpad-root.is-calm .scratchpad-row-actions,
+.scratchpad-root.is-calm .scratchpad-card:hover:not(.is-moving),
+.scratchpad-root.is-calm .scratchpad-card-play {
+  translate: none;
+}
+
+.scratchpad-root.is-calm .scratchpad-cover img,
+.scratchpad-root.is-calm .scratchpad-card-cover img,
+.scratchpad-root.is-calm .scratchpad-icon-button,
+.scratchpad-root.is-calm .scratchpad-pill,
+.scratchpad-root.is-calm .scratchpad-menu-button,
+.scratchpad-root.is-calm .scratchpad-card-play {
+  scale: none !important;
+}
+
+.scratchpad-root.is-calm .scratchpad-handle,
+.scratchpad-root.is-calm .scratchpad-edge-rest,
+.scratchpad-root.is-calm
+  .scratchpad-edge:is(:hover, :focus-within)
+  :is(.scratchpad-handle, .scratchpad-edge-rest) {
+  transition: opacity 0.12s ease;
+}
+
+.scratchpad-root.is-calm .scratchpad-handle-paper {
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+  opacity: 1;
+  transition: none;
+}
+
+.scratchpad-root.is-calm :is(.scratchpad-handle-texture, .scratchpad-handle-body) {
+  transition: none;
+}
+.scratchpad-root.is-calm .scratchpad-edge.is-pulsing .scratchpad-edge-rest > * {
+  animation: none;
+}
+
+.scratchpad-sheet {
+  position: relative;
+  display: flex;
+  min-width: 0;
+  flex: 1 1 auto;
+  flex-direction: column;
+  padding-top: 40px;
+  padding-bottom: 112px;
+}
+
+.scratchpad-drawer.is-panel .scratchpad-footer {
+  padding-bottom: 16px;
+}
+
+.scratchpad-band-wrap {
+  position: relative;
+  z-index: 6;
+  width: calc(100% + 36px);
+  flex: none;
+  filter: drop-shadow(0 14px 28px rgb(0 0 0 / 38%));
+}
+
+.scratchpad-panel-band {
+  position: relative;
+  z-index: 6;
+  width: calc(100% + 36px);
+  height: 64px;
+  flex: none;
+  pointer-events: none;
+}
+.scratchpad-panel-band > button {
+  pointer-events: auto;
+}
+
+.scratchpad-drawer.is-panel {
+  --scratchpad-slim-shift: 160px;
+}
+
+.scratchpad-panel-paper {
+  position: absolute;
+  z-index: 6;
+  filter: drop-shadow(0 14px 28px rgb(0 0 0 / 38%));
+}
+
+.scratchpad-panel-paper.is-slim {
+  filter: drop-shadow(0 -8px 22px rgb(0 0 0 / 34%));
+}
+:root:not(.dark) .scratchpad-root .scratchpad-panel-paper {
+  filter: drop-shadow(0 10px 22px rgb(42 35 27 / 18%));
+}
+:root:not(.dark) .scratchpad-root .scratchpad-panel-paper.is-slim {
+  filter: drop-shadow(0 -6px 18px rgb(42 35 27 / 16%));
+}
+
+.scratchpad-panel-paper-sheet {
+  position: absolute;
+  inset: 0;
+  background: var(--scratchpad-paper);
+}
+
+.scratchpad-panel-paper .scratchpad-band-wrap {
+  width: 100%;
+  height: 100%;
+  filter: none;
+}
+
+.scratchpad-panel-paper .scratchpad-band,
+.scratchpad-panel-paper .scratchpad-slim {
+  height: 100%;
+  background: transparent;
+  box-shadow: none;
+}
+
+.scratchpad-drawer.is-panel .scratchpad-slim-open {
+  visibility: hidden;
+  opacity: 0;
+}
+.scratchpad-drawer.is-panel .scratchpad-slim:hover .scratchpad-slim-title {
+  text-decoration: underline 2px var(--scratchpad-mark);
+  text-underline-offset: 5px;
+}
+
+.scratchpad-band-fold {
+  position: absolute;
+  top: 17px;
+  left: 12px;
+  z-index: 7;
+  display: grid;
+  width: 32px;
+  height: 32px;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  background: var(--scratchpad-ink);
+  color: var(--scratchpad-paper);
+  cursor: pointer;
+  transition:
+    background-color 0.14s ease,
+    scale 0.14s ease;
+}
+
+.scratchpad-band-fold svg {
+  width: 20px;
+  height: 20px;
+  stroke-width: 2.6;
+}
+.scratchpad-band-fold:hover {
+  background: var(--scratchpad-mark);
+  scale: 1.06;
+}
+.scratchpad-band-fold:active {
+  scale: 0.95;
+}
+.scratchpad-band-fold:focus-visible {
+  outline: 2px solid var(--scratchpad-mark);
+  outline-offset: 2px;
+}
+.scratchpad-root.is-calm .scratchpad-band-fold {
+  transition: background-color 0.14s ease;
+  scale: none;
+}
+
+.scratchpad-band.is-panel .scratchpad-band-head {
+  left: 56px;
+}
+
+.scratchpad-band-expand {
+  position: absolute;
+  top: 17px;
+  right: 18px;
+
+  z-index: 7;
+  display: grid;
+  width: 32px;
+  height: 32px;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  background: var(--scratchpad-ink);
+  color: var(--scratchpad-paper);
+  cursor: pointer;
+  transition:
+    background-color 0.14s ease,
+    scale 0.14s ease;
+}
+
+.scratchpad-band-expand svg {
+  width: 15px;
+  height: 15px;
+}
+.scratchpad-band-expand:hover:not(:disabled) {
+  background: var(--scratchpad-mark);
+  scale: 1.06;
+}
+.scratchpad-band-expand:active:not(:disabled) {
+  scale: 0.95;
+}
+.scratchpad-band-expand:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+.scratchpad-band-expand:focus-visible {
+  outline: 2px solid var(--scratchpad-mark);
+  outline-offset: 2px;
+}
+.scratchpad-root.is-calm .scratchpad-band-expand {
+  transition: background-color 0.14s ease;
+  scale: none;
+}
+
+:root:not(.dark) .scratchpad-root .scratchpad-band-wrap {
+  filter: drop-shadow(0 10px 22px rgb(42 35 27 / 18%));
+}
+
+.scratchpad-band {
+  position: relative;
+  height: 64px;
+  box-sizing: border-box;
+  overflow: hidden;
+  border-top: 4px solid var(--scratchpad-mark);
+  border-bottom: 3px solid var(--scratchpad-ink);
+  background: var(--scratchpad-paper);
+  color: var(--scratchpad-ink);
+  isolation: isolate;
+}
+
+.scratchpad-band-texture {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle, currentColor 1.3px, transparent 1.7px) 0 0 / 9px 9px;
+  opacity: 0.16;
+  -webkit-mask-image: linear-gradient(90deg, transparent 0, transparent 160px, #000 240px);
+  mask-image: linear-gradient(90deg, transparent 0, transparent 160px, #000 240px);
+}
+
+:is(.scratchpad-panel-paper, .scratchpad-sheet-band)[data-page="history"] .scratchpad-band-texture {
+  background: repeating-linear-gradient(60deg, currentColor 0 1px, transparent 1px 9px);
+  opacity: 0.12;
+}
+
+:is(.scratchpad-panel-paper, .scratchpad-sheet-band)[data-page="moments"] .scratchpad-band-texture {
+  background: repeating-linear-gradient(180deg, transparent 0 8px, currentColor 8px 9px);
+  opacity: 0.13;
+}
+
+:is(.scratchpad-panel-paper, .scratchpad-sheet-band)[data-page="queue"] .scratchpad-band-texture {
+  background:
+    repeating-linear-gradient(90deg, currentColor 0 3px, transparent 3px 11px) 0 6px / 100% 5px
+      no-repeat,
+    repeating-linear-gradient(90deg, currentColor 0 3px, transparent 3px 11px) 0 calc(100% - 6px) /
+      100% 5px no-repeat;
+  opacity: 0.22;
+}
+
+.scratchpad-band-deco {
+  position: absolute;
+}
+.scratchpad-band-deco.is-cover {
+  overflow: hidden;
+  background: var(--scratchpad-ink);
+}
+.scratchpad-band-deco.is-cover img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.scratchpad-band-head {
+  position: absolute;
+  top: 0;
+  left: 12px;
+  display: flex;
+  height: 57px;
+  align-items: center;
+  gap: 12px;
+}
+
+.scratchpad-band-count {
+  display: grid;
+  min-width: 56px;
+  height: 40px;
+  box-sizing: border-box;
+  flex: none;
+  padding: 0 6px;
+  place-items: center;
+  background: var(--scratchpad-ink);
+  color: var(--scratchpad-paper);
+  transform: skewX(-14deg);
+}
+
+:is(.scratchpad-panel-paper, .scratchpad-sheet-band)[data-page="notes"] .scratchpad-band-count {
+  background: var(--scratchpad-mark);
+}
+
+.scratchpad-band-count > span {
+  display: block;
+  font-family: Inter, sans-serif;
+  font-size: 22px;
+  font-variant-numeric: tabular-nums;
+  font-weight: 900;
+  letter-spacing: -0.05em;
+  line-height: 1;
+  transform: skewX(14deg);
+}
+
+.scratchpad-band-heading {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 3px;
+}
+.scratchpad-band-index {
+  font-size: 10.5px;
+  font-weight: 800;
+  letter-spacing: 0.22em;
+  line-height: 1;
+}
+.scratchpad-band-title {
+  font-size: 20px;
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.scratchpad-intro {
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  gap: 8px;
+  padding: 20px 14px 0 18px;
+}
+
+.scratchpad-greeting.is-headline {
+  display: block;
+  margin: 0;
+  color: inherit;
+  font-size: 24px;
+  font-weight: 900;
+  letter-spacing: -0.01em;
+  line-height: 1.15;
+  opacity: 1;
+}
+
+.scratchpad-greeting.is-headline > span {
+  display: -webkit-box;
+  overflow: hidden;
+  white-space: normal;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.scratchpad-intro-rule {
+  width: 36px;
+  height: 4px;
+  background: var(--scratchpad-mark-wall);
+}
+
+.scratchpad-drawer.is-panel .scratchpad-panel-page[data-page="notes"] .scratchpad-list {
+  background: linear-gradient(
+    90deg,
+    transparent 69px,
+    color-mix(in srgb, var(--scratchpad-mark-wall) 35%, transparent) 69px 71px,
+    transparent 71px
+  );
+}
+
+.scratchpad-drawer.is-panel .scratchpad-panel-page[data-page="notes"] .scratchpad-row {
+  gap: 22px;
+  background-image: linear-gradient(to top, var(--scratchpad-rule) 1px, transparent 1px);
+}
+
+.scratchpad-drawer.is-panel .scratchpad-panel-page[data-page="notes"] .scratchpad-meta {
+  font-style: italic;
+}
+
+.scratchpad-drawer.is-panel .scratchpad-panel-page[data-page="history"] .scratchpad-row {
+  height: 60px;
+  contain-intrinsic-size: auto 60px;
+}
+
+.scratchpad-list .scratchpad-group-header.is-day {
+  height: 44px;
+  box-sizing: border-box;
+  align-items: flex-end;
+  gap: 10px;
+  padding-bottom: 6px;
+}
+
+.scratchpad-group-header.is-day > svg {
+  margin-bottom: 4px;
+}
+.scratchpad-group-header.is-day .scratchpad-group-label {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  line-height: 1.3;
+}
+.scratchpad-group-header.is-day .scratchpad-group-count {
+  line-height: 1.5;
+}
+
+.scratchpad-day-number {
+  flex: none;
+  font-family: Inter, sans-serif;
+  font-size: 24px;
+  font-variant-numeric: tabular-nums;
+  font-weight: 900;
+  letter-spacing: -0.04em;
+  line-height: 0.9;
+}
+
+.scratchpad-root .scratchpad-cover.scratchpad-photo {
+  position: relative;
+  width: 44px;
+  height: 52px;
+  box-sizing: border-box;
+  padding: 3px 3px 11px;
+  overflow: visible;
+  background: #ece6d8;
+  box-shadow: 0 6px 12px rgb(0 0 0 / 50%);
+  transition: rotate 0.22s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+:root:not(.dark) .scratchpad-root .scratchpad-cover.scratchpad-photo {
+  box-shadow: 0 4px 10px rgb(42 35 27 / 24%);
+}
+.scratchpad-photo img {
+  display: block;
+  width: 38px;
+  height: 38px;
+  filter: sepia(0.42) saturate(0.7) contrast(0.92) brightness(0.96);
+}
+
+.scratchpad-photo::after {
+  position: absolute;
+  inset: 3px 3px 11px;
+  background: radial-gradient(
+    circle at 50% 42%,
+    rgb(255 240 210 / 10%) 38%,
+    rgb(50 30 10 / 42%) 100%
+  );
+  content: "";
+  pointer-events: none;
+}
+
+.scratchpad-list li:nth-child(6n + 1) .scratchpad-photo {
+  rotate: -2.2deg;
+}
+.scratchpad-list li:nth-child(6n + 2) .scratchpad-photo {
+  rotate: 1.4deg;
+}
+.scratchpad-list li:nth-child(6n + 3) .scratchpad-photo {
+  rotate: -0.6deg;
+}
+.scratchpad-list li:nth-child(6n + 4) .scratchpad-photo {
+  rotate: 2deg;
+}
+.scratchpad-list li:nth-child(6n + 5) .scratchpad-photo {
+  rotate: -1.5deg;
+}
+.scratchpad-list li:nth-child(6n) .scratchpad-photo {
+  rotate: 0.8deg;
+}
+.scratchpad-list .scratchpad-row:hover .scratchpad-photo {
+  rotate: 0deg;
+}
+.scratchpad-row:hover .scratchpad-photo img {
+  scale: none;
+}
+.scratchpad-root.is-calm .scratchpad-photo {
+  transition: none;
+}
+
+.scratchpad-played-toggle {
+  display: flex;
+  min-width: 0;
+  height: 30px;
+  flex: none;
+  align-items: center;
+  gap: 8px;
+  margin: 0 14px 10px 18px;
+  padding: 0 10px;
+  border: 0;
+  background: var(--scratchpad-rail);
+  color: var(--scratchpad-text-soft);
+  font: inherit;
+  font-size: 12px;
+  font-weight: 800;
+  text-align: left;
+  cursor: pointer;
+}
+
+.scratchpad-played-toggle:hover {
+  color: var(--scratchpad-text);
+}
+.scratchpad-played-toggle:focus-visible {
+  outline: 2px solid var(--scratchpad-mark-wall);
+  outline-offset: 2px;
+}
+.scratchpad-played-toggle > span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.scratchpad-root {
+  --scratchpad-film: #121212;
+  --scratchpad-film-raise: #1a1a1c;
+  --scratchpad-film-hole: rgb(236 230 216 / 26%);
+  --scratchpad-film-ink: #f4f1ea;
+  --scratchpad-film-edge: #d9a35c;
+}
+
+:root:not(.dark) .scratchpad-root {
+  --scratchpad-film: #f6f4ef;
+  --scratchpad-film-raise: #ffffff;
+  --scratchpad-film-hole: rgb(20 18 16 / 16%);
+  --scratchpad-film-ink: #1a1714;
+  --scratchpad-film-edge: #94621f;
+}
+
+.scratchpad-drawer.is-panel .scratchpad-table {
+  --scratchpad-raise: #26262a;
+  --scratchpad-press: #3a3a3e;
+  --scratchpad-text: #f4f1ea;
+  --scratchpad-text-soft: rgb(244 241 234 / 62%);
+  margin: 0 14px 0 18px;
+  background: var(--scratchpad-film);
+  color: var(--scratchpad-text);
+}
+
+:root:not(.dark) .scratchpad-root .scratchpad-drawer.is-panel .scratchpad-table {
+  --scratchpad-raise: #ecebe6;
+  --scratchpad-press: #e1dfd8;
+  --scratchpad-text: #1a1714;
+  --scratchpad-text-soft: rgb(26 23 20 / 62%);
+}
+
+.scratchpad-drawer.is-panel .scratchpad-table-scroll {
+  background:
+    linear-gradient(
+        180deg,
+        transparent 10px,
+        var(--scratchpad-film-hole) 10px 16px,
+        transparent 16px
+      )
+      left 4px top 0 / 6px 26px repeat-y local,
+    linear-gradient(
+        180deg,
+        transparent 10px,
+        var(--scratchpad-film-hole) 10px 16px,
+        transparent 16px
+      )
+      right 4px top 0 / 6px 26px repeat-y local;
+}
+
+:root:not(.dark) .scratchpad-root .scratchpad-table-scroll::-webkit-scrollbar-thumb {
+  background: rgb(0 0 0 / 18%);
+  background-clip: content-box;
+}
+:root:not(.dark) .scratchpad-root .scratchpad-table-scroll::-webkit-scrollbar-thumb:hover {
+  background: rgb(0 0 0 / 30%);
+  background-clip: content-box;
+}
+:root:not(.dark) .scratchpad-root .scratchpad-table .scratchpad-cover {
+  background: rgb(0 0 0 / 6%);
+}
+
+.scratchpad-table-row {
+  gap: 12px;
+  padding: 0 18px;
+}
+
+.scratchpad-table-row:hover {
+  translate: none;
+}
+
+.scratchpad-drawer.is-panel .scratchpad-table-row,
+.scratchpad-drawer.is-panel .scratchpad-table-row:hover {
+  background-clip: content-box;
+}
+.scratchpad-table-row .scratchpad-row-actions {
+  right: 12px;
+  padding-right: 0;
+}
+.scratchpad-table-row.is-current {
+  background: rgb(255 255 255 / 5%);
+}
+:root:not(.dark) .scratchpad-root .scratchpad-table-row.is-current {
+  background: rgb(0 0 0 / 4%);
+}
+.scratchpad-table-row.is-current .scratchpad-cover {
+  box-shadow: 0 0 0 3px var(--scratchpad-mark-dark);
+}
+
+.scratchpad-film-edge {
+  margin-right: 6px;
+  color: var(--scratchpad-film-edge);
+  font-family: ui-monospace, Menlo, Consolas, monospace;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+}
+
+.scratchpad-table-row.is-current .scratchpad-film-edge {
+  color: var(--scratchpad-mark-dark);
+}
+
+.scratchpad-table-row.is-dimmed:not(:hover) .scratchpad-cover img {
+  filter: grayscale(1);
+  opacity: 0.55;
+}
+.scratchpad-table-row.is-dimmed:not(:hover) :is(.scratchpad-name, .scratchpad-meta) {
+  opacity: 0.5;
+}
+
+.scratchpad-f {
+  position: absolute;
+  inset: 0;
+  outline: none;
+}
+.scratchpad-f-scrim {
+  position: absolute;
+  inset: 0;
+  background: var(--scratchpad-scrim);
+}
+
+.scratchpad-f-sheet {
+  position: absolute;
+  top: -130px;
+  left: -160px;
+  width: calc(100% + 320px);
+  height: calc(100% + 260px);
+}
+
+.scratchpad-sheet-band {
+  position: absolute;
+  z-index: 3;
+  background: var(--scratchpad-paper);
+  box-shadow: 0 16px 40px rgb(0 0 0 / 40%);
+}
+
+.scratchpad-sheet-band.is-slim {
+  z-index: 4;
+  box-shadow: 0 -10px 30px rgb(0 0 0 / 35%);
+}
+.scratchpad-sheet-band-face {
+  position: absolute;
+  inset: 0;
+}
+.scratchpad-sheet-band .scratchpad-band-wrap {
+  width: 100%;
+  height: 100%;
+}
+
+.scratchpad-sheet-band .scratchpad-band,
+.scratchpad-sheet-band .scratchpad-slim {
+  height: 100%;
+  background: transparent;
+  box-shadow: none;
+}
+
+.scratchpad-f-layer {
+  position: absolute;
+  inset: 0;
+}
+
+.scratchpad-f-body {
+  position: absolute;
+  top: 362px;
+  right: 184px;
+  bottom: var(--scratchpad-body-bottom, 166px);
+  left: 186px;
+  display: flex;
+}
+
+.scratchpad-f-body > .scratchpad-panel {
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.scratchpad-drawer.is-expanded .scratchpad-canvas-side {
+  padding-bottom: var(--scratchpad-safe-side, 0px);
+}
+.scratchpad-drawer.is-expanded .scratchpad-canvas-content {
+  padding-bottom: calc(24px + var(--scratchpad-safe-cards, 0px));
+}
+
+.scratchpad-drawer.is-expanded .scratchpad-panel-page {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 124px;
+  grid-template-rows: minmax(0, 1fr);
+  column-gap: 26px;
+}
+
+.scratchpad-drawer.is-expanded .scratchpad-canvas {
+  grid-column: 1;
+}
+
+@media (max-width: 640px) {
+  .scratchpad-drawer.is-expanded .scratchpad-panel-page {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .scratchpad-drawer.is-expanded :is(.scratchpad-canvas-side, .scratchpad-band-actions) {
+    display: none;
+  }
+}
+
+.scratchpad-band-wrap.is-full {
+  width: 100%;
+  filter: none;
+}
+
+.scratchpad-band.is-full {
+  height: 120px;
+  overflow: visible;
+  box-shadow: 0 16px 40px rgb(0 0 0 / 40%);
+  clip-path: none;
+}
+
+.scratchpad-band.is-full .scratchpad-band-texture {
+  -webkit-mask-image: linear-gradient(90deg, transparent 0, transparent 720px, #000 870px);
+  mask-image: linear-gradient(90deg, transparent 0, transparent 720px, #000 870px);
+}
+
+.scratchpad-band-skew {
+  position: absolute;
+  top: 0;
+  left: 150px;
+  width: 14px;
+  height: 100%;
+  background: var(--scratchpad-ink);
+  transform: skewX(-14deg);
+}
+
+.scratchpad-band.is-full .scratchpad-band-head {
+  left: 248px;
+  height: 100%;
+  gap: 18px;
+}
+.scratchpad-band.is-full .scratchpad-band-count {
+  min-width: 96px;
+  height: 80px;
+  padding: 0 10px;
+}
+.scratchpad-band.is-full .scratchpad-band-count > span {
+  font-size: 46px;
+}
+.scratchpad-band.is-full .scratchpad-band-heading {
+  max-width: 460px;
+  gap: 6px;
+}
+.scratchpad-band.is-full .scratchpad-band-index {
+  font-size: 11px;
+}
+.scratchpad-band.is-full .scratchpad-band-title {
+  margin: 0;
+  font-size: 34px;
+}
+
+.scratchpad-band-meta {
+  overflow: hidden;
+  font-size: 12.5px;
+  font-weight: 700;
+  opacity: 0.74;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.scratchpad-band-actions {
+  --scratchpad-text: var(--scratchpad-ink);
+  --scratchpad-sheet: var(--scratchpad-paper);
+  --scratchpad-text-soft: rgb(20 20 20 / 70%);
+  --scratchpad-mark-wall: var(--scratchpad-mark);
+  position: absolute;
+  top: 0;
+  right: 220px;
+  bottom: 0;
+  z-index: 1;
+  display: flex;
+  box-sizing: border-box;
+  align-items: flex-end;
+  gap: 6px;
+  padding-bottom: 14px;
+  color: var(--scratchpad-ink);
+}
+
+.scratchpad-band-actions .scratchpad-footer {
+  padding: 0;
+}
+.scratchpad-band-note {
+  font-size: 12px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.scratchpad-slim {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 36px;
+  box-sizing: border-box;
+  overflow: hidden;
+  padding: 0;
+  border: 0;
+  border-top: 3px solid var(--scratchpad-mark);
+  background: var(--scratchpad-paper);
+  box-shadow: 0 -10px 30px rgb(0 0 0 / 35%);
+  color: var(--scratchpad-ink);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  isolation: isolate;
+}
+
+.scratchpad-slim .scratchpad-band-texture {
+  -webkit-mask-image: linear-gradient(
+    90deg,
+    transparent 0,
+    transparent calc(470px - var(--scratchpad-slim-shift, 0px)),
+    #000 calc(620px - var(--scratchpad-slim-shift, 0px))
+  );
+  mask-image: linear-gradient(
+    90deg,
+    transparent 0,
+    transparent calc(470px - var(--scratchpad-slim-shift, 0px)),
+    #000 calc(620px - var(--scratchpad-slim-shift, 0px))
+  );
+}
+
+.scratchpad-slim .scratchpad-band-deco {
+  translate: calc(-1 * var(--scratchpad-slim-shift, 0px)) 0;
+}
+
+.scratchpad-slim:focus-visible {
+  outline: 3px solid var(--scratchpad-mark);
+  outline-offset: -3px;
+}
+
+.scratchpad-slim-head {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: calc(186px - var(--scratchpad-slim-shift, 0px));
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  white-space: nowrap;
+}
+
+.scratchpad-slim-title {
+  font-size: 16px;
+  font-weight: 900;
+}
+.scratchpad-slim-count {
+  font-size: 12px;
+  font-weight: 700;
+  opacity: 0.7;
+}
+.scratchpad-slim-open {
+  border-bottom: 2px solid var(--scratchpad-mark);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  transition: opacity 0.2s ease;
+}
+
+.scratchpad-f.is-handoff .scratchpad-slim-open {
+  opacity: 0;
+}
+.scratchpad-slim:hover .scratchpad-slim-open {
+  border-bottom-width: 3px;
+}
+
+.scratchpad-triangle {
+  --scratchpad-text: var(--scratchpad-paper);
+  --scratchpad-sheet: var(--scratchpad-ink);
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 6;
+  width: 440px;
+  height: 220px;
+  box-sizing: border-box;
+  padding-right: 18px;
+  background: var(--scratchpad-ink);
+  clip-path: polygon(0 0, 100% 0, 100% 100%);
+  color: var(--scratchpad-paper);
+  text-align: right;
+}
+
+.scratchpad-triangle-float {
+  float: left;
+  width: 100%;
+  height: 100%;
+  shape-outside: polygon(0 0, 0 100%, 100% 100%);
+}
+
+.scratchpad-triangle .scratchpad-greeting.is-headline {
+  margin: 42px 0 8px;
+  font-size: 22px;
+}
+.scratchpad-triangle .scratchpad-greeting.is-headline > span {
+  display: inline;
+  overflow: visible;
+  -webkit-line-clamp: none;
+}
+.scratchpad-triangle .scratchpad-intro-rule {
+  display: block;
+  margin-left: auto;
+}
+.scratchpad-triangle-row {
+  display: block;
+  margin-top: 10px;
+  line-height: 26px;
+}
+.scratchpad-triangle-crumb {
+  font-size: 10.5px;
+  font-weight: 800;
+  letter-spacing: 0.2em;
+  opacity: 0.7;
+}
+.scratchpad-triangle .scratchpad-greeting.is-narrow {
+  display: none;
+}
+
+@media (max-width: 640px) {
+  .scratchpad-triangle {
+    width: 320px;
+    height: 130px;
+    padding-right: 14px;
+  }
+  .scratchpad-triangle
+    :is(.scratchpad-greeting.is-wide, .scratchpad-intro-rule, .scratchpad-triangle-crumb) {
+    display: none;
+  }
+  .scratchpad-triangle .scratchpad-greeting.is-narrow {
+    display: block;
+    margin: 40px 0 0;
+    font-size: 18px;
+  }
+  .scratchpad-triangle-row {
+    margin-top: 6px;
+  }
+  .scratchpad-f .scratchpad-overview-help {
+    top: 138px;
+    right: 14px;
+    max-width: calc(100vw - 28px);
+  }
+}
+
+.scratchpad-sheet-back {
+  position: absolute;
+  z-index: 5;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  background: var(--scratchpad-ink);
+  box-shadow: 0 6px 16px rgb(0 0 0 / 35%);
+  color: var(--scratchpad-paper);
+  cursor: pointer;
+  transition:
+    background-color 0.14s ease,
+    scale 0.14s ease;
+}
+
+.scratchpad-sheet-back svg {
+  width: 26px;
+  height: 26px;
+  stroke-width: 2.6;
+}
+.scratchpad-sheet-back:hover {
+  background: var(--scratchpad-mark);
+  scale: 1.06;
+}
+.scratchpad-sheet-back:active {
+  scale: 0.95;
+}
+.scratchpad-sheet-back:focus-visible {
+  outline: 3px solid var(--scratchpad-mark);
+  outline-offset: 3px;
+}
+.scratchpad-root.is-calm .scratchpad-sheet-back {
+  transition: background-color 0.14s ease;
+  scale: none;
+}
+.scratchpad-pill.is-small {
+  height: 26px;
+  vertical-align: middle;
+}
+.scratchpad-pill.is-small.is-icon {
+  width: 26px;
+}
+
+.scratchpad-backdrop {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  color: var(--scratchpad-text);
+  pointer-events: none;
+}
+
+.scratchpad-backdrop-wedge {
+  position: absolute;
+  bottom: -70px;
+  left: -60px;
+  width: 560px;
+  height: 320px;
+  background: var(--scratchpad-mark-wall);
+  clip-path: polygon(0 16%, 64% 0, 100% 42%, 32% 100%, 0 100%);
+  opacity: 0.07;
+}
+
+.scratchpad-backdrop-shape {
+  position: absolute;
+}
+.scratchpad-backdrop-shape.is-big {
+  top: 330px;
+  left: -170px;
+  opacity: 0.11;
+}
+.scratchpad-backdrop-shape.is-mid {
+  top: 640px;
+  left: 330px;
+  opacity: 0.08;
+}
+.scratchpad-backdrop-shape.is-tint {
+  top: 470px;
+  right: 0;
+  opacity: 0.09;
+}
+.scratchpad-backdrop-shape.is-small {
+  bottom: 48px;
+  left: 640px;
+  opacity: 0.12;
+}
+
+.scratchpad-backdrop-hair {
+  position: absolute;
+  left: -10%;
+  width: 120%;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.06;
+}
+
+.scratchpad-backdrop-hair.is-upper {
+  top: 31%;
+  rotate: -9deg;
+}
+.scratchpad-backdrop-hair.is-lower {
+  top: 76%;
+  rotate: 4deg;
+}
+
+.scratchpad-backdrop-hatch {
+  position: absolute;
+  top: 300px;
+  right: 40px;
+  width: 72px;
+  height: 72px;
+  background: repeating-linear-gradient(135deg, currentColor 0 2px, transparent 2px 9px);
+  opacity: 0.14;
+}
+
+.scratchpad-backdrop-word {
+  position: absolute;
+  top: 170px;
+  left: 22px;
+  font-size: 150px;
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  line-height: 1;
+  opacity: 0.045;
+  white-space: nowrap;
+  writing-mode: vertical-rl;
+}
+
+.scratchpad-drawer.is-expanded .scratchpad-canvas-content {
+  padding-top: 0;
+}
+.scratchpad-drawer.is-expanded .scratchpad-grid {
+  margin-top: 8px;
+}
+.scratchpad-drawer.is-expanded .scratchpad-canvas-group + .scratchpad-canvas-group {
+  margin-top: 18px;
+}
+
+.scratchpad-drawer.is-expanded .scratchpad-canvas .scratchpad-group-header {
+  height: 30px;
+  gap: 10px;
+  padding: 0 4px 0 10px;
+  border-radius: 0;
+  background: var(--scratchpad-veil);
+}
+
+.scratchpad-drawer.is-expanded .scratchpad-canvas .scratchpad-group-label {
+  font-size: 15px;
+  font-weight: 900;
+}
+.scratchpad-drawer.is-expanded .scratchpad-canvas .scratchpad-group-count {
+  flex: none;
+  color: var(--scratchpad-text-soft);
+  font-weight: 700;
+  opacity: 1;
+}
+.scratchpad-drawer.is-expanded .scratchpad-group-rule {
+  width: 40px;
+}
+
+.scratchpad-drawer.is-expanded .scratchpad-canvas .scratchpad-group-header.is-day {
+  height: 46px;
+  align-items: flex-end;
+  padding-bottom: 6px;
+}
+.scratchpad-drawer.is-expanded .scratchpad-group-header.is-day .scratchpad-day-number {
+  font-size: 34px;
+}
+.scratchpad-drawer.is-expanded .scratchpad-group-header.is-day .scratchpad-group-label {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+}
+
+.scratchpad-marquee {
+  transform-origin: 0 0;
+}
+
+.scratchpad-drawer.is-expanded .scratchpad-marquee {
+  border-color: var(--scratchpad-mark-wall);
+  border-radius: 0;
+  background: color-mix(in srgb, var(--scratchpad-mark-wall) 12%, transparent);
+}
+
+.scratchpad-drawer.is-expanded .scratchpad-card {
+  border: 0;
+  border-radius: 0;
+}
+
+.scratchpad-drawer.is-expanded .scratchpad-card {
+  transition:
+    background-color 0.16s ease,
+    translate 0.22s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.22s ease,
+    opacity 0.18s ease;
+}
+
+.scratchpad-drawer.is-expanded
+  :is(.scratchpad-canvas, .scratchpad-overview).has-selection
+  .scratchpad-card:not(.is-selected, .is-moving) {
+  opacity: 0.4;
+}
+
+.scratchpad-drawer.is-expanded .scratchpad-card.is-selected:not(.is-moving) {
+  translate: 0 -4px;
+  box-shadow: 0 14px 28px rgb(0 0 0 / 55%);
+}
+
+.scratchpad-drawer.is-expanded .scratchpad-card-cover {
+  border-radius: 0;
+}
+
+.scratchpad-drawer.is-expanded .scratchpad-card-play {
+  border-radius: 0;
+  background: var(--scratchpad-paper);
+  color: var(--scratchpad-ink);
+}
+
+.scratchpad-card.is-note {
+  gap: 0;
+  padding: 0;
+  background: #efe9dc;
+  color: #1d1a16;
+}
+
+.scratchpad-card.is-note::before {
+  position: absolute;
+  top: 94px;
+  bottom: 0;
+  left: 14px;
+  width: 2px;
+  background: color-mix(in srgb, var(--scratchpad-mark) 55%, transparent);
+  content: "";
+  pointer-events: none;
+}
+
+.scratchpad-card.is-note:hover {
+  background-color: #f6f1e6;
+}
+.scratchpad-card.is-note .scratchpad-card-cover {
+  width: 100%;
+  height: 94px;
+  aspect-ratio: auto;
+}
+.scratchpad-card.is-note .scratchpad-card-name {
+  margin: 9px 10px 0 24px;
+  padding: 0;
+  font-size: 13.5px;
+  font-weight: 800;
+}
+
+.scratchpad-card.is-note .scratchpad-card-meta {
+  margin: 5px 10px 0 24px;
+  padding: 4px 0 0;
+  border-top: 1px solid rgb(70 100 170 / 30%);
+  color: #6b6255;
+  font-size: 11px;
+  font-style: italic;
+  font-weight: 600;
+  opacity: 1;
+}
+
+.scratchpad-card.is-photo {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-rows: 92px auto;
+  align-items: baseline;
+  gap: 0 6px;
+  padding: 6px 8px 0 6px;
+  background: #ece6d8;
+  box-shadow: 0 8px 18px rgb(0 0 0 / 50%);
+  color: #3a332a;
+}
+
+.scratchpad-card.is-photo:hover {
+  background: #f3eee2;
+}
+
+.scratchpad-drawer.is-expanded .scratchpad-card.is-photo:hover:not(.is-moving) {
+  translate: 0 -1px;
+}
+.scratchpad-drawer.is-expanded .scratchpad-card.is-photo.is-selected:not(.is-moving) {
+  translate: 0 -2px;
+}
+.scratchpad-card.is-photo .scratchpad-card-cover {
+  grid-column: 1 / -1;
+  width: 92px;
+  height: 92px;
+  aspect-ratio: auto;
+}
+.scratchpad-card.is-photo .scratchpad-card-cover img {
+  filter: sepia(0.42) saturate(0.7) contrast(0.92) brightness(0.96);
+}
+
+.scratchpad-card.is-photo .scratchpad-card-cover::before {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: radial-gradient(
+    circle at 50% 42%,
+    rgb(255 240 210 / 10%) 38%,
+    rgb(50 30 10 / 42%) 100%
+  );
+  content: "";
+  pointer-events: none;
+}
+
+.scratchpad-card.is-photo .scratchpad-card-name {
+  margin: 5px 0 0;
+  padding: 0;
+  font-size: 11px;
+  font-weight: 800;
+}
+.scratchpad-card.is-photo .scratchpad-card-meta {
+  padding: 0;
+  font-size: 10px;
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+  opacity: 0.75;
+}
+
+.scratchpad-card.is-film {
+  padding: 0;
+  background:
+    repeating-linear-gradient(
+        90deg,
+        transparent 0 10px,
+        var(--scratchpad-film-hole) 10px 17px,
+        transparent 17px 28px
+      )
+      0 5px / 100% 5px no-repeat,
+    repeating-linear-gradient(
+        90deg,
+        transparent 0 10px,
+        var(--scratchpad-film-hole) 10px 17px,
+        transparent 17px 28px
+      )
+      0 calc(100% - 5px) / 100% 5px no-repeat,
+    var(--scratchpad-film);
+  color: var(--scratchpad-film-ink);
+}
+
+.scratchpad-card.is-film:hover {
+  background-color: var(--scratchpad-film-raise);
+}
+
+.scratchpad-card.is-film .scratchpad-card-cover {
+  position: absolute;
+  top: 15px;
+  right: 4px;
+  bottom: 26px;
+  left: 4px;
+  width: auto;
+  height: auto;
+  aspect-ratio: auto;
+}
+
+.scratchpad-card.is-film .scratchpad-card-cover::before {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(180deg, transparent 45%, rgb(0 0 0 / 85%));
+  content: "";
+  pointer-events: none;
+}
+
+.scratchpad-card.is-film .scratchpad-card-name {
+  position: absolute;
+  right: 10px;
+  bottom: 31px;
+  left: 10px;
+  z-index: 2;
+  margin: 0;
+  padding: 0;
+  color: #f4f1ea;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.scratchpad-card-edge {
+  position: absolute;
+  right: 7px;
+  bottom: 12px;
+  left: 7px;
+  display: flex;
+  justify-content: space-between;
+  gap: 4px;
+  color: var(--scratchpad-film-edge);
+  font-family: ui-monospace, Menlo, Consolas, monospace;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  white-space: nowrap;
+}
+
+.scratchpad-card.is-film.is-current .scratchpad-card-edge {
+  color: var(--scratchpad-mark-dark);
+}
+
+.scratchpad-card.is-film.is-current .scratchpad-card-cover::after {
+  inset: 0;
+  width: auto;
+  height: auto;
+  border-radius: 0;
+  background: none;
+  box-shadow: inset 0 0 0 3px var(--scratchpad-mark-dark);
+}
+
+.scratchpad-card.is-film .scratchpad-card-play {
+  top: 6px;
+  bottom: auto;
+}
+
+:is(.scratchpad-canvas, .scratchpad-full-cards) .scratchpad-card-placeholder svg {
+  width: 36px;
+  height: 36px;
+}
+:is(.scratchpad-canvas, .scratchpad-full-cards) .scratchpad-card-play {
+  width: 36px;
+  height: 36px;
+}
+:is(.scratchpad-canvas, .scratchpad-full-cards) .scratchpad-card-play svg {
+  width: 15px;
+  height: 15px;
+}
+
+:is(.scratchpad-canvas, .scratchpad-full-cards) .scratchpad-card.is-note::before {
+  top: 136px;
+  left: 18px;
+}
+:is(.scratchpad-canvas, .scratchpad-full-cards) .scratchpad-card.is-note .scratchpad-card-cover {
+  height: 136px;
+}
+:is(.scratchpad-canvas, .scratchpad-full-cards) .scratchpad-card.is-note .scratchpad-card-name {
+  margin: 12px 12px 0 30px;
+  font-size: 15.5px;
+}
+:is(.scratchpad-canvas, .scratchpad-full-cards) .scratchpad-card.is-note .scratchpad-card-meta {
+  margin: 6px 12px 0 30px;
+  padding-top: 5px;
+  font-size: 12.5px;
+}
+
+:is(.scratchpad-canvas, .scratchpad-full-cards) .scratchpad-card.is-photo {
+  grid-template-rows: 134px auto;
+  padding: 9px 9px 0;
+}
+:is(.scratchpad-canvas, .scratchpad-full-cards) .scratchpad-card.is-photo .scratchpad-card-cover {
+  width: 134px;
+  height: 134px;
+}
+:is(.scratchpad-canvas, .scratchpad-full-cards) .scratchpad-card.is-photo .scratchpad-card-name {
+  margin-top: 8px;
+  font-size: 13px;
+}
+:is(.scratchpad-canvas, .scratchpad-full-cards) .scratchpad-card.is-photo .scratchpad-card-meta {
+  font-size: 11.5px;
+}
+
+:is(.scratchpad-canvas, .scratchpad-full-cards) .scratchpad-card.is-film .scratchpad-card-name {
+  right: 12px;
+  bottom: 33px;
+  left: 12px;
+  font-size: 15px;
+}
+:is(.scratchpad-canvas, .scratchpad-full-cards) .scratchpad-card-edge {
+  right: 9px;
+  left: 9px;
+  font-size: 11px;
+}
+
+.scratchpad-drawer.is-expanded .scratchpad-selection-menu,
+:root:not(.dark) .scratchpad-root .scratchpad-drawer.is-expanded .scratchpad-selection-menu {
+  --scratchpad-text: var(--scratchpad-paper);
+  --scratchpad-sheet: var(--scratchpad-ink);
+  --scratchpad-press: #2c2c30;
+  gap: 6px;
+  padding: 8px 10px;
+  border: 0;
+  border-radius: 0;
+  background: var(--scratchpad-ink);
+  box-shadow: 0 18px 48px rgb(0 0 0 / 55%);
+  color: var(--scratchpad-paper);
+}
+
+.scratchpad-drawer.is-expanded .scratchpad-selection-count {
+  color: var(--scratchpad-mark-dark);
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.scratchpad-drawer.is-expanded .scratchpad-menu-button {
+  height: 30px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 0;
+  background: rgb(255 255 255 / 9%);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.scratchpad-drawer.is-expanded .scratchpad-menu-button:disabled {
+  background: rgb(255 255 255 / 4%);
+}
+
+.scratchpad-drawer.is-expanded .scratchpad-menu-button:hover:not(:disabled),
+:root:not(.dark)
+  .scratchpad-root
+  .scratchpad-drawer.is-expanded
+  .scratchpad-menu-button:hover:not(:disabled) {
+  background: var(--scratchpad-paper);
+  color: var(--scratchpad-ink);
+}
+
+.scratchpad-drawer.is-expanded
+  :is(.scratchpad-side-title, .scratchpad-jump-item, .scratchpad-tip, .scratchpad-empty) {
+  text-shadow: var(--scratchpad-wall-shadow);
+}
+
+.scratchpad-canvas-side {
+  display: flex;
+  min-height: 0;
+  grid-column: 2;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.scratchpad-side-title {
+  padding: 0 8px 4px;
+  color: var(--scratchpad-text-soft);
+  font-size: 10.5px;
+  font-weight: 800;
+  letter-spacing: 0.22em;
+}
+
+.scratchpad-jump {
+  display: flex;
+  min-height: 0;
+  flex-direction: column;
+  gap: 4px;
+  overflow-y: auto;
+}
+
+.scratchpad-jump-item {
+  display: flex;
+  width: 100%;
+  height: 32px;
+  flex: none;
+  box-sizing: border-box;
+  align-items: center;
+  gap: 7px;
+  padding: 0 8px;
+  border: 0;
+  background: transparent;
+  color: var(--scratchpad-text-soft);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.scratchpad-jump-item:hover {
+  color: var(--scratchpad-text);
+}
+.scratchpad-jump-item.is-in-view {
+  background: var(--scratchpad-raise);
+  color: var(--scratchpad-text);
+}
+.scratchpad-jump-item.is-current .scratchpad-jump-mark {
+  color: var(--scratchpad-mark-wall);
+}
+.scratchpad-jump-item:focus-visible {
+  outline: 2px solid var(--scratchpad-mark-wall);
+  outline-offset: -2px;
+}
+.scratchpad-jump-label {
+  min-width: 0;
+  flex: 1 1 auto;
+  overflow: hidden;
+  font-size: 11px;
+  font-weight: 800;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.scratchpad-jump-count {
+  color: var(--scratchpad-text-soft);
+  font-size: 10.5px;
+  font-variant-numeric: tabular-nums;
+}
+.scratchpad-jump-locate {
+  height: 26px;
+  margin: 2px 8px 0 0;
+  font-size: 11px;
+}
+
+.scratchpad-tips {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: auto;
+}
+
+.scratchpad-tip {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 0 8px;
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+.scratchpad-tip b {
+  color: var(--scratchpad-text);
+  font-weight: 800;
+}
+.scratchpad-tip > span:last-child {
+  color: var(--scratchpad-text-soft);
+}
+
+.scratchpad-card-check {
+  display: none;
+}
+
+.scratchpad-drawer.is-expanded .scratchpad-card.is-selected .scratchpad-card-check {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  z-index: 4;
+  display: grid;
+  width: 20px;
+  height: 20px;
+  place-items: center;
+  background: var(--scratchpad-ink);
+  box-shadow: 0 0 0 1.5px var(--scratchpad-paper);
+  color: var(--scratchpad-paper);
+  pointer-events: none;
+}
+
+.scratchpad-drawer.is-expanded .scratchpad-card.is-film.is-selected .scratchpad-card-check {
+  top: 20px;
+  left: 9px;
+}
+.scratchpad-card-check svg {
+  width: 14px;
+  height: 14px;
+  stroke-width: 3;
+}
+
+.scratchpad-root.is-calm .scratchpad-drawer.is-expanded .scratchpad-card.is-selected,
+.scratchpad-root.is-calm
+  .scratchpad-drawer.is-expanded
+  .scratchpad-card.is-photo:is(.is-selected, :hover) {
+  translate: none;
+}
+
+.scratchpad-overview {
+  position: absolute;
+  inset: 0;
+  outline: none;
+  touch-action: pan-y;
+}
+.scratchpad-overview-row {
+  position: absolute;
+  right: 0;
+  left: 0;
+}
+.scratchpad-overview-row:nth-child(1) {
+  z-index: 4;
+}
+.scratchpad-overview-row:nth-child(2) {
+  z-index: 3;
+}
+.scratchpad-overview-row:nth-child(3) {
+  z-index: 2;
+}
+.scratchpad-overview-row:nth-child(4) {
+  z-index: 1;
+}
+
+.scratchpad-band.is-row {
+  height: 72px;
+  overflow: visible;
+  box-shadow: 0 16px 40px rgb(0 0 0 / 40%);
+  clip-path: none;
+}
+.scratchpad-band-wrap.is-row {
+  width: 100%;
+  filter: none;
+}
+
+.scratchpad-band.is-row .scratchpad-band-texture {
+  -webkit-mask-image: linear-gradient(90deg, transparent 0, transparent 630px, #000 780px);
+  mask-image: linear-gradient(90deg, transparent 0, transparent 630px, #000 780px);
+}
+
+.scratchpad-band.is-row .scratchpad-band-head {
+  left: 248px;
+  height: 100%;
+  gap: 14px;
+}
+.scratchpad-band.is-row .scratchpad-band-count {
+  min-width: 64px;
+  height: 52px;
+  padding: 0 8px;
+}
+.scratchpad-band.is-row .scratchpad-band-count > span {
+  font-size: 30px;
+}
+.scratchpad-band.is-row .scratchpad-band-heading {
+  max-width: 380px;
+  gap: 3px;
+}
+.scratchpad-band.is-row .scratchpad-band-index {
+  font-size: 11px;
+}
+.scratchpad-band.is-row .scratchpad-band-title {
+  margin: 0;
+  font-size: 24px;
+}
+
+.scratchpad-band-index {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  white-space: nowrap;
+}
+
+.scratchpad-band-link {
+  padding: 0;
+  border: 0;
+  border-bottom: 2px solid var(--scratchpad-mark);
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+}
+
+.scratchpad-band-link:hover {
+  border-bottom-width: 3px;
+}
+.scratchpad-band-link:focus-visible {
+  outline: 2px solid var(--scratchpad-mark);
+  outline-offset: 2px;
+}
+
+.scratchpad-overview-cards {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 196px;
+}
+
+.scratchpad-overview-more {
+  position: absolute;
+  top: 0;
+  display: flex;
+  width: 132px;
+  box-sizing: border-box;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 12px;
+  border: 0;
+  background: var(--scratchpad-rail);
+  color: var(--scratchpad-text);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.scratchpad-overview-more:hover {
+  background: var(--scratchpad-raise);
+}
+.scratchpad-overview-more:focus-visible {
+  outline: 2px solid var(--scratchpad-mark-wall);
+  outline-offset: 2px;
+}
+.scratchpad-overview-more-count {
+  font-size: 13px;
+  font-weight: 800;
+  line-height: 1.35;
+}
+.scratchpad-overview-more .scratchpad-slim-open {
+  border-bottom-color: var(--scratchpad-mark-wall);
+}
+
+.scratchpad-overview .scratchpad-selection-menu {
+  position: absolute;
+  z-index: 30;
+}
+.scratchpad-overview.is-box-selecting .scratchpad-card {
+  transition: none;
+}
+.scratchpad-triangle-help {
+  margin-left: 8px;
+  font-size: 13px;
+}
+
+.scratchpad-overview-help {
+  position: absolute;
+  top: 228px;
+  right: 18px;
+  z-index: 6;
+  max-width: 360px;
+  margin: 0;
+  padding: 10px 12px;
+  background: var(--scratchpad-ink);
+  box-shadow: 0 12px 32px rgb(0 0 0 / 45%);
+  color: var(--scratchpad-paper);
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.6;
+}
+
+.scratchpad-comments {
+  display: flex;
+  min-height: 0;
+  flex: 1 1 auto;
+  flex-direction: column;
+}
+
+.scratchpad-comments.is-idle .scratchpad-greeting.is-headline {
+  padding: 20px 14px 0 18px;
+}
+
+.scratchpad-comments-head {
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  gap: 10px;
+  padding: 18px 14px 0 18px;
+}
+
+.scratchpad-comments-song {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+.scratchpad-comments-song-text {
+  display: flex;
+  min-width: 0;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.scratchpad-comments-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--scratchpad-text-soft);
+  font-size: 10.5px;
+  font-weight: 800;
+  letter-spacing: 0.22em;
+}
+
+.scratchpad-comments-back {
+  border-bottom-color: var(--scratchpad-mark-wall);
+  letter-spacing: 0.04em;
+  color: var(--scratchpad-text);
+}
+
+.scratchpad-comments-title {
+  display: -webkit-box;
+  margin: 0;
+  overflow: hidden;
+  font-size: 24px;
+  font-weight: 900;
+  letter-spacing: -0.01em;
+  line-height: 1.15;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.scratchpad-comments-artist {
+  overflow: hidden;
+  color: var(--scratchpad-text-soft);
+  font-size: 12px;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.scratchpad-comments-cover {
+  display: grid;
+  width: 64px;
+  height: 64px;
+  flex: none;
+  place-items: center;
+  overflow: hidden;
+  background: var(--scratchpad-rail);
+}
+
+.scratchpad-comments-cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.scratchpad-comments-cover svg {
+  width: 22px;
+  height: 22px;
+  opacity: 0.4;
+}
+
+.scratchpad-comments-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.scratchpad-comments-tag {
+  display: flex;
+  height: 24px;
+  align-items: center;
+  gap: 2px;
+  padding: 0 2px 0 8px;
+  background: var(--scratchpad-paper);
+  color: var(--scratchpad-ink);
+  font-size: 11.5px;
+  font-weight: 800;
+}
+
+.scratchpad-comments-tag button {
+  display: grid;
+  width: 20px;
+  height: 20px;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  opacity: 0.55;
+  cursor: pointer;
+}
+
+.scratchpad-comments-tag button:hover {
+  opacity: 1;
+}
+.scratchpad-comments-tag button:focus-visible {
+  outline: 2px solid var(--scratchpad-mark);
+  outline-offset: -2px;
+}
+.scratchpad-comments-tag svg {
+  width: 12px;
+  height: 12px;
+}
+
+.scratchpad-comments-tag-add {
+  display: flex;
+  height: 24px;
+  align-items: center;
+  gap: 4px;
+  padding: 0 8px;
+  border: 1px dashed var(--scratchpad-text-soft);
+  background: transparent;
+  color: var(--scratchpad-text-soft);
+  font: inherit;
+  font-size: 11.5px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.scratchpad-comments-tag-add:hover {
+  border-style: solid;
+  color: var(--scratchpad-text);
+}
+.scratchpad-comments-tag-add:focus-visible {
+  outline: 2px solid var(--scratchpad-mark-wall);
+  outline-offset: 1px;
+}
+.scratchpad-comments-tag-add svg {
+  width: 12px;
+  height: 12px;
+}
+
+.scratchpad-comments-tag-input {
+  width: 140px;
+  height: 24px;
+  box-sizing: border-box;
+  padding: 0 8px;
+  border: 0;
+  border-bottom: 2px solid var(--scratchpad-mark-wall);
+  background: var(--scratchpad-raise);
+  color: var(--scratchpad-text);
+  font: inherit;
+  font-size: 12px;
+  outline: none;
+}
+
+.scratchpad-comments-timeline {
+  position: relative;
+  height: 18px;
+  margin: 2px 0 0;
+}
+
+.scratchpad-comments-timeline-track {
+  position: absolute;
+  top: 8px;
+  right: 0;
+  left: 0;
+  height: 2px;
+  background: var(--scratchpad-raise);
+}
+
+.scratchpad-comments-timeline-mark {
+  position: absolute;
+  top: 2px;
+  width: 12px;
+  height: 14px;
+  margin-left: -6px;
+  padding: 0;
+  border: 0;
+  background: linear-gradient(
+    90deg,
+    transparent 4.5px,
+    var(--scratchpad-mark-wall) 4.5px 7.5px,
+    transparent 7.5px
+  );
+  cursor: pointer;
+}
+
+.scratchpad-comments-timeline-mark:disabled {
+  cursor: default;
+}
+.scratchpad-comments-timeline-mark:hover:not(:disabled) {
+  background: linear-gradient(
+    90deg,
+    transparent 3.5px,
+    var(--scratchpad-mark-wall) 3.5px 8.5px,
+    transparent 8.5px
+  );
+}
+.scratchpad-comments-timeline-mark:focus-visible {
+  outline: 2px solid var(--scratchpad-mark-wall);
+  outline-offset: 1px;
+}
+
+.scratchpad-comments-timeline-carrier {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  will-change: transform;
+}
+
+.scratchpad-comments-timeline-now {
+  position: absolute;
+  top: 5px;
+  left: -4px;
+  width: 8px;
+  height: 8px;
+  background: var(--scratchpad-text);
+  transform: rotate(45deg);
+}
+
+.scratchpad-comments-sort {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 14px;
+  margin: 12px 14px 6px 18px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--scratchpad-raise);
+}
+
+.scratchpad-comments-sort-option {
+  padding: 2px 0;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  background: transparent;
+  color: var(--scratchpad-text-soft);
+  font: inherit;
+  font-size: 11.5px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.scratchpad-comments-sort-option.is-active {
+  border-bottom-color: var(--scratchpad-mark-wall);
+  color: var(--scratchpad-text);
+}
+.scratchpad-comments-sort-option:focus-visible {
+  outline: 2px solid var(--scratchpad-mark-wall);
+  outline-offset: 2px;
+}
+.scratchpad-comments-sort-count {
+  margin-left: auto;
+  color: var(--scratchpad-text-soft);
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+}
+
+.scratchpad-comments-modhint {
+  flex: 0 0 auto;
+  margin: 10px 14px 4px 18px;
+  padding: 6px 0 6px 10px;
+  border-left: 2px solid var(--scratchpad-mark-wall);
+  color: var(--scratchpad-text-soft);
+  font-size: 11.5px;
+  line-height: 1.5;
+}
+.scratchpad-comments-modhint p {
+  margin: 0;
+}
+.scratchpad-comments-modhint-actions {
+  display: flex;
+  gap: 14px;
+  margin-top: 4px;
+}
+.scratchpad-comments-modhint-actions button {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--scratchpad-text-soft);
+  font: inherit;
+  font-weight: 800;
+  cursor: pointer;
+}
+.scratchpad-comments-modhint-actions .scratchpad-comments-modhint-go {
+  color: var(--scratchpad-text);
+}
+.scratchpad-comments-modhint-actions button:hover {
+  color: var(--scratchpad-text);
+}
+.scratchpad-comments-modhint-actions button:focus-visible {
+  outline: 2px solid var(--scratchpad-mark-wall);
+  outline-offset: 2px;
+}
+
+.scratchpad-comment-scroll {
+  min-height: 0;
+  flex: 1 1 auto;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+.scratchpad-comment-list {
+  margin: 0;
+  padding: 0 0 8px;
+  list-style: none;
+}
+
+.scratchpad-comment {
+  position: relative;
+  display: grid;
+  grid-template-columns: 48px minmax(0, 1fr) auto;
+  align-items: start;
+  gap: 8px;
+  padding: 8px 10px 8px 18px;
+}
+
+.scratchpad-comment:hover {
+  background: var(--scratchpad-raise);
+}
+
+.scratchpad-comment-at {
+  padding: 3px 0;
+  border: 0;
+  background: var(--scratchpad-mark-wall);
+  color: var(--scratchpad-sheet);
+  font-family: ui-monospace, Menlo, Consolas, monospace;
+  font-size: 11px;
+  font-weight: 800;
+  line-height: 1.2;
+  text-align: center;
+}
+
+button.scratchpad-comment-at {
+  cursor: pointer;
+}
+button.scratchpad-comment-at:hover {
+  filter: brightness(1.1);
+}
+button.scratchpad-comment-at:focus-visible {
+  outline: 2px solid var(--scratchpad-text);
+  outline-offset: 1px;
+}
+
+.scratchpad-comment-quote {
+  color: var(--scratchpad-mark-wall);
+  font-size: 22px;
+  font-weight: 900;
+  line-height: 1;
+  text-align: right;
+}
+
+.scratchpad-comment-body {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.scratchpad-comment-text {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.55;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+
+.scratchpad-comment-text.is-empty {
+  color: var(--scratchpad-text-soft);
+  font-style: italic;
+}
+.scratchpad-comment-when {
+  color: var(--scratchpad-text-soft);
+  font-size: 10.5px;
+  font-variant-numeric: tabular-nums;
+}
+
+.scratchpad-comment-actions {
+  display: flex;
+  opacity: 0;
+  transition: opacity 0.12s ease;
+}
+.scratchpad-comment:hover .scratchpad-comment-actions,
+.scratchpad-comment:focus-within .scratchpad-comment-actions {
+  opacity: 1;
+}
+.scratchpad-comment-actions .scratchpad-icon-button {
+  width: 28px;
+  height: 28px;
+}
+
+.scratchpad-comment-actions .scratchpad-icon-button.is-confirming {
+  display: flex;
+  width: auto;
+  gap: 4px;
+  padding: 0 8px;
+  background: var(--scratchpad-mark-wall);
+  color: var(--scratchpad-sheet);
+  font-size: 11px;
+  font-weight: 800;
+  opacity: 1;
+}
+
+.scratchpad-comment-edit,
+.scratchpad-composer-input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 6px 8px;
+  border: 0;
+  border-bottom: 2px solid var(--scratchpad-mark-wall);
+  background: var(--scratchpad-rail);
+  color: var(--scratchpad-text);
+  font: inherit;
+  font-size: 13px;
+  line-height: 1.5;
+  resize: none;
+  outline: none;
+}
+
+.scratchpad-comment-divider {
+  margin: 6px 14px 2px 18px;
+  padding-top: 8px;
+  border-top: 1px solid var(--scratchpad-raise);
+  color: var(--scratchpad-text-soft);
+  font-size: 10.5px;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+}
+
+.scratchpad-comments-none {
+  margin: 10px 14px 0 18px;
+  color: var(--scratchpad-text-soft);
+  font-size: 12.5px;
+  line-height: 1.6;
+  flex: 1 1 auto;
+}
+
+.scratchpad-composer {
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  gap: 8px;
+  padding: 10px 14px 16px 18px;
+  background: var(--scratchpad-rail);
+}
+
+.scratchpad-composer-input {
+  background: var(--scratchpad-sheet);
+}
+.scratchpad-composer-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.scratchpad-composer-pin {
+  display: flex;
+  height: 28px;
+  align-items: center;
+  gap: 5px;
+  padding: 0 8px;
+  border: 1px solid var(--scratchpad-raise);
+  background: transparent;
+  color: var(--scratchpad-text-soft);
+  font: inherit;
+  font-size: 11.5px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.scratchpad-composer-pin svg {
+  width: 13px;
+  height: 13px;
+}
+.scratchpad-composer-pin:hover:not(:disabled) {
+  color: var(--scratchpad-text);
+}
+.scratchpad-composer-pin.is-on {
+  border-color: var(--scratchpad-mark-wall);
+  background: var(--scratchpad-mark-wall);
+  color: var(--scratchpad-sheet);
+}
+.scratchpad-composer-pin:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+.scratchpad-composer-pin:focus-visible {
+  outline: 2px solid var(--scratchpad-mark-wall);
+  outline-offset: 1px;
+}
+.scratchpad-composer-pin-time {
+  font-family: ui-monospace, Menlo, Consolas, monospace;
+  font-variant-numeric: tabular-nums;
+}
+.scratchpad-composer-hint {
+  min-width: 0;
+  flex: 1 1 auto;
+  overflow: hidden;
+  color: var(--scratchpad-text-soft);
+  font-size: 10.5px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.scratchpad-comments-recent {
+  min-height: 0;
+  flex: 1 1 auto;
+  margin: 0;
+  padding: 0 0 12px;
+  overflow-y: auto;
+  list-style: none;
+}
+
+.scratchpad-comments-recent-item {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  gap: 3px;
+  padding: 9px 14px 9px 18px;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.scratchpad-comments-recent-item:hover {
+  background: var(--scratchpad-raise);
+}
+.scratchpad-comments-recent-item:focus-visible {
+  outline: 2px solid var(--scratchpad-mark-wall);
+  outline-offset: -2px;
+}
+.scratchpad-comments-recent-title {
+  font-size: 13.5px;
+  font-weight: 800;
+}
+.scratchpad-comments-recent-meta {
+  color: var(--scratchpad-text-soft);
+  font-size: 11px;
+}
+
+.scratchpad-comments-recent-quote {
+  display: -webkit-box;
+  overflow: hidden;
+  color: var(--scratchpad-text-soft);
+  font-size: 12px;
+  font-style: italic;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.scratchpad-canvas.is-catalog .scratchpad-card {
+  cursor: pointer;
+}
+
+.scratchpad-comments-search {
+  display: inline-flex;
+  width: 280px;
+  height: 34px;
+  box-sizing: border-box;
+  align-items: center;
+  gap: 8px;
+  padding: 0 10px;
+  border: 1.5px solid var(--scratchpad-ink);
+  background: transparent;
+  color: var(--scratchpad-ink);
+}
+
+.scratchpad-comments-search svg {
+  width: 15px;
+  height: 15px;
+  flex: none;
+  opacity: 0.7;
+}
+
+.scratchpad-comments-search input {
+  min-width: 0;
+  flex: 1 1 auto;
+  border: 0;
+  outline: none;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  -webkit-user-select: text;
+  user-select: text;
+}
+
+.scratchpad-comments-search input::placeholder {
+  color: rgb(20 20 20 / 45%);
+}
+.scratchpad-comments-search input::-webkit-search-cancel-button {
+  display: none;
+}
+.scratchpad-comments-search-count {
+  flex: none;
+  font-size: 11.5px;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+}
+.scratchpad-comments-search:focus-within {
+  box-shadow: 3px 3px 0 var(--scratchpad-mark);
+}
+
+.scratchpad-card-noteline {
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  max-width: calc(100% - 12px);
+  box-sizing: border-box;
+  overflow: hidden;
+  padding: 2px 6px;
+  background: var(--scratchpad-ink);
+  color: var(--scratchpad-paper);
+  font-size: 10.5px;
+  font-weight: 800;
+  line-height: 1.4;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.scratchpad-card.is-film .scratchpad-card-noteline {
+  top: auto;
+  bottom: 6px;
+}
+
+.scratchpad-row-noteline {
+  display: block;
+  overflow: hidden;
+  color: var(--scratchpad-mark-wall);
+  font-size: 11px;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.scratchpad-card-play.is-comment {
+  right: 42px;
+}
+:is(.scratchpad-canvas, .scratchpad-full-cards) .scratchpad-card-play.is-comment {
+  right: 48px;
+}
+.scratchpad-card-play.is-comment svg {
+  margin-left: 0;
+}
+
+.scratchpad-card.is-catalog {
+  display: block;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: var(--scratchpad-paper);
+  box-shadow: 0 10px 22px rgb(0 0 0 / 35%);
+  color: var(--scratchpad-ink);
+  overflow: hidden;
+}
+
+.scratchpad-card.is-catalog::before {
+  position: absolute;
+  top: 112px;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: repeating-linear-gradient(180deg, transparent 0 17px, rgb(20 20 20 / 9%) 17px 18px);
+  content: "";
+  pointer-events: none;
+}
+
+.scratchpad-card.is-catalog:hover {
+  background: #f8f5ee;
+}
+.scratchpad-card.is-catalog .scratchpad-card-cover {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  width: 42px;
+  height: 42px;
+  aspect-ratio: auto;
+  border-radius: 0;
+}
+.scratchpad-card.is-catalog .scratchpad-card-play {
+  width: 24px;
+  height: 24px;
+}
+.scratchpad-card.is-catalog .scratchpad-card-play svg {
+  width: 11px;
+  height: 11px;
+}
+.scratchpad-card.is-catalog .scratchpad-card-placeholder svg {
+  width: 18px;
+  height: 18px;
+}
+
+.scratchpad-card-no {
+  position: absolute;
+  top: 12px;
+  left: 61px;
+  color: rgb(20 20 20 / 55%);
+  font:
+    700 9.5px/1 ui-monospace,
+    Menlo,
+    Consolas,
+    monospace;
+  letter-spacing: 0.06em;
+}
+
+.scratchpad-card.is-catalog .scratchpad-card-name {
+  position: absolute;
+  top: 25px;
+  right: 10px;
+  left: 61px;
+  display: -webkit-box;
+  margin: 0;
+  padding: 0;
+  font-size: 13.5px;
+  font-weight: 900;
+  line-height: 1.2;
+  white-space: normal;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.scratchpad-card.is-catalog.is-current .scratchpad-card-name {
+  color: #141414;
+}
+
+.scratchpad-card.is-catalog .scratchpad-card-meta {
+  position: absolute;
+  top: 60px;
+  right: 10px;
+  left: 10px;
+  margin: 0;
+  padding: 0;
+  color: rgb(20 20 20 / 70%);
+  font-size: 11px;
+  font-weight: 600;
+  opacity: 1;
+}
+.scratchpad-card-rule {
+  position: absolute;
+  top: 80px;
+  right: 0;
+  left: 0;
+  height: 2px;
+  background: var(--scratchpad-mark);
+}
+
+.scratchpad-card-tags {
+  position: absolute;
+  top: 88px;
+  right: 10px;
+  left: 10px;
+  overflow: hidden;
+  font-size: 10.5px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.scratchpad-card-quote {
+  position: absolute;
+  top: 112px;
+  right: 10px;
+  left: 10px;
+  display: -webkit-box;
+  overflow: hidden;
+  color: rgb(20 20 20 / 82%);
+  font-size: 11.5px;
+  font-style: italic;
+  line-height: 18px;
+  overflow-wrap: anywhere;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+}
+
+.scratchpad-card-foot {
+  position: absolute;
+  right: 10px;
+  bottom: 9px;
+  left: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  font-size: 10.5px;
+  font-weight: 800;
+}
+
+.scratchpad-card-playing {
+  padding: 1px 5px;
+  background: var(--scratchpad-ink);
+  color: var(--scratchpad-paper);
+  font-size: 9.5px;
+  letter-spacing: 0.08em;
+}
+
+:is(.scratchpad-overview, .scratchpad-compact) .scratchpad-card.is-note::before {
+  top: 54px;
+  left: 11px;
+}
+:is(.scratchpad-overview, .scratchpad-compact) .scratchpad-card.is-note .scratchpad-card-cover {
+  height: 54px;
+}
+:is(.scratchpad-overview, .scratchpad-compact) .scratchpad-card.is-note .scratchpad-card-name {
+  margin: 6px 6px 0 18px;
+  font-size: 12px;
+}
+:is(.scratchpad-overview, .scratchpad-compact) .scratchpad-card.is-note .scratchpad-card-meta {
+  margin: 3px 6px 0 18px;
+  padding-top: 2px;
+  font-size: 10px;
+}
+
+:is(.scratchpad-overview, .scratchpad-compact) .scratchpad-card.is-photo {
+  grid-template-rows: 70px auto;
+  padding: 5px 5px 0;
+}
+:is(.scratchpad-overview, .scratchpad-compact) .scratchpad-card.is-photo .scratchpad-card-cover {
+  width: 82px;
+  height: 70px;
+}
+:is(.scratchpad-overview, .scratchpad-compact) .scratchpad-card.is-photo .scratchpad-card-name {
+  margin-top: 4px;
+  font-size: 10.5px;
+}
+:is(.scratchpad-overview, .scratchpad-compact) .scratchpad-card.is-photo .scratchpad-card-meta {
+  font-size: 9.5px;
+}
+
+:is(.scratchpad-overview, .scratchpad-compact) .scratchpad-card.is-film .scratchpad-card-cover {
+  top: 13px;
+  bottom: 23px;
+}
+:is(.scratchpad-overview, .scratchpad-compact) .scratchpad-card.is-film .scratchpad-card-name {
+  bottom: 27px;
+  font-size: 11.5px;
+}
+:is(.scratchpad-overview, .scratchpad-compact) .scratchpad-card.is-film .scratchpad-card-edge {
+  bottom: 9px;
+  font-size: 9px;
+}
+:is(.scratchpad-overview, .scratchpad-compact) .scratchpad-card-play {
+  width: 26px;
+  height: 26px;
+}
+
+:is(.scratchpad-overview, .scratchpad-compact) .scratchpad-card.is-catalog .scratchpad-card-cover {
+  top: 8px;
+  left: 8px;
+  width: 28px;
+  height: 28px;
+}
+:is(.scratchpad-overview, .scratchpad-compact) .scratchpad-card.is-catalog .scratchpad-card-play {
+  display: none;
+}
+:is(.scratchpad-overview, .scratchpad-compact) .scratchpad-card.is-catalog .scratchpad-card-no {
+  display: none;
+}
+:is(.scratchpad-overview, .scratchpad-compact) .scratchpad-card.is-catalog .scratchpad-card-name {
+  top: 8px;
+  right: 8px;
+  left: 43px;
+  font-size: 11.5px;
+}
+:is(.scratchpad-overview, .scratchpad-compact)
+  .scratchpad-card.is-catalog
+  :is(.scratchpad-card-meta, .scratchpad-card-tags) {
+  display: none;
+}
+:is(.scratchpad-overview, .scratchpad-compact) .scratchpad-card.is-catalog .scratchpad-card-rule {
+  top: 42px;
+}
+:is(.scratchpad-overview, .scratchpad-compact) .scratchpad-card.is-catalog::before {
+  top: 50px;
+  background: repeating-linear-gradient(180deg, transparent 0 13px, rgb(20 20 20 / 9%) 13px 14px);
+}
+:is(.scratchpad-overview, .scratchpad-compact) .scratchpad-card.is-catalog .scratchpad-card-quote {
+  top: 50px;
+  right: 8px;
+  left: 8px;
+  font-size: 10px;
+  line-height: 14px;
+  -webkit-line-clamp: 2;
+}
+:is(.scratchpad-overview, .scratchpad-compact) .scratchpad-card.is-catalog .scratchpad-card-foot {
+  right: 8px;
+  bottom: 5px;
+  left: 8px;
+  font-size: 9.5px;
+}
+:is(.scratchpad-overview, .scratchpad-compact)
+  .scratchpad-card.is-catalog
+  .scratchpad-card-playing {
+  display: none;
+}
+
+/* The Now Playing toolbar takes the place of Folia's desktop title bar. */
+.scratchpad-root .scratchpad-drawer.is-panel {
+  position: relative;
+  inset: auto;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  box-shadow: none;
+  overflow: hidden;
+}
+.scratchpad-drawer.is-panel .scratchpad-sheet {
+  padding-top: 0;
+  padding-bottom: 110px;
+  min-height: 0;
+}
+.scratchpad-drawer.is-panel .scratchpad-panel-band {
+  width: 100%;
+}
+.scratchpad-drawer.is-panel .scratchpad-band-fold {
+  left: 8px;
+}
+.scratchpad-drawer.is-panel .scratchpad-band-expand {
+  right: 8px;
+}
+.scratchpad-drawer.is-panel .scratchpad-band.is-panel .scratchpad-band-head {
+  left: 52px;
+}
+.scratchpad-root .scratchpad-drawer.is-expanded {
+  position: absolute;
+  z-index: 0;
+}
+.scratchpad-drawer.is-expanded .scratchpad-band-actions {
+  z-index: 2;
+}
+.scratchpad-band-actions input {
+  background: var(--scratchpad-paper);
+  color: var(--scratchpad-ink);
+}
+.scratchpad-comments-cover {
+  position: relative;
+}
+.scratchpad-root button:focus-visible {
+  outline: 2px solid var(--scratchpad-mark-wall);
+  outline-offset: -2px;
+}
+.scratchpad-panel-page .scratchpad-list {
+  min-height: 0;
+}
+.scratchpad-overview-row-tools {
+  position: absolute;
+  right: 190px;
+  bottom: 0;
+  display: flex;
+  gap: 5px;
+}
+.scratchpad-f-body > .scratchpad-panel {
+  display: flex;
+  min-height: 0;
+  flex-direction: column;
+}
+.scratchpad-overview .scratchpad-overview-more {
+  position: absolute;
+  top: 0;
+}
+
+.scratchpad-comments-scroll-body {
+  display: flex;
+  min-height: 0;
+  flex: 1;
+  flex-direction: column;
+  overflow: auto;
+}
+.scratchpad-comments-scroll-body .scratchpad-comment-scroll {
+  flex: 1 0 auto;
+  overflow: visible;
+}
+.scratchpad-root .scratchpad-panel-band,
+.scratchpad-root .scratchpad-sheet {
+  pointer-events: none;
+}
+.scratchpad-root .scratchpad-sheet > :not(.scratchpad-panel-band),
+.scratchpad-panel-band > button {
+  pointer-events: auto;
+}
+.scratchpad-overview .scratchpad-overview-row-tools {
+  z-index: 1;
+}
+
+/* Keep the Scopify dashboard behind the sheet legible only as a silhouette. */
+.scratchpad-root .scratchpad-f-scrim {
+  background: color-mix(in srgb, var(--background) 96%, transparent);
+}
+.scratchpad-root .scratchpad-composer-pin,
+.scratchpad-root .scratchpad-composer-row > button {
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+.scratchpad-root .scratchpad-composer-hint {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+}
+.scratchpad-root .scratchpad-table-scroll {
+  position: relative;
+  overflow: auto;
+  min-height: 0;
+}
+.scratchpad-root .scratchpad-list-group ul {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+.scratchpad-root .scratchpad-f-body .scratchpad-canvas-side {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  position: relative;
+  inset: auto;
+}
+@media (max-width: 640px) {
+  .scratchpad-root .scratchpad-f-body .scratchpad-canvas-side {
+    display: none;
+  }
+}
+
+.scratchpad-root .scratchpad-drawer.is-expanded.is-overview {
+  overflow-y: auto;
+  overflow-x: clip;
+}
+.scratchpad-drawer.is-overview .scratchpad-f {
+  position: relative;
+  overflow: clip;
+}
+
+@media (max-width: 640px) {
+  .scratchpad-root .scratchpad-band-actions {
+    right: 165px;
+    bottom: 4px;
+    max-width: calc(100% - 355px);
+    gap: 3px;
+    overflow-x: auto;
+  }
+  .scratchpad-root .scratchpad-f-body {
+    left: 170px;
+    right: 170px;
+  }
+  .scratchpad-root .scratchpad-overview-row-tools {
+    display: none;
+  }
+}
+
+.scratchpad-panel-paper.is-band .scratchpad-band-deco {
+  margin-left: min(0px, calc(65% - 262px));
+}

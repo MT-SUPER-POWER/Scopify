@@ -178,7 +178,7 @@ export function getPrimaryModifierLabel(): string {
 }
 
 export function scratchpadCanvasTips(
-  tab: "notes" | "queue" | "history",
+  tab: "notes" | "queue" | "history" | "moments",
   t: TFunction,
   canReorder = true,
 ): CanvasSideTip[] {
@@ -202,6 +202,13 @@ export function scratchpadCanvasTips(
       ...common,
       { key: t("scratchpad.tipPlayKey"), label: t("scratchpad.tipPlay") },
       { key: t("scratchpad.tipDeleteKey"), label: t("scratchpad.tipDelete") },
+    ];
+  }
+  if (tab === "moments") {
+    return [
+      ...common,
+      { key: t("scratchpad.tipPlayKey"), label: t("scratchpad.tipPlay") },
+      { key: t("scratchpad.tipEscKey"), label: t("scratchpad.tipEsc") },
     ];
   }
   return [

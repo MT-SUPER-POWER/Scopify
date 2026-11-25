@@ -24,13 +24,16 @@ export interface CanvasSpacing {
   };
 }
 
-export type CanvasCardVariant = "note" | "queue" | "history";
+export type CanvasCardVariant = "note" | "queue" | "history" | "moment";
 
 export interface CanvasEntry {
   key: string;
   track: PlayerTrack;
   meta?: string;
   badge?: string;
+  tagLine?: string;
+  quote?: string;
+  counts?: string;
   isCurrent?: boolean;
   isDimmed?: boolean;
   position?: number;

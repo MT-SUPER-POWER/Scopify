@@ -1,52 +1,34 @@
 "use client";
 
-import {
-  ChevronRight,
-  FolderPlus,
-  History,
-  ListMusic,
-  ListPlus,
-  NotebookPen,
-  Shuffle,
-  Trash2,
-  X,
-} from "lucide-react";
-import {
-  useCallback,
-  useEffect,
-  useLayoutEffect,
-  useMemo,
-  useRef,
-  useState,
-  type PointerEvent,
-} from "react";
+import { ChevronRight, FolderPlus, ListPlus, NotebookPen, Shuffle, Trash2, X } from "lucide-react";
+import { useCallback, useEffect, useMemo, useRef, useState, type PointerEvent } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
+import {
+  rowSpacing,
+  overviewRowTops,
+  overviewBottomInset,
+} from "@/lib/scratchpad/foliaCanvasLayout";
+import { SCRATCHPAD_TABS } from "@/lib/scratchpad/scratchpadLook";
+import { clientToLocal } from "@/lib/scratchpad/scratchpadTilt";
 import { ScratchpadCard } from "@/components/scratchpad/ScratchpadCard";
 import { isPersonalFmPlaybackSource } from "@/constants/personalFm";
 import { useScratchpadActions } from "@/hooks/scratchpad/useScratchpadActions";
 import { formatTrackArtists } from "@/lib/player/trackDisplay";
 import { playerTrackKey } from "@/lib/player/trackIdentity";
-import {
-  OVERVIEW_CARD_SPACING,
-  columnsFor,
-  rectFromPoints,
-  rectsIntersect,
-} from "@/lib/scratchpad/canvasLayout";
+import { rectFromPoints, rectsIntersect } from "@/lib/scratchpad/canvasLayout";
 import { groupScratchpadEntries, providerLabel } from "@/lib/scratchpad/scratchpadModel";
+import { formatMomentAt, getRecentMomentRecords } from "@/lib/scratchpad/songNotesModel";
 import { cn } from "@/lib/utils";
 import { usePlayerStore } from "@/store/module/player";
 import { collectTracksToScratchpad, useScratchpadStore } from "@/store/module/scratchpad";
 import type { PlayerTrack } from "@/types/player/model";
 import type { CanvasEntry, CanvasPoint, CanvasRect, CardMotion } from "@/types/scratchpad/canvas";
-import type { ScratchpadOverviewViewProps } from "@/types/scratchpad/components";
-
-type OverviewRowId = "notes" | "queue" | "history";
-
-interface OverviewEntry extends CanvasEntry {
-  row: OverviewRowId;
-  sourceKey: string;
-}
+import type {
+  OverviewEntry,
+  ScratchpadSection,
+  ScratchpadOverviewViewProps,
+} from "@/types/scratchpad/components";
 
 const noopRegister = (_key: string, _motion: CardMotion | null) => undefined;
 
@@ -57,12 +39,17 @@ const MAX_CARDS_PER_ROW = 10;
  * 支持单选、Ctrl/Cmd 多选、跨行拉框选择、一键批量入队/存歌单/移出与快速展开对应全屏画布。
  */
 export function ScratchpadOverviewView({
+  sheetWidth,
+  viewHeight,
+  tilt,
   onOpenTab,
   onCloseWorkspace,
 }: ScratchpadOverviewViewProps) {
   const { t, i18n } = useTranslation();
   const entries = useScratchpadStore((s) => s.entries);
   const localHistory = useScratchpadStore((s) => s.localHistory);
+  const momentsByKey = useScratchpadStore((s) => s.momentsByKey);
+  const tags = useScratchpadStore((s) => s.tags);
   const removeKeys = useScratchpadStore((s) => s.removeKeys);
   const removeHistoryKeys = useScratchpadStore((s) => s.removeHistoryKeys);
 
@@ -77,7 +64,7 @@ export function ScratchpadOverviewView({
   const rootRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const marqueeRef = useRef<HTMLDivElement>(null);
-  const stripRefs = useRef(new Map<OverviewRowId, HTMLDivElement>());
+  const stripRefs = useRef(new Map<ScratchpadSection, HTMLDivElement>());
   const dragRef = useRef<{
     pointerId: number;
     start: CanvasPoint;
@@ -85,33 +72,22 @@ export function ScratchpadOverviewView({
     moved: boolean;
   } | null>(null);
 
-  const [cardsPerRow, setCardsPerRow] = useState(6);
+  const tops = overviewRowTops(viewHeight, overviewBottomInset(sheetWidth, tilt));
   const [selected, setSelected] = useState<ReadonlySet<string>>(() => new Set());
   const [boxing, setBoxing] = useState(false);
-
-  useLayoutEffect(() => {
-    const element = containerRef.current;
-    if (!element) return;
-    const update = () => {
-      if (element.clientWidth === 0) return;
-      // Leave room for the tail "View All" tile inside the row strip.
-      const available = Math.max(
-        OVERVIEW_CARD_SPACING.card.width,
-        element.clientWidth - OVERVIEW_CARD_SPACING.card.width - 48,
-      );
-      setCardsPerRow(Math.min(MAX_CARDS_PER_ROW, columnsFor(available, OVERVIEW_CARD_SPACING)));
-    };
-    update();
-    const observer = new ResizeObserver(update);
-    observer.observe(element);
-    return () => observer.disconnect();
-  }, []);
 
   const currentKey = currentTrack ? playerTrackKey(currentTrack) : null;
 
   const sections = useMemo(() => {
+    const fit = (tab: ScratchpadSection) => {
+      const { card, x } = rowSpacing[tab];
+      return Math.max(
+        1,
+        Math.min(MAX_CARDS_PER_ROW, Math.floor((sheetWidth - 550) / (card.width + x))),
+      );
+    };
     const flatNotes = groupScratchpadEntries(entries).flatMap((group) => group.entries);
-    const notesItems: OverviewEntry[] = flatNotes.slice(0, cardsPerRow).map((entry) => ({
+    const notesItems: OverviewEntry[] = flatNotes.slice(0, fit("notes")).map((entry) => ({
       key: `notes|${entry.key}`,
       row: "notes",
       sourceKey: entry.key,
@@ -124,7 +100,7 @@ export function ScratchpadOverviewView({
     }));
 
     const queueStart = Math.max(0, queueIndex);
-    const queueSlice = queue.slice(queueStart, queueStart + cardsPerRow);
+    const queueSlice = queue.slice(queueStart, queueStart + fit("queue"));
     const queueItems: OverviewEntry[] = queueSlice.map((track, offset) => {
       const idx = queueStart + offset;
       const trackKey = playerTrackKey(track);
@@ -143,7 +119,7 @@ export function ScratchpadOverviewView({
       minute: "2-digit",
       hourCycle: "h23",
     });
-    const historyItems: OverviewEntry[] = localHistory.slice(0, cardsPerRow).map((item) => ({
+    const historyItems: OverviewEntry[] = localHistory.slice(0, fit("history")).map((item) => ({
       key: `history|${item.key}`,
       row: "history",
       sourceKey: item.key,
@@ -152,11 +128,37 @@ export function ScratchpadOverviewView({
       isCurrent: currentKey === item.key,
     }));
 
+    const tagMap = new Map(tags.map((tag) => [tag.key, tag.name]));
+    const momentCount = Object.keys(momentsByKey).length;
+    const momentItems: OverviewEntry[] = getRecentMomentRecords(momentsByKey, fit("moments")).map(
+      (record) => {
+        const latest = record.comments[0];
+        return {
+          key: `moments|${record.key}`,
+          row: "moments",
+          sourceKey: record.key,
+          track: record.track,
+          tagLine: record.tags
+            .slice(0, 2)
+            .map((key) => `#${tagMap.get(key) ?? key}`)
+            .join(" "),
+          quote:
+            latest?.text ||
+            (latest?.at !== undefined
+              ? t("scratchpad.momentMarkOnly", { time: formatMomentAt(latest.at) })
+              : undefined),
+          counts:
+            record.comments.length > 0
+              ? t("scratchpad.momentsCommentCount", { count: record.comments.length })
+              : t("scratchpad.momentsTagsOnly", { count: record.tags.length }),
+          isCurrent: currentKey === record.key,
+        };
+      },
+    );
+
     return [
       {
         id: "notes" as const,
-        title: t("scratchpad.title"),
-        icon: NotebookPen,
         total: flatNotes.length,
         more: Math.max(0, flatNotes.length - notesItems.length),
         items: notesItems,
@@ -165,8 +167,6 @@ export function ScratchpadOverviewView({
       },
       {
         id: "queue" as const,
-        title: t("scratchpad.tabQueue"),
-        icon: ListMusic,
         total: queue.length,
         more: Math.max(0, queue.length - queueStart - queueItems.length),
         items: queueItems,
@@ -175,16 +175,32 @@ export function ScratchpadOverviewView({
       },
       {
         id: "history" as const,
-        title: t("scratchpad.tabHistory"),
-        icon: History,
         total: localHistory.length,
         more: Math.max(0, localHistory.length - historyItems.length),
         items: historyItems,
         allTracks: localHistory.map((item) => item.track),
         emptyText: t("scratchpad.historyEmpty"),
       },
+      {
+        id: "moments" as const,
+        total: momentCount,
+        more: momentCount - momentItems.length,
+        items: momentItems,
+        emptyText: t("scratchpad.momentsEmptyDesc"),
+      },
     ];
-  }, [cardsPerRow, currentKey, entries, i18n.language, localHistory, queue, queueIndex, t]);
+  }, [
+    sheetWidth,
+    currentKey,
+    entries,
+    i18n.language,
+    localHistory,
+    momentsByKey,
+    queue,
+    queueIndex,
+    t,
+    tags,
+  ]);
 
   const allItems = useMemo(() => sections.flatMap((section) => section.items), [sections]);
 
@@ -231,25 +247,15 @@ export function ScratchpadOverviewView({
   );
 
   const clientToContainer = (clientX: number, clientY: number): CanvasPoint => {
-    const rect = containerRef.current!.getBoundingClientRect();
-    return { x: clientX - rect.left, y: clientY - rect.top };
+    return clientToLocal(containerRef.current!, { x: clientX, y: clientY }, tilt);
   };
-
-  const cardBoxInContainer = (rowId: OverviewRowId, index: number): CanvasRect | null => {
-    const container = containerRef.current;
+  const cardBoxInContainer = (rowId: ScratchpadSection, index: number): CanvasRect | null => {
     const strip = stripRefs.current.get(rowId);
-    if (!container || !strip) return null;
-    const containerRect = container.getBoundingClientRect();
-    const stripRect = strip.getBoundingClientRect();
-    const step = OVERVIEW_CARD_SPACING.card.width + OVERVIEW_CARD_SPACING.x;
-    const left = stripRect.left - containerRect.left + index * step;
-    const top = stripRect.top - containerRect.top;
-    return {
-      left,
-      top,
-      right: left + OVERVIEW_CARD_SPACING.card.width,
-      bottom: top + OVERVIEW_CARD_SPACING.card.height,
-    };
+    if (!strip) return null;
+    const { card, x } = rowSpacing[rowId];
+    const left = strip.offsetLeft + index * (card.width + x);
+    const top = strip.parentElement!.offsetTop;
+    return { left, top, right: left + card.width, bottom: top + card.height };
   };
 
   const applyMarquee = (clientX: number, clientY: number) => {
@@ -328,15 +334,20 @@ export function ScratchpadOverviewView({
   const collectSelected = () => {
     const historyTracks: PlayerTrack[] = [];
     const queueTracks: PlayerTrack[] = [];
+    const momentTracks: PlayerTrack[] = [];
     for (const entry of selectedEntries) {
       if (entry.row === "history") historyTracks.push(entry.track);
       else if (entry.row === "queue") queueTracks.push(entry.track);
+      else if (entry.row === "moments") momentTracks.push(entry.track);
     }
     if (historyTracks.length > 0) {
       collectTracksToScratchpad(historyTracks, { label: t("scratchpad.originHistory") });
     }
     if (queueTracks.length > 0) {
       collectTracksToScratchpad(queueTracks, { label: t("scratchpad.originQueue") });
+    }
+    if (momentTracks.length > 0) {
+      collectTracksToScratchpad(momentTracks, { label: t("scratchpad.tabMoments") });
     }
   };
 
@@ -351,7 +362,7 @@ export function ScratchpadOverviewView({
     if ((event.key === "Delete" || event.key === "Backspace") && selected.size > 0) {
       event.preventDefault();
       event.stopPropagation();
-      if (!selectedEntries.some((entry) => entry.row === "queue")) {
+      if (!selectedEntries.some((entry) => entry.row === "queue" || entry.row === "moments")) {
         removeSelected();
       }
       return;
@@ -366,9 +377,10 @@ export function ScratchpadOverviewView({
   const selectedTracks = selectedEntries.map((entry) => entry.track);
   const onlyFromNotes =
     selectedEntries.length > 0 && selectedEntries.every((entry) => entry.row === "notes");
-  const includesQueue = selectedEntries.some((entry) => entry.row === "queue");
+  const cannotRemove = selectedEntries.some(
+    (entry) => entry.row === "queue" || entry.row === "moments",
+  );
   const collectableCount = selectedEntries.filter((entry) => entry.row !== "notes").length;
-  const stepWidth = OVERVIEW_CARD_SPACING.card.width + OVERVIEW_CARD_SPACING.x;
 
   return (
     <div
@@ -379,74 +391,32 @@ export function ScratchpadOverviewView({
       onPointerMove={handlePointerMove}
       onPointerUp={handlePointerUp}
       onPointerCancel={handlePointerUp}
-      className={cn(
-        "relative min-h-0 flex-1 overflow-y-auto outline-none",
-        boxing && "select-none",
-      )}
+      className={cn("scratchpad-overview", boxing && "select-none")}
     >
-      <div ref={containerRef} className="relative mx-auto max-w-400 space-y-5 px-6 py-6 pb-24">
+      <div ref={containerRef} className="absolute inset-0">
         {sections.map((section) => {
-          const Icon = section.icon;
+          const { card, x } = rowSpacing[section.id];
+          const stepWidth = card.width + x;
           return (
             <section
               key={section.id}
-              className="rounded-2xl border border-border/70 bg-surface-raised/75 p-5 shadow-xs"
+              className="scratchpad-overview-row"
+              data-page={section.id}
+              style={{
+                top: 130 + tops[SCRATCHPAD_TABS.indexOf(section.id)] + 84,
+                height: card.height,
+              }}
             >
-              <header className="mb-4 flex flex-wrap items-center justify-between gap-2">
-                <div className="flex items-center gap-2.5">
-                  <span className="flex size-8 items-center justify-center rounded-lg bg-content/8 text-content">
-                    <Icon className="size-4" />
-                  </span>
-                  <h2 className="text-base font-bold text-content">{section.title}</h2>
-                  <span className="rounded-full bg-content/8 px-2 py-0.5 text-xs font-medium text-content-muted tabular-nums">
-                    {section.total}
-                  </span>
-                </div>
-
-                <div className="flex items-center gap-2">
-                  {section.id === "notes" && section.total > 0 && (
-                    <button
-                      type="button"
-                      onClick={() => actions.enqueueTracks(section.allTracks)}
-                      className="inline-flex items-center gap-1.5 rounded-full bg-content/8 px-3 py-1 text-xs font-medium text-content transition-colors hover:bg-content/14"
-                    >
-                      <ListPlus className="size-3.5" />
-                      <span>{t("scratchpad.enqueueAll")}</span>
-                    </button>
-                  )}
-                  {section.id === "queue" && section.total > 1 && !isFm && (
-                    <button
-                      type="button"
-                      onClick={() => reshuffleQueue()}
-                      className="inline-flex items-center gap-1.5 rounded-full bg-content/8 px-3 py-1 text-xs font-medium text-content transition-colors hover:bg-content/14"
-                    >
-                      <Shuffle className="size-3.5" />
-                      <span>{t("scratchpad.shuffleQueue")}</span>
-                    </button>
-                  )}
-                  <button
-                    type="button"
-                    onClick={() => onOpenTab(section.id)}
-                    className="inline-flex items-center gap-1 rounded-full bg-content px-3 py-1 text-xs font-semibold text-surface transition-opacity hover:opacity-90"
-                  >
-                    <span>{t("scratchpad.expandPage")}</span>
-                    <ChevronRight className="size-3.5" />
-                  </button>
-                </div>
-              </header>
-
               {section.items.length === 0 ? (
-                <div className="flex h-28 items-center justify-center rounded-xl border border-dashed border-border/70 bg-surface-sunken/35 px-4 text-sm text-content-muted">
-                  {section.emptyText}
-                </div>
+                <div className="scratchpad-overview-cards scratchpad-hint">{section.emptyText}</div>
               ) : (
                 <div
                   ref={(element) => {
                     if (element) stripRefs.current.set(section.id, element);
                     else stripRefs.current.delete(section.id);
                   }}
-                  className="relative overflow-hidden"
-                  style={{ height: OVERVIEW_CARD_SPACING.card.height }}
+                  className="scratchpad-overview-cards"
+                  style={{ height: card.height }}
                 >
                   {section.items.map((item, index) => (
                     <ScratchpadCard
@@ -457,9 +427,15 @@ export function ScratchpadOverviewView({
                       isMoving={false}
                       isSelected={selected.has(item.key)}
                       isFresh={false}
-                      width={OVERVIEW_CARD_SPACING.card.width}
-                      height={OVERVIEW_CARD_SPACING.card.height}
-                      variant={section.id === "notes" ? "note" : section.id}
+                      width={card.width}
+                      height={card.height}
+                      variant={
+                        section.id === "notes"
+                          ? "note"
+                          : section.id === "moments"
+                            ? "moment"
+                            : section.id
+                      }
                       currentLabel={t("scratchpad.nowPlaying")}
                       playLabel={t(
                         section.id === "queue" ? "scratchpad.playFromQueue" : "scratchpad.play",
@@ -475,21 +451,43 @@ export function ScratchpadOverviewView({
                     onClick={() => onOpenTab(section.id)}
                     style={{
                       left: section.items.length * stepWidth,
-                      width: OVERVIEW_CARD_SPACING.card.width,
-                      height: OVERVIEW_CARD_SPACING.card.height,
+                      width: card.width,
+                      height: card.height,
                     }}
-                    className="absolute top-0 flex flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-border/80 bg-surface-sunken/40 p-3 text-center transition-colors hover:border-brand/50 hover:bg-content/5"
+                    className="scratchpad-overview-more"
                   >
-                    <span className="text-lg font-bold text-content tabular-nums">
+                    <span className="scratchpad-overview-more-count">
                       {section.more > 0 ? `+${section.more}` : t("scratchpad.allCount")}
                     </span>
-                    <span className="inline-flex items-center gap-1 text-xs font-medium text-content-muted">
+                    <span className="scratchpad-slim-open">
                       <span>{t("scratchpad.expandPage")}</span>
                       <ChevronRight className="size-3.5" />
                     </span>
                   </button>
                 </div>
               )}
+              <div className="scratchpad-overview-row-tools">
+                {section.id === "notes" && section.total > 0 && (
+                  <button
+                    type="button"
+                    onClick={() => actions.enqueueTracks(section.allTracks)}
+                    className="scratchpad-pill is-small"
+                  >
+                    <ListPlus className="size-3.5" />
+                    <span>{t("scratchpad.enqueueAll")}</span>
+                  </button>
+                )}
+                {section.id === "queue" && section.total > 1 && !isFm && (
+                  <button
+                    type="button"
+                    onClick={() => reshuffleQueue()}
+                    className="scratchpad-pill is-small"
+                  >
+                    <Shuffle className="size-3.5" />
+                    <span>{t("scratchpad.shuffleQueue")}</span>
+                  </button>
+                )}
+              </div>
             </section>
           );
         })}
@@ -505,7 +503,7 @@ export function ScratchpadOverviewView({
             role="toolbar"
             aria-label={t("scratchpad.selectedCount", { count: selectedEntries.length })}
             onPointerDown={(event) => event.stopPropagation()}
-            className="sticky bottom-5 z-30 mx-auto flex w-fit max-w-full flex-wrap items-center gap-1.5 rounded-full border border-border/80 bg-surface-elevated/95 px-3.5 py-2 shadow-2xl backdrop-blur-xl"
+            className="absolute top-[45%] left-[25%] z-30 mx-auto flex w-fit max-w-full flex-wrap items-center gap-1.5 rounded-full border border-border/80 bg-surface-elevated/95 px-3.5 py-2 shadow-2xl backdrop-blur-xl"
           >
             <span className="px-1.5 text-xs font-semibold text-content tabular-nums">
               {t("scratchpad.selectedCount", { count: selectedEntries.length })}
@@ -541,8 +539,8 @@ export function ScratchpadOverviewView({
             )}
             <button
               type="button"
-              disabled={includesQueue}
-              title={includesQueue ? t("scratchpad.overviewRemoveQueueHint") : undefined}
+              disabled={cannotRemove}
+              title={cannotRemove ? t("scratchpad.overviewRemoveQueueHint") : undefined}
               onClick={removeSelected}
               className="inline-flex items-center gap-1.5 rounded-full bg-destructive/12 px-3 py-1 text-xs font-medium text-destructive transition-colors hover:bg-destructive hover:text-white disabled:opacity-40"
             >

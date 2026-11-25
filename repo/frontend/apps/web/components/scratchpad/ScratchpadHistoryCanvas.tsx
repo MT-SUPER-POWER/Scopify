@@ -195,7 +195,7 @@ export function ScratchpadHistoryCanvas({
       onDelete={handleDelete}
       selectionActions={selectionActions}
       onEscape={onEscape}
-      spacing={spacingForDensity(density)}
+      spacing={spacingForDensity(density, "history")}
       focusKey={currentKey ?? undefined}
       variant="history"
       side={side}

@@ -1,4 +1,6 @@
 import type { CanvasPoint, CanvasRect, CanvasSpacing } from "@/types/scratchpad/canvas";
+import { pageSpacing, rowSpacing } from "./foliaCanvasLayout";
+import type { ScratchpadSection } from "@/types/scratchpad/components";
 import type { ScratchpadCardDensity } from "@/types/scratchpad/model";
 
 export const STANDARD_SPACING: CanvasSpacing = {
@@ -22,7 +24,11 @@ export const OVERVIEW_CARD_SPACING: CanvasSpacing = {
   card: { width: 152, height: 202 },
 };
 
-export function spacingForDensity(density: ScratchpadCardDensity): CanvasSpacing {
+export function spacingForDensity(
+  density: ScratchpadCardDensity,
+  section?: ScratchpadSection,
+): CanvasSpacing {
+  if (section) return density === "compact" ? rowSpacing[section] : pageSpacing[section];
   return density === "compact" ? COMPACT_SPACING : STANDARD_SPACING;
 }
 

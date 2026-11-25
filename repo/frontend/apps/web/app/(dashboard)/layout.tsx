@@ -1,6 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
+import { AnimatePresence } from "framer-motion";
 import { usePathname } from "next/navigation";
 import { type ReactNode, useEffect, useRef, useState } from "react";
 import { useDefaultLayout, usePanelRef } from "react-resizable-panels";
@@ -159,7 +160,9 @@ function DashboardShell({ children }: { children: ReactNode }) {
         <LyricStageMount />
         <FoliaSettingsMount />
         {isQueueWallOpen && <PlaybackQueueWall />}
-        {isScratchpadWorkspaceOpen && <ScratchpadWorkspace />}
+        <AnimatePresence>
+          {isScratchpadWorkspaceOpen && <ScratchpadWorkspace key="scratchpad" />}
+        </AnimatePresence>
         <ScratchpadSaveToPlaylistDialog />
 
         {/* 顶栏行连同外边距一起作为桌面端窗口拖拽区（系统标题栏已隐藏） */}
