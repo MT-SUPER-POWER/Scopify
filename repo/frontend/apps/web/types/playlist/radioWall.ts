@@ -42,6 +42,11 @@ export interface RadioWallDrag {
   horizontal: boolean;
 }
 
+export interface RadioRedactionWidths {
+  artist: number;
+  title: number;
+}
+
 export interface RadioWallCardProps {
   slot: RadioWallSlot;
   metrics: RadioWallMetrics;
@@ -50,5 +55,6 @@ export interface RadioWallCardProps {
   centered: boolean;
   current: boolean;
   faceDown: boolean;
+  reducedMotion: boolean;
   showLyrics: boolean;
 }

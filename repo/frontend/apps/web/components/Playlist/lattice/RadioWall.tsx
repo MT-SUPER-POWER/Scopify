@@ -201,6 +201,7 @@ export default function RadioWall({
               centered={centered}
               current={current}
               faceDown={faceDown}
+              reducedMotion={Boolean(reducedMotion)}
               showLyrics={Boolean(
                 current &&
                 centered &&

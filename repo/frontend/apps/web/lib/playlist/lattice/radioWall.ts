@@ -1,4 +1,9 @@
-import type { RadioBrowseRange, RadioWallMetrics, RadioWallSlot } from "@/types/playlist/radioWall";
+import type {
+  RadioBrowseRange,
+  RadioRedactionWidths,
+  RadioWallMetrics,
+  RadioWallSlot,
+} from "@/types/playlist/radioWall";
 
 export function radioBrowseRange(count: number, anchor: number, wrap: boolean): RadioBrowseRange {
   if (count < 1) return { min: 0, max: 0 };
@@ -65,5 +70,20 @@ export function radioCardPose(offset: number, metrics: RadioWallMetrics) {
     y: metrics.centerY + metrics.radius * (1 - Math.cos(angle)) + first * metrics.cardSize * 0.12,
     rotation: Math.sign(offset) * distance * 6,
     scale: Math.max(0.26, 1 - first * 0.36 - rest * 0.1),
+  };
+}
+
+/** Deterministic width percentages for a face-down card's redacted title and artist bars. */
+export function radioRedactionWidths(key: string): RadioRedactionWidths {
+  let hash = 2_166_136_261;
+  for (let index = 0; index < key.length; index++) {
+    hash ^= key.charCodeAt(index);
+    hash = Math.imul(hash, 16_777_619);
+  }
+  const titleSpan = 78 - 52 + 1;
+  const artistSpan = 56 - 34 + 1;
+  return {
+    artist: 34 + ((hash >>> 16) % artistSpan),
+    title: 52 + ((hash >>> 0) % titleSpan),
   };
 }
