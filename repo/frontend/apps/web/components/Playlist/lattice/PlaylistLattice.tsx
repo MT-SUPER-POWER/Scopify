@@ -64,7 +64,7 @@ export default function PlaylistLattice({
       data-playlist-view=""
       ref={rootRef}
       tabIndex={-1}
-      className="group/lattice @container absolute inset-0 isolate z-15 overflow-hidden bg-card text-foreground outline-none motion-reduce:**:transition-none"
+      className="group/lattice @container absolute inset-0 isolate z-15 overflow-hidden bg-card text-foreground transition-[box-shadow] duration-[260ms] ease-out outline-none data-[lights-off=true]:shadow-[inset_0_0_0_100vmax_rgb(0_0_0/92%)] motion-reduce:transition-none motion-reduce:**:transition-none"
       data-lights-off={lightsOff && currentIndex >= 0}
       data-current-number-only={currentNumberOnly}
       aria-label={t("playlist.view.lattice")}
